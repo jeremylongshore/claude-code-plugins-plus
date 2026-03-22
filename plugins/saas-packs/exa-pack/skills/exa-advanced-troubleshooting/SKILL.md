@@ -1,265 +1,263 @@
 ---
 name: exa-advanced-troubleshooting
 description: |
-  Apply Exa advanced debugging techniques for hard-to-diagnose issues.
-  Use when standard troubleshooting fails, investigating complex race conditions,
+  Apply advanced debugging techniques for hard-to-diagnose Exa issues.
+  Use when standard troubleshooting fails, investigating latency spikes,
   or preparing evidence bundles for Exa support escalation.
   Trigger with phrases like "exa hard bug", "exa mystery error",
-  "exa impossible to debug", "difficult exa issue", "exa deep debug".
-allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*), Bash(tcpdump:*)
+  "exa deep debug", "difficult exa issue", "exa latency spike".
+allowed-tools: Read, Grep, Bash(curl:*), Bash(node:*), Bash(tcpdump:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, exa, debugging, scaling]
+tags: [saas, exa, debugging, advanced]
 
 ---
 # Exa Advanced Troubleshooting
 
 ## Overview
-Deep debugging techniques for complex Exa issues that resist standard troubleshooting.
+Deep debugging for complex Exa issues: latency spikes, intermittent failures, result quality degradation, and content retrieval failures. All Exa error responses include a `requestId` — always capture it.
 
-## Prerequisites
-- Access to production logs and metrics
-- kubectl access to clusters
-- Network capture tools available
-- Understanding of distributed tracing
+## Instructions
 
-## Evidence Collection Framework
-
-### Comprehensive Debug Bundle
-```bash
-#!/bin/bash
-set -euo pipefail
-# advanced-exa-debug.sh
-
-BUNDLE="exa-advanced-debug-$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$BUNDLE"/{logs,metrics,network,config,traces}
-
-# 1. Extended logs (1 hour window)
-kubectl logs -l app=exa-integration --since=1h > "$BUNDLE/logs/pods.log"
-journalctl -u exa-service --since "1 hour ago" > "$BUNDLE/logs/system.log"
-
-# 2. Metrics dump
-curl -s localhost:9090/api/v1/query?query=exa_requests_total > "$BUNDLE/metrics/requests.json"  # 9090: Prometheus port
-curl -s localhost:9090/api/v1/query?query=exa_errors_total > "$BUNDLE/metrics/errors.json"  # Prometheus port
-
-# 3. Network capture (30 seconds)
-timeout 30 tcpdump -i any port 443 -w "$BUNDLE/network/capture.pcap" &  # 443: HTTPS port
-
-# 4. Distributed traces
-curl -s localhost:16686/api/traces?service=exa > "$BUNDLE/traces/jaeger.json"  # 16686: Jaeger UI port
-
-# 5. Configuration state
-kubectl get cm exa-config -o yaml > "$BUNDLE/config/configmap.yaml"
-kubectl get secret exa-secrets -o yaml > "$BUNDLE/config/secrets-redacted.yaml"
-
-tar -czf "$BUNDLE.tar.gz" "$BUNDLE"
-echo "Advanced debug bundle: $BUNDLE.tar.gz"
-```
-
-## Systematic Isolation
-
-### Layer-by-Layer Testing
-
+### Step 1: Layer-by-Layer Diagnostics
 ```typescript
-// Test each layer independently
-async function diagnoseExaIssue(): Promise<DiagnosisReport> {
-  const results: DiagnosisResult[] = [];
+import Exa from "exa-js";
 
-  // Layer 1: Network connectivity
-  results.push(await testNetworkConnectivity());
-
-  // Layer 2: DNS resolution
-  results.push(await testDNSResolution('api.exa.com'));
-
-  // Layer 3: TLS handshake
-  results.push(await testTLSHandshake('api.exa.com'));
-
-  // Layer 4: Authentication
-  results.push(await testAuthentication());
-
-  // Layer 5: API response
-  results.push(await testAPIResponse());
-
-  // Layer 6: Response parsing
-  results.push(await testResponseParsing());
-
-  return { results, firstFailure: results.find(r => !r.success) };
+interface DiagnosticResult {
+  layer: string;
+  success: boolean;
+  latencyMs: number;
+  details: string;
 }
-```
 
-### Minimal Reproduction
+async function diagnoseExa(): Promise<DiagnosticResult[]> {
+  const results: DiagnosticResult[] = [];
+  const exa = new Exa(process.env.EXA_API_KEY);
 
-```typescript
-// Strip down to absolute minimum
-async function minimalRepro(): Promise<void> {
-  // 1. Fresh client, no customization
-  const client = new ExaClient({
-    apiKey: process.env.EXA_API_KEY!,
-  });
-
-  // 2. Simplest possible call
+  // Layer 1: DNS + Network
+  let start = performance.now();
   try {
-    const result = await client.ping();
-    console.log('Ping successful:', result);
-  } catch (error) {
-    console.error('Ping failed:', {
-      message: error.message,
-      code: error.code,
-      stack: error.stack,
+    const resp = await fetch("https://api.exa.ai", { method: "HEAD" });
+    results.push({
+      layer: "network",
+      success: true,
+      latencyMs: performance.now() - start,
+      details: `HTTP ${resp.status}`,
+    });
+  } catch (err: any) {
+    results.push({
+      layer: "network",
+      success: false,
+      latencyMs: performance.now() - start,
+      details: err.message,
+    });
+    return results; // No point continuing if network fails
+  }
+
+  // Layer 2: Authentication
+  start = performance.now();
+  try {
+    await exa.search("auth test", { numResults: 1 });
+    results.push({
+      layer: "auth",
+      success: true,
+      latencyMs: performance.now() - start,
+      details: "API key valid",
+    });
+  } catch (err: any) {
+    results.push({
+      layer: "auth",
+      success: false,
+      latencyMs: performance.now() - start,
+      details: `${err.status}: ${err.message}`,
+    });
+    if (err.status === 401 || err.status === 402) return results;
+  }
+
+  // Layer 3: Neural search
+  start = performance.now();
+  try {
+    const r = await exa.search("test neural search quality", {
+      type: "neural",
+      numResults: 3,
+    });
+    results.push({
+      layer: "neural-search",
+      success: true,
+      latencyMs: performance.now() - start,
+      details: `${r.results.length} results, top score: ${r.results[0]?.score.toFixed(3)}`,
+    });
+  } catch (err: any) {
+    results.push({
+      layer: "neural-search",
+      success: false,
+      latencyMs: performance.now() - start,
+      details: `${err.status}: ${err.message}`,
     });
   }
+
+  // Layer 4: Content retrieval
+  start = performance.now();
+  try {
+    const r = await exa.searchAndContents("content retrieval test", {
+      numResults: 1,
+      text: { maxCharacters: 500 },
+      highlights: { maxCharacters: 200 },
+    });
+    const hasText = !!r.results[0]?.text;
+    const hasHighlights = !!r.results[0]?.highlights?.length;
+    results.push({
+      layer: "content-retrieval",
+      success: hasText,
+      latencyMs: performance.now() - start,
+      details: `text: ${hasText}, highlights: ${hasHighlights}`,
+    });
+  } catch (err: any) {
+    results.push({
+      layer: "content-retrieval",
+      success: false,
+      latencyMs: performance.now() - start,
+      details: `${err.status}: ${err.message}`,
+    });
+  }
+
+  // Layer 5: findSimilar
+  start = performance.now();
+  try {
+    const r = await exa.findSimilar("https://nodejs.org", { numResults: 2 });
+    results.push({
+      layer: "find-similar",
+      success: r.results.length > 0,
+      latencyMs: performance.now() - start,
+      details: `${r.results.length} similar pages found`,
+    });
+  } catch (err: any) {
+    results.push({
+      layer: "find-similar",
+      success: false,
+      latencyMs: performance.now() - start,
+      details: `${err.status}: ${err.message}`,
+    });
+  }
+
+  return results;
+}
+
+// Print diagnostic report
+const results = await diagnoseExa();
+console.log("=== Exa Diagnostic Report ===");
+for (const r of results) {
+  const icon = r.success ? "PASS" : "FAIL";
+  console.log(`[${icon}] ${r.layer}: ${r.latencyMs.toFixed(0)}ms — ${r.details}`);
 }
 ```
 
-## Timing Analysis
-
+### Step 2: Latency Profiling
 ```typescript
-class TimingAnalyzer {
-  private timings: Map<string, number[]> = new Map();
+async function profileLatency(query: string, iterations = 5) {
+  const exa = new Exa(process.env.EXA_API_KEY);
+  const timings: { type: string; ms: number }[] = [];
 
-  async measure<T>(label: string, fn: () => Promise<T>): Promise<T> {
-    const start = performance.now();
+  for (const type of ["instant", "fast", "auto", "neural"] as const) {
+    for (let i = 0; i < iterations; i++) {
+      const start = performance.now();
+      try {
+        await exa.search(query, { type, numResults: 3 });
+        timings.push({ type, ms: performance.now() - start });
+      } catch {
+        timings.push({ type, ms: -1 }); // -1 indicates failure
+      }
+    }
+  }
+
+  // Summarize
+  const grouped = new Map<string, number[]>();
+  for (const t of timings) {
+    if (!grouped.has(t.type)) grouped.set(t.type, []);
+    if (t.ms > 0) grouped.get(t.type)!.push(t.ms);
+  }
+
+  console.log(`\nLatency profile for: "${query}"`);
+  for (const [type, times] of grouped) {
+    const sorted = times.sort((a, b) => a - b);
+    const p50 = sorted[Math.floor(sorted.length * 0.5)];
+    const p95 = sorted[Math.floor(sorted.length * 0.95)];
+    console.log(`  ${type}: p50=${p50?.toFixed(0)}ms, p95=${p95?.toFixed(0)}ms`);
+  }
+}
+```
+
+### Step 3: Content Retrieval Debugging
+```typescript
+// When getContents or searchAndContents returns empty text
+async function debugContentRetrieval(url: string) {
+  const exa = new Exa(process.env.EXA_API_KEY);
+  const configs = [
+    { name: "default", opts: { text: true } },
+    { name: "livecrawl-preferred", opts: { text: true, livecrawl: "preferred" as const, livecrawlTimeout: 15000 } },
+    { name: "livecrawl-always", opts: { text: true, livecrawl: "always" as const, livecrawlTimeout: 15000 } },
+    { name: "highlights-only", opts: { highlights: { maxCharacters: 500 } } },
+    { name: "summary-only", opts: { summary: true } },
+  ];
+
+  console.log(`\nContent retrieval debug for: ${url}`);
+  for (const { name, opts } of configs) {
     try {
-      return await fn();
-    } finally {
-      const duration = performance.now() - start;
-      const existing = this.timings.get(label) || [];
-      existing.push(duration);
-      this.timings.set(label, existing);
-    }
-  }
-
-  report(): TimingReport {
-    const report: TimingReport = {};
-    for (const [label, times] of this.timings) {
-      report[label] = {
-        count: times.length,
-        min: Math.min(...times),
-        max: Math.max(...times),
-        avg: times.reduce((a, b) => a + b, 0) / times.length,
-        p95: this.percentile(times, 95),
-      };
-    }
-    return report;
-  }
-}
-```
-
-## Memory and Resource Analysis
-
-```typescript
-// Detect memory leaks in Exa client usage
-const heapUsed: number[] = [];
-
-setInterval(() => {
-  const usage = process.memoryUsage();
-  heapUsed.push(usage.heapUsed);
-
-  // Alert on sustained growth
-  if (heapUsed.length > 60) { // 1 hour at 1/min
-    const trend = heapUsed[59] - heapUsed[0];
-    if (trend > 100 * 1024 * 1024) { // 100MB growth  # 1024: 1 KB
-      console.warn('Potential memory leak in exa integration');
-    }
-  }
-}, 60000);  # 60000: 1 minute in ms
-```
-
-## Race Condition Detection
-
-```typescript
-// Detect concurrent access issues
-class ExaConcurrencyChecker {
-  private inProgress: Set<string> = new Set();
-
-  async execute<T>(key: string, fn: () => Promise<T>): Promise<T> {
-    if (this.inProgress.has(key)) {
-      console.warn(`Concurrent access detected for ${key}`);
-    }
-
-    this.inProgress.add(key);
-    try {
-      return await fn();
-    } finally {
-      this.inProgress.delete(key);
+      const result = await exa.getContents([url], opts as any);
+      const r = result.results[0];
+      console.log(`  ${name}: text=${r?.text?.length || 0} chars, highlights=${r?.highlights?.length || 0}`);
+    } catch (err: any) {
+      console.log(`  ${name}: ERROR ${err.status} — ${err.message}`);
     }
   }
 }
 ```
 
-## Support Escalation Template
-
+### Step 4: Support Escalation Template
 ```markdown
 ## Exa Support Escalation
 
 **Severity:** P[1-4]
-**Request ID:** [from error response]
-**Timestamp:** [ISO 8601]  # 8601 = configured value
+**RequestId:** [from error response]
+**Timestamp:** [ISO 8601 from error]
+**SDK:** exa-js [version from npm list]
 
 ### Issue Summary
 [One paragraph description]
 
 ### Steps to Reproduce
-1. [Step 1]
-2. [Step 2]
+1. Initialize Exa client
+2. Call [method] with [parameters]
+3. Observe [error/unexpected behavior]
 
 ### Expected vs Actual
 - Expected: [behavior]
 - Actual: [behavior]
 
-### Evidence Attached
-- [ ] Debug bundle (exa-advanced-debug-*.tar.gz)
-- [ ] Minimal reproduction code
-- [ ] Timing analysis
-- [ ] Network capture (if relevant)
+### Diagnostic Results
+[Output from diagnoseExa() function]
 
-### Workarounds Attempted
-1. [Workaround 1] - Result: [outcome]
-2. [Workaround 2] - Result: [outcome]
+### Evidence
+- Latency profile attached
+- Content retrieval debug output
+- Error response with requestId
 ```
-
-## Instructions
-
-### Step 1: Collect Evidence Bundle
-Run the comprehensive debug script to gather all relevant data.
-
-### Step 2: Systematic Isolation
-Test each layer independently to identify the failure point.
-
-### Step 3: Create Minimal Reproduction
-Strip down to the simplest failing case.
-
-### Step 4: Escalate with Evidence
-Use the support template with all collected evidence.
-
-## Output
-- Comprehensive debug bundle collected
-- Failure layer identified
-- Minimal reproduction created
-- Support escalation submitted
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Can't reproduce | Race condition | Add timing analysis |
-| Intermittent failure | Timing-dependent | Increase sample size |
-| No useful logs | Missing instrumentation | Add debug logging |
-| Memory growth | Resource leak | Use heap profiling |
-
-## Examples
-
-### Quick Layer Test
-```bash
-set -euo pipefail
-# Test each layer in sequence
-curl -v https://api.exa.com/health 2>&1 | grep -E "(Connected|TLS|HTTP)"
-```
+| Intermittent 5xx | Exa transient failure | Retry with backoff, capture requestId |
+| Neural search slow | Complex/long query | Switch to `fast`, shorten query |
+| Empty text for valid URL | Site blocks crawling | Try `livecrawl: "always"`, use highlights |
+| Score drops across queries | Query drift | Compare with baseline queries |
+| findSimilar returns nothing | Seed URL not indexed | Try a more popular seed URL |
 
 ## Resources
-- [Exa Support Portal](https://support.exa.com)
-- [Exa Status Page](https://status.exa.com)
+- [Exa Error Codes](https://docs.exa.ai/reference/error-codes)
+- [Exa Support](mailto:hello@exa.ai)
+- [Exa Rate Limits](https://docs.exa.ai/reference/rate-limits)
 
 ## Next Steps
 For load testing, see `exa-load-scale`.

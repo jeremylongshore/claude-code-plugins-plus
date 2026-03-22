@@ -1,155 +1,223 @@
 ---
 name: exa-policy-guardrails
 description: |
-  Implement Exa lint rules, policy enforcement, and automated guardrails.
-  Use when setting up code quality rules for Exa integrations, implementing
-  pre-commit hooks, or configuring CI policy checks for Exa best practices.
-  Trigger with phrases like "exa policy", "exa lint",
-  "exa guardrails", "exa best practices check", "exa eslint".
+  Implement content policy enforcement, domain filtering, and usage guardrails for Exa.
+  Use when setting up content safety rules, restricting search domains,
+  or enforcing query and budget policies for Exa integrations.
+  Trigger with phrases like "exa policy", "exa content filter",
+  "exa guardrails", "exa domain allowlist", "exa content moderation".
 allowed-tools: Read, Write, Edit, Bash(npx:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, exa, exa-policy]
+tags: [saas, exa, policy, content-moderation]
 
 ---
 # Exa Policy Guardrails
 
 ## Overview
-Policy enforcement for Exa neural search integrations. Exa searches the open web, which means results may include inappropriate content, competitors' sites, or unreliable sources that need filtering before user presentation.
+Policy enforcement for Exa neural search integrations. Exa searches the open web, so results may include unreliable sources, competitor content, or inappropriate material. This skill covers domain allowlists/blocklists (via Exa's `includeDomains`/`excludeDomains`), content moderation, query sanitization, freshness policies, and per-user budget enforcement.
 
 ## Prerequisites
-- Exa API configured
-- Content filtering requirements defined
-- Understanding of domain allowlist/blocklist patterns
+- `exa-js` installed and configured
+- Content policy requirements defined
+- Redis for per-user quota tracking (optional)
 
 ## Instructions
 
-### Step 1: Domain Allowlist/Blocklist Filtering
+### Step 1: Domain Filtering (Built-in Exa Feature)
+```typescript
+import Exa from "exa-js";
 
-Control which sources appear in search results to prevent showing competitor content or unreliable sites.
+const exa = new Exa(process.env.EXA_API_KEY);
 
-```python
-DOMAIN_BLOCKLIST = [
-    "competitor1.com", "competitor2.io",
-    "spam-farm.com", "content-mill.net"
-]
+// Exa supports up to 1200 domains in includeDomains/excludeDomains
+const TRUSTED_SOURCES = {
+  medical: [
+    "pubmed.ncbi.nlm.nih.gov", "who.int", "cdc.gov",
+    "nejm.org", "nature.com", "thelancet.com",
+  ],
+  technical: [
+    "github.com", "stackoverflow.com", "developer.mozilla.org",
+    "docs.python.org", "nodejs.org", "arxiv.org",
+  ],
+  news: [
+    "reuters.com", "apnews.com", "bbc.com",
+    "techcrunch.com", "arstechnica.com",
+  ],
+};
 
-DOMAIN_ALLOWLIST_FOR_MEDICAL = [
-    "pubmed.ncbi.nlm.nih.gov", "who.int",
-    "cdc.gov", "nejm.org", "nature.com"
-]
+const BLOCKED_DOMAINS = [
+  "competitor1.com", "competitor2.io",
+  "spam-farm.com", "content-mill.net",
+];
 
-def filter_results(results, blocklist=None, allowlist=None):
-    filtered = []
-    for r in results.results:
-        domain = extract_domain(r.url)
-        if blocklist and domain in blocklist:
-            continue
-        if allowlist and domain not in allowlist:
-            continue
-        filtered.append(r)
-    return filtered
+async function policySearch(
+  query: string,
+  category: keyof typeof TRUSTED_SOURCES | "general"
+) {
+  const opts: any = {
+    type: "auto",
+    numResults: 10,
+    text: { maxCharacters: 1000 },
+    moderation: true,  // Exa's built-in content moderation
+  };
 
-def enforce_search_policy(query: str, category: str = "general"):
-    results = exa.search(query, num_results=20)
-    if category == "medical":
-        return filter_results(results, allowlist=DOMAIN_ALLOWLIST_FOR_MEDICAL)
-    return filter_results(results, blocklist=DOMAIN_BLOCKLIST)
+  if (category !== "general" && TRUSTED_SOURCES[category]) {
+    opts.includeDomains = TRUSTED_SOURCES[category];
+  } else {
+    opts.excludeDomains = BLOCKED_DOMAINS;
+  }
+
+  return exa.searchAndContents(query, opts);
+}
 ```
 
 ### Step 2: Query Content Policy
+```typescript
+const BLOCKED_PATTERNS = [
+  /how to (hack|exploit|attack|ddos)/i,
+  /(buy|purchase|order)\s+(drugs|weapons|firearms)/i,
+  /personal.*(address|phone|ssn|social security)/i,
+  /generate.*(malware|ransomware|virus)/i,
+];
 
-Block or sanitize queries that could return harmful content.
+function validateQuery(input: string): string {
+  for (const pattern of BLOCKED_PATTERNS) {
+    if (pattern.test(input)) {
+      throw new PolicyViolation("Query blocked by content policy");
+    }
+  }
 
-```python
-BLOCKED_QUERY_PATTERNS = [
-    r'how to (hack|exploit|attack)',
-    r'(drugs|weapons)\s+(buy|purchase|order)',
-    r'personal.*(address|phone|ssn)',
-]
+  // Sanitize
+  return input
+    .replace(/[<>{}]/g, "")     // strip HTML/template chars
+    .replace(/\0/g, "")         // remove null bytes
+    .trim()
+    .substring(0, 500);         // cap query length
+}
 
-def validate_query(query: str) -> str:
-    import re
-    for pattern in BLOCKED_QUERY_PATTERNS:
-        if re.search(pattern, query, re.IGNORECASE):
-            raise PolicyViolation(f"Query blocked by content policy")
-    return query
+class PolicyViolation extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "PolicyViolation";
+  }
+}
 ```
 
-### Step 3: Result Freshness Policy
+### Step 3: Freshness Policy
+```typescript
+// Enforce minimum recency for time-sensitive use cases
+function applyFreshnessPolicy(
+  opts: any,
+  maxAgeDays: number
+): any {
+  const cutoff = new Date(Date.now() - maxAgeDays * 24 * 60 * 60 * 1000);
+  return {
+    ...opts,
+    startPublishedDate: cutoff.toISOString(),
+  };
+}
 
-Enforce minimum recency for time-sensitive use cases.
-
-```python
-from datetime import datetime, timedelta
-
-def enforce_freshness(results, max_age_days: int = 365):  # 365 days = 1 year
-    cutoff = datetime.now() - timedelta(days=max_age_days)
-    fresh = []
-    for r in results.results:
-        if r.published_date and datetime.fromisoformat(r.published_date) >= cutoff:
-            fresh.append(r)
-    if not fresh:
-        raise PolicyViolation(f"No results found within {max_age_days} day freshness window")
-    return fresh
+// Usage: only return results from the last 90 days
+const results = await exa.searchAndContents("AI regulation updates",
+  applyFreshnessPolicy(
+    { type: "neural", numResults: 10, text: true },
+    90  // max 90 days old
+  )
+);
 ```
 
-### Step 4: API Usage Budget Enforcement
+### Step 4: Per-User Budget Enforcement
+```typescript
+class ExaUsagePolicy {
+  private usage = new Map<string, { count: number; resetAt: number }>();
+  private limits: Record<string, number>;
 
-Prevent excessive API consumption with per-user and per-project quotas.
+  constructor(limits: Record<string, number> = {
+    "free": 10,
+    "pro": 100,
+    "enterprise": 1000,
+  }) {
+    this.limits = limits;
+  }
 
-```python
-class ExaUsagePolicy:
-    def __init__(self, redis_client):
-        self.r = redis_client
-        self.limits = {"per_user_hourly": 100, "per_project_daily": 5000}  # 5000: 5 seconds in ms
+  checkQuota(userId: string, tier: string): void {
+    const limit = this.limits[tier] || this.limits["free"] || 10;
+    const now = Date.now();
+    const hourKey = `${userId}:${new Date().toISOString().substring(0, 13)}`;
 
-    def check_quota(self, user_id: str, project_id: str):
-        user_key = f"exa:quota:{user_id}:{datetime.now().strftime('%Y-%m-%d-%H')}"
-        user_count = int(self.r.get(user_key) or 0)
-        if user_count >= self.limits["per_user_hourly"]:
-            raise PolicyViolation(f"User hourly quota exceeded ({user_count})")
-        proj_key = f"exa:quota:proj:{project_id}:{datetime.now().strftime('%Y-%m-%d')}"
-        proj_count = int(self.r.get(proj_key) or 0)
-        if proj_count >= self.limits["per_project_daily"]:
-            raise PolicyViolation(f"Project daily quota exceeded")
+    let entry = this.usage.get(hourKey);
+    if (!entry || entry.resetAt < now) {
+      entry = { count: 0, resetAt: now + 3600 * 1000 };
+    }
 
-    def record_usage(self, user_id: str, project_id: str):
-        for key, ttl in [
-            (f"exa:quota:{user_id}:{datetime.now().strftime('%Y-%m-%d-%H')}", 3600),  # 3600: timeout: 1 hour
-            (f"exa:quota:proj:{project_id}:{datetime.now().strftime('%Y-%m-%d')}", 86400)  # 86400: timeout: 24 hours
-        ]:
-            self.r.incr(key)
-            self.r.expire(key, ttl)
+    if (entry.count >= limit) {
+      throw new PolicyViolation(
+        `Hourly search quota exceeded: ${entry.count}/${limit}`
+      );
+    }
+
+    entry.count++;
+    this.usage.set(hourKey, entry);
+  }
+}
+
+const usagePolicy = new ExaUsagePolicy();
+```
+
+### Step 5: Combined Policy Enforcement
+```typescript
+async function enforcedSearch(
+  userId: string,
+  userTier: string,
+  rawQuery: string,
+  category: keyof typeof TRUSTED_SOURCES | "general" = "general",
+  maxAgeDays?: number
+) {
+  // 1. Check quota
+  usagePolicy.checkQuota(userId, userTier);
+
+  // 2. Validate and sanitize query
+  const query = validateQuery(rawQuery);
+
+  // 3. Build options with domain policy
+  let opts: any = {
+    type: "auto",
+    numResults: 10,
+    text: { maxCharacters: 1000 },
+    moderation: true,
+  };
+
+  if (category !== "general" && TRUSTED_SOURCES[category]) {
+    opts.includeDomains = TRUSTED_SOURCES[category];
+  } else {
+    opts.excludeDomains = BLOCKED_DOMAINS;
+  }
+
+  // 4. Apply freshness policy
+  if (maxAgeDays) {
+    opts = applyFreshnessPolicy(opts, maxAgeDays);
+  }
+
+  // 5. Execute search
+  return exa.searchAndContents(query, opts);
+}
 ```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Competitor content in results | No domain filtering | Apply blocklist before displaying |
+| Competitor content in results | No domain filtering | Apply `excludeDomains` blocklist |
 | Harmful query accepted | No content policy | Validate queries against blocked patterns |
-| Stale results shown | No freshness check | Enforce date cutoff on results |
-| API cost overrun | No usage limits | Implement per-user/project quotas |
-
-## Examples
-
-### Combined Policy Check
-```python
-query = validate_query(user_input)
-usage_policy.check_quota(user_id, project_id)
-results = exa.search(query, num_results=15)
-filtered = filter_results(results, blocklist=DOMAIN_BLOCKLIST)
-fresh = enforce_freshness(filtered, max_age_days=90)
-usage_policy.record_usage(user_id, project_id)
-```
+| Stale results displayed | No freshness check | Apply `startPublishedDate` filter |
+| API cost overrun | No usage limits | Implement per-user/tier quotas |
+| Blocked policy query | False positive | Review and adjust `BLOCKED_PATTERNS` |
 
 ## Resources
-- [Exa API Docs](https://docs.exa.ai)
+- [Exa Search Reference](https://docs.exa.ai/reference/search)
+- [Exa Domain Filtering](https://docs.exa.ai/reference/search)
 
-## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+## Next Steps
+For architecture decisions, see `exa-architecture-variants`. For cost control, see `exa-cost-tuning`.

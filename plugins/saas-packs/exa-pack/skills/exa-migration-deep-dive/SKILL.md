@@ -1,12 +1,12 @@
 ---
 name: exa-migration-deep-dive
 description: |
-  Execute Exa major re-architecture and migration strategies with strangler fig pattern.
-  Use when migrating to or from Exa, performing major version upgrades,
-  or re-platforming existing integrations to Exa.
-  Trigger with phrases like "migrate exa", "exa migration",
-  "switch to exa", "exa replatform", "exa upgrade major".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
+  Migrate from other search APIs (Google, Bing, Tavily, Serper) to Exa neural search.
+  Use when switching to Exa from another search provider, migrating search pipelines,
+  or evaluating Exa as a replacement for traditional search APIs.
+  Trigger with phrases like "migrate to exa", "switch to exa", "replace google search with exa",
+  "exa vs tavily", "exa migration", "move to exa".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,237 +17,183 @@ tags: [saas, exa, migration]
 # Exa Migration Deep Dive
 
 ## Current State
-!`npm list 2>/dev/null | head -20`
-!`pip freeze 2>/dev/null | head -20`
+!`npm list exa-js 2>/dev/null | grep exa-js || echo 'exa-js not installed'`
+!`npm list 2>/dev/null | grep -E '(google|bing|tavily|serper|serpapi)' || echo 'No competing search SDK found'`
 
 ## Overview
-Comprehensive guide for migrating to or from Exa, or major version upgrades.
+Migrate from traditional search APIs (Google Custom Search, Bing Web Search, Tavily, Serper) to Exa's neural search API. Key differences: Exa uses semantic/neural search instead of keyword matching, returns content (text/highlights/summary) in a single API call, and supports similarity search from a seed URL.
 
-## Prerequisites
-- Current system documentation
-- Exa SDK installed
-- Feature flag infrastructure
-- Rollback strategy tested
+## API Comparison
 
-## Migration Types
-
-| Type | Complexity | Duration | Risk |
-|------|-----------|----------|------|
-| Fresh install | Low | Days | Low |
-| From competitor | Medium | Weeks | Medium |
-| Major version | Medium | Weeks | Medium |
-| Full replatform | High | Months | High |
-
-## Pre-Migration Assessment
-
-### Step 1: Current State Analysis
-```bash
-set -euo pipefail
-# Document current implementation
-find . -name "*.ts" -o -name "*.py" | xargs grep -l "exa" > exa-files.txt
-
-# Count integration points
-wc -l exa-files.txt
-
-# Identify dependencies
-npm list | grep exa
-pip freeze | grep exa
-```
-
-### Step 2: Data Inventory
-```typescript
-interface MigrationInventory {
-  dataTypes: string[];
-  recordCounts: Record<string, number>;
-  dependencies: string[];
-  integrationPoints: string[];
-  customizations: string[];
-}
-
-async function assessExaMigration(): Promise<MigrationInventory> {
-  return {
-    dataTypes: await getDataTypes(),
-    recordCounts: await getRecordCounts(),
-    dependencies: await analyzeDependencies(),
-    integrationPoints: await findIntegrationPoints(),
-    customizations: await documentCustomizations(),
-  };
-}
-```
-
-## Migration Strategy: Strangler Fig Pattern
-
-```
-Phase 1: Parallel Run
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   System    │ ──▶ │  Exa   │
-│   (100%)    │     │   (0%)      │
-└─────────────┘     └─────────────┘
-
-Phase 2: Gradual Shift
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   (50%)     │ ──▶ │   (50%)     │
-└─────────────┘     └─────────────┘
-
-Phase 3: Complete
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   (0%)      │ ──▶ │   (100%)    │
-└─────────────┘     └─────────────┘
-```
-
-## Implementation Plan
-
-### Phase 1: Setup (Week 1-2)
-```bash
-set -euo pipefail
-# Install Exa SDK
-npm install @exa/sdk
-
-# Configure credentials
-cp .env.example .env.exa
-# Edit with new credentials
-
-# Verify connectivity
-node -e "require('@exa/sdk').ping()"
-```
-
-### Phase 2: Adapter Layer (Week 3-4)
-```typescript
-// src/adapters/exa.ts
-interface ServiceAdapter {
-  create(data: CreateInput): Promise<Resource>;
-  read(id: string): Promise<Resource>;
-  update(id: string, data: UpdateInput): Promise<Resource>;
-  delete(id: string): Promise<void>;
-}
-
-class ExaAdapter implements ServiceAdapter {
-  async create(data: CreateInput): Promise<Resource> {
-    const exaData = this.transform(data);
-    return exaClient.create(exaData);
-  }
-
-  private transform(data: CreateInput): ExaInput {
-    // Map from old format to Exa format
-  }
-}
-```
-
-### Phase 3: Data Migration (Week 5-6)
-```typescript
-async function migrateExaData(): Promise<MigrationResult> {
-  const batchSize = 100;
-  let processed = 0;
-  let errors: MigrationError[] = [];
-
-  for await (const batch of oldSystem.iterateBatches(batchSize)) {
-    try {
-      const transformed = batch.map(transform);
-      await exaClient.batchCreate(transformed);
-      processed += batch.length;
-    } catch (error) {
-      errors.push({ batch, error });
-    }
-
-    // Progress update
-    console.log(`Migrated ${processed} records`);
-  }
-
-  return { processed, errors };
-}
-```
-
-### Phase 4: Traffic Shift (Week 7-8)
-```typescript
-// Feature flag controlled traffic split
-function getServiceAdapter(): ServiceAdapter {
-  const exaPercentage = getFeatureFlag('exa_migration_percentage');
-
-  if (Math.random() * 100 < exaPercentage) {
-    return new ExaAdapter();
-  }
-
-  return new LegacyAdapter();
-}
-```
-
-## Rollback Plan
-
-```bash
-set -euo pipefail
-# Immediate rollback
-kubectl set env deployment/app EXA_ENABLED=false
-kubectl rollout restart deployment/app
-
-# Data rollback (if needed)
-./scripts/restore-from-backup.sh --date YYYY-MM-DD
-
-# Verify rollback
-curl https://app.yourcompany.com/health | jq '.services.exa'
-```
-
-## Post-Migration Validation
-
-```typescript
-async function validateExaMigration(): Promise<ValidationReport> {
-  const checks = [
-    { name: 'Data count match', fn: checkDataCounts },
-    { name: 'API functionality', fn: checkApiFunctionality },
-    { name: 'Performance baseline', fn: checkPerformance },
-    { name: 'Error rates', fn: checkErrorRates },
-  ];
-
-  const results = await Promise.all(
-    checks.map(async c => ({ name: c.name, result: await c.fn() }))
-  );
-
-  return { checks: results, passed: results.every(r => r.result.success) };
-}
-```
+| Feature | Google/Bing | Tavily | Exa |
+|---------|-------------|--------|-----|
+| Search model | Keyword | AI-enhanced | Neural embeddings |
+| Content in results | Snippets only | Full text | Text + highlights + summary |
+| Similarity search | No | No | `findSimilar()` by URL |
+| AI answer | No | Yes | `answer()` + `streamAnswer()` |
+| Categories | No | No | company, news, research paper, tweet, people |
+| Date filtering | Limited | Yes | `startPublishedDate` / `endPublishedDate` |
+| Domain filtering | Yes | Yes | `includeDomains` / `excludeDomains` (up to 1200) |
 
 ## Instructions
 
-### Assess current configuration
-Document existing implementation and data inventory.
+### Step 1: Install Exa SDK
+```bash
+set -euo pipefail
+npm install exa-js
+# Remove old SDK if replacing
+# npm uninstall google-search-api tavily serpapi
+```
 
-### Step 2: Build Adapter Layer
-Create abstraction layer for gradual migration.
+### Step 2: Create Adapter Layer
+```typescript
+// src/search/adapter.ts
+import Exa from "exa-js";
 
-### Step 3: Migrate Data
-Run batch data migration with error handling.
+// Define a provider-agnostic search interface
+interface SearchResult {
+  title: string;
+  url: string;
+  snippet: string;
+  score?: number;
+  publishedDate?: string;
+}
 
-### Step 4: Shift Traffic
-Gradually route traffic to new Exa integration.
+interface SearchResponse {
+  results: SearchResult[];
+  query: string;
+}
 
-## Output
-- Migration assessment complete
-- Adapter layer implemented
-- Data migrated successfully
-- Traffic fully shifted to Exa
+// Exa implementation
+class ExaSearchAdapter {
+  private exa: Exa;
+
+  constructor(apiKey: string) {
+    this.exa = new Exa(apiKey);
+  }
+
+  async search(query: string, numResults = 10): Promise<SearchResponse> {
+    const response = await this.exa.searchAndContents(query, {
+      type: "auto",
+      numResults,
+      text: { maxCharacters: 500 },
+      highlights: { maxCharacters: 300, query },
+    });
+
+    return {
+      query,
+      results: response.results.map(r => ({
+        title: r.title || "Untitled",
+        url: r.url,
+        snippet: r.highlights?.join(" ") || r.text?.substring(0, 300) || "",
+        score: r.score,
+        publishedDate: r.publishedDate || undefined,
+      })),
+    };
+  }
+
+  // Exa-only: similarity search (no equivalent in Google/Bing)
+  async findSimilar(url: string, numResults = 5): Promise<SearchResponse> {
+    const response = await this.exa.findSimilarAndContents(url, {
+      numResults,
+      text: { maxCharacters: 500 },
+      excludeSourceDomain: true,
+    });
+
+    return {
+      query: url,
+      results: response.results.map(r => ({
+        title: r.title || "Untitled",
+        url: r.url,
+        snippet: r.text?.substring(0, 300) || "",
+        score: r.score,
+      })),
+    };
+  }
+}
+```
+
+### Step 3: Feature Flag Traffic Shift
+```typescript
+// src/search/router.ts
+function getSearchProvider(): "legacy" | "exa" {
+  const exaPercentage = Number(process.env.EXA_TRAFFIC_PERCENTAGE || "0");
+  return Math.random() * 100 < exaPercentage ? "exa" : "legacy";
+}
+
+async function search(query: string, numResults = 10): Promise<SearchResponse> {
+  const provider = getSearchProvider();
+
+  if (provider === "exa") {
+    return exaAdapter.search(query, numResults);
+  }
+  return legacyAdapter.search(query, numResults);
+}
+
+// Gradually increase: 0% → 10% → 50% → 100%
+// EXA_TRAFFIC_PERCENTAGE=10
+```
+
+### Step 4: Query Translation
+```typescript
+// Exa neural search works best with natural language, not keyword syntax
+function translateQuery(legacyQuery: string): string {
+  return legacyQuery
+    // Remove boolean operators (Exa doesn't use them)
+    .replace(/\b(AND|OR|NOT)\b/gi, " ")
+    // Remove quotes (Exa uses semantic matching, not exact)
+    .replace(/"/g, "")
+    // Remove site: operator (use includeDomains instead)
+    .replace(/site:\S+/gi, "")
+    // Clean up extra whitespace
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+// Extract domain filters from legacy query
+function extractDomainFilter(query: string): string[] {
+  const domains: string[] = [];
+  const siteMatches = query.matchAll(/site:(\S+)/gi);
+  for (const match of siteMatches) {
+    domains.push(match[1]);
+  }
+  return domains;
+}
+```
+
+### Step 5: Validation and Comparison
+```typescript
+async function compareResults(query: string) {
+  const [legacyResults, exaResults] = await Promise.all([
+    legacyAdapter.search(query, 5),
+    exaAdapter.search(query, 5),
+  ]);
+
+  // Compare URL overlap
+  const legacyUrls = new Set(legacyResults.results.map(r => new URL(r.url).hostname));
+  const exaUrls = new Set(exaResults.results.map(r => new URL(r.url).hostname));
+  const overlap = [...legacyUrls].filter(u => exaUrls.has(u));
+
+  console.log(`Legacy results: ${legacyResults.results.length}`);
+  console.log(`Exa results: ${exaResults.results.length}`);
+  console.log(`Domain overlap: ${overlap.length}/${legacyUrls.size}`);
+
+  return { legacyResults, exaResults, overlapRate: overlap.length / legacyUrls.size };
+}
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Data mismatch | Transform errors | Validate transform logic |
-| Performance drop | No caching | Add caching layer |
-| Rollback triggered | Errors spiked | Reduce traffic percentage |
-| Validation failed | Missing data | Check batch processing |
-
-## Examples
-
-### Quick Migration Status
-```typescript
-const status = await validateExaMigration();
-console.log(`Migration ${status.passed ? 'PASSED' : 'FAILED'}`);
-status.checks.forEach(c => console.log(`  ${c.name}: ${c.result.success}`));
-```
+| Lower result count | Exa filters more aggressively | Increase `numResults` |
+| Different ranking | Neural vs keyword ranking | Expected — evaluate by relevance |
+| Boolean queries fail | Exa doesn't support AND/OR | Translate to natural language |
+| Missing `site:` filter | Different API parameter | Use `includeDomains` parameter |
 
 ## Resources
-- [Strangler Fig Pattern](https://martinfowler.com/bliki/StranglerFigApplication.html)
-- [Exa Migration Guide](https://docs.exa.com/migration)
+- [Exa vs Tavily Comparison](https://exa.ai/versus/tavily)
+- [Exa Search Reference](https://docs.exa.ai/reference/search)
+- [exa-js SDK](https://github.com/exa-labs/exa-js)
 
-## Flagship+ Skills
+## Next Steps
 For advanced troubleshooting, see `exa-advanced-troubleshooting`.

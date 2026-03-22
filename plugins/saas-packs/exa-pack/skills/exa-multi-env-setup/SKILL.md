@@ -1,85 +1,90 @@
 ---
 name: exa-multi-env-setup
 description: |
-  Configure Exa neural search API across development, staging, and production environments.
+  Configure Exa across development, staging, and production environments.
   Use when setting up multi-environment search pipelines, managing API key isolation,
-  or configuring caching and result limits per deployment tier.
+  or configuring per-environment search limits and caching.
   Trigger with phrases like "exa environments", "exa staging", "exa dev prod",
-  "exa environment setup", "exa api key by env".
+  "exa environment setup", "exa multi-env".
 allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, exa, deployment, api]
+tags: [saas, exa, deployment, api, environments]
 
 ---
 # Exa Multi-Environment Setup
 
 ## Overview
-Exa's neural search API (`api.exa.ai`) charges per search request. Multi-environment setup focuses on API key isolation, request caching to reduce costs in staging/production, and controlling `numResults` and `text.maxCharacters` per environment (higher values cost more).
+Exa charges per search request at `api.exa.ai`. Multi-environment setup focuses on API key isolation per environment, request limits and caching to control costs in staging, and appropriate `numResults`/content settings per tier.
 
 ## Prerequisites
 - Exa API key(s) from dashboard.exa.ai
-- `exa-js` npm package (`npm install exa-js`)
+- `exa-js` installed (`npm install exa-js`)
 - Optional: Redis for search result caching in staging/production
 
 ## Environment Strategy
 
-| Environment | Key Isolation | numResults | Cache TTL | Rate Limit |
-|-------------|---------------|------------|-----------|------------|
-| Development | Shared dev key | 3 (low cost) | None | Low |
-| Staging | Staging key | 5 | 5 minutes | Moderate |
-| Production | Prod key | 5-10 per query | 1 hour | Full |
+| Environment | Key Isolation | numResults | Content | Cache TTL |
+|-------------|---------------|------------|---------|-----------|
+| Development | Shared dev key | 3 | highlights only | None |
+| Staging | Staging key | 5 | text (1000 chars) | 5 min |
+| Production | Prod key | 10 | text (2000 chars) | 1 hour |
 
 ## Instructions
 
-### Step 1: Configuration Structure
+### Step 1: Environment-Aware Configuration
 ```typescript
 // config/exa.ts
 import Exa from "exa-js";
 
 type Env = "development" | "staging" | "production";
 
-interface ExaConfig {
+interface ExaEnvConfig {
   apiKey: string;
   defaultNumResults: number;
-  maxCharacters: number;       // per result content length
+  maxCharacters: number;
+  searchType: "auto" | "neural" | "keyword";
   cacheEnabled: boolean;
   cacheTtlSeconds: number;
 }
 
-const configs: Record<Env, ExaConfig> = {
+const configs: Record<Env, Omit<ExaEnvConfig, "apiKey"> & { keyVar: string }> = {
   development: {
-    apiKey: process.env.EXA_API_KEY!,
-    defaultNumResults: 3,       // fewer results = lower cost in dev
-    maxCharacters: 500,  # HTTP 500 Internal Server Error
-    cacheEnabled: false,        // don't bother caching in dev
+    keyVar: "EXA_API_KEY",
+    defaultNumResults: 3,
+    maxCharacters: 500,
+    searchType: "auto",
+    cacheEnabled: false,
     cacheTtlSeconds: 0,
   },
   staging: {
-    apiKey: process.env.EXA_API_KEY_STAGING!,
+    keyVar: "EXA_API_KEY_STAGING",
     defaultNumResults: 5,
-    maxCharacters: 1000,  # 1000: 1 second in ms
+    maxCharacters: 1000,
+    searchType: "auto",
     cacheEnabled: true,
-    cacheTtlSeconds: 300,       // 5-minute cache in staging  # 300: timeout: 5 minutes
+    cacheTtlSeconds: 300,  // 5 minutes
   },
   production: {
-    apiKey: process.env.EXA_API_KEY_PROD!,
-    defaultNumResults: 5,
-    maxCharacters: 1000,  # 1 second in ms
+    keyVar: "EXA_API_KEY_PROD",
+    defaultNumResults: 10,
+    maxCharacters: 2000,
+    searchType: "neural",
     cacheEnabled: true,
-    cacheTtlSeconds: 3600,      // 1-hour cache for repeated queries  # 3600: timeout: 1 hour
+    cacheTtlSeconds: 3600,  // 1 hour
   },
 };
 
-export function getExaConfig(): ExaConfig {
+export function getExaConfig(): ExaEnvConfig {
   const env = (process.env.NODE_ENV || "development") as Env;
   const config = configs[env] || configs.development;
-  if (!config.apiKey) {
-    throw new Error(`EXA_API_KEY not set for ${env} environment`);
+  const apiKey = process.env[config.keyVar];
+  if (!apiKey) {
+    throw new Error(`${config.keyVar} not set for ${env} environment`);
   }
-  return config;
+  return { ...config, apiKey };
 }
 
 export function getExaClient(): Exa {
@@ -87,27 +92,44 @@ export function getExaClient(): Exa {
 }
 ```
 
-### Step 2: Search Service with Caching
+### Step 2: Search Service with Config-Driven Defaults
 ```typescript
 // lib/exa-search.ts
 import { getExaClient, getExaConfig } from "../config/exa";
-import { Redis } from "ioredis";
-
-const redis = process.env.REDIS_URL ? new Redis(process.env.REDIS_URL) : null;
 
 export async function search(query: string, numResults?: number) {
   const exa = getExaClient();
   const cfg = getExaConfig();
   const n = numResults ?? cfg.defaultNumResults;
 
-  // Check cache if enabled
+  return exa.searchAndContents(query, {
+    type: cfg.searchType,
+    numResults: n,
+    text: { maxCharacters: cfg.maxCharacters },
+  });
+}
+```
+
+### Step 3: Redis Cache Layer (Staging/Production)
+```typescript
+// lib/exa-cache.ts
+import { Redis } from "ioredis";
+import { getExaClient, getExaConfig } from "../config/exa";
+
+const redis = process.env.REDIS_URL ? new Redis(process.env.REDIS_URL) : null;
+
+export async function cachedSearch(query: string, numResults?: number) {
+  const exa = getExaClient();
+  const cfg = getExaConfig();
+  const n = numResults ?? cfg.defaultNumResults;
+
   if (cfg.cacheEnabled && redis) {
-    const cacheKey = `exa:${Buffer.from(`${query}:${n}`).toString("base64")}`;
+    const cacheKey = `exa:${Buffer.from(`${query}:${n}:${cfg.searchType}`).toString("base64")}`;
     const cached = await redis.get(cacheKey);
     if (cached) return JSON.parse(cached);
 
     const results = await exa.searchAndContents(query, {
-      type: "neural",
+      type: cfg.searchType,
       numResults: n,
       text: { maxCharacters: cfg.maxCharacters },
     });
@@ -117,41 +139,28 @@ export async function search(query: string, numResults?: number) {
   }
 
   return exa.searchAndContents(query, {
-    type: "neural",
+    type: cfg.searchType,
     numResults: n,
     text: { maxCharacters: cfg.maxCharacters },
   });
 }
 ```
 
-### Step 3: Environment Variable Setup
+### Step 4: Environment Variables
 ```bash
 # .env.local (development)
-EXA_API_KEY=exa-dev-abc123
+EXA_API_KEY=exa-dev-key-here
 
-# GitHub Actions - Staging
-EXA_API_KEY_STAGING=exa-staging-def456
+# .env.staging
+EXA_API_KEY_STAGING=exa-staging-key-here
+REDIS_URL=redis://staging-redis:6379
 
-# GitHub Actions - Production
-EXA_API_KEY_PROD=exa-prod-xyz789
-REDIS_URL=redis://prod-redis:6379  # 6379: Redis port
+# .env.production
+EXA_API_KEY_PROD=exa-prod-key-here
+REDIS_URL=redis://prod-redis:6379
 ```
 
-### Step 4: Health Check Per Environment
-```typescript
-// lib/exa-health.ts
-export async function checkExaHealth(): Promise<{ status: string; env: string }> {
-  try {
-    const exa = getExaClient();
-    await exa.search("test connectivity", { numResults: 1 });
-    return { status: "healthy", env: process.env.NODE_ENV || "development" };
-  } catch (err: any) {
-    return { status: "unhealthy", env: process.env.NODE_ENV || "development" };
-  }
-}
-```
-
-### Step 5: CI/CD Configuration
+### Step 5: CI/CD Secret Configuration
 ```yaml
 # .github/workflows/deploy.yml
 jobs:
@@ -161,7 +170,7 @@ jobs:
       EXA_API_KEY_STAGING: ${{ secrets.EXA_API_KEY_STAGING }}
       NODE_ENV: staging
     steps:
-      - run: npm run build && npm run deploy:staging
+      - run: npm ci && npm run build && npm run deploy:staging
 
   deploy-production:
     environment: production
@@ -169,38 +178,47 @@ jobs:
       EXA_API_KEY_PROD: ${{ secrets.EXA_API_KEY_PROD }}
       NODE_ENV: production
     steps:
-      - run: npm run deploy:prod
+      - run: npm ci && npm run build && npm run deploy:prod
+```
+
+### Step 6: Health Check Per Environment
+```typescript
+export async function checkExaHealth(): Promise<{
+  status: string;
+  env: string;
+  latencyMs: number;
+}> {
+  const start = performance.now();
+  try {
+    const exa = getExaClient();
+    await exa.search("health check", { numResults: 1 });
+    return {
+      status: "healthy",
+      env: process.env.NODE_ENV || "development",
+      latencyMs: Math.round(performance.now() - start),
+    };
+  } catch {
+    return {
+      status: "unhealthy",
+      env: process.env.NODE_ENV || "development",
+      latencyMs: Math.round(performance.now() - start),
+    };
+  }
+}
 ```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| `401 Unauthorized` | Wrong API key for environment | Verify `EXA_API_KEY` in env vars |
-| `429 rate_limit_exceeded` | Too many requests | Implement caching and request queuing |
-| High API costs in staging | No caching enabled | Enable Redis cache with 5-minute TTL |
-| Empty results | Query too narrow | Broaden query terms for neural search |
-
-## Examples
-
-### Check Active Configuration
-```typescript
-import { getExaConfig } from "./config/exa";
-
-const cfg = getExaConfig();
-console.log(`Results per query: ${cfg.defaultNumResults}`);
-console.log(`Cache enabled: ${cfg.cacheEnabled}, TTL: ${cfg.cacheTtlSeconds}s`);
-```
+| `401 Unauthorized` | Wrong API key for environment | Verify correct env var name |
+| `429 rate_limit_exceeded` | Too many requests | Enable caching and request queuing |
+| High API costs in staging | No caching enabled | Enable Redis cache with 5-min TTL |
+| Empty results in dev | numResults too low | Increase from 3 to 5 |
 
 ## Resources
 - [Exa API Documentation](https://docs.exa.ai)
-- [Exa JavaScript SDK](https://github.com/exa-labs/exa-js)
 - [Exa Pricing](https://exa.ai/pricing)
+- [exa-js SDK](https://github.com/exa-labs/exa-js)
 
 ## Next Steps
 For deployment configuration, see `exa-deploy-integration`.
-
-## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale

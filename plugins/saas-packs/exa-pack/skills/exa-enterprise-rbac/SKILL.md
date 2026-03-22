@@ -1,121 +1,217 @@
 ---
 name: exa-enterprise-rbac
 description: |
-  Configure Exa enterprise SSO, role-based access control, and organization management.
-  Use when implementing SSO integration, configuring role-based permissions,
-  or setting up organization-level controls for Exa.
-  Trigger with phrases like "exa SSO", "exa RBAC",
-  "exa enterprise", "exa roles", "exa permissions", "exa SAML".
-allowed-tools: Read, Write, Edit
+  Manage Exa API key scoping, team access controls, and domain restrictions.
+  Use when implementing multi-key access control, configuring per-team search limits,
+  or setting up organization-level Exa governance.
+  Trigger with phrases like "exa access control", "exa RBAC",
+  "exa enterprise", "exa team keys", "exa permissions".
+allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, exa, rbac]
+tags: [saas, exa, rbac, enterprise]
 
 ---
 # Exa Enterprise RBAC
 
 ## Overview
-Manage access to Exa AI search API through API key scoping and team-level controls. Exa is an API-first product with per-search pricing, so access control centers on API key management, rate limiting, and domain restrictions rather than traditional user roles.
+Manage access to Exa search API through API key scoping and application-level controls. Exa is API-key-based (no built-in RBAC), so access control is implemented through multiple API keys per use case, application-layer permission enforcement, domain restrictions per team, and per-key usage monitoring.
 
 ## Prerequisites
-- Exa API account with team plan
+- Exa API account with team/enterprise plan
 - Dashboard access at dashboard.exa.ai
-- At least one API key with management permissions
+- Multiple API keys for key isolation
 
 ## Instructions
 
-### Step 1: Create Scoped API Keys per Use Case
-```bash
-set -euo pipefail
-# Create a key for the RAG pipeline (high volume, neural search only)
-curl -X POST https://api.exa.ai/v1/api-keys \
-  -H "Authorization: Bearer $EXA_ADMIN_KEY" \
-  -d '{
-    "name": "rag-pipeline-prod",
-    "allowed_endpoints": ["search", "get-contents"],
-    "rate_limit_rpm": 300,  # 300: timeout: 5 minutes
-    "monthly_search_limit": 50000  # 50000ms = 50 seconds
-  }'
-
-# Create a restricted key for the internal tool (low volume)
-curl -X POST https://api.exa.ai/v1/api-keys \
-  -H "Authorization: Bearer $EXA_ADMIN_KEY" \
-  -d '{
-    "name": "internal-research-tool",
-    "rate_limit_rpm": 30,
-    "monthly_search_limit": 5000  # 5000: 5 seconds in ms
-  }'
-```
-
-### Step 2: Implement Key-Based Access in Your Gateway
+### Step 1: Key-Per-Use-Case Architecture
 ```typescript
-// exa-proxy.ts - Route requests through your gateway
-const KEY_PERMISSIONS: Record<string, { maxResults: number; allowedTypes: string[] }> = {
-  'rag-pipeline':    { maxResults: 10, allowedTypes: ['neural', 'auto'] },
-  'research-tool':   { maxResults: 25, allowedTypes: ['neural', 'keyword', 'auto'] },
-  'marketing-team':  { maxResults: 5,  allowedTypes: ['keyword'] },
+// config/exa-keys.ts
+import Exa from "exa-js";
+
+// Create separate clients for each use case
+const exaClients = {
+  // High-volume RAG pipeline — production key with higher limits
+  ragPipeline: new Exa(process.env.EXA_KEY_RAG!),
+
+  // Internal research tool — lower volume key
+  researchTool: new Exa(process.env.EXA_KEY_RESEARCH!),
+
+  // Customer-facing search — separate key for isolation
+  customerSearch: new Exa(process.env.EXA_KEY_CUSTOMER!),
 };
 
-function validateRequest(keyName: string, searchType: string, numResults: number): boolean {
-  const perms = KEY_PERMISSIONS[keyName];
-  if (!perms) return false;
-  return perms.allowedTypes.includes(searchType) && numResults <= perms.maxResults;
+export function getExaForUseCase(
+  useCase: keyof typeof exaClients
+): Exa {
+  const client = exaClients[useCase];
+  if (!client) throw new Error(`No Exa client for use case: ${useCase}`);
+  return client;
 }
 ```
 
-### Step 3: Set Domain Restrictions
-Restrict search results to approved domains for compliance-sensitive teams:
-```bash
-set -euo pipefail
-# Only allow searches from vetted sources
-curl -X POST https://api.exa.ai/search \
-  -H "x-api-key: $EXA_API_KEY" \
-  -d '{
-    "query": "enterprise security best practices",
-    "includeDomains": ["nist.gov", "owasp.org", "sans.org"],
-    "numResults": 10
-  }'
+### Step 2: Application-Level Permission Enforcement
+```typescript
+// middleware/exa-permissions.ts
+interface ExaPermissions {
+  maxResults: number;
+  allowedTypes: ("auto" | "neural" | "keyword" | "fast" | "deep")[];
+  allowedCategories: string[];
+  includeDomains?: string[];     // restrict to these domains
+  dailySearchLimit: number;
+}
+
+const ROLE_PERMISSIONS: Record<string, ExaPermissions> = {
+  "rag-pipeline": {
+    maxResults: 10,
+    allowedTypes: ["neural", "auto"],
+    allowedCategories: [],
+    dailySearchLimit: 10000,
+  },
+  "research-analyst": {
+    maxResults: 25,
+    allowedTypes: ["neural", "keyword", "auto", "deep"],
+    allowedCategories: ["research paper", "news"],
+    dailySearchLimit: 500,
+  },
+  "marketing-team": {
+    maxResults: 5,
+    allowedTypes: ["keyword", "auto"],
+    allowedCategories: ["company", "news"],
+    dailySearchLimit: 100,
+  },
+  "compliance-team": {
+    maxResults: 10,
+    allowedTypes: ["keyword", "auto"],
+    allowedCategories: [],
+    includeDomains: ["nist.gov", "owasp.org", "sans.org", "sec.gov"],
+    dailySearchLimit: 200,
+  },
+};
+
+function validateSearchRequest(
+  role: string,
+  searchType: string,
+  numResults: number,
+  category?: string
+): { allowed: boolean; reason?: string } {
+  const perms = ROLE_PERMISSIONS[role];
+  if (!perms) return { allowed: false, reason: "Unknown role" };
+  if (!perms.allowedTypes.includes(searchType as any)) {
+    return { allowed: false, reason: `Search type ${searchType} not allowed for ${role}` };
+  }
+  if (numResults > perms.maxResults) {
+    return { allowed: false, reason: `Max ${perms.maxResults} results for ${role}` };
+  }
+  if (category && perms.allowedCategories.length > 0 && !perms.allowedCategories.includes(category)) {
+    return { allowed: false, reason: `Category ${category} not allowed for ${role}` };
+  }
+  return { allowed: true };
+}
 ```
 
-### Step 4: Monitor Usage and Rotate Keys
+### Step 3: Domain Restrictions per Team
+```typescript
+// Enforce domain restrictions so compliance-sensitive teams
+// only see results from vetted sources
+async function enforcedSearch(
+  exa: Exa,
+  role: string,
+  query: string,
+  opts: any = {}
+) {
+  const perms = ROLE_PERMISSIONS[role];
+  if (!perms) throw new Error(`Unknown role: ${role}`);
+
+  const validation = validateSearchRequest(
+    role,
+    opts.type || "auto",
+    opts.numResults || 10,
+    opts.category
+  );
+  if (!validation.allowed) throw new Error(validation.reason);
+
+  return exa.searchAndContents(query, {
+    ...opts,
+    numResults: Math.min(opts.numResults || 10, perms.maxResults),
+    type: opts.type || "auto",
+    // Merge domain restrictions from role permissions
+    includeDomains: perms.includeDomains || opts.includeDomains,
+  });
+}
+```
+
+### Step 4: Per-Key Usage Tracking
+```typescript
+// Track usage per API key / role for budget enforcement
+class KeyUsageTracker {
+  private usage = new Map<string, { count: number; resetAt: number }>();
+
+  checkAndIncrement(role: string): void {
+    const perms = ROLE_PERMISSIONS[role];
+    if (!perms) throw new Error(`Unknown role: ${role}`);
+
+    const now = Date.now();
+    const dayStart = new Date().setHours(0, 0, 0, 0);
+    let entry = this.usage.get(role);
+
+    if (!entry || entry.resetAt < now) {
+      entry = { count: 0, resetAt: dayStart + 24 * 60 * 60 * 1000 };
+    }
+
+    if (entry.count >= perms.dailySearchLimit) {
+      throw new Error(
+        `Daily search limit (${perms.dailySearchLimit}) exceeded for ${role}`
+      );
+    }
+
+    entry.count++;
+    this.usage.set(role, entry);
+  }
+
+  getUsage(role: string) {
+    const entry = this.usage.get(role);
+    const limit = ROLE_PERMISSIONS[role]?.dailySearchLimit || 0;
+    return {
+      used: entry?.count || 0,
+      limit,
+      remaining: limit - (entry?.count || 0),
+    };
+  }
+}
+```
+
+### Step 5: Key Rotation Procedure
 ```bash
 set -euo pipefail
-# Check usage per API key
-curl https://api.exa.ai/v1/usage \
-  -H "Authorization: Bearer $EXA_ADMIN_KEY" | \
-  jq '.keys[] | {name, searches_this_month, cost_usd}'
+# 1. Create new key in Exa dashboard (dashboard.exa.ai)
+# 2. Deploy new key alongside old key
+# 3. Verify new key works
+curl -s -o /dev/null -w "%{http_code}" \
+  -X POST https://api.exa.ai/search \
+  -H "x-api-key: $NEW_EXA_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"query":"key rotation test","numResults":1}'
 
-# Rotate a key (create new, then delete old)
-NEW_KEY=$(curl -s -X POST https://api.exa.ai/v1/api-keys \
-  -H "Authorization: Bearer $EXA_ADMIN_KEY" \
-  -d '{"name": "rag-pipeline-prod-v2"}' | jq -r '.key')
-echo "Update services with new key, then delete old key"
+# 4. Switch traffic to new key
+# 5. Monitor for errors
+# 6. Revoke old key in dashboard after 24h
 ```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| `401` on search | Invalid or revoked API key | Regenerate key in dashboard |
-| `429 rate limited` | Exceeded RPM on key | Increase rate limit or add request queue |
-| Monthly limit hit | Search budget exhausted | Upgrade plan or wait for billing cycle reset |
-| Empty results | Domain filter too restrictive | Widen `includeDomains` or remove filter |
-
-## Examples
-
-**Basic usage**: Apply exa enterprise rbac to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize exa enterprise rbac for production environments with multiple constraints and team-specific requirements.
-
-## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+| `401` on search | Invalid or revoked API key | Regenerate in dashboard |
+| `429 rate limited` | Key-level rate limit exceeded | Distribute across keys |
+| Daily limit hit | Search budget exhausted | Adjust limits or wait for reset |
+| Wrong domain results | Missing domain filter | Apply `includeDomains` per role |
 
 ## Resources
+- [Exa API Documentation](https://docs.exa.ai)
+- [Exa Dashboard](https://dashboard.exa.ai)
+- [Exa API Key Usage](https://docs.exa.ai/reference/team-management/get-api-key-usage)
 
-- Official Exa Enterprise Rbac documentation
-- Community best practices and patterns
-- Related skills in this plugin pack
+## Next Steps
+For policy enforcement, see `exa-policy-guardrails`. For multi-env setup, see `exa-multi-env-setup`.

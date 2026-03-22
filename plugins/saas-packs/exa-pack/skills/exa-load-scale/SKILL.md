@@ -1,12 +1,12 @@
 ---
 name: exa-load-scale
 description: |
-  Implement Exa load testing, auto-scaling, and capacity planning strategies.
-  Use when running performance tests, configuring horizontal scaling,
-  or planning capacity for Exa integrations.
+  Implement Exa load testing, capacity planning, and scaling strategies.
+  Use when running performance tests, planning capacity for Exa integrations,
+  or designing high-throughput search architectures.
   Trigger with phrases like "exa load test", "exa scale",
-  "exa performance test", "exa capacity", "exa k6", "exa benchmark".
-allowed-tools: Read, Write, Edit, Bash(k6:*), Bash(kubectl:*)
+  "exa capacity", "exa k6", "exa benchmark", "exa throughput".
+allowed-tools: Read, Write, Edit, Bash(k6:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,261 +17,213 @@ tags: [saas, exa, testing, performance, scaling]
 # Exa Load & Scale
 
 ## Overview
-Load testing, scaling strategies, and capacity planning for Exa integrations.
+Load testing and capacity planning for Exa integrations. Key constraint: Exa's default rate limit is 10 QPS. Scaling strategies focus on caching, request queuing, parallel processing within rate limits, and search type selection for latency budgets.
 
 ## Prerequisites
 - k6 load testing tool installed
-- Kubernetes cluster with HPA configured
-- Prometheus for metrics collection
-- Test environment API keys
+- Test environment Exa API key (separate from production)
+- Redis for result caching
 
-## Load Testing with k6
+## Capacity Reference
 
-### Basic Load Test
+| Search Type | Typical Latency | Max Throughput (10 QPS) |
+|-------------|----------------|-------------------------|
+| `instant` | < 150ms | 10 req/s (600/min) |
+| `fast` | < 425ms | 10 req/s (600/min) |
+| `auto` | 300-1500ms | 10 req/s (600/min) |
+| `neural` | 500-2000ms | 10 req/s (600/min) |
+| `deep` | 2-5s | 10 req/s (600/min) |
+
+**With caching (50% hit rate):** Effective throughput doubles to 20 req/s equivalent.
+
+## Instructions
+
+### Step 1: k6 Load Test Against Your Wrapper
 ```javascript
 // exa-load-test.js
-import http from 'k6/http';
-import { check, sleep } from 'k6';
+import http from "k6/http";
+import { check, sleep } from "k6";
 
 export const options = {
   stages: [
-    { duration: '2m', target: 10 },   // Ramp up
-    { duration: '5m', target: 10 },   // Steady state
-    { duration: '2m', target: 50 },   // Ramp to peak
-    { duration: '5m', target: 50 },   // Stress test
-    { duration: '2m', target: 0 },    // Ramp down
+    { duration: "1m", target: 5 },    // Ramp up to 5 VUs
+    { duration: "3m", target: 5 },    // Steady state
+    { duration: "1m", target: 10 },   // Push toward rate limit
+    { duration: "2m", target: 10 },   // Stress test
+    { duration: "1m", target: 0 },    // Ramp down
   ],
   thresholds: {
-    http_req_duration: ['p(95)<500'],  # HTTP 500 Internal Server Error
-    http_req_failed: ['rate<0.01'],
+    http_req_duration: ["p(95)<3000"],  // 3s P95 for neural search
+    http_req_failed: ["rate<0.05"],     // < 5% error rate
   },
 };
 
+const queries = [
+  "best practices for building RAG systems",
+  "transformer architecture improvements 2025",
+  "TypeScript 5.5 new features",
+  "vector database comparison guide",
+  "AI safety alignment research",
+];
+
 export default function () {
+  const query = queries[Math.floor(Math.random() * queries.length)];
+
   const response = http.post(
-    'https://api.exa.com/v1/resource',
-    JSON.stringify({ test: true }),
+    `${__ENV.APP_URL}/api/search`,
+    JSON.stringify({ query, numResults: 3 }),
     {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${__ENV.EXA_API_KEY}`,
-      },
+      headers: { "Content-Type": "application/json" },
+      timeout: "10s",
     }
   );
 
   check(response, {
-    'status is 200': (r) => r.status === 200,  # HTTP 200 OK
-    'latency < 500ms': (r) => r.timings.duration < 500,  # HTTP 500 Internal Server Error
+    "status 200": (r) => r.status === 200,
+    "has results": (r) => JSON.parse(r.body).results?.length > 0,
+    "latency < 3s": (r) => r.timings.duration < 3000,
   });
 
-  sleep(1);
+  sleep(0.5 + Math.random()); // 0.5-1.5s between requests
 }
 ```
 
-### Run Load Test
 ```bash
-# Install k6
-brew install k6  # macOS
-# or: sudo apt install k6  # Linux
-
-# Run test
-k6 run --env EXA_API_KEY=${EXA_API_KEY} exa-load-test.js
-
-# Run with output to InfluxDB
-k6 run --out influxdb=http://localhost:8086/k6 exa-load-test.js  # 8086 = configured value
+# Run load test
+k6 run --env APP_URL=http://localhost:3000 exa-load-test.js
 ```
 
-## Scaling Patterns
-
-### Horizontal Scaling
-```yaml
-# kubernetes HPA
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: exa-integration-hpa
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: exa-integration
-  minReplicas: 2
-  maxReplicas: 20
-  metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        target:
-          type: Utilization
-          averageUtilization: 70
-    - type: Pods
-      pods:
-        metric:
-          name: exa_queue_depth
-        target:
-          type: AverageValue
-          averageValue: 100
-```
-
-### Connection Pooling
+### Step 2: Throughput Maximizer with Request Queue
 ```typescript
-import { Pool } from 'generic-pool';
+import Exa from "exa-js";
+import PQueue from "p-queue";
 
-const exaPool = Pool.create({
-  create: async () => {
-    return new ExaClient({
-      apiKey: process.env.EXA_API_KEY!,
-    });
-  },
-  destroy: async (client) => {
-    await client.close();
-  },
-  max: 20,
-  min: 5,
-  idleTimeoutMillis: 30000,  # 30000: 30 seconds in ms
+const exa = new Exa(process.env.EXA_API_KEY);
+
+// Stay under 10 QPS rate limit
+const searchQueue = new PQueue({
+  concurrency: 8,        // max concurrent requests
+  interval: 1000,        // per second
+  intervalCap: 10,       // Exa's QPS limit
 });
 
-async function withExaClient<T>(
-  fn: (client: ExaClient) => Promise<T>
-): Promise<T> {
-  const client = await exaPool.acquire();
-  try {
-    return await fn(client);
-  } finally {
-    exaPool.release(client);
+async function highThroughputSearch(queries: string[]) {
+  const results = [];
+
+  for (const query of queries) {
+    const promise = searchQueue.add(async () => {
+      const result = await exa.searchAndContents(query, {
+        type: "auto",
+        numResults: 3,
+        text: { maxCharacters: 500 },
+      });
+      return { query, results: result.results };
+    });
+    results.push(promise);
   }
+
+  return Promise.all(results);
 }
+
+// Process 100 queries respecting rate limits
+const queries = Array.from({ length: 100 }, (_, i) => `research topic ${i}`);
+console.time("batch");
+const results = await highThroughputSearch(queries);
+console.timeEnd("batch");
+// Expected: ~10-12 seconds (100 queries / 10 QPS)
 ```
 
-## Capacity Planning
+### Step 3: Caching for Scale
+```typescript
+import { LRUCache } from "lru-cache";
 
-### Metrics to Monitor
-| Metric | Warning | Critical |
-|--------|---------|----------|
-| CPU Utilization | > 70% | > 85% |
-| Memory Usage | > 75% | > 90% |
-| Request Queue Depth | > 100 | > 500 |
-| Error Rate | > 1% | > 5% |
-| P95 Latency | > 1000ms | > 3000ms |
+// Cache eliminates repeat queries entirely
+const cache = new LRUCache<string, any>({
+  max: 10000,
+  ttl: 3600 * 1000, // 1-hour TTL
+});
 
-### Capacity Calculation
+async function scalableSearch(query: string, opts: any) {
+  const key = `${query.toLowerCase().trim()}:${opts.type}:${opts.numResults}`;
+  const cached = cache.get(key);
+  if (cached) return cached;
+
+  const result = await searchQueue.add(() =>
+    exa.searchAndContents(query, opts)
+  );
+  cache.set(key, result);
+  return result;
+}
+
+// With 50% cache hit rate:
+// 100 unique queries → 50 API calls → 5 seconds instead of 10
+```
+
+### Step 4: Capacity Planning Calculator
 ```typescript
 interface CapacityEstimate {
-  currentRPS: number;
-  maxRPS: number;
-  headroom: number;
-  scaleRecommendation: string;
+  dailySearches: number;
+  peakQPS: number;
+  cacheHitRate: number;
+  effectiveQPS: number;
+  withinLimits: boolean;
+  recommendation: string;
 }
 
-function estimateExaCapacity(
-  metrics: SystemMetrics
+function estimateCapacity(
+  dailySearches: number,
+  peakMultiplier = 3,
+  expectedCacheHitRate = 0.5
 ): CapacityEstimate {
-  const currentRPS = metrics.requestsPerSecond;
-  const avgLatency = metrics.p50Latency;
-  const cpuUtilization = metrics.cpuPercent;
+  const avgQPS = dailySearches / (24 * 3600);
+  const peakQPS = avgQPS * peakMultiplier;
+  const effectiveQPS = peakQPS * (1 - expectedCacheHitRate);
+  const withinLimits = effectiveQPS <= 10; // Default Exa limit
 
-  // Estimate max RPS based on current performance
-  const maxRPS = currentRPS / (cpuUtilization / 100) * 0.7; // 70% target
-  const headroom = ((maxRPS - currentRPS) / currentRPS) * 100;
+  let recommendation = "Within default limits";
+  if (effectiveQPS > 10 && effectiveQPS <= 50) {
+    recommendation = "Contact hello@exa.ai for Enterprise rate limits";
+  } else if (effectiveQPS > 50) {
+    recommendation = "Requires Enterprise plan + aggressive caching + request queue";
+  }
 
-  return {
-    currentRPS,
-    maxRPS: Math.floor(maxRPS),
-    headroom: Math.round(headroom),
-    scaleRecommendation: headroom < 30
-      ? 'Scale up soon'
-      : headroom < 50
-      ? 'Monitor closely'
-      : 'Adequate capacity',
-  };
+  return { dailySearches, peakQPS, cacheHitRate: expectedCacheHitRate, effectiveQPS, withinLimits, recommendation };
 }
+
+// Example: 50,000 searches/day
+const estimate = estimateCapacity(50000);
+console.log(estimate);
+// { effectiveQPS: ~0.87, withinLimits: true, recommendation: "Within default limits" }
 ```
 
 ## Benchmark Results Template
-
 ```markdown
 ## Exa Performance Benchmark
-**Date:** YYYY-MM-DD
-**Environment:** [staging/production]
-**SDK Version:** X.Y.Z
+**Date:** YYYY-MM-DD | **SDK:** exa-js X.Y.Z
 
-### Test Configuration
-- Duration: 10 minutes
-- Ramp: 10 → 100 → 10 VUs
-- Target endpoint: /v1/resource
-
-### Results
 | Metric | Value |
 |--------|-------|
-| Total Requests | 50,000 |
-| Success Rate | 99.9% |
-| P50 Latency | 120ms |
-| P95 Latency | 350ms |
-| P99 Latency | 800ms |
-| Max RPS Achieved | 150 |
-
-### Observations
-- [Key finding 1]
-- [Key finding 2]
-
-### Recommendations
-- [Scaling recommendation]
+| Total Requests | N |
+| Success Rate | X% |
+| Cache Hit Rate | X% |
+| P50 Latency | Xms |
+| P95 Latency | Xms |
+| Peak QPS (actual API calls) | X |
+| 429 Rate Limit Errors | N |
 ```
-
-## Instructions
-
-### Step 1: Create Load Test Script
-Write k6 test script with appropriate thresholds.
-
-### Step 2: Configure Auto-Scaling
-Set up HPA with CPU and custom metrics.
-
-### Step 3: Run Load Test
-Execute test and collect metrics.
-
-### Step 4: Analyze and Document
-Record results in benchmark template.
-
-## Output
-- Load test script created
-- HPA configured
-- Benchmark results documented
-- Capacity recommendations defined
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| k6 timeout | Rate limited | Reduce RPS |
-| HPA not scaling | Wrong metrics | Verify metric name |
-| Connection refused | Pool exhausted | Increase pool size |
-| Inconsistent results | Warm-up needed | Add ramp-up phase |
-
-## Examples
-
-### Quick k6 Test
-```bash
-k6 run --vus 10 --duration 30s exa-load-test.js
-```
-
-### Check Current Capacity
-```typescript
-const metrics = await getSystemMetrics();
-const capacity = estimateExaCapacity(metrics);
-console.log('Headroom:', capacity.headroom + '%');
-console.log('Recommendation:', capacity.scaleRecommendation);
-```
-
-### Scale HPA Manually
-```bash
-set -euo pipefail
-kubectl scale deployment exa-integration --replicas=5
-kubectl get hpa exa-integration-hpa
-```
+| 429 errors in load test | Exceeding 10 QPS | Reduce concurrency, add cache |
+| Inconsistent latency | Different search types | Standardize on one type per test |
+| Timeout errors | Deep search under load | Use `fast` or `auto` for load tests |
+| Cache miss rate high | Unique queries per request | Use a fixed query pool |
 
 ## Resources
+- [Exa Rate Limits](https://docs.exa.ai/reference/rate-limits)
 - [k6 Documentation](https://k6.io/docs/)
-- [Kubernetes HPA](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/)
-- [Exa Rate Limits](https://docs.exa.com/rate-limits)
+- [p-queue](https://github.com/sindresorhus/p-queue)
 
 ## Next Steps
 For reliability patterns, see `exa-reliability-patterns`.

@@ -1,152 +1,246 @@
 ---
 name: exa-reliability-patterns
 description: |
-  Implement Exa reliability patterns including circuit breakers, idempotency, and graceful degradation.
-  Use when building fault-tolerant Exa integrations, implementing retry strategies,
-  or adding resilience to production Exa services.
+  Implement Exa reliability patterns: query fallback chains, circuit breakers, and graceful degradation.
+  Use when building fault-tolerant Exa integrations, implementing fallback strategies,
+  or adding resilience to production search services.
   Trigger with phrases like "exa reliability", "exa circuit breaker",
-  "exa idempotent", "exa resilience", "exa fallback", "exa bulkhead".
+  "exa fallback", "exa resilience", "exa graceful degradation".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, exa, exa-reliability]
+tags: [saas, exa, reliability, resilience]
 
 ---
 # Exa Reliability Patterns
 
 ## Overview
-Production reliability patterns for Exa neural search integrations. Exa's search-focused API has unique failure modes: query relevance degradation, empty result sets, and variable response times based on query complexity.
-
-## Prerequisites
-- Exa API configured
-- Caching infrastructure (Redis recommended)
-- Understanding of search quality metrics
+Production reliability patterns for Exa neural search. Exa-specific failure modes include: empty result sets (query too narrow), content retrieval failures (sites block crawling), variable latency by search type, and 429 rate limits at 10 QPS default.
 
 ## Instructions
 
-### Step 1: Cache Search Results with TTL
+### Step 1: Query Fallback Chain
+```typescript
+import Exa from "exa-js";
 
-Search results for the same query are stable over short periods. Caching reduces API calls and latency.
+const exa = new Exa(process.env.EXA_API_KEY);
 
-```python
-import hashlib, json, time
+// If neural search returns too few results, fall back through search types
+async function resilientSearch(
+  query: string,
+  minResults = 3,
+  opts: any = {}
+) {
+  // Try 1: Neural search (best quality)
+  let results = await exa.searchAndContents(query, {
+    type: "neural",
+    numResults: 10,
+    ...opts,
+  });
+  if (results.results.length >= minResults) return results;
 
-class ExaSearchCache:
-    def __init__(self, redis_client, default_ttl=300):  # 300: timeout: 5 minutes
-        self.r = redis_client
-        self.ttl = default_ttl
+  // Try 2: Auto search (Exa picks best approach)
+  results = await exa.searchAndContents(query, {
+    type: "auto",
+    numResults: 10,
+    ...opts,
+  });
+  if (results.results.length >= minResults) return results;
 
-    def _key(self, query: str, **params) -> str:
-        data = json.dumps({"q": query, **params}, sort_keys=True)
-        return f"exa:search:{hashlib.sha256(data.encode()).hexdigest()}"
+  // Try 3: Keyword search (different index)
+  results = await exa.searchAndContents(query, {
+    type: "keyword",
+    numResults: 10,
+    ...opts,
+  });
+  if (results.results.length >= minResults) return results;
 
-    def search(self, exa_client, query: str, **params):
-        key = self._key(query, **params)
-        cached = self.r.get(key)
-        if cached:
-            return json.loads(cached)
-        results = exa_client.search(query, **params)
-        self.r.setex(key, self.ttl, json.dumps(results.to_dict()))
-        return results
+  // Try 4: Remove filters and broaden
+  const broadOpts = { ...opts };
+  delete broadOpts.startPublishedDate;
+  delete broadOpts.endPublishedDate;
+  delete broadOpts.includeDomains;
+  delete broadOpts.includeText;
+
+  return exa.searchAndContents(query, {
+    type: "auto",
+    numResults: 10,
+    ...broadOpts,
+  });
+}
 ```
 
-### Step 2: Query Fallback Chain
+### Step 2: Retry with Exponential Backoff
+```typescript
+async function searchWithRetry(
+  query: string,
+  opts: any,
+  maxRetries = 3
+) {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await exa.searchAndContents(query, opts);
+    } catch (err: any) {
+      const status = err.status || 0;
 
-If neural search returns low-relevance results, fall back to keyword search, then to cached results.
+      // Only retry on rate limits (429) and server errors (5xx)
+      if (status !== 429 && (status < 500 || status >= 600)) throw err;
+      if (attempt === maxRetries) throw err;
 
-```python
-from exa_py import Exa
-
-def resilient_search(exa: Exa, query: str, min_results: int = 3):
-    # Try neural search first
-    results = exa.search(query, type="neural", num_results=10)
-    if len(results.results) >= min_results:
-        return results
-
-    # Fall back to keyword search
-    results = exa.search(query, type="keyword", num_results=10)
-    if len(results.results) >= min_results:
-        return results
-
-    # Fall back to broader query with autoprompt
-    results = exa.search(query, type="neural", use_autoprompt=True, num_results=10)
-    return results
+      const delay = 1000 * Math.pow(2, attempt) + Math.random() * 500;
+      console.log(`[Exa] ${status} retry ${attempt + 1}/${maxRetries} in ${delay.toFixed(0)}ms`);
+      await new Promise(r => setTimeout(r, delay));
+    }
+  }
+  throw new Error("Unreachable");
+}
 ```
 
-### Step 3: Retry with Exponential Backoff
+### Step 3: Circuit Breaker
+```typescript
+class ExaCircuitBreaker {
+  private failures = 0;
+  private lastFailure = 0;
+  private state: "closed" | "open" | "half-open" = "closed";
+  private readonly threshold = 5;       // failures before opening
+  private readonly resetTimeMs = 30000; // 30s before half-open
 
-Exa returns 429 on rate limits and 5xx on transient failures.
+  async execute<T>(fn: () => Promise<T>, fallback?: () => T): Promise<T> {
+    // Check if circuit should reset
+    if (this.state === "open") {
+      if (Date.now() - this.lastFailure > this.resetTimeMs) {
+        this.state = "half-open";
+      } else if (fallback) {
+        return fallback();
+      } else {
+        throw new Error("Exa circuit breaker is open");
+      }
+    }
 
-```python
-import time, random
+    try {
+      const result = await fn();
+      if (this.state === "half-open") {
+        this.state = "closed";
+        this.failures = 0;
+      }
+      return result;
+    } catch (err: any) {
+      this.failures++;
+      this.lastFailure = Date.now();
 
-def exa_with_retry(fn, max_retries=3, base_delay=1.0):
-    for attempt in range(max_retries + 1):
-        try:
-            return fn()
-        except Exception as e:
-            status = getattr(e, 'status_code', 0)
-            if status == 429 or status >= 500:  # 500: HTTP 429 Too Many Requests
-                if attempt == max_retries:
-                    raise
-                delay = base_delay * (2 ** attempt) + random.uniform(0, 0.5)
-                time.sleep(delay)
-            else:
-                raise
+      if (this.failures >= this.threshold) {
+        this.state = "open";
+        console.warn(`[Exa] Circuit breaker OPEN after ${this.failures} failures`);
+      }
+
+      if (fallback && this.state === "open") return fallback();
+      throw err;
+    }
+  }
+
+  getState() {
+    return { state: this.state, failures: this.failures };
+  }
+}
+
+const circuitBreaker = new ExaCircuitBreaker();
+
+// Usage with fallback to cached results
+const result = await circuitBreaker.execute(
+  () => exa.searchAndContents("query", { numResults: 5, text: true }),
+  () => getCachedResults("query") // fallback when circuit is open
+);
 ```
 
-### Step 4: Result Quality Monitoring
+### Step 4: Graceful Degradation
+```typescript
+interface SearchResultWithMeta {
+  results: any[];
+  degraded: boolean;
+  source: "live" | "cache" | "fallback";
+  searchType: string;
+}
 
-Track search quality metrics to detect degradation before users notice.
+async function degradableSearch(
+  query: string,
+  opts: any = {}
+): Promise<SearchResultWithMeta> {
+  // Level 1: Full search with contents
+  try {
+    const results = await searchWithRetry(query, {
+      type: "neural",
+      numResults: 10,
+      text: { maxCharacters: 2000 },
+      highlights: { maxCharacters: 500 },
+      ...opts,
+    }, 2);
+    return { results: results.results, degraded: false, source: "live", searchType: "neural" };
+  } catch {}
 
-```python
-class SearchQualityMonitor:
-    def __init__(self, redis_client):
-        self.r = redis_client
+  // Level 2: Fast search without content (less expensive)
+  try {
+    const results = await exa.search(query, {
+      type: "fast",
+      numResults: 5,
+    });
+    return { results: results.results, degraded: true, source: "live", searchType: "fast" };
+  } catch {}
 
-    def record(self, query: str, result_count: int, has_content: bool):
-        key = f"exa:quality:{time.strftime('%Y-%m-%d-%H')}"
-        self.r.hincrby(key, "total", 1)
-        if result_count == 0:
-            self.r.hincrby(key, "empty", 1)
-        if not has_content:
-            self.r.hincrby(key, "no_content", 1)
-        self.r.expire(key, 86400 * 7)  # 86400: timeout: 24 hours
+  // Level 3: Return cached results
+  const cached = getCachedResults(query);
+  if (cached) {
+    return { results: cached, degraded: true, source: "cache", searchType: "cached" };
+  }
 
-    def get_health(self) -> dict:
-        key = f"exa:quality:{time.strftime('%Y-%m-%d-%H')}"
-        stats = self.r.hgetall(key)
-        total = int(stats.get(b"total", 0))
-        empty = int(stats.get(b"empty", 0))
-        return {
-            "total": total,
-            "empty_rate": empty / total if total > 0 else 0,
-            "healthy": (empty / total < 0.2) if total > 10 else True
-        }
+  // Level 4: Return empty with degradation flag
+  return { results: [], degraded: true, source: "fallback", searchType: "none" };
+}
+```
+
+### Step 5: Result Quality Monitoring
+```typescript
+class SearchQualityMonitor {
+  private stats = { total: 0, empty: 0, lowScore: 0 };
+
+  record(results: any[]) {
+    this.stats.total++;
+    if (results.length === 0) this.stats.empty++;
+    if (results[0]?.score < 0.5) this.stats.lowScore++;
+  }
+
+  isHealthy(): boolean {
+    if (this.stats.total < 10) return true; // not enough data
+    const emptyRate = this.stats.empty / this.stats.total;
+    const lowScoreRate = this.stats.lowScore / this.stats.total;
+    return emptyRate < 0.2 && lowScoreRate < 0.3;
+  }
+
+  getReport() {
+    return {
+      ...this.stats,
+      emptyRate: `${((this.stats.empty / this.stats.total) * 100).toFixed(1)}%`,
+      lowScoreRate: `${((this.stats.lowScore / this.stats.total) * 100).toFixed(1)}%`,
+      healthy: this.isHealthy(),
+    };
+  }
+}
 ```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Empty results | Overly specific query | Use autoprompt and query fallback chain |
-| Slow responses | Complex neural search | Cache results, set timeouts |
-| 429 rate limit | Burst traffic | Exponential backoff with jitter |
-| Quality degradation | API changes or query drift | Monitor empty result rates |
-
-## Examples
-
-
-**Basic usage**: Apply exa reliability patterns to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize exa reliability patterns for production environments with multiple constraints and team-specific requirements.
+| Empty results | Query too specific | Use fallback chain with broader query |
+| Slow responses | Neural on complex query | Degrade to `fast` type |
+| 429 rate limit | Burst traffic | Circuit breaker + backoff |
+| Content retrieval fails | Site blocks crawling | Fall back to highlights or summary |
+| Quality degradation | Query drift | Monitor empty/low-score rates |
 
 ## Resources
-- [Exa API Reference](https://docs.exa.ai/reference)
+- [Exa API Reference](https://docs.exa.ai/reference/search)
+- [Exa Error Codes](https://docs.exa.ai/reference/error-codes)
+- [Circuit Breaker Pattern](https://martinfowler.com/bliki/CircuitBreaker.html)
 
-## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+## Next Steps
+For policy guardrails, see `exa-policy-guardrails`. For architecture variants, see `exa-architecture-variants`.

@@ -1,80 +1,196 @@
 ---
 name: exa-core-workflow-b
 description: |
-  Execute Exa secondary workflow: Core Workflow B.
-  Use when implementing secondary use case,
-  or complementing primary workflow.
-  Trigger with phrases like "exa secondary workflow",
-  "secondary task with exa".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
+  Execute Exa findSimilar, getContents, answer, and streaming answer workflows.
+  Use when finding pages similar to a URL, retrieving content for known URLs,
+  or getting AI-generated answers with citations.
+  Trigger with phrases like "exa find similar", "exa get contents",
+  "exa answer", "exa similarity search", "findSimilarAndContents".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, exa, workflow]
+tags: [saas, exa, workflow, similarity-search, answer]
 
 ---
-# Exa Core Workflow B
+# Exa Core Workflow B — Similarity, Contents & Answer
 
 ## Overview
-Secondary workflow for Exa. Complements the primary search workflow by focusing on advanced retrieval patterns: similarity search from a seed URL, domain-filtered queries, and batching multiple queries efficiently. Use this skill when you need to find pages similar to a known reference, restrict results to specific domains, or run bulk research queries within your API quota.
+Secondary Exa workflow covering three endpoints beyond search: `findSimilar` (discover pages semantically related to a URL), `getContents` (retrieve text/highlights for known URLs), and `answer` (get AI-generated answers with web citations). These complement the primary search workflow in `exa-core-workflow-a`.
 
 ## Prerequisites
-- Completed `exa-install-auth` setup
-- Familiarity with `exa-core-workflow-a`
-- Valid API credentials configured
+- `exa-js` installed and `EXA_API_KEY` configured
+- Familiarity with `exa-core-workflow-a` search patterns
 
 ## Instructions
 
-### Step 1: Setup
-Determine whether to use URL-based similarity search or a domain-scoped query. For similarity search, provide a seed URL that represents the type of content you want to surface. For domain-scoped queries, specify the `include_domains` or `exclude_domains` filters to narrow results to authoritative sources.
-
+### Step 1: Find Similar Pages
 ```typescript
-// Step 1 implementation
+import Exa from "exa-js";
+
+const exa = new Exa(process.env.EXA_API_KEY);
+
+// findSimilar takes a URL (not a query string) and returns
+// pages with semantically similar content
+const similar = await exa.findSimilar(
+  "https://openai.com/research/gpt-4",
+  {
+    numResults: 10,
+    excludeSourceDomain: true, // exclude openai.com from results
+    startPublishedDate: "2024-01-01T00:00:00.000Z",
+    excludeDomains: ["reddit.com", "twitter.com"],
+  }
+);
+
+for (const r of similar.results) {
+  console.log(`${r.title} — ${r.url}`);
+}
 ```
 
-### Step 2: Process
-Execute the configured query using the appropriate Exa endpoint variant. Review the returned results for coverage and quality. If using similarity search, compare the seed URL content against the returned results to confirm the semantic alignment is accurate. Adjust the `num_results` and `start_published_date` parameters to refine freshness and volume.
-
+### Step 2: Find Similar with Contents
 ```typescript
-// Step 2 implementation
+// findSimilarAndContents combines similarity search + content extraction
+const results = await exa.findSimilarAndContents(
+  "https://huggingface.co/blog/llama3",
+  {
+    numResults: 5,
+    text: { maxCharacters: 2000 },
+    highlights: { maxCharacters: 500, query: "open source LLM" },
+    excludeSourceDomain: true,
+  }
+);
+
+for (const r of results.results) {
+  console.log(`## ${r.title}`);
+  console.log(`URL: ${r.url}`);
+  console.log(`Highlights: ${r.highlights?.join(" | ")}`);
+  console.log(`Text preview: ${r.text?.substring(0, 300)}...\n`);
+}
 ```
 
-### Step 3: Complete
-Aggregate results from multiple queries if running a batch, merge and deduplicate across query outputs, and write the final result set to your target destination. Document the query strategy used so future runs can reproduce or iterate on the approach.
-
+### Step 3: Get Contents for Known URLs
 ```typescript
-// Step 3 implementation
+// getContents retrieves page content for a list of URLs you already have
+// Useful when you have URLs from a previous search or external source
+const contents = await exa.getContents(
+  [
+    "https://arxiv.org/abs/2401.00001",
+    "https://arxiv.org/abs/2401.00002",
+    "https://blog.example.com/article",
+  ],
+  {
+    text: { maxCharacters: 3000 },
+    highlights: { maxCharacters: 500 },
+    summary: { query: "key findings and methodology" },
+    livecrawl: "preferred",     // try fresh, fall back to cache
+    livecrawlTimeout: 15000,    // 15s timeout
+    // Subpage crawling: retrieve linked pages from each URL
+    subpages: 3,                // crawl up to 3 subpages per URL
+    subpageTarget: "documentation",  // find subpages matching this term
+  }
+);
+
+for (const r of contents.results) {
+  console.log(`${r.title}: ${r.text?.length || 0} chars`);
+  if (r.summary) console.log(`Summary: ${r.summary}`);
+}
+```
+
+### Step 4: AI-Powered Answer with Citations
+```typescript
+// answer() searches the web and returns an AI-generated answer with sources
+const answer = await exa.answer(
+  "What are the key differences between RAG and fine-tuning for LLMs?",
+  {
+    text: true,
+    // The answer response includes citations linking to source results
+  }
+);
+
+console.log("Answer:", answer.answer);
+console.log("\nSources:");
+for (const r of answer.results) {
+  console.log(`  - ${r.title}: ${r.url}`);
+}
+```
+
+### Step 5: Streaming Answer
+```typescript
+// streamAnswer returns chunks as they're generated
+for await (const chunk of exa.streamAnswer(
+  "What is the current state of quantum computing in 2025?"
+)) {
+  if (chunk.content) {
+    process.stdout.write(chunk.content);
+  }
+  if (chunk.citations) {
+    console.log("\n\nCitations:", JSON.stringify(chunk.citations, null, 2));
+  }
+}
 ```
 
 ## Output
-- Completed Core Workflow B execution
-- Filtered or similarity-matched results from Exa API
-- Deduplicated, merged result set ready for downstream consumption
-- Success confirmation or error details
+- Similar pages discovered from a seed URL
+- Page content (text, highlights, summary) for known URLs
+- AI-generated answers with web source citations
+- Streaming answer chunks for real-time display
 
 ## Error Handling
-| Aspect | Workflow A | Workflow B |
-|--------|------------|------------|
-| Use Case | Primary | Secondary |
-| Complexity | Medium | Lower |
-| Performance | Standard | Optimized |
+| Error | HTTP Code | Cause | Solution |
+|-------|-----------|-------|----------|
+| `INVALID_URLS` | 400 | Malformed URLs in getContents | Validate URLs have protocol |
+| `CRAWL_NOT_FOUND` | 404 | Content unavailable at URL | Verify URL is accessible |
+| `CRAWL_TIMEOUT` | 504 | Live crawl exceeded timeout | Increase `livecrawlTimeout` |
+| `SOURCE_NOT_AVAILABLE` | 403 | Paywalled or blocked content | Try without `livecrawl: "always"` |
+| `UNABLE_TO_GENERATE_RESPONSE` | 501 | Insufficient data for answer | Rephrase query or add context |
+| Empty `similar.results` | 200 | Seed URL not indexed | Try a more popular seed URL |
 
 ## Examples
 
-### Complete Workflow
+### Competitive Intelligence Pipeline
 ```typescript
-// Complete workflow example
+async function findCompetitors(companyUrl: string) {
+  // Find companies similar to a given company
+  const similar = await exa.findSimilarAndContents(companyUrl, {
+    numResults: 10,
+    excludeSourceDomain: true,
+    text: { maxCharacters: 500 },
+    category: "company",
+  });
+
+  return similar.results.map(r => ({
+    name: r.title,
+    url: r.url,
+    description: r.text?.substring(0, 200),
+  }));
+}
 ```
 
-### Error Recovery
+### Batch URL Content Retrieval
 ```typescript
-// Error handling code
+async function enrichUrls(urls: string[]) {
+  // Process URLs in batches to stay within rate limits
+  const batchSize = 10;
+  const allContents = [];
+
+  for (let i = 0; i < urls.length; i += batchSize) {
+    const batch = urls.slice(i, i + batchSize);
+    const contents = await exa.getContents(batch, {
+      text: { maxCharacters: 1500 },
+      summary: { query: "main topic and key points" },
+    });
+    allContents.push(...contents.results);
+  }
+
+  return allContents;
+}
 ```
 
 ## Resources
-- [Exa Documentation](https://docs.exa.com)
-- [Exa API Reference](https://docs.exa.com/api)
+- [Exa Find Similar](https://docs.exa.ai/reference/find-similar-links)
+- [Exa Get Contents](https://docs.exa.ai/reference/get-contents)
+- [Exa Contents Retrieval](https://docs.exa.ai/reference/contents-retrieval)
 
 ## Next Steps
-For common errors, see `exa-common-errors`.
+For common errors, see `exa-common-errors`. For SDK patterns, see `exa-sdk-patterns`.

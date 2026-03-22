@@ -1,7 +1,7 @@
 ---
 name: exa-incident-runbook
 description: |
-  Execute Exa incident response procedures with triage, mitigation, and postmortem.
+  Execute Exa incident response with triage, mitigation, and postmortem procedures.
   Use when responding to Exa-related outages, investigating errors,
   or running post-incident reviews for Exa integration failures.
   Trigger with phrases like "exa incident", "exa outage",
@@ -17,114 +17,135 @@ tags: [saas, exa, incident-response]
 # Exa Incident Runbook
 
 ## Overview
-Rapid incident response procedures for Exa-related outages.
-
-## Prerequisites
-- Access to Exa dashboard and status page
-- kubectl access to production cluster
-- Prometheus/Grafana access
-- Communication channels (Slack, PagerDuty)
+Rapid incident response procedures for Exa search API issues. Exa errors include a `requestId` field for support escalation. Default rate limit is 10 QPS. Contact hello@exa.ai for urgent production issues.
 
 ## Severity Levels
 
-| Level | Definition | Response Time | Examples |
-|-------|------------|---------------|----------|
-| P1 | Complete outage | < 15 min | Exa API unreachable |
-| P2 | Degraded service | < 1 hour | High latency, partial failures |
-| P3 | Minor impact | < 4 hours | Webhook delays, non-critical errors |
+| Level | Definition | Response Time | Example |
+|-------|------------|---------------|---------|
+| P1 | All Exa calls failing | < 15 min | 401/500 on every request |
+| P2 | Degraded performance | < 1 hour | High latency, partial failures |
+| P3 | Minor impact | < 4 hours | Empty results, content fetch failures |
 | P4 | No user impact | Next business day | Monitoring gaps |
 
-## Quick Triage
+## Quick Triage (Run First)
 
 ```bash
 set -euo pipefail
-# 1. Check Exa status
-curl -s https://status.exa.com | jq
+echo "=== Exa Triage ==="
 
-# 2. Check our integration health
-curl -s https://api.yourapp.com/health | jq '.services.exa'
+# 1. Test API connectivity
+echo -n "API Status: "
+HTTP_CODE=$(curl -s -o /tmp/exa-triage.json -w "%{http_code}" \
+  -X POST https://api.exa.ai/search \
+  -H "x-api-key: $EXA_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"query":"triage test","numResults":1}')
+echo "$HTTP_CODE"
 
-# 3. Check error rate (last 5 min)
-curl -s localhost:9090/api/v1/query?query=rate(exa_errors_total[5m])  # 9090: Prometheus port
+# 2. Show error details if not 200
+if [ "$HTTP_CODE" != "200" ]; then
+  echo "Error response:"
+  cat /tmp/exa-triage.json | python3 -m json.tool 2>/dev/null || cat /tmp/exa-triage.json
+fi
 
-# 4. Recent error logs
-kubectl logs -l app=exa-integration --since=5m | grep -i error | tail -20
+# 3. Check if it's a key issue
+echo ""
+echo "API Key: ${EXA_API_KEY:+SET (${#EXA_API_KEY} chars)}"
 ```
 
 ## Decision Tree
 
 ```
 Exa API returning errors?
-├─ YES: Is status.exa.com showing incident?
-│   ├─ YES → Wait for Exa to resolve. Enable fallback.
-│   └─ NO → Our integration issue. Check credentials, config.
-└─ NO: Is our service healthy?
-    ├─ YES → Likely resolved or intermittent. Monitor.
-    └─ NO → Our infrastructure issue. Check pods, memory, network.
+├── YES: What HTTP code?
+│   ├── 401 → API key invalid/expired → Regenerate at dashboard.exa.ai
+│   ├── 402 → Credits exhausted → Top up at dashboard.exa.ai
+│   ├── 429 → Rate limited → Implement backoff, enable caching
+│   ├── 5xx → Exa server issue → Retry with backoff, wait for resolution
+│   └── 400 → Bad request → Fix request parameters
+└── NO: Is search quality degraded?
+    ├── Empty results → Broaden query, check date/domain filters
+    ├── Low relevance → Switch search type, rephrase query
+    └── Slow responses → Switch to faster search type, add caching
 ```
 
-## Immediate Actions by Error Type
+## Immediate Actions by Error Code
 
-### 401/403 - Authentication
+### 401/403 — Authentication
 ```bash
 set -euo pipefail
-# Verify API key is set
-kubectl get secret exa-secrets -o jsonpath='{.data.api-key}' | base64 -d
+# Verify API key
+echo "Key present: ${EXA_API_KEY:+yes}"
+echo "Key length: ${#EXA_API_KEY}"
 
-# Check if key was rotated
-# → Verify in Exa dashboard
+# Test with a simple search
+curl -v -X POST https://api.exa.ai/search \
+  -H "x-api-key: $EXA_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"query":"auth test","numResults":1}' 2>&1 | grep "< HTTP"
 
-# Remediation: Update secret and restart pods
-kubectl create secret generic exa-secrets --from-literal=api-key=NEW_KEY --dry-run=client -o yaml | kubectl apply -f -
-kubectl rollout restart deployment/exa-integration
+# Fix: regenerate key at dashboard.exa.ai and update env
 ```
 
-### 429 - Rate Limited
-```bash
-set -euo pipefail
-# Check rate limit headers
-curl -v https://api.exa.com 2>&1 | grep -i rate
+### 429 — Rate Limited
+```typescript
+// Enable emergency caching to reduce API calls
+import { LRUCache } from "lru-cache";
 
-# Enable request queuing
-kubectl set env deployment/exa-integration RATE_LIMIT_MODE=queue
+const emergencyCache = new LRUCache<string, any>({
+  max: 10000,
+  ttl: 30 * 60 * 1000, // 30-minute emergency TTL
+});
 
-# Long-term: Contact Exa for limit increase
+// Reduce concurrent requests
+import PQueue from "p-queue";
+const queue = new PQueue({ concurrency: 3, interval: 1000, intervalCap: 5 });
 ```
 
-### 500/503 - Exa Errors
-```bash
-set -euo pipefail
-# Enable graceful degradation
-kubectl set env deployment/exa-integration EXA_FALLBACK=true
-
-# Notify users of degraded service
-# Update status page
-
-# Monitor Exa status for resolution
+### 5xx — Exa Server Errors
+```typescript
+// Enable graceful degradation
+async function searchWithFallback(query: string, opts: any) {
+  try {
+    return await exa.searchAndContents(query, opts);
+  } catch (err: any) {
+    if (err.status >= 500) {
+      console.error(`[Exa] ${err.status}: ${err.message} (requestId: ${err.requestId})`);
+      // Return cached results or show degraded UI
+      const cached = emergencyCache.get(query);
+      if (cached) return cached;
+      return { results: [], _degraded: true };
+    }
+    throw err;
+  }
+}
 ```
 
 ## Communication Templates
 
 ### Internal (Slack)
 ```
-🔴 P1 INCIDENT: Exa Integration
+P[1-4] INCIDENT: Exa Search Integration
 Status: INVESTIGATING
 Impact: [Describe user impact]
+Error: [HTTP code] [error tag]
+RequestId: [from error response]
 Current action: [What you're doing]
 Next update: [Time]
-Incident commander: @[name]
 ```
 
-### External (Status Page)
+### Support Escalation
 ```
-Exa Integration Issue
+To: hello@exa.ai
+Subject: [P1/P2] Production issue — [brief description]
 
-We're experiencing issues with our Exa integration.
-Some users may experience [specific impact].
-
-We're actively investigating and will provide updates.
-
-Last updated: [timestamp]
+RequestId: [from error response]
+Timestamp: [ISO 8601]
+HTTP Status: [code]
+Error Tag: [tag from response]
+Frequency: [every request / intermittent / percentage]
+Impact: [number of affected users/requests]
 ```
 
 ## Post-Incident
@@ -132,80 +153,46 @@ Last updated: [timestamp]
 ### Evidence Collection
 ```bash
 set -euo pipefail
-# Generate debug bundle
-./scripts/exa-debug-bundle.sh
+# Capture recent error logs
+kubectl logs -l app=exa-integration --since=1h 2>/dev/null | grep -i "error\|429\|500" | tail -50
 
-# Export relevant logs
-kubectl logs -l app=exa-integration --since=1h > incident-logs.txt
-
-# Capture metrics
-curl "localhost:9090/api/v1/query_range?query=exa_errors_total&start=2h" > metrics.json  # 9090: Prometheus port
+# Capture metrics snapshot
+curl -s "localhost:9090/api/v1/query?query=rate(exa_search_error[1h])" 2>/dev/null
 ```
 
 ### Postmortem Template
 ```markdown
 ## Incident: Exa [Error Type]
-**Date:** YYYY-MM-DD
-**Duration:** X hours Y minutes
-**Severity:** P[1-4]
+**Date:** YYYY-MM-DD | **Duration:** Xh Ym | **Severity:** P[1-4]
 
 ### Summary
 [1-2 sentence description]
 
 ### Timeline
-- HH:MM - [Event]
-- HH:MM - [Event]
+- HH:MM — First error detected
+- HH:MM — Triage began
+- HH:MM — Root cause identified
+- HH:MM — Mitigation applied
+- HH:MM — Full recovery
 
 ### Root Cause
 [Technical explanation]
 
-### Impact
-- Users affected: N
-- Revenue impact: $X
-
 ### Action Items
-- [ ] [Preventive measure] - Owner - Due date
+- [ ] [Preventive measure] — Owner — Due date
 ```
-
-## Instructions
-
-### Step 1: Quick Triage
-Run the triage commands to identify the issue source.
-
-### Step 2: Follow Decision Tree
-Determine if the issue is Exa-side or internal.
-
-### Step 3: Execute Immediate Actions
-Apply the appropriate remediation for the error type.
-
-### Step 4: Communicate Status
-Update internal and external stakeholders.
-
-## Output
-- Issue identified and categorized
-- Remediation applied
-- Stakeholders notified
-- Evidence collected for postmortem
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Can't reach status page | Network issue | Use mobile or VPN |
-| kubectl fails | Auth expired | Re-authenticate |
-| Metrics unavailable | Prometheus down | Check backup metrics |
-| Secret rotation fails | Permission denied | Escalate to admin |
-
-## Examples
-
-### One-Line Health Check
-```bash
-set -euo pipefail
-curl -sf https://api.yourapp.com/health | jq '.services.exa.status' || echo "UNHEALTHY"
-```
+| Intermittent 5xx | Exa server issues | Retry with backoff, check status page |
+| All requests 401 | API key rotated/expired | Regenerate at dashboard.exa.ai |
+| Sudden empty results | Exa index issue | Switch search type, broaden query |
+| Latency spike | Exa under load | Use `fast` type, enable caching |
 
 ## Resources
-- [Exa Status Page](https://status.exa.com)
-- [Exa Support](https://support.exa.com)
+- [Exa Error Codes](https://docs.exa.ai/reference/error-codes)
+- [Exa Support](mailto:hello@exa.ai)
 
 ## Next Steps
-For data handling, see `exa-data-handling`.
+For data handling, see `exa-data-handling`. For debugging, see `exa-debug-bundle`.
