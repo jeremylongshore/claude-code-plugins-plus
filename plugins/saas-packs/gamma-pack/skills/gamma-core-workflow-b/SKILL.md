@@ -1,156 +1,247 @@
 ---
 name: gamma-core-workflow-b
 description: |
-  Implement core Gamma workflow for presentation editing and export.
-  Use when modifying existing presentations, exporting to various formats,
-  or managing presentation assets.
-  Trigger with phrases like "gamma edit presentation", "gamma export",
-  "gamma PDF", "gamma update slides", "gamma modify".
-allowed-tools: Read, Write, Edit
+  Generate from templates, retrieve exports, and manage sharing via Gamma API.
+  Use when creating content from template gammas, downloading PDF/PPTX/PNG exports,
+  or configuring sharing and folder organization.
+  Trigger: "gamma template", "gamma export", "gamma download PDF",
+  "gamma PPTX", "gamma sharing", "gamma from template".
+allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, gamma, workflow]
+tags: [saas, gamma, workflow, export, templates]
 
 ---
-# Gamma Core Workflow B: Editing and Export
+# Gamma Core Workflow B: Templates & Export
 
 ## Overview
-Implement workflows for editing existing presentations and exporting to various formats.
+
+Use Gamma's template-based generation (`POST /v1.0/generations/from-template`) and export retrieval (`GET /v1.0/generations/{id}/files`) endpoints. Template generation lets you replicate a single-page gamma template across multiple variations. Export retrieval gives you downloadable PDF, PPTX, and PNG files.
 
 ## Prerequisites
-- Completed `gamma-core-workflow-a` setup
-- Existing presentation to work with
-- Understanding of export formats
+
+- Completed `gamma-core-workflow-a`
+- A template gamma with exactly one page (created in the Gamma app)
+- Understanding of the generate-poll-retrieve pattern
+
+## Key Concepts
+
+- **Template gamma**: A regular gamma with exactly one page, used as a repeatable template
+- **gammaId**: Found in the gamma URL or copied from the app
+- **Export URLs**: Temporary download links returned after generation — download promptly as they expire
 
 ## Instructions
 
-### Step 1: Retrieve and Edit Presentation
+### Step 1: Create from Template
+
 ```typescript
-import { GammaClient } from '@gamma/sdk';
+import { createGammaClient, pollUntilDone } from "./lib/gamma";
 
-const gamma = new GammaClient({ apiKey: process.env.GAMMA_API_KEY });
+const gamma = createGammaClient({ apiKey: process.env.GAMMA_API_KEY! });
 
-async function editPresentation(presentationId: string) {
-  // Retrieve existing presentation
-  const presentation = await gamma.presentations.get(presentationId);
-
-  // Update title and style
-  const updated = await gamma.presentations.update(presentationId, {
-    title: 'Updated: ' + presentation.title,
-    style: 'modern',
-  });
-
-  return updated;
-}
-```
-
-### Step 2: Slide-Level Editing
-```typescript
-async function editSlide(presentationId: string, slideIndex: number, content: object) {
-  const presentation = await gamma.presentations.get(presentationId);
-
-  // Update specific slide
-  const updatedSlide = await gamma.slides.update(
-    presentationId,
-    slideIndex,
-    {
-      title: content.title,
-      content: content.body,
-      layout: content.layout || 'content',
-    }
-  );
-
-  return updatedSlide;
-}
-
-async function addSlide(presentationId: string, position: number, content: object) {
-  return gamma.slides.insert(presentationId, position, {
-    title: content.title,
-    content: content.body,
-    generateImage: content.imagePrompt,
-  });
-}
-
-async function deleteSlide(presentationId: string, slideIndex: number) {
-  return gamma.slides.delete(presentationId, slideIndex);
-}
-```
-
-### Step 3: Export to Various Formats
-```typescript
-type ExportFormat = 'pdf' | 'pptx' | 'png' | 'html';
-
-async function exportPresentation(
-  presentationId: string,
-  format: ExportFormat,
-  options: object = {}
+// POST /v1.0/generations/from-template
+// The template gamma MUST have exactly one page
+async function generateFromTemplate(
+  templateGammaId: string,
+  prompt: string,
+  options: {
+    themeId?: string;
+    exportAs?: "pdf" | "pptx" | "png";
+    imageStyle?: string;
+  } = {}
 ) {
-  const exportJob = await gamma.exports.create(presentationId, {
-    format,
-    quality: options.quality || 'high',
-    includeNotes: options.includeNotes ?? true,
-    ...options,
+  const { generationId } = await gamma.generateFromTemplate({
+    gammaId: templateGammaId,
+    prompt,
+    themeId: options.themeId,
+    exportAs: options.exportAs,
+    imageOptions: options.imageStyle
+      ? { style: options.imageStyle }
+      : undefined,
   });
 
-  // Wait for export to complete
-  const result = await gamma.exports.wait(exportJob.id, {
-    timeout: 60000,  # 60000: 1 minute in ms
-    pollInterval: 2000,  # 2000: 2 seconds in ms
-  });
-
-  return result.downloadUrl;
+  return pollUntilDone(gamma, generationId);
 }
 
-// Usage examples
-const pdfUrl = await exportPresentation('pres-123', 'pdf');
-const pptxUrl = await exportPresentation('pres-123', 'pptx', { includeNotes: false });
-const pngUrl = await exportPresentation('pres-123', 'png', { slideIndex: 0 }); // First slide only
+// Usage: generate a sales proposal from a template
+const result = await generateFromTemplate(
+  "gamma_template_abc123",   // Your one-page template ID
+  "Create a sales proposal for Acme Corp. Highlight our cloud migration services, 99.9% uptime SLA, and 24/7 support.",
+  { exportAs: "pdf", imageStyle: "corporate professional" }
+);
+
+console.log(`View: ${result.gammaUrl}`);
+console.log(`Download: ${result.exportUrl}`);
 ```
 
-### Step 4: Asset Management
+### Step 2: Batch Template Generation
+
 ```typescript
-async function uploadAsset(presentationId: string, filePath: string) {
-  const fileBuffer = await fs.readFile(filePath);
+// Generate multiple variations from the same template
+const clients = [
+  { name: "Acme Corp", focus: "cloud migration" },
+  { name: "TechStart Inc", focus: "AI implementation" },
+  { name: "GlobalBank", focus: "security compliance" },
+];
 
-  const asset = await gamma.assets.upload(presentationId, {
-    file: fileBuffer,
-    filename: path.basename(filePath),
-    type: 'image',
-  });
+import pLimit from "p-limit";
+const limit = pLimit(2); // Respect rate limits
 
-  return asset.url;
-}
+const proposals = await Promise.allSettled(
+  clients.map((client) =>
+    limit(() =>
+      generateFromTemplate(
+        "gamma_template_abc123",
+        `Proposal for ${client.name} focusing on ${client.focus}. Include pricing tier for enterprise. Reference their industry.`,
+        { exportAs: "pptx" }
+      )
+    )
+  )
+);
 
-async function listAssets(presentationId: string) {
-  return gamma.assets.list(presentationId);
-}
+proposals.forEach((r, i) => {
+  const status = r.status === "fulfilled" ? r.value.gammaUrl : `FAILED: ${r.reason}`;
+  console.log(`${clients[i].name}: ${status}`);
+});
 ```
 
-## Output
-- Updated presentation with modifications
-- Exported files in various formats
-- Managed presentation assets
-- Download URLs for exports
+### Step 3: Export Format Selection
+
+```typescript
+// Export is specified at generation time via `exportAs`
+// You cannot export an already-generated gamma via the API
+// Instead, generate with the desired export format
+
+// PDF export — best for sharing externally
+const pdfResult = await gamma.generate({
+  content: "Annual report for 2025",
+  outputFormat: "document",
+  exportAs: "pdf",
+});
+
+// PPTX export — for editing in PowerPoint/Google Slides
+// Note: PPTX exports may have layout shifts and font differences
+const pptxResult = await gamma.generate({
+  content: "Team kickoff presentation",
+  outputFormat: "presentation",
+  exportAs: "pptx",
+});
+
+// PNG export — for thumbnails or social sharing
+const pngResult = await gamma.generate({
+  content: "Product announcement graphic",
+  outputFormat: "social_post",
+  exportAs: "png",
+});
+```
+
+### Step 4: Retrieve Export Files
+
+```typescript
+// After generation completes, exportUrl is in the poll response
+// Download files promptly — URLs expire after a period
+
+import { writeFile } from "node:fs/promises";
+
+async function downloadExport(generationId: string, outputPath: string) {
+  // Poll until complete
+  const result = await pollUntilDone(gamma, generationId);
+
+  if (!result.exportUrl) {
+    throw new Error("No export URL — did you specify exportAs?");
+  }
+
+  // Download the file
+  const response = await fetch(result.exportUrl);
+  if (!response.ok) throw new Error(`Download failed: ${response.status}`);
+
+  const buffer = Buffer.from(await response.arrayBuffer());
+  await writeFile(outputPath, buffer);
+  console.log(`Saved to ${outputPath} (${buffer.length} bytes)`);
+}
+
+// Usage
+const { generationId } = await gamma.generate({
+  content: "Sales deck for Q1 review",
+  outputFormat: "presentation",
+  exportAs: "pdf",
+});
+
+await downloadExport(generationId, "./output/q1-review.pdf");
+```
+
+### Step 5: Sharing Configuration
+
+```typescript
+// Configure who can access the generated gamma
+const { generationId } = await gamma.generate({
+  content: "Internal strategy document",
+  outputFormat: "document",
+  sharingOptions: {
+    // Workspace members
+    workspaceAccess: "comment",  // noAccess | view | comment | edit | fullAccess
+
+    // External (non-workspace) visitors
+    externalAccess: "noAccess",  // Lock down for internal docs
+
+    // Share with specific people via email
+    emailOptions: {
+      emails: ["partner@example.com"],
+      accessLevel: "view",
+    },
+  },
+});
+```
+
+### Step 6: curl Reference
+
+```bash
+# Generate from template
+curl -X POST "https://public-api.gamma.app/v1.0/generations/from-template" \
+  -H "X-API-KEY: ${GAMMA_API_KEY}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "gammaId": "your_template_gamma_id",
+    "prompt": "Create a proposal for Acme Corp focusing on cloud services",
+    "exportAs": "pdf",
+    "themeId": "theme_abc123",
+    "imageOptions": { "style": "photorealistic" },
+    "sharingOptions": {
+      "workspaceAccess": "edit",
+      "externalAccess": "view"
+    }
+  }'
+
+# Poll for result
+curl "https://public-api.gamma.app/v1.0/generations/${GEN_ID}" \
+  -H "X-API-KEY: ${GAMMA_API_KEY}" | jq '{status, gammaUrl, exportUrl, creditsUsed}'
+```
+
+## Export Format Comparison
+
+| Format | Best For | Fidelity | Editable? |
+|--------|----------|----------|-----------|
+| PDF | Sharing, printing | High | No |
+| PPTX | Editing in PowerPoint/Slides | Medium (layout shifts possible) | Yes |
+| PNG | Thumbnails, social media | High (single image) | No |
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Export Timeout | Large presentation | Increase timeout or reduce slides |
-| Format Not Supported | Invalid export format | Check supported formats |
-| Asset Too Large | File exceeds limit | Compress or resize image |
-| Slide Not Found | Invalid index | Verify slide exists |
+| "Template must have exactly one page" | Multi-page template | Edit template to single page |
+| Empty `exportUrl` | `exportAs` not specified | Add `exportAs` to generation request |
+| Download URL expired | Too slow to download | Download immediately after completion |
+| 422 on template generation | Invalid `gammaId` | Verify template ID from Gamma app URL |
 
 ## Resources
-- [Gamma Export API](https://gamma.app/docs/export)
-- [Gamma Asset Management](https://gamma.app/docs/assets)
+
+- [Create from Template](https://developers.gamma.app/reference/create-from-template)
+- [Template Parameters Explained](https://developers.gamma.app/guides/create-from-template-api-parameters-explained)
+- [Receive Generated File URLs](https://developers.gamma.app/reference/get-gamma-file-urls)
 
 ## Next Steps
-Proceed to `gamma-common-errors` for error handling patterns.
 
-## Examples
-
-**Basic usage**: Apply gamma core workflow b to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize gamma core workflow b for production environments with multiple constraints and team-specific requirements.
+Proceed to `gamma-common-errors` for troubleshooting API issues.

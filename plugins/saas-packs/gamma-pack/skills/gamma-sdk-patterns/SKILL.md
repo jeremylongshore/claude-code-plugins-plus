@@ -1,152 +1,284 @@
 ---
 name: gamma-sdk-patterns
 description: |
-  Learn idiomatic Gamma SDK patterns and best practices.
-  Use when implementing complex presentation workflows,
-  handling async operations, or structuring Gamma code.
-  Trigger with phrases like "gamma patterns", "gamma best practices",
-  "gamma SDK usage", "gamma async", "gamma code structure".
+  Reusable patterns for the Gamma REST API (no SDK exists).
+  Use when building typed wrappers, generation helpers,
+  template factories, or error handling for Gamma.
+  Trigger: "gamma patterns", "gamma client wrapper",
+  "gamma best practices", "gamma API helper", "gamma code structure".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, gamma, workflow]
+tags: [saas, gamma, patterns, api]
 
 ---
-# Gamma SDK Patterns
+# Gamma API Patterns
 
 ## Overview
-Learn idiomatic patterns and best practices for the Gamma SDK to build robust presentation automation.
+
+Gamma has no published SDK — all interaction is via REST at `https://public-api.gamma.app/v1.0/`. This skill provides production-grade patterns for typed clients, generation helpers, polling, template workflows, and error handling.
 
 ## Prerequisites
-- Completed `gamma-local-dev-loop` setup
-- Familiarity with async/await patterns
-- TypeScript recommended
+
+- Completed `gamma-install-auth` setup
+- TypeScript project with `fetch` (Node.js 18+)
+- Understanding of the generate-poll-retrieve workflow
 
 ## Instructions
 
-### Step 1: Client Singleton
+### Step 1: Typed Client Singleton
+
 ```typescript
 // lib/gamma.ts
-import { GammaClient } from '@gamma/sdk';
+const GAMMA_BASE = "https://public-api.gamma.app/v1.0";
 
-let client: GammaClient | null = null;
-
-export function getGammaClient(): GammaClient {
-  if (!client) {
-    client = new GammaClient({
-      apiKey: process.env.GAMMA_API_KEY,
-      timeout: 30000,  # 30000: 30 seconds in ms
-      retries: 3,
-    });
-  }
-  return client;
+interface GammaConfig {
+  apiKey: string;
+  baseUrl?: string;
+  timeoutMs?: number;
 }
-```
 
-### Step 2: Presentation Builder
-```typescript
-// lib/presentation-builder.ts
-import { getGammaClient } from './gamma';
-
-interface SlideContent {
-  title: string;
+// Types based on actual API responses
+interface GenerateRequest {
   content: string;
-  layout?: 'title' | 'content' | 'image' | 'split';
+  outputFormat?: "presentation" | "document" | "webpage" | "social_post";
+  themeId?: string;
+  exportAs?: "pdf" | "pptx" | "png";
+  textMode?: "generate" | "condense" | "preserve";
+  textAmount?: "brief" | "medium" | "detailed" | "extensive";
+  imageOptions?: { style?: string };
+  sharingOptions?: {
+    workspaceAccess?: "noAccess" | "view" | "comment" | "edit" | "fullAccess";
+    externalAccess?: "noAccess" | "view" | "comment" | "edit" | "fullAccess";
+  };
+  folderIds?: string[];
 }
 
-export class PresentationBuilder {
-  private slides: SlideContent[] = [];
-  private title: string = '';
-  private style: string = 'professional';
+interface GenerateResult {
+  generationId: string;
+  status: "in_progress" | "completed" | "failed";
+  gammaUrl?: string;
+  exportUrl?: string;
+  creditsUsed?: number;
+}
 
-  setTitle(title: string): this {
-    this.title = title;
-    return this;
-  }
+let instance: ReturnType<typeof createGammaClient> | null = null;
 
-  addSlide(slide: SlideContent): this {
-    this.slides.push(slide);
-    return this;
-  }
-
-  setStyle(style: string): this {
-    this.style = style;
-    return this;
-  }
-
-  async build() {
-    const gamma = getGammaClient();
-    return gamma.presentations.create({
-      title: this.title,
-      slides: this.slides,
-      style: this.style,
+export function getGamma() {
+  if (!instance) {
+    instance = createGammaClient({
+      apiKey: process.env.GAMMA_API_KEY!,
     });
   }
+  return instance;
 }
-```
 
-### Step 3: Error Handling Wrapper
-```typescript
-// lib/safe-gamma.ts
-import { GammaError } from '@gamma/sdk';
+export function createGammaClient(config: GammaConfig) {
+  const base = config.baseUrl ?? GAMMA_BASE;
+  const headers: Record<string, string> = {
+    "X-API-KEY": config.apiKey,
+    "Content-Type": "application/json",
+  };
 
-export async function safeGammaCall<T>(
-  fn: () => Promise<T>
-): Promise<{ data: T; error: null } | { data: null; error: string }> {
-  try {
-    const data = await fn();
-    return { data, error: null };
-  } catch (err) {
-    if (err instanceof GammaError) {
-      return { data: null, error: err.message };
+  async function request<T>(method: string, path: string, body?: unknown): Promise<T> {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), config.timeoutMs ?? 30000);
+    try {
+      const res = await fetch(`${base}${path}`, {
+        method,
+        headers,
+        body: body ? JSON.stringify(body) : undefined,
+        signal: controller.signal,
+      });
+      if (!res.ok) {
+        const text = await res.text();
+        throw new GammaApiError(res.status, text, path);
+      }
+      return res.json() as T;
+    } finally {
+      clearTimeout(timeout);
     }
-    throw err;
   }
+
+  return {
+    generate: (body: GenerateRequest) =>
+      request<{ generationId: string }>("POST", "/generations", body),
+    generateFromTemplate: (body: TemplateRequest) =>
+      request<{ generationId: string }>("POST", "/generations/from-template", body),
+    poll: (id: string) =>
+      request<GenerateResult>("GET", `/generations/${id}`),
+    getFileUrls: (id: string) =>
+      request<{ exportUrl: string }>("GET", `/generations/${id}/files`),
+    listThemes: () => request<Theme[]>("GET", "/themes"),
+    listFolders: () => request<Folder[]>("GET", "/folders"),
+  };
 }
 ```
 
-### Step 4: Template Factory
+### Step 2: Custom Error Class
+
+```typescript
+// lib/errors.ts
+export class GammaApiError extends Error {
+  constructor(
+    public status: number,
+    public body: string,
+    public path: string
+  ) {
+    super(`Gamma API ${status} on ${path}: ${body}`);
+    this.name = "GammaApiError";
+  }
+
+  get isRateLimit() { return this.status === 429; }
+  get isAuth() { return this.status === 401 || this.status === 403; }
+  get isServerError() { return this.status >= 500; }
+}
+```
+
+### Step 3: Poll-Until-Done Helper
+
+```typescript
+// lib/poll.ts
+export async function pollUntilDone(
+  gamma: ReturnType<typeof createGammaClient>,
+  generationId: string,
+  opts = { intervalMs: 5000, timeoutMs: 180000 }
+): Promise<GenerateResult> {
+  const deadline = Date.now() + opts.timeoutMs;
+
+  while (Date.now() < deadline) {
+    const result = await gamma.poll(generationId);
+
+    if (result.status === "completed") return result;
+    if (result.status === "failed") {
+      throw new Error(`Generation ${generationId} failed`);
+    }
+
+    await new Promise((r) => setTimeout(r, opts.intervalMs));
+  }
+
+  throw new Error(`Poll timeout for ${generationId} after ${opts.timeoutMs}ms`);
+}
+```
+
+### Step 4: Generate-and-Wait Convenience
+
+```typescript
+// lib/generate.ts
+export async function generateAndWait(
+  gamma: ReturnType<typeof createGammaClient>,
+  request: GenerateRequest
+): Promise<GenerateResult> {
+  const { generationId } = await gamma.generate(request);
+  console.log(`Generation started: ${generationId}`);
+  return pollUntilDone(gamma, generationId);
+}
+
+// Usage
+const gamma = getGamma();
+const result = await generateAndWait(gamma, {
+  content: "Quarterly business review for Q1 2026",
+  outputFormat: "presentation",
+  themeId: "theme_abc123",
+  exportAs: "pptx",
+  textAmount: "medium",
+  imageOptions: { style: "photorealistic corporate" },
+});
+console.log(`View: ${result.gammaUrl}`);
+console.log(`Download: ${result.exportUrl}`);
+```
+
+### Step 5: Template-Based Generation
+
 ```typescript
 // lib/templates.ts
-type TemplateType = 'pitch-deck' | 'report' | 'tutorial' | 'proposal';
+// Uses POST /v1.0/generations/from-template
+// The template gamma must contain exactly one page
 
-const TEMPLATES: Record<TemplateType, object> = {
-  'pitch-deck': { slides: 10, style: 'bold' },
-  'report': { slides: 15, style: 'professional' },
-  'tutorial': { slides: 8, style: 'friendly' },
-  'proposal': { slides: 12, style: 'corporate' },
-};
+interface TemplateRequest {
+  gammaId: string;     // Template gamma ID (one-page template)
+  prompt: string;      // Content + instructions for the template
+  themeId?: string;
+  exportAs?: "pdf" | "pptx" | "png";
+  imageOptions?: { style?: string };
+  sharingOptions?: object;
+  folderIds?: string[];
+}
 
-export function fromTemplate(type: TemplateType, title: string) {
-  return { ...TEMPLATES[type], title };
+export async function generateFromTemplate(
+  gamma: ReturnType<typeof createGammaClient>,
+  templateId: string,
+  prompt: string,
+  options: Partial<TemplateRequest> = {}
+): Promise<GenerateResult> {
+  const { generationId } = await gamma.generateFromTemplate({
+    gammaId: templateId,
+    prompt,
+    ...options,
+  });
+  return pollUntilDone(gamma, generationId);
 }
 ```
 
-## Output
-- Reusable client singleton
-- Fluent builder pattern
-- Type-safe error handling
-- Template factory system
+### Step 6: Retry with Backoff
+
+```typescript
+// lib/retry.ts
+export async function withRetry<T>(
+  fn: () => Promise<T>,
+  maxRetries = 3,
+  baseDelayMs = 1000
+): Promise<T> {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (err) {
+      if (attempt === maxRetries) throw err;
+      if (err instanceof GammaApiError && !err.isRateLimit && !err.isServerError) {
+        throw err; // Don't retry auth errors or 4xx
+      }
+      const delay = baseDelayMs * Math.pow(2, attempt);
+      console.warn(`Retry ${attempt + 1}/${maxRetries} in ${delay}ms`);
+      await new Promise((r) => setTimeout(r, delay));
+    }
+  }
+  throw new Error("Unreachable");
+}
+
+// Usage
+const result = await withRetry(() =>
+  generateAndWait(gamma, { content: "My deck", outputFormat: "presentation" })
+);
+```
+
+## API Endpoints Reference
+
+| Method | Endpoint | Purpose |
+|--------|----------|---------|
+| POST | `/v1.0/generations` | Generate from text content |
+| POST | `/v1.0/generations/from-template` | Generate from a template gamma |
+| GET | `/v1.0/generations/{id}` | Poll generation status |
+| GET | `/v1.0/generations/{id}/files` | Get export file URLs |
+| GET | `/v1.0/themes` | List workspace themes |
+| GET | `/v1.0/folders` | List workspace folders |
 
 ## Error Handling
-| Pattern | Use Case | Benefit |
-|---------|----------|---------|
-| Singleton | Multiple modules | Consistent config |
-| Builder | Complex presentations | Readable code |
-| Safe Call | Error boundaries | Graceful failures |
-| Factory | Repeated templates | DRY code |
+
+| Pattern | Use Case |
+|---------|----------|
+| `GammaApiError` class | Typed error handling with `isRateLimit`, `isAuth`, `isServerError` |
+| `withRetry()` | Auto-retry on 429/5xx with exponential backoff |
+| `pollUntilDone()` | Timeout-aware polling with configurable interval |
+| Singleton `getGamma()` | Consistent config across modules |
 
 ## Resources
-- [Gamma SDK Patterns](https://gamma.app/docs/patterns)
-- [TypeScript Design Patterns](https://refactoring.guru/design-patterns/typescript)
+
+- [Gamma API Reference](https://developers.gamma.app/reference/generate-a-gamma)
+- [Generate API Parameters](https://developers.gamma.app/guides/generate-api-parameters-explained)
+- [Create from Template](https://developers.gamma.app/guides/create-from-template-api-parameters-explained)
 
 ## Next Steps
-Proceed to `gamma-core-workflow-a` for presentation generation workflows.
 
-## Examples
-
-**Basic usage**: Apply gamma sdk patterns to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize gamma sdk patterns for production environments with multiple constraints and team-specific requirements.
+Proceed to `gamma-core-workflow-a` for content generation workflows.

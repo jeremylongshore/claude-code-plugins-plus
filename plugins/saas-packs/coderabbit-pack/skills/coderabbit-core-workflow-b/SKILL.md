@@ -1,80 +1,194 @@
 ---
 name: coderabbit-core-workflow-b
 description: |
-  Execute CodeRabbit secondary workflow: Core Workflow B.
-  Use when implementing secondary use case,
-  or complementing primary workflow.
-  Trigger with phrases like "coderabbit secondary workflow",
-  "secondary task with coderabbit".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
+  Tune CodeRabbit review configuration: learnings, code guidelines, and noise reduction.
+  Use when fine-tuning review quality, training CodeRabbit with team preferences,
+  adding code guidelines, or reducing false positives.
+  Trigger with phrases like "coderabbit tune reviews", "coderabbit learnings",
+  "coderabbit guidelines", "reduce coderabbit noise", "coderabbit false positives".
+allowed-tools: Read, Write, Edit, Bash(gh:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, coderabbit, workflow]
+tags: [saas, coderabbit, workflow, tuning, learnings]
 
 ---
-# CodeRabbit Core Workflow B
+# CodeRabbit Core Workflow B: Learnings & Tuning
 
 ## Overview
-Secondary workflow for CodeRabbit. Complements the primary workflow by addressing configuration tuning, rule customization, and bulk remediation tasks that arise after the initial integration is established. Use this skill when you need to adjust review sensitivity, suppress false positives, or apply CodeRabbit feedback across multiple pull requests at once.
+After initial CodeRabbit setup (Workflow A), this skill covers tuning review quality through learnings, code guidelines, tone customization, and noise reduction. CodeRabbit improves over time by learning from your team's feedback patterns and custom rules.
 
 ## Prerequisites
-- Completed `coderabbit-install-auth` setup
-- Familiarity with `coderabbit-core-workflow-a`
-- Valid API credentials configured
+- CodeRabbit installed and producing reviews (see `coderabbit-core-workflow-a`)
+- Several PRs worth of review history
+- Understanding of team coding standards
 
 ## Instructions
 
-### Step 1: Setup
-Load the current CodeRabbit configuration and review the existing rule-set. Identify which rules are generating excessive noise or missing important patterns based on recent review history.
+### Step 1: Configure Code Guidelines
+CodeRabbit automatically detects coding rules from standard config files in your repo. It also reads AI agent configuration files for additional context.
 
-```typescript
-// Step 1 implementation
+```yaml
+# Files CodeRabbit auto-detects for coding rules:
+# - .eslintrc.* / eslint.config.*     (JavaScript/TypeScript rules)
+# - .prettierrc / prettier.config.*   (Formatting rules)
+# - biome.json / biome.jsonc          (Biome linter rules)
+# - .cursorrules                      (Cursor AI rules)
+# - CLAUDE.md                         (Claude Code instructions)
+# - .editorconfig                     (Editor settings)
+# - .rubocop.yml                      (Ruby style)
+# - ruff.toml / pyproject.toml        (Python rules)
+
+# Add custom guidelines file:
+# Create docs/CODING_STANDARDS.md with your team's rules
+# Then reference it in .coderabbit.yaml:
 ```
 
-### Step 2: Process
-Update the configuration with refined rule weights, additional ignore patterns, or new custom rules. Apply the changes to the repository settings and validate by re-running CodeRabbit against a representative pull request to confirm the new behavior matches expectations.
-
-```typescript
-// Step 2 implementation
+```yaml
+# .coderabbit.yaml - Custom code guidelines
+reviews:
+  knowledge_base:
+    code_guidelines:
+      auto_detection: true          # Auto-detect from config files
+      custom_patterns:
+        - "docs/CODING_STANDARDS.md"
+        - "docs/SECURITY_POLICY.md"
+        - "team/code-style.txt"
 ```
 
-### Step 3: Complete
-Commit the updated configuration file, document the rationale for each change in your team's runbook, and notify reviewers of the updated standards. Monitor the next several reviews to ensure the tuned configuration reduces noise without missing real issues.
+### Step 2: Train with Learnings via PR Feedback
+Learnings are enabled by default. CodeRabbit learns from your team's review interactions:
 
-```typescript
-// Step 3 implementation
+```markdown
+# When CodeRabbit gives feedback you disagree with, reply:
+"We intentionally use default exports in this project for Next.js pages.
+Please don't flag default exports in files under src/pages/."
+
+# CodeRabbit remembers this preference for future reviews.
+
+# When you want to reinforce a pattern, reply positively:
+"Good catch! We always want to flag missing error boundaries in React components."
+
+# View current learnings in the CodeRabbit dashboard:
+# app.coderabbit.ai > Organization > Learnings
+```
+
+### Step 3: Customize Review Tone
+```yaml
+# .coderabbit.yaml - Tone configuration
+tone_instructions: |
+  Be concise and direct. Skip pleasantries.
+  Use bullet points for multiple suggestions.
+  Include code examples for non-obvious fixes.
+  Rate severity as: Critical > Warning > Suggestion > Nitpick.
+
+# Review profiles control comment volume:
+reviews:
+  profile: "chill"       # Fewer comments, only significant issues
+  # profile: "assertive" # Balanced (default, recommended for most teams)
+
+# Fun tone options (if your team appreciates them):
+# tone_instructions: "Review like a wise but slightly sarcastic senior engineer."
+# tone_instructions: "You must talk like a pirate. Arr!"
+```
+
+### Step 4: Reduce False Positives
+```yaml
+# .coderabbit.yaml - Noise reduction strategies
+reviews:
+  # Skip paths that generate noise
+  path_filters:
+    - "!**/*.lock"
+    - "!**/*.snap"
+    - "!**/*.generated.*"
+    - "!**/migrations/*.sql"    # DB migrations are reviewed manually
+    - "!**/__mocks__/**"
+    - "!**/fixtures/**"
+    - "!**/testdata/**"
+
+  # Give context to prevent misguided comments
+  path_instructions:
+    - path: "src/legacy/**"
+      instructions: |
+        This is legacy code being incrementally migrated.
+        Only flag security issues and bugs. Do NOT suggest refactoring.
+        Do NOT comment on naming conventions or code style.
+
+    - path: "src/generated/**"
+      instructions: |
+        This code is auto-generated by protobuf/GraphQL codegen.
+        Only review if there are manual modifications (check git blame).
+        Skip style and structure comments entirely.
+
+    - path: "scripts/**"
+      instructions: |
+        These are one-off scripts. Do not enforce production code standards.
+        Only flag: security issues, destructive operations without confirmation,
+        and missing error handling on file/network operations.
+
+  # Skip PRs from automated tools
+  auto_review:
+    ignore_title_keywords:
+      - "chore: bump"
+      - "chore(deps)"
+      - "Bump version"
+      - "auto-generated"
+```
+
+### Step 5: A/B Test Review Profiles
+```yaml
+# Try different profiles to find the right signal-to-noise ratio:
+#
+# Week 1-2: Run "assertive" (default)
+# - Track: comments per PR, acceptance rate, developer satisfaction
+#
+# Week 3-4: Switch to "chill"
+# - Compare same metrics
+#
+# Decision framework:
+# - Acceptance rate < 30%? → Profile too aggressive, switch to chill
+# - Acceptance rate > 70%? → Reviews are valued, keep current profile
+# - Developers ignoring reviews? → Too many nitpicks, switch to chill
+# - Security issues slipping through? → Switch to assertive
+```
+
+### Step 6: Monitor Review Effectiveness
+```bash
+set -euo pipefail
+# Check CodeRabbit comment acceptance rate on recent PRs
+ORG="your-org"
+REPO="your-repo"
+
+echo "=== CodeRabbit Review Effectiveness ==="
+for PR in $(gh api "repos/$ORG/$REPO/pulls?state=closed&per_page=20" --jq '.[].number'); do
+  TOTAL=$(gh api "repos/$ORG/$REPO/pulls/$PR/comments" \
+    --jq '[.[] | select(.user.login=="coderabbitai[bot]")] | length' 2>/dev/null)
+  [ "$TOTAL" -gt 0 ] && echo "PR #$PR: $TOTAL CodeRabbit comments"
+done
 ```
 
 ## Output
-- Completed Core Workflow B execution
-- Updated CodeRabbit configuration committed to repository
-- Validation report confirming rule changes behave as intended
-- Success confirmation or error details
+- Code guidelines configured from team standards documents
+- Learnings trained through PR comment feedback
+- Review tone customized for team culture
+- False positives reduced through path filters and contextual instructions
+- Review effectiveness measured with acceptance rate metrics
 
 ## Error Handling
-| Aspect | Workflow A | Workflow B |
-|--------|------------|------------|
-| Use Case | Primary | Secondary |
-| Complexity | Medium | Lower |
-| Performance | Standard | Optimized |
-
-## Examples
-
-### Complete Workflow
-```typescript
-// Complete workflow example
-```
-
-### Error Recovery
-```typescript
-// Error handling code
-```
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Reviews ignore custom rules | Guidelines file not referenced | Add path to `custom_patterns` in config |
+| Learnings not sticking | Organization-level vs repo-level | Check learnings scope in dashboard |
+| Too few comments | Profile set to "chill" | Switch to "assertive" for more thorough reviews |
+| Same issue flagged repeatedly | Learning not created | Reply explicitly stating the preference |
+| Tone instructions ignored | YAML formatting issue | Ensure `tone_instructions` is a proper string |
 
 ## Resources
-- [CodeRabbit Documentation](https://docs.coderabbit.com)
-- [CodeRabbit API Reference](https://docs.coderabbit.com/api)
+- [Code Guidelines](https://www.coderabbit.ai/blog/code-guidelines-bring-your-coding-rules-to-coderabbit)
+- [Knowledge Base](https://docs.coderabbit.ai/integrations/knowledge-base)
+- [Tone Customization](https://www.coderabbit.ai/blog/tone-customizations-roast-your-code)
+- [Context Engineering](https://www.coderabbit.ai/blog/context-engineering-ai-code-reviews)
 
 ## Next Steps
-For common errors, see `coderabbit-common-errors`.
+For common errors and troubleshooting, see `coderabbit-common-errors`.

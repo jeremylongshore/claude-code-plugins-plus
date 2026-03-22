@@ -1,57 +1,166 @@
 ---
 name: openrouter-hello-world
 description: |
-  Create your first OpenRouter API request with a simple example. Use when learning OpenRouter or testing your setup. Trigger with phrases like 'openrouter hello world', 'openrouter first request', 'openrouter quickstart', 'test openrouter'.
-allowed-tools: Read, Write, Edit, Grep
-version: 1.0.0
+  Send your first OpenRouter API request and understand the response. Use when learning OpenRouter, testing setup, or verifying connectivity. Triggers: 'openrouter hello world', 'openrouter first request', 'test openrouter', 'openrouter quickstart'.
+allowed-tools: Read, Write, Edit, Bash, Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, openrouter, api, testing]
+tags: [saas, openrouter, api, quickstart]
 
 ---
-# Openrouter Hello World
+# OpenRouter Hello World
 
 ## Overview
 
-This skill provides a minimal working example to verify your OpenRouter integration is functioning and introduces the basic request/response pattern.
+Send a minimal chat completion request through OpenRouter, understand the response format, try different models, and verify the full round-trip works. All requests go to the single endpoint `POST https://openrouter.ai/api/v1/chat/completions`.
 
-## Prerequisites
+## Minimal Request (cURL)
 
-- OpenRouter API key configured
-- Python 3.8+ or Node.js 18+
-- OpenAI SDK installed
+```bash
+curl -s https://openrouter.ai/api/v1/chat/completions \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "google/gemma-2-9b-it:free",
+    "messages": [{"role": "user", "content": "Say hello in three languages"}],
+    "max_tokens": 100
+  }' | jq .
+```
 
-## Instructions
+## Response Format
 
-1. **Set your API key**: Export `OPENROUTER_API_KEY` as an environment variable or add it to your `.env` file
-2. **Send a test completion**: Make a POST request to `https://openrouter.ai/api/v1/chat/completions` with a simple prompt using `model: "openai/gpt-3.5-turbo"`
-3. **Verify the response**: Confirm the response contains `choices[0].message.content` and `usage` token counts
-4. **Try a different model**: Swap the model to `anthropic/claude-3-haiku` or `google/gemma-2-9b-it:free` to confirm multi-model routing works
+```json
+{
+  "id": "gen-abc123xyz",
+  "model": "google/gemma-2-9b-it:free",
+  "object": "chat.completion",
+  "created": 1711234567,
+  "choices": [{
+    "index": 0,
+    "message": {
+      "role": "assistant",
+      "content": "Hello! Bonjour! Hola!"
+    },
+    "finish_reason": "stop"
+  }],
+  "usage": {
+    "prompt_tokens": 12,
+    "completion_tokens": 8,
+    "total_tokens": 20
+  }
+}
+```
 
-## Output
+Key fields:
+- `id` (`gen-...`) -- use this to query generation stats via `GET /api/v1/generation?id=gen-abc123xyz`
+- `model` -- confirms which model actually served the request
+- `usage` -- token counts for cost calculation
+- `finish_reason` -- `stop` (complete), `length` (hit max_tokens), `tool_calls` (function call)
 
-- A JSON response with `id`, `model`, `choices`, and `usage` fields
-- Token usage breakdown (prompt_tokens, completion_tokens, total_tokens)
-- Confirmation that your API key and network configuration are correct
+## Python Example
+
+```python
+from openai import OpenAI
+import os
+
+client = OpenAI(
+    base_url="https://openrouter.ai/api/v1",
+    api_key=os.environ["OPENROUTER_API_KEY"],
+    default_headers={"HTTP-Referer": "https://your-app.com", "X-Title": "My App"},
+)
+
+# Basic completion
+response = client.chat.completions.create(
+    model="google/gemma-2-9b-it:free",
+    messages=[
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "What is OpenRouter in one sentence?"},
+    ],
+    max_tokens=100,
+)
+
+print(response.choices[0].message.content)
+print(f"Model: {response.model}")
+print(f"Tokens: {response.usage.prompt_tokens} prompt + {response.usage.completion_tokens} completion")
+```
+
+## TypeScript Example
+
+```typescript
+import OpenAI from "openai";
+
+const client = new OpenAI({
+  baseURL: "https://openrouter.ai/api/v1",
+  apiKey: process.env.OPENROUTER_API_KEY,
+  defaultHeaders: { "HTTP-Referer": "https://your-app.com", "X-Title": "My App" },
+});
+
+const res = await client.chat.completions.create({
+  model: "google/gemma-2-9b-it:free",
+  messages: [{ role: "user", content: "What is OpenRouter in one sentence?" }],
+  max_tokens: 100,
+});
+
+console.log(res.choices[0].message.content);
+console.log(`Model: ${res.model} | Tokens: ${res.usage?.total_tokens}`);
+```
+
+## Try Different Models
+
+```python
+# Swap model ID to access any of 400+ models
+models_to_try = [
+    "google/gemma-2-9b-it:free",         # Free tier
+    "meta-llama/llama-3.1-8b-instruct",  # Open-source
+    "anthropic/claude-3.5-sonnet",        # Anthropic
+    "openai/gpt-4o",                      # OpenAI
+    "openrouter/auto",                    # Auto-router (picks best model)
+]
+
+for model_id in models_to_try:
+    try:
+        r = client.chat.completions.create(
+            model=model_id,
+            messages=[{"role": "user", "content": "Hi"}],
+            max_tokens=10,
+        )
+        print(f"{model_id}: {r.choices[0].message.content}")
+    except Exception as e:
+        print(f"{model_id}: {e}")
+```
+
+## Check Generation Cost
+
+```bash
+# After a request, query the generation endpoint for cost details
+curl -s "https://openrouter.ai/api/v1/generation?id=gen-abc123xyz" \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" | jq '{
+    model: .data.model,
+    tokens_prompt: .data.tokens_prompt,
+    tokens_completion: .data.tokens_completion,
+    total_cost: .data.total_cost
+  }'
+```
 
 ## Error Handling
 
-| Error | Cause | Fix |
-|-------|-------|-----|
-| 401 Unauthorized | Invalid or missing API key | Verify key starts with `sk-or-` and is exported correctly |
-| 404 Not Found | Wrong base URL | Use `https://openrouter.ai/api/v1` (not v2) |
-| 400 Bad Request | Malformed JSON body | Check `messages` array has `role` and `content` fields |
+| HTTP | Cause | Fix |
+|------|-------|-----|
+| 401 | Invalid or missing API key | Verify `sk-or-v1-...` key is exported |
+| 402 | Insufficient credits for paid model | Add credits or use a `:free` model |
+| 404 | Wrong base URL or invalid model ID | Use `https://openrouter.ai/api/v1`; check model ID at `/api/v1/models` |
+| 400 | Malformed JSON or missing `messages` | Ensure `messages` array has objects with `role` and `content` |
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for full error reference.
+## Enterprise Considerations
 
-## Examples
+- Always set `max_tokens` to prevent unbounded completions
+- Use `HTTP-Referer` and `X-Title` headers for usage attribution in dashboards
+- Query `/api/v1/generation?id=` for async cost auditing
+- Test with free models first, then switch to paid models for production
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for runnable code samples.
+## References
 
-## Resources
-
-- [OpenRouter Documentation](https://openrouter.ai/docs)
-- [OpenRouter Models](https://openrouter.ai/models)
-- [OpenRouter API Reference](https://openrouter.ai/docs/api-reference)
-- [OpenRouter Status](https://status.openrouter.ai)
+- [Examples](${CLAUDE_SKILL_DIR}/references/examples.md) | [Errors](${CLAUDE_SKILL_DIR}/references/errors.md)
+- [OpenRouter Quickstart](https://openrouter.ai/docs/quickstart) | [API Reference](https://openrouter.ai/docs/api/reference/overview)
