@@ -1,7 +1,7 @@
 ---
 name: groq-incident-runbook
 description: |
-  Execute Groq incident response procedures with triage, mitigation, and postmortem.
+  Execute Groq incident response: triage, mitigation, fallback, and postmortem.
   Use when responding to Groq-related outages, investigating errors,
   or running post-incident reviews for Groq integration failures.
   Trigger with phrases like "groq incident", "groq outage",
@@ -17,112 +17,163 @@ tags: [saas, groq, incident-response]
 # Groq Incident Runbook
 
 ## Overview
-Rapid incident response procedures for Groq-related outages.
-
-## Prerequisites
-- Access to Groq dashboard and status page
-- kubectl access to production cluster
-- Prometheus/Grafana access
-- Communication channels (Slack, PagerDuty)
+Rapid incident response procedures for Groq API failures. Groq is a third-party inference provider -- when it goes down, your mitigation options are: wait, fall back to a different model, or fall back to a different provider.
 
 ## Severity Levels
 
 | Level | Definition | Response Time | Examples |
 |-------|------------|---------------|----------|
-| P1 | Complete outage | < 15 min | Groq API unreachable |
-| P2 | Degraded service | < 1 hour | High latency, partial failures |
-| P3 | Minor impact | < 4 hours | Webhook delays, non-critical errors |
-| P4 | No user impact | Next business day | Monitoring gaps |
+| P1 | Complete API failure | < 15 min | Groq API returns 5xx on all models |
+| P2 | Degraded performance | < 1 hour | High latency, partial 429s, one model down |
+| P3 | Minor impact | < 4 hours | Intermittent errors, non-critical feature affected |
+| P4 | No user impact | Next business day | Monitoring gap, cost anomaly |
 
-## Quick Triage
+## Quick Triage (Run First)
 
 ```bash
 set -euo pipefail
-# 1. Check Groq status
-curl -s https://status.groq.com | jq
+echo "=== 1. Groq API Status ==="
+curl -sf https://status.groq.com > /dev/null && echo "status.groq.com: REACHABLE" || echo "status.groq.com: UNREACHABLE"
 
-# 2. Check our integration health
-curl -s https://api.yourapp.com/health | jq '.services.groq'
+echo ""
+echo "=== 2. API Authentication ==="
+HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
+  https://api.groq.com/openai/v1/models \
+  -H "Authorization: Bearer $GROQ_API_KEY")
+echo "GET /models: HTTP $HTTP_CODE"
 
-# 3. Check error rate (last 5 min)
-curl -s localhost:9090/api/v1/query?query=rate(groq_errors_total[5m])  # 9090: Prometheus port
+echo ""
+echo "=== 3. Model Availability ==="
+for model in "llama-3.1-8b-instant" "llama-3.3-70b-versatile"; do
+  CODE=$(curl -s -o /dev/null -w "%{http_code}" \
+    https://api.groq.com/openai/v1/chat/completions \
+    -H "Authorization: Bearer $GROQ_API_KEY" \
+    -H "Content-Type: application/json" \
+    -d "{\"model\":\"$model\",\"messages\":[{\"role\":\"user\",\"content\":\"ping\"}],\"max_tokens\":1}")
+  echo "$model: HTTP $CODE"
+done
 
-# 4. Recent error logs
-kubectl logs -l app=groq-integration --since=5m | grep -i error | tail -20
+echo ""
+echo "=== 4. Rate Limit Status ==="
+curl -si https://api.groq.com/openai/v1/chat/completions \
+  -H "Authorization: Bearer $GROQ_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"model":"llama-3.1-8b-instant","messages":[{"role":"user","content":"ping"}],"max_tokens":1}' \
+  2>/dev/null | grep -iE "^(x-ratelimit|retry-after)" || echo "No rate limit headers"
 ```
 
 ## Decision Tree
 
 ```
-Groq API returning errors?
-├─ YES: Is status.groq.com showing incident?
-│   ├─ YES → Wait for Groq to resolve. Enable fallback.
-│   └─ NO → Our integration issue. Check credentials, config.
-└─ NO: Is our service healthy?
-    ├─ YES → Likely resolved or intermittent. Monitor.
-    └─ NO → Our infrastructure issue. Check pods, memory, network.
+Is the Groq API responding?
+├─ NO (timeout/connection refused):
+│   ├─ Check status.groq.com
+│   │   ├─ Incident reported → Wait, enable fallback provider
+│   │   └─ No incident → Network issue on our side (check DNS, firewall, proxy)
+│   └─ Check if api.groq.com resolves: dig api.groq.com
+│
+├─ YES, but 401/403:
+│   ├─ API key revoked or expired → Rotate key
+│   └─ Key not set in environment → Check secret manager
+│
+├─ YES, but 429:
+│   ├─ retry-after header present → Wait that many seconds
+│   ├─ All models 429 → Org-level limit hit; reduce traffic or upgrade plan
+│   └─ One model 429 → Route to a different model
+│
+├─ YES, but 500/503:
+│   ├─ One model → Groq capacity issue on that model; use fallback model
+│   └─ All models → Groq-wide outage; enable fallback provider
+│
+└─ YES, but slow (latency > 2s):
+    ├─ Large prompts → Reduce input size
+    ├─ 70B model → Switch to 8B for speed
+    └─ queue_time high → Groq queue congestion; try different model
 ```
 
-## Immediate Actions by Error Type
+## Immediate Mitigations
 
-### 401/403 - Authentication
-```bash
-set -euo pipefail
-# Verify API key is set
-kubectl get secret groq-secrets -o jsonpath='{.data.api-key}' | base64 -d
+### Enable Fallback to Different Model
+```typescript
+// If primary model is failing, route to fallback
+async function mitigateModelFailure(messages: any[]) {
+  const models = [
+    "llama-3.3-70b-versatile",  // Primary
+    "llama-3.3-70b-specdec",    // Same quality, different infra
+    "llama-3.1-8b-instant",     // Fastest, most available
+  ];
 
-# Check if key was rotated
-# → Verify in Groq dashboard
+  for (const model of models) {
+    try {
+      return await groq.chat.completions.create({
+        model,
+        messages,
+        max_tokens: 1024,
+        timeout: 10_000,
+      });
+    } catch (err: any) {
+      console.warn(`Model ${model} failed: ${err.status} ${err.message}`);
+      continue;
+    }
+  }
 
-# Remediation: Update secret and restart pods
-kubectl create secret generic groq-secrets --from-literal=api-key=NEW_KEY --dry-run=client -o yaml | kubectl apply -f -
-kubectl rollout restart deployment/groq-integration
+  throw new Error("All Groq models unavailable");
+}
 ```
 
-### 429 - Rate Limited
+### 429 Rate Limit — Immediate Actions
 ```bash
 set -euo pipefail
-# Check rate limit headers
-curl -v https://api.groq.com 2>&1 | grep -i rate
+# Check exact limit info
+curl -si https://api.groq.com/openai/v1/chat/completions \
+  -H "Authorization: Bearer $GROQ_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"model":"llama-3.1-8b-instant","messages":[{"role":"user","content":"ping"}],"max_tokens":1}' \
+  2>/dev/null | grep -i "x-ratelimit\|retry-after"
 
-# Enable request queuing
-kubectl set env deployment/groq-integration RATE_LIMIT_MODE=queue
-
-# Long-term: Contact Groq for limit increase
+# Options:
+# 1. Wait for retry-after seconds
+# 2. Switch to a different model (each model has separate limits)
+# 3. Reduce request volume (disable non-critical features)
+# 4. If persistent, upgrade Groq plan at console.groq.com
 ```
 
-### 500/503 - Groq Errors
+### 401 Auth Failure — Key Rotation
 ```bash
 set -euo pipefail
-# Enable graceful degradation
-kubectl set env deployment/groq-integration GROQ_FALLBACK=true
+# 1. Verify current key
+echo "Current key prefix: ${GROQ_API_KEY:0:8}"
 
-# Notify users of degraded service
-# Update status page
+# 2. Create new key at console.groq.com/keys
+# 3. Test new key
+curl -s -o /dev/null -w "%{http_code}" \
+  https://api.groq.com/openai/v1/models \
+  -H "Authorization: Bearer $NEW_GROQ_KEY"
 
-# Monitor Groq status for resolution
+# 4. Deploy new key to production
+# 5. Delete old key in console
 ```
 
 ## Communication Templates
 
-### Internal (Slack)
+### Internal Alert (Slack/PagerDuty)
 ```
-🔴 P1 INCIDENT: Groq Integration
-Status: INVESTIGATING
-Impact: [Describe user impact]
-Current action: [What you're doing]
-Next update: [Time]
-Incident commander: @[name]
+P[1-4] INCIDENT: Groq API [Error Type]
+Status: INVESTIGATING | MITIGATING | RESOLVED
+Impact: [What users see]
+Current action: [What we're doing]
+Fallback: [Enabled/Disabled]
+Next update in: [Time]
+Commander: @[name]
 ```
 
-### External (Status Page)
+### Status Page (External)
 ```
-Groq Integration Issue
+AI Feature Performance Issue
 
-We're experiencing issues with our Groq integration.
-Some users may experience [specific impact].
-
-We're actively investigating and will provide updates.
+We're experiencing [degraded performance / intermittent errors] with our AI features.
+[Feature X] may respond slower than usual.
+We've activated backup systems and are monitoring the situation.
 
 Last updated: [timestamp]
 ```
@@ -132,80 +183,62 @@ Last updated: [timestamp]
 ### Evidence Collection
 ```bash
 set -euo pipefail
-# Generate debug bundle
-./scripts/groq-debug-bundle.sh
+INCIDENT_DIR="groq-incident-$(date +%Y%m%d-%H%M%S)"
+mkdir -p "$INCIDENT_DIR"
 
-# Export relevant logs
-kubectl logs -l app=groq-integration --since=1h > incident-logs.txt
+# API diagnostics
+curl -s https://api.groq.com/openai/v1/models \
+  -H "Authorization: Bearer $GROQ_API_KEY" > "$INCIDENT_DIR/models.json"
 
-# Capture metrics
-curl "localhost:9090/api/v1/query_range?query=groq_errors_total&start=2h" > metrics.json  # 9090: Prometheus port
+# Application logs (redacted)
+kubectl logs -l app=your-app --since=1h 2>/dev/null | \
+  grep -i "groq\|429\|error\|timeout" | \
+  sed 's/gsk_[a-zA-Z0-9]*/gsk_REDACTED/g' | \
+  tail -100 > "$INCIDENT_DIR/app-logs.txt"
+
+tar -czf "$INCIDENT_DIR.tar.gz" "$INCIDENT_DIR"
+echo "Evidence bundle: $INCIDENT_DIR.tar.gz"
 ```
 
 ### Postmortem Template
 ```markdown
-## Incident: Groq [Error Type]
-**Date:** YYYY-MM-DD
+## Incident: Groq [Error Type] — [Date]
 **Duration:** X hours Y minutes
 **Severity:** P[1-4]
-
-### Summary
-[1-2 sentence description]
+**Impact:** [N users affected, feature X degraded]
 
 ### Timeline
-- HH:MM - [Event]
-- HH:MM - [Event]
+- HH:MM — First alert fired
+- HH:MM — On-call acknowledged, began triage
+- HH:MM — Root cause identified: [cause]
+- HH:MM — Mitigation applied: [what]
+- HH:MM — Resolved, monitoring
 
 ### Root Cause
-[Technical explanation]
+[Was it Groq-side or our side? Rate limit hit? Model deprecated? Key expired?]
 
-### Impact
-- Users affected: N
-- Revenue impact: $X
+### What Went Well
+- [Fallback activated automatically]
+
+### What Could Improve
+- [Alert fired too late / fallback didn't work / no runbook]
 
 ### Action Items
-- [ ] [Preventive measure] - Owner - Due date
+- [ ] [Action] — Owner — Due date
 ```
-
-## Instructions
-
-### Step 1: Quick Triage
-Run the triage commands to identify the issue source.
-
-### Step 2: Follow Decision Tree
-Determine if the issue is Groq-side or internal.
-
-### Step 3: Execute Immediate Actions
-Apply the appropriate remediation for the error type.
-
-### Step 4: Communicate Status
-Update internal and external stakeholders.
-
-## Output
-- Issue identified and categorized
-- Remediation applied
-- Stakeholders notified
-- Evidence collected for postmortem
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Can't reach status page | Network issue | Use mobile or VPN |
-| kubectl fails | Auth expired | Re-authenticate |
-| Metrics unavailable | Prometheus down | Check backup metrics |
-| Secret rotation fails | Permission denied | Escalate to admin |
-
-## Examples
-
-### One-Line Health Check
-```bash
-set -euo pipefail
-curl -sf https://api.yourapp.com/health | jq '.services.groq.status' || echo "UNHEALTHY"
-```
+| Can't reach status.groq.com | Network issue | Use mobile or different network |
+| All models failing | Groq-wide outage | Enable fallback provider (OpenAI, etc.) |
+| Key rotation fails | No admin access | Escalate to team lead with console access |
+| Fallback provider also down | Multi-provider outage | Degrade gracefully, show cached content |
 
 ## Resources
 - [Groq Status Page](https://status.groq.com)
-- [Groq Support](https://support.groq.com)
+- [Groq Error Codes](https://console.groq.com/docs/errors)
+- [Groq Rate Limits](https://console.groq.com/docs/rate-limits)
 
 ## Next Steps
-For data handling, see `groq-data-handling`.
+For data handling compliance, see `groq-data-handling`.

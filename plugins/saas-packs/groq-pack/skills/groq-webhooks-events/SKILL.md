@@ -1,11 +1,11 @@
 ---
 name: groq-webhooks-events
 description: |
-  Implement Groq webhook signature validation and event handling.
-  Use when setting up webhook endpoints, implementing signature verification,
-  or handling Groq event notifications securely.
-  Trigger with phrases like "groq webhook", "groq events",
-  "groq webhook signature", "handle groq events", "groq notifications".
+  Build event-driven architectures with Groq streaming, batch processing, and async patterns.
+  Use when setting up real-time SSE endpoints, batch processing pipelines,
+  or event-driven LLM processing with Groq.
+  Trigger with phrases like "groq streaming", "groq events",
+  "groq SSE", "groq batch", "groq async", "groq event-driven".
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
@@ -17,196 +17,256 @@ tags: [saas, groq, webhooks]
 # Groq Events & Async Patterns
 
 ## Overview
-Build event-driven architectures around Groq's ultra-fast LLM inference API. Groq does not provide native webhooks, but its sub-second response times at `api.groq.com` enable unique patterns: real-time streaming, batch processing with callbacks, and event-driven pipelines where Groq acts as the processing engine within your webhook infrastructure.
+Build event-driven architectures around Groq's inference API. Groq does not provide native webhooks, but its sub-second latency enables unique patterns: real-time SSE streaming, batch processing with callbacks, queue-based pipelines, and event processors that use Groq as an LLM classification/extraction engine.
 
 ## Prerequisites
-- Groq API key stored in `GROQ_API_KEY` environment variable
-- Groq SDK installed (`npm install groq-sdk` or `pip install groq`)
-- Queue system for batch processing (BullMQ, Celery)
-- Understanding of Groq model options (llama, mixtral, gemma)
-
-## Event Patterns
-
-| Pattern | Trigger | Use Case |
-|---------|---------|----------|
-| Streaming SSE | Client request | Real-time chat responses |
-| Batch completion callback | Queue job finishes | Document processing pipeline |
-| Webhook processor | Incoming webhook | Process events with Groq LLM |
-| Health monitor | Scheduled check | API availability tracking |
+- `groq-sdk` installed, `GROQ_API_KEY` set
+- Queue system for batch patterns (BullMQ, Redis, SQS)
+- Understanding of Server-Sent Events (SSE) for streaming
 
 ## Instructions
 
-### Step 1: Real-Time Streaming with SSE
+### Step 1: SSE Streaming Endpoint
 ```typescript
 import Groq from "groq-sdk";
+import express from "express";
 
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY! });
+const groq = new Groq();
+const app = express();
+app.use(express.json());
 
-// Express SSE endpoint
 app.post("/api/chat/stream", async (req, res) => {
-  const { messages, model } = req.body;
+  const { messages, model = "llama-3.3-70b-versatile" } = req.body;
 
-  res.writeHead(200, {  # HTTP 200 OK
+  res.writeHead(200, {
     "Content-Type": "text/event-stream",
     "Cache-Control": "no-cache",
-    "Connection": "keep-alive",
+    Connection: "keep-alive",
+    "X-Accel-Buffering": "no",  // Disable nginx buffering
   });
 
-  const stream = await groq.chat.completions.create({
-    model: model || "llama-3.3-70b-versatile",
-    messages,
-    stream: true,
-    max_tokens: 2048,  # 2048: 2 KB
-  });
+  try {
+    const stream = await groq.chat.completions.create({
+      model,
+      messages,
+      stream: true,
+      max_tokens: 2048,
+    });
 
-  for await (const chunk of stream) {
-    const content = chunk.choices[0]?.delta?.content;
-    if (content) {
-      res.write(`data: ${JSON.stringify({ content })}\n\n`);
+    for await (const chunk of stream) {
+      const content = chunk.choices[0]?.delta?.content;
+      if (content) {
+        res.write(`data: ${JSON.stringify({ content, type: "token" })}\n\n`);
+      }
     }
+
+    res.write(`data: ${JSON.stringify({ type: "done" })}\n\n`);
+  } catch (err: any) {
+    res.write(`data: ${JSON.stringify({ type: "error", message: err.message })}\n\n`);
   }
 
-  res.write("data: [DONE]\n\n");
   res.end();
 });
 ```
 
-### Step 2: Batch Processing with Callbacks
+### Step 2: Batch Processing with BullMQ
 ```typescript
 import { Queue, Worker } from "bullmq";
+import Groq from "groq-sdk";
+import { randomUUID } from "crypto";
 
-const groqQueue = new Queue("groq-batch");
+const groq = new Groq();
+const groqQueue = new Queue("groq-batch", { connection: { host: "localhost" } });
 
-// Queue a batch of prompts with callback webhook
-async function queueBatch(prompts: string[], callbackUrl: string) {
-  const batchId = crypto.randomUUID();
+// Enqueue a batch of prompts
+async function submitBatch(
+  prompts: string[],
+  callbackUrl: string,
+  model = "llama-3.1-8b-instant"
+): Promise<string> {
+  const batchId = randomUUID();
 
   for (const [index, prompt] of prompts.entries()) {
     await groqQueue.add("inference", {
       batchId,
       index,
       prompt,
+      model,
       callbackUrl,
-      totalItems: prompts.length,
+      total: prompts.length,
     });
   }
 
   return batchId;
 }
 
+// Worker processes queue items
 const worker = new Worker("groq-batch", async (job) => {
-  const { prompt, callbackUrl, batchId, index, totalItems } = job.data;
+  const { prompt, model, callbackUrl, batchId, index, total } = job.data;
 
   const completion = await groq.chat.completions.create({
-    model: "llama-3.3-70b-versatile",
+    model,
     messages: [{ role: "user", content: prompt }],
+    temperature: 0,
   });
 
   const result = {
     batchId,
     index,
+    total,
     content: completion.choices[0].message.content,
-    usage: completion.usage,
     model: completion.model,
-    processingTime: completion.usage?.total_time,
+    usage: completion.usage,
   };
 
-  // Fire callback webhook on completion
-  await fetch(callbackUrl, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      event: "groq.batch_item.completed",
-      data: result,
-    }),
-  });
+  // Fire callback on completion
+  if (callbackUrl) {
+    await fetch(callbackUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        event: "groq.batch.item_completed",
+        data: result,
+      }),
+    });
+  }
 
   return result;
+}, {
+  connection: { host: "localhost" },
+  concurrency: 5,
+  limiter: { max: 25, duration: 60_000 },  // 25 RPM to stay under limits
 });
 ```
 
 ### Step 3: Webhook Event Processor
 ```typescript
-// Use Groq to process incoming webhook events with LLM
-async function processWebhookWithGroq(event: any) {
-  const completion = await groq.chat.completions.create({
+// Use Groq as an LLM engine to process incoming webhook events
+async function processWebhookEvent(event: any) {
+  // Classify event type and extract key data using fast 8B model
+  const classification = await groq.chat.completions.create({
     model: "llama-3.1-8b-instant",
     messages: [
       {
         role: "system",
-        content: "Classify this event and extract key information. Respond with JSON.",
+        content: `Classify this webhook event and extract key fields.
+Respond with JSON: {"type": string, "priority": "high"|"medium"|"low", "summary": string, "action": string}`,
       },
-      {
-        role: "user",
-        content: JSON.stringify(event),
-      },
+      { role: "user", content: JSON.stringify(event) },
     ],
     response_format: { type: "json_object" },
     temperature: 0,
+    max_tokens: 200,
   });
 
-  return JSON.parse(completion.choices[0].message.content!);
+  return JSON.parse(classification.choices[0].message.content!);
 }
-```
 
-### Step 4: Monitor API Health
-```typescript
-async function checkGroqHealth(): Promise<boolean> {
-  try {
-    const start = Date.now();
-    await groq.chat.completions.create({
-      model: "llama-3.1-8b-instant",
-      messages: [{ role: "user", content: "ping" }],
-      max_tokens: 1,
-    });
-    const latency = Date.now() - start;
-    console.log(`Groq health: OK (${latency}ms)`);
-    return true;
-  } catch (error) {
-    console.error("Groq health check failed:", error);
-    return false;
+// Express webhook receiver
+app.post("/webhook", async (req, res) => {
+  const event = req.body;
+
+  // Acknowledge immediately (don't block the sender)
+  res.status(202).json({ received: true });
+
+  // Process asynchronously with Groq
+  const analysis = await processWebhookEvent(event);
+
+  if (analysis.priority === "high") {
+    await notifySlack(`High priority event: ${analysis.summary}`);
   }
-}
+
+  await logEvent({ raw: event, analysis });
+});
 ```
 
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Rate limited (429) | Too many requests | Implement exponential backoff, use queue |
-| Model unavailable | Service capacity | Fall back to smaller model variant |
-| Streaming disconnect | Network timeout | Implement reconnection with last token |
-| JSON parse error | Malformed response | Use `response_format` and validate output |
+### Step 4: Scheduled Health Monitor
+```typescript
+// Periodic Groq API health check with latency tracking
+async function monitorGroqHealth() {
+  const models = ["llama-3.1-8b-instant", "llama-3.3-70b-versatile"];
+  const results: Record<string, any> = {};
 
-## Examples
+  for (const model of models) {
+    const start = performance.now();
+    try {
+      const completion = await groq.chat.completions.create({
+        model,
+        messages: [{ role: "user", content: "OK" }],
+        max_tokens: 1,
+      });
+      results[model] = {
+        status: "ok",
+        latencyMs: Math.round(performance.now() - start),
+        tokensPerSec: completion.usage!.completion_tokens / ((completion.usage as any).completion_time || 1),
+      };
+    } catch (err: any) {
+      results[model] = {
+        status: "error",
+        latencyMs: Math.round(performance.now() - start),
+        error: `${err.status}: ${err.message}`,
+      };
+    }
+  }
 
-### Python Async Batch
+  return results;
+}
+
+// Run every 5 minutes
+setInterval(() => monitorGroqHealth().then(console.log), 5 * 60_000);
+```
+
+### Step 5: Python Async Batch Processing
 ```python
 import asyncio
 from groq import AsyncGroq
 
-client = AsyncGroq(api_key=os.environ["GROQ_API_KEY"])
+client = AsyncGroq()
 
-async def process_batch(prompts: list[str]):
-    tasks = [
-        client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
-            messages=[{"role": "user", "content": p}],
-        )
-        for p in prompts
+async def process_batch(prompts: list[str], model: str = "llama-3.1-8b-instant"):
+    """Process prompts concurrently with rate limit awareness."""
+    semaphore = asyncio.Semaphore(5)  # Max 5 concurrent requests
+
+    async def process_one(prompt: str):
+        async with semaphore:
+            return await client.chat.completions.create(
+                model=model,
+                messages=[{"role": "user", "content": prompt}],
+                max_tokens=256,
+            )
+
+    results = await asyncio.gather(
+        *[process_one(p) for p in prompts],
+        return_exceptions=True,
+    )
+
+    return [
+        r.choices[0].message.content if not isinstance(r, Exception) else str(r)
+        for r in results
     ]
-    return await asyncio.gather(*tasks)
 ```
 
+## Event Pattern Summary
+
+| Pattern | Groq Model | Latency | Use Case |
+|---------|-----------|---------|----------|
+| SSE streaming | `llama-3.3-70b-versatile` | ~200ms TTFT | Real-time chat |
+| Batch queue | `llama-3.1-8b-instant` | ~80ms TTFT | Document processing |
+| Webhook processor | `llama-3.1-8b-instant` | ~80ms TTFT | Event classification |
+| Health monitor | `llama-3.1-8b-instant` | ~80ms TTFT | Uptime tracking |
+
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| SSE disconnect | Client timeout or network | Implement reconnection with last-event-id |
+| Batch item fails | Rate limit or model error | Queue retry with exponential backoff |
+| Webhook timeout | Processing takes too long | Acknowledge immediately (202), process async |
+| Health check 429 | Monitoring consuming quota | Reduce check frequency, use smallest model |
+
 ## Resources
-- [Groq API Documentation](https://console.groq.com/docs)
-- [Groq Models](https://console.groq.com/docs/models)
-- [Groq Rate Limits](https://console.groq.com/docs/rate-limits)
+- [Groq API Reference](https://console.groq.com/docs/api-reference)
+- [Groq Text Generation (streaming)](https://console.groq.com/docs/text-chat)
+- [BullMQ Documentation](https://docs.bullmq.io/)
 
 ## Next Steps
-For deployment setup, see `groq-deploy-integration`.
-
-## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+For performance optimization, see `groq-performance-tuning`.

@@ -1,11 +1,10 @@
 ---
 name: groq-migration-deep-dive
 description: |
-  Execute Groq major re-architecture and migration strategies with strangler fig pattern.
-  Use when migrating to or from Groq, performing major version upgrades,
-  or re-platforming existing integrations to Groq.
-  Trigger with phrases like "migrate groq", "groq migration",
-  "switch to groq", "groq replatform", "groq upgrade major".
+  Migrate from OpenAI/Anthropic/other LLM providers to Groq, or migrate
+  between Groq model generations with zero-downtime traffic shifting.
+  Trigger with phrases like "migrate to groq", "switch to groq",
+  "groq migration", "openai to groq", "groq replatform".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
@@ -17,237 +16,243 @@ tags: [saas, groq, migration]
 # Groq Migration Deep Dive
 
 ## Current State
-!`npm list 2>/dev/null | head -20`
-!`pip freeze 2>/dev/null | head -20`
+!`npm list groq-sdk openai @anthropic-ai/sdk 2>/dev/null | grep -E "groq|openai|anthropic" || echo 'No LLM SDKs found'`
 
 ## Overview
-Comprehensive guide for migrating to or from Groq, or major version upgrades.
+Migrate to Groq from OpenAI, Anthropic, or other LLM providers. Groq's OpenAI-compatible API makes migration straightforward -- the primary changes are: different SDK import, different model IDs, and different response metadata. The reward is 10-50x faster inference.
 
-## Prerequisites
-- Current system documentation
-- Groq SDK installed
-- Feature flag infrastructure
-- Rollback strategy tested
+## Migration Complexity
 
-## Migration Types
-
-| Type | Complexity | Duration | Risk |
-|------|-----------|----------|------|
-| Fresh install | Low | Days | Low |
-| From competitor | Medium | Weeks | Medium |
-| Major version | Medium | Weeks | Medium |
-| Full replatform | High | Months | High |
-
-## Pre-Migration Assessment
-
-### Step 1: Current State Analysis
-```bash
-set -euo pipefail
-# Document current implementation
-find . -name "*.ts" -o -name "*.py" | xargs grep -l "groq" > groq-files.txt
-
-# Count integration points
-wc -l groq-files.txt
-
-# Identify dependencies
-npm list | grep groq
-pip freeze | grep groq
-```
-
-### Step 2: Data Inventory
-```typescript
-interface MigrationInventory {
-  dataTypes: string[];
-  recordCounts: Record<string, number>;
-  dependencies: string[];
-  integrationPoints: string[];
-  customizations: string[];
-}
-
-async function assessGroqMigration(): Promise<MigrationInventory> {
-  return {
-    dataTypes: await getDataTypes(),
-    recordCounts: await getRecordCounts(),
-    dependencies: await analyzeDependencies(),
-    integrationPoints: await findIntegrationPoints(),
-    customizations: await documentCustomizations(),
-  };
-}
-```
-
-## Migration Strategy: Strangler Fig Pattern
-
-```
-Phase 1: Parallel Run
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   System    │ ──▶ │  Groq   │
-│   (100%)    │     │   (0%)      │
-└─────────────┘     └─────────────┘
-
-Phase 2: Gradual Shift
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   (50%)     │ ──▶ │   (50%)     │
-└─────────────┘     └─────────────┘
-
-Phase 3: Complete
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   (0%)      │ ──▶ │   (100%)    │
-└─────────────┘     └─────────────┘
-```
-
-## Implementation Plan
-
-### Phase 1: Setup (Week 1-2)
-```bash
-set -euo pipefail
-# Install Groq SDK
-npm install @groq/sdk
-
-# Configure credentials
-cp .env.example .env.groq
-# Edit with new credentials
-
-# Verify connectivity
-node -e "require('@groq/sdk').ping()"
-```
-
-### Phase 2: Adapter Layer (Week 3-4)
-```typescript
-// src/adapters/groq.ts
-interface ServiceAdapter {
-  create(data: CreateInput): Promise<Resource>;
-  read(id: string): Promise<Resource>;
-  update(id: string, data: UpdateInput): Promise<Resource>;
-  delete(id: string): Promise<void>;
-}
-
-class GroqAdapter implements ServiceAdapter {
-  async create(data: CreateInput): Promise<Resource> {
-    const groqData = this.transform(data);
-    return groqClient.create(groqData);
-  }
-
-  private transform(data: CreateInput): GroqInput {
-    // Map from old format to Groq format
-  }
-}
-```
-
-### Phase 3: Data Migration (Week 5-6)
-```typescript
-async function migrateGroqData(): Promise<MigrationResult> {
-  const batchSize = 100;
-  let processed = 0;
-  let errors: MigrationError[] = [];
-
-  for await (const batch of oldSystem.iterateBatches(batchSize)) {
-    try {
-      const transformed = batch.map(transform);
-      await groqClient.batchCreate(transformed);
-      processed += batch.length;
-    } catch (error) {
-      errors.push({ batch, error });
-    }
-
-    // Progress update
-    console.log(`Migrated ${processed} records`);
-  }
-
-  return { processed, errors };
-}
-```
-
-### Phase 4: Traffic Shift (Week 7-8)
-```typescript
-// Feature flag controlled traffic split
-function getServiceAdapter(): ServiceAdapter {
-  const groqPercentage = getFeatureFlag('groq_migration_percentage');
-
-  if (Math.random() * 100 < groqPercentage) {
-    return new GroqAdapter();
-  }
-
-  return new LegacyAdapter();
-}
-```
-
-## Rollback Plan
-
-```bash
-set -euo pipefail
-# Immediate rollback
-kubectl set env deployment/app GROQ_ENABLED=false
-kubectl rollout restart deployment/app
-
-# Data rollback (if needed)
-./scripts/restore-from-backup.sh --date YYYY-MM-DD
-
-# Verify rollback
-curl https://app.yourcompany.com/health | jq '.services.groq'
-```
-
-## Post-Migration Validation
-
-```typescript
-async function validateGroqMigration(): Promise<ValidationReport> {
-  const checks = [
-    { name: 'Data count match', fn: checkDataCounts },
-    { name: 'API functionality', fn: checkApiFunctionality },
-    { name: 'Performance baseline', fn: checkPerformance },
-    { name: 'Error rates', fn: checkErrorRates },
-  ];
-
-  const results = await Promise.all(
-    checks.map(async c => ({ name: c.name, result: await c.fn() }))
-  );
-
-  return { checks: results, passed: results.every(r => r.result.success) };
-}
-```
+| Source | Complexity | Key Changes |
+|--------|-----------|-------------|
+| OpenAI | Low | Import, model IDs, base URL -- API shape is identical |
+| Anthropic | Medium | Different API shape, message format, streaming protocol |
+| Local LLMs | Medium | Remove infra, add API calls |
+| Other cloud (Bedrock, Vertex) | Medium | Remove cloud SDK, add groq-sdk |
 
 ## Instructions
 
-### Assess current configuration
-Document existing implementation and data inventory.
+### Step 1: OpenAI to Groq Migration
+```typescript
+// BEFORE: OpenAI
+import OpenAI from "openai";
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const result = await openai.chat.completions.create({
+  model: "gpt-4o-mini",
+  messages: [{ role: "user", content: "Hello" }],
+});
 
-### Step 2: Build Adapter Layer
-Create abstraction layer for gradual migration.
+// AFTER: Groq (minimal changes)
+import Groq from "groq-sdk";
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+const result = await groq.chat.completions.create({
+  model: "llama-3.3-70b-versatile",  // or "llama-3.1-8b-instant"
+  messages: [{ role: "user", content: "Hello" }],
+});
 
-### Step 3: Migrate Data
-Run batch data migration with error handling.
+// Same response shape: result.choices[0].message.content
+```
 
-### Step 4: Shift Traffic
-Gradually route traffic to new Groq integration.
+### Step 2: Model ID Mapping
+```typescript
+// OpenAI → Groq model equivalents
+const MODEL_MAP: Record<string, string> = {
+  // OpenAI → Groq (quality equivalent)
+  "gpt-4o":        "llama-3.3-70b-versatile",
+  "gpt-4o-mini":   "llama-3.1-8b-instant",
+  "gpt-4-turbo":   "llama-3.3-70b-versatile",
+  "gpt-3.5-turbo": "llama-3.1-8b-instant",
 
-## Output
-- Migration assessment complete
-- Adapter layer implemented
-- Data migrated successfully
-- Traffic fully shifted to Groq
+  // Anthropic → Groq (approximate)
+  "claude-3-5-sonnet": "llama-3.3-70b-versatile",
+  "claude-3-haiku":    "llama-3.1-8b-instant",
+};
+
+function migrateModelId(model: string): string {
+  return MODEL_MAP[model] || "llama-3.3-70b-versatile";
+}
+```
+
+### Step 3: Provider Abstraction Layer
+```typescript
+// Build a provider-agnostic layer for zero-downtime migration
+interface LLMProvider {
+  name: string;
+  complete(messages: any[], model: string, maxTokens: number): Promise<{
+    content: string;
+    model: string;
+    tokens: { prompt: number; completion: number; total: number };
+  }>;
+}
+
+class GroqProvider implements LLMProvider {
+  name = "groq";
+  private client: Groq;
+
+  constructor() {
+    this.client = new Groq();
+  }
+
+  async complete(messages: any[], model: string, maxTokens: number) {
+    const result = await this.client.chat.completions.create({
+      model,
+      messages,
+      max_tokens: maxTokens,
+    });
+
+    return {
+      content: result.choices[0].message.content || "",
+      model: result.model,
+      tokens: {
+        prompt: result.usage!.prompt_tokens,
+        completion: result.usage!.completion_tokens,
+        total: result.usage!.total_tokens,
+      },
+    };
+  }
+}
+
+class OpenAIProvider implements LLMProvider {
+  name = "openai";
+  private client: OpenAI;
+
+  constructor() {
+    this.client = new OpenAI();
+  }
+
+  async complete(messages: any[], model: string, maxTokens: number) {
+    const result = await this.client.chat.completions.create({
+      model,
+      messages,
+      max_tokens: maxTokens,
+    });
+
+    return {
+      content: result.choices[0].message.content || "",
+      model: result.model,
+      tokens: {
+        prompt: result.usage!.prompt_tokens,
+        completion: result.usage!.completion_tokens,
+        total: result.usage!.total_tokens,
+      },
+    };
+  }
+}
+```
+
+### Step 4: Feature Flag Traffic Shifting
+```typescript
+// Gradually shift traffic from OpenAI to Groq
+function getProvider(): LLMProvider {
+  const groqPercentage = getFeatureFlag("groq_migration_pct"); // 0-100
+
+  if (Math.random() * 100 < groqPercentage) {
+    return new GroqProvider();
+  }
+  return new OpenAIProvider();
+}
+
+// Migration schedule:
+// Week 1: groq_migration_pct = 10  (canary)
+// Week 2: groq_migration_pct = 50  (validate quality)
+// Week 3: groq_migration_pct = 90  (near-complete)
+// Week 4: groq_migration_pct = 100 (done, remove OpenAI)
+```
+
+### Step 5: Automated Migration Scanner
+```bash
+set -euo pipefail
+echo "=== Migration Assessment ==="
+
+echo ""
+echo "--- OpenAI references ---"
+grep -rn "from ['\"]openai['\"]" src/ --include="*.ts" --include="*.js" 2>/dev/null | wc -l
+grep -rn "openai\." src/ --include="*.ts" --include="*.js" 2>/dev/null | head -5
+
+echo ""
+echo "--- Model IDs to migrate ---"
+grep -roh "model.*['\"]gpt-[^'\"]*['\"]" src/ --include="*.ts" --include="*.js" 2>/dev/null | sort -u
+
+echo ""
+echo "--- OpenAI-specific features used ---"
+grep -rn "\.images\.\|\.audio\.\|\.embeddings\.\|\.moderations\.\|\.files\.\|\.fine_tuning\." \
+  src/ --include="*.ts" --include="*.js" 2>/dev/null || echo "None (chat.completions only -- easy migration)"
+
+echo ""
+echo "--- API keys to update ---"
+grep -rn "OPENAI_API_KEY" src/ .env* --include="*.ts" --include="*.js" --include=".env*" 2>/dev/null | wc -l
+```
+
+### Step 6: Comparison Benchmark
+```typescript
+// Run the same prompts through both providers to compare quality + speed
+async function migrationBenchmark(prompts: string[]) {
+  const groq = new GroqProvider();
+  const openai = new OpenAIProvider();
+
+  for (const prompt of prompts) {
+    const messages = [{ role: "user" as const, content: prompt }];
+
+    const startGroq = performance.now();
+    const groqResult = await groq.complete(messages, "llama-3.3-70b-versatile", 256);
+    const groqMs = performance.now() - startGroq;
+
+    const startOAI = performance.now();
+    const oaiResult = await openai.complete(messages, "gpt-4o-mini", 256);
+    const oaiMs = performance.now() - startOAI;
+
+    console.log(`Prompt: "${prompt.slice(0, 50)}..."`);
+    console.log(`  Groq:   ${groqMs.toFixed(0)}ms | ${groqResult.tokens.total} tokens`);
+    console.log(`  OpenAI: ${oaiMs.toFixed(0)}ms | ${oaiResult.tokens.total} tokens`);
+    console.log(`  Speedup: ${(oaiMs / groqMs).toFixed(1)}x faster with Groq`);
+    console.log();
+  }
+}
+```
+
+### Step 7: Key Differences to Handle
+
+| Feature | OpenAI | Groq |
+|---------|--------|------|
+| SDK import | `import OpenAI from "openai"` | `import Groq from "groq-sdk"` |
+| Env var | `OPENAI_API_KEY` | `GROQ_API_KEY` |
+| Models | `gpt-4o`, `gpt-4o-mini` | `llama-3.3-70b-versatile`, `llama-3.1-8b-instant` |
+| Embeddings | `openai.embeddings.create()` | Not available (use OpenAI or local) |
+| Fine-tuning | Supported | Not available |
+| Image generation | `openai.images.generate()` | Not available |
+| Audio (STT) | `openai.audio.transcriptions` | `groq.audio.transcriptions` (faster) |
+| Structured outputs | `strict: true` | `strict: true` (same format) |
+| Tool calling | Supported | Supported (same format) |
+| JSON mode | `response_format: { type: "json_object" }` | Same |
+| Vision | `gpt-4o` with images | Llama 4 Scout/Maverick |
+| Streaming | Supported | Supported (same SSE format) |
+| Response usage | Standard fields | Adds `queue_time`, `completion_time`, `total_time` |
+
+## Rollback Plan
+```bash
+set -euo pipefail
+# Immediate rollback: flip feature flag
+# groq_migration_pct = 0
+
+# Verify:
+# - All requests routing to OpenAI
+# - Error rates returned to baseline
+# - No Groq API calls in logs
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Data mismatch | Transform errors | Validate transform logic |
-| Performance drop | No caching | Add caching layer |
-| Rollback triggered | Errors spiked | Reduce traffic percentage |
-| Validation failed | Missing data | Check batch processing |
-
-## Examples
-
-### Quick Migration Status
-```typescript
-const status = await validateGroqMigration();
-console.log(`Migration ${status.passed ? 'PASSED' : 'FAILED'}`);
-status.checks.forEach(c => console.log(`  ${c.name}: ${c.result.success}`));
-```
+| Quality regression | Different model strengths | Tune system prompts for Llama models |
+| Missing features | Groq doesn't have embeddings/images | Keep OpenAI for those features |
+| Rate limits | Different limits than OpenAI | Configure per-model rate limits |
+| Cost increase | Different pricing structure | Route simple tasks to 8B model |
 
 ## Resources
-- [Strangler Fig Pattern](https://martinfowler.com/bliki/StranglerFigApplication.html)
-- [Groq Migration Guide](https://docs.groq.com/migration)
+- [Groq Quickstart](https://console.groq.com/docs/quickstart)
+- [Groq Models](https://console.groq.com/docs/models)
+- [Groq API Reference](https://console.groq.com/docs/api-reference)
+- [groq-sdk npm](https://www.npmjs.com/package/groq-sdk)
 
-## Flagship+ Skills
-For advanced troubleshooting, see `groq-advanced-troubleshooting`.
+## Next Steps
+For ongoing SDK version upgrades, see `groq-upgrade-migration`.

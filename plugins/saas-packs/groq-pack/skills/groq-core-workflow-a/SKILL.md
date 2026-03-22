@@ -1,11 +1,11 @@
 ---
 name: groq-core-workflow-a
 description: |
-  Execute Groq primary workflow: Core Workflow A.
-  Use when implementing primary use case,
-  building main features, or core integration tasks.
-  Trigger with phrases like "groq main workflow",
-  "primary task with groq".
+  Execute Groq primary workflow: chat completions with tool use and JSON mode.
+  Use when implementing chat interfaces, function calling, structured output,
+  or building AI features with Groq's fast inference.
+  Trigger with phrases like "groq chat completion", "groq tool use",
+  "groq function calling", "groq JSON mode".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
@@ -14,65 +14,239 @@ compatible-with: claude-code, codex, openclaw
 tags: [saas, groq, workflow]
 
 ---
-# Groq Core Workflow A
+# Groq Core Workflow A: Chat, Tools & Structured Output
 
 ## Overview
-Primary money-path workflow for Groq. This is the most common use case. Groq provides ultra-low-latency LLM inference using custom LPU (Language Processing Unit) hardware, enabling token generation speeds that are significantly faster than GPU-based providers. This makes Groq the right choice for latency-sensitive applications such as real-time chat interfaces, voice assistants, and streaming analysis pipelines where response time directly impacts user experience.
+Primary integration patterns for Groq: chat completions, tool/function calling, JSON mode, and structured outputs. Groq's LPU delivers sub-200ms time-to-first-token, making these patterns viable for real-time user-facing features.
 
 ## Prerequisites
-- Completed `groq-install-auth` setup
-- Understanding of Groq core concepts
-- Valid API credentials configured
+- `groq-sdk` installed, `GROQ_API_KEY` set
+- Understanding of Groq model capabilities
+
+## Model Selection for This Workflow
+
+| Task | Recommended Model | Why |
+|------|------------------|-----|
+| Chat with tools | `llama-3.3-70b-versatile` | Best tool-calling accuracy |
+| JSON extraction | `llama-3.1-8b-instant` | Fast, accurate for structured tasks |
+| Structured outputs | `llama-3.3-70b-versatile` | Supports `strict: true` schema compliance |
+| Vision + chat | `meta-llama/llama-4-scout-17b-16e-instruct` | Multimodal input |
 
 ## Instructions
 
-### Step 1: Initialize
-Authenticate with the Groq API and select the target model from the available options (LLaMA, Mixtral, Gemma, or others available on the platform). Configure your default request parameters including temperature, max tokens, and stop sequences. Verify the model is available in your region and that your rate limits accommodate your expected request volume.
-
+### Step 1: Chat Completion with System Prompt
 ```typescript
-// Step 1 implementation
+import Groq from "groq-sdk";
+
+const groq = new Groq();
+
+async function chat(userMessage: string, history: any[] = []) {
+  const messages = [
+    { role: "system" as const, content: "You are a concise technical assistant." },
+    ...history,
+    { role: "user" as const, content: userMessage },
+  ];
+
+  const completion = await groq.chat.completions.create({
+    model: "llama-3.3-70b-versatile",
+    messages,
+    temperature: 0.7,
+    max_tokens: 1024,
+  });
+
+  return {
+    reply: completion.choices[0].message.content,
+    usage: completion.usage,
+  };
+}
 ```
 
-### Step 2: Execute
-Submit the chat completion or text completion request to Groq. Because of the LPU architecture, first-token latency is exceptionally low, so the streaming experience feels near-instant for end users. Monitor the token-per-second rate in the response metadata to confirm the performance profile matches expectations for your use case.
-
+### Step 2: Tool Use / Function Calling
 ```typescript
-// Step 2 implementation
+// Define tools with JSON Schema
+const tools: Groq.Chat.ChatCompletionTool[] = [
+  {
+    type: "function",
+    function: {
+      name: "get_weather",
+      description: "Get current weather for a location",
+      parameters: {
+        type: "object",
+        properties: {
+          location: { type: "string", description: "City name" },
+          unit: { type: "string", enum: ["celsius", "fahrenheit"] },
+        },
+        required: ["location"],
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "search_docs",
+      description: "Search internal documentation",
+      parameters: {
+        type: "object",
+        properties: {
+          query: { type: "string" },
+          limit: { type: "number", description: "Max results" },
+        },
+        required: ["query"],
+      },
+    },
+  },
+];
+
+async function chatWithTools(userMessage: string) {
+  // Step A: Send message with tool definitions
+  const response = await groq.chat.completions.create({
+    model: "llama-3.3-70b-versatile",
+    messages: [{ role: "user", content: userMessage }],
+    tools,
+    tool_choice: "auto",
+  });
+
+  const message = response.choices[0].message;
+
+  // Step B: If model wants to call tools, execute them
+  if (message.tool_calls) {
+    const toolResults = await Promise.all(
+      message.tool_calls.map(async (tc) => {
+        const args = JSON.parse(tc.function.arguments);
+        const result = await executeFunction(tc.function.name, args);
+        return {
+          role: "tool" as const,
+          tool_call_id: tc.id,
+          content: JSON.stringify(result),
+        };
+      })
+    );
+
+    // Step C: Send tool results back for final response
+    const finalResponse = await groq.chat.completions.create({
+      model: "llama-3.3-70b-versatile",
+      messages: [
+        { role: "user", content: userMessage },
+        message,         // includes tool_calls
+        ...toolResults,  // tool execution results
+      ],
+      tools,
+    });
+
+    return finalResponse.choices[0].message.content;
+  }
+
+  return message.content;
+}
+
+// Implement your actual tool functions
+async function executeFunction(name: string, args: any): Promise<any> {
+  switch (name) {
+    case "get_weather":
+      return { temperature: 72, conditions: "sunny", location: args.location };
+    case "search_docs":
+      return { results: [`Doc about ${args.query}`], count: 1 };
+    default:
+      throw new Error(`Unknown function: ${name}`);
+  }
+}
 ```
 
-### Step 3: Finalize
-Handle the streamed or buffered response appropriately for your application. For interactive use cases, render tokens as they arrive. For batch processing, accumulate the full response before writing results. Log model ID, token usage, and latency metrics for cost attribution and capacity planning.
-
+### Step 3: JSON Mode
 ```typescript
-// Step 3 implementation
+// Force model to return valid JSON
+async function extractJSON(text: string) {
+  const completion = await groq.chat.completions.create({
+    model: "llama-3.1-8b-instant",
+    messages: [
+      {
+        role: "system",
+        content: "Extract entities from the text. Respond with JSON: {entities: [{name, type, confidence}]}",
+      },
+      { role: "user", content: text },
+    ],
+    response_format: { type: "json_object" },
+    temperature: 0,
+  });
+
+  return JSON.parse(completion.choices[0].message.content!);
+}
 ```
 
-## Output
-- Completed Core Workflow A execution
-- Generated text or chat completion response from the selected Groq model
-- Token usage statistics and measured latency
-- Success confirmation or error details if the request failed
+### Step 4: Structured Outputs (Strict Schema)
+```typescript
+// Guaranteed schema compliance -- no validation needed
+async function extractStructured(text: string) {
+  const completion = await groq.chat.completions.create({
+    model: "llama-3.3-70b-versatile",
+    messages: [
+      { role: "system", content: "Extract contact information from the text." },
+      { role: "user", content: text },
+    ],
+    response_format: {
+      type: "json_schema",
+      json_schema: {
+        name: "contact_info",
+        strict: true,
+        schema: {
+          type: "object",
+          properties: {
+            name: { type: "string" },
+            email: { type: "string" },
+            phone: { type: "string" },
+            company: { type: "string" },
+          },
+          required: ["name", "email"],
+          additionalProperties: false,
+        },
+      },
+    },
+  });
+
+  // With strict: true, output is guaranteed to match schema
+  return JSON.parse(completion.choices[0].message.content!);
+}
+```
+
+**Limitation**: Streaming and tool use are not supported with Structured Outputs. Use non-streaming mode when using `response_format` with `json_schema`.
+
+### Step 5: Multi-Turn Conversation
+```typescript
+class GroqConversation {
+  private messages: Groq.Chat.ChatCompletionMessageParam[] = [];
+
+  constructor(private systemPrompt: string) {
+    this.messages.push({ role: "system", content: systemPrompt });
+  }
+
+  async send(userMessage: string): Promise<string> {
+    this.messages.push({ role: "user", content: userMessage });
+
+    const completion = await groq.chat.completions.create({
+      model: "llama-3.3-70b-versatile",
+      messages: this.messages,
+      max_tokens: 1024,
+    });
+
+    const reply = completion.choices[0].message;
+    this.messages.push(reply);
+    return reply.content || "";
+  }
+}
+```
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Error 1 | Cause | Solution |
-| Error 2 | Cause | Solution |
-
-## Examples
-
-### Complete Workflow
-```typescript
-// Complete workflow example
-```
-
-### Common Variations
-- Variation 1: Description
-- Variation 2: Description
+| `tool_calls` with malformed JSON | Model hallucinated arguments | Wrap `JSON.parse` in try/catch, retry with lower temperature |
+| `json_object` returns non-JSON | System prompt missing JSON instruction | Always include "respond with JSON" in system prompt |
+| `context_length_exceeded` | Conversation too long | Trim older messages, keep system prompt |
+| Tool call loop | Model keeps calling tools | Set `tool_choice: "none"` on final completion |
 
 ## Resources
-- [Groq Documentation](https://docs.groq.com)
-- [Groq API Reference](https://docs.groq.com/api)
+- [Groq Tool Use Docs](https://console.groq.com/docs/tool-use)
+- [Groq Structured Outputs](https://console.groq.com/docs/structured-outputs)
+- [Groq Text Generation](https://console.groq.com/docs/text-chat)
 
 ## Next Steps
-For secondary workflow, see `groq-core-workflow-b`.
+For audio, vision, and speech workflows, see `groq-core-workflow-b`.
