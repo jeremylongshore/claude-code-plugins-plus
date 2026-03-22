@@ -1,11 +1,11 @@
 ---
 name: hubspot-rate-limits
 description: |
-  Implement HubSpot rate limiting, backoff, and idempotency patterns.
-  Use when handling rate limit errors, implementing retry logic,
-  or optimizing API request throughput for HubSpot.
+  Implement HubSpot rate limiting, backoff, and request queuing patterns.
+  Use when handling 429 errors, implementing retry logic,
+  or optimizing API throughput against HubSpot rate limits.
   Trigger with phrases like "hubspot rate limit", "hubspot throttling",
-  "hubspot 429", "hubspot retry", "hubspot backoff".
+  "hubspot 429", "hubspot retry", "hubspot backoff", "hubspot quota".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
@@ -17,44 +17,71 @@ compatible-with: claude-code
 # HubSpot Rate Limits
 
 ## Overview
-Handle HubSpot rate limits gracefully with exponential backoff and idempotency.
+
+Handle HubSpot API rate limits with proper backoff strategies. HubSpot enforces per-second and daily limits shared across all apps in a portal.
 
 ## Prerequisites
-- HubSpot SDK installed
-- Understanding of async/await patterns
-- Access to rate limit headers
+
+- `@hubspot/api-client` installed
+- Understanding of HubSpot's shared rate limit model
 
 ## Instructions
 
-### Step 1: Understand Rate Limit Tiers
+### Step 1: Understand HubSpot Rate Limit Tiers
 
-| Tier | Requests/min | Requests/day | Burst |
-|------|-------------|--------------|-------|
-| Free | 60 | 1,000 | 10 |
-| Pro | 300 | 10,000 | 50 |
-| Enterprise | 1,000 | 100,000 | 200 |
+| Plan | Per-Second Limit | Daily Limit | Burst |
+|------|-----------------|-------------|-------|
+| Free/Starter | 10 requests/sec | 250,000/day | -- |
+| Professional | 10 requests/sec | 500,000/day | -- |
+| Enterprise | 10 requests/sec | 500,000/day | -- |
+| API Add-on | 10 requests/sec | 1,000,000/day | -- |
 
-### Step 2: Implement Exponential Backoff with Jitter
+**Critical:** Limits are per HubSpot portal (account), not per app. All private apps and OAuth apps in the same portal share the same limit bucket.
+
+### Step 2: Use SDK Built-in Retries
 
 ```typescript
-async function withExponentialBackoff<T>(
+import * as hubspot from '@hubspot/api-client';
+
+// The SDK has built-in retry for 429 responses
+const client = new hubspot.Client({
+  accessToken: process.env.HUBSPOT_ACCESS_TOKEN!,
+  numberOfApiCallRetries: 3, // retries 429 and 5xx automatically
+});
+```
+
+### Step 3: Custom Backoff with Retry-After Header
+
+```typescript
+async function withHubSpotBackoff<T>(
   operation: () => Promise<T>,
-  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 32000, jitterMs: 500 }
+  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 30000 }
 ): Promise<T> {
   for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
     try {
       return await operation();
     } catch (error: any) {
       if (attempt === config.maxRetries) throw error;
-      const status = error.status || error.response?.status;
+
+      const status = error?.code || error?.statusCode || error?.response?.status;
+
+      // Only retry on 429 and 5xx
       if (status !== 429 && (status < 500 || status >= 600)) throw error;
 
-      // Exponential delay with jitter to prevent thundering herd
-      const exponentialDelay = config.baseDelayMs * Math.pow(2, attempt);
-      const jitter = Math.random() * config.jitterMs;
-      const delay = Math.min(exponentialDelay + jitter, config.maxDelayMs);
+      // Honor Retry-After header from HubSpot
+      let delay: number;
+      const retryAfter = error?.response?.headers?.['retry-after'];
+      if (retryAfter) {
+        delay = parseInt(retryAfter) * 1000;
+      } else {
+        // Exponential backoff with jitter
+        const exponential = config.baseDelayMs * Math.pow(2, attempt);
+        const jitter = Math.random() * 500;
+        delay = Math.min(exponential + jitter, config.maxDelayMs);
+      }
 
-      console.log(`Rate limited. Retrying in ${delay.toFixed(0)}ms...`);
+      console.warn(`HubSpot rate limited (attempt ${attempt + 1}/${config.maxRetries}). ` +
+        `Retrying in ${delay}ms...`);
       await new Promise(r => setTimeout(r, delay));
     }
   }
@@ -62,90 +89,123 @@ async function withExponentialBackoff<T>(
 }
 ```
 
-### Step 3: Add Idempotency Keys
+### Step 4: Request Queue for Throughput Control
 
-```typescript
-import { v4 as uuidv4 } from 'uuid';
-import crypto from 'crypto';
-
-// Generate deterministic key from operation params (for safe retries)
-function generateIdempotencyKey(operation: string, params: Record<string, any>): string {
-  const data = JSON.stringify({ operation, params });
-  return crypto.createHash('sha256').update(data).digest('hex');
-}
-
-async function idempotentRequest<T>(
-  client: HubSpotClient,
-  params: Record<string, any>,
-  idempotencyKey?: string  // Pass existing key for retries
-): Promise<T> {
-  // Use provided key (for retries) or generate deterministic key from params
-  const key = idempotencyKey || generateIdempotencyKey(params.method || 'POST', params);
-  return client.request({
-    ...params,
-    headers: { 'Idempotency-Key': key, ...params.headers },
-  });
-}
-```
-
-## Output
-- Reliable API calls with automatic retry
-- Idempotent requests preventing duplicates
-- Rate limit headers properly handled
-
-## Error Handling
-| Header | Description | Action |
-|--------|-------------|--------|
-| X-RateLimit-Limit | Max requests | Monitor usage |
-| X-RateLimit-Remaining | Remaining requests | Throttle if low |
-| X-RateLimit-Reset | Reset timestamp | Wait until reset |
-| Retry-After | Seconds to wait | Honor this value |
-
-## Examples
-
-### Queue-Based Rate Limiting
 ```typescript
 import PQueue from 'p-queue';
 
-const queue = new PQueue({
-  concurrency: 5,
-  interval: 1000,
-  intervalCap: 10,
+// Queue that respects HubSpot's 10 req/sec limit
+const hubspotQueue = new PQueue({
+  concurrency: 5,        // max parallel requests
+  interval: 1000,        // per second
+  intervalCap: 10,       // max 10 per interval (HubSpot limit)
 });
 
 async function queuedRequest<T>(operation: () => Promise<T>): Promise<T> {
-  return queue.add(operation);
+  return hubspotQueue.add(operation) as Promise<T>;
 }
+
+// Usage -- all calls automatically throttled
+const results = await Promise.all(
+  contactIds.map(id =>
+    queuedRequest(() =>
+      client.crm.contacts.basicApi.getById(id, ['email', 'firstname'])
+    )
+  )
+);
 ```
 
-### Monitor Rate Limit Usage
-```typescript
-class RateLimitMonitor {
-  private remaining: number = 60;
-  private resetAt: Date = new Date();
+### Step 5: Batch Operations to Reduce Call Volume
 
-  updateFromHeaders(headers: Headers) {
-    this.remaining = parseInt(headers.get('X-RateLimit-Remaining') || '60');
-    const resetTimestamp = headers.get('X-RateLimit-Reset');
-    if (resetTimestamp) {
-      this.resetAt = new Date(parseInt(resetTimestamp) * 1000);
+```typescript
+// Instead of 100 individual GET calls (100 API calls):
+// BAD
+for (const id of contactIds) {
+  await client.crm.contacts.basicApi.getById(id, ['email']);
+}
+
+// Use batch read (1 API call for up to 100 records):
+// GOOD - POST /crm/v3/objects/contacts/batch/read
+const batchResult = await client.crm.contacts.batchApi.read({
+  inputs: contactIds.map(id => ({ id })),
+  properties: ['email', 'firstname', 'lastname'],
+  propertiesWithHistory: [],
+});
+
+console.log(`Fetched ${batchResult.results.length} contacts in 1 API call`);
+```
+
+### Step 6: Monitor Rate Limit Headers
+
+```typescript
+class HubSpotRateLimitMonitor {
+  private dailyRemaining = 500000;
+  private secondlyRemaining = 10;
+
+  updateFromResponse(headers: Record<string, string>): void {
+    if (headers['x-hubspot-ratelimit-daily-remaining']) {
+      this.dailyRemaining = parseInt(headers['x-hubspot-ratelimit-daily-remaining']);
+    }
+    if (headers['x-hubspot-ratelimit-secondly-remaining']) {
+      this.secondlyRemaining = parseInt(headers['x-hubspot-ratelimit-secondly-remaining']);
     }
   }
 
   shouldThrottle(): boolean {
-    // Only throttle if low remaining AND reset hasn't happened yet
-    return this.remaining < 5 && new Date() < this.resetAt;
+    return this.secondlyRemaining < 2 || this.dailyRemaining < 1000;
   }
 
-  getWaitTime(): number {
-    return Math.max(0, this.resetAt.getTime() - Date.now());
+  getStatus(): { daily: number; secondly: number; warning: boolean } {
+    return {
+      daily: this.dailyRemaining,
+      secondly: this.secondlyRemaining,
+      warning: this.shouldThrottle(),
+    };
   }
 }
 ```
 
+## Output
+
+- SDK built-in retry handles basic 429s
+- Custom backoff honors `Retry-After` header
+- Request queue enforces 10 req/sec limit
+- Batch operations reduce API call volume by 100x
+- Rate limit monitoring prevents threshold breaches
+
+## Error Handling
+
+| Header | Description | Action |
+|--------|-------------|--------|
+| `X-HubSpot-RateLimit-Daily` | Daily quota | Monitor usage |
+| `X-HubSpot-RateLimit-Daily-Remaining` | Remaining today | Alert if < 10% |
+| `X-HubSpot-RateLimit-Secondly` | Per-second limit | Always 10 |
+| `X-HubSpot-RateLimit-Secondly-Remaining` | Remaining this second | Throttle if < 2 |
+| `Retry-After` | Seconds to wait | Always honor this |
+
+## Examples
+
+### Quick Rate Limit Check
+
+```bash
+# Check current rate limit state
+curl -sI https://api.hubapi.com/crm/v3/objects/contacts?limit=1 \
+  -H "Authorization: Bearer $HUBSPOT_ACCESS_TOKEN" \
+  | grep -i ratelimit
+
+# Output:
+# X-HubSpot-RateLimit-Daily: 500000
+# X-HubSpot-RateLimit-Daily-Remaining: 499800
+# X-HubSpot-RateLimit-Secondly: 10
+# X-HubSpot-RateLimit-Secondly-Remaining: 9
+```
+
 ## Resources
-- [HubSpot Rate Limits](https://docs.hubspot.com/rate-limits)
-- [p-queue Documentation](https://github.com/sindresorhus/p-queue)
+
+- [HubSpot API Usage Guidelines](https://developers.hubspot.com/docs/guides/apps/api-usage/usage-details)
+- [Error Handling Guide](https://developers.hubspot.com/docs/api-reference/error-handling)
+- [p-queue npm](https://github.com/sindresorhus/p-queue)
 
 ## Next Steps
+
 For security configuration, see `hubspot-security-basics`.

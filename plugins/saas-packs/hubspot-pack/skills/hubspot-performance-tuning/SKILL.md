@@ -1,11 +1,11 @@
 ---
 name: hubspot-performance-tuning
 description: |
-  Optimize HubSpot API performance with caching, batching, and connection pooling.
+  Optimize HubSpot API performance with caching, batching, and search optimization.
   Use when experiencing slow API responses, implementing caching strategies,
-  or optimizing request throughput for HubSpot integrations.
+  or optimizing request throughput for HubSpot CRM operations.
   Trigger with phrases like "hubspot performance", "optimize hubspot",
-  "hubspot latency", "hubspot caching", "hubspot slow", "hubspot batch".
+  "hubspot slow", "hubspot caching", "hubspot batch", "hubspot latency".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
@@ -17,200 +17,212 @@ compatible-with: claude-code
 # HubSpot Performance Tuning
 
 ## Overview
-Optimize HubSpot API performance with caching, batching, and connection pooling.
+
+Optimize HubSpot API performance through batch operations, caching, search optimization, and request minimization.
 
 ## Prerequisites
-- HubSpot SDK installed
-- Understanding of async patterns
-- Redis or in-memory cache available (optional)
-- Performance monitoring in place
 
-## Latency Benchmarks
-
-| Operation | P50 | P95 | P99 |
-|-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
-
-## Caching Strategy
-
-### Response Caching
-```typescript
-import { LRUCache } from 'lru-cache';
-
-const cache = new LRUCache<string, any>({
-  max: 1000,
-  ttl: 60000, // 1 minute
-  updateAgeOnGet: true,
-});
-
-async function cachedHubSpotRequest<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttl?: number
-): Promise<T> {
-  const cached = cache.get(key);
-  if (cached) return cached as T;
-
-  const result = await fetcher();
-  cache.set(key, result, { ttl });
-  return result;
-}
-```
-
-### Redis Caching (Distributed)
-```typescript
-import Redis from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function cachedWithRedis<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttlSeconds = 60
-): Promise<T> {
-  const cached = await redis.get(key);
-  if (cached) return JSON.parse(cached);
-
-  const result = await fetcher();
-  await redis.setex(key, ttlSeconds, JSON.stringify(result));
-  return result;
-}
-```
-
-## Request Batching
-
-```typescript
-import DataLoader from 'dataloader';
-
-const hubspotLoader = new DataLoader<string, any>(
-  async (ids) => {
-    // Batch fetch from HubSpot
-    const results = await hubspotClient.batchGet(ids);
-    return ids.map(id => results.find(r => r.id === id) || null);
-  },
-  {
-    maxBatchSize: 100,
-    batchScheduleFn: callback => setTimeout(callback, 10),
-  }
-);
-
-// Usage - automatically batched
-const [item1, item2, item3] = await Promise.all([
-  hubspotLoader.load('id-1'),
-  hubspotLoader.load('id-2'),
-  hubspotLoader.load('id-3'),
-]);
-```
-
-## Connection Optimization
-
-```typescript
-import { Agent } from 'https';
-
-// Keep-alive connection pooling
-const agent = new Agent({
-  keepAlive: true,
-  maxSockets: 10,
-  maxFreeSockets: 5,
-  timeout: 30000,
-});
-
-const client = new HubSpotClient({
-  apiKey: process.env.HUBSPOT_API_KEY!,
-  httpAgent: agent,
-});
-```
-
-## Pagination Optimization
-
-```typescript
-async function* paginatedHubSpotList<T>(
-  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
-): AsyncGenerator<T> {
-  let cursor: string | undefined;
-
-  do {
-    const { data, nextCursor } = await fetcher(cursor);
-    for (const item of data) {
-      yield item;
-    }
-    cursor = nextCursor;
-  } while (cursor);
-}
-
-// Usage
-for await (const item of paginatedHubSpotList(cursor =>
-  hubspotClient.list({ cursor, limit: 100 })
-)) {
-  await process(item);
-}
-```
-
-## Performance Monitoring
-
-```typescript
-async function measuredHubSpotCall<T>(
-  operation: string,
-  fn: () => Promise<T>
-): Promise<T> {
-  const start = performance.now();
-  try {
-    const result = await fn();
-    const duration = performance.now() - start;
-    console.log({ operation, duration, status: 'success' });
-    return result;
-  } catch (error) {
-    const duration = performance.now() - start;
-    console.error({ operation, duration, status: 'error', error });
-    throw error;
-  }
-}
-```
+- `@hubspot/api-client` installed
+- Understanding of your access patterns (read-heavy vs write-heavy)
+- Optional: Redis for distributed caching
 
 ## Instructions
 
-### Step 1: Establish Baseline
-Measure current latency for critical HubSpot operations.
+### Step 1: Use Batch APIs Everywhere
 
-### Step 2: Implement Caching
-Add response caching for frequently accessed data.
+The single biggest performance win: batch operations reduce API calls by up to 100x.
 
-### Step 3: Enable Batching
-Use DataLoader or similar for automatic request batching.
-
-### Step 4: Optimize Connections
-Configure connection pooling with keep-alive.
-
-## Output
-- Reduced API latency
-- Caching layer implemented
-- Request batching enabled
-- Connection pooling configured
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Cache miss storm | TTL expired | Use stale-while-revalidate |
-| Batch timeout | Too many items | Reduce batch size |
-| Connection exhausted | No pooling | Configure max sockets |
-| Memory pressure | Cache too large | Set max cache entries |
-
-## Examples
-
-### Quick Performance Wrapper
 ```typescript
-const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
-  measuredHubSpotCall(name, () =>
-    cachedHubSpotRequest(`cache:${name}`, fn)
-  );
+import * as hubspot from '@hubspot/api-client';
+
+const client = new hubspot.Client({
+  accessToken: process.env.HUBSPOT_ACCESS_TOKEN!,
+  numberOfApiCallRetries: 3,
+});
+
+// BAD: 100 API calls for 100 contacts
+async function getContactsSlow(ids: string[]) {
+  return Promise.all(ids.map(id =>
+    client.crm.contacts.basicApi.getById(id, ['email', 'firstname'])
+  ));
+}
+
+// GOOD: 1 API call for 100 contacts
+async function getContactsFast(ids: string[], properties: string[]) {
+  // POST /crm/v3/objects/contacts/batch/read
+  const result = await client.crm.contacts.batchApi.read({
+    inputs: ids.map(id => ({ id })),
+    properties,
+    propertiesWithHistory: [],
+  });
+  return result.results;
+}
+
+// For more than 100 records, chunk:
+async function getContactsChunked(ids: string[], properties: string[]) {
+  const results = [];
+  for (let i = 0; i < ids.length; i += 100) {
+    const chunk = ids.slice(i, i + 100);
+    const batch = await getContactsFast(chunk, properties);
+    results.push(...batch);
+  }
+  return results;
+}
 ```
 
+### Step 2: Request Only Needed Properties
+
+```typescript
+// BAD: Returns ALL default properties (slow, large payload)
+const contact = await client.crm.contacts.basicApi.getById(id);
+
+// GOOD: Only request what you need (fast, small payload)
+const contact = await client.crm.contacts.basicApi.getById(
+  id,
+  ['email', 'firstname', 'lastname', 'lifecyclestage'] // specific properties
+);
+```
+
+### Step 3: Cache Frequently Accessed Data
+
+```typescript
+import { LRUCache } from 'lru-cache';
+
+const contactCache = new LRUCache<string, any>({
+  max: 5000,              // max entries
+  ttl: 5 * 60 * 1000,     // 5 minute TTL
+  updateAgeOnGet: true,
+});
+
+async function getCachedContact(id: string, properties: string[]) {
+  const cacheKey = `contact:${id}`;
+  const cached = contactCache.get(cacheKey);
+  if (cached) return cached;
+
+  const contact = await client.crm.contacts.basicApi.getById(id, properties);
+  contactCache.set(cacheKey, contact);
+  return contact;
+}
+
+// Invalidate on webhook events
+function invalidateContactCache(contactId: string): void {
+  contactCache.delete(`contact:${contactId}`);
+}
+```
+
+### Step 4: Optimize Search Queries
+
+```typescript
+// BAD: Overly broad search, returns too much data
+const bad = await client.crm.contacts.searchApi.doSearch({
+  filterGroups: [],  // no filters = scan entire DB
+  properties: [],    // returns default properties
+  limit: 100,
+  after: 0,
+  sorts: [],
+});
+
+// GOOD: Specific filters, minimal properties, sorted
+const good = await client.crm.contacts.searchApi.doSearch({
+  filterGroups: [{
+    filters: [
+      { propertyName: 'lifecyclestage', operator: 'EQ', value: 'customer' },
+      { propertyName: 'createdate', operator: 'GTE', value: String(Date.now() - 86400000) },
+    ],
+  }],
+  properties: ['email', 'firstname'],  // only what you need
+  limit: 50,
+  after: 0,
+  sorts: [{ propertyName: 'createdate', direction: 'DESCENDING' }],
+});
+
+// Search limits: max 5 filterGroups, 6 filters per group, 18 filters total
+// Search returns max 10,000 results total (pagination limit)
+```
+
+### Step 5: Pipeline and Property Caching
+
+Pipeline stages and custom properties rarely change -- cache them aggressively:
+
+```typescript
+let pipelineCache: Map<string, any> | null = null;
+let pipelineCacheExpiry = 0;
+
+async function getCachedPipelines(objectType: 'deals' | 'tickets') {
+  if (pipelineCache && Date.now() < pipelineCacheExpiry) {
+    return pipelineCache.get(objectType);
+  }
+
+  const pipelines = await client.crm.pipelines.pipelinesApi.getAll(objectType);
+  if (!pipelineCache) pipelineCache = new Map();
+  pipelineCache.set(objectType, pipelines.results);
+  pipelineCacheExpiry = Date.now() + 3600000; // 1 hour cache
+  return pipelines.results;
+}
+
+// Same pattern for properties
+let propertyCache: Map<string, any> | null = null;
+
+async function getCachedProperties(objectType: string) {
+  if (propertyCache?.has(objectType)) {
+    return propertyCache.get(objectType);
+  }
+  const props = await client.crm.properties.coreApi.getAll(objectType);
+  if (!propertyCache) propertyCache = new Map();
+  propertyCache.set(objectType, props.results);
+  return props.results;
+}
+```
+
+### Step 6: Pagination with Async Generators
+
+```typescript
+// Memory-efficient streaming for large exports
+async function* streamAllContacts(properties: string[]) {
+  let after: string | undefined;
+  do {
+    const page = await client.crm.contacts.basicApi.getPage(
+      100,    // max page size
+      after,
+      properties
+    );
+    yield* page.results;
+    after = page.paging?.next?.after;
+  } while (after);
+}
+
+// Process millions of records without running out of memory
+let count = 0;
+for await (const contact of streamAllContacts(['email', 'firstname'])) {
+  await processContact(contact);
+  count++;
+  if (count % 1000 === 0) console.log(`Processed ${count} contacts`);
+}
+```
+
+## Output
+
+- Batch operations reducing API calls by 100x
+- Property-specific requests reducing payload size
+- LRU caching for frequently accessed records
+- Optimized search queries with proper filters
+- Streaming pagination for large datasets
+
+## Error Handling
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Batch returns `207 Multi-Status` | Some records failed | Check individual `status` in response |
+| Cache stale data | TTL too long | Invalidate on webhook events |
+| Search returns max 10,000 | HubSpot search limit | Use `getPage` pagination instead |
+| Memory pressure | Caching too much | Set `max` entries on LRU cache |
+
 ## Resources
-- [HubSpot Performance Guide](https://docs.hubspot.com/performance)
-- [DataLoader Documentation](https://github.com/graphql/dataloader)
-- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
+
+- [Batch Operations Guide](https://developers.hubspot.com/docs/guides/api/crm/understanding-the-crm)
+- [CRM Search Guide](https://developers.hubspot.com/docs/guides/api/crm/search)
+- [lru-cache npm](https://github.com/isaacs/node-lru-cache)
 
 ## Next Steps
+
 For cost optimization, see `hubspot-cost-tuning`.

@@ -1,11 +1,11 @@
 ---
 name: hubspot-data-handling
 description: |
-  Implement HubSpot PII handling, data retention, and GDPR/CCPA compliance patterns.
-  Use when handling sensitive data, implementing data redaction, configuring retention policies,
-  or ensuring compliance with privacy regulations for HubSpot integrations.
-  Trigger with phrases like "hubspot data", "hubspot PII",
-  "hubspot GDPR", "hubspot data retention", "hubspot privacy", "hubspot CCPA".
+  Implement HubSpot GDPR compliance, data export, and contact privacy operations.
+  Use when handling GDPR/CCPA data subject requests, implementing data export,
+  contact deletion, or privacy-compliant HubSpot integrations.
+  Trigger with phrases like "hubspot GDPR", "hubspot data export",
+  "hubspot delete contact", "hubspot privacy", "hubspot CCPA", "hubspot PII".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
@@ -17,206 +17,246 @@ compatible-with: claude-code
 # HubSpot Data Handling
 
 ## Overview
-Handle sensitive data correctly when integrating with HubSpot.
+
+Handle GDPR/CCPA compliance with HubSpot's built-in privacy APIs: GDPR delete, data export, consent management, and PII handling for CRM data.
 
 ## Prerequisites
+
+- HubSpot account with GDPR features enabled
+- Scope: `crm.objects.contacts.write` (for GDPR delete)
 - Understanding of GDPR/CCPA requirements
-- HubSpot SDK with data export capabilities
-- Database for audit logging
-- Scheduled job infrastructure for cleanup
-
-## Data Classification
-
-| Category | Examples | Handling |
-|----------|----------|----------|
-| PII | Email, name, phone | Encrypt, minimize |
-| Sensitive | API keys, tokens | Never log, rotate |
-| Business | Usage metrics | Aggregate when possible |
-| Public | Product names | Standard handling |
-
-## PII Detection
-
-```typescript
-const PII_PATTERNS = [
-  { type: 'email', regex: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g },
-  { type: 'phone', regex: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g },
-  { type: 'ssn', regex: /\b\d{3}-\d{2}-\d{4}\b/g },
-  { type: 'credit_card', regex: /\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b/g },
-];
-
-function detectPII(text: string): { type: string; match: string }[] {
-  const findings: { type: string; match: string }[] = [];
-
-  for (const pattern of PII_PATTERNS) {
-    const matches = text.matchAll(pattern.regex);
-    for (const match of matches) {
-      findings.push({ type: pattern.type, match: match[0] });
-    }
-  }
-
-  return findings;
-}
-```
-
-## Data Redaction
-
-```typescript
-function redactPII(data: Record<string, any>): Record<string, any> {
-  const sensitiveFields = ['email', 'phone', 'ssn', 'password', 'apiKey'];
-  const redacted = { ...data };
-
-  for (const field of sensitiveFields) {
-    if (redacted[field]) {
-      redacted[field] = '[REDACTED]';
-    }
-  }
-
-  return redacted;
-}
-
-// Use in logging
-console.log('HubSpot request:', redactPII(requestData));
-```
-
-## Data Retention Policy
-
-### Retention Periods
-| Data Type | Retention | Reason |
-|-----------|-----------|--------|
-| API logs | 30 days | Debugging |
-| Error logs | 90 days | Root cause analysis |
-| Audit logs | 7 years | Compliance |
-| PII | Until deletion request | GDPR/CCPA |
-
-### Automatic Cleanup
-
-```typescript
-async function cleanupHubSpotData(retentionDays: number): Promise<void> {
-  const cutoff = new Date();
-  cutoff.setDate(cutoff.getDate() - retentionDays);
-
-  await db.hubspotLogs.deleteMany({
-    createdAt: { $lt: cutoff },
-    type: { $nin: ['audit', 'compliance'] },
-  });
-}
-
-// Schedule daily cleanup
-cron.schedule('0 3 * * *', () => cleanupHubSpotData(30));
-```
-
-## GDPR/CCPA Compliance
-
-### Data Subject Access Request (DSAR)
-
-```typescript
-async function exportUserData(userId: string): Promise<DataExport> {
-  const hubspotData = await hubspotClient.getUserData(userId);
-
-  return {
-    source: 'HubSpot',
-    exportedAt: new Date().toISOString(),
-    data: {
-      profile: hubspotData.profile,
-      activities: hubspotData.activities,
-      // Include all user-related data
-    },
-  };
-}
-```
-
-### Right to Deletion
-
-```typescript
-async function deleteUserData(userId: string): Promise<DeletionResult> {
-  // 1. Delete from HubSpot
-  await hubspotClient.deleteUser(userId);
-
-  // 2. Delete local copies
-  await db.hubspotUserCache.deleteMany({ userId });
-
-  // 3. Audit log (required to keep)
-  await auditLog.record({
-    action: 'GDPR_DELETION',
-    userId,
-    service: 'hubspot',
-    timestamp: new Date(),
-  });
-
-  return { success: true, deletedAt: new Date() };
-}
-```
-
-## Data Minimization
-
-```typescript
-// Only request needed fields
-const user = await hubspotClient.getUser(userId, {
-  fields: ['id', 'name'], // Not email, phone, address
-});
-
-// Don't store unnecessary data
-const cacheData = {
-  id: user.id,
-  name: user.name,
-  // Omit sensitive fields
-};
-```
 
 ## Instructions
 
-### Step 1: Classify Data
-Categorize all HubSpot data by sensitivity level.
+### Step 1: GDPR Contact Deletion
 
-### Step 2: Implement PII Detection
-Add regex patterns to detect sensitive data in logs.
+HubSpot provides a dedicated GDPR delete endpoint that permanently removes all contact data and communications:
 
-### Step 3: Configure Redaction
-Apply redaction to sensitive fields before logging.
-
-### Step 4: Set Up Retention
-Configure automatic cleanup with appropriate retention periods.
-
-## Output
-- Data classification documented
-- PII detection implemented
-- Redaction in logging active
-- Retention policy enforced
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| PII in logs | Missing redaction | Wrap logging with redact |
-| Deletion failed | Data locked | Check dependencies |
-| Export incomplete | Timeout | Increase batch size |
-| Audit gap | Missing entries | Review log pipeline |
-
-## Examples
-
-### Quick PII Scan
 ```typescript
-const findings = detectPII(JSON.stringify(userData));
-if (findings.length > 0) {
-  console.warn(`PII detected: ${findings.map(f => f.type).join(', ')}`);
+import * as hubspot from '@hubspot/api-client';
+
+const client = new hubspot.Client({
+  accessToken: process.env.HUBSPOT_ACCESS_TOKEN!,
+});
+
+// GDPR delete: permanently removes contact and all associated data
+// POST /crm/v3/objects/contacts/gdpr-delete
+async function gdprDeleteContact(email: string): Promise<void> {
+  // First, find the contact
+  const search = await client.crm.contacts.searchApi.doSearch({
+    filterGroups: [{
+      filters: [{ propertyName: 'email', operator: 'EQ', value: email }],
+    }],
+    properties: ['email'],
+    limit: 1, after: 0, sorts: [],
+  });
+
+  if (search.results.length === 0) {
+    console.log(`Contact not found: ${email}`);
+    return;
+  }
+
+  const contactId = search.results[0].id;
+
+  // GDPR delete via API
+  await client.apiRequest({
+    method: 'POST',
+    path: '/crm/v3/objects/contacts/gdpr-delete',
+    body: {
+      objectId: contactId,
+      idProperty: 'hs_object_id',
+    },
+  });
+
+  // Also delete from your local systems
+  await deleteLocalContactData(email);
+
+  // Audit log (keep for compliance -- do NOT delete audit records)
+  await auditLog({
+    action: 'GDPR_DELETE',
+    email: '[REDACTED]', // don't store the email in audit
+    contactId,
+    timestamp: new Date().toISOString(),
+    reason: 'Data subject deletion request',
+  });
+
+  console.log(`GDPR deleted contact ${contactId}`);
 }
 ```
 
-### Redact Before Logging
+### Step 2: Data Subject Access Request (DSAR)
+
+Export all data HubSpot holds about a contact:
+
 ```typescript
-const safeData = redactPII(apiResponse);
-logger.info('HubSpot response:', safeData);
+async function exportContactData(email: string): Promise<ContactDataExport> {
+  // Find contact
+  const search = await client.crm.contacts.searchApi.doSearch({
+    filterGroups: [{
+      filters: [{ propertyName: 'email', operator: 'EQ', value: email }],
+    }],
+    properties: [], // get all default properties
+    limit: 1, after: 0, sorts: [],
+  });
+
+  if (search.results.length === 0) {
+    return { found: false, data: null };
+  }
+
+  const contact = search.results[0];
+
+  // Get all properties for complete export
+  const fullContact = await client.crm.contacts.basicApi.getById(
+    contact.id,
+    undefined, // all properties
+    undefined,
+    ['companies', 'deals', 'tickets'] // include associations
+  );
+
+  // Get associated deals
+  const deals = await client.crm.deals.searchApi.doSearch({
+    filterGroups: [{
+      filters: [{
+        propertyName: 'associations.contact',
+        operator: 'EQ',
+        value: contact.id,
+      }],
+    }],
+    properties: ['dealname', 'amount', 'dealstage', 'createdate'],
+    limit: 100, after: 0, sorts: [],
+  });
+
+  // Get engagement history (notes, emails, calls)
+  const notes = await client.crm.objects.notes.basicApi.getPage(
+    100, undefined, ['hs_note_body', 'hs_timestamp']
+  );
+
+  return {
+    found: true,
+    data: {
+      exportedAt: new Date().toISOString(),
+      source: 'HubSpot CRM',
+      contact: fullContact.properties,
+      associations: fullContact.associations,
+      deals: deals.results.map(d => d.properties),
+      notes: notes.results.map(n => n.properties),
+    },
+  };
+}
+
+interface ContactDataExport {
+  found: boolean;
+  data: {
+    exportedAt: string;
+    source: string;
+    contact: Record<string, string>;
+    associations?: any;
+    deals: Record<string, string>[];
+    notes: Record<string, string>[];
+  } | null;
+}
 ```
 
-### GDPR Data Export
+### Step 3: PII Redaction for Logging
+
 ```typescript
-const userExport = await exportUserData('user-123');
-await sendToUser(userExport);
+// Never log PII from HubSpot responses
+const PII_FIELDS = new Set([
+  'email', 'firstname', 'lastname', 'phone', 'mobilephone',
+  'address', 'city', 'state', 'zip', 'country',
+  'date_of_birth', 'ip_city', 'ip_state', 'ip_country',
+]);
+
+function redactContactForLogging(properties: Record<string, string>): Record<string, string> {
+  const redacted: Record<string, string> = {};
+  for (const [key, value] of Object.entries(properties)) {
+    redacted[key] = PII_FIELDS.has(key) ? '[REDACTED]' : value;
+  }
+  return redacted;
+}
+
+// Usage
+const contact = await client.crm.contacts.basicApi.getById(id, ['email', 'lifecyclestage']);
+console.log('Contact data:', redactContactForLogging(contact.properties));
+// Output: { email: "[REDACTED]", lifecyclestage: "customer" }
 ```
+
+### Step 4: Consent Tracking
+
+```typescript
+// Track consent using HubSpot's communication preferences
+// POST /crm/v3/objects/contacts (with consent properties)
+async function createContactWithConsent(
+  email: string,
+  properties: Record<string, string>,
+  consent: { marketing: boolean; sales: boolean }
+): Promise<void> {
+  await client.crm.contacts.basicApi.create({
+    properties: {
+      ...properties,
+      email,
+      hs_legal_basis: consent.marketing
+        ? 'Legitimate interest - existing customer'
+        : 'Not applicable',
+    },
+    associations: [],
+  });
+
+  // Set communication preferences via the subscriptions API
+  if (consent.marketing) {
+    await client.apiRequest({
+      method: 'POST',
+      path: `/communication-preferences/v3/subscribe`,
+      body: {
+        emailAddress: email,
+        subscriptionId: process.env.HUBSPOT_MARKETING_SUBSCRIPTION_ID!,
+        legalBasis: 'CONSENT_WITH_NOTICE',
+        legalBasisExplanation: 'User opted in via signup form',
+      },
+    });
+  }
+}
+```
+
+### Step 5: Data Minimization
+
+```typescript
+// Only request the properties you actually need
+// BAD: Fetches all default properties including PII
+const bad = await client.crm.contacts.basicApi.getById(id);
+
+// GOOD: Only fetch non-PII fields for analytics
+const good = await client.crm.contacts.basicApi.getById(id, [
+  'lifecyclestage',      // not PII
+  'hs_lead_status',      // not PII
+  'createdate',          // not PII
+  'num_associated_deals', // not PII
+]);
+```
+
+## Output
+
+- GDPR delete endpoint permanently removing contact data
+- Data export for Subject Access Requests
+- PII redaction utility for safe logging
+- Consent tracking with communication preferences
+- Data minimization patterns for non-PII analytics
+
+## Error Handling
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| GDPR delete returns 404 | Contact already deleted | Idempotent -- log and continue |
+| Export missing associations | Scope not granted | Add `crm.objects.deals.read` scope |
+| Consent API returns 400 | Invalid subscription ID | Check Settings > Marketing > Email > Subscriptions |
+| PII in logs | Missing redaction | Wrap all logging with `redactContactForLogging` |
 
 ## Resources
+
+- [HubSpot GDPR Compliance](https://developers.hubspot.com/docs/guides/api/crm/gdpr)
+- [Communication Preferences API](https://developers.hubspot.com/docs/reference/api/marketing/subscriptions-preferences)
 - [GDPR Developer Guide](https://gdpr.eu/developers/)
-- [CCPA Compliance Guide](https://oag.ca.gov/privacy/ccpa)
-- [HubSpot Privacy Guide](https://docs.hubspot.com/privacy)
 
 ## Next Steps
+
 For enterprise access control, see `hubspot-enterprise-rbac`.

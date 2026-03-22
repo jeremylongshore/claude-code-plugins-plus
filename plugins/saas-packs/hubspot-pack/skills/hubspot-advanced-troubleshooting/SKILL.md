@@ -1,11 +1,11 @@
 ---
 name: hubspot-advanced-troubleshooting
 description: |
-  Apply HubSpot advanced debugging techniques for hard-to-diagnose issues.
-  Use when standard troubleshooting fails, investigating complex race conditions,
+  Debug complex HubSpot API issues with systematic isolation and evidence collection.
+  Use when standard troubleshooting fails, investigating intermittent CRM errors,
   or preparing evidence bundles for HubSpot support escalation.
   Trigger with phrases like "hubspot hard bug", "hubspot mystery error",
-  "hubspot impossible to debug", "difficult hubspot issue", "hubspot deep debug".
+  "hubspot intermittent failure", "hubspot deep debug", "hubspot support ticket".
 allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*), Bash(tcpdump:*)
 version: 1.0.0
 license: MIT
@@ -17,247 +17,279 @@ compatible-with: claude-code
 # HubSpot Advanced Troubleshooting
 
 ## Overview
-Deep debugging techniques for complex HubSpot issues that resist standard troubleshooting.
+
+Deep debugging techniques for complex HubSpot API issues: systematic layer testing, timing analysis, correlation ID tracking, and support escalation.
 
 ## Prerequisites
-- Access to production logs and metrics
-- kubectl access to clusters
-- Network capture tools available
-- Understanding of distributed tracing
 
-## Evidence Collection Framework
+- Access to application logs
+- `curl` and `jq` available
+- HubSpot access token for manual testing
 
-### Comprehensive Debug Bundle
+## Instructions
+
+### Step 1: Systematic Layer Testing
+
+Test each layer independently to isolate the failure:
+
 ```bash
 #!/bin/bash
-# advanced-hubspot-debug.sh
+# hubspot-layer-test.sh
 
-BUNDLE="hubspot-advanced-debug-$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$BUNDLE"/{logs,metrics,network,config,traces}
+echo "=== HubSpot Layer-by-Layer Diagnostic ==="
 
-# 1. Extended logs (1 hour window)
-kubectl logs -l app=hubspot-integration --since=1h > "$BUNDLE/logs/pods.log"
-journalctl -u hubspot-service --since "1 hour ago" > "$BUNDLE/logs/system.log"
+# Layer 1: DNS Resolution
+echo "1. DNS Resolution"
+dig api.hubapi.com +short || echo "FAIL: DNS resolution"
 
-# 2. Metrics dump
-curl -s localhost:9090/api/v1/query?query=hubspot_requests_total > "$BUNDLE/metrics/requests.json"
-curl -s localhost:9090/api/v1/query?query=hubspot_errors_total > "$BUNDLE/metrics/errors.json"
+# Layer 2: TCP Connectivity
+echo "2. TCP Connectivity"
+timeout 5 bash -c 'echo > /dev/tcp/api.hubapi.com/443' 2>/dev/null \
+  && echo "OK" || echo "FAIL: Cannot reach port 443"
 
-# 3. Network capture (30 seconds)
-timeout 30 tcpdump -i any port 443 -w "$BUNDLE/network/capture.pcap" &
+# Layer 3: TLS Handshake
+echo "3. TLS Handshake"
+echo | openssl s_client -connect api.hubapi.com:443 2>/dev/null | grep "Verify return code"
 
-# 4. Distributed traces
-curl -s localhost:16686/api/traces?service=hubspot > "$BUNDLE/traces/jaeger.json"
+# Layer 4: HTTP Response (unauthenticated)
+echo "4. HTTP Response (no auth)"
+curl -so /dev/null -w "HTTP %{http_code} in %{time_total}s\n" \
+  https://api.hubapi.com/crm/v3/objects/contacts?limit=1
 
-# 5. Configuration state
-kubectl get cm hubspot-config -o yaml > "$BUNDLE/config/configmap.yaml"
-kubectl get secret hubspot-secrets -o yaml > "$BUNDLE/config/secrets-redacted.yaml"
+# Layer 5: Authenticated Request
+echo "5. Authenticated Request"
+RESPONSE=$(curl -s -w "\n%{http_code}" \
+  https://api.hubapi.com/crm/v3/objects/contacts?limit=1 \
+  -H "Authorization: Bearer $HUBSPOT_ACCESS_TOKEN")
+HTTP_CODE=$(echo "$RESPONSE" | tail -1)
+BODY=$(echo "$RESPONSE" | head -n -1)
+echo "HTTP $HTTP_CODE"
 
-tar -czf "$BUNDLE.tar.gz" "$BUNDLE"
-echo "Advanced debug bundle: $BUNDLE.tar.gz"
+if [ "$HTTP_CODE" = "200" ]; then
+  echo "OK: API accessible"
+  echo "Records: $(echo $BODY | jq '.results | length')"
+else
+  echo "FAIL: $(echo $BODY | jq -r '.category // .message')"
+  echo "Correlation ID: $(echo $BODY | jq -r '.correlationId // "none"')"
+fi
+
+# Layer 6: Rate Limit State
+echo "6. Rate Limit State"
+curl -sI https://api.hubapi.com/crm/v3/objects/contacts?limit=1 \
+  -H "Authorization: Bearer $HUBSPOT_ACCESS_TOKEN" \
+  | grep -i "ratelimit" | sed 's/^/   /'
 ```
 
-## Systematic Isolation
+### Step 2: Correlation ID Tracking
 
-### Layer-by-Layer Testing
-
-```typescript
-// Test each layer independently
-async function diagnoseHubSpotIssue(): Promise<DiagnosisReport> {
-  const results: DiagnosisResult[] = [];
-
-  // Layer 1: Network connectivity
-  results.push(await testNetworkConnectivity());
-
-  // Layer 2: DNS resolution
-  results.push(await testDNSResolution('api.hubspot.com'));
-
-  // Layer 3: TLS handshake
-  results.push(await testTLSHandshake('api.hubspot.com'));
-
-  // Layer 4: Authentication
-  results.push(await testAuthentication());
-
-  // Layer 5: API response
-  results.push(await testAPIResponse());
-
-  // Layer 6: Response parsing
-  results.push(await testResponseParsing());
-
-  return { results, firstFailure: results.find(r => !r.success) };
-}
-```
-
-### Minimal Reproduction
+Every HubSpot error response includes a `correlationId`. Track these for support:
 
 ```typescript
-// Strip down to absolute minimum
-async function minimalRepro(): Promise<void> {
-  // 1. Fresh client, no customization
-  const client = new HubSpotClient({
-    apiKey: process.env.HUBSPOT_API_KEY!,
-  });
+import * as hubspot from '@hubspot/api-client';
 
-  // 2. Simplest possible call
+// Collect correlation IDs from errors
+const errorLog: Array<{
+  timestamp: string;
+  correlationId: string;
+  statusCode: number;
+  category: string;
+  message: string;
+  endpoint: string;
+}> = [];
+
+async function debuggedApiCall<T>(
+  endpoint: string,
+  operation: () => Promise<T>
+): Promise<T> {
   try {
-    const result = await client.ping();
-    console.log('Ping successful:', result);
-  } catch (error) {
-    console.error('Ping failed:', {
-      message: error.message,
-      code: error.code,
-      stack: error.stack,
-    });
+    return await operation();
+  } catch (error: any) {
+    const body = error?.body || {};
+    const entry = {
+      timestamp: new Date().toISOString(),
+      correlationId: body.correlationId || 'unknown',
+      statusCode: error?.code || error?.statusCode || 500,
+      category: body.category || 'UNKNOWN',
+      message: body.message || error.message,
+      endpoint,
+    };
+    errorLog.push(entry);
+    console.error('HubSpot error:', entry);
+    throw error;
+  }
+}
+
+// Dump error log for support ticket
+function getErrorReport(): string {
+  return errorLog.map(e =>
+    `[${e.timestamp}] ${e.statusCode} ${e.category} | ${e.correlationId} | ${e.endpoint}: ${e.message}`
+  ).join('\n');
+}
+```
+
+### Step 3: Timing Analysis
+
+```typescript
+async function timingAnalysis() {
+  const operations = [
+    {
+      name: 'GET contacts (single)',
+      fn: () => client.crm.contacts.basicApi.getPage(1, undefined, ['email']),
+    },
+    {
+      name: 'SEARCH contacts',
+      fn: () => client.crm.contacts.searchApi.doSearch({
+        filterGroups: [{
+          filters: [{ propertyName: 'lifecyclestage', operator: 'EQ', value: 'lead' }],
+        }],
+        properties: ['email'], limit: 1, after: 0, sorts: [],
+      }),
+    },
+    {
+      name: 'GET pipelines',
+      fn: () => client.crm.pipelines.pipelinesApi.getAll('deals'),
+    },
+    {
+      name: 'GET properties',
+      fn: () => client.crm.properties.coreApi.getAll('contacts'),
+    },
+  ];
+
+  console.log('=== HubSpot Timing Analysis ===');
+  for (const op of operations) {
+    const times: number[] = [];
+    for (let i = 0; i < 5; i++) {
+      const start = performance.now();
+      try {
+        await op.fn();
+        times.push(performance.now() - start);
+      } catch {
+        times.push(-1); // mark failures
+      }
+    }
+
+    const successful = times.filter(t => t >= 0);
+    if (successful.length > 0) {
+      console.log(`${op.name}:
+  Min: ${Math.min(...successful).toFixed(0)}ms
+  Max: ${Math.max(...successful).toFixed(0)}ms
+  Avg: ${(successful.reduce((a, b) => a + b, 0) / successful.length).toFixed(0)}ms
+  Failures: ${times.length - successful.length}/5`);
+    } else {
+      console.log(`${op.name}: ALL FAILED`);
+    }
   }
 }
 ```
 
-## Timing Analysis
+### Step 4: Reproduce Specific Error
 
 ```typescript
-class TimingAnalyzer {
-  private timings: Map<string, number[]> = new Map();
+// Reproduce common intermittent issues
 
-  async measure<T>(label: string, fn: () => Promise<T>): Promise<T> {
-    const start = performance.now();
+// Test 1: Rapid sequential calls (rate limit sensitivity)
+async function testRateLimit(requestCount = 20) {
+  console.log(`Sending ${requestCount} rapid requests...`);
+  let success = 0, rateLimited = 0, errors = 0;
+
+  for (let i = 0; i < requestCount; i++) {
     try {
-      return await fn();
-    } finally {
-      const duration = performance.now() - start;
-      const existing = this.timings.get(label) || [];
-      existing.push(duration);
-      this.timings.set(label, existing);
+      await client.crm.contacts.basicApi.getPage(1, undefined, ['email']);
+      success++;
+    } catch (error: any) {
+      if (error?.code === 429) rateLimited++;
+      else errors++;
     }
   }
+  console.log(`Results: ${success} ok, ${rateLimited} rate limited, ${errors} errors`);
+}
 
-  report(): TimingReport {
-    const report: TimingReport = {};
-    for (const [label, times] of this.timings) {
-      report[label] = {
-        count: times.length,
-        min: Math.min(...times),
-        max: Math.max(...times),
-        avg: times.reduce((a, b) => a + b, 0) / times.length,
-        p95: this.percentile(times, 95),
-      };
-    }
-    return report;
+// Test 2: Concurrent requests (connection pool issues)
+async function testConcurrency(concurrent = 10) {
+  console.log(`Sending ${concurrent} concurrent requests...`);
+  const results = await Promise.allSettled(
+    Array.from({ length: concurrent }, () =>
+      client.crm.contacts.basicApi.getPage(1, undefined, ['email'])
+    )
+  );
+
+  const fulfilled = results.filter(r => r.status === 'fulfilled').length;
+  const rejected = results.filter(r => r.status === 'rejected').length;
+  console.log(`Results: ${fulfilled} ok, ${rejected} failed`);
+
+  const failures = results.filter(r => r.status === 'rejected') as PromiseRejectedResult[];
+  for (const f of failures) {
+    console.log(`  Error: ${f.reason?.code} ${f.reason?.body?.category}`);
   }
 }
 ```
 
-## Memory and Resource Analysis
-
-```typescript
-// Detect memory leaks in HubSpot client usage
-const heapUsed: number[] = [];
-
-setInterval(() => {
-  const usage = process.memoryUsage();
-  heapUsed.push(usage.heapUsed);
-
-  // Alert on sustained growth
-  if (heapUsed.length > 60) { // 1 hour at 1/min
-    const trend = heapUsed[59] - heapUsed[0];
-    if (trend > 100 * 1024 * 1024) { // 100MB growth
-      console.warn('Potential memory leak in hubspot integration');
-    }
-  }
-}, 60000);
-```
-
-## Race Condition Detection
-
-```typescript
-// Detect concurrent access issues
-class HubSpotConcurrencyChecker {
-  private inProgress: Set<string> = new Set();
-
-  async execute<T>(key: string, fn: () => Promise<T>): Promise<T> {
-    if (this.inProgress.has(key)) {
-      console.warn(`Concurrent access detected for ${key}`);
-    }
-
-    this.inProgress.add(key);
-    try {
-      return await fn();
-    } finally {
-      this.inProgress.delete(key);
-    }
-  }
-}
-```
-
-## Support Escalation Template
+### Step 5: Support Escalation Template
 
 ```markdown
 ## HubSpot Support Escalation
 
 **Severity:** P[1-4]
-**Request ID:** [from error response]
-**Timestamp:** [ISO 8601]
+**Portal ID:** [your portal ID]
+**Correlation IDs:** [list from error log]
 
 ### Issue Summary
-[One paragraph description]
+[1-2 sentence description]
 
 ### Steps to Reproduce
-1. [Step 1]
-2. [Step 2]
+1. Make API call: POST /crm/v3/objects/contacts/search
+2. With body: { "filterGroups": [...], "properties": ["email"], "limit": 10 }
+3. Observe: 500 Internal Server Error
 
-### Expected vs Actual
-- Expected: [behavior]
-- Actual: [behavior]
-
-### Evidence Attached
-- [ ] Debug bundle (hubspot-advanced-debug-*.tar.gz)
-- [ ] Minimal reproduction code
-- [ ] Timing analysis
-- [ ] Network capture (if relevant)
-
-### Workarounds Attempted
-1. [Workaround 1] - Result: [outcome]
-2. [Workaround 2] - Result: [outcome]
+### Error Response
+```json
+{
+  "status": "error",
+  "message": "[exact error message]",
+  "correlationId": "[exact ID]",
+  "category": "[exact category]"
+}
 ```
 
-## Instructions
+### Environment
+- SDK: @hubspot/api-client v[version]
+- Node.js: v[version]
+- Auth: Private app token
 
-### Step 1: Collect Evidence Bundle
-Run the comprehensive debug script to gather all relevant data.
+### Timeline
+- [time]: First occurrence
+- [time]: Frequency increased
+- [time]: Pattern identified
 
-### Step 2: Systematic Isolation
-Test each layer independently to identify the failure point.
-
-### Step 3: Create Minimal Reproduction
-Strip down to the simplest failing case.
-
-### Step 4: Escalate with Evidence
-Use the support template with all collected evidence.
+### What We've Tried
+1. [Workaround 1] - Result
+2. [Workaround 2] - Result
+```
 
 ## Output
-- Comprehensive debug bundle collected
-- Failure layer identified
-- Minimal reproduction created
-- Support escalation submitted
+
+- Layer-by-layer diagnostic isolating the failure point
+- Correlation ID collection for support tickets
+- Timing analysis identifying latency patterns
+- Reproduction scripts for rate limit and concurrency issues
+- Support escalation template with all required evidence
 
 ## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Can't reproduce | Race condition | Add timing analysis |
-| Intermittent failure | Timing-dependent | Increase sample size |
-| No useful logs | Missing instrumentation | Add debug logging |
-| Memory growth | Resource leak | Use heap profiling |
 
-## Examples
-
-### Quick Layer Test
-```bash
-# Test each layer in sequence
-curl -v https://api.hubspot.com/health 2>&1 | grep -E "(Connected|TLS|HTTP)"
-```
+| Scenario | Diagnostic | Next Step |
+|----------|-----------|-----------|
+| DNS fails | Check resolver config | Try `8.8.8.8` resolver |
+| TLS fails | Certificate issue | Check system CA bundle |
+| 401 after working | Token rotated | Regenerate in Settings |
+| Intermittent 500 | HubSpot server issue | Collect correlation IDs, file ticket |
+| Latency spikes | Network or HubSpot load | Run timing analysis over time |
 
 ## Resources
-- [HubSpot Support Portal](https://support.hubspot.com)
-- [HubSpot Status Page](https://status.hubspot.com)
+
+- [HubSpot Support Portal](https://help.hubspot.com/)
+- [HubSpot Developer Community](https://community.hubspot.com/t5/APIs-Integrations/bd-p/integration)
+- [Error Handling Guide](https://developers.hubspot.com/docs/api-reference/error-handling)
 
 ## Next Steps
+
 For load testing, see `hubspot-load-scale`.

@@ -1,11 +1,11 @@
 ---
 name: hubspot-migration-deep-dive
 description: |
-  Execute HubSpot major re-architecture and migration strategies with strangler fig pattern.
-  Use when migrating to or from HubSpot, performing major version upgrades,
-  or re-platforming existing integrations to HubSpot.
-  Trigger with phrases like "migrate hubspot", "hubspot migration",
-  "switch to hubspot", "hubspot replatform", "hubspot upgrade major".
+  Execute CRM data migration to HubSpot with batch imports and validation.
+  Use when migrating from Salesforce/Pipedrive/spreadsheets to HubSpot,
+  performing bulk data imports, or re-platforming to HubSpot CRM.
+  Trigger with phrases like "migrate to hubspot", "hubspot data import",
+  "salesforce to hubspot", "hubspot migration", "bulk import hubspot".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
@@ -17,230 +17,336 @@ compatible-with: claude-code
 # HubSpot Migration Deep Dive
 
 ## Overview
-Comprehensive guide for migrating to or from HubSpot, or major version upgrades.
+
+Comprehensive guide for migrating CRM data into HubSpot, including data mapping, batch imports via API, validation, and rollback procedures.
 
 ## Prerequisites
-- Current system documentation
-- HubSpot SDK installed
-- Feature flag infrastructure
-- Rollback strategy tested
 
-## Migration Types
+- Source CRM data exported (CSV or API access)
+- HubSpot account with required scopes
+- Custom properties created in HubSpot for non-default fields
 
-| Type | Complexity | Duration | Risk |
-|------|-----------|----------|------|
-| Fresh install | Low | Days | Low |
-| From competitor | Medium | Weeks | Medium |
-| Major version | Medium | Weeks | Medium |
-| Full replatform | High | Months | High |
+## Instructions
 
-## Pre-Migration Assessment
+### Step 1: Data Inventory and Mapping
 
-### Step 1: Current State Analysis
-```bash
-# Document current implementation
-find . -name "*.ts" -o -name "*.py" | xargs grep -l "hubspot" > hubspot-files.txt
-
-# Count integration points
-wc -l hubspot-files.txt
-
-# Identify dependencies
-npm list | grep hubspot
-pip freeze | grep hubspot
-```
-
-### Step 2: Data Inventory
 ```typescript
-interface MigrationInventory {
-  dataTypes: string[];
-  recordCounts: Record<string, number>;
-  dependencies: string[];
-  integrationPoints: string[];
-  customizations: string[];
+// Map source CRM fields to HubSpot properties
+interface FieldMapping {
+  sourceField: string;
+  hubspotProperty: string;
+  transform?: (value: string) => string;
+  required: boolean;
 }
 
-async function assessHubSpotMigration(): Promise<MigrationInventory> {
+const contactFieldMap: FieldMapping[] = [
+  { sourceField: 'Email', hubspotProperty: 'email', required: true },
+  { sourceField: 'First Name', hubspotProperty: 'firstname', required: false },
+  { sourceField: 'Last Name', hubspotProperty: 'lastname', required: false },
+  { sourceField: 'Phone', hubspotProperty: 'phone', required: false },
+  { sourceField: 'Company', hubspotProperty: 'company', required: false },
+  {
+    sourceField: 'Lead Status',
+    hubspotProperty: 'lifecyclestage',
+    transform: (val) => {
+      // Map source values to HubSpot lifecycle stages
+      const map: Record<string, string> = {
+        'New': 'lead',
+        'Qualified': 'marketingqualifiedlead',
+        'Won': 'customer',
+      };
+      return map[val] || 'lead';
+    },
+    required: false,
+  },
+];
+
+function mapRecord(
+  source: Record<string, string>,
+  fieldMap: FieldMapping[]
+): Record<string, string> {
+  const mapped: Record<string, string> = {};
+  for (const field of fieldMap) {
+    const value = source[field.sourceField];
+    if (value !== undefined && value !== '') {
+      mapped[field.hubspotProperty] = field.transform ? field.transform(value) : value;
+    } else if (field.required) {
+      throw new Error(`Missing required field: ${field.sourceField}`);
+    }
+  }
+  return mapped;
+}
+```
+
+### Step 2: Create Custom Properties Before Import
+
+```typescript
+import * as hubspot from '@hubspot/api-client';
+
+const client = new hubspot.Client({
+  accessToken: process.env.HUBSPOT_ACCESS_TOKEN!,
+});
+
+// Create custom properties that don't exist in HubSpot
+async function ensureCustomProperties(objectType: string) {
+  const customProps = [
+    {
+      name: 'source_crm_id',
+      label: 'Source CRM ID',
+      type: 'string',
+      fieldType: 'text',
+      groupName: 'contactinformation',
+      description: 'Original record ID from source CRM',
+    },
+    {
+      name: 'migration_date',
+      label: 'Migration Date',
+      type: 'date',
+      fieldType: 'date',
+      groupName: 'contactinformation',
+      description: 'Date record was migrated to HubSpot',
+    },
+  ];
+
+  for (const prop of customProps) {
+    try {
+      // POST /crm/v3/properties/{objectType}
+      await client.crm.properties.coreApi.create(objectType, prop);
+      console.log(`Created property: ${prop.name}`);
+    } catch (error: any) {
+      if (error?.body?.category === 'DUPLICATE_PROPERTY') {
+        console.log(`Property already exists: ${prop.name}`);
+      } else {
+        throw error;
+      }
+    }
+  }
+}
+```
+
+### Step 3: Batch Import with Progress Tracking
+
+```typescript
+interface MigrationResult {
+  total: number;
+  created: number;
+  updated: number;
+  errors: Array<{ record: any; error: string }>;
+  durationMs: number;
+}
+
+async function migrateContacts(
+  records: Record<string, string>[],
+  fieldMap: FieldMapping[]
+): Promise<MigrationResult> {
+  const start = Date.now();
+  const result: MigrationResult = {
+    total: records.length,
+    created: 0,
+    updated: 0,
+    errors: [],
+    durationMs: 0,
+  };
+
+  // Process in batches of 100 (HubSpot batch limit)
+  const batchSize = 100;
+  for (let i = 0; i < records.length; i += batchSize) {
+    const batch = records.slice(i, i + batchSize);
+    const mapped = [];
+
+    for (const record of batch) {
+      try {
+        const properties = mapRecord(record, fieldMap);
+        properties.migration_date = new Date().toISOString().split('T')[0];
+        properties.source_crm_id = record.Id || record.id || '';
+        mapped.push({ properties });
+      } catch (error: any) {
+        result.errors.push({ record, error: error.message });
+      }
+    }
+
+    if (mapped.length === 0) continue;
+
+    try {
+      // Use batch upsert to handle existing contacts
+      // POST /crm/v3/objects/contacts/batch/upsert
+      const response = await client.apiRequest({
+        method: 'POST',
+        path: '/crm/v3/objects/contacts/batch/upsert',
+        body: {
+          inputs: mapped.map(m => ({
+            properties: m.properties,
+            idProperty: 'email',
+            id: m.properties.email,
+          })),
+        },
+      });
+
+      const data = await response.json();
+      result.created += data.results?.length || 0;
+    } catch (error: any) {
+      // On batch failure, try individual records
+      for (const item of mapped) {
+        try {
+          await client.crm.contacts.basicApi.create({
+            properties: item.properties,
+            associations: [],
+          });
+          result.created++;
+        } catch (err: any) {
+          if (err?.body?.category === 'CONFLICT') {
+            // Contact exists, update instead
+            const existing = await client.crm.contacts.searchApi.doSearch({
+              filterGroups: [{
+                filters: [{ propertyName: 'email', operator: 'EQ', value: item.properties.email }],
+              }],
+              properties: ['email'], limit: 1, after: 0, sorts: [],
+            });
+            if (existing.results.length > 0) {
+              await client.crm.contacts.basicApi.update(existing.results[0].id, {
+                properties: item.properties,
+              });
+              result.updated++;
+            }
+          } else {
+            result.errors.push({ record: item.properties, error: err.message });
+          }
+        }
+      }
+    }
+
+    // Progress logging
+    const progress = Math.min(i + batchSize, records.length);
+    console.log(`Progress: ${progress}/${records.length} ` +
+      `(${result.created} created, ${result.updated} updated, ${result.errors.length} errors)`);
+
+    // Rate limit: max 10 requests/second
+    await new Promise(r => setTimeout(r, 200));
+  }
+
+  result.durationMs = Date.now() - start;
+  return result;
+}
+```
+
+### Step 4: Migrate Deals with Associations
+
+```typescript
+async function migrateDeals(
+  deals: any[],
+  contactEmailToId: Map<string, string>
+): Promise<MigrationResult> {
+  const result: MigrationResult = {
+    total: deals.length, created: 0, updated: 0, errors: [], durationMs: 0,
+  };
+  const start = Date.now();
+
+  // Get pipeline stages
+  const pipelines = await client.crm.pipelines.pipelinesApi.getAll('deals');
+  const defaultPipeline = pipelines.results[0];
+
+  for (const deal of deals) {
+    try {
+      const associations = [];
+
+      // Associate with contact if we have a mapping
+      if (deal.contactEmail && contactEmailToId.has(deal.contactEmail)) {
+        associations.push({
+          to: { id: contactEmailToId.get(deal.contactEmail)! },
+          types: [{ associationCategory: 'HUBSPOT_DEFINED', associationTypeId: 3 }],
+        });
+      }
+
+      await client.crm.deals.basicApi.create({
+        properties: {
+          dealname: deal.name,
+          amount: String(deal.amount || 0),
+          pipeline: defaultPipeline.id,
+          dealstage: defaultPipeline.stages[0].id,
+          closedate: deal.closeDate || new Date().toISOString(),
+          source_crm_id: deal.id || '',
+        },
+        associations,
+      });
+      result.created++;
+    } catch (error: any) {
+      result.errors.push({ record: deal, error: error.message });
+    }
+  }
+
+  result.durationMs = Date.now() - start;
+  return result;
+}
+```
+
+### Step 5: Post-Migration Validation
+
+```typescript
+async function validateMigration(
+  expectedCounts: { contacts: number; deals: number }
+): Promise<{ valid: boolean; checks: any[] }> {
+  const checks = [];
+
+  // Count contacts
+  const contacts = await client.crm.contacts.searchApi.doSearch({
+    filterGroups: [{
+      filters: [{ propertyName: 'migration_date', operator: 'HAS_PROPERTY', value: '' }],
+    }],
+    properties: ['email'], limit: 1, after: 0, sorts: [],
+  });
+  checks.push({
+    check: 'Contact count',
+    expected: expectedCounts.contacts,
+    actual: contacts.total,
+    passed: contacts.total >= expectedCounts.contacts * 0.95, // 95% threshold
+  });
+
+  // Check for required fields
+  const missingEmail = await client.crm.contacts.searchApi.doSearch({
+    filterGroups: [{
+      filters: [
+        { propertyName: 'migration_date', operator: 'HAS_PROPERTY', value: '' },
+        { propertyName: 'email', operator: 'NOT_HAS_PROPERTY', value: '' },
+      ],
+    }],
+    properties: ['firstname'], limit: 1, after: 0, sorts: [],
+  });
+  checks.push({
+    check: 'Contacts with email',
+    missing: missingEmail.total,
+    passed: missingEmail.total === 0,
+  });
+
   return {
-    dataTypes: await getDataTypes(),
-    recordCounts: await getRecordCounts(),
-    dependencies: await analyzeDependencies(),
-    integrationPoints: await findIntegrationPoints(),
-    customizations: await documentCustomizations(),
+    valid: checks.every(c => c.passed),
+    checks,
   };
 }
 ```
 
-## Migration Strategy: Strangler Fig Pattern
-
-```
-Phase 1: Parallel Run
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   System    │ ──▶ │  HubSpot   │
-│   (100%)    │     │   (0%)      │
-└─────────────┘     └─────────────┘
-
-Phase 2: Gradual Shift
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   (50%)     │ ──▶ │   (50%)     │
-└─────────────┘     └─────────────┘
-
-Phase 3: Complete
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   (0%)      │ ──▶ │   (100%)    │
-└─────────────┘     └─────────────┘
-```
-
-## Implementation Plan
-
-### Phase 1: Setup (Week 1-2)
-```bash
-# Install HubSpot SDK
-npm install @hubspot/sdk
-
-# Configure credentials
-cp .env.example .env.hubspot
-# Edit with new credentials
-
-# Verify connectivity
-node -e "require('@hubspot/sdk').ping()"
-```
-
-### Phase 2: Adapter Layer (Week 3-4)
-```typescript
-// src/adapters/hubspot.ts
-interface ServiceAdapter {
-  create(data: CreateInput): Promise<Resource>;
-  read(id: string): Promise<Resource>;
-  update(id: string, data: UpdateInput): Promise<Resource>;
-  delete(id: string): Promise<void>;
-}
-
-class HubSpotAdapter implements ServiceAdapter {
-  async create(data: CreateInput): Promise<Resource> {
-    const hubspotData = this.transform(data);
-    return hubspotClient.create(hubspotData);
-  }
-
-  private transform(data: CreateInput): HubSpotInput {
-    // Map from old format to HubSpot format
-  }
-}
-```
-
-### Phase 3: Data Migration (Week 5-6)
-```typescript
-async function migrateHubSpotData(): Promise<MigrationResult> {
-  const batchSize = 100;
-  let processed = 0;
-  let errors: MigrationError[] = [];
-
-  for await (const batch of oldSystem.iterateBatches(batchSize)) {
-    try {
-      const transformed = batch.map(transform);
-      await hubspotClient.batchCreate(transformed);
-      processed += batch.length;
-    } catch (error) {
-      errors.push({ batch, error });
-    }
-
-    // Progress update
-    console.log(`Migrated ${processed} records`);
-  }
-
-  return { processed, errors };
-}
-```
-
-### Phase 4: Traffic Shift (Week 7-8)
-```typescript
-// Feature flag controlled traffic split
-function getServiceAdapter(): ServiceAdapter {
-  const hubspotPercentage = getFeatureFlag('hubspot_migration_percentage');
-
-  if (Math.random() * 100 < hubspotPercentage) {
-    return new HubSpotAdapter();
-  }
-
-  return new LegacyAdapter();
-}
-```
-
-## Rollback Plan
-
-```bash
-# Immediate rollback
-kubectl set env deployment/app HUBSPOT_ENABLED=false
-kubectl rollout restart deployment/app
-
-# Data rollback (if needed)
-./scripts/restore-from-backup.sh --date YYYY-MM-DD
-
-# Verify rollback
-curl https://app.yourcompany.com/health | jq '.services.hubspot'
-```
-
-## Post-Migration Validation
-
-```typescript
-async function validateHubSpotMigration(): Promise<ValidationReport> {
-  const checks = [
-    { name: 'Data count match', fn: checkDataCounts },
-    { name: 'API functionality', fn: checkApiFunctionality },
-    { name: 'Performance baseline', fn: checkPerformance },
-    { name: 'Error rates', fn: checkErrorRates },
-  ];
-
-  const results = await Promise.all(
-    checks.map(async c => ({ name: c.name, result: await c.fn() }))
-  );
-
-  return { checks: results, passed: results.every(r => r.result.success) };
-}
-```
-
-## Instructions
-
-### Step 1: Assess Current State
-Document existing implementation and data inventory.
-
-### Step 2: Build Adapter Layer
-Create abstraction layer for gradual migration.
-
-### Step 3: Migrate Data
-Run batch data migration with error handling.
-
-### Step 4: Shift Traffic
-Gradually route traffic to new HubSpot integration.
-
 ## Output
-- Migration assessment complete
-- Adapter layer implemented
-- Data migrated successfully
-- Traffic fully shifted to HubSpot
+
+- Field mapping from source CRM to HubSpot properties
+- Custom properties created before import
+- Batch upsert with progress tracking and error recovery
+- Deal migration with contact associations
+- Post-migration validation with threshold checks
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Data mismatch | Transform errors | Validate transform logic |
-| Performance drop | No caching | Add caching layer |
-| Rollback triggered | Errors spiked | Reduce traffic percentage |
-| Validation failed | Missing data | Check batch processing |
-
-## Examples
-
-### Quick Migration Status
-```typescript
-const status = await validateHubSpotMigration();
-console.log(`Migration ${status.passed ? 'PASSED' : 'FAILED'}`);
-status.checks.forEach(c => console.log(`  ${c.name}: ${c.result.success}`));
-```
+| `PROPERTY_DOESNT_EXIST` | Custom property not created | Run `ensureCustomProperties` first |
+| `409 Conflict` | Contact email already exists | Use batch upsert instead of batch create |
+| Batch partial failure | Some records invalid | Fall back to individual creates |
+| Association failure | Contact not yet created | Import contacts before deals |
 
 ## Resources
-- [Strangler Fig Pattern](https://martinfowler.com/bliki/StranglerFigApplication.html)
-- [HubSpot Migration Guide](https://docs.hubspot.com/migration)
 
-## Flagship+ Skills
+- [HubSpot Import API](https://developers.hubspot.com/docs/guides/api/crm/imports)
+- [Batch Operations Guide](https://developers.hubspot.com/docs/guides/api/crm/understanding-the-crm)
+- [Custom Properties API](https://developers.hubspot.com/docs/guides/api/crm/properties)
+
+## Next Steps
+
 For advanced troubleshooting, see `hubspot-advanced-troubleshooting`.

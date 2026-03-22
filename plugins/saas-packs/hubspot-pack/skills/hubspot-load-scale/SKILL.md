@@ -1,11 +1,11 @@
 ---
 name: hubspot-load-scale
 description: |
-  Implement HubSpot load testing, auto-scaling, and capacity planning strategies.
-  Use when running performance tests, configuring horizontal scaling,
-  or planning capacity for HubSpot integrations.
+  Load test HubSpot integrations and plan capacity around API rate limits.
+  Use when running performance tests, planning for traffic growth,
+  or sizing your HubSpot integration for production load.
   Trigger with phrases like "hubspot load test", "hubspot scale",
-  "hubspot performance test", "hubspot capacity", "hubspot k6", "hubspot benchmark".
+  "hubspot capacity", "hubspot benchmark", "hubspot traffic planning".
 allowed-tools: Read, Write, Edit, Bash(k6:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
@@ -17,260 +17,245 @@ compatible-with: claude-code
 # HubSpot Load & Scale
 
 ## Overview
-Load testing, scaling strategies, and capacity planning for HubSpot integrations.
+
+Load testing and capacity planning for HubSpot integrations, constrained by the 10 requests/second and 500,000 requests/day API limits.
 
 ## Prerequisites
-- k6 load testing tool installed
-- Kubernetes cluster with HPA configured
-- Prometheus for metrics collection
-- Test environment API keys
 
-## Load Testing with k6
+- k6 or similar load testing tool
+- HubSpot developer test account (never load test against production)
+- Understanding of HubSpot rate limits
 
-### Basic Load Test
+## Instructions
+
+### Step 1: Understand HubSpot Rate Limit Constraints
+
+Your integration's maximum throughput is bound by HubSpot's limits:
+
+| Constraint | Limit | Impact |
+|-----------|-------|--------|
+| Per-second | 10 req/sec | 600 req/min maximum |
+| Daily | 500,000/day | ~347 req/min sustained |
+| Batch size | 100 records/batch | Each batch = 1 API call |
+| Search results | 10,000 total | Cannot page past 10K |
+| Associations | 500 per record | Hard limit |
+
+**Effective throughput with batching:**
+- Individual operations: 10 records/sec
+- Batch operations: 1,000 records/sec (10 batches/sec x 100 records/batch)
+
+### Step 2: k6 Load Test Script
+
 ```javascript
 // hubspot-load-test.js
 import http from 'k6/http';
 import { check, sleep } from 'k6';
+import { Rate, Trend } from 'k6/metrics';
+
+const errorRate = new Rate('hubspot_errors');
+const rateLimited = new Rate('hubspot_rate_limited');
 
 export const options = {
   stages: [
-    { duration: '2m', target: 10 },   // Ramp up
-    { duration: '5m', target: 10 },   // Steady state
-    { duration: '2m', target: 50 },   // Ramp to peak
-    { duration: '5m', target: 50 },   // Stress test
-    { duration: '2m', target: 0 },    // Ramp down
+    { duration: '1m', target: 2 },    // warm up (2 req/sec)
+    { duration: '3m', target: 5 },    // moderate load
+    { duration: '2m', target: 8 },    // approach limit
+    { duration: '2m', target: 10 },   // at limit
+    { duration: '1m', target: 0 },    // ramp down
   ],
   thresholds: {
-    http_req_duration: ['p(95)<500'],
-    http_req_failed: ['rate<0.01'],
+    http_req_duration: ['p(95)<2000'],       // 95% under 2s
+    hubspot_errors: ['rate<0.05'],           // <5% errors
+    hubspot_rate_limited: ['rate<0.10'],     // <10% rate limited
   },
 };
 
+const BASE_URL = 'https://api.hubapi.com';
+const TOKEN = __ENV.HUBSPOT_ACCESS_TOKEN;
+
 export default function () {
-  const response = http.post(
-    'https://api.hubspot.com/v1/resource',
-    JSON.stringify({ test: true }),
+  // Test: List contacts (GET)
+  const listRes = http.get(
+    `${BASE_URL}/crm/v3/objects/contacts?limit=10&properties=email,firstname`,
+    { headers: { Authorization: `Bearer ${TOKEN}` } }
+  );
+
+  check(listRes, { 'list contacts: 200': (r) => r.status === 200 });
+  errorRate.add(listRes.status >= 400 && listRes.status !== 429);
+  rateLimited.add(listRes.status === 429);
+
+  sleep(0.1); // 100ms between requests per VU
+
+  // Test: Search contacts (POST)
+  const searchRes = http.post(
+    `${BASE_URL}/crm/v3/objects/contacts/search`,
+    JSON.stringify({
+      filterGroups: [{
+        filters: [{
+          propertyName: 'lifecyclestage',
+          operator: 'EQ',
+          value: 'lead',
+        }],
+      }],
+      properties: ['email'],
+      limit: 10,
+      after: 0,
+      sorts: [],
+    }),
     {
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${__ENV.HUBSPOT_API_KEY}`,
+        Authorization: `Bearer ${TOKEN}`,
       },
     }
   );
 
-  check(response, {
-    'status is 200': (r) => r.status === 200,
-    'latency < 500ms': (r) => r.timings.duration < 500,
+  check(searchRes, { 'search contacts: 200': (r) => r.status === 200 });
+  errorRate.add(searchRes.status >= 400 && searchRes.status !== 429);
+  rateLimited.add(searchRes.status === 429);
+
+  sleep(0.1);
+}
+```
+
+```bash
+# Run against test account only
+k6 run --env HUBSPOT_ACCESS_TOKEN=$HUBSPOT_TEST_TOKEN hubspot-load-test.js
+```
+
+### Step 3: Capacity Planning Calculator
+
+```typescript
+interface CapacityPlan {
+  operationType: string;
+  recordsPerDay: number;
+  apiCallsPerDay: number;
+  batchApiCallsPerDay: number;
+  percentOfDailyQuota: number;
+  feasible: boolean;
+}
+
+function planCapacity(operations: Array<{
+  type: string;
+  recordsPerDay: number;
+  batchable: boolean;
+}>): CapacityPlan[] {
+  const DAILY_LIMIT = 500_000;
+  let totalCalls = 0;
+
+  const plans = operations.map(op => {
+    const apiCallsPerDay = op.batchable
+      ? Math.ceil(op.recordsPerDay / 100) // batch: 100 per call
+      : op.recordsPerDay;                  // individual: 1 per call
+
+    totalCalls += apiCallsPerDay;
+
+    return {
+      operationType: op.type,
+      recordsPerDay: op.recordsPerDay,
+      apiCallsPerDay: op.batchable ? op.recordsPerDay : apiCallsPerDay,
+      batchApiCallsPerDay: apiCallsPerDay,
+      percentOfDailyQuota: (apiCallsPerDay / DAILY_LIMIT) * 100,
+      feasible: apiCallsPerDay < DAILY_LIMIT * 0.5, // leave 50% headroom
+    };
   });
 
-  sleep(1);
+  console.log(`\nTotal daily API calls: ${totalCalls.toLocaleString()} / ${DAILY_LIMIT.toLocaleString()}`);
+  console.log(`Quota utilization: ${((totalCalls / DAILY_LIMIT) * 100).toFixed(1)}%`);
+
+  if (totalCalls > DAILY_LIMIT) {
+    console.warn('WARNING: Exceeds daily limit! Optimize with batching or reduce volume.');
+  }
+
+  return plans;
 }
+
+// Example capacity plan
+planCapacity([
+  { type: 'Sync contacts (read)', recordsPerDay: 50000, batchable: true },
+  { type: 'Create deals', recordsPerDay: 500, batchable: true },
+  { type: 'Search contacts', recordsPerDay: 10000, batchable: false },
+  { type: 'Webhook processing', recordsPerDay: 5000, batchable: false },
+]);
+// Total: 500 + 5 + 10000 + 5000 = 15,505 API calls
+// Quota: 3.1% -- very feasible
 ```
 
-### Run Load Test
-```bash
-# Install k6
-brew install k6  # macOS
-# or: sudo apt install k6  # Linux
+### Step 4: Scaling Patterns for High Volume
 
-# Run test
-k6 run --env HUBSPOT_API_KEY=${HUBSPOT_API_KEY} hubspot-load-test.js
-
-# Run with output to InfluxDB
-k6 run --out influxdb=http://localhost:8086/k6 hubspot-load-test.js
-```
-
-## Scaling Patterns
-
-### Horizontal Scaling
-```yaml
-# kubernetes HPA
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: hubspot-integration-hpa
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: hubspot-integration
-  minReplicas: 2
-  maxReplicas: 20
-  metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        target:
-          type: Utilization
-          averageUtilization: 70
-    - type: Pods
-      pods:
-        metric:
-          name: hubspot_queue_depth
-        target:
-          type: AverageValue
-          averageValue: 100
-```
-
-### Connection Pooling
 ```typescript
-import { Pool } from 'generic-pool';
+// Pattern 1: Queue-based rate limiting
+import PQueue from 'p-queue';
 
-const hubspotPool = Pool.create({
-  create: async () => {
-    return new HubSpotClient({
-      apiKey: process.env.HUBSPOT_API_KEY!,
-    });
-  },
-  destroy: async (client) => {
-    await client.close();
-  },
-  max: 20,
-  min: 5,
-  idleTimeoutMillis: 30000,
+const hubspotQueue = new PQueue({
+  concurrency: 5,
+  interval: 1000,
+  intervalCap: 10, // HubSpot's 10/sec limit
 });
 
-async function withHubSpotClient<T>(
-  fn: (client: HubSpotClient) => Promise<T>
-): Promise<T> {
-  const client = await hubspotPool.acquire();
-  try {
-    return await fn(client);
-  } finally {
-    hubspotPool.release(client);
+// Pattern 2: Batch aggregation
+class BatchAggregator<T> {
+  private buffer: T[] = [];
+  private timer: NodeJS.Timeout | null = null;
+
+  constructor(
+    private maxBatch: number,
+    private maxWaitMs: number,
+    private flush: (items: T[]) => Promise<void>
+  ) {}
+
+  add(item: T): void {
+    this.buffer.push(item);
+    if (this.buffer.length >= this.maxBatch) {
+      this.flushNow();
+    } else if (!this.timer) {
+      this.timer = setTimeout(() => this.flushNow(), this.maxWaitMs);
+    }
+  }
+
+  private async flushNow(): Promise<void> {
+    if (this.timer) { clearTimeout(this.timer); this.timer = null; }
+    if (this.buffer.length === 0) return;
+    const batch = this.buffer.splice(0, this.maxBatch);
+    await this.flush(batch);
   }
 }
+
+// Usage: aggregate individual creates into batch creates
+const contactAggregator = new BatchAggregator(
+  100,   // max batch size (HubSpot limit)
+  5000,  // flush every 5 seconds max
+  async (contacts) => {
+    await client.crm.contacts.batchApi.create({
+      inputs: contacts.map(c => ({ properties: c, associations: [] })),
+    });
+  }
+);
 ```
-
-## Capacity Planning
-
-### Metrics to Monitor
-| Metric | Warning | Critical |
-|--------|---------|----------|
-| CPU Utilization | > 70% | > 85% |
-| Memory Usage | > 75% | > 90% |
-| Request Queue Depth | > 100 | > 500 |
-| Error Rate | > 1% | > 5% |
-| P95 Latency | > 1000ms | > 3000ms |
-
-### Capacity Calculation
-```typescript
-interface CapacityEstimate {
-  currentRPS: number;
-  maxRPS: number;
-  headroom: number;
-  scaleRecommendation: string;
-}
-
-function estimateHubSpotCapacity(
-  metrics: SystemMetrics
-): CapacityEstimate {
-  const currentRPS = metrics.requestsPerSecond;
-  const avgLatency = metrics.p50Latency;
-  const cpuUtilization = metrics.cpuPercent;
-
-  // Estimate max RPS based on current performance
-  const maxRPS = currentRPS / (cpuUtilization / 100) * 0.7; // 70% target
-  const headroom = ((maxRPS - currentRPS) / currentRPS) * 100;
-
-  return {
-    currentRPS,
-    maxRPS: Math.floor(maxRPS),
-    headroom: Math.round(headroom),
-    scaleRecommendation: headroom < 30
-      ? 'Scale up soon'
-      : headroom < 50
-      ? 'Monitor closely'
-      : 'Adequate capacity',
-  };
-}
-```
-
-## Benchmark Results Template
-
-```markdown
-## HubSpot Performance Benchmark
-**Date:** YYYY-MM-DD
-**Environment:** [staging/production]
-**SDK Version:** X.Y.Z
-
-### Test Configuration
-- Duration: 10 minutes
-- Ramp: 10 → 100 → 10 VUs
-- Target endpoint: /v1/resource
-
-### Results
-| Metric | Value |
-|--------|-------|
-| Total Requests | 50,000 |
-| Success Rate | 99.9% |
-| P50 Latency | 120ms |
-| P95 Latency | 350ms |
-| P99 Latency | 800ms |
-| Max RPS Achieved | 150 |
-
-### Observations
-- [Key finding 1]
-- [Key finding 2]
-
-### Recommendations
-- [Scaling recommendation]
-```
-
-## Instructions
-
-### Step 1: Create Load Test Script
-Write k6 test script with appropriate thresholds.
-
-### Step 2: Configure Auto-Scaling
-Set up HPA with CPU and custom metrics.
-
-### Step 3: Run Load Test
-Execute test and collect metrics.
-
-### Step 4: Analyze and Document
-Record results in benchmark template.
 
 ## Output
-- Load test script created
-- HPA configured
-- Benchmark results documented
-- Capacity recommendations defined
+
+- Understanding of HubSpot rate limit constraints
+- k6 load test script for realistic testing
+- Capacity planning calculator for daily operations
+- Queue-based rate limiting for production use
+- Batch aggregation pattern for high-volume writes
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| k6 timeout | Rate limited | Reduce RPS |
-| HPA not scaling | Wrong metrics | Verify metric name |
-| Connection refused | Pool exhausted | Increase pool size |
-| Inconsistent results | Warm-up needed | Add ramp-up phase |
-
-## Examples
-
-### Quick k6 Test
-```bash
-k6 run --vus 10 --duration 30s hubspot-load-test.js
-```
-
-### Check Current Capacity
-```typescript
-const metrics = await getSystemMetrics();
-const capacity = estimateHubSpotCapacity(metrics);
-console.log('Headroom:', capacity.headroom + '%');
-console.log('Recommendation:', capacity.scaleRecommendation);
-```
-
-### Scale HPA Manually
-```bash
-kubectl scale deployment hubspot-integration --replicas=5
-kubectl get hpa hubspot-integration-hpa
-```
+| Load test hits 429 immediately | Testing against shared portal | Use dedicated test account |
+| k6 results inconsistent | HubSpot API latency varies | Run multiple iterations |
+| Capacity plan exceeds limit | Too many individual calls | Convert to batch operations |
+| Batch aggregator data loss | App crash before flush | Add persistence to buffer |
 
 ## Resources
-- [k6 Documentation](https://k6.io/docs/)
-- [Kubernetes HPA](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/)
-- [HubSpot Rate Limits](https://docs.hubspot.com/rate-limits)
+
+- [HubSpot API Usage Guidelines](https://developers.hubspot.com/docs/guides/apps/api-usage/usage-details)
+- [k6 Documentation](https://grafana.com/docs/k6/)
+- [p-queue npm](https://github.com/sindresorhus/p-queue)
 
 ## Next Steps
+
 For reliability patterns, see `hubspot-reliability-patterns`.

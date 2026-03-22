@@ -1,11 +1,11 @@
 ---
 name: hubspot-architecture-variants
 description: |
-  Choose and implement HubSpot validated architecture blueprints for different scales.
-  Use when designing new HubSpot integrations, choosing between monolith/service/microservice
-  architectures, or planning migration paths for HubSpot applications.
-  Trigger with phrases like "hubspot architecture", "hubspot blueprint",
-  "how to structure hubspot", "hubspot project layout", "hubspot microservice".
+  Choose and implement HubSpot integration architecture for different scales.
+  Use when designing new HubSpot integrations, choosing between embedded/service/gateway
+  patterns, or planning architecture for HubSpot CRM applications.
+  Trigger with phrases like "hubspot architecture", "hubspot design pattern",
+  "how to structure hubspot", "hubspot integration pattern", "hubspot microservice".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
@@ -17,270 +17,235 @@ compatible-with: claude-code
 # HubSpot Architecture Variants
 
 ## Overview
-Three validated architecture blueprints for HubSpot integrations.
+
+Three validated architecture patterns for HubSpot CRM integrations at different scales, from embedded client to dedicated API gateway.
 
 ## Prerequisites
-- Understanding of team size and DAU requirements
+
+- Understanding of team size and daily API call volume
 - Knowledge of deployment infrastructure
-- Clear SLA requirements
-- Growth projections available
-
-## Variant A: Monolith (Simple)
-
-**Best for:** MVPs, small teams, < 10K daily active users
-
-```
-my-app/
-├── src/
-│   ├── hubspot/
-│   │   ├── client.ts          # Singleton client
-│   │   ├── types.ts           # Types
-│   │   └── middleware.ts      # Express middleware
-│   ├── routes/
-│   │   └── api/
-│   │       └── hubspot.ts    # API routes
-│   └── index.ts
-├── tests/
-│   └── hubspot.test.ts
-└── package.json
-```
-
-### Key Characteristics
-- Single deployment unit
-- Synchronous HubSpot calls in request path
-- In-memory caching
-- Simple error handling
-
-### Code Pattern
-```typescript
-// Direct integration in route handler
-app.post('/api/create', async (req, res) => {
-  try {
-    const result = await hubspotClient.create(req.body);
-    res.json(result);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-```
-
----
-
-## Variant B: Service Layer (Moderate)
-
-**Best for:** Growing startups, 10K-100K DAU, multiple integrations
-
-```
-my-app/
-├── src/
-│   ├── services/
-│   │   ├── hubspot/
-│   │   │   ├── client.ts      # Client wrapper
-│   │   │   ├── service.ts     # Business logic
-│   │   │   ├── repository.ts  # Data access
-│   │   │   └── types.ts
-│   │   └── index.ts           # Service exports
-│   ├── controllers/
-│   │   └── hubspot.ts
-│   ├── routes/
-│   ├── middleware/
-│   ├── queue/
-│   │   └── hubspot-processor.ts  # Async processing
-│   └── index.ts
-├── config/
-│   └── hubspot/
-└── package.json
-```
-
-### Key Characteristics
-- Separation of concerns
-- Background job processing
-- Redis caching
-- Circuit breaker pattern
-- Structured error handling
-
-### Code Pattern
-```typescript
-// Service layer abstraction
-class HubSpotService {
-  constructor(
-    private client: HubSpotClient,
-    private cache: CacheService,
-    private queue: QueueService
-  ) {}
-
-  async createResource(data: CreateInput): Promise<Resource> {
-    // Business logic before API call
-    const validated = this.validate(data);
-
-    // Check cache
-    const cached = await this.cache.get(cacheKey);
-    if (cached) return cached;
-
-    // API call with retry
-    const result = await this.withRetry(() =>
-      this.client.create(validated)
-    );
-
-    // Cache result
-    await this.cache.set(cacheKey, result, 300);
-
-    // Async follow-up
-    await this.queue.enqueue('hubspot.post-create', result);
-
-    return result;
-  }
-}
-```
-
----
-
-## Variant C: Microservice (Complex)
-
-**Best for:** Enterprise, 100K+ DAU, strict SLAs
-
-```
-hubspot-service/              # Dedicated microservice
-├── src/
-│   ├── api/
-│   │   ├── grpc/
-│   │   │   └── hubspot.proto
-│   │   └── rest/
-│   │       └── routes.ts
-│   ├── domain/
-│   │   ├── entities/
-│   │   ├── events/
-│   │   └── services/
-│   ├── infrastructure/
-│   │   ├── hubspot/
-│   │   │   ├── client.ts
-│   │   │   ├── mapper.ts
-│   │   │   └── circuit-breaker.ts
-│   │   ├── cache/
-│   │   ├── queue/
-│   │   └── database/
-│   └── index.ts
-├── config/
-├── k8s/
-│   ├── deployment.yaml
-│   ├── service.yaml
-│   └── hpa.yaml
-└── package.json
-
-other-services/
-├── order-service/       # Calls hubspot-service
-├── payment-service/
-└── notification-service/
-```
-
-### Key Characteristics
-- Dedicated HubSpot microservice
-- gRPC for internal communication
-- Event-driven architecture
-- Database per service
-- Kubernetes autoscaling
-- Distributed tracing
-- Circuit breaker per service
-
-### Code Pattern
-```typescript
-// Event-driven with domain isolation
-class HubSpotAggregate {
-  private events: DomainEvent[] = [];
-
-  process(command: HubSpotCommand): void {
-    // Domain logic
-    const result = this.execute(command);
-
-    // Emit domain event
-    this.events.push(new HubSpotProcessedEvent(result));
-  }
-
-  getUncommittedEvents(): DomainEvent[] {
-    return [...this.events];
-  }
-}
-
-// Event handler
-@EventHandler(HubSpotProcessedEvent)
-class HubSpotEventHandler {
-  async handle(event: HubSpotProcessedEvent): Promise<void> {
-    // Saga orchestration
-    await this.sagaOrchestrator.continue(event);
-  }
-}
-```
-
----
-
-## Decision Matrix
-
-| Factor | Monolith | Service Layer | Microservice |
-|--------|----------|---------------|--------------|
-| Team Size | 1-5 | 5-20 | 20+ |
-| DAU | < 10K | 10K-100K | 100K+ |
-| Deployment Frequency | Weekly | Daily | Continuous |
-| Failure Isolation | None | Partial | Full |
-| Operational Complexity | Low | Medium | High |
-| Time to Market | Fastest | Moderate | Slowest |
-
-## Migration Path
-
-```
-Monolith → Service Layer:
-1. Extract HubSpot code to service/
-2. Add caching layer
-3. Add background processing
-
-Service Layer → Microservice:
-1. Create dedicated hubspot-service repo
-2. Define gRPC contract
-3. Add event bus
-4. Deploy to Kubernetes
-5. Migrate traffic gradually
-```
+- Clear sync requirements (real-time vs batch)
 
 ## Instructions
 
-### Step 1: Assess Requirements
-Use the decision matrix to identify appropriate variant.
+### Variant A: Embedded Client (Simple)
 
-### Step 2: Choose Architecture
-Select Monolith, Service Layer, or Microservice based on needs.
+**Best for:** MVPs, small teams, < 10K contacts, < 50K API calls/day
 
-### Step 3: Implement Structure
-Set up project layout following the chosen blueprint.
-
-### Step 4: Plan Migration Path
-Document upgrade path for future scaling.
-
-## Output
-- Architecture variant selected
-- Project structure implemented
-- Migration path documented
-- Appropriate patterns applied
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Over-engineering | Wrong variant choice | Start simpler |
-| Performance issues | Wrong layer | Add caching/async |
-| Team friction | Complex architecture | Simplify or train |
-| Deployment complexity | Microservice overhead | Consider service layer |
-
-## Examples
-
-### Quick Variant Check
-```bash
-# Count team size and DAU to select variant
-echo "Team: $(git log --format='%ae' | sort -u | wc -l) developers"
-echo "DAU: Check analytics dashboard"
+```
+your-app/
+├── src/
+│   ├── hubspot/
+│   │   ├── client.ts       # @hubspot/api-client singleton
+│   │   └── contacts.ts     # Direct CRM operations
+│   ├── routes/
+│   │   └── api.ts           # API routes that call HubSpot directly
+│   └── index.ts
 ```
 
+```typescript
+// Direct integration in route handlers
+import * as hubspot from '@hubspot/api-client';
+
+const client = new hubspot.Client({
+  accessToken: process.env.HUBSPOT_ACCESS_TOKEN!,
+  numberOfApiCallRetries: 3,
+});
+
+app.get('/api/contacts', async (req, res) => {
+  const page = await client.crm.contacts.basicApi.getPage(
+    20, req.query.after as string, ['email', 'firstname', 'lastname']
+  );
+  res.json(page);
+});
+
+app.post('/api/contacts', async (req, res) => {
+  const contact = await client.crm.contacts.basicApi.create({
+    properties: req.body,
+    associations: [],
+  });
+  res.status(201).json(contact);
+});
+```
+
+**Pros:** Fast to build, simple to understand, one deployment
+**Cons:** No fault isolation, HubSpot latency in user request path
+
+---
+
+### Variant B: Service Layer with Async Queue
+
+**Best for:** Growing teams, 10K-100K contacts, 50K-300K API calls/day
+
+```
+your-app/
+├── src/
+│   ├── services/
+│   │   └── hubspot/
+│   │       ├── client.ts       # Singleton with circuit breaker
+│   │       ├── contact.ts      # Business logic layer
+│   │       ├── deal.ts
+│   │       └── sync.ts         # Background sync
+│   ├── queue/
+│   │   └── hubspot-worker.ts   # Process async operations
+│   ├── cache/
+│   │   └── hubspot-cache.ts    # Redis cache layer
+│   ├── routes/
+│   └── index.ts
+```
+
+```typescript
+// Service layer abstracts HubSpot from route handlers
+class ContactService {
+  private client = getHubSpotClient();
+  private cache: Redis;
+  private queue: BullQueue;
+
+  async getContact(id: string): Promise<Contact> {
+    // Check cache first
+    const cached = await this.cache.get(`contact:${id}`);
+    if (cached) return JSON.parse(cached);
+
+    // Fetch from HubSpot
+    const contact = await this.client.crm.contacts.basicApi.getById(
+      id, ['email', 'firstname', 'lastname', 'lifecyclestage']
+    );
+
+    // Cache for 5 minutes
+    await this.cache.setex(`contact:${id}`, 300, JSON.stringify(contact));
+    return contact;
+  }
+
+  async createContact(data: CreateContactInput): Promise<{ jobId: string }> {
+    // Enqueue for async processing (fast API response)
+    const job = await this.queue.add('create-contact', data);
+    return { jobId: job.id };
+  }
+}
+
+// Background worker
+queue.process('create-contact', async (job) => {
+  const contact = await client.crm.contacts.basicApi.create({
+    properties: job.data,
+    associations: [],
+  });
+  // Invalidate cache, send notification, etc.
+  await cache.del(`contacts:list`);
+  return contact;
+});
+```
+
+**Pros:** Fault isolation, fast API responses, caching, background processing
+**Cons:** More complexity, Redis dependency, two process types
+
+---
+
+### Variant C: Dedicated HubSpot Gateway
+
+**Best for:** Enterprise, 100K+ contacts, multiple services needing CRM access
+
+```
+hubspot-gateway/               # Standalone service
+├── src/
+│   ├── api/
+│   │   ├── grpc/              # Internal gRPC API
+│   │   │   └── hubspot.proto
+│   │   └── rest/              # REST API (optional)
+│   ├── domain/
+│   │   ├── contacts.ts        # Domain logic
+│   │   ├── deals.ts
+│   │   └── sync.ts
+│   ├── infrastructure/
+│   │   ├── hubspot-client.ts  # SDK wrapper
+│   │   ├── rate-limiter.ts    # Centralized rate limiting
+│   │   ├── cache.ts           # Redis cache
+│   │   └── circuit-breaker.ts
+│   └── index.ts
+├── k8s/
+│   ├── deployment.yaml
+│   └── hpa.yaml
+
+other-services/
+├── order-service/      # Calls hubspot-gateway
+├── marketing-service/  # Calls hubspot-gateway
+└── analytics-service/  # Calls hubspot-gateway
+```
+
+```typescript
+// All HubSpot access goes through the gateway
+// Gateway handles rate limiting, caching, and circuit breaking
+
+// Centralized rate limiter ensures all services share the 10 req/sec limit
+class CentralizedRateLimiter {
+  private redis: Redis;
+  private maxPerSecond = 8; // leave headroom
+
+  async acquire(): Promise<void> {
+    const key = `hubspot:ratelimit:${Math.floor(Date.now() / 1000)}`;
+    const count = await this.redis.incr(key);
+    await this.redis.expire(key, 2);
+
+    if (count > this.maxPerSecond) {
+      throw new Error('HubSpot rate limit -- waiting');
+    }
+  }
+}
+```
+
+**Pros:** Single point of rate limiting, all services share cache, independent scaling
+**Cons:** Network hop, operational complexity, gRPC/REST contract management
+
+---
+
+### Decision Matrix
+
+| Factor | Embedded | Service Layer | Gateway |
+|--------|----------|---------------|---------|
+| Team size | 1-3 | 3-15 | 15+ |
+| Contacts | < 10K | 10K-100K | 100K+ |
+| Services using CRM | 1 | 1-2 | 3+ |
+| Sync model | Synchronous | Async queue | Event-driven |
+| Cache | In-memory | Redis | Redis + CDN |
+| Rate limit mgmt | SDK built-in | App-level | Centralized |
+| Fault isolation | None | Partial | Full |
+| Time to build | Days | 1-2 weeks | 3-4 weeks |
+
+### Migration Path
+
+```
+Embedded → Service Layer:
+  1. Extract HubSpot client to services/hubspot/
+  2. Add Redis cache layer
+  3. Move writes to background queue
+
+Service Layer → Gateway:
+  1. Extract to standalone service
+  2. Define gRPC/REST contract
+  3. Add centralized rate limiter
+  4. Migrate services one at a time
+```
+
+## Output
+
+- Three validated architecture patterns with code examples
+- Decision matrix for choosing the right pattern
+- Migration path from simpler to more complex architectures
+
+## Error Handling
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Over-engineering | Wrong variant choice | Start with Embedded, evolve |
+| Rate limit shared | Multiple services hitting HubSpot | Move to Gateway pattern |
+| Cache inconsistency | No invalidation strategy | Invalidate on webhook events |
+| Gateway single point of failure | No redundancy | Run multiple replicas + HPA |
+
 ## Resources
-- [Monolith First](https://martinfowler.com/bliki/MonolithFirst.html)
-- [Microservices Guide](https://martinfowler.com/microservices/)
-- [HubSpot Architecture Guide](https://docs.hubspot.com/architecture)
+
+- [HubSpot API Client GitHub](https://github.com/HubSpot/hubspot-api-nodejs)
+- [HubSpot API Usage Guidelines](https://developers.hubspot.com/docs/guides/apps/api-usage/usage-details)
+- [Monolith First (Martin Fowler)](https://martinfowler.com/bliki/MonolithFirst.html)
 
 ## Next Steps
+
 For common anti-patterns, see `hubspot-known-pitfalls`.

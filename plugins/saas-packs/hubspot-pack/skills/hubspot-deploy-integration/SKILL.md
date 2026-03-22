@@ -2,10 +2,10 @@
 name: hubspot-deploy-integration
 description: |
   Deploy HubSpot integrations to Vercel, Fly.io, and Cloud Run platforms.
-  Use when deploying HubSpot-powered applications to production,
-  configuring platform-specific secrets, or setting up deployment pipelines.
+  Use when deploying HubSpot-powered applications, configuring platform secrets,
+  or setting up deployment pipelines with HubSpot access tokens.
   Trigger with phrases like "deploy hubspot", "hubspot Vercel",
-  "hubspot production deploy", "hubspot Cloud Run", "hubspot Fly.io".
+  "hubspot Cloud Run", "hubspot Fly.io", "hubspot production deploy".
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
@@ -17,37 +17,33 @@ compatible-with: claude-code
 # HubSpot Deploy Integration
 
 ## Overview
-Deploy HubSpot-powered applications to popular platforms with proper secrets management.
+
+Deploy HubSpot-powered applications to Vercel, Fly.io, or Google Cloud Run with proper secret management and health checks.
 
 ## Prerequisites
-- HubSpot API keys for production environment
+
+- HubSpot private app token for production
 - Platform CLI installed (vercel, fly, or gcloud)
-- Application code ready for deployment
-- Environment variables documented
+- Application code with health check endpoint
 
-## Vercel Deployment
+## Instructions
 
-### Environment Setup
+### Step 1: Vercel Deployment
+
 ```bash
 # Add HubSpot secrets to Vercel
-vercel secrets add hubspot_api_key sk_live_***
-vercel secrets add hubspot_webhook_secret whsec_***
+vercel env add HUBSPOT_ACCESS_TOKEN production
+# Paste: pat-na1-xxxxx
 
-# Link to project
-vercel link
-
-# Deploy preview
-vercel
-
-# Deploy production
-vercel --prod
+# Optional webhook secret
+vercel env add HUBSPOT_WEBHOOK_SECRET production
 ```
 
-### vercel.json Configuration
 ```json
+// vercel.json
 {
   "env": {
-    "HUBSPOT_API_KEY": "@hubspot_api_key"
+    "HUBSPOT_ACCESS_TOKEN": "@hubspot-access-token"
   },
   "functions": {
     "api/**/*.ts": {
@@ -57,10 +53,43 @@ vercel --prod
 }
 ```
 
-## Fly.io Deployment
+```typescript
+// api/hubspot/contacts.ts (Vercel serverless function)
+import * as hubspot from '@hubspot/api-client';
 
-### fly.toml
+const client = new hubspot.Client({
+  accessToken: process.env.HUBSPOT_ACCESS_TOKEN!,
+  numberOfApiCallRetries: 3,
+});
+
+export default async function handler(req: Request) {
+  if (req.method === 'GET') {
+    const contacts = await client.crm.contacts.basicApi.getPage(
+      10, undefined, ['firstname', 'lastname', 'email']
+    );
+    return Response.json(contacts.results);
+  }
+
+  if (req.method === 'POST') {
+    const body = await req.json();
+    const contact = await client.crm.contacts.basicApi.create({
+      properties: body,
+      associations: [],
+    });
+    return Response.json(contact, { status: 201 });
+  }
+}
+```
+
+```bash
+# Deploy
+vercel --prod
+```
+
+### Step 2: Fly.io Deployment
+
 ```toml
+# fly.toml
 app = "my-hubspot-app"
 primary_region = "iad"
 
@@ -72,140 +101,116 @@ primary_region = "iad"
   force_https = true
   auto_stop_machines = true
   auto_start_machines = true
+
+[[http_service.checks]]
+  grace_period = "10s"
+  interval = "30s"
+  method = "GET"
+  path = "/health"
+  timeout = "5s"
 ```
 
-### Secrets
 ```bash
 # Set HubSpot secrets
-fly secrets set HUBSPOT_API_KEY=sk_live_***
-fly secrets set HUBSPOT_WEBHOOK_SECRET=whsec_***
+fly secrets set HUBSPOT_ACCESS_TOKEN=pat-na1-xxxxx
+fly secrets set HUBSPOT_WEBHOOK_SECRET=your-secret
 
 # Deploy
 fly deploy
+
+# Verify health
+fly status
+curl https://my-hubspot-app.fly.dev/health
 ```
 
-## Google Cloud Run
+### Step 3: Google Cloud Run Deployment
 
-### Dockerfile
-```dockerfile
-FROM node:20-slim
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-CMD ["npm", "start"]
-```
-
-### Deploy Script
 ```bash
 #!/bin/bash
 # deploy-cloud-run.sh
-
 PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
 SERVICE_NAME="hubspot-service"
 REGION="us-central1"
 
-# Build and push image
+# Store token in Secret Manager
+echo -n "pat-na1-xxxxx" | gcloud secrets create hubspot-access-token \
+  --data-file=- --replication-policy="automatic"
+
+# Grant Cloud Run access to the secret
+gcloud secrets add-iam-policy-binding hubspot-access-token \
+  --member="serviceAccount:${PROJECT_ID}-compute@developer.gserviceaccount.com" \
+  --role="roles/secretmanager.secretAccessor"
+
+# Build and deploy
 gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
 
-# Deploy to Cloud Run
 gcloud run deploy $SERVICE_NAME \
   --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
   --region $REGION \
   --platform managed \
-  --allow-unauthenticated \
-  --set-secrets=HUBSPOT_API_KEY=hubspot-api-key:latest
+  --set-secrets=HUBSPOT_ACCESS_TOKEN=hubspot-access-token:latest \
+  --min-instances=1 \
+  --max-instances=10 \
+  --memory=512Mi \
+  --timeout=30s
 ```
 
-## Environment Configuration Pattern
+### Step 4: Health Check for All Platforms
 
 ```typescript
-// config/hubspot.ts
-interface HubSpotConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  webhookSecret?: string;
-}
+// src/health.ts
+import * as hubspot from '@hubspot/api-client';
 
-export function getHubSpotConfig(): HubSpotConfig {
-  const env = process.env.NODE_ENV || 'development';
+export async function healthCheck(): Promise<{
+  status: string;
+  services: Record<string, any>;
+  timestamp: string;
+}> {
+  const client = new hubspot.Client({
+    accessToken: process.env.HUBSPOT_ACCESS_TOKEN!,
+  });
+
+  let hubspotStatus = { connected: false, latencyMs: 0 };
+  const start = Date.now();
+
+  try {
+    await client.crm.contacts.basicApi.getPage(1);
+    hubspotStatus = { connected: true, latencyMs: Date.now() - start };
+  } catch {
+    hubspotStatus = { connected: false, latencyMs: Date.now() - start };
+  }
 
   return {
-    apiKey: process.env.HUBSPOT_API_KEY!,
-    environment: env as HubSpotConfig['environment'],
-    webhookSecret: process.env.HUBSPOT_WEBHOOK_SECRET,
+    status: hubspotStatus.connected ? 'healthy' : 'degraded',
+    services: { hubspot: hubspotStatus },
+    timestamp: new Date().toISOString(),
   };
 }
 ```
 
-## Health Check Endpoint
-
-```typescript
-// api/health.ts
-export async function GET() {
-  const hubspotStatus = await checkHubSpotConnection();
-
-  return Response.json({
-    status: hubspotStatus ? 'healthy' : 'degraded',
-    services: {
-      hubspot: hubspotStatus,
-    },
-    timestamp: new Date().toISOString(),
-  });
-}
-```
-
-## Instructions
-
-### Step 1: Choose Deployment Platform
-Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
-
-### Step 2: Configure Secrets
-Store HubSpot API keys securely using the platform's secrets management.
-
-### Step 3: Deploy Application
-Use the platform CLI to deploy your application with HubSpot integration.
-
-### Step 4: Verify Health
-Test the health check endpoint to confirm HubSpot connectivity.
-
 ## Output
-- Application deployed to production
-- HubSpot secrets securely configured
-- Health check endpoint functional
-- Environment-specific configuration in place
+
+- Application deployed to chosen platform
+- HubSpot access token stored in platform's secret manager
+- Health check endpoint verifying HubSpot connectivity
+- HTTPS enforced on all endpoints
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via platform CLI |
+| Secret not found at runtime | Wrong env var name | Check platform secret config |
 | Deploy timeout | Large build | Increase build timeout |
-| Health check fails | Wrong API key | Verify environment variable |
-| Cold start issues | No warm-up | Configure minimum instances |
-
-## Examples
-
-### Quick Deploy Script
-```bash
-#!/bin/bash
-# Platform-agnostic deploy helper
-case "$1" in
-  vercel)
-    vercel secrets add hubspot_api_key "$HUBSPOT_API_KEY"
-    vercel --prod
-    ;;
-  fly)
-    fly secrets set HUBSPOT_API_KEY="$HUBSPOT_API_KEY"
-    fly deploy
-    ;;
-esac
-```
+| Health check fails | Wrong token for environment | Verify production token |
+| Cold start latency | Serverless function | Set `min-instances=1` or use warm-up |
 
 ## Resources
-- [Vercel Documentation](https://vercel.com/docs)
-- [Fly.io Documentation](https://fly.io/docs)
-- [Cloud Run Documentation](https://cloud.google.com/run/docs)
-- [HubSpot Deploy Guide](https://docs.hubspot.com/deploy)
+
+- [Vercel Environment Variables](https://vercel.com/docs/environment-variables)
+- [Fly.io Secrets](https://fly.io/docs/reference/secrets/)
+- [Cloud Run with Secret Manager](https://cloud.google.com/run/docs/configuring/secrets)
+- [HubSpot Private Apps](https://developers.hubspot.com/docs/guides/apps/private-apps/overview)
 
 ## Next Steps
+
 For webhook handling, see `hubspot-webhooks-events`.

@@ -1,11 +1,11 @@
 ---
 name: hubspot-webhooks-events
 description: |
-  Implement HubSpot webhook signature validation and event handling.
-  Use when setting up webhook endpoints, implementing signature verification,
-  or handling HubSpot event notifications securely.
+  Implement HubSpot webhook subscriptions and CRM event handling.
+  Use when setting up webhook endpoints for CRM events, implementing
+  signature verification, or handling contact/deal/company change notifications.
   Trigger with phrases like "hubspot webhook", "hubspot events",
-  "hubspot webhook signature", "handle hubspot events", "hubspot notifications".
+  "hubspot subscription", "handle hubspot notifications", "hubspot CRM events".
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
@@ -17,185 +17,278 @@ compatible-with: claude-code
 # HubSpot Webhooks & Events
 
 ## Overview
-Securely handle HubSpot webhooks with signature validation and replay protection.
+
+Set up HubSpot webhook subscriptions for CRM events (contact/company/deal creation, updates, deletions) with v3 signature verification and idempotent event handling.
 
 ## Prerequisites
-- HubSpot webhook secret configured
-- HTTPS endpoint accessible from internet
-- Understanding of cryptographic signatures
-- Redis or database for idempotency (optional)
 
-## Webhook Endpoint Setup
+- HubSpot public app (webhooks require a public app, not a private app)
+- Client secret from your app settings (for signature verification)
+- HTTPS endpoint accessible from the internet
+- Optional: Redis or database for idempotency
 
-### Express.js
+## Instructions
+
+### Step 1: Understand HubSpot Webhook Events
+
+HubSpot sends webhook events as batches of CRM change notifications:
+
+```json
+[
+  {
+    "eventId": 100,
+    "subscriptionId": 1234,
+    "portalId": 12345678,
+    "appId": 98765,
+    "occurredAt": 1711234567890,
+    "subscriptionType": "contact.propertyChange",
+    "attemptNumber": 0,
+    "objectId": 123,
+    "propertyName": "lifecyclestage",
+    "propertyValue": "marketingqualifiedlead",
+    "changeSource": "CRM",
+    "sourceId": "userId:12345"
+  }
+]
+```
+
+**Available subscription types:**
+- `contact.creation`, `contact.deletion`, `contact.propertyChange`, `contact.privacyDeletion`
+- `company.creation`, `company.deletion`, `company.propertyChange`
+- `deal.creation`, `deal.deletion`, `deal.propertyChange`
+- `ticket.creation`, `ticket.deletion`, `ticket.propertyChange`
+- `contact.merge`, `company.merge`, `deal.merge`
+- `contact.associationChange`, `company.associationChange`, `deal.associationChange`
+
+### Step 2: Set Up Webhook Endpoint with Signature Verification
+
 ```typescript
 import express from 'express';
 import crypto from 'crypto';
 
 const app = express();
 
-// IMPORTANT: Raw body needed for signature verification
+// IMPORTANT: Use raw body for signature verification
 app.post('/webhooks/hubspot',
   express.raw({ type: 'application/json' }),
   async (req, res) => {
-    const signature = req.headers['x-hubspot-signature'] as string;
-    const timestamp = req.headers['x-hubspot-timestamp'] as string;
+    // Verify signature (v3)
+    const signature = req.headers['x-hubspot-signature-v3'] as string;
+    const timestamp = req.headers['x-hubspot-request-timestamp'] as string;
 
-    if (!verifyHubSpotSignature(req.body, signature, timestamp)) {
-      return res.status(401).json({ error: 'Invalid signature' });
+    if (!signature || !timestamp) {
+      // Fall back to v2 signature
+      const sigV2 = req.headers['x-hubspot-signature'] as string;
+      if (!verifySignatureV2(req.body.toString(), sigV2)) {
+        return res.status(401).json({ error: 'Invalid signature' });
+      }
+    } else {
+      const requestUri = `https://${req.headers.host}${req.originalUrl}`;
+      if (!verifySignatureV3(req.body.toString(), signature, timestamp, requestUri)) {
+        return res.status(401).json({ error: 'Invalid signature' });
+      }
     }
 
-    const event = JSON.parse(req.body.toString());
-    await handleHubSpotEvent(event);
+    // HubSpot sends events as an array
+    const events: HubSpotWebhookEvent[] = JSON.parse(req.body.toString());
 
+    // Respond immediately (HubSpot expects < 5 second response)
     res.status(200).json({ received: true });
+
+    // Process events asynchronously
+    processEvents(events).catch(err =>
+      console.error('Event processing failed:', err)
+    );
   }
 );
 ```
 
-## Signature Verification
+### Step 3: Signature Verification Functions
 
 ```typescript
-function verifyHubSpotSignature(
-  payload: Buffer,
-  signature: string,
-  timestamp: string
+const CLIENT_SECRET = process.env.HUBSPOT_CLIENT_SECRET!;
+
+// v3 signature (preferred)
+function verifySignatureV3(
+  body: string, signature: string, timestamp: string, requestUri: string
 ): boolean {
-  const secret = process.env.HUBSPOT_WEBHOOK_SECRET!;
+  // Reject timestamps older than 5 minutes
+  const now = Math.floor(Date.now() / 1000);
+  if (Math.abs(now - parseInt(timestamp)) > 300) return false;
 
-  // Reject old timestamps (replay attack protection)
-  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
-  if (timestampAge > 300000) { // 5 minutes
-    console.error('Webhook timestamp too old');
-    return false;
-  }
+  const sourceString = `POST${requestUri}${body}${timestamp}`;
+  const expected = crypto
+    .createHmac('sha256', CLIENT_SECRET)
+    .update(sourceString)
+    .digest('base64');
 
-  // Compute expected signature
-  const signedPayload = `${timestamp}.${payload.toString()}`;
-  const expectedSignature = crypto
-    .createHmac('sha256', secret)
-    .update(signedPayload)
+  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
+}
+
+// v2 signature (fallback)
+function verifySignatureV2(body: string, signature: string): boolean {
+  const sourceString = CLIENT_SECRET + body;
+  const expected = crypto
+    .createHash('sha256')
+    .update(sourceString)
     .digest('hex');
 
-  // Timing-safe comparison
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
-  );
+  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
 }
 ```
 
-## Event Handler Pattern
+### Step 4: Event Handler with Idempotency
 
 ```typescript
-type HubSpotEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
-
-interface HubSpotEvent {
-  id: string;
-  type: HubSpotEventType;
-  data: Record<string, any>;
-  created: string;
+interface HubSpotWebhookEvent {
+  eventId: number;
+  subscriptionId: number;
+  portalId: number;
+  appId: number;
+  occurredAt: number;
+  subscriptionType: string;
+  attemptNumber: number;
+  objectId: number;
+  propertyName?: string;
+  propertyValue?: string;
+  changeSource?: string;
 }
 
-const eventHandlers: Record<HubSpotEventType, (data: any) => Promise<void>> = {
-  'resource.created': async (data) => { /* handle */ },
-  'resource.updated': async (data) => { /* handle */ },
-  'resource.deleted': async (data) => { /* handle */ }
-};
+// Track processed events to prevent duplicates
+const processedEvents = new Set<number>();
 
-async function handleHubSpotEvent(event: HubSpotEvent): Promise<void> {
-  const handler = eventHandlers[event.type];
+async function processEvents(events: HubSpotWebhookEvent[]): Promise<void> {
+  for (const event of events) {
+    // Idempotency: skip already-processed events
+    if (processedEvents.has(event.eventId)) {
+      console.log(`Skipping duplicate event: ${event.eventId}`);
+      continue;
+    }
 
-  if (!handler) {
-    console.log(`Unhandled event type: ${event.type}`);
-    return;
+    try {
+      await handleEvent(event);
+      processedEvents.add(event.eventId);
+
+      // Clean up old event IDs (keep last 10,000)
+      if (processedEvents.size > 10000) {
+        const oldest = [...processedEvents].slice(0, 5000);
+        oldest.forEach(id => processedEvents.delete(id));
+      }
+    } catch (error) {
+      console.error(`Failed to process event ${event.eventId}:`, error);
+    }
   }
+}
 
-  try {
-    await handler(event.data);
-    console.log(`Processed ${event.type}: ${event.id}`);
-  } catch (error) {
-    console.error(`Failed to process ${event.type}: ${event.id}`, error);
-    throw error; // Rethrow to trigger retry
+async function handleEvent(event: HubSpotWebhookEvent): Promise<void> {
+  const { subscriptionType, objectId, propertyName, propertyValue } = event;
+
+  switch (subscriptionType) {
+    case 'contact.creation':
+      console.log(`New contact created: ${objectId}`);
+      // Sync to your database, send welcome email, etc.
+      break;
+
+    case 'contact.propertyChange':
+      console.log(`Contact ${objectId}: ${propertyName} = ${propertyValue}`);
+      if (propertyName === 'lifecyclestage' && propertyValue === 'customer') {
+        // Trigger onboarding workflow
+      }
+      break;
+
+    case 'deal.propertyChange':
+      if (propertyName === 'dealstage') {
+        console.log(`Deal ${objectId} moved to stage: ${propertyValue}`);
+        // Notify sales team, update dashboard, etc.
+      }
+      break;
+
+    case 'deal.creation':
+      console.log(`New deal created: ${objectId}`);
+      break;
+
+    case 'contact.deletion':
+    case 'contact.privacyDeletion':
+      console.log(`Contact ${objectId} deleted`);
+      // Remove from your systems (GDPR compliance)
+      break;
+
+    default:
+      console.log(`Unhandled event: ${subscriptionType} for object ${objectId}`);
   }
 }
 ```
 
-## Idempotency Handling
+### Step 5: Register Webhook Subscriptions
+
+Subscriptions are configured in your HubSpot public app settings, or via API:
 
 ```typescript
-import { Redis } from 'ioredis';
+// Create webhook subscription via API
+async function createSubscription(
+  appId: number,
+  subscriptionType: string,
+  propertyName?: string
+) {
+  const client = new hubspot.Client({
+    accessToken: process.env.HUBSPOT_DEVELOPER_API_KEY!,
+  });
 
-const redis = new Redis(process.env.REDIS_URL);
-
-async function isEventProcessed(eventId: string): Promise<boolean> {
-  const key = `hubspot:event:${eventId}`;
-  const exists = await redis.exists(key);
-  return exists === 1;
+  await client.apiRequest({
+    method: 'POST',
+    path: `/webhooks/v3/${appId}/subscriptions`,
+    body: {
+      eventType: subscriptionType,
+      propertyName: propertyName || undefined,
+      active: true,
+    },
+  });
 }
 
-async function markEventProcessed(eventId: string): Promise<void> {
-  const key = `hubspot:event:${eventId}`;
-  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
-}
+// Example: Subscribe to lifecycle stage changes
+await createSubscription(appId, 'contact.propertyChange', 'lifecyclestage');
+await createSubscription(appId, 'deal.creation');
+await createSubscription(appId, 'deal.propertyChange', 'dealstage');
 ```
-
-## Webhook Testing
-
-```bash
-# Use HubSpot CLI to send test events
-hubspot webhooks trigger resource.created --url http://localhost:3000/webhooks/hubspot
-
-# Or use webhook.site for debugging
-curl -X POST https://webhook.site/your-uuid \
-  -H "Content-Type: application/json" \
-  -d '{"type": "resource.created", "data": {}}'
-```
-
-## Instructions
-
-### Step 1: Register Webhook Endpoint
-Configure your webhook URL in the HubSpot dashboard.
-
-### Step 2: Implement Signature Verification
-Use the signature verification code to validate incoming webhooks.
-
-### Step 3: Handle Events
-Implement handlers for each event type your application needs.
-
-### Step 4: Add Idempotency
-Prevent duplicate processing with event ID tracking.
 
 ## Output
-- Secure webhook endpoint
-- Signature validation enabled
-- Event handlers implemented
-- Replay attack protection active
+
+- Webhook endpoint with v3 signature verification
+- Event handler for contact, company, deal, and ticket events
+- Idempotent processing preventing duplicate handling
+- Replay protection via timestamp validation
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Invalid signature | Wrong secret | Verify webhook secret |
-| Timestamp rejected | Clock drift | Check server time sync |
-| Duplicate events | Missing idempotency | Implement event ID tracking |
-| Handler timeout | Slow processing | Use async queue |
+| Invalid signature | Wrong client secret | Verify in App Settings > Auth |
+| Duplicate events | HubSpot retries | Implement event ID tracking |
+| Timeout (no 200 response) | Slow processing | Respond immediately, process async |
+| Missing events | Subscription inactive | Check subscription status in app settings |
+| `attemptNumber > 0` | Previous delivery failed | Normal retry behavior -- process normally |
 
 ## Examples
 
-### Testing Webhooks Locally
+### Test Webhooks Locally
+
 ```bash
 # Use ngrok to expose local server
 ngrok http 3000
 
-# Send test webhook
-curl -X POST https://your-ngrok-url/webhooks/hubspot \
-  -H "Content-Type: application/json" \
-  -d '{"type": "test", "data": {}}'
+# Update webhook URL in HubSpot app settings:
+# https://xxxx.ngrok.io/webhooks/hubspot
+
+# Trigger a test: create a contact in HubSpot UI
+# Watch your local logs for the webhook event
 ```
 
 ## Resources
-- [HubSpot Webhooks Guide](https://docs.hubspot.com/webhooks)
-- [Webhook Security Best Practices](https://docs.hubspot.com/webhooks/security)
+
+- [HubSpot Webhooks API Guide](https://developers.hubspot.com/docs/guides/api/webhooks/overview)
+- [Webhook Signature Verification](https://developers.hubspot.com/docs/guides/api/webhooks/validating-requests)
+- [Webhook Subscription Types](https://developers.hubspot.com/changelog/new-subscription-types-for-webhooks)
 
 ## Next Steps
+
 For performance optimization, see `hubspot-performance-tuning`.
