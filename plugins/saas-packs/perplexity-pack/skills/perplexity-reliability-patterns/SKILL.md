@@ -1,11 +1,10 @@
 ---
 name: perplexity-reliability-patterns
 description: |
-  Implement Perplexity reliability patterns including circuit breakers, idempotency, and graceful degradation.
-  Use when building fault-tolerant Perplexity integrations, implementing retry strategies,
-  or adding resilience to production Perplexity services.
+  Implement reliability patterns for Perplexity Sonar API: circuit breaker, model fallback,
+  streaming timeout, and citation validation.
   Trigger with phrases like "perplexity reliability", "perplexity circuit breaker",
-  "perplexity idempotent", "perplexity resilience", "perplexity fallback", "perplexity bulkhead".
+  "perplexity fallback", "perplexity resilience", "perplexity timeout".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
@@ -17,126 +16,233 @@ tags: [saas, perplexity, perplexity-reliability]
 # Perplexity Reliability Patterns
 
 ## Overview
-Production reliability patterns for Perplexity Sonar API integrations. Perplexity performs live web searches per request, making response times variable and dependent on search complexity -- unlike static LLM inference.
+Production reliability patterns for Perplexity Sonar API. Perplexity performs live web searches per request, making response times inherently variable. The key reliability challenges: search can stall, citations can break, and model tiers have different availability.
 
 ## Prerequisites
 - Perplexity API key configured
-- Caching layer (Redis recommended)
-- Understanding of search-augmented generation latency
+- Cache layer (Redis or in-memory)
+- Understanding of search latency variability
 
 ## Instructions
 
-### Step 1: Cache Identical Queries
+### Step 1: Model Tier Fallback
+```typescript
+import OpenAI from "openai";
 
-Perplexity's web search is expensive per call. Cache results for repeated queries within a time window.
+const perplexity = new OpenAI({
+  apiKey: process.env.PERPLEXITY_API_KEY!,
+  baseURL: "https://api.perplexity.ai",
+});
 
-```python
-import hashlib, json
+async function resilientSearch(
+  query: string,
+  preferredModel: string = "sonar-pro"
+) {
+  const fallbackChain = [preferredModel, "sonar"];
+  let lastError: Error | null = null;
 
-class PerplexityCache:
-    def __init__(self, redis_client, ttl=600):  # 600: timeout: 10 minutes
-        self.r = redis_client
-        self.ttl = ttl
+  for (const model of fallbackChain) {
+    try {
+      const response = await perplexity.chat.completions.create({
+        model,
+        messages: [{ role: "user", content: query }],
+        max_tokens: model === "sonar-pro" ? 2048 : 512,
+      });
 
-    def get_or_search(self, client, messages, model="sonar", **kwargs):
-        key = self._cache_key(messages, model, **kwargs)
-        cached = self.r.get(key)
-        if cached:
-            return json.loads(cached)
-        result = client.chat.completions.create(
-            model=model, messages=messages, **kwargs
-        )
-        self.r.setex(key, self.ttl, json.dumps(result.to_dict()))
-        return result
+      if (model !== preferredModel) {
+        console.warn(`[Reliability] Fell back from ${preferredModel} to ${model}`);
+      }
 
-    def _cache_key(self, messages, model, **kwargs):
-        data = json.dumps({"m": messages, "model": model, **kwargs}, sort_keys=True)
-        return f"pplx:{hashlib.sha256(data.encode()).hexdigest()}"
+      return {
+        answer: response.choices[0].message.content || "",
+        citations: (response as any).citations || [],
+        model: response.model,
+        fallback: model !== preferredModel,
+      };
+    } catch (err: any) {
+      lastError = err;
+      if (err.status === 401 || err.status === 402) throw err; // Don't retry auth/billing
+      console.warn(`[Reliability] ${model} failed (${err.status || err.message}), trying next`);
+    }
+  }
+
+  throw lastError || new Error("All models failed");
+}
 ```
 
-### Step 2: Model Tier Fallback
+### Step 2: Circuit Breaker
+```typescript
+class CircuitBreaker {
+  private failures = 0;
+  private lastFailure = 0;
+  private state: "closed" | "open" | "half-open" = "closed";
 
-If `sonar-pro` times out or errors, fall back to `sonar` for a faster but shallower response.
+  constructor(
+    private threshold: number = 5,
+    private resetTimeMs: number = 60000
+  ) {}
 
-```python
-def resilient_search(client, messages, timeout=30):
-    try:
-        return client.chat.completions.create(
-            model="sonar-pro", messages=messages, timeout=timeout
-        )
-    except Exception:
-        return client.chat.completions.create(
-            model="sonar", messages=messages, timeout=15
-        )
+  async execute<T>(fn: () => Promise<T>, fallback: () => Promise<T>): Promise<T> {
+    if (this.state === "open") {
+      if (Date.now() - this.lastFailure > this.resetTimeMs) {
+        this.state = "half-open";
+      } else {
+        console.warn("[CircuitBreaker] Open — using fallback");
+        return fallback();
+      }
+    }
+
+    try {
+      const result = await fn();
+      if (this.state === "half-open") {
+        this.state = "closed";
+        this.failures = 0;
+      }
+      return result;
+    } catch (err) {
+      this.failures++;
+      this.lastFailure = Date.now();
+      if (this.failures >= this.threshold) {
+        this.state = "open";
+        console.warn(`[CircuitBreaker] Opened after ${this.failures} failures`);
+      }
+      return fallback();
+    }
+  }
+
+  get status() {
+    return { state: this.state, failures: this.failures };
+  }
+}
+
+// Usage
+const breaker = new CircuitBreaker(5, 60000);
+const cachedFallback = () => getCachedResult(query);
+
+const result = await breaker.execute(
+  () => resilientSearch(query, "sonar-pro"),
+  cachedFallback
+);
 ```
 
 ### Step 3: Streaming with Timeout Protection
+```typescript
+async function* streamWithTimeout(
+  query: string,
+  model: string = "sonar",
+  chunkTimeoutMs: number = 10000
+): AsyncGenerator<{ type: "text" | "citations" | "timeout"; data: any }> {
+  const stream = await perplexity.chat.completions.create({
+    model,
+    messages: [{ role: "user", content: query }],
+    stream: true,
+    max_tokens: 2048,
+  });
 
-Perplexity streams can stall on complex searches. Set per-chunk timeouts.
+  let lastChunkAt = Date.now();
 
-```python
-import time
+  for await (const chunk of stream) {
+    if (Date.now() - lastChunkAt > chunkTimeoutMs) {
+      yield { type: "timeout", data: "Stream stalled — no data for 10s" };
+      return;
+    }
 
-def stream_with_timeout(client, messages, chunk_timeout=10):
-    stream = client.chat.completions.create(
-        model="sonar", messages=messages, stream=True
-    )
-    last_chunk = time.time()
-    full_response = ""
-    citations = []
+    lastChunkAt = Date.now();
+    const text = chunk.choices[0]?.delta?.content || "";
+    if (text) yield { type: "text", data: text };
 
-    for chunk in stream:
-        if time.time() - last_chunk > chunk_timeout:
-            raise TimeoutError("Stream stalled")
-        last_chunk = time.time()
-        delta = chunk.choices[0].delta.content or ""
-        full_response += delta
-        if hasattr(chunk, 'citations'):
-            citations = chunk.citations
-        yield delta
+    const citations = (chunk as any).citations;
+    if (citations) yield { type: "citations", data: citations };
+  }
+}
 
-    return full_response, citations
+// Usage
+for await (const event of streamWithTimeout("explain quantum computing", "sonar-pro")) {
+  if (event.type === "text") process.stdout.write(event.data);
+  if (event.type === "citations") console.log("\nSources:", event.data);
+  if (event.type === "timeout") console.error("\nStream timed out");
+}
 ```
 
-### Step 4: Citation Validation
+### Step 4: Cache as Reliability Layer
+```typescript
+import { LRUCache } from "lru-cache";
+import { createHash } from "crypto";
 
-Verify cited URLs are accessible before presenting to users.
+const reliabilityCache = new LRUCache<string, any>({
+  max: 500,
+  ttl: 24 * 3600_000, // 24-hour stale cache for reliability
+});
 
-```python
-import aiohttp
+async function searchWithCacheFallback(query: string, model = "sonar") {
+  const key = createHash("sha256").update(`${model}:${query}`).digest("hex");
 
-async def validate_citations(citations: list[str]) -> list[dict]:
-    validated = []
-    async with aiohttp.ClientSession() as session:
-        for url in citations[:5]:  # limit to top 5
-            try:
-                async with session.head(url, timeout=aiohttp.ClientTimeout(total=5)) as r:
-                    validated.append({"url": url, "status": r.status, "valid": r.status < 400})  # HTTP 400 Bad Request
-            except:
-                validated.append({"url": url, "status": 0, "valid": False})
-    return validated
+  try {
+    const response = await resilientSearch(query, model);
+    // Update cache on success
+    reliabilityCache.set(key, response);
+    return { ...response, source: "live" };
+  } catch {
+    // Serve stale cache as last resort
+    const cached = reliabilityCache.get(key);
+    if (cached) {
+      console.warn("[Reliability] Serving stale cached result");
+      return { ...cached, source: "stale-cache" };
+    }
+    throw new Error("Perplexity unavailable and no cached result");
+  }
+}
+```
+
+### Step 5: Citation URL Validation
+```typescript
+async function validateCitations(
+  citations: string[],
+  timeoutMs: number = 5000
+): Promise<Array<{ url: string; status: number; valid: boolean }>> {
+  const results = await Promise.allSettled(
+    citations.slice(0, 5).map(async (url) => {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), timeoutMs);
+      try {
+        const response = await fetch(url, {
+          method: "HEAD",
+          signal: controller.signal,
+          redirect: "follow",
+        });
+        return { url, status: response.status, valid: response.status < 400 };
+      } catch {
+        return { url, status: 0, valid: false };
+      } finally {
+        clearTimeout(timeout);
+      }
+    })
+  );
+
+  return results.map((r) =>
+    r.status === "fulfilled" ? r.value : { url: "", status: 0, valid: false }
+  );
+}
 ```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Slow responses (>15s) | Complex search query | Use sonar instead of sonar-pro |
-| Stream stalls | Search taking too long | Per-chunk timeout detection |
-| Stale results | Cached data too old | Reduce TTL for time-sensitive queries |
-| Broken citation links | Source pages moved | Validate URLs before displaying |
-
-## Examples
-
-
-**Basic usage**: Apply perplexity reliability patterns to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize perplexity reliability patterns for production environments with multiple constraints and team-specific requirements.
-
-## Resources
-- [Perplexity API Docs](https://docs.perplexity.ai)
+| sonar-pro timeout >15s | Complex multi-source search | Fall back to sonar |
+| Stream stalls | Search hanging on source | Per-chunk timeout detection |
+| Broken citation links | Source pages moved/deleted | Validate URLs before displaying |
+| All models failing | Perplexity outage | Serve stale cache, circuit breaker |
 
 ## Output
+- Model tier fallback chain
+- Circuit breaker preventing cascade failures
+- Streaming with stall detection
+- Cache as reliability layer (stale > unavailable)
+- Citation URL validation
 
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+## Resources
+- [Perplexity API Documentation](https://docs.perplexity.ai)
+- [Circuit Breaker Pattern](https://martinfowler.com/bliki/CircuitBreaker.html)
+
+## Next Steps
+For policy enforcement, see `perplexity-policy-guardrails`.

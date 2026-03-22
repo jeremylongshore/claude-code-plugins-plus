@@ -1,11 +1,11 @@
 ---
 name: perplexity-load-scale
 description: |
-  Implement Perplexity load testing, auto-scaling, and capacity planning strategies.
-  Use when running performance tests, configuring horizontal scaling,
-  or planning capacity for Perplexity integrations.
+  Load test Perplexity Sonar API integrations and plan capacity.
+  Use when running performance tests, planning for traffic growth,
+  or benchmarking Perplexity latency under load.
   Trigger with phrases like "perplexity load test", "perplexity scale",
-  "perplexity performance test", "perplexity capacity", "perplexity k6", "perplexity benchmark".
+  "perplexity performance test", "perplexity capacity", "perplexity benchmark".
 allowed-tools: Read, Write, Edit, Bash(k6:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
@@ -17,261 +17,218 @@ tags: [saas, perplexity, testing, performance, scaling]
 # Perplexity Load & Scale
 
 ## Overview
-Load testing, scaling strategies, and capacity planning for Perplexity integrations.
+Load testing and capacity planning for Perplexity Sonar API. Key constraint: Perplexity rate limits at 50 RPM (default tier), and every request performs a live web search with variable latency. Load testing must respect these limits to avoid burning through credits.
+
+## Capacity Constraints
+
+| Constraint | Default Limit | Impact |
+|-----------|--------------|--------|
+| RPM (requests per minute) | 50 | Hard ceiling on throughput |
+| Context window | 127K tokens | Limits conversation history |
+| `sonar` latency | 1-3s | Throughput: ~20-50 concurrent |
+| `sonar-pro` latency | 3-8s | Throughput: ~6-16 concurrent |
+| `search_domain_filter` | 20 domains max | Per-request limit |
 
 ## Prerequisites
 - k6 load testing tool installed
-- Kubernetes cluster with HPA configured
-- Prometheus for metrics collection
-- Test environment API keys
+- Separate Perplexity API key for load testing
+- Budget approval (load tests cost money)
 
-## Load Testing with k6
+## Instructions
 
-### Basic Load Test
+### Step 1: k6 Load Test Script
 ```javascript
 // perplexity-load-test.js
-import http from 'k6/http';
-import { check, sleep } from 'k6';
+import http from "k6/http";
+import { check, sleep } from "k6";
+import { Rate, Trend } from "k6/metrics";
+
+const errorRate = new Rate("perplexity_errors");
+const citationCount = new Trend("perplexity_citations");
 
 export const options = {
   stages: [
-    { duration: '2m', target: 10 },   // Ramp up
-    { duration: '5m', target: 10 },   // Steady state
-    { duration: '2m', target: 50 },   // Ramp to peak
-    { duration: '5m', target: 50 },   // Stress test
-    { duration: '2m', target: 0 },    // Ramp down
+    { duration: "1m", target: 5 },    // Ramp to 5 VUs
+    { duration: "3m", target: 5 },    // Steady at 5 VUs
+    { duration: "1m", target: 15 },   // Ramp to 15 VUs
+    { duration: "3m", target: 15 },   // Steady at 15 VUs
+    { duration: "1m", target: 0 },    // Ramp down
   ],
   thresholds: {
-    http_req_duration: ['p(95)<500'],  # HTTP 500 Internal Server Error
-    http_req_failed: ['rate<0.01'],
+    http_req_duration: ["p(95)<10000"],  // 10s P95 for sonar
+    perplexity_errors: ["rate<0.05"],    // <5% error rate
   },
 };
 
+const queries = [
+  "What is TypeScript?",
+  "Latest Node.js features",
+  "Python vs JavaScript for web development",
+  "Current state of AI in healthcare",
+  "Best practices for REST API design",
+];
+
 export default function () {
+  const query = queries[Math.floor(Math.random() * queries.length)];
+
   const response = http.post(
-    'https://api.perplexity.com/v1/resource',
-    JSON.stringify({ test: true }),
+    "https://api.perplexity.ai/chat/completions",
+    JSON.stringify({
+      model: "sonar",
+      messages: [{ role: "user", content: query }],
+      max_tokens: 200,
+    }),
     {
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${__ENV.PERPLEXITY_API_KEY}`,
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${__ENV.PERPLEXITY_API_KEY}`,
       },
+      timeout: "15s",
     }
   );
 
-  check(response, {
-    'status is 200': (r) => r.status === 200,  # HTTP 200 OK
-    'latency < 500ms': (r) => r.timings.duration < 500,  # HTTP 500 Internal Server Error
+  const success = check(response, {
+    "status is 200": (r) => r.status === 200,
+    "has content": (r) => {
+      try { return JSON.parse(r.body).choices[0].message.content.length > 0; }
+      catch { return false; }
+    },
   });
 
-  sleep(1);
-}
-```
+  errorRate.add(!success);
 
-### Run Load Test
-```bash
-# Install k6
-brew install k6  # macOS
-# or: sudo apt install k6  # Linux
-
-# Run test
-k6 run --env PERPLEXITY_API_KEY=${PERPLEXITY_API_KEY} perplexity-load-test.js
-
-# Run with output to InfluxDB
-k6 run --out influxdb=http://localhost:8086/k6 perplexity-load-test.js  # 8086 = configured value
-```
-
-## Scaling Patterns
-
-### Horizontal Scaling
-```yaml
-# kubernetes HPA
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: perplexity-integration-hpa
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: perplexity-integration
-  minReplicas: 2
-  maxReplicas: 20
-  metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        target:
-          type: Utilization
-          averageUtilization: 70
-    - type: Pods
-      pods:
-        metric:
-          name: perplexity_queue_depth
-        target:
-          type: AverageValue
-          averageValue: 100
-```
-
-### Connection Pooling
-```typescript
-import { Pool } from 'generic-pool';
-
-const perplexityPool = Pool.create({
-  create: async () => {
-    return new PerplexityClient({
-      apiKey: process.env.PERPLEXITY_API_KEY!,
-    });
-  },
-  destroy: async (client) => {
-    await client.close();
-  },
-  max: 20,
-  min: 5,
-  idleTimeoutMillis: 30000,  # 30000: 30 seconds in ms
-});
-
-async function withPerplexityClient<T>(
-  fn: (client: PerplexityClient) => Promise<T>
-): Promise<T> {
-  const client = await perplexityPool.acquire();
-  try {
-    return await fn(client);
-  } finally {
-    perplexityPool.release(client);
+  if (response.status === 200) {
+    try {
+      const body = JSON.parse(response.body);
+      citationCount.add(body.citations?.length || 0);
+    } catch {}
   }
+
+  // Critical: stay within 50 RPM
+  sleep(1.5 + Math.random());
 }
 ```
 
-## Capacity Planning
+### Step 2: Run Load Test
+```bash
+set -euo pipefail
+# Minimal test (5 queries, verify setup)
+k6 run --vus 1 --duration 30s \
+  --env PERPLEXITY_API_KEY=$PERPLEXITY_API_KEY \
+  perplexity-load-test.js
 
-### Metrics to Monitor
-| Metric | Warning | Critical |
-|--------|---------|----------|
-| CPU Utilization | > 70% | > 85% |
-| Memory Usage | > 75% | > 90% |
-| Request Queue Depth | > 100 | > 500 |
-| Error Rate | > 1% | > 5% |
-| P95 Latency | > 1000ms | > 3000ms |
+# Full test (respecting 50 RPM)
+k6 run --env PERPLEXITY_API_KEY=$PERPLEXITY_API_KEY \
+  perplexity-load-test.js
+```
 
-### Capacity Calculation
+### Step 3: Capacity Estimation
 ```typescript
 interface CapacityEstimate {
-  currentRPS: number;
-  maxRPS: number;
-  headroom: number;
-  scaleRecommendation: string;
+  maxRPM: number;
+  avgLatencyMs: number;
+  maxConcurrent: number;
+  dailyCapacity: number;
+  estimatedDailyCost: number;
 }
 
-function estimatePerplexityCapacity(
-  metrics: SystemMetrics
+function estimateCapacity(
+  rpm: number,
+  avgLatency: number,
+  model: "sonar" | "sonar-pro"
 ): CapacityEstimate {
-  const currentRPS = metrics.requestsPerSecond;
-  const avgLatency = metrics.p50Latency;
-  const cpuUtilization = metrics.cpuPercent;
-
-  // Estimate max RPS based on current performance
-  const maxRPS = currentRPS / (cpuUtilization / 100) * 0.7; // 70% target
-  const headroom = ((maxRPS - currentRPS) / currentRPS) * 100;
+  const costPerRequest = model === "sonar-pro" ? 0.02 : 0.005;
 
   return {
-    currentRPS,
-    maxRPS: Math.floor(maxRPS),
-    headroom: Math.round(headroom),
-    scaleRecommendation: headroom < 30
-      ? 'Scale up soon'
-      : headroom < 50
-      ? 'Monitor closely'
-      : 'Adequate capacity',
+    maxRPM: rpm,
+    avgLatencyMs: avgLatency,
+    maxConcurrent: Math.floor((rpm / 60) * (avgLatency / 1000)),
+    dailyCapacity: rpm * 60 * 24,
+    estimatedDailyCost: rpm * 60 * 24 * costPerRequest,
+  };
+}
+
+// Example: 50 RPM, 2s avg latency, sonar
+const capacity = estimateCapacity(50, 2000, "sonar");
+// { maxRPM: 50, maxConcurrent: 1, dailyCapacity: 72000, estimatedDailyCost: $360 }
+```
+
+### Step 4: Request Queue for Scale
+```typescript
+import PQueue from "p-queue";
+
+// Queue that respects 50 RPM
+const searchQueue = new PQueue({
+  concurrency: 5,
+  interval: 60_000,
+  intervalCap: 45,  // 45 RPM (safety margin below 50)
+});
+
+async function scalableSearch(query: string) {
+  return searchQueue.add(() =>
+    perplexity.chat.completions.create({
+      model: "sonar",
+      messages: [{ role: "user", content: query }],
+      max_tokens: 500,
+    })
+  );
+}
+
+// Queue status for monitoring
+function queueStatus() {
+  return {
+    pending: searchQueue.pending,
+    size: searchQueue.size,
+    isPaused: searchQueue.isPaused,
   };
 }
 ```
 
+### Step 5: Scaling Strategy
+
+| Scale | Queries/Day | Architecture | Cost/Day |
+|-------|-------------|-------------|----------|
+| Small | <1,000 | Direct API calls | <$5 |
+| Medium | 1K-10K | Queue + cache (30%+ hit rate) | $5-$50 |
+| Large | 10K-100K | Multi-key + cache + queue | $50-$500 |
+| Enterprise | 100K+ | Contact Perplexity for custom limits | Custom |
+
+For Medium+ scale, caching is mandatory. A 50% cache hit rate halves your API costs and doubles effective throughput.
+
 ## Benchmark Results Template
-
 ```markdown
-## Perplexity Performance Benchmark
-**Date:** YYYY-MM-DD
-**Environment:** [staging/production]
-**SDK Version:** X.Y.Z
+## Perplexity Load Test Report
+**Date:** YYYY-MM-DD | **Model:** sonar | **Duration:** 10 min
 
-### Test Configuration
-- Duration: 10 minutes
-- Ramp: 10 → 100 → 10 VUs
-- Target endpoint: /v1/resource
-
-### Results
 | Metric | Value |
 |--------|-------|
-| Total Requests | 50,000 |
-| Success Rate | 99.9% |
-| P50 Latency | 120ms |
-| P95 Latency | 350ms |
-| P99 Latency | 800ms |
-| Max RPS Achieved | 150 |
-
-### Observations
-- [Key finding 1]
-- [Key finding 2]
-
-### Recommendations
-- [Scaling recommendation]
+| Total Requests | |
+| Success Rate | |
+| P50 Latency | |
+| P95 Latency | |
+| P99 Latency | |
+| Avg Citations/Response | |
+| Max Sustained RPM | |
+| Estimated Cost | |
 ```
-
-## Instructions
-
-### Step 1: Create Load Test Script
-Write k6 test script with appropriate thresholds.
-
-### Step 2: Configure Auto-Scaling
-Set up HPA with CPU and custom metrics.
-
-### Step 3: Run Load Test
-Execute test and collect metrics.
-
-### Step 4: Analyze and Document
-Record results in benchmark template.
-
-## Output
-- Load test script created
-- HPA configured
-- Benchmark results documented
-- Capacity recommendations defined
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| k6 timeout | Rate limited | Reduce RPS |
-| HPA not scaling | Wrong metrics | Verify metric name |
-| Connection refused | Pool exhausted | Increase pool size |
-| Inconsistent results | Warm-up needed | Add ramp-up phase |
+| 429 during load test | Exceeding 50 RPM | Reduce VUs, increase sleep |
+| Inconsistent latency | Web search variability | Normal; use P95 not avg |
+| k6 timeout | sonar-pro queries >15s | Increase timeout to 30s |
+| High cost from test | Too many queries | Use `max_tokens: 50` for load tests |
 
-## Examples
-
-### Quick k6 Test
-```bash
-k6 run --vus 10 --duration 30s perplexity-load-test.js
-```
-
-### Check Current Capacity
-```typescript
-const metrics = await getSystemMetrics();
-const capacity = estimatePerplexityCapacity(metrics);
-console.log('Headroom:', capacity.headroom + '%');
-console.log('Recommendation:', capacity.scaleRecommendation);
-```
-
-### Scale HPA Manually
-```bash
-set -euo pipefail
-kubectl scale deployment perplexity-integration --replicas=5
-kubectl get hpa perplexity-integration-hpa
-```
+## Output
+- k6 load test script calibrated for Perplexity rate limits
+- Capacity estimation calculator
+- Request queue for sustained throughput
+- Scaling strategy by volume tier
 
 ## Resources
 - [k6 Documentation](https://k6.io/docs/)
-- [Kubernetes HPA](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/)
-- [Perplexity Rate Limits](https://docs.perplexity.com/rate-limits)
+- [Perplexity Rate Limits](https://docs.perplexity.ai/guides/rate-limits)
 
 ## Next Steps
 For reliability patterns, see `perplexity-reliability-patterns`.

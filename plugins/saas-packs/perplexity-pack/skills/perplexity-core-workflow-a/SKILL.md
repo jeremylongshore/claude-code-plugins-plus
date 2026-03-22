@@ -1,11 +1,11 @@
 ---
 name: perplexity-core-workflow-a
 description: |
-  Execute Perplexity primary workflow: Core Workflow A.
-  Use when implementing primary use case,
-  building main features, or core integration tasks.
-  Trigger with phrases like "perplexity main workflow",
-  "primary task with perplexity".
+  Execute Perplexity primary workflow: single-query search with citations.
+  Use when implementing AI search, building fact-checking tools,
+  or integrating web-grounded answers into your application.
+  Trigger with phrases like "perplexity search", "perplexity query",
+  "search with citations", "perplexity main workflow".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
@@ -14,65 +14,180 @@ compatible-with: claude-code, codex, openclaw
 tags: [saas, perplexity, workflow]
 
 ---
-# Perplexity Core Workflow A
+# Perplexity Core Workflow A: Search with Citations
 
 ## Overview
-Primary money-path workflow for Perplexity. This is the most common use case. Perplexity is an AI-powered answer engine that grounds its responses in real-time web searches, providing cited, up-to-date answers rather than responses based solely on training data. It is particularly valuable for research tasks that require current information, such as market analysis, technology trend monitoring, or fact-checking against live sources.
+Primary money-path workflow: send a search query to Perplexity Sonar, receive a web-grounded answer with inline citations, parse and display the results. This is the single-query pattern used for search widgets, fact-checking, and real-time information retrieval.
 
 ## Prerequisites
 - Completed `perplexity-install-auth` setup
-- Understanding of Perplexity core concepts
-- Valid API credentials configured
+- `openai` package installed
+- `PERPLEXITY_API_KEY` set
 
 ## Instructions
 
-### Step 1: Initialize
-Authenticate with the Perplexity API and select the appropriate model — `sonar` for fast web-grounded answers or `sonar-pro` for deeper research with extended search coverage. Configure your system prompt if you want to shape the response format, language, or domain focus for your use case.
-
+### Step 1: Initialize Client and Send Query
 ```typescript
-// Step 1 implementation
+import OpenAI from "openai";
+
+const perplexity = new OpenAI({
+  apiKey: process.env.PERPLEXITY_API_KEY,
+  baseURL: "https://api.perplexity.ai",
+});
+
+async function searchWithCitations(query: string) {
+  const response = await perplexity.chat.completions.create({
+    model: "sonar",
+    messages: [
+      {
+        role: "system",
+        content: "Provide accurate, well-sourced answers. Cite your sources inline.",
+      },
+      { role: "user", content: query },
+    ],
+    // Perplexity-specific parameters
+    search_recency_filter: "week",  // hour | day | week | month
+  } as any);
+
+  return response;
+}
 ```
 
-### Step 2: Execute
-Submit your research query to the Perplexity chat completions endpoint. The model will retrieve relevant web sources and synthesize a grounded answer. Examine the `citations` field in the response to identify which sources were consulted. Verify that the cited pages actually support the claims made in the answer before presenting the information externally.
-
+### Step 2: Parse Response with Citations
 ```typescript
-// Step 2 implementation
+interface SearchResult {
+  answer: string;
+  citations: string[];
+  searchResults: Array<{ title: string; url: string; snippet: string }>;
+  tokensUsed: number;
+}
+
+function parseResponse(response: any): SearchResult {
+  return {
+    answer: response.choices[0].message.content,
+    citations: response.citations || [],
+    searchResults: response.search_results || [],
+    tokensUsed: response.usage?.total_tokens || 0,
+  };
+}
 ```
 
-### Step 3: Finalize
-Extract the answer text and citations from the API response. Format the citations as hyperlinks or footnotes according to your output requirements. If the answer is being incorporated into a document or report, note the query date alongside each citation since web content can change over time.
-
+### Step 3: Format Citations for Display
 ```typescript
-// Step 3 implementation
+function formatAnswer(result: SearchResult): string {
+  let formatted = result.answer;
+
+  // Replace [1], [2] markers with markdown links
+  result.citations.forEach((url, i) => {
+    formatted = formatted.replaceAll(`[${i + 1}]`, `[${i + 1}](${url})`);
+  });
+
+  // Append source list
+  if (result.citations.length > 0) {
+    formatted += "\n\n**Sources:**\n";
+    result.citations.forEach((url, i) => {
+      formatted += `${i + 1}. ${url}\n`;
+    });
+  }
+
+  return formatted;
+}
 ```
 
-## Output
-- Completed Core Workflow A execution
-- Grounded answer text with source citations from live web search
-- List of supporting URLs for fact verification
-- Success confirmation or error details if the query could not be fulfilled
+### Step 4: Complete Workflow
+```typescript
+async function main() {
+  const query = "What are the latest advances in battery technology?";
+
+  const response = await searchWithCitations(query);
+  const result = parseResponse(response);
+  const formatted = formatAnswer(result);
+
+  console.log(formatted);
+  console.log(`\n[${result.tokensUsed} tokens | ${result.citations.length} sources]`);
+}
+
+main().catch(console.error);
+```
+
+### Step 5: Domain-Filtered Search
+```typescript
+// Restrict search to trusted sources
+async function domainFilteredSearch(query: string, domains: string[]) {
+  const response = await perplexity.chat.completions.create({
+    model: "sonar",
+    messages: [{ role: "user", content: query }],
+    search_domain_filter: domains,  // max 20 domains
+  } as any);
+
+  return parseResponse(response);
+}
+
+// Example: only search academic sources
+const result = await domainFilteredSearch(
+  "CRISPR gene editing latest trials",
+  ["nature.com", "science.org", "nih.gov", "arxiv.org"]
+);
+```
+
+### Step 6: Python Implementation
+```python
+from openai import OpenAI
+import os, re
+
+client = OpenAI(
+    api_key=os.environ["PERPLEXITY_API_KEY"],
+    base_url="https://api.perplexity.ai",
+)
+
+def search_with_citations(query: str, model: str = "sonar", recency: str = None) -> dict:
+    kwargs = {
+        "model": model,
+        "messages": [
+            {"role": "system", "content": "Provide accurate answers with cited sources."},
+            {"role": "user", "content": query},
+        ],
+    }
+    if recency:
+        kwargs["search_recency_filter"] = recency
+
+    response = client.chat.completions.create(**kwargs)
+    raw = response.model_dump()
+
+    return {
+        "answer": response.choices[0].message.content,
+        "citations": raw.get("citations", []),
+        "tokens": response.usage.total_tokens,
+    }
+
+# Usage
+result = search_with_citations(
+    "What are the latest advances in battery technology?",
+    recency="week"
+)
+print(result["answer"])
+for i, url in enumerate(result["citations"], 1):
+    print(f"  [{i}] {url}")
+```
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Error 1 | Cause | Solution |
-| Error 2 | Cause | Solution |
+| `401 Unauthorized` | Invalid API key | Regenerate at perplexity.ai/settings/api |
+| `429 Too Many Requests` | Rate limit exceeded | Implement exponential backoff |
+| Empty citations | Query too vague | Make query more specific and factual |
+| Stale information | No recency filter | Add `search_recency_filter: "day"` |
+| Slow response (>10s) | Using sonar-pro | Switch to sonar for faster results |
 
-## Examples
-
-### Complete Workflow
-```typescript
-// Complete workflow example
-```
-
-### Common Variations
-- Variation 1: Description
-- Variation 2: Description
+## Output
+- Web-grounded answer text with inline citation markers
+- Parsed citation URLs for source verification
+- Formatted markdown with linked sources
+- Token usage for cost tracking
 
 ## Resources
-- [Perplexity Documentation](https://docs.perplexity.com)
-- [Perplexity API Reference](https://docs.perplexity.com/api)
+- [Perplexity API Reference](https://docs.perplexity.ai/api-reference/chat-completions-post)
+- [Search Parameters](https://docs.perplexity.ai/docs/sonar/quickstart)
 
 ## Next Steps
-For secondary workflow, see `perplexity-core-workflow-b`.
+For multi-query research, see `perplexity-core-workflow-b`.

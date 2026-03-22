@@ -1,11 +1,11 @@
 ---
 name: perplexity-migration-deep-dive
 description: |
-  Execute Perplexity major re-architecture and migration strategies with strangler fig pattern.
-  Use when migrating to or from Perplexity, performing major version upgrades,
-  or re-platforming existing integrations to Perplexity.
-  Trigger with phrases like "migrate perplexity", "perplexity migration",
-  "switch to perplexity", "perplexity replatform", "perplexity upgrade major".
+  Migrate to Perplexity Sonar from other search/LLM APIs using the strangler fig pattern.
+  Use when switching from Google Custom Search, Bing API, or other LLMs to Perplexity,
+  or migrating from legacy pplx-api models.
+  Trigger with phrases like "migrate to perplexity", "switch to perplexity",
+  "replace search API with perplexity", "perplexity replatform".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
@@ -17,237 +17,193 @@ tags: [saas, perplexity, migration]
 # Perplexity Migration Deep Dive
 
 ## Current State
-!`npm list 2>/dev/null | head -20`
-!`pip freeze 2>/dev/null | head -20`
+!`npm list openai 2>/dev/null | grep openai || echo 'N/A'`
+!`grep -rn "google.*search\|bing.*api\|serpapi\|pplx-7b\|pplx-70b" --include="*.ts" --include="*.py" . 2>/dev/null | head -5 || echo 'No legacy search APIs found'`
 
 ## Overview
-Comprehensive guide for migrating to or from Perplexity, or major version upgrades.
+Migrate from traditional search APIs (Google Custom Search, Bing, SerpAPI) or legacy LLMs to Perplexity Sonar. Key advantage: Perplexity combines search + LLM summarization in a single API call, replacing a multi-step pipeline.
 
-## Prerequisites
-- Current system documentation
-- Perplexity SDK installed
-- Feature flag infrastructure
-- Rollback strategy tested
+## Migration Comparison
 
-## Migration Types
+| Feature | Google CSE / Bing | Perplexity Sonar |
+|---------|-------------------|------------------|
+| Returns | Raw search results (links + snippets) | Synthesized answer + citations |
+| Answer generation | Requires separate LLM call | Built-in |
+| Citation handling | Manual extraction | Automatic `citations` array |
+| Cost structure | Per-search ($5/1K queries) | Per-token + per-request |
+| Recency filter | Date range parameters | `search_recency_filter` |
+| Domain filter | Site restriction | `search_domain_filter` |
 
-| Type | Complexity | Duration | Risk |
-|------|-----------|----------|------|
-| Fresh install | Low | Days | Low |
-| From competitor | Medium | Weeks | Medium |
-| Major version | Medium | Weeks | Medium |
-| Full replatform | High | Months | High |
+## Instructions
 
-## Pre-Migration Assessment
-
-### Step 1: Current State Analysis
+### Step 1: Assess Current Integration
 ```bash
 set -euo pipefail
-# Document current implementation
-find . -name "*.ts" -o -name "*.py" | xargs grep -l "perplexity" > perplexity-files.txt
+# Find existing search API usage
+grep -rn "googleapis.*customsearch\|bing.*search\|serpapi\|serper\|tavily" \
+  --include="*.ts" --include="*.py" --include="*.js" \
+  . 2>/dev/null || echo "No search APIs found"
 
 # Count integration points
-wc -l perplexity-files.txt
-
-# Identify dependencies
-npm list | grep perplexity
-pip freeze | grep perplexity
+grep -rln "search.*api\|customsearch\|bing.*web" \
+  --include="*.ts" --include="*.py" --include="*.js" \
+  . 2>/dev/null | wc -l
 ```
 
-### Step 2: Data Inventory
+### Step 2: Build Adapter Layer
 ```typescript
-interface MigrationInventory {
-  dataTypes: string[];
-  recordCounts: Record<string, number>;
-  dependencies: string[];
-  integrationPoints: string[];
-  customizations: string[];
+// src/search/adapter.ts
+export interface SearchResult {
+  answer: string;
+  citations: string[];
+  rawResults?: Array<{ title: string; url: string; snippet: string }>;
 }
 
-async function assessPerplexityMigration(): Promise<MigrationInventory> {
+export interface SearchAdapter {
+  search(query: string, opts?: { recency?: string; domains?: string[] }): Promise<SearchResult>;
+}
+
+// Legacy adapter (existing Google/Bing implementation)
+class GoogleSearchAdapter implements SearchAdapter {
+  async search(query: string): Promise<SearchResult> {
+    // Existing Google CSE code
+    const results = await googleCustomSearch(query);
+    return {
+      answer: "", // No built-in answer generation
+      citations: results.items.map((i: any) => i.link),
+      rawResults: results.items.map((i: any) => ({
+        title: i.title,
+        url: i.link,
+        snippet: i.snippet,
+      })),
+    };
+  }
+}
+
+// New Perplexity adapter
+class PerplexitySearchAdapter implements SearchAdapter {
+  private client: OpenAI;
+
+  constructor() {
+    this.client = new OpenAI({
+      apiKey: process.env.PERPLEXITY_API_KEY!,
+      baseURL: "https://api.perplexity.ai",
+    });
+  }
+
+  async search(query: string, opts?: { recency?: string; domains?: string[] }): Promise<SearchResult> {
+    const response = await this.client.chat.completions.create({
+      model: "sonar",
+      messages: [{ role: "user", content: query }],
+      ...(opts?.recency && { search_recency_filter: opts.recency }),
+      ...(opts?.domains && { search_domain_filter: opts.domains }),
+    } as any);
+
+    return {
+      answer: response.choices[0].message.content || "",
+      citations: (response as any).citations || [],
+      rawResults: (response as any).search_results || [],
+    };
+  }
+}
+```
+
+### Step 3: Feature Flag Traffic Split
+```typescript
+// src/search/factory.ts
+function getSearchAdapter(): SearchAdapter {
+  const perplexityPercent = parseInt(process.env.PERPLEXITY_TRAFFIC_PERCENT || "0");
+
+  if (Math.random() * 100 < perplexityPercent) {
+    return new PerplexitySearchAdapter();
+  }
+  return new GoogleSearchAdapter();
+}
+
+// Migration schedule:
+// Week 1: PERPLEXITY_TRAFFIC_PERCENT=10  (canary)
+// Week 2: PERPLEXITY_TRAFFIC_PERCENT=50  (half traffic)
+// Week 3: PERPLEXITY_TRAFFIC_PERCENT=100 (full migration)
+// Week 4: Remove Google adapter code
+```
+
+### Step 4: Validate Migration Quality
+```typescript
+// Compare results between old and new adapter
+async function compareSearchResults(query: string): Promise<{
+  perplexity: SearchResult;
+  google: SearchResult;
+  citationOverlap: number;
+}> {
+  const [perplexity, google] = await Promise.all([
+    new PerplexitySearchAdapter().search(query),
+    new GoogleSearchAdapter().search(query),
+  ]);
+
+  // Check citation overlap (shared domains)
+  const pplxDomains = new Set(perplexity.citations.map((u) => new URL(u).hostname));
+  const googleDomains = new Set(google.citations.map((u) => new URL(u).hostname));
+  const overlap = [...pplxDomains].filter((d) => googleDomains.has(d)).length;
+
   return {
-    dataTypes: await getDataTypes(),
-    recordCounts: await getRecordCounts(),
-    dependencies: await analyzeDependencies(),
-    integrationPoints: await findIntegrationPoints(),
-    customizations: await documentCustomizations(),
+    perplexity,
+    google,
+    citationOverlap: overlap / Math.max(pplxDomains.size, 1),
   };
 }
 ```
 
-## Migration Strategy: Strangler Fig Pattern
-
-```
-Phase 1: Parallel Run
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   System    │ ──▶ │  Perplexity   │
-│   (100%)    │     │   (0%)      │
-└─────────────┘     └─────────────┘
-
-Phase 2: Gradual Shift
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   (50%)     │ ──▶ │   (50%)     │
-└─────────────┘     └─────────────┘
-
-Phase 3: Complete
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   (0%)      │ ──▶ │   (100%)    │
-└─────────────┘     └─────────────┘
-```
-
-## Implementation Plan
-
-### Phase 1: Setup (Week 1-2)
-```bash
-set -euo pipefail
-# Install Perplexity SDK
-npm install @perplexity/sdk
-
-# Configure credentials
-cp .env.example .env.perplexity
-# Edit with new credentials
-
-# Verify connectivity
-node -e "require('@perplexity/sdk').ping()"
-```
-
-### Phase 2: Adapter Layer (Week 3-4)
+### Step 5: Simplify Post-Migration
 ```typescript
-// src/adapters/perplexity.ts
-interface ServiceAdapter {
-  create(data: CreateInput): Promise<Resource>;
-  read(id: string): Promise<Resource>;
-  update(id: string, data: UpdateInput): Promise<Resource>;
-  delete(id: string): Promise<void>;
-}
+// Before migration: 3-step pipeline
+// 1. Google Custom Search API → raw results
+// 2. Send results to LLM for summarization
+// 3. Extract citations manually
 
-class PerplexityAdapter implements ServiceAdapter {
-  async create(data: CreateInput): Promise<Resource> {
-    const perplexityData = this.transform(data);
-    return perplexityClient.create(perplexityData);
-  }
+// After migration: 1-step
+async function search(query: string): Promise<{ answer: string; sources: string[] }> {
+  const client = new OpenAI({
+    apiKey: process.env.PERPLEXITY_API_KEY!,
+    baseURL: "https://api.perplexity.ai",
+  });
 
-  private transform(data: CreateInput): PerplexityInput {
-    // Map from old format to Perplexity format
-  }
-}
-```
+  const response = await client.chat.completions.create({
+    model: "sonar",
+    messages: [{ role: "user", content: query }],
+  });
 
-### Phase 3: Data Migration (Week 5-6)
-```typescript
-async function migratePerplexityData(): Promise<MigrationResult> {
-  const batchSize = 100;
-  let processed = 0;
-  let errors: MigrationError[] = [];
-
-  for await (const batch of oldSystem.iterateBatches(batchSize)) {
-    try {
-      const transformed = batch.map(transform);
-      await perplexityClient.batchCreate(transformed);
-      processed += batch.length;
-    } catch (error) {
-      errors.push({ batch, error });
-    }
-
-    // Progress update
-    console.log(`Migrated ${processed} records`);
-  }
-
-  return { processed, errors };
-}
-```
-
-### Phase 4: Traffic Shift (Week 7-8)
-```typescript
-// Feature flag controlled traffic split
-function getServiceAdapter(): ServiceAdapter {
-  const perplexityPercentage = getFeatureFlag('perplexity_migration_percentage');
-
-  if (Math.random() * 100 < perplexityPercentage) {
-    return new PerplexityAdapter();
-  }
-
-  return new LegacyAdapter();
+  return {
+    answer: response.choices[0].message.content || "",
+    sources: (response as any).citations || [],
+  };
 }
 ```
 
 ## Rollback Plan
-
 ```bash
 set -euo pipefail
-# Immediate rollback
-kubectl set env deployment/app PERPLEXITY_ENABLED=false
-kubectl rollout restart deployment/app
-
-# Data rollback (if needed)
-./scripts/restore-from-backup.sh --date YYYY-MM-DD
-
-# Verify rollback
-curl https://app.yourcompany.com/health | jq '.services.perplexity'
+# Instant rollback: set traffic to 0%
+# kubectl set env deployment/search-app PERPLEXITY_TRAFFIC_PERCENT=0
+# The adapter layer keeps both implementations live until decommissioned
 ```
-
-## Post-Migration Validation
-
-```typescript
-async function validatePerplexityMigration(): Promise<ValidationReport> {
-  const checks = [
-    { name: 'Data count match', fn: checkDataCounts },
-    { name: 'API functionality', fn: checkApiFunctionality },
-    { name: 'Performance baseline', fn: checkPerformance },
-    { name: 'Error rates', fn: checkErrorRates },
-  ];
-
-  const results = await Promise.all(
-    checks.map(async c => ({ name: c.name, result: await c.fn() }))
-  );
-
-  return { checks: results, passed: results.every(r => r.result.success) };
-}
-```
-
-## Instructions
-
-### Assess current configuration
-Document existing implementation and data inventory.
-
-### Step 2: Build Adapter Layer
-Create abstraction layer for gradual migration.
-
-### Step 3: Migrate Data
-Run batch data migration with error handling.
-
-### Step 4: Shift Traffic
-Gradually route traffic to new Perplexity integration.
-
-## Output
-- Migration assessment complete
-- Adapter layer implemented
-- Data migrated successfully
-- Traffic fully shifted to Perplexity
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Data mismatch | Transform errors | Validate transform logic |
-| Performance drop | No caching | Add caching layer |
-| Rollback triggered | Errors spiked | Reduce traffic percentage |
-| Validation failed | Missing data | Check batch processing |
+| Citation format differs | Google returns titles, Perplexity returns URLs | Normalize in adapter |
+| No raw results | Perplexity returns synthesized answer | Use `search_results` field if available |
+| Higher latency | Perplexity does search + synthesis | Expected; cache to compensate |
+| Cost increase | Perplexity uses more tokens | Route simple queries to sonar, limit max_tokens |
 
-## Examples
-
-### Quick Migration Status
-```typescript
-const status = await validatePerplexityMigration();
-console.log(`Migration ${status.passed ? 'PASSED' : 'FAILED'}`);
-status.checks.forEach(c => console.log(`  ${c.name}: ${c.result.success}`));
-```
+## Output
+- Adapter layer abstracting search implementations
+- Feature-flagged traffic split for gradual migration
+- Quality comparison between old and new search
+- Simplified single-API architecture post-migration
 
 ## Resources
+- [Perplexity API Documentation](https://docs.perplexity.ai)
 - [Strangler Fig Pattern](https://martinfowler.com/bliki/StranglerFigApplication.html)
-- [Perplexity Migration Guide](https://docs.perplexity.com/migration)
 
-## Flagship+ Skills
+## Next Steps
 For advanced troubleshooting, see `perplexity-advanced-troubleshooting`.

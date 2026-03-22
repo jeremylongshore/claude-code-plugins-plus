@@ -1,11 +1,10 @@
 ---
 name: perplexity-enterprise-rbac
 description: |
-  Configure Perplexity enterprise SSO, role-based access control, and organization management.
-  Use when implementing SSO integration, configuring role-based permissions,
-  or setting up organization-level controls for Perplexity.
-  Trigger with phrases like "perplexity SSO", "perplexity RBAC",
-  "perplexity enterprise", "perplexity roles", "perplexity permissions", "perplexity SAML".
+  Configure Perplexity API key scoping, per-team model access, cost controls,
+  and search domain restrictions for enterprise deployments.
+  Trigger with phrases like "perplexity enterprise", "perplexity RBAC",
+  "perplexity team access", "perplexity roles", "perplexity permissions".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
@@ -17,101 +16,205 @@ tags: [saas, perplexity, rbac]
 # Perplexity Enterprise RBAC
 
 ## Overview
-Manage access to Perplexity's AI search API through API key scoping and per-query cost controls. Perplexity charges per query with pricing varying by model -- `sonar` (lightweight) costs less per query than `sonar-pro` (deeper research).
+Control access to Perplexity Sonar API at the organizational level. Perplexity does not have built-in RBAC -- you implement access control through: separate API keys per team/environment, a gateway that enforces model and budget policies, and domain restrictions for compliance.
+
+## Access Control Strategy
+
+| Layer | Mechanism | Perplexity Support |
+|-------|-----------|-------------------|
+| Authentication | API key per team | Yes (multiple keys) |
+| Model restriction | Gateway enforcement | Build yourself |
+| Budget cap | Per-key monthly limit | Via dashboard |
+| Domain restriction | `search_domain_filter` | Yes (per-request) |
+| Rate limiting | Gateway + key limits | Yes (per-key RPM) |
 
 ## Prerequisites
-- Perplexity API account at docs.perplexity.ai
-- API key with organization admin access
-- Understanding of model pricing tiers (sonar vs sonar-pro)
+- Perplexity API account with admin access
+- Separate API keys per team/environment
+- Gateway or middleware for policy enforcement
 
 ## Instructions
 
-### Step 1: Create Model-Restricted API Keys
-```bash
-set -euo pipefail
-# Key for the support bot (lightweight model only, low cost)
-curl -X POST https://api.perplexity.ai/v1/api-keys \
-  -H "Authorization: Bearer $PPLX_ADMIN_KEY" \
-  -d '{
-    "name": "support-bot-prod",
-    "allowed_models": ["sonar"],
-    "rate_limit_rpm": 100,
-    "monthly_budget_usd": 200  # HTTP 200 OK
-  }'
+### Step 1: Create Per-Team API Keys
+Generate separate keys at [perplexity.ai/settings/api](https://www.perplexity.ai/settings/api):
 
-# Key for the research team (full model access)
-curl -X POST https://api.perplexity.ai/v1/api-keys \
-  -H "Authorization: Bearer $PPLX_ADMIN_KEY" \
-  -d '{
-    "name": "research-team",
-    "allowed_models": ["sonar", "sonar-pro"],
-    "rate_limit_rpm": 60,
-    "monthly_budget_usd": 1000  # 1000: 1 second in ms
-  }'
+```
+Key: pplx-support-bot-prod     → Budget: $200/mo, sonar only
+Key: pplx-research-team        → Budget: $1000/mo, sonar + sonar-pro
+Key: pplx-data-team            → Budget: $500/mo, sonar only
+Key: pplx-executive-reports    → Budget: $300/mo, sonar-pro
 ```
 
-### Step 2: Implement a Gateway with Query Routing
+### Step 2: Gateway with Policy Enforcement
 ```typescript
-// pplx-gateway.ts - Route queries to appropriate model by team
-const TEAM_CONFIG: Record<string, { model: string; maxTokens: number }> = {
-  support:    { model: 'sonar',     maxTokens: 512 },  # 512 bytes
-  sales:      { model: 'sonar',     maxTokens: 1024 },  # 1024: 1 KB
-  research:   { model: 'sonar-pro', maxTokens: 4096 },  # 4096: 4 KB
+// perplexity-gateway.ts
+import OpenAI from "openai";
+
+interface TeamPolicy {
+  apiKey: string;
+  allowedModels: string[];
+  maxTokensPerRequest: number;
+  maxRequestsPerMinute: number;
+  requiredDomainFilter?: string[];  // Force search to specific domains
+  blockedDomainFilter?: string[];   // Block specific domains
+}
+
+const TEAM_POLICIES: Record<string, TeamPolicy> = {
+  support: {
+    apiKey: process.env.PPLX_KEY_SUPPORT!,
+    allowedModels: ["sonar"],
+    maxTokensPerRequest: 512,
+    maxRequestsPerMinute: 30,
+  },
+  research: {
+    apiKey: process.env.PPLX_KEY_RESEARCH!,
+    allowedModels: ["sonar", "sonar-pro", "sonar-reasoning-pro"],
+    maxTokensPerRequest: 4096,
+    maxRequestsPerMinute: 50,
+  },
+  compliance: {
+    apiKey: process.env.PPLX_KEY_COMPLIANCE!,
+    allowedModels: ["sonar", "sonar-pro"],
+    maxTokensPerRequest: 2048,
+    maxRequestsPerMinute: 20,
+    requiredDomainFilter: ["sec.gov", "edgar.sec.gov", "law.cornell.edu"],
+  },
+  marketing: {
+    apiKey: process.env.PPLX_KEY_MARKETING!,
+    allowedModels: ["sonar"],
+    maxTokensPerRequest: 1024,
+    maxRequestsPerMinute: 20,
+    blockedDomainFilter: ["-competitor1.com", "-competitor2.com"],
+  },
 };
 
-function getModelForTeam(team: string): { model: string; maxTokens: number } {
-  return TEAM_CONFIG[team] || TEAM_CONFIG.support;
+function enforcePolicy(
+  team: string,
+  requestedModel: string,
+  requestedTokens: number
+): { client: OpenAI; model: string; maxTokens: number; domainFilter?: string[] } {
+  const policy = TEAM_POLICIES[team];
+  if (!policy) throw new Error(`Unknown team: ${team}`);
+
+  if (!policy.allowedModels.includes(requestedModel)) {
+    console.warn(`Team ${team} not allowed ${requestedModel}, using ${policy.allowedModels[0]}`);
+  }
+
+  const model = policy.allowedModels.includes(requestedModel)
+    ? requestedModel
+    : policy.allowedModels[0];
+
+  const maxTokens = Math.min(requestedTokens, policy.maxTokensPerRequest);
+
+  return {
+    client: new OpenAI({ apiKey: policy.apiKey, baseURL: "https://api.perplexity.ai" }),
+    model,
+    maxTokens,
+    domainFilter: policy.requiredDomainFilter || policy.blockedDomainFilter,
+  };
 }
 ```
 
-### Step 3: Configure Search Domain Restrictions
-```bash
-set -euo pipefail
-# Restrict search to approved sources for compliance
-curl -X POST https://api.perplexity.ai/chat/completions \
-  -H "Authorization: Bearer $PPLX_API_KEY" \
-  -d '{
-    "model": "sonar",
-    "messages": [{"role": "user", "content": "latest SEC filing for AAPL"}],
-    "search_domain_filter": ["sec.gov", "edgar.sec.gov"],
-    "return_citations": true
-  }'
+### Step 3: Enforced Search with Domain Restrictions
+```typescript
+async function teamSearch(
+  team: string,
+  query: string,
+  requestedModel: string = "sonar"
+) {
+  const { client, model, maxTokens, domainFilter } = enforcePolicy(
+    team, requestedModel, 2048
+  );
+
+  const response = await client.chat.completions.create({
+    model,
+    messages: [{ role: "user", content: query }],
+    max_tokens: maxTokens,
+    ...(domainFilter && { search_domain_filter: domainFilter }),
+  } as any);
+
+  return {
+    answer: response.choices[0].message.content,
+    citations: (response as any).citations || [],
+    model: response.model,
+    team,
+    tokens: response.usage?.total_tokens,
+  };
+}
+
+// Usage
+const result = await teamSearch("compliance", "latest SEC filing for AAPL", "sonar-pro");
+// -> Uses sonar-pro (allowed for compliance team)
+// -> Searches only sec.gov, edgar.sec.gov, law.cornell.edu
+
+const supportResult = await teamSearch("support", "How to reset password", "sonar-pro");
+// -> Downgrades to sonar (support team only allowed sonar)
 ```
 
-### Step 4: Monitor Usage and Cost
-```bash
-set -euo pipefail
-# Check API usage by key
-curl https://api.perplexity.ai/v1/usage \
-  -H "Authorization: Bearer $PPLX_ADMIN_KEY" | \
-  jq '.keys[] | {name, queries_today, cost_today_usd, budget_remaining}'
+### Step 4: Usage Tracking per Team
+```typescript
+class TeamUsageTracker {
+  private usage: Map<string, Array<{ timestamp: number; tokens: number; model: string; cost: number }>> = new Map();
+
+  record(team: string, tokens: number, model: string) {
+    const entries = this.usage.get(team) || [];
+    const cost = model === "sonar-pro" ? tokens * 0.000009 : tokens * 0.000001;
+    entries.push({ timestamp: Date.now(), tokens, model, cost });
+    this.usage.set(team, entries);
+  }
+
+  getDailySummary(team: string) {
+    const today = new Date().toDateString();
+    const entries = (this.usage.get(team) || []).filter(
+      (e) => new Date(e.timestamp).toDateString() === today
+    );
+    return {
+      team,
+      queries: entries.length,
+      totalTokens: entries.reduce((s, e) => s + e.tokens, 0),
+      estimatedCost: entries.reduce((s, e) => s + e.cost, 0).toFixed(4),
+      modelBreakdown: {
+        sonar: entries.filter((e) => e.model === "sonar").length,
+        "sonar-pro": entries.filter((e) => e.model === "sonar-pro").length,
+      },
+    };
+  }
+}
 ```
 
-### Step 5: Enforce Key Rotation
-Rotate API keys every 90 days. Label keys with creation date (`research-team-2026Q1`) for easy tracking. Create new key, deploy, then delete old key after 24-hour overlap.
+### Step 5: Key Rotation Schedule
+Rotate API keys every 90 days. Name keys with quarter (`pplx-research-2026Q1`) for tracking.
+
+```bash
+set -euo pipefail
+# 1. Generate new key at perplexity.ai/settings/api
+# 2. Deploy new key alongside old key (24-hour overlap)
+# 3. Verify new key works
+curl -s -o /dev/null -w "%{http_code}" \
+  -H "Authorization: Bearer $NEW_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"model":"sonar","messages":[{"role":"user","content":"test"}],"max_tokens":5}' \
+  https://api.perplexity.ai/chat/completions
+# 4. Remove old key from perplexity.ai/settings/api
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| `401 invalid_api_key` | Key revoked or expired | Generate new key |
-| `403 model_not_allowed` | Key restricted from sonar-pro | Use sonar or request broader key |
-| `429 rate_limited` | RPM cap exceeded | Add backoff or increase rate limit |
-| Budget cap reached | Monthly spend exhausted | Increase budget or wait for cycle reset |
-
-## Examples
-
-**Basic usage**: Apply perplexity enterprise rbac to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize perplexity enterprise rbac for production environments with multiple constraints and team-specific requirements.
+| `401` for a team | Key expired or revoked | Regenerate key for that team |
+| Model downgrade unexpected | Policy restricting access | Check team's `allowedModels` |
+| Compliance citations from wrong domain | Domain filter not applied | Verify `requiredDomainFilter` in policy |
+| Budget exceeded | Team over monthly cap | Alert team lead, increase cap or throttle |
 
 ## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+- Per-team API key management
+- Gateway enforcing model and token policies
+- Domain-restricted search for compliance teams
+- Usage tracking and cost allocation per team
 
 ## Resources
+- [Perplexity API Documentation](https://docs.perplexity.ai)
+- [API Key Management](https://www.perplexity.ai/settings/api)
 
-- Official Perplexity Enterprise Rbac documentation
-- Community best practices and patterns
-- Related skills in this plugin pack
+## Next Steps
+For migration planning, see `perplexity-migration-deep-dive`.

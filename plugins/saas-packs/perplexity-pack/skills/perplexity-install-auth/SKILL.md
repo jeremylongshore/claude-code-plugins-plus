@@ -1,11 +1,11 @@
 ---
 name: perplexity-install-auth
 description: |
-  Install and configure Perplexity SDK/CLI authentication.
+  Install and configure Perplexity Sonar API authentication.
   Use when setting up a new Perplexity integration, configuring API keys,
-  or initializing Perplexity in your project.
+  or initializing the OpenAI-compatible client for Perplexity.
   Trigger with phrases like "install perplexity", "setup perplexity",
-  "perplexity auth", "configure perplexity API key".
+  "perplexity auth", "configure perplexity API key", "perplexity sonar setup".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
@@ -17,77 +17,108 @@ tags: [saas, perplexity, api, authentication]
 # Perplexity Install & Auth
 
 ## Overview
-Set up Perplexity SDK/CLI and configure authentication credentials.
+Set up Perplexity Sonar API access using the OpenAI-compatible chat completions endpoint at `https://api.perplexity.ai`. Perplexity does not have a custom SDK -- you use the standard OpenAI client library pointed at Perplexity's base URL.
 
 ## Prerequisites
 - Node.js 18+ or Python 3.10+
-- Package manager (npm, pnpm, or pip)
-- Perplexity account with API access
-- API key from Perplexity dashboard
+- Perplexity account at [perplexity.ai](https://www.perplexity.ai)
+- API key from [perplexity.ai/settings/api](https://www.perplexity.ai/settings/api)
 
 ## Instructions
 
-### Step 1: Install SDK
+### Step 1: Install OpenAI Client Library
 ```bash
 set -euo pipefail
-# Node.js
-npm install @perplexity/sdk
+# Node.js / TypeScript
+npm install openai
 
 # Python
-pip install perplexity
+pip install openai
 ```
 
-### Step 2: Configure Authentication
+There is no `@perplexity/sdk` package. Perplexity uses the OpenAI wire format, so you use the official `openai` package with a custom `baseURL`.
+
+### Step 2: Configure API Key
 ```bash
 # Set environment variable
-export PERPLEXITY_API_KEY="your-api-key"
+export PERPLEXITY_API_KEY="pplx-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
-# Or create .env file
-echo 'PERPLEXITY_API_KEY=your-api-key' >> .env
+# Or create .env file (add .env to .gitignore)
+echo 'PERPLEXITY_API_KEY=pplx-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx' >> .env
 ```
 
-### Step 3: Verify Connection
+API keys start with `pplx-` and are generated at [perplexity.ai/settings/api](https://www.perplexity.ai/settings/api). You must add credits to your account before making API calls.
+
+### Step 3: Verify Connection (TypeScript)
 ```typescript
-// Test connection code here
+import OpenAI from "openai";
+
+const client = new OpenAI({
+  apiKey: process.env.PERPLEXITY_API_KEY,
+  baseURL: "https://api.perplexity.ai",
+});
+
+async function verify() {
+  const response = await client.chat.completions.create({
+    model: "sonar",
+    messages: [{ role: "user", content: "What is 2+2?" }],
+    max_tokens: 50,
+  });
+  console.log("Connected:", response.choices[0].message.content);
+  console.log("Model:", response.model);
+  console.log("Tokens used:", response.usage?.total_tokens);
+}
+
+verify().catch(console.error);
 ```
 
-## Output
-- Installed SDK package in node_modules or site-packages
-- Environment variable or .env file with API key
-- Successful connection verification output
+### Step 4: Verify Connection (Python)
+```python
+import os
+from openai import OpenAI
+
+client = OpenAI(
+    api_key=os.environ["PERPLEXITY_API_KEY"],
+    base_url="https://api.perplexity.ai",
+)
+
+response = client.chat.completions.create(
+    model="sonar",
+    messages=[{"role": "user", "content": "What is 2+2?"}],
+    max_tokens=50,
+)
+print("Connected:", response.choices[0].message.content)
+print("Model:", response.model)
+print("Tokens:", response.usage.total_tokens)
+```
+
+## Available Models
+
+| Model | Use Case | Input $/M tokens | Output $/M tokens |
+|-------|----------|-------------------|-------------------|
+| `sonar` | Fast search, simple queries | $1 | $1 |
+| `sonar-pro` | Deep research, more citations | $3 | $15 |
+| `sonar-reasoning-pro` | Chain-of-thought with search | $3 | $15 |
+| `sonar-deep-research` | Multi-step research synthesis | $2 | $8 |
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Invalid API Key | Incorrect or expired key | Verify key in Perplexity dashboard |
-| Rate Limited | Exceeded quota | Check quota at https://docs.perplexity.com |
-| Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
-| Module Not Found | Installation failed | Run `npm install` or `pip install` again |
+| `401 Unauthorized` | Invalid or missing API key | Verify key starts with `pplx-` and has credits |
+| `403 Forbidden` | Key lacks model access | Check key permissions at perplexity.ai/settings |
+| `Module not found: openai` | SDK not installed | Run `npm install openai` or `pip install openai` |
+| `Connection refused` | Wrong base URL | Ensure `baseURL` is `https://api.perplexity.ai` |
 
-## Examples
-
-### TypeScript Setup
-```typescript
-import { PerplexityClient } from '@perplexity/sdk';
-
-const client = new PerplexityClient({
-  apiKey: process.env.PERPLEXITY_API_KEY,
-});
-```
-
-### Python Setup
-```python
-from perplexity import PerplexityClient
-
-client = PerplexityClient(
-    api_key=os.environ.get('PERPLEXITY_API_KEY')
-)
-```
+## Output
+- OpenAI client configured with Perplexity base URL
+- Successful API response confirming connection
+- Token usage confirming billing is active
 
 ## Resources
-- [Perplexity Documentation](https://docs.perplexity.com)
-- [Perplexity Dashboard](https://api.perplexity.com)
-- [Perplexity Status](https://status.perplexity.com)
+- [Perplexity API Documentation](https://docs.perplexity.ai)
+- [API Key Management](https://www.perplexity.ai/settings/api)
+- [OpenAI Compatibility Guide](https://docs.perplexity.ai/guides/chat-completions-guide)
+- [Model Cards](https://docs.perplexity.ai/getting-started/models)
 
 ## Next Steps
-After successful auth, proceed to `perplexity-hello-world` for your first API call.
+After successful auth, proceed to `perplexity-hello-world` for your first search query.

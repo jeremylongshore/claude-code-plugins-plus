@@ -1,11 +1,11 @@
 ---
 name: perplexity-advanced-troubleshooting
 description: |
-  Apply Perplexity advanced debugging techniques for hard-to-diagnose issues.
-  Use when standard troubleshooting fails, investigating complex race conditions,
-  or preparing evidence bundles for Perplexity support escalation.
+  Apply advanced debugging techniques for hard-to-diagnose Perplexity Sonar API issues.
+  Use when standard troubleshooting fails, investigating inconsistent citations,
+  or preparing evidence for support escalation.
   Trigger with phrases like "perplexity hard bug", "perplexity mystery error",
-  "perplexity impossible to debug", "difficult perplexity issue", "perplexity deep debug".
+  "perplexity inconsistent results", "difficult perplexity issue", "perplexity deep debug".
 allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*), Bash(tcpdump:*)
 version: 1.0.0
 license: MIT
@@ -17,249 +17,227 @@ tags: [saas, perplexity, debugging, scaling]
 # Perplexity Advanced Troubleshooting
 
 ## Overview
-Deep debugging techniques for complex Perplexity issues that resist standard troubleshooting.
+Deep debugging for Perplexity Sonar API issues that resist standard fixes. Common hard problems: inconsistent citations between identical queries, intermittent timeouts on sonar-pro, search results not matching recency filter, and response quality degradation.
 
 ## Prerequisites
 - Access to production logs and metrics
-- kubectl access to clusters
-- Network capture tools available
-- Understanding of distributed tracing
+- `curl` for direct API testing
+- Understanding of Perplexity's search-augmented generation model
 
-## Evidence Collection Framework
+## Diagnostic Tools
 
-### Comprehensive Debug Bundle
+### Layer-by-Layer Test
 ```bash
 #!/bin/bash
 set -euo pipefail
-# advanced-perplexity-debug.sh
+echo "=== Perplexity Layer Diagnostics ==="
 
-BUNDLE="perplexity-advanced-debug-$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$BUNDLE"/{logs,metrics,network,config,traces}
+# Layer 1: DNS
+echo -n "1. DNS: "
+dig +short api.perplexity.ai || echo "FAIL"
 
-# 1. Extended logs (1 hour window)
-kubectl logs -l app=perplexity-integration --since=1h > "$BUNDLE/logs/pods.log"
-journalctl -u perplexity-service --since "1 hour ago" > "$BUNDLE/logs/system.log"
+# Layer 2: TCP connectivity
+echo -n "2. TCP: "
+timeout 5 bash -c 'echo > /dev/tcp/api.perplexity.ai/443 && echo "OK"' 2>/dev/null || echo "FAIL"
 
-# 2. Metrics dump
-curl -s localhost:9090/api/v1/query?query=perplexity_requests_total > "$BUNDLE/metrics/requests.json"  # 9090: Prometheus port
-curl -s localhost:9090/api/v1/query?query=perplexity_errors_total > "$BUNDLE/metrics/errors.json"  # Prometheus port
+# Layer 3: TLS handshake
+echo -n "3. TLS: "
+echo | openssl s_client -connect api.perplexity.ai:443 2>/dev/null | grep -c "Verify return code: 0" | sed 's/1/OK/;s/0/FAIL/'
 
-# 3. Network capture (30 seconds)
-timeout 30 tcpdump -i any port 443 -w "$BUNDLE/network/capture.pcap" &  # 443: HTTPS port
+# Layer 4: HTTP with auth
+echo -n "4. Auth: "
+curl -s -o /dev/null -w "%{http_code}" \
+  -H "Authorization: Bearer $PERPLEXITY_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"model":"sonar","messages":[{"role":"user","content":"test"}],"max_tokens":5}' \
+  https://api.perplexity.ai/chat/completions
 
-# 4. Distributed traces
-curl -s localhost:16686/api/traces?service=perplexity > "$BUNDLE/traces/jaeger.json"  # 16686: Jaeger UI port
+echo ""
 
-# 5. Configuration state
-kubectl get cm perplexity-config -o yaml > "$BUNDLE/config/configmap.yaml"
-kubectl get secret perplexity-secrets -o yaml > "$BUNDLE/config/secrets-redacted.yaml"
+# Layer 5: Response quality
+echo "5. Quality check:"
+RESPONSE=$(curl -s \
+  -H "Authorization: Bearer $PERPLEXITY_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"model":"sonar","messages":[{"role":"user","content":"What is 2+2?"}],"max_tokens":50}' \
+  https://api.perplexity.ai/chat/completions)
 
-tar -czf "$BUNDLE.tar.gz" "$BUNDLE"
-echo "Advanced debug bundle: $BUNDLE.tar.gz"
+echo "   Model: $(echo $RESPONSE | jq -r '.model')"
+echo "   Answer: $(echo $RESPONSE | jq -r '.choices[0].message.content' | head -c 100)"
+echo "   Citations: $(echo $RESPONSE | jq -r '.citations | length')"
+echo "   Tokens: $(echo $RESPONSE | jq -r '.usage.total_tokens')"
 ```
 
-## Systematic Isolation
-
-### Layer-by-Layer Testing
-
+### Inconsistent Citation Investigation
 ```typescript
-// Test each layer independently
-async function diagnosePerplexityIssue(): Promise<DiagnosisReport> {
-  const results: DiagnosisResult[] = [];
+// Same query can return different citations due to live web search
+// Run N times and compare to identify pattern vs randomness
 
-  // Layer 1: Network connectivity
-  results.push(await testNetworkConnectivity());
+async function citationStabilityTest(query: string, runs: number = 5) {
+  const results: Array<{ citations: string[]; answer: string }> = [];
 
-  // Layer 2: DNS resolution
-  results.push(await testDNSResolution('api.perplexity.com'));
-
-  // Layer 3: TLS handshake
-  results.push(await testTLSHandshake('api.perplexity.com'));
-
-  // Layer 4: Authentication
-  results.push(await testAuthentication());
-
-  // Layer 5: API response
-  results.push(await testAPIResponse());
-
-  // Layer 6: Response parsing
-  results.push(await testResponseParsing());
-
-  return { results, firstFailure: results.find(r => !r.success) };
-}
-```
-
-### Minimal Reproduction
-
-```typescript
-// Strip down to absolute minimum
-async function minimalRepro(): Promise<void> {
-  // 1. Fresh client, no customization
-  const client = new PerplexityClient({
-    apiKey: process.env.PERPLEXITY_API_KEY!,
-  });
-
-  // 2. Simplest possible call
-  try {
-    const result = await client.ping();
-    console.log('Ping successful:', result);
-  } catch (error) {
-    console.error('Ping failed:', {
-      message: error.message,
-      code: error.code,
-      stack: error.stack,
+  for (let i = 0; i < runs; i++) {
+    const response = await perplexity.chat.completions.create({
+      model: "sonar",
+      messages: [{ role: "user", content: query }],
+      max_tokens: 500,
     });
+
+    results.push({
+      answer: response.choices[0].message.content || "",
+      citations: (response as any).citations || [],
+    });
+
+    await new Promise((r) => setTimeout(r, 2000)); // Rate limit
+  }
+
+  // Analyze consistency
+  const allCitations = results.flatMap((r) => r.citations);
+  const citationFreq = allCitations.reduce((acc, url) => {
+    acc[url] = (acc[url] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+
+  const stable = Object.entries(citationFreq)
+    .filter(([, count]) => count >= runs * 0.6)
+    .map(([url]) => url);
+
+  console.log(`Stable citations (>60% appearance): ${stable.length}/${Object.keys(citationFreq).length}`);
+  console.log("Stable:", stable);
+  console.log("All unique:", Object.keys(citationFreq).length);
+
+  return { results, citationFreq, stableCitations: stable };
+}
+```
+
+### Latency Profiling
+```typescript
+async function profileLatency(
+  queries: string[],
+  models: string[] = ["sonar", "sonar-pro"]
+) {
+  const results: Array<{
+    query: string;
+    model: string;
+    latencyMs: number;
+    tokens: number;
+    citations: number;
+  }> = [];
+
+  for (const model of models) {
+    for (const query of queries) {
+      const start = performance.now();
+      try {
+        const response = await perplexity.chat.completions.create({
+          model,
+          messages: [{ role: "user", content: query }],
+          max_tokens: 500,
+        });
+
+        results.push({
+          query: query.slice(0, 50),
+          model,
+          latencyMs: Math.round(performance.now() - start),
+          tokens: response.usage?.total_tokens || 0,
+          citations: (response as any).citations?.length || 0,
+        });
+      } catch (err: any) {
+        results.push({
+          query: query.slice(0, 50),
+          model,
+          latencyMs: Math.round(performance.now() - start),
+          tokens: 0,
+          citations: 0,
+        });
+      }
+
+      await new Promise((r) => setTimeout(r, 1500));
+    }
+  }
+
+  // Print report
+  console.table(results);
+
+  const byModel = results.reduce((acc, r) => {
+    if (!acc[r.model]) acc[r.model] = [];
+    acc[r.model].push(r.latencyMs);
+    return acc;
+  }, {} as Record<string, number[]>);
+
+  for (const [model, latencies] of Object.entries(byModel)) {
+    const sorted = latencies.sort((a, b) => a - b);
+    console.log(`${model}: p50=${sorted[Math.floor(sorted.length * 0.5)]}ms p95=${sorted[Math.floor(sorted.length * 0.95)]}ms`);
   }
 }
 ```
 
-## Timing Analysis
-
+### Recency Filter Validation
 ```typescript
-class TimingAnalyzer {
-  private timings: Map<string, number[]> = new Map();
+// Verify search_recency_filter is actually working
+async function testRecencyFilter() {
+  const query = "latest technology news";
+  const filters: Array<"hour" | "day" | "week" | "month"> = ["hour", "day", "week", "month"];
 
-  async measure<T>(label: string, fn: () => Promise<T>): Promise<T> {
-    const start = performance.now();
-    try {
-      return await fn();
-    } finally {
-      const duration = performance.now() - start;
-      const existing = this.timings.get(label) || [];
-      existing.push(duration);
-      this.timings.set(label, existing);
-    }
-  }
+  for (const filter of filters) {
+    const response = await perplexity.chat.completions.create({
+      model: "sonar",
+      messages: [{ role: "user", content: query }],
+      search_recency_filter: filter,
+      max_tokens: 200,
+    } as any);
 
-  report(): TimingReport {
-    const report: TimingReport = {};
-    for (const [label, times] of this.timings) {
-      report[label] = {
-        count: times.length,
-        min: Math.min(...times),
-        max: Math.max(...times),
-        avg: times.reduce((a, b) => a + b, 0) / times.length,
-        p95: this.percentile(times, 95),
-      };
-    }
-    return report;
-  }
-}
-```
+    const citations = (response as any).citations || [];
+    console.log(`\nRecency: ${filter}`);
+    console.log(`  Citations: ${citations.length}`);
+    console.log(`  Answer preview: ${(response.choices[0].message.content || "").slice(0, 100)}...`);
 
-## Memory and Resource Analysis
-
-```typescript
-// Detect memory leaks in Perplexity client usage
-const heapUsed: number[] = [];
-
-setInterval(() => {
-  const usage = process.memoryUsage();
-  heapUsed.push(usage.heapUsed);
-
-  // Alert on sustained growth
-  if (heapUsed.length > 60) { // 1 hour at 1/min
-    const trend = heapUsed[59] - heapUsed[0];
-    if (trend > 100 * 1024 * 1024) { // 100MB growth  # 1024: 1 KB
-      console.warn('Potential memory leak in perplexity integration');
-    }
-  }
-}, 60000);  # 60000: 1 minute in ms
-```
-
-## Race Condition Detection
-
-```typescript
-// Detect concurrent access issues
-class PerplexityConcurrencyChecker {
-  private inProgress: Set<string> = new Set();
-
-  async execute<T>(key: string, fn: () => Promise<T>): Promise<T> {
-    if (this.inProgress.has(key)) {
-      console.warn(`Concurrent access detected for ${key}`);
-    }
-
-    this.inProgress.add(key);
-    try {
-      return await fn();
-    } finally {
-      this.inProgress.delete(key);
-    }
+    await new Promise((r) => setTimeout(r, 2000));
   }
 }
 ```
 
 ## Support Escalation Template
-
 ```markdown
 ## Perplexity Support Escalation
 
-**Severity:** P[1-4]
-**Request ID:** [from error response]
-**Timestamp:** [ISO 8601]  # 8601 = configured value
-
-### Issue Summary
-[One paragraph description]
+**Issue:** [Brief description]
+**Severity:** [P1-P4]
+**First observed:** [ISO 8601 timestamp]
+**Frequency:** [Always / Intermittent / Once]
 
 ### Steps to Reproduce
-1. [Step 1]
-2. [Step 2]
+1. Call `POST https://api.perplexity.ai/chat/completions`
+2. Body: `{"model": "sonar", "messages": [{"role": "user", "content": "..."}]}`
+3. Observed: [What happened]
+4. Expected: [What should happen]
 
-### Expected vs Actual
-- Expected: [behavior]
-- Actual: [behavior]
-
-### Evidence Attached
-- [ ] Debug bundle (perplexity-advanced-debug-*.tar.gz)
-- [ ] Minimal reproduction code
-- [ ] Timing analysis
-- [ ] Network capture (if relevant)
+### Evidence
+- Layer diagnostic results: [paste output]
+- Latency profile: [p50/p95 values]
+- Citation stability: [X/Y stable citations]
+- Response JSON: [attach]
 
 ### Workarounds Attempted
-1. [Workaround 1] - Result: [outcome]
-2. [Workaround 2] - Result: [outcome]
+1. [Workaround] — Result: [outcome]
 ```
-
-## Instructions
-
-### Step 1: Collect Evidence Bundle
-Run the comprehensive debug script to gather all relevant data.
-
-### Step 2: Systematic Isolation
-Test each layer independently to identify the failure point.
-
-### Step 3: Create Minimal Reproduction
-Strip down to the simplest failing case.
-
-### Step 4: Escalate with Evidence
-Use the support template with all collected evidence.
-
-## Output
-- Comprehensive debug bundle collected
-- Failure layer identified
-- Minimal reproduction created
-- Support escalation submitted
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Can't reproduce | Race condition | Add timing analysis |
-| Intermittent failure | Timing-dependent | Increase sample size |
-| No useful logs | Missing instrumentation | Add debug logging |
-| Memory growth | Resource leak | Use heap profiling |
+| Different citations per call | Web search is non-deterministic | Cache results; accept variability |
+| recency filter ignored | Query overrides filter context | Make query explicitly time-bounded |
+| sonar-pro timeout | Complex multi-source search | Set 30s timeout, fall back to sonar |
+| Answer quality varies | Different web sources found | Use `search_domain_filter` for consistency |
 
-## Examples
-
-### Quick Layer Test
-```bash
-set -euo pipefail
-# Test each layer in sequence
-curl -v https://api.perplexity.com/health 2>&1 | grep -E "(Connected|TLS|HTTP)"
-```
+## Output
+- Layer-by-layer diagnostic results
+- Citation stability analysis
+- Latency profiling by model
+- Support escalation package
 
 ## Resources
-- [Perplexity Support Portal](https://support.perplexity.com)
-- [Perplexity Status Page](https://status.perplexity.com)
+- [Perplexity Community Forum](https://community.perplexity.ai)
+- [Perplexity API Documentation](https://docs.perplexity.ai)
 
 ## Next Steps
 For load testing, see `perplexity-load-scale`.

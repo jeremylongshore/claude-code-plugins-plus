@@ -2,10 +2,10 @@
 name: perplexity-incident-runbook
 description: |
   Execute Perplexity incident response procedures with triage, mitigation, and postmortem.
-  Use when responding to Perplexity-related outages, investigating errors,
-  or running post-incident reviews for Perplexity integration failures.
+  Use when responding to Perplexity API outages, investigating search failures,
+  or running post-incident reviews for Perplexity integration issues.
   Trigger with phrases like "perplexity incident", "perplexity outage",
-  "perplexity down", "perplexity on-call", "perplexity emergency", "perplexity broken".
+  "perplexity down", "perplexity on-call", "perplexity emergency".
 allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
@@ -17,114 +17,137 @@ tags: [saas, perplexity, incident-response]
 # Perplexity Incident Runbook
 
 ## Overview
-Rapid incident response procedures for Perplexity-related outages.
-
-## Prerequisites
-- Access to Perplexity dashboard and status page
-- kubectl access to production cluster
-- Prometheus/Grafana access
-- Communication channels (Slack, PagerDuty)
+Rapid incident response for Perplexity Sonar API issues. Perplexity-specific: the API depends on live web search, so outages can be partial (search degraded but API responding), model-specific (sonar-pro down but sonar working), or citation-related (answers returned but no sources).
 
 ## Severity Levels
 
-| Level | Definition | Response Time | Examples |
-|-------|------------|---------------|----------|
-| P1 | Complete outage | < 15 min | Perplexity API unreachable |
-| P2 | Degraded service | < 1 hour | High latency, partial failures |
-| P3 | Minor impact | < 4 hours | Webhook delays, non-critical errors |
-| P4 | No user impact | Next business day | Monitoring gaps |
+| Level | Definition | Response Time | Example |
+|-------|-----------|--------------|---------|
+| P1 | Complete API failure | < 15 min | All requests returning 500/503 |
+| P2 | Degraded service | < 1 hour | High latency, 429 rate limits, no citations |
+| P3 | Minor impact | < 4 hours | Single model unavailable, sporadic errors |
+| P4 | No user impact | Next business day | Monitoring gap, stale cache |
 
-## Quick Triage
+## Quick Triage (Run Immediately)
 
 ```bash
 set -euo pipefail
-# 1. Check Perplexity status
-curl -s https://status.perplexity.com | jq
+echo "=== Perplexity Triage ==="
 
-# 2. Check our integration health
-curl -s https://api.yourapp.com/health | jq '.services.perplexity'
+# 1. Test sonar model
+echo -n "sonar: "
+curl -s -w "HTTP %{http_code} in %{time_total}s" -o /dev/null \
+  -H "Authorization: Bearer $PERPLEXITY_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"model":"sonar","messages":[{"role":"user","content":"test"}],"max_tokens":5}' \
+  https://api.perplexity.ai/chat/completions
+echo ""
 
-# 3. Check error rate (last 5 min)
-curl -s localhost:9090/api/v1/query?query=rate(perplexity_errors_total[5m])  # 9090: Prometheus port
+# 2. Test sonar-pro model
+echo -n "sonar-pro: "
+curl -s -w "HTTP %{http_code} in %{time_total}s" -o /dev/null \
+  -H "Authorization: Bearer $PERPLEXITY_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"model":"sonar-pro","messages":[{"role":"user","content":"test"}],"max_tokens":5}' \
+  https://api.perplexity.ai/chat/completions
+echo ""
 
-# 4. Recent error logs
-kubectl logs -l app=perplexity-integration --since=5m | grep -i error | tail -20
+# 3. Check API key validity
+echo -n "Auth: "
+curl -s -o /dev/null -w "%{http_code}" \
+  -H "Authorization: Bearer invalid-key" \
+  -H "Content-Type: application/json" \
+  -d '{"model":"sonar","messages":[{"role":"user","content":"test"}],"max_tokens":5}' \
+  https://api.perplexity.ai/chat/completions
+echo " (expect 401 = API reachable)"
+
+# 4. DNS check
+echo -n "DNS: "
+dig +short api.perplexity.ai
 ```
 
 ## Decision Tree
 
 ```
-Perplexity API returning errors?
-├─ YES: Is status.perplexity.com showing incident?
-│   ├─ YES → Wait for Perplexity to resolve. Enable fallback.
-│   └─ NO → Our integration issue. Check credentials, config.
-└─ NO: Is our service healthy?
-    ├─ YES → Likely resolved or intermittent. Monitor.
-    └─ NO → Our infrastructure issue. Check pods, memory, network.
+API returning errors?
+├─ 401/402: Auth issue
+│   └─ Verify API key → Regenerate at perplexity.ai/settings/api
+├─ 429: Rate limited
+│   └─ Enable request queue → Reduce concurrency → Wait
+├─ 500/503: Server error
+│   ├─ All models affected?
+│   │   ├─ YES → Perplexity outage. Enable fallback/cache.
+│   │   └─ NO → Model-specific issue. Route to working model.
+│   └─ Check Perplexity community forum for status
+├─ Timeout: No response
+│   ├─ DNS resolves? → Check network/firewall
+│   └─ DNS fails? → DNS issue. Use alternative resolver.
+└─ 200 but no citations: Search degraded
+    └─ Switch to sonar-pro for more citations
 ```
 
-## Immediate Actions by Error Type
+## Immediate Actions
 
-### 401/403 - Authentication
+### Auth Failure (401/402)
 ```bash
 set -euo pipefail
-# Verify API key is set
-kubectl get secret perplexity-secrets -o jsonpath='{.data.api-key}' | base64 -d
+# Verify current key
+echo "Key prefix: ${PERPLEXITY_API_KEY:0:5}"
+echo "Key length: ${#PERPLEXITY_API_KEY}"
 
-# Check if key was rotated
-# → Verify in Perplexity dashboard
-
-# Remediation: Update secret and restart pods
-kubectl create secret generic perplexity-secrets --from-literal=api-key=NEW_KEY --dry-run=client -o yaml | kubectl apply -f -
-kubectl rollout restart deployment/perplexity-integration
+# If key is invalid: regenerate at perplexity.ai/settings/api
+# Update in secret manager:
+# gcloud secrets versions add perplexity-api-key --data-file=<(echo -n "NEW_KEY")
+# kubectl create secret generic perplexity-secrets --from-literal=api-key=NEW_KEY --dry-run=client -o yaml | kubectl apply -f -
+# kubectl rollout restart deployment/your-app
 ```
 
-### 429 - Rate Limited
+### Rate Limited (429)
 ```bash
 set -euo pipefail
-# Check rate limit headers
-curl -v https://api.perplexity.com 2>&1 | grep -i rate
+# Check if we're making too many requests
+# Default limit: 50 RPM per API key
 
-# Enable request queuing
-kubectl set env deployment/perplexity-integration RATE_LIMIT_MODE=queue
+# Immediate: reduce concurrency
+# kubectl set env deployment/your-app PERPLEXITY_MAX_CONCURRENT=1
 
-# Long-term: Contact Perplexity for limit increase
+# Enable request queuing if not already active
+# kubectl set env deployment/your-app PERPLEXITY_QUEUE_MODE=true
 ```
 
-### 500/503 - Perplexity Errors
-```bash
-set -euo pipefail
-# Enable graceful degradation
-kubectl set env deployment/perplexity-integration PERPLEXITY_FALLBACK=true
-
-# Notify users of degraded service
-# Update status page
-
-# Monitor Perplexity status for resolution
+### Model-Specific Fallback
+```typescript
+// If sonar-pro is failing, fall back to sonar
+async function resilientSearch(query: string) {
+  try {
+    return await perplexity.chat.completions.create({
+      model: "sonar-pro",
+      messages: [{ role: "user", content: query }],
+    });
+  } catch (err: any) {
+    if (err.status >= 500) {
+      console.warn("sonar-pro unavailable, falling back to sonar");
+      return await perplexity.chat.completions.create({
+        model: "sonar",
+        messages: [{ role: "user", content: query }],
+      });
+    }
+    throw err;
+  }
+}
 ```
 
 ## Communication Templates
 
 ### Internal (Slack)
 ```
-🔴 P1 INCIDENT: Perplexity Integration
-Status: INVESTIGATING
-Impact: [Describe user impact]
-Current action: [What you're doing]
-Next update: [Time]
-Incident commander: @[name]
-```
-
-### External (Status Page)
-```
-Perplexity Integration Issue
-
-We're experiencing issues with our Perplexity integration.
-Some users may experience [specific impact].
-
-We're actively investigating and will provide updates.
-
-Last updated: [timestamp]
+P[1-4] INCIDENT: Perplexity Search Integration
+Status: INVESTIGATING | IDENTIFIED | MONITORING | RESOLVED
+Impact: [What users see — degraded search, no citations, etc.]
+Cause: [API error / rate limit / auth / Perplexity outage]
+Action: [What we're doing]
+ETA: [Next update time]
+IC: @[name]
 ```
 
 ## Post-Incident
@@ -132,80 +155,60 @@ Last updated: [timestamp]
 ### Evidence Collection
 ```bash
 set -euo pipefail
-# Generate debug bundle
-./scripts/perplexity-debug-bundle.sh
+# Collect debug bundle
+mkdir -p incident-evidence
 
-# Export relevant logs
-kubectl logs -l app=perplexity-integration --since=1h > incident-logs.txt
+# API response during incident
+curl -s \
+  -H "Authorization: Bearer $PERPLEXITY_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"model":"sonar","messages":[{"role":"user","content":"test"}],"max_tokens":5}' \
+  https://api.perplexity.ai/chat/completions > incident-evidence/api-response.json
 
-# Capture metrics
-curl "localhost:9090/api/v1/query_range?query=perplexity_errors_total&start=2h" > metrics.json  # 9090: Prometheus port
+# Application logs
+kubectl logs -l app=your-app --since=1h > incident-evidence/app-logs.txt 2>/dev/null || true
+
+tar -czf "incident-$(date +%Y%m%d-%H%M%S).tar.gz" incident-evidence/
 ```
 
 ### Postmortem Template
 ```markdown
 ## Incident: Perplexity [Error Type]
-**Date:** YYYY-MM-DD
-**Duration:** X hours Y minutes
-**Severity:** P[1-4]
+**Date:** YYYY-MM-DD | **Duration:** Xh Ym | **Severity:** P[1-4]
 
 ### Summary
-[1-2 sentence description]
+[1-2 sentences]
 
 ### Timeline
-- HH:MM - [Event]
-- HH:MM - [Event]
+- HH:MM — Alert fired: [description]
+- HH:MM — Triage: [findings]
+- HH:MM — Mitigation: [action taken]
+- HH:MM — Resolved
 
 ### Root Cause
-[Technical explanation]
-
-### Impact
-- Users affected: N
-- Revenue impact: $X
+[Technical explanation — API outage / rate limit / auth / our bug]
 
 ### Action Items
-- [ ] [Preventive measure] - Owner - Due date
+- [ ] [Fix] — Owner — Due
 ```
-
-## Instructions
-
-### Step 1: Quick Triage
-Run the triage commands to identify the issue source.
-
-### Step 2: Follow Decision Tree
-Determine if the issue is Perplexity-side or internal.
-
-### Step 3: Execute Immediate Actions
-Apply the appropriate remediation for the error type.
-
-### Step 4: Communicate Status
-Update internal and external stakeholders.
-
-## Output
-- Issue identified and categorized
-- Remediation applied
-- Stakeholders notified
-- Evidence collected for postmortem
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Can't reach status page | Network issue | Use mobile or VPN |
-| kubectl fails | Auth expired | Re-authenticate |
-| Metrics unavailable | Prometheus down | Check backup metrics |
-| Secret rotation fails | Permission denied | Escalate to admin |
+| All models failing | Perplexity outage | Serve cached results, notify users |
+| Intermittent 500s | Transient API issue | Retry with backoff |
+| Latency spike | Complex searches | Timeout + fallback to sonar |
+| No citations | Search degradation | Log and monitor, usually resolves |
 
-## Examples
-
-### One-Line Health Check
-```bash
-set -euo pipefail
-curl -sf https://api.yourapp.com/health | jq '.services.perplexity.status' || echo "UNHEALTHY"
-```
+## Output
+- Issue triaged and categorized
+- Remediation applied (fallback/queue/key rotation)
+- Stakeholders notified
+- Evidence collected for postmortem
 
 ## Resources
-- [Perplexity Status Page](https://status.perplexity.com)
-- [Perplexity Support](https://support.perplexity.com)
+- [Perplexity Community Forum](https://community.perplexity.ai)
+- [Perplexity API Documentation](https://docs.perplexity.ai)
 
 ## Next Steps
 For data handling, see `perplexity-data-handling`.

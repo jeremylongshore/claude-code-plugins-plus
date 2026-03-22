@@ -1,11 +1,10 @@
 ---
 name: perplexity-policy-guardrails
 description: |
-  Implement Perplexity lint rules, policy enforcement, and automated guardrails.
-  Use when setting up code quality rules for Perplexity integrations, implementing
-  pre-commit hooks, or configuring CI policy checks for Perplexity best practices.
-  Trigger with phrases like "perplexity policy", "perplexity lint",
-  "perplexity guardrails", "perplexity best practices check", "perplexity eslint".
+  Implement content moderation, model selection policy, citation quality enforcement,
+  and per-user usage quotas for Perplexity Sonar API.
+  Trigger with phrases like "perplexity policy", "perplexity guardrails",
+  "perplexity content moderation", "perplexity usage limits", "perplexity safety".
 allowed-tools: Read, Write, Edit, Bash(npx:*)
 version: 1.0.0
 license: MIT
@@ -17,128 +16,260 @@ tags: [saas, perplexity, perplexity-policy]
 # Perplexity Policy Guardrails
 
 ## Overview
-Policy enforcement for Perplexity Sonar API usage. Since Perplexity performs live web searches, guardrails must address query content moderation, citation reliability, cost control, and responsible AI usage.
+Policy enforcement for Perplexity Sonar API. Since Perplexity performs live web searches, guardrails must address: query content moderation (what users can search for), citation reliability (filtering low-quality sources), cost control (model selection + token limits), and responsible AI usage.
+
+## Policy Pipeline
+
+```
+User Query
+    │
+    ▼
+Query Moderation (block harmful queries)
+    │
+    ▼
+PII Sanitization (strip personal data)
+    │
+    ▼
+Quota Check (daily limit by user tier)
+    │
+    ▼
+Model Selection (enforce tier-appropriate model)
+    │
+    ▼
+Perplexity API Call
+    │
+    ▼
+Citation Quality Scoring (filter low-trust sources)
+    │
+    ▼
+Response to User
+```
 
 ## Prerequisites
 - Perplexity API configured
-- Content moderation requirements defined
-- Cost monitoring in place
+- Content moderation policy defined
+- User tier system in place
+- Redis for quota tracking (optional: in-memory for simple apps)
 
 ## Instructions
 
 ### Step 1: Query Content Moderation
+```typescript
+const BLOCKED_PATTERNS = [
+  /\b(write|generate|create)\s+(malware|virus|exploit|ransomware)\b/i,
+  /\b(personal|private)\s+(address|phone|ssn)\s+of\s+\w+/i,
+  /\b(bypass|circumvent|hack)\s+(security|firewall|authentication)\b/i,
+  /\b(how to|tutorial)\s+(stalk|dox|harass)\b/i,
+];
 
-Filter user queries before sending to Perplexity to prevent misuse.
+const MAX_QUERY_LENGTH = 2000;
 
-```python
-import re
+class PolicyError extends Error {
+  constructor(public code: string, message: string) {
+    super(message);
+    this.name = "PolicyError";
+  }
+}
 
-BLOCKED_INTENTS = [
-    r"(write|generate|create)\s+(malware|virus|exploit)",
-    r"(personal|private)\s+(information|data|address)\s+of\s+",
-    r"(bypass|circumvent|hack)\s+(security|firewall|authentication)",
-]
+function moderateQuery(query: string): string {
+  if (query.length > MAX_QUERY_LENGTH) {
+    throw new PolicyError("QUERY_TOO_LONG", `Query exceeds ${MAX_QUERY_LENGTH} characters`);
+  }
 
-def moderate_query(query: str) -> str:
-    for pattern in BLOCKED_INTENTS:
-        if re.search(pattern, query, re.IGNORECASE):
-            raise PolicyViolation("Query blocked by content policy")
-    if len(query) > 2000:  # 2000: 2 seconds in ms
-        raise PolicyViolation("Query exceeds maximum length")
-    return query
+  for (const pattern of BLOCKED_PATTERNS) {
+    if (pattern.test(query)) {
+      throw new PolicyError("CONTENT_BLOCKED", "Query blocked by content policy");
+    }
+  }
+
+  return query;
+}
 ```
 
 ### Step 2: Model Selection Policy
+```typescript
+interface ModelPolicy {
+  model: string;
+  maxTokens: number;
+  costPerRequest: number;
+}
 
-Route queries to appropriate model tiers to control costs.
+const MODEL_POLICIES: Record<string, ModelPolicy> = {
+  free:       { model: "sonar",     maxTokens: 256,  costPerRequest: 0.005 },
+  basic:      { model: "sonar",     maxTokens: 1024, costPerRequest: 0.005 },
+  pro:        { model: "sonar-pro", maxTokens: 2048, costPerRequest: 0.02 },
+  enterprise: { model: "sonar-pro", maxTokens: 4096, costPerRequest: 0.02 },
+};
 
-```python
-class ModelSelectionPolicy:
-    RULES = {
-        "sonar": {"max_tokens": 4096, "cost_per_request": 0.005},  # 4096: 4 KB
-        "sonar-pro": {"max_tokens": 8192, "cost_per_request": 0.025},  # 8192: 8 KB
+function enforceModelPolicy(
+  userTier: string,
+  requestedModel?: string
+): ModelPolicy {
+  const policy = MODEL_POLICIES[userTier] || MODEL_POLICIES.free;
+
+  // Prevent free users from using expensive models
+  if (requestedModel === "sonar-pro" && !["pro", "enterprise"].includes(userTier)) {
+    console.warn(`User tier ${userTier} not allowed sonar-pro, using sonar`);
+    return MODEL_POLICIES.free;
+  }
+
+  return requestedModel ? { ...policy, model: requestedModel } : policy;
+}
+```
+
+### Step 3: Per-User Usage Quotas
+```typescript
+class UsageQuota {
+  private usage: Map<string, { count: number; resetAt: number }> = new Map();
+
+  private readonly limits: Record<string, number> = {
+    free: 50,
+    basic: 200,
+    pro: 1000,
+    enterprise: 5000,
+  };
+
+  check(userId: string, tier: string = "free"): void {
+    const key = `${userId}:${new Date().toISOString().slice(0, 10)}`;
+    const entry = this.usage.get(key) || { count: 0, resetAt: this.endOfDay() };
+
+    // Reset if past end of day
+    if (Date.now() > entry.resetAt) {
+      entry.count = 0;
+      entry.resetAt = this.endOfDay();
     }
 
-    def select_model(self, query: str, user_tier: str = "free") -> str:
-        if user_tier == "free":
-            return "sonar"
-        if len(query.split()) > 100 or "detailed" in query.lower():
-            return "sonar-pro"
-        return "sonar"
+    const limit = this.limits[tier] || this.limits.free;
+    if (entry.count >= limit) {
+      throw new PolicyError(
+        "QUOTA_EXCEEDED",
+        `Daily quota exceeded (${entry.count}/${limit}). Resets at midnight UTC.`
+      );
+    }
 
-    def enforce_token_limit(self, model: str, requested_tokens: int):
-        max_tokens = self.RULES[model]["max_tokens"]
-        if requested_tokens > max_tokens:
-            raise PolicyViolation(f"Requested {requested_tokens} tokens exceeds {model} limit of {max_tokens}")
+    entry.count++;
+    this.usage.set(key, entry);
+  }
+
+  getUsage(userId: string): { used: number; limit: number; remaining: number } {
+    const key = `${userId}:${new Date().toISOString().slice(0, 10)}`;
+    const entry = this.usage.get(key);
+    const used = entry?.count || 0;
+    return { used, limit: 50, remaining: Math.max(0, 50 - used) };
+  }
+
+  private endOfDay(): number {
+    const d = new Date();
+    d.setUTCHours(23, 59, 59, 999);
+    return d.getTime();
+  }
+}
 ```
 
-### Step 3: Citation Quality Enforcement
+### Step 4: Citation Quality Scoring
+```typescript
+const TRUSTED_TLDS = new Set(["gov", "edu", "org"]);
+const HIGH_QUALITY_DOMAINS = new Set([
+  "nature.com", "science.org", "arxiv.org", "wikipedia.org",
+  "nih.gov", "cdc.gov", "who.int",
+]);
+const LOW_QUALITY_DOMAINS = new Set([
+  "reddit.com", "quora.com", "medium.com", "yahoo.com",
+]);
 
-Verify that citations come from trusted sources before displaying to users.
+interface CitationQuality {
+  url: string;
+  trust: "high" | "medium" | "low";
+  domain: string;
+}
 
-```python
-TRUSTED_DOMAINS = {"gov", "edu", "org"}
-UNTRUSTED_DOMAINS = {"reddit.com", "quora.com", "medium.com"}
+function scoreCitations(citations: string[]): {
+  scored: CitationQuality[];
+  highTrustPercent: number;
+} {
+  const scored = citations.map((url) => {
+    const domain = new URL(url).hostname;
+    const tld = domain.split(".").pop() || "";
 
-def score_citation_quality(citations: list[str]) -> dict:
-    scores = []
-    for url in citations:
-        domain = extract_domain(url)
-        tld = domain.split('.')[-1]
-        if tld in TRUSTED_DOMAINS:
-            scores.append({"url": url, "trust": "high"})
-        elif domain in UNTRUSTED_DOMAINS:
-            scores.append({"url": url, "trust": "low"})
-        else:
-            scores.append({"url": url, "trust": "medium"})
-    return {"citations": scores, "high_trust_pct": sum(1 for s in scores if s["trust"] == "high") / max(len(scores), 1)}
+    let trust: "high" | "medium" | "low" = "medium";
+    if (TRUSTED_TLDS.has(tld) || HIGH_QUALITY_DOMAINS.has(domain)) {
+      trust = "high";
+    } else if (LOW_QUALITY_DOMAINS.has(domain)) {
+      trust = "low";
+    }
+
+    return { url, trust, domain };
+  });
+
+  const highTrust = scored.filter((s) => s.trust === "high").length;
+  return {
+    scored,
+    highTrustPercent: citations.length > 0 ? highTrust / citations.length : 0,
+  };
+}
 ```
 
-### Step 4: Per-User Usage Quotas
+### Step 5: Full Policy Pipeline
+```typescript
+const quota = new UsageQuota();
 
-Limit API consumption to control costs.
+async function policiedSearch(
+  query: string,
+  userId: string,
+  userTier: string = "free",
+  requestedModel?: string
+) {
+  // 1. Content moderation
+  const moderated = moderateQuery(query);
 
-```python
-class PerplexityQuota:
-    def __init__(self, redis_client):
-        self.r = redis_client
-        self.limits = {"free": 50, "pro": 500, "enterprise": 5000}  # 5000: HTTP 500 Internal Server Error
+  // 2. PII sanitization
+  const { clean } = sanitizeQuery(moderated);
 
-    def check_and_consume(self, user_id: str, tier: str = "free"):
-        key = f"pplx:quota:{user_id}:{datetime.now().strftime('%Y-%m-%d')}"
-        current = int(self.r.get(key) or 0)
-        limit = self.limits.get(tier, 50)
-        if current >= limit:
-            raise PolicyViolation(f"Daily quota exceeded ({current}/{limit})")
-        self.r.incr(key)
-        self.r.expire(key, 86400)  # 86400: timeout: 24 hours
+  // 3. Quota check
+  quota.check(userId, userTier);
+
+  // 4. Model policy
+  const policy = enforceModelPolicy(userTier, requestedModel);
+
+  // 5. API call
+  const response = await perplexity.chat.completions.create({
+    model: policy.model,
+    messages: [{ role: "user", content: clean }],
+    max_tokens: policy.maxTokens,
+  });
+
+  // 6. Citation quality
+  const citations = (response as any).citations || [];
+  const quality = scoreCitations(citations);
+
+  return {
+    answer: response.choices[0].message.content,
+    citations: quality.scored,
+    citationQuality: quality.highTrustPercent,
+    model: response.model,
+    tokens: response.usage?.total_tokens,
+  };
+}
 ```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Harmful query sent | No content moderation | Pre-filter with blocked patterns |
-| High API costs | Using sonar-pro for simple queries | Route by complexity and user tier |
-| Unreliable citations shown | No source filtering | Score and filter citation quality |
-| Usage spike | No per-user limits | Implement daily quotas by tier |
-
-## Examples
-
-### Full Policy Pipeline
-```python
-query = moderate_query(user_input)
-quota.check_and_consume(user_id, user_tier)
-model = model_policy.select_model(query, user_tier)
-result = client.chat.completions.create(model=model, messages=[{"role": "user", "content": query}])
-citation_quality = score_citation_quality(result.citations)
-```
-
-## Resources
-- [Perplexity API Docs](https://docs.perplexity.ai)
-- [Responsible AI Practices](https://docs.perplexity.ai/guides/responsible-use)
+| Query blocked | Content moderation triggered | Review patterns, adjust if false positive |
+| Quota exceeded | User hit daily limit | Upgrade tier or wait for reset |
+| Model downgraded | User tier restricts access | Inform user of tier limitations |
+| Low citation quality | All sources from forums | Add `search_domain_filter` for trusted sources |
 
 ## Output
+- Query content moderation with blocked patterns
+- Model selection enforced by user tier
+- Per-user daily quotas
+- Citation quality scoring and filtering
+- Full policy pipeline combining all layers
 
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+## Resources
+- [Perplexity API Documentation](https://docs.perplexity.ai)
+- [Perplexity Responsible Use](https://www.perplexity.ai/hub)
+
+## Next Steps
+For architecture patterns, see `perplexity-architecture-variants`.

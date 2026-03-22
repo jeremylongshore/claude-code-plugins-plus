@@ -1,11 +1,10 @@
 ---
 name: perplexity-data-handling
 description: |
-  Implement Perplexity PII handling, data retention, and GDPR/CCPA compliance patterns.
-  Use when handling sensitive data, implementing data redaction, configuring retention policies,
-  or ensuring compliance with privacy regulations for Perplexity integrations.
+  Implement Perplexity query sanitization, citation validation, result caching,
+  and conversation context management for search workflows.
   Trigger with phrases like "perplexity data", "perplexity PII",
-  "perplexity GDPR", "perplexity data retention", "perplexity privacy", "perplexity CCPA".
+  "perplexity citations", "perplexity cache", "perplexity context".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
@@ -17,160 +16,219 @@ tags: [saas, perplexity, compliance]
 # Perplexity Data Handling
 
 ## Overview
-Manage search query data and results from Perplexity Sonar API. Covers query sanitization, citation validation, result caching with freshness policies, and conversation context management for research workflows.
+Manage data flowing through Perplexity Sonar API. Critical concern: queries are sent to Perplexity for web search, so any PII in queries is exposed to external infrastructure. Responses contain citations (third-party URLs) that must be validated before displaying to users.
+
+## Data Flow
+
+```
+User Input → Query Sanitization → Perplexity API → Response Parsing
+                                                         │
+                                           ┌─────────────┼──────────────┐
+                                           │             │              │
+                                      Answer Text    Citations    Search Results
+                                           │             │              │
+                                      Format &      Validate &    Store for
+                                      Display       Deduplicate   Analytics
+```
 
 ## Prerequisites
-- Perplexity API key
-- OpenAI-compatible client library
-- Understanding of search result data structures
-- Cache storage for results
+- Perplexity API key configured
+- Understanding of PII regulations (GDPR/CCPA)
+- Cache storage (Redis or in-memory)
 
 ## Instructions
 
 ### Step 1: Query Sanitization
 ```typescript
-function sanitizeQuery(query: string): string {
-  // Remove PII that might leak into search queries
-  let clean = query
-    .replace(/\b[\w.+-]+@[\w-]+\.[\w.]+\b/g, '[email]')
-    .replace(/\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g, '[phone]')
-    .replace(/\b\d{3}-\d{2}-\d{4}\b/g, '[ssn]');
+function sanitizeQuery(query: string): { clean: string; redacted: boolean } {
+  let clean = query;
+  let redacted = false;
 
-  // Remove overly specific identifiers
-  clean = clean
-    .replace(/\b(user|customer|account)\s*#?\s*\d+\b/gi, '[ID]')
-    .replace(/\b[A-Z0-9]{20,}\b/g, '[TOKEN]');
+  const patterns: Array<[RegExp, string]> = [
+    [/\b[\w.+-]+@[\w-]+\.[\w.]+\b/g, "[email]"],
+    [/\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g, "[phone]"],
+    [/\b\d{3}-\d{2}-\d{4}\b/g, "[ssn]"],
+    [/\b\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}\b/g, "[card]"],
+    [/\b(pplx-|sk-|pk_|sk_live_)\w{20,}\b/g, "[token]"],
+    [/\b(user|customer|account)\s*#?\s*\d+\b/gi, "[id]"],
+  ];
 
-  return clean;
+  for (const [pattern, replacement] of patterns) {
+    if (pattern.test(clean)) {
+      clean = clean.replace(pattern, replacement);
+      redacted = true;
+    }
+  }
+
+  return { clean, redacted };
 }
 
 async function safeSearch(rawQuery: string) {
-  const query = sanitizeQuery(rawQuery);
+  const { clean, redacted } = sanitizeQuery(rawQuery);
+  if (redacted) {
+    console.warn("[Data] PII redacted from Perplexity query");
+  }
 
-  const result = await perplexity.chat.completions.create({
-    model: 'sonar',
-    messages: [{ role: 'user', content: query }],
+  return perplexity.chat.completions.create({
+    model: "sonar",
+    messages: [{ role: "user", content: clean }],
   });
-
-  return result;
 }
 ```
 
-### Step 2: Citation Validation and Cleaning
+### Step 2: Citation Validation
 ```typescript
 interface ValidatedCitation {
   url: string;
   domain: string;
-  isAccessible: boolean;
-  title?: string;
+  valid: boolean;
+  index: number;
 }
 
-function extractAndValidateCitations(responseText: string): ValidatedCitation[] {
-  const urlRegex = /https?:\/\/[^\s\])"]+/g;
-  const urls = [...new Set(responseText.match(urlRegex) || [])];
-
-  return urls.map(url => {
+function validateCitations(citations: string[]): ValidatedCitation[] {
+  return citations.map((url, i) => {
     try {
       const parsed = new URL(url);
       return {
-        url: url.replace(/[.,;:]+$/, ''), // Clean trailing punctuation
+        url: url.replace(/[.,;:]+$/, ""),
         domain: parsed.hostname,
-        isAccessible: true,
+        valid: ["http:", "https:"].includes(parsed.protocol),
+        index: i + 1,
       };
     } catch {
-      return { url, domain: 'unknown', isAccessible: false };
+      return { url, domain: "unknown", valid: false, index: i + 1 };
     }
-  }).filter(c => c.isAccessible);
+  });
 }
 
 function deduplicateCitations(citations: ValidatedCitation[]): ValidatedCitation[] {
   const seen = new Set<string>();
-  return citations.filter(c => {
-    const key = c.domain + c.url.split('?')[0]; // Ignore query params
-    if (seen.has(key)) return false;
-    seen.add(key);
+  return citations.filter((c) => {
+    const normalized = c.url.split("?")[0].replace(/\/$/, "");
+    if (seen.has(normalized)) return false;
+    seen.add(normalized);
     return true;
   });
+}
+
+// Replace [1] markers with linked citations
+function renderCitations(answer: string, citations: ValidatedCitation[]): string {
+  let rendered = answer;
+  for (const c of citations.filter((c) => c.valid)) {
+    rendered = rendered.replaceAll(`[${c.index}]`, `[${c.index}](${c.url})`);
+  }
+  return rendered;
 }
 ```
 
 ### Step 3: Result Caching with Freshness Policy
 ```typescript
-import { LRUCache } from 'lru-cache';
-import { createHash } from 'crypto';
+import { LRUCache } from "lru-cache";
+import { createHash } from "crypto";
 
 interface CachedResult {
-  response: string;
+  answer: string;
   citations: ValidatedCitation[];
   cachedAt: number;
-  queryHash: string;
+  model: string;
 }
 
-// Different TTLs based on query type
-const CACHE_TTL = {
-  factual: 1000 * 60 * 60 * 24,  // 24 hours for stable facts  # 1000: 1 second in ms
-  news: 1000 * 60 * 30,           // 30 min for news queries  # 1 second in ms
-  research: 1000 * 60 * 60 * 4,   // 4 hours for research  # 1 second in ms
-  default: 1000 * 60 * 60,        // 1 hour default  # 1 second in ms
+const CACHE_TTL: Record<string, number> = {
+  news: 30 * 60_000,       // 30 min for breaking/current events
+  research: 4 * 3600_000,  // 4 hours for research topics
+  factual: 24 * 3600_000,  // 24 hours for stable facts
+  default: 1 * 3600_000,   // 1 hour default
 };
 
-const resultCache = new LRUCache<string, CachedResult>({ max: 500 });  # HTTP 500 Internal Server Error
+const resultCache = new LRUCache<string, CachedResult>({ max: 500 });
 
 function detectQueryType(query: string): keyof typeof CACHE_TTL {
-  if (/\b(latest|today|breaking|recent)\b/i.test(query)) return 'news';
-  if (/\b(research|study|paper|analysis)\b/i.test(query)) return 'research';
-  if (/\b(what is|define|how does)\b/i.test(query)) return 'factual';
-  return 'default';
+  if (/\b(latest|today|breaking|recent|this week)\b/i.test(query)) return "news";
+  if (/\b(research|study|paper|analysis|compare)\b/i.test(query)) return "research";
+  if (/\b(what is|define|how does|who is)\b/i.test(query)) return "factual";
+  return "default";
 }
 
-async function cachedSearch(query: string) {
-  const hash = createHash('sha256').update(query.toLowerCase().trim()).digest('hex');
-  const cached = resultCache.get(hash);
-  if (cached) return cached;
+async function cachedSearch(query: string, model = "sonar") {
+  const hash = createHash("sha256")
+    .update(`${model}:${query.toLowerCase().trim()}`)
+    .digest("hex");
 
-  const result = await safeSearch(query);
-  const content = result.choices[0].message.content || '';
-  const citations = deduplicateCitations(extractAndValidateCitations(content));
+  const cached = resultCache.get(hash);
+  if (cached) return { ...cached, fromCache: true };
+
+  const response = await safeSearch(query);
+  const rawCitations = (response as any).citations || [];
+  const citations = deduplicateCitations(validateCitations(rawCitations));
   const queryType = detectQueryType(query);
 
   const entry: CachedResult = {
-    response: content,
+    answer: response.choices[0].message.content || "",
     citations,
     cachedAt: Date.now(),
-    queryHash: hash,
+    model: response.model,
   };
 
   resultCache.set(hash, entry, { ttl: CACHE_TTL[queryType] });
-  return entry;
+  return { ...entry, fromCache: false };
 }
 ```
 
-### Step 4: Conversation Context Limits
+### Step 4: Conversation Context Management
 ```typescript
-class ResearchContext {
-  private messages: any[] = [];
-  private maxMessages = 10;
-  private maxTokenEstimate = 8000;  # 8000: API server port
+import OpenAI from "openai";
 
-  addMessage(role: string, content: string) {
-    this.messages.push({ role, content });
+type Message = OpenAI.ChatCompletionMessageParam;
 
-    // Trim oldest messages if over limit
-    while (this.messages.length > this.maxMessages) {
-      this.messages.shift();
-    }
+class SearchContext {
+  private messages: Message[] = [];
+  private readonly maxMessages = 10;
+  private readonly maxEstimatedTokens = 8000;
 
-    // Trim if estimated tokens too high
-    while (this.estimateTokens() > this.maxTokenEstimate && this.messages.length > 2) {
-      this.messages.splice(1, 1); // Remove second oldest (keep system prompt)
+  constructor(systemPrompt?: string) {
+    if (systemPrompt) {
+      this.messages.push({ role: "system", content: systemPrompt });
     }
   }
 
-  getMessages() { return [...this.messages]; }
-  clear() { this.messages = []; }
+  addUserMessage(content: string) {
+    this.messages.push({ role: "user", content });
+    this.trim();
+  }
+
+  addAssistantMessage(content: string) {
+    this.messages.push({ role: "assistant", content });
+    this.trim();
+  }
+
+  getMessages(): Message[] {
+    return [...this.messages];
+  }
+
+  private trim() {
+    // Keep system prompt + last N messages
+    while (this.messages.length > this.maxMessages) {
+      const systemIdx = this.messages[0].role === "system" ? 1 : 0;
+      this.messages.splice(systemIdx, 1);
+    }
+
+    // Trim if estimated tokens too high
+    while (this.estimateTokens() > this.maxEstimatedTokens && this.messages.length > 2) {
+      const systemIdx = this.messages[0].role === "system" ? 1 : 0;
+      this.messages.splice(systemIdx, 1);
+    }
+  }
 
   private estimateTokens(): number {
-    return this.messages.reduce((sum, m) => sum + Math.ceil(m.content.length / 4), 0);
+    return this.messages.reduce(
+      (sum, m) => sum + Math.ceil(String(m.content).length / 4),
+      0
+    );
+  }
+
+  clear() {
+    const system = this.messages.find((m) => m.role === "system");
+    this.messages = system ? [system] : [];
   }
 }
 ```
@@ -179,28 +237,20 @@ class ResearchContext {
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | PII in search query | User entered personal data | Apply `sanitizeQuery` before API call |
-| Broken citations | URL changed or removed | Validate URLs, remove inaccessible ones |
-| Stale cached results | TTL too long for news queries | Use query-type-aware TTL |
-| Context overflow | Too many conversation turns | Trim old messages automatically |
-
-## Examples
-
-### Research Session with Caching
-```typescript
-const context = new ResearchContext();
-context.addMessage('system', 'You are a research assistant.');
-
-const result = await cachedSearch('Latest advances in quantum computing 2025');  # 2025 year
-console.log(`Response: ${result.response.slice(0, 200)}...`);  # HTTP 200 OK
-console.log(`Citations: ${result.citations.length} sources`);
-```
-
-## Resources
-- [Perplexity API Docs](https://docs.perplexity.ai/)
-- [Perplexity Data Policy](https://perplexity.ai/privacy)
+| Broken citation URLs | Source page moved/deleted | Validate URLs, filter invalid ones |
+| Stale cached results | TTL too long for news | Use query-type-aware TTL |
+| Context overflow | Too many conversation turns | Automatic trimming in SearchContext |
+| Duplicate citations | Same source cited multiple times | Deduplicate by normalized URL |
 
 ## Output
+- Query sanitization stripping PII before API calls
+- Citation validation and deduplication
+- Cache with query-type-aware TTL
+- Conversation context with automatic trimming
 
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+## Resources
+- [Perplexity API Documentation](https://docs.perplexity.ai)
+- [Perplexity Privacy Policy](https://www.perplexity.ai/privacy)
+
+## Next Steps
+For access control, see `perplexity-enterprise-rbac`.
