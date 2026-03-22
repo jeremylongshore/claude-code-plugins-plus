@@ -1,106 +1,128 @@
 ---
 name: anthropic-install-auth
 description: |
-  Install and configure Anthropic SDK/CLI authentication.
-  Use when setting up a new Anthropic integration, configuring API keys,
-  or initializing Anthropic in your project.
-  Trigger with phrases like "install anthropic", "setup anthropic",
+  Install and configure the Anthropic SDK for Claude API access.
+  Use when setting up Claude integration, configuring API keys,
+  or initializing the Anthropic client in your project.
+  Trigger with phrases like "install anthropic", "setup claude api",
   "anthropic auth", "configure anthropic API key".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code
-tags: [saas, anthropic]
+tags: [saas, anthropic, claude, ai]
 ---
 
 # Anthropic Install & Auth
 
 ## Overview
-Set up Anthropic SDK/CLI and configure authentication credentials.
+Set up the Anthropic SDK and configure your API key to start using Claude models.
 
 ## Prerequisites
 - Node.js 18+ or Python 3.10+
-- Package manager (npm, pnpm, or pip)
-- Anthropic account with API access
-
-- API key from Anthropic dashboard (starts with `sk-` or similar prefix)
-
+- Anthropic account at [console.anthropic.com](https://console.anthropic.com)
+- API key from Settings → API Keys (starts with `sk-ant-`)
 
 ## Instructions
 
 ### Step 1: Install SDK
 ```bash
-# Node.js
-npm install @anthropic/sdk
+# Node.js / TypeScript
+npm install @anthropic-ai/sdk
 
 # Python
 pip install anthropic
 ```
 
-### Step 2: Configure Authentication
-
+### Step 2: Configure API Key
 ```bash
-# Set environment variable
-export ANTHROPIC_API_KEY="your-api-key"
+# Set environment variable (recommended)
+export ANTHROPIC_API_KEY="sk-ant-api03-..."
 
-# Or create .env file
-echo 'ANTHROPIC_API_KEY=your-api-key' >> .env
+# Or add to .env file
+echo 'ANTHROPIC_API_KEY=sk-ant-api03-...' >> .env
 ```
 
+> **Important:** Never hardcode API keys. Use environment variables or a secrets manager. Keys start with `sk-ant-`.
 
 ### Step 3: Verify Connection
 ```typescript
-const models = await client.models.list();
-console.log(`Connected — ${models.data.length} models available`);
+import Anthropic from '@anthropic-ai/sdk';
 
+const client = new Anthropic(); // reads ANTHROPIC_API_KEY from env
+
+const message = await client.messages.create({
+  model: 'claude-sonnet-4-20250514',
+  max_tokens: 64,
+  messages: [{ role: 'user', content: 'Say "connected" in one word.' }],
+});
+console.log(message.content[0].text); // "Connected"
+```
+
+```python
+import anthropic
+
+client = anthropic.Anthropic()  # reads ANTHROPIC_API_KEY from env
+
+message = client.messages.create(
+    model="claude-sonnet-4-20250514",
+    max_tokens=64,
+    messages=[{"role": "user", "content": "Say 'connected' in one word."}],
+)
+print(message.content[0].text)  # "Connected"
 ```
 
 ## Output
-- Installed SDK package in node_modules or site-packages
-
-- Environment variable or .env file with API key
-- Successful connection verification output
-
+- `@anthropic-ai/sdk` in node_modules or `anthropic` in site-packages
+- `ANTHROPIC_API_KEY` environment variable set
+- Successful Claude response confirming API access
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-
-| Invalid API Key | Key is missing, expired, or has extra whitespace | Verify key in Anthropic dashboard. Check for trailing newlines |
-| Rate Limited | Exceeded requests/tokens per minute | Check usage at https://docs.anthropic.com/usage |
-
-| Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
-| Module Not Found | Installation failed | Run `npm install` or `pip install` again |
+| `authentication_error` (401) | API key missing, invalid, or revoked | Check key at console.anthropic.com → API Keys |
+| `permission_error` (403) | Key lacks access to requested model | Verify workspace has model access enabled |
+| `ModuleNotFoundError` | SDK not installed | `pip install anthropic` or `npm i @anthropic-ai/sdk` |
+| `Could not resolve host` | Network/DNS issue | Check internet connectivity and proxy settings |
 
 ## Examples
 
 ### TypeScript Setup
 ```typescript
-import { AnthropicClient } from '@anthropic/sdk';
+import Anthropic from '@anthropic-ai/sdk';
 
-const client = new AnthropicClient({
+// Default: reads ANTHROPIC_API_KEY from environment
+const client = new Anthropic();
 
-  apiKey: process.env.ANTHROPIC_API_KEY,
+// Explicit key (for testing only — don't hardcode in production)
+const client = new Anthropic({ apiKey: 'sk-ant-api03-...' });
 
+// Custom base URL (for proxies or Vertex AI)
+const client = new Anthropic({
+  baseURL: 'https://your-proxy.example.com',
 });
 ```
 
 ### Python Setup
 ```python
-from anthropic import AnthropicClient
+import anthropic
 
-client = AnthropicClient(
+# Default: reads ANTHROPIC_API_KEY from environment
+client = anthropic.Anthropic()
 
-    api_key=os.environ.get('ANTHROPIC_API_KEY')
+# Explicit key
+client = anthropic.Anthropic(api_key="sk-ant-api03-...")
 
-)
+# Async client
+client = anthropic.AsyncAnthropic()
 ```
 
 ## Resources
-- [Anthropic Documentation](https://docs.anthropic.com)
-- [Anthropic Dashboard](https://api.anthropic.com)
+- [Anthropic API Docs](https://docs.anthropic.com/en/api/getting-started)
+- [Console Dashboard](https://console.anthropic.com)
+- [API Key Management](https://console.anthropic.com/settings/keys)
 - [Anthropic Status](https://status.anthropic.com)
 
 ## Next Steps
-After successful auth, proceed to `anthropic-hello-world` for your first API call.
+After successful auth, proceed to `anthropic-hello-world` for your first Claude conversation.

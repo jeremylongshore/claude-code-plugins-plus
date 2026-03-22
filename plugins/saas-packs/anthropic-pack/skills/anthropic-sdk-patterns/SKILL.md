@@ -1,149 +1,209 @@
 ---
 name: anthropic-sdk-patterns
 description: |
-  Apply production-ready Anthropic SDK patterns for TypeScript and Python.
-  Use when implementing Anthropic integrations, refactoring SDK usage,
-  or establishing team coding standards for Anthropic.
-  Trigger with phrases like "anthropic SDK patterns", "anthropic best practices",
-  "anthropic code patterns", "idiomatic anthropic".
+  Production-ready Anthropic SDK patterns — client config, retries, timeouts,
+  error handling, TypeScript types, and async patterns.
+  Trigger with "anthropic sdk", "claude client setup", "anthropic typescript",
+  "anthropic python patterns".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code
-tags: [saas, anthropic]
+tags: [saas, anthropic, claude, sdk, typescript, python]
 ---
 
 # Anthropic SDK Patterns
 
 ## Overview
-Production-ready patterns for Anthropic SDK usage in TypeScript and Python.
+Production patterns for the `@anthropic-ai/sdk` (TypeScript) and `anthropic` (Python) SDKs.
 
-## Prerequisites
-- Completed `anthropic-install-auth` setup
-- Familiarity with async/await patterns
-- Understanding of error handling best practices
+## Client Configuration
 
-## Instructions
-
-### Step 1: Implement Singleton Pattern (Recommended)
+### TypeScript
 ```typescript
-// src/anthropic/client.ts
-import { AnthropicClient } from '@anthropic/sdk';
+import Anthropic from '@anthropic-ai/sdk';
 
-let instance: AnthropicClient | null = null;
+// Default — reads ANTHROPIC_API_KEY from env
+const client = new Anthropic();
 
-export function getAnthropicClient(): AnthropicClient {
-  if (!instance) {
-    instance = new AnthropicClient({
-      apiKey: process.env.ANTHROPIC_API_KEY!,
-      // Additional options
-    });
-  }
-  return instance;
-}
-```
-
-### Step 2: Add Error Handling Wrapper
-```typescript
-import { AnthropicError } from '@anthropic/sdk';
-
-async function safeAnthropicCall<T>(
-  operation: () => Promise<T>
-): Promise<{ data: T | null; error: Error | null }> {
-  try {
-    const data = await operation();
-    return { data, error: null };
-  } catch (err) {
-    if (err instanceof AnthropicError) {
-      console.error({
-        code: err.code,
-        message: err.message,
-      });
-    }
-    return { data: null, error: err as Error };
-  }
-}
-```
-
-### Step 3: Implement Retry Logic
-```typescript
-async function withRetry<T>(
-  operation: () => Promise<T>,
-  maxRetries = 3,
-  backoffMs = 1000
-): Promise<T> {
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      return await operation();
-    } catch (err) {
-      if (attempt === maxRetries) throw err;
-      const delay = backoffMs * Math.pow(2, attempt - 1);
-      await new Promise(r => setTimeout(r, delay));
-    }
-  }
-  throw new Error('Unreachable');
-}
-```
-
-## Output
-- Type-safe client singleton
-- Robust error handling with structured logging
-- Automatic retry with exponential backoff
-- Runtime validation for API responses
-
-## Error Handling
-| Pattern | Use Case | Benefit |
-|---------|----------|---------|
-| Safe wrapper | All API calls | Prevents uncaught exceptions |
-| Retry logic | Transient failures | Improves reliability |
-| Type guards | Response validation | Catches API changes |
-| Logging | All operations | Debugging and monitoring |
-
-## Examples
-
-### Factory Pattern (Multi-tenant)
-```typescript
-const clients = new Map<string, AnthropicClient>();
-
-export function getClientForTenant(tenantId: string): AnthropicClient {
-  if (!clients.has(tenantId)) {
-    const apiKey = getTenantApiKey(tenantId);
-    clients.set(tenantId, new AnthropicClient({ apiKey }));
-  }
-  return clients.get(tenantId)!;
-}
-```
-
-### Python Context Manager
-```python
-from contextlib import asynccontextmanager
-from anthropic import AnthropicClient
-
-@asynccontextmanager
-async def get_anthropic_client():
-    client = AnthropicClient()
-    try:
-        yield client
-    finally:
-        await client.close()
-```
-
-### Zod Validation
-```typescript
-import { z } from 'zod';
-
-const anthropicResponseSchema = z.object({
-  id: z.string(),
-  status: z.enum(['active', 'inactive']),
-  createdAt: z.string().datetime(),
+// Full configuration
+const client = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,   // default: env var
+  maxRetries: 3,                            // default: 2
+  timeout: 60_000,                          // default: 10 minutes
+  baseURL: 'https://api.anthropic.com',     // override for proxies
+  defaultHeaders: {                         // custom headers
+    'anthropic-beta': 'prompt-caching-2024-07-31',
+  },
 });
 ```
 
+### Python
+```python
+import anthropic
+
+# Sync client
+client = anthropic.Anthropic()
+
+# Async client
+client = anthropic.AsyncAnthropic()
+
+# Full configuration
+client = anthropic.Anthropic(
+    api_key=os.environ["ANTHROPIC_API_KEY"],
+    max_retries=3,
+    timeout=60.0,
+    base_url="https://api.anthropic.com",
+    default_headers={"anthropic-beta": "prompt-caching-2024-07-31"},
+)
+```
+
+## Error Handling
+```typescript
+import Anthropic from '@anthropic-ai/sdk';
+
+try {
+  const message = await client.messages.create({ ... });
+} catch (err) {
+  if (err instanceof Anthropic.AuthenticationError) {
+    // 401 — bad API key
+  } else if (err instanceof Anthropic.RateLimitError) {
+    // 429 — back off and retry
+  } else if (err instanceof Anthropic.APIError) {
+    // All other API errors
+    console.error(err.status, err.error?.type, err.message);
+  } else if (err instanceof Anthropic.APIConnectionError) {
+    // Network failure — DNS, timeout, etc.
+  }
+}
+```
+
+```python
+try:
+    message = client.messages.create(...)
+except anthropic.AuthenticationError:
+    ...  # 401
+except anthropic.RateLimitError:
+    ...  # 429
+except anthropic.APIStatusError as e:
+    print(e.status_code, e.message)
+except anthropic.APIConnectionError:
+    ...  # network failure
+```
+
+## Streaming Patterns
+
+### Event-Based (TypeScript)
+```typescript
+const stream = client.messages.stream({
+  model: 'claude-sonnet-4-20250514',
+  max_tokens: 2048,
+  messages,
+});
+
+stream.on('text', (text) => process.stdout.write(text));
+stream.on('error', (err) => console.error('Stream error:', err));
+stream.on('end', () => console.log('\nDone'));
+
+const finalMessage = await stream.finalMessage();
+```
+
+### Async Iterator (TypeScript)
+```typescript
+const stream = await client.messages.create({
+  model: 'claude-sonnet-4-20250514',
+  max_tokens: 2048,
+  messages,
+  stream: true,
+});
+
+for await (const event of stream) {
+  if (event.type === 'content_block_delta') {
+    process.stdout.write(event.delta.text || '');
+  }
+}
+```
+
+### Context Manager (Python)
+```python
+with client.messages.stream(
+    model="claude-sonnet-4-20250514",
+    max_tokens=2048,
+    messages=messages,
+) as stream:
+    for text in stream.text_stream:
+        print(text, end="", flush=True)
+
+message = stream.get_final_message()
+```
+
+## TypeScript Types
+```typescript
+import Anthropic from '@anthropic-ai/sdk';
+
+// Message types
+type Message = Anthropic.Message;
+type MessageParam = Anthropic.MessageParam;
+type ContentBlock = Anthropic.ContentBlock;
+type TextBlock = Anthropic.TextBlock;
+type ToolUseBlock = Anthropic.ToolUseBlock;
+
+// Tool types
+type Tool = Anthropic.Tool;
+type ToolResultBlockParam = Anthropic.ToolResultBlockParam;
+
+// Request/response
+type MessageCreateParams = Anthropic.MessageCreateParams;
+```
+
+## Prompt Caching (Beta)
+```typescript
+const message = await client.messages.create({
+  model: 'claude-sonnet-4-20250514',
+  max_tokens: 1024,
+  system: [
+    {
+      type: 'text',
+      text: longSystemPrompt, // 1024+ tokens to be cacheable
+      cache_control: { type: 'ephemeral' },
+    },
+  ],
+  messages: [{ role: 'user', content: userQuestion }],
+}, {
+  headers: { 'anthropic-beta': 'prompt-caching-2024-07-31' },
+});
+// Cache hit: 90% cheaper on input tokens
+// message.usage.cache_creation_input_tokens / cache_read_input_tokens
+```
+
+## Message Batches
+```typescript
+// Submit up to 10,000 messages as a batch (50% cheaper, 24h SLA)
+const batch = await client.messages.batches.create({
+  requests: items.map((item, i) => ({
+    custom_id: `item-${i}`,
+    params: {
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1024,
+      messages: [{ role: 'user', content: item.prompt }],
+    },
+  })),
+});
+
+// Poll for completion
+let status = await client.messages.batches.retrieve(batch.id);
+while (status.processing_status !== 'ended') {
+  await new Promise(r => setTimeout(r, 30000));
+  status = await client.messages.batches.retrieve(batch.id);
+}
+```
+
 ## Resources
-- [Anthropic SDK Reference](https://docs.anthropic.com/sdk)
-- [Anthropic API Types](https://docs.anthropic.com/types)
-- [Zod Documentation](https://zod.dev/)
+- [TypeScript SDK](https://github.com/anthropics/anthropic-sdk-typescript)
+- [Python SDK](https://github.com/anthropics/anthropic-sdk-python)
+- [Prompt Caching](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching)
+- [Message Batches](https://docs.anthropic.com/en/api/creating-message-batches)
 
 ## Next Steps
-Apply patterns in `anthropic-core-workflow-a` for real-world usage.
+See `anthropic-rate-limits` for throughput optimization.

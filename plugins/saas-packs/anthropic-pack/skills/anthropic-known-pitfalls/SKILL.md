@@ -1,336 +1,110 @@
 ---
 name: anthropic-known-pitfalls
 description: |
-  Identify and avoid Anthropic anti-patterns and common integration mistakes.
-  Use when reviewing Anthropic code for issues, onboarding new developers,
-  or auditing existing Anthropic integrations for best practices violations.
-  Trigger with phrases like "anthropic mistakes", "anthropic anti-patterns",
-  "anthropic pitfalls", "anthropic what not to do", "anthropic code review".
-allowed-tools: Read, Grep
+  Common mistakes when building with the Anthropic API and how to avoid them.
+  Trigger with "anthropic mistakes", "claude pitfalls", "anthropic gotchas",
+  "common claude errors", "anthropic anti-patterns".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code
-tags: [saas, anthropic]
+tags: [saas, anthropic, claude, pitfalls, best-practices]
 ---
 
 # Anthropic Known Pitfalls
 
-## Overview
-Common mistakes and anti-patterns when integrating with Anthropic.
-
-## Prerequisites
-- Access to Anthropic codebase for review
-- Understanding of async/await patterns
-- Knowledge of security best practices
-- Familiarity with rate limiting concepts
-
-## Pitfall #1: Synchronous API Calls in Request Path
-
-### ❌ Anti-Pattern
+## 1. Forgetting `max_tokens`
+Unlike OpenAI, `max_tokens` is **required**. Omitting it returns a 400 error.
 ```typescript
-// User waits for Anthropic API call
-app.post('/checkout', async (req, res) => {
-  const payment = await anthropicClient.processPayment(req.body);  // 2-5s latency
-  const notification = await anthropicClient.sendEmail(payment);   // Another 1-2s
-  res.json({ success: true });  // User waited 3-7s
-});
+// BAD
+await client.messages.create({ model: 'claude-sonnet-4-20250514', messages });
+
+// GOOD
+await client.messages.create({ model: 'claude-sonnet-4-20250514', max_tokens: 1024, messages });
 ```
 
-### ✅ Better Approach
+## 2. System Prompt in Messages Array
+Claude uses a top-level `system` parameter, not a system message in the array.
 ```typescript
-// Return immediately, process async
-app.post('/checkout', async (req, res) => {
-  const jobId = await queue.enqueue('process-checkout', req.body);
-  res.json({ jobId, status: 'processing' });  // 50ms response
-});
+// BAD — this sends "system" as a user message role, which will error
+messages: [{ role: 'system', content: '...' }, { role: 'user', content: '...' }]
 
-// Background job
-async function processCheckout(data) {
-  const payment = await anthropicClient.processPayment(data);
-  await anthropicClient.sendEmail(payment);
+// GOOD
+system: 'You are helpful.',
+messages: [{ role: 'user', content: '...' }]
+```
+
+## 3. Non-Alternating Messages
+Messages must strictly alternate between user and assistant.
+```typescript
+// BAD — two user messages in a row
+messages: [
+  { role: 'user', content: 'Hello' },
+  { role: 'user', content: 'How are you?' }, // ERROR
+]
+
+// GOOD — combine into one or add assistant between
+messages: [
+  { role: 'user', content: 'Hello. How are you?' },
+]
+```
+
+## 4. Not Checking `stop_reason`
+If `stop_reason === 'max_tokens'`, the response was truncated.
+```typescript
+if (message.stop_reason === 'max_tokens') {
+  // Response is incomplete — increase max_tokens or handle truncation
 }
 ```
 
----
-
-## Pitfall #2: Not Handling Rate Limits
-
-### ❌ Anti-Pattern
+## 5. Creating Client Per Request
+Each `new Anthropic()` creates a new connection pool. In serverless, this adds latency.
 ```typescript
-// Blast requests, crash on 429
-for (const item of items) {
-  await anthropicClient.process(item);  // Will hit rate limit
-}
-```
-
-### ✅ Better Approach
-```typescript
-import pLimit from 'p-limit';
-
-const limit = pLimit(5);  // Max 5 concurrent
-const rateLimiter = new RateLimiter({ tokensPerSecond: 10 });
-
-for (const item of items) {
-  await rateLimiter.acquire();
-  await limit(() => anthropicClient.process(item));
-}
-```
-
----
-
-## Pitfall #3: Leaking API Keys
-
-### ❌ Anti-Pattern
-```typescript
-// In frontend code (visible to users!)
-const client = new AnthropicClient({
-  apiKey: 'sk_live_ACTUAL_KEY_HERE',  // Anyone can see this
+// BAD — new client every request
+app.post('/chat', async (req, res) => {
+  const client = new Anthropic(); // Cold connection every time
 });
 
-// In git history
-git commit -m "add API key"  // Exposed forever
-```
-
-### ✅ Better Approach
-```typescript
-// Backend only, environment variable
-const client = new AnthropicClient({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
-
-// Use .gitignore
-.env
-.env.local
-.env.*.local
-```
-
----
-
-## Pitfall #4: Ignoring Idempotency
-
-### ❌ Anti-Pattern
-```typescript
-// Network error on response = duplicate charge!
-try {
-  await anthropicClient.charge(order);
-} catch (error) {
-  if (error.code === 'NETWORK_ERROR') {
-    await anthropicClient.charge(order);  // Charged twice!
-  }
-}
-```
-
-### ✅ Better Approach
-```typescript
-const idempotencyKey = `order-${order.id}-${Date.now()}`;
-
-await anthropicClient.charge(order, {
-  idempotencyKey,  // Safe to retry
+// GOOD — reuse across requests
+const client = new Anthropic();
+app.post('/chat', async (req, res) => {
+  await client.messages.create({ ... });
 });
 ```
 
----
+## 6. No Error Handling for 529
+529 (overloaded) is common during peak hours. The SDK retries automatically, but you should handle it for critical paths.
 
-## Pitfall #5: Not Validating Webhooks
-
-### ❌ Anti-Pattern
+## 7. Hardcoding Model IDs
+Model IDs change with new versions. Use environment variables.
 ```typescript
-// Trust any incoming request
-app.post('/webhook', (req, res) => {
-  processWebhook(req.body);  // Attacker can send fake events
-  res.sendStatus(200);
-});
+const MODEL = process.env.CLAUDE_MODEL || 'claude-sonnet-4-20250514';
 ```
 
-### ✅ Better Approach
-```typescript
-app.post('/webhook',
-  express.raw({ type: 'application/json' }),
-  (req, res) => {
-    const signature = req.headers['x-anthropic-signature'];
-    if (!verifyAnthropicSignature(req.body, signature)) {
-      return res.sendStatus(401);
-    }
-    processWebhook(JSON.parse(req.body));
-    res.sendStatus(200);
-  }
-);
-```
+## 8. Ignoring Token Costs
+Output tokens cost 5x more than input tokens. A 4096 max_tokens response on Opus costs ~$0.30. Use the smallest max_tokens that works.
 
----
+## 9. No Streaming for User-Facing Apps
+Without streaming, users stare at a blank screen for 5-30 seconds. Always stream for interactive use.
 
-## Pitfall #6: Missing Error Handling
+## 10. Sending PII Unnecessarily
+Don't include user PII in prompts unless the task requires it. Redact before sending.
 
-### ❌ Anti-Pattern
-```typescript
-// Crashes on any error
-const result = await anthropicClient.get(id);
-console.log(result.data.nested.value);  // TypeError if missing
-```
-
-### ✅ Better Approach
-```typescript
-try {
-  const result = await anthropicClient.get(id);
-  console.log(result?.data?.nested?.value ?? 'default');
-} catch (error) {
-  if (error instanceof AnthropicNotFoundError) {
-    return null;
-  }
-  if (error instanceof AnthropicRateLimitError) {
-    await sleep(error.retryAfter);
-    return this.get(id);  // Retry
-  }
-  throw error;  // Rethrow unknown errors
-}
-```
-
----
-
-## Pitfall #7: Hardcoding Configuration
-
-### ❌ Anti-Pattern
-```typescript
-const client = new AnthropicClient({
-  timeout: 5000,  // Too short for some operations
-  baseUrl: 'https://api.anthropic.com',  // Can't change for staging
-});
-```
-
-### ✅ Better Approach
-```typescript
-const client = new AnthropicClient({
-  timeout: parseInt(process.env.ANTHROPIC_TIMEOUT || '30000'),
-  baseUrl: process.env.ANTHROPIC_BASE_URL || 'https://api.anthropic.com',
-});
-```
-
----
-
-## Pitfall #8: Not Implementing Circuit Breaker
-
-### ❌ Anti-Pattern
-```typescript
-// When Anthropic is down, every request hangs
-for (const user of users) {
-  await anthropicClient.sync(user);  // All timeout sequentially
-}
-```
-
-### ✅ Better Approach
-```typescript
-import CircuitBreaker from 'opossum';
-
-const breaker = new CircuitBreaker(anthropicClient.sync, {
-  timeout: 10000,
-  errorThresholdPercentage: 50,
-  resetTimeout: 30000,
-});
-
-// Fails fast when circuit is open
-for (const user of users) {
-  await breaker.fire(user).catch(handleFailure);
-}
-```
-
----
-
-## Pitfall #9: Logging Sensitive Data
-
-### ❌ Anti-Pattern
-```typescript
-console.log('Request:', JSON.stringify(request));  // Logs API key, PII
-console.log('User:', user);  // Logs email, phone
-```
-
-### ✅ Better Approach
-```typescript
-const redacted = {
-  ...request,
-  apiKey: '[REDACTED]',
-  user: { id: user.id },  // Only non-sensitive fields
-};
-console.log('Request:', JSON.stringify(redacted));
-```
-
----
-
-## Pitfall #10: No Graceful Degradation
-
-### ❌ Anti-Pattern
-```typescript
-// Entire feature broken if Anthropic is down
-const recommendations = await anthropicClient.getRecommendations(userId);
-return renderPage({ recommendations });  // Page crashes
-```
-
-### ✅ Better Approach
-```typescript
-let recommendations;
-try {
-  recommendations = await anthropicClient.getRecommendations(userId);
-} catch (error) {
-  recommendations = await getFallbackRecommendations(userId);
-  reportDegradedService('anthropic', error);
-}
-return renderPage({ recommendations, degraded: !recommendations });
-```
-
----
-
-## Instructions
-
-### Step 1: Review for Anti-Patterns
-Scan codebase for each pitfall pattern.
-
-### Step 2: Prioritize Fixes
-Address security issues first, then performance.
-
-### Step 3: Implement Better Approach
-Replace anti-patterns with recommended patterns.
-
-### Step 4: Add Prevention
-Set up linting and CI checks to prevent recurrence.
-
-## Output
-- Anti-patterns identified
-- Fixes prioritized and implemented
-- Prevention measures in place
-- Code quality improved
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Too many findings | Legacy codebase | Prioritize security first |
-| Pattern not detected | Complex code | Manual review |
-| False positive | Similar code | Whitelist exceptions |
-| Fix breaks tests | Behavior change | Update tests |
-
-## Examples
-
-### Quick Pitfall Scan
-```bash
-# Check for common pitfalls
-grep -r "sk_live_" --include="*.ts" src/        # Key leakage
-grep -r "console.log" --include="*.ts" src/     # Potential PII logging
-```
+## Quick Reference
+| Pitfall | Fix |
+|---------|-----|
+| Missing `max_tokens` | Always include it |
+| System in messages | Use top-level `system` param |
+| Non-alternating messages | Combine or interleave |
+| Unchecked `stop_reason` | Check for `max_tokens` truncation |
+| Client per request | Module-level singleton |
+| No 529 handling | SDK retries + fallback model |
+| Hardcoded model IDs | Environment variable |
+| Expensive output | Minimize `max_tokens` |
+| No streaming | Always stream for UI |
+| Unnecessary PII | Redact before sending |
 
 ## Resources
-- [Anthropic Security Guide](https://docs.anthropic.com/security)
-- [Anthropic Best Practices](https://docs.anthropic.com/best-practices)
-
-## Quick Reference Card
-
-| Pitfall | Detection | Prevention |
-|---------|-----------|------------|
-| Sync in request | High latency | Use queues |
-| Rate limit ignore | 429 errors | Implement backoff |
-| Key leakage | Git history scan | Env vars, .gitignore |
-| No idempotency | Duplicate records | Idempotency keys |
-| Unverified webhooks | Security audit | Signature verification |
-| Missing error handling | Crashes | Try-catch, types |
-| Hardcoded config | Code review | Environment variables |
-| No circuit breaker | Cascading failures | opossum, resilience4j |
-| Logging PII | Log audit | Redaction middleware |
-| No degradation | Total outages | Fallback systems |
+- [API Reference](https://docs.anthropic.com/en/api/messages)
+- [Best Practices](https://docs.anthropic.com/en/docs/build-with-claude)

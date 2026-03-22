@@ -1,151 +1,117 @@
 ---
 name: anthropic-rate-limits
 description: |
-  Implement Anthropic rate limiting, backoff, and idempotency patterns.
-  Use when handling rate limit errors, implementing retry logic,
-  or optimizing API request throughput for Anthropic.
-  Trigger with phrases like "anthropic rate limit", "anthropic throttling",
-  "anthropic 429", "anthropic retry", "anthropic backoff".
+  Handle Anthropic rate limits — understand tiers, implement backoff,
+  optimize throughput, and monitor usage.
+  Trigger with "anthropic rate limit", "claude 429", "anthropic throttling",
+  "anthropic usage limits", "claude tokens per minute".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code
-tags: [saas, anthropic]
+tags: [saas, anthropic, claude, rate-limits]
 ---
 
 # Anthropic Rate Limits
 
 ## Overview
-Handle Anthropic rate limits gracefully with exponential backoff and idempotency.
+Anthropic enforces three types of limits: requests per minute (RPM), input tokens per minute (TPM), and output tokens per minute. Limits depend on your spend tier.
 
-## Prerequisites
-- Anthropic SDK installed
-- Understanding of async/await patterns
-- Access to rate limit headers
+## Rate Limit Tiers
 
-## Instructions
+| Tier | Qualification | RPM | Input TPM | Output TPM |
+|------|--------------|-----|-----------|------------|
+| Tier 1 | Free | 50 | 40,000 | 8,000 |
+| Tier 2 | $40+ spend | 1,000 | 80,000 | 16,000 |
+| Tier 3 | $200+ spend | 2,000 | 160,000 | 32,000 |
+| Tier 4 | $400+ spend | 4,000 | 400,000 | 80,000 |
+| Scale | Custom | Custom | Custom | Custom |
 
-### Step 1: Understand Rate Limit Tiers
+> **Check your tier:** console.anthropic.com → Settings → Limits
 
-| Tier | Requests/min | Requests/day | Burst |
-|------|-------------|--------------|-------|
-| Free / Developer | 60 | 1,000 | 10 |
-| Pro / Growth | 600 | 50,000 | 50 |
-| Enterprise | 6,000 | Unlimited | 200 |
-
-### Step 2: Implement Exponential Backoff with Jitter
-
-```typescript
-async function withExponentialBackoff<T>(
-  operation: () => Promise<T>,
-  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 32000, jitterMs: 500 }
-): Promise<T> {
-  for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
-    try {
-      return await operation();
-    } catch (error: any) {
-      if (attempt === config.maxRetries) throw error;
-      const status = error.status || error.response?.status;
-      if (status !== 429 && (status < 500 || status >= 600)) throw error;
-
-      // Exponential delay with jitter to prevent thundering herd
-      const exponentialDelay = config.baseDelayMs * Math.pow(2, attempt);
-      const jitter = Math.random() * config.jitterMs;
-      const delay = Math.min(exponentialDelay + jitter, config.maxDelayMs);
-
-      console.log(`Rate limited. Retrying in ${delay.toFixed(0)}ms...`);
-      await new Promise(r => setTimeout(r, delay));
-    }
-  }
-  throw new Error('Unreachable');
-}
+## Response Headers
+Every API response includes rate limit headers:
+```
+anthropic-ratelimit-requests-limit: 1000
+anthropic-ratelimit-requests-remaining: 998
+anthropic-ratelimit-requests-reset: 2025-01-01T00:01:00Z
+anthropic-ratelimit-tokens-limit: 80000
+anthropic-ratelimit-tokens-remaining: 79500
+anthropic-ratelimit-tokens-reset: 2025-01-01T00:01:00Z
+retry-after: 5
 ```
 
-### Step 3: Add Idempotency Keys
-
+## Built-In SDK Retries
+The SDK automatically retries 429 and 529 errors with exponential backoff:
 ```typescript
-import { v4 as uuidv4 } from 'uuid';
-import crypto from 'crypto';
+import Anthropic from '@anthropic-ai/sdk';
 
-// Generate deterministic key from operation params (for safe retries)
-function generateIdempotencyKey(operation: string, params: Record<string, any>): string {
-  const data = JSON.stringify({ operation, params });
-  return crypto.createHash('sha256').update(data).digest('hex');
-}
-
-async function idempotentRequest<T>(
-  client: AnthropicClient,
-  params: Record<string, any>,
-  idempotencyKey?: string  // Pass existing key for retries
-): Promise<T> {
-  // Use provided key (for retries) or generate deterministic key from params
-  const key = idempotencyKey || generateIdempotencyKey(params.method || 'POST', params);
-  return client.request({
-    ...params,
-    headers: { 'Idempotency-Key': key, ...params.headers },
-  });
-}
-```
-
-## Output
-- Reliable API calls with automatic retry
-- Idempotent requests preventing duplicates
-- Rate limit headers properly handled
-
-## Error Handling
-| Header | Description | Action |
-|--------|-------------|--------|
-| X-RateLimit-Limit | Max requests | Monitor usage |
-| X-RateLimit-Remaining | Remaining requests | Throttle if low |
-| X-RateLimit-Reset | Reset timestamp | Wait until reset |
-| Retry-After | Seconds to wait | Honor this value |
-
-## Examples
-
-### Queue-Based Rate Limiting
-```typescript
-import PQueue from 'p-queue';
-
-const queue = new PQueue({
-  concurrency: 5,
-  interval: 1000,
-  intervalCap: 10,
+const client = new Anthropic({
+  maxRetries: 3, // default: 2. Set to 0 to disable.
 });
+```
 
-async function queuedRequest<T>(operation: () => Promise<T>): Promise<T> {
-  return queue.add(operation);
+## Custom Backoff
+```typescript
+async function callWithBackoff(params: Anthropic.MessageCreateParams, maxRetries = 5) {
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      return await client.messages.create(params);
+    } catch (err) {
+      if (err instanceof Anthropic.RateLimitError) {
+        const retryAfter = Number(err.headers?.['retry-after'] || 2 ** attempt);
+        const jitter = Math.random() * 1000;
+        console.log(`Rate limited. Retry in ${retryAfter}s (attempt ${attempt + 1})`);
+        await new Promise(r => setTimeout(r, retryAfter * 1000 + jitter));
+      } else {
+        throw err;
+      }
+    }
+  }
+  throw new Error('Exceeded max retries');
 }
 ```
 
-### Monitor Rate Limit Usage
+## Throughput Optimization
+| Strategy | Impact |
+|----------|--------|
+| Use Message Batches API | Bypasses rate limits entirely (async, 24h SLA) |
+| Use prompt caching | Cached tokens don't count toward input TPM |
+| Use smaller models for simple tasks | Lower token counts = more requests per minute |
+| Pre-count tokens with `countTokens` | Avoid wasted requests that will fail |
+| Queue and batch requests | Smooth out bursts |
+
+## Token Counting
 ```typescript
-class RateLimitMonitor {
-  private remaining: number = 60;
-  private resetAt: Date = new Date();
+// Count before sending — avoid burning RPM on requests that'll fail
+const count = await client.messages.countTokens({
+  model: 'claude-sonnet-4-20250514',
+  messages,
+  system: systemPrompt,
+});
+console.log(`This request will use ${count.input_tokens} input tokens`);
+```
 
-  updateFromHeaders(headers: Headers) {
-    this.remaining = parseInt(headers.get('X-RateLimit-Remaining') || '60');
-    const resetTimestamp = headers.get('X-RateLimit-Reset');
-    if (resetTimestamp) {
-      this.resetAt = new Date(parseInt(resetTimestamp) * 1000);
-    }
-  }
+## Python
+```python
+import anthropic
+import time
 
-  shouldThrottle(): boolean {
-    // Only throttle if low remaining AND reset hasn't happened yet
-    return this.remaining < 5 && new Date() < this.resetAt;
-  }
+client = anthropic.Anthropic(max_retries=5)
 
-  getWaitTime(): number {
-    return Math.max(0, this.resetAt.getTime() - Date.now());
-  }
-}
+# Or manual handling:
+try:
+    message = client.messages.create(...)
+except anthropic.RateLimitError as e:
+    retry_after = float(e.response.headers.get("retry-after", 5))
+    time.sleep(retry_after)
 ```
 
 ## Resources
-- [Anthropic Rate Limits](https://docs.anthropic.com/rate-limits)
-- [p-queue Documentation](https://github.com/sindresorhus/p-queue)
+- [Rate Limits Docs](https://docs.anthropic.com/en/api/rate-limits)
+- [Message Batches](https://docs.anthropic.com/en/api/creating-message-batches) — no rate limits
+- [Token Counting](https://docs.anthropic.com/en/api/counting-tokens)
 
 ## Next Steps
-For security configuration, see `anthropic-security-basics`.
+See `anthropic-cost-tuning` for cost optimization strategies.

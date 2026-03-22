@@ -1,12 +1,9 @@
 ---
 name: anthropic-core-workflow-a
 description: |
-  Execute Anthropic primary workflow: Core Workflow A.
-  Use when implementing primary use case,
-  building main features, or core integration tasks.
-  Trigger with phrases like "anthropic main workflow",
-  "primary task with anthropic".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
+  This skill has been superseded by anthropic-model-inference.
+  See anthropic-model-inference for Messages API streaming and advanced patterns.
+allowed-tools: Read
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -14,58 +11,13 @@ compatible-with: claude-code
 tags: [saas, anthropic]
 ---
 
-# Anthropic Core Workflow A
+# Anthropic Core Workflow A → See anthropic-model-inference
 
-## Overview
-Primary money-path workflow for Anthropic. This is the most common use case.
+This skill has been replaced by `anthropic-model-inference` which covers:
+- Streaming responses
+- Vision (sending images)
+- Structured JSON output
+- Multi-turn conversations
+- All Messages API parameters
 
-## Prerequisites
-- Completed `anthropic-install-auth` setup
-- Understanding of Anthropic core concepts
-- Valid API credentials configured
-
-## Instructions
-
-### Step 1: Initialize
-```typescript
-// Step 1 implementation
-```
-
-### Step 2: Execute
-```typescript
-// Step 2 implementation
-```
-
-### Step 3: Finalize
-```typescript
-// Step 3 implementation
-```
-
-## Output
-- Completed Core Workflow A execution
-- Expected results from Anthropic API
-- Success confirmation or error details
-
-## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| Error 1 | Cause | Solution |
-| Error 2 | Cause | Solution |
-
-## Examples
-
-### Complete Workflow
-```typescript
-// Complete workflow example
-```
-
-### Common Variations
-- Variation 1: Description
-- Variation 2: Description
-
-## Resources
-- [Anthropic Documentation](https://docs.anthropic.com)
-- [Anthropic API Reference](https://docs.anthropic.com/api)
-
-## Next Steps
-For secondary workflow, see `anthropic-core-workflow-b`.
+Run `anthropic-model-inference` instead.

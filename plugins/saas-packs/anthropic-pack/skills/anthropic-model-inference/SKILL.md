@@ -1,111 +1,135 @@
 ---
 name: anthropic-model-inference
 description: |
-  Execute Anthropic primary workflow: Model Inference Pipeline.
-  Use when sending chat completions with system prompts,
-  streaming responses for real-time UX, or batch processing documents through the model.
-  Trigger with phrases like "anthropic inference",
-  "run model inference with anthropic".
+  Stream Claude responses, use system prompts, handle multi-turn conversations,
+  and process structured output with the Messages API.
+  Trigger with "anthropic streaming", "claude messages api", "claude inference",
+  "stream claude response".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code
-tags: [saas, anthropic]
+tags: [saas, anthropic, claude, streaming, messages-api]
 ---
 
-# Anthropic Model Inference Pipeline
+# Anthropic Messages API — Streaming & Advanced Patterns
 
 ## Overview
-Send prompts to the model API and process streaming or batch responses.
-This is the core money-path — every integration starts here.
-
+The Messages API is the only inference endpoint. Every Claude interaction goes through `client.messages.create()`. This skill covers streaming, system prompts, vision, and structured output.
 
 ## Prerequisites
-- Completed `anthropic-install-auth` setup
-
-- Understanding of model IDs, token limits, and streaming patterns
-
-- Valid API credentials configured
+- Completed `anthropic-install-auth`
+- Familiarity with `anthropic-hello-world`
 
 ## Instructions
 
-### Step 1: Configure Model Parameters
+### Step 1: Streaming Responses
 ```typescript
-const config = {
-  model: process.env.MODEL_ID || 'default',
-  temperature: 0.7,
-  max_tokens: 2048,
-  stream: true,
-};
+import Anthropic from '@anthropic-ai/sdk';
 
-```
+const client = new Anthropic();
 
-### Step 2: Send Completion Request
-```typescript
-const stream = await client.chat.completions.create({
-  ...config,
-  messages: [
-    { role: 'system', content: 'You are a helpful assistant.' },
-    { role: 'user', content: userInput },
-  ],
+const stream = client.messages.stream({
+  model: 'claude-sonnet-4-20250514',
+  max_tokens: 1024,
+  messages: [{ role: 'user', content: 'Write a haiku about TypeScript.' }],
 });
-for await (const chunk of stream) {
-  process.stdout.write(chunk.choices[0]?.delta?.content || '');
+
+for await (const event of stream) {
+  if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
+    process.stdout.write(event.delta.text);
+  }
 }
 
+const finalMessage = await stream.finalMessage();
+console.log('\n\nTokens:', finalMessage.usage);
 ```
 
-### Step 3: Handle Response and Token Usage
+### Step 2: Vision — Sending Images
 ```typescript
-// For non-streaming responses:
-const usage = response.usage;
-console.log(`Tokens: ${usage.prompt_tokens} in / ${usage.completion_tokens} out`);
-console.log(`Cost estimate: $${((usage.prompt_tokens * 0.003 + usage.completion_tokens * 0.015) / 1000).toFixed(4)}`);
+const message = await client.messages.create({
+  model: 'claude-sonnet-4-20250514',
+  max_tokens: 1024,
+  messages: [{
+    role: 'user',
+    content: [
+      {
+        type: 'image',
+        source: {
+          type: 'base64',
+          media_type: 'image/png',
+          data: fs.readFileSync('screenshot.png').toString('base64'),
+        },
+      },
+      { type: 'text', text: 'Describe what you see in this image.' },
+    ],
+  }],
+});
+```
 
+### Step 3: JSON / Structured Output
+```typescript
+const message = await client.messages.create({
+  model: 'claude-sonnet-4-20250514',
+  max_tokens: 1024,
+  system: `Respond with valid JSON only. Schema: { "summary": string, "sentiment": "positive"|"negative"|"neutral", "confidence": number }`,
+  messages: [{ role: 'user', content: 'Analyze: "This product exceeded my expectations!"' }],
+});
+
+const result = JSON.parse(message.content[0].text);
+// { summary: "Very positive review", sentiment: "positive", confidence: 0.95 }
+```
+
+## Python Streaming
+```python
+import anthropic
+
+client = anthropic.Anthropic()
+
+with client.messages.stream(
+    model="claude-sonnet-4-20250514",
+    max_tokens=1024,
+    messages=[{"role": "user", "content": "Write a haiku about Python."}],
+) as stream:
+    for text in stream.text_stream:
+        print(text, end="", flush=True)
+
+print(f"\nTokens: {stream.get_final_message().usage}")
 ```
 
 ## Output
-- Completed Model Inference Pipeline execution
-
-- Model response with token usage and cost estimate
-- Streaming or batch completion depending on configuration
-
-- Success confirmation or error details
+- **Non-streaming:** Full `Message` object with `content`, `usage`, `stop_reason`
+- **Streaming events:**
+  - `message_start` — message metadata
+  - `content_block_start` — new content block beginning
+  - `content_block_delta` — incremental text (`text_delta`) or tool input (`input_json_delta`)
+  - `message_delta` — final `stop_reason` and usage
+  - `message_stop` — stream complete
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Context Length Exceeded | Input + max_tokens exceeds model context window | Truncate input or reduce max_tokens. Check model's context limit. |
-| Model Not Found | Invalid model ID or model not available on your plan | Call /models endpoint to list available models. Check plan access. |
+| `overloaded_error` (529) | Anthropic API temporarily overloaded | Retry with exponential backoff; use `client.messages.create` with built-in retries |
+| `rate_limit_error` (429) | Exceeded RPM or TPM | Check `retry-after` header. See `anthropic-rate-limits` |
+| `invalid_request_error` | Image too large or bad format | Max 20 images per request. Supported: PNG, JPEG, GIF, WebP. Max 5MB each |
 
-## Examples
-
-### Complete Workflow
-```typescript
-import { Client } from 'vendor-sdk';
-const client = new Client({ apiKey: process.env.API_KEY });
-
-async function inference(prompt: string) {
-  const response = await client.chat.completions.create({
-    model: 'default',
-    messages: [{ role: 'user', content: prompt }],
-    max_tokens: 1024,
-  });
-  return response.choices[0].message.content;
-}
-
-```
-
-### Common Variations
-- **Streaming**: Set `stream: true` for real-time token delivery
-- **JSON mode**: Set `response_format: { type: 'json_object' }` for structured output
-- **Multi-turn**: Append assistant responses to messages array for conversation
-
+## Key Parameters
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `model` | string | Required. Model ID (e.g. `claude-sonnet-4-20250514`) |
+| `max_tokens` | int | Required. Maximum output tokens (1–8192 typical) |
+| `messages` | array | Required. Alternating user/assistant messages |
+| `system` | string | Optional. System prompt for behavior/persona |
+| `temperature` | float | Optional. 0.0–1.0, default 1.0 |
+| `top_p` | float | Optional. Nucleus sampling threshold |
+| `stop_sequences` | string[] | Optional. Custom stop strings |
+| `stream` | boolean | Optional. Enable SSE streaming |
 
 ## Resources
-- [Anthropic Documentation](https://docs.anthropic.com)
-- [Anthropic API Reference](https://docs.anthropic.com/api)
+- [Messages API](https://docs.anthropic.com/en/api/messages)
+- [Streaming](https://docs.anthropic.com/en/api/messages-streaming)
+- [Vision](https://docs.anthropic.com/en/docs/build-with-claude/vision)
 
 ## Next Steps
-For secondary workflow, see `anthropic-embeddings-search`.
+See `anthropic-embeddings-search` for tool use and function calling patterns.

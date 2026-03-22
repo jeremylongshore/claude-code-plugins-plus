@@ -1,276 +1,86 @@
 ---
 name: anthropic-load-scale
 description: |
-  Implement Anthropic load testing, auto-scaling, and capacity planning strategies.
-  Use when running performance tests, configuring horizontal scaling,
-  or planning capacity for Anthropic integrations.
-  Trigger with phrases like "anthropic load test", "anthropic scale",
-  "anthropic performance test", "anthropic capacity", "anthropic k6", "anthropic benchmark".
-allowed-tools: Read, Write, Edit, Bash(k6:*), Bash(kubectl:*)
+  Scale Claude usage for high-throughput applications — batches, queues,
+  concurrency control, and tier upgrades.
+  Trigger with "anthropic scale", "claude high volume", "anthropic throughput",
+  "scale claude api", "anthropic concurrent requests".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code
-tags: [saas, anthropic]
+tags: [saas, anthropic, claude, scale, throughput]
 ---
 
 # Anthropic Load & Scale
 
-## Overview
-Load testing, scaling strategies, and capacity planning for Anthropic integrations.
+## Scaling Strategies
 
-## Prerequisites
-- k6 load testing tool installed
-- Kubernetes cluster with HPA configured
-- Prometheus for metrics collection
-- Test environment API keys
-
-## Load Testing with k6
-
-### Basic Load Test
-```javascript
-// anthropic-load-test.js
-import http from 'k6/http';
-import { check, sleep } from 'k6';
-
-export const options = {
-  stages: [
-    { duration: '2m', target: 10 },   // Ramp up
-    { duration: '5m', target: 10 },   // Steady state
-    { duration: '2m', target: 50 },   // Ramp to peak
-    { duration: '5m', target: 50 },   // Stress test
-    { duration: '2m', target: 0 },    // Ramp down
-  ],
-  thresholds: {
-    http_req_duration: ['p(95)<500'],
-    http_req_failed: ['rate<0.01'],
-  },
-};
-
-export default function () {
-  const response = http.post(
-    'https://api.anthropic.com/v1/resource',
-    JSON.stringify({ test: true }),
-    {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${__ENV.ANTHROPIC_API_KEY}`,
-      },
-    }
-  );
-
-  check(response, {
-    'status is 200': (r) => r.status === 200,
-    'latency < 500ms': (r) => r.timings.duration < 500,
-  });
-
-  sleep(1);
-}
-```
-
-### Run Load Test
-```bash
-# Install k6
-brew install k6  # macOS
-# or: sudo apt install k6  # Linux
-
-# Run test
-k6 run --env ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY} anthropic-load-test.js
-
-# Run with output to InfluxDB
-k6 run --out influxdb=http://localhost:8086/k6 anthropic-load-test.js
-```
-
-## Scaling Patterns
-
-### Horizontal Scaling
-```yaml
-# kubernetes HPA
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: anthropic-integration-hpa
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: anthropic-integration
-  minReplicas: 2
-  maxReplicas: 20
-  metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        target:
-          type: Utilization
-          averageUtilization: 70
-    - type: Pods
-      pods:
-        metric:
-          name: anthropic_queue_depth
-        target:
-          type: AverageValue
-          averageValue: 100
-```
-
-### Connection Pooling
+### 1. Message Batches (Best for Bulk)
 ```typescript
-import { Pool } from 'generic-pool';
-
-const anthropicPool = Pool.create({
-  create: async () => {
-    return new AnthropicClient({
-      apiKey: process.env.ANTHROPIC_API_KEY!,
-    });
-  },
-  destroy: async (client) => {
-    await client.close();
-  },
-  max: 20,
-  min: 5,
-  idleTimeoutMillis: 30000,
+// 10K requests per batch, 50% cheaper, no rate limits
+const batch = await client.messages.batches.create({
+  requests: items.map((item, i) => ({
+    custom_id: `${i}`,
+    params: { model: 'claude-sonnet-4-20250514', max_tokens: 1024, messages: [{ role: 'user', content: item }] },
+  })),
 });
-
-async function withAnthropicClient<T>(
-  fn: (client: AnthropicClient) => Promise<T>
-): Promise<T> {
-  const client = await anthropicPool.acquire();
-  try {
-    return await fn(client);
-  } finally {
-    anthropicPool.release(client);
-  }
-}
+// Process up to 100 concurrent batches
 ```
 
-## Capacity Planning
-
-### Metrics to Monitor
-| Metric | Warning | Critical |
-|--------|---------|----------|
-| CPU Utilization | > 70% | > 85% |
-| Memory Usage | > 75% | > 90% |
-| Request Queue Depth | > 100 | > 500 |
-| Error Rate | > 1% | > 5% |
-| P95 Latency | > 1000ms | > 3000ms |
-
-### Capacity Calculation
+### 2. Request Queue with Concurrency Control
 ```typescript
-interface CapacityEstimate {
-  currentRPS: number;
-  maxRPS: number;
-  headroom: number;
-  scaleRecommendation: string;
-}
+import pLimit from 'p-limit';
 
-function estimateAnthropicCapacity(
-  metrics: SystemMetrics
-): CapacityEstimate {
-  const currentRPS = metrics.requestsPerSecond;
-  const avgLatency = metrics.p50Latency;
-  const cpuUtilization = metrics.cpuPercent;
+// Match your rate limit tier
+const limit = pLimit(10); // 10 concurrent requests
 
-  // Estimate max RPS based on current performance
-  const maxRPS = currentRPS / (cpuUtilization / 100) * 0.7; // 70% target
-  const headroom = ((maxRPS - currentRPS) / currentRPS) * 100;
-
-  return {
-    currentRPS,
-    maxRPS: Math.floor(maxRPS),
-    headroom: Math.round(headroom),
-    scaleRecommendation: headroom < 30
-      ? 'Scale up soon'
-      : headroom < 50
-      ? 'Monitor closely'
-      : 'Adequate capacity',
-  };
-}
+const results = await Promise.all(
+  inputs.map(input =>
+    limit(() => client.messages.create({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1024,
+      messages: [{ role: 'user', content: input }],
+    }))
+  )
+);
 ```
 
-## Benchmark Results Template
+### 3. Tier Upgrades
+Increase your spending to unlock higher tiers:
 
-```markdown
-## Anthropic Performance Benchmark
-**Date:** YYYY-MM-DD
-**Environment:** [staging/production]
-**SDK Version:** X.Y.Z
+| Tier | RPM | Input TPM | How to Qualify |
+|------|-----|-----------|----------------|
+| 1 | 50 | 40K | Free |
+| 2 | 1,000 | 80K | $40+ total spend |
+| 3 | 2,000 | 160K | $200+ total spend |
+| 4 | 4,000 | 400K | $400+ total spend |
+| Scale | Custom | Custom | Contact sales |
 
-### Test Configuration
-- Duration: 10 minutes
-- Ramp: 10 → 100 → 10 VUs
-- Target endpoint: /v1/resource
-
-### Results
-| Metric | Value |
-|--------|-------|
-| Total Requests | 50,000 |
-| Success Rate | 99.9% |
-| P50 Latency | 120ms |
-| P95 Latency | 350ms |
-| P99 Latency | 800ms |
-| Max RPS Achieved | 150 |
-
-### Observations
-- [Key finding 1]
-- [Key finding 2]
-
-### Recommendations
-- [Scaling recommendation]
-```
-
-## Instructions
-
-### Step 1: Create Load Test Script
-Write k6 test script with appropriate thresholds.
-
-### Step 2: Configure Auto-Scaling
-Set up HPA with CPU and custom metrics.
-
-### Step 3: Run Load Test
-Execute test and collect metrics.
-
-### Step 4: Analyze and Document
-Record results in benchmark template.
-
-## Output
-- Load test script created
-- HPA configured
-- Benchmark results documented
-- Capacity recommendations defined
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| k6 timeout | Rate limited | Reduce RPS |
-| HPA not scaling | Wrong metrics | Verify metric name |
-| Connection refused | Pool exhausted | Increase pool size |
-| Inconsistent results | Warm-up needed | Add ramp-up phase |
-
-## Examples
-
-### Quick k6 Test
-```bash
-k6 run --vus 10 --duration 30s anthropic-load-test.js
-```
-
-### Check Current Capacity
+### 4. Model Selection for Throughput
 ```typescript
-const metrics = await getSystemMetrics();
-const capacity = estimateAnthropicCapacity(metrics);
-console.log('Headroom:', capacity.headroom + '%');
-console.log('Recommendation:', capacity.scaleRecommendation);
+// Haiku processes 3-4x faster than Sonnet, 8x faster than Opus
+// Use the fastest model that meets quality requirements
+const model = taskComplexity === 'simple' ? 'claude-haiku-4-5-20251001' : 'claude-sonnet-4-20250514';
 ```
 
-### Scale HPA Manually
-```bash
-kubectl scale deployment anthropic-integration --replicas=5
-kubectl get hpa anthropic-integration-hpa
+## Monitoring at Scale
+```typescript
+// Track throughput metrics
+let requestCount = 0;
+let tokenCount = 0;
+
+setInterval(() => {
+  console.log(`Throughput: ${requestCount} req/min, ${tokenCount} tokens/min`);
+  requestCount = 0;
+  tokenCount = 0;
+}, 60_000);
 ```
 
 ## Resources
-- [k6 Documentation](https://k6.io/docs/)
-- [Kubernetes HPA](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/)
-- [Anthropic Rate Limits](https://docs.anthropic.com/rate-limits)
+- [Rate Limits](https://docs.anthropic.com/en/api/rate-limits)
+- [Message Batches](https://docs.anthropic.com/en/api/creating-message-batches)
 
 ## Next Steps
-For reliability patterns, see `anthropic-reliability-patterns`.
+See `anthropic-reliability-patterns` for fault-tolerant high-scale patterns.

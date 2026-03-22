@@ -1,126 +1,124 @@
 ---
 name: anthropic-ci-integration
 description: |
-  Configure Anthropic CI/CD integration with GitHub Actions and testing.
-  Use when setting up automated testing, configuring CI pipelines,
-  or integrating Anthropic tests into your build process.
-  Trigger with phrases like "anthropic CI", "anthropic GitHub Actions",
-  "anthropic automated tests", "CI anthropic".
-allowed-tools: Read, Write, Edit, Bash(gh:*)
+  Test and validate Claude integrations in CI/CD pipelines —
+  GitHub Actions, mocking strategies, and cost control.
+  Trigger with "anthropic ci", "test claude in ci", "anthropic github actions",
+  "claude automated testing".
+allowed-tools: Read, Write, Edit, Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code
-tags: [saas, anthropic]
+tags: [saas, anthropic, claude, ci, testing]
 ---
 
 # Anthropic CI Integration
 
 ## Overview
-Set up CI/CD pipelines for Anthropic integrations with automated testing.
+Testing Claude integrations in CI requires handling API keys securely, mocking for unit tests, and making real calls only in integration tests.
 
-## Prerequisites
-- GitHub repository with Actions enabled
-- Anthropic test API key
-- npm/pnpm project configured
-
-## Instructions
-
-### Step 1: Create GitHub Actions Workflow
-Create `.github/workflows/anthropic-integration.yml`:
-
+## GitHub Actions Setup
 ```yaml
-name: Anthropic Integration Tests
-
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-
-env:
-  ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+# .github/workflows/test.yml
+name: Test Claude Integration
+on: [push, pull_request]
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    env:
-      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: 20
+
       - run: npm ci
-      - run: npm test -- --coverage
+
+      # Unit tests — no API key needed (mocked)
+      - run: npm run test:unit
+
+      # Integration tests — real API calls
       - run: npm run test:integration
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 ```
 
-### Step 2: Configure Secrets
-```bash
-gh secret set ANTHROPIC_API_KEY --body "sk_test_***"
-```
-
-### Step 3: Add Integration Tests
+## Mock Strategy for Unit Tests
 ```typescript
-describe('Anthropic Integration', () => {
-  it.skipIf(!process.env.ANTHROPIC_API_KEY)('should connect', async () => {
-    const client = getAnthropicClient();
-    const result = await client.healthCheck();
-    expect(result.status).toBe('ok');
-  });
+// tests/helpers/mock-anthropic.ts
+import { vi } from 'vitest';
+
+export function mockAnthropicClient() {
+  return {
+    messages: {
+      create: vi.fn().mockResolvedValue({
+        id: 'msg_mock',
+        type: 'message',
+        role: 'assistant',
+        model: 'claude-sonnet-4-20250514',
+        content: [{ type: 'text', text: 'Mock response' }],
+        stop_reason: 'end_turn',
+        usage: { input_tokens: 10, output_tokens: 5 },
+      }),
+      stream: vi.fn().mockReturnValue({
+        async *[Symbol.asyncIterator]() {
+          yield { type: 'content_block_delta', delta: { type: 'text_delta', text: 'Mock' } };
+        },
+        finalMessage: vi.fn().mockResolvedValue({ usage: { input_tokens: 10, output_tokens: 5 } }),
+      }),
+    },
+  };
+}
+
+// In your test:
+import { mockAnthropicClient } from './helpers/mock-anthropic';
+
+test('summarize function returns text', async () => {
+  const client = mockAnthropicClient();
+  const result = await summarize(client, 'Some long text...');
+  expect(result).toBe('Mock response');
+  expect(client.messages.create).toHaveBeenCalledWith(
+    expect.objectContaining({ model: 'claude-sonnet-4-20250514' })
+  );
 });
 ```
 
-## Output
-- Automated test pipeline
-- PR checks configured
-- Coverage reports uploaded
-- Release workflow ready
+## Integration Test (Real API)
+```typescript
+// tests/integration/claude.test.ts
+import Anthropic from '@anthropic-ai/sdk';
+import { describe, test, expect } from 'vitest';
 
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via `gh secret set` |
-| Tests timeout | Network issues | Increase timeout or mock |
-| Auth failures | Invalid key | Check secret value |
+describe('Claude API Integration', () => {
+  const client = new Anthropic(); // Uses ANTHROPIC_API_KEY env var
 
-## Examples
+  test('messages.create returns valid response', async () => {
+    const message = await client.messages.create({
+      model: 'claude-haiku-4-5-20251001', // Cheapest for CI
+      max_tokens: 50,
+      messages: [{ role: 'user', content: 'Say "test passed" in 2 words.' }],
+    });
 
-### Release Workflow
-```yaml
-on:
-  push:
-    tags: ['v*']
-
-jobs:
-  release:
-    runs-on: ubuntu-latest
-    env:
-      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY_PROD }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - run: npm ci
-      - name: Verify Anthropic production readiness
-        run: npm run test:integration
-      - run: npm run build
-      - run: npm publish
+    expect(message.content[0].type).toBe('text');
+    expect(message.stop_reason).toBe('end_turn');
+    expect(message.usage.output_tokens).toBeGreaterThan(0);
+  }, 30_000); // 30s timeout for API calls
+});
 ```
 
-### Branch Protection
-```yaml
-required_status_checks:
-  - "test"
-  - "anthropic-integration"
-```
+## Cost Control in CI
+| Strategy | How |
+|----------|-----|
+| Use Haiku only | Cheapest model, fast |
+| Limit max_tokens | `max_tokens: 50` for validation tests |
+| Skip on PRs from forks | Don't expose API key to untrusted code |
+| Run integration tests only on main | `if: github.ref == 'refs/heads/main'` |
+| Budget cap | Set spending limits in Anthropic console |
 
 ## Resources
-- [GitHub Actions Documentation](https://docs.github.com/en/actions)
-- [Anthropic CI Guide](https://docs.anthropic.com/ci)
+- [GitHub Actions Secrets](https://docs.github.com/en/actions/security-for-github-actions/using-secrets-in-github-actions)
+- [Anthropic SDK](https://github.com/anthropics/anthropic-sdk-typescript)
 
 ## Next Steps
-For deployment patterns, see `anthropic-deploy-integration`.
+See `anthropic-deploy-integration` for deploying to production.

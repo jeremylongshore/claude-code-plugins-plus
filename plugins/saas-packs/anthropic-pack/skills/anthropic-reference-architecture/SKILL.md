@@ -1,240 +1,174 @@
 ---
 name: anthropic-reference-architecture
 description: |
-  Implement Anthropic reference architecture with best-practice project layout.
-  Use when designing new Anthropic integrations, reviewing project structure,
-  or establishing architecture standards for Anthropic applications.
-  Trigger with phrases like "anthropic architecture", "anthropic best practices",
-  "anthropic project structure", "how to organize anthropic", "anthropic layout".
-allowed-tools: Read, Grep
+  Build Claude Code plugins — skills, agents, MCP servers, hooks, and slash commands.
+  The complete guide to extending Claude Code with the Anthropic plugin system.
+  Trigger with "claude code plugin", "build a skill", "create mcp server",
+  "anthropic plugin architecture", "claude code hooks".
+allowed-tools: Read, Write, Edit, Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code
-tags: [saas, anthropic]
+tags: [saas, anthropic, claude-code, plugins, skills, mcp]
 ---
 
-# Anthropic Reference Architecture
+# Claude Code Plugin Architecture
 
 ## Overview
-Production-ready architecture patterns for Anthropic integrations.
+Claude Code has a plugin system with 4 extension points: **skills** (auto-activating knowledge), **commands** (slash commands), **agents** (specialized sub-agents), and **MCP servers** (tool providers). This skill covers building all four.
 
-## Prerequisites
-- Understanding of layered architecture
-- Anthropic SDK knowledge
-- TypeScript project setup
-- Testing framework configured
-
-## Project Structure
-
+## Plugin Structure
 ```
-my-anthropic-project/
-├── src/
-│   ├── anthropic/
-│   │   ├── client.ts           # Singleton client wrapper
-│   │   ├── config.ts           # Environment configuration
-│   │   ├── types.ts            # TypeScript types
-│   │   ├── errors.ts           # Custom error classes
-│   │   └── handlers/
-│   │       ├── webhooks.ts     # Webhook handlers
-│   │       └── events.ts       # Event processing
-│   ├── services/
-│   │   └── anthropic/
-│   │       ├── index.ts        # Service facade
-│   │       ├── sync.ts         # Data synchronization
-│   │       └── cache.ts        # Caching layer
-│   ├── api/
-│   │   └── anthropic/
-│   │       └── webhook.ts      # Webhook endpoint
-│   └── jobs/
-│       └── anthropic/
-│           └── sync.ts         # Background sync job
-├── tests/
-│   ├── unit/
-│   │   └── anthropic/
-│   └── integration/
-│       └── anthropic/
-├── config/
-│   ├── anthropic.development.json
-│   ├── anthropic.staging.json
-│   └── anthropic.production.json
-└── docs/
-    └── anthropic/
-        ├── SETUP.md
-        └── RUNBOOK.md
+my-plugin/
+├── .claude-plugin/
+│   └── plugin.json          # Required: name, version, description, author
+├── skills/
+│   └── my-skill/
+│       └── SKILL.md          # Auto-activating skill
+├── commands/
+│   └── my-command.md         # Slash command (/my-command)
+├── agents/
+│   └── my-agent.md           # Custom agent
+└── README.md
 ```
 
-## Layer Architecture
+## Building a Skill (SKILL.md)
+```yaml
+---
+name: my-skill
+description: |
+  When to activate this skill. Include trigger phrases so Claude
+  knows when to use it. Be specific about the problem it solves.
+allowed-tools: Read, Write, Edit, Bash(npm:*)
+version: 1.0.0
+author: Your Name <you@example.com>
+license: MIT
+compatible-with: claude-code
+tags: [category, topic]
+---
 
-```
-┌─────────────────────────────────────────┐
-│             API Layer                    │
-│   (Controllers, Routes, Webhooks)        │
-├─────────────────────────────────────────┤
-│           Service Layer                  │
-│  (Business Logic, Orchestration)         │
-├─────────────────────────────────────────┤
-│          Anthropic Layer        │
-│   (Client, Types, Error Handling)        │
-├─────────────────────────────────────────┤
-│         Infrastructure Layer             │
-│    (Cache, Queue, Monitoring)            │
-└─────────────────────────────────────────┘
-```
+# Skill Title
 
-## Key Components
-
-### Step 1: Client Wrapper
-```typescript
-// src/anthropic/client.ts
-export class AnthropicService {
-  private client: AnthropicClient;
-  private cache: Cache;
-  private monitor: Monitor;
-
-  constructor(config: AnthropicConfig) {
-    this.client = new AnthropicClient(config);
-    this.cache = new Cache(config.cacheOptions);
-    this.monitor = new Monitor('anthropic');
-  }
-
-  async get(id: string): Promise<Resource> {
-    return this.cache.getOrFetch(id, () =>
-      this.monitor.track('get', () => this.client.get(id))
-    );
-  }
-}
-```
-
-### Step 2: Error Boundary
-```typescript
-// src/anthropic/errors.ts
-export class AnthropicServiceError extends Error {
-  constructor(
-    message: string,
-    public readonly code: string,
-    public readonly retryable: boolean,
-    public readonly originalError?: Error
-  ) {
-    super(message);
-    this.name = 'AnthropicServiceError';
-  }
-}
-
-export function wrapAnthropicError(error: unknown): AnthropicServiceError {
-  // Transform SDK errors to application errors
-}
-```
-
-### Step 3: Health Check
-```typescript
-// src/anthropic/health.ts
-export async function checkAnthropicHealth(): Promise<HealthStatus> {
-  try {
-    const start = Date.now();
-    await anthropicClient.ping();
-    return {
-      status: 'healthy',
-      latencyMs: Date.now() - start,
-    };
-  } catch (error) {
-    return { status: 'unhealthy', error: error.message };
-  }
-}
-```
-
-## Data Flow Diagram
-
-```
-User Request
-     │
-     ▼
-┌─────────────┐
-│   API       │
-│   Gateway   │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐    ┌─────────────┐
-│   Service   │───▶│   Cache     │
-│   Layer     │    │   (Redis)   │
-└──────┬──────┘    └─────────────┘
-       │
-       ▼
-┌─────────────┐
-│ Anthropic    │
-│   Client    │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│ Anthropic    │
-│   API       │
-└─────────────┘
-```
-
-## Configuration Management
-
-```typescript
-// config/anthropic.ts
-export interface AnthropicConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  timeout: number;
-  retries: number;
-  cache: {
-    enabled: boolean;
-    ttlSeconds: number;
-  };
-}
-
-export function loadAnthropicConfig(): AnthropicConfig {
-  const env = process.env.NODE_ENV || 'development';
-  return require(`./anthropic.${env}.json`);
-}
-```
+## Overview
+What this skill does and when to use it.
 
 ## Instructions
+Step-by-step instructions Claude follows when this skill activates.
 
-### Step 1: Create Directory Structure
-Set up the project layout following the reference structure above.
-
-### Step 2: Implement Client Wrapper
-Create the singleton client with caching and monitoring.
-
-### Step 3: Add Error Handling
-Implement custom error classes for Anthropic operations.
-
-### Step 4: Configure Health Checks
-Add health check endpoint for Anthropic connectivity.
+### Step 1: Do the thing
+Explain what to do with code examples.
 
 ## Output
-- Structured project layout
-- Client wrapper with caching
-- Error boundary implemented
-- Health checks configured
+What the user should expect when this skill runs.
 
 ## Error Handling
-| Issue | Cause | Solution |
+| Error | Cause | Solution |
 |-------|-------|----------|
-| Circular dependencies | Wrong layering | Separate concerns by layer |
-| Config not loading | Wrong paths | Verify config file locations |
-| Type errors | Missing types | Add Anthropic types |
-| Test isolation | Shared state | Use dependency injection |
-
-## Examples
-
-### Quick Setup Script
-```bash
-# Create reference structure
-mkdir -p src/anthropic/{handlers} src/services/anthropic src/api/anthropic
-touch src/anthropic/{client,config,types,errors}.ts
-touch src/services/anthropic/{index,sync,cache}.ts
+| ... | ... | ... |
 ```
 
-## Resources
-- [Anthropic SDK Documentation](https://docs.anthropic.com/sdk)
-- [Anthropic Best Practices](https://docs.anthropic.com/best-practices)
+## Building a Slash Command
+```yaml
+---
+name: my-command
+description: "Run my custom workflow"
+user-invocable: true
+argument-hint: "<file-path>"
+allowed-tools: Read, Write, Edit, Bash(npm:*)
+version: 1.0.0
+---
 
-## Flagship Skills
-For multi-environment setup, see `anthropic-multi-env-setup`.
+# /my-command
+
+When the user runs `/my-command <file-path>`, do the following:
+
+1. Read the file at $ARGUMENTS
+2. Analyze it for issues
+3. Report findings
+```
+
+## Building an Agent
+```yaml
+---
+name: my-agent
+description: "Specialized agent for code review"
+capabilities: ["code-review", "security-audit"]
+model: sonnet
+maxTurns: 10
+---
+
+# Code Review Agent
+
+You are a code review specialist. When invoked:
+1. Read the files provided
+2. Check for security issues, code quality, and performance
+3. Report findings with specific line references
+```
+
+## Building an MCP Server
+```typescript
+// src/index.ts
+#!/usr/bin/env node
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+
+const server = new Server({ name: 'my-tools', version: '1.0.0' }, {
+  capabilities: { tools: {} },
+});
+
+server.setRequestHandler('tools/list', async () => ({
+  tools: [{
+    name: 'search_docs',
+    description: 'Search documentation for a query',
+    inputSchema: {
+      type: 'object',
+      properties: { query: { type: 'string' } },
+      required: ['query'],
+    },
+  }],
+}));
+
+server.setRequestHandler('tools/call', async (request) => {
+  if (request.params.name === 'search_docs') {
+    const results = await searchDocs(request.params.arguments.query);
+    return { content: [{ type: 'text', text: JSON.stringify(results) }] };
+  }
+});
+
+const transport = new StdioServerTransport();
+await server.connect(transport);
+```
+
+## Hooks
+```json
+// .claude/settings.json
+{
+  "hooks": {
+    "pre-tool-call": [{
+      "matcher": "Edit",
+      "command": "echo 'About to edit a file'"
+    }],
+    "post-tool-call": [{
+      "matcher": "Bash",
+      "command": "echo 'Bash command completed'"
+    }]
+  }
+}
+```
+
+## Path Variables
+| Variable | Context | Resolves To |
+|----------|---------|-------------|
+| `${CLAUDE_SKILL_DIR}` | Skills (bash/DCI) | Skill's directory |
+| `${CLAUDE_PLUGIN_ROOT}` | Hooks | Plugin root directory |
+| `${CLAUDE_PLUGIN_DATA}` | Persistent state | Survives updates |
+| `$ARGUMENTS` | Commands | User-provided args |
+
+## Resources
+- [Plugin Docs](https://docs.anthropic.com/en/docs/claude-code/plugins)
+- [SKILL.md Spec](https://docs.anthropic.com/en/docs/claude-code/skills)
+- [MCP Protocol](https://modelcontextprotocol.io)
+
+## Next Steps
+See `anthropic-multi-env-setup` for managing plugins across environments.

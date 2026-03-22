@@ -1,222 +1,77 @@
 ---
 name: anthropic-data-handling
 description: |
-  Implement Anthropic PII handling, data retention, and GDPR/CCPA compliance patterns.
-  Use when handling sensitive data, implementing data redaction, configuring retention policies,
-  or ensuring compliance with privacy regulations for Anthropic integrations.
-  Trigger with phrases like "anthropic data", "anthropic PII",
-  "anthropic GDPR", "anthropic data retention", "anthropic privacy", "anthropic CCPA".
+  Handle sensitive data with Claude — PII redaction, conversation management,
+  context window optimization, and data retention policies.
+  Trigger with "anthropic data privacy", "claude pii", "anthropic context window",
+  "manage claude conversations", "anthropic data retention".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code
-tags: [saas, anthropic]
+tags: [saas, anthropic, claude, data, privacy, context]
 ---
 
 # Anthropic Data Handling
 
-## Overview
-Handle sensitive data correctly when integrating with Anthropic.
-
-## Prerequisites
-- Understanding of GDPR/CCPA requirements
-- Anthropic SDK with data export capabilities
-- Database for audit logging
-- Scheduled job infrastructure for cleanup
-
-## Data Classification
-
-| Category | Examples | Handling |
-|----------|----------|----------|
-| PII | Email, name, phone | Encrypt, minimize |
-| Sensitive | API keys, tokens | Never log, rotate |
-| Business | Usage metrics | Aggregate when possible |
-| Public | Product names | Standard handling |
-
-## PII Detection
+## Context Window Management
+Claude models have a 200K token context window. Managing it efficiently is critical.
 
 ```typescript
-const PII_PATTERNS = [
-  { type: 'email', regex: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g },
-  { type: 'phone', regex: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g },
-  { type: 'ssn', regex: /\b\d{3}-\d{2}-\d{4}\b/g },
-  { type: 'credit_card', regex: /\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b/g },
-];
-
-function detectPII(text: string): { type: string; match: string }[] {
-  const findings: { type: string; match: string }[] = [];
-
-  for (const pattern of PII_PATTERNS) {
-    const matches = text.matchAll(pattern.regex);
-    for (const match of matches) {
-      findings.push({ type: pattern.type, match: match[0] });
-    }
-  }
-
-  return findings;
-}
-```
-
-## Data Redaction
-
-```typescript
-function redactPII(data: Record<string, any>): Record<string, any> {
-  const sensitiveFields = ['email', 'phone', 'ssn', 'password', 'apiKey'];
-  const redacted = { ...data };
-
-  for (const field of sensitiveFields) {
-    if (redacted[field]) {
-      redacted[field] = '[REDACTED]';
-    }
-  }
-
-  return redacted;
-}
-
-// Use in logging
-console.log('Anthropic request:', redactPII(requestData));
-```
-
-## Data Retention Policy
-
-### Retention Periods
-| Data Type | Retention | Reason |
-|-----------|-----------|--------|
-| API logs | 30 days | Debugging |
-| Error logs | 90 days | Root cause analysis |
-| Audit logs | 7 years | Compliance |
-| PII | Until deletion request | GDPR/CCPA |
-
-### Automatic Cleanup
-
-```typescript
-async function cleanupAnthropicData(retentionDays: number): Promise<void> {
-  const cutoff = new Date();
-  cutoff.setDate(cutoff.getDate() - retentionDays);
-
-  await db.anthropicLogs.deleteMany({
-    createdAt: { $lt: cutoff },
-    type: { $nin: ['audit', 'compliance'] },
-  });
-}
-
-// Schedule daily cleanup
-cron.schedule('0 3 * * *', () => cleanupAnthropicData(30));
-```
-
-## GDPR/CCPA Compliance
-
-### Data Subject Access Request (DSAR)
-
-```typescript
-async function exportUserData(userId: string): Promise<DataExport> {
-  const anthropicData = await anthropicClient.getUserData(userId);
-
-  return {
-    source: 'Anthropic',
-    exportedAt: new Date().toISOString(),
-    data: {
-      profile: anthropicData.profile,
-      activities: anthropicData.activities,
-      // Include all user-related data
-    },
-  };
-}
-```
-
-### Right to Deletion
-
-```typescript
-async function deleteUserData(userId: string): Promise<DeletionResult> {
-  // 1. Delete from Anthropic
-  await anthropicClient.deleteUser(userId);
-
-  // 2. Delete local copies
-  await db.anthropicUserCache.deleteMany({ userId });
-
-  // 3. Audit log (required to keep)
-  await auditLog.record({
-    action: 'GDPR_DELETION',
-    userId,
-    service: 'anthropic',
-    timestamp: new Date(),
-  });
-
-  return { success: true, deletedAt: new Date() };
-}
-```
-
-## Data Minimization
-
-```typescript
-// Only request needed fields
-const user = await anthropicClient.getUser(userId, {
-  fields: ['id', 'name'], // Not email, phone, address
+// Count tokens before sending
+const count = await client.messages.countTokens({
+  model: 'claude-sonnet-4-20250514',
+  messages,
+  system: systemPrompt,
 });
 
-// Don't store unnecessary data
-const cacheData = {
-  id: user.id,
-  name: user.name,
-  // Omit sensitive fields
-};
-```
+// Budget: 200K total - max_tokens (output) = available input
+const MAX_CONTEXT = 200_000;
+const MAX_OUTPUT = 4096;
+const inputBudget = MAX_CONTEXT - MAX_OUTPUT;
 
-## Instructions
-
-### Step 1: Classify Data
-Categorize all Anthropic data by sensitivity level.
-
-### Step 2: Implement PII Detection
-Add regex patterns to detect sensitive data in logs.
-
-### Step 3: Configure Redaction
-Apply redaction to sensitive fields before logging.
-
-### Step 4: Set Up Retention
-Configure automatic cleanup with appropriate retention periods.
-
-## Output
-- Data classification documented
-- PII detection implemented
-- Redaction in logging active
-- Retention policy enforced
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| PII in logs | Missing redaction | Wrap logging with redact |
-| Deletion failed | Data locked | Check dependencies |
-| Export incomplete | Timeout | Increase batch size |
-| Audit gap | Missing entries | Review log pipeline |
-
-## Examples
-
-### Quick PII Scan
-```typescript
-const findings = detectPII(JSON.stringify(userData));
-if (findings.length > 0) {
-  console.warn(`PII detected: ${findings.map(f => f.type).join(', ')}`);
+if (count.input_tokens > inputBudget) {
+  // Trim oldest messages, keep system prompt + recent context
+  messages = trimToFit(messages, inputBudget);
 }
 ```
 
-### Redact Before Logging
+### Conversation Trimming
 ```typescript
-const safeData = redactPII(apiResponse);
-logger.info('Anthropic response:', safeData);
+function trimConversation(messages: MessageParam[], maxTokens: number): MessageParam[] {
+  // Always keep the first message (often contains key context)
+  // Keep the most recent messages
+  // Drop middle turns first
+  if (messages.length <= 4) return messages;
+
+  const first = messages[0];
+  const recent = messages.slice(-6); // Last 3 turns
+  return [first, ...recent];
+}
 ```
 
-### GDPR Data Export
+## PII Handling
 ```typescript
-const userExport = await exportUserData('user-123');
-await sendToUser(userExport);
+// Strip PII before sending to Claude (if not needed for the task)
+function redactPII(text: string): string {
+  return text
+    .replace(/\b[\w._%+-]+@[\w.-]+\.\w{2,}\b/g, '[EMAIL]')
+    .replace(/\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g, '[PHONE]')
+    .replace(/\b\d{3}-\d{2}-\d{4}\b/g, '[SSN]')
+    .replace(/\b\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}\b/g, '[CARD]');
+}
 ```
+
+## Data Retention
+- **Default**: Anthropic does not use API data for training
+- **Zero retention**: Available on Enterprise plans
+- **Your responsibility**: Don't store Claude responses containing user PII longer than needed
 
 ## Resources
-- [GDPR Developer Guide](https://gdpr.eu/developers/)
-- [CCPA Compliance Guide](https://oag.ca.gov/privacy/ccpa)
-- [Anthropic Privacy Guide](https://docs.anthropic.com/privacy)
+- [Anthropic Privacy Policy](https://www.anthropic.com/policies/privacy)
+- [Token Counting](https://docs.anthropic.com/en/api/counting-tokens)
+- [Context Window](https://docs.anthropic.com/en/docs/about-claude/models)
 
 ## Next Steps
-For enterprise access control, see `anthropic-enterprise-rbac`.
+See `anthropic-enterprise-rbac` for organization and access management.

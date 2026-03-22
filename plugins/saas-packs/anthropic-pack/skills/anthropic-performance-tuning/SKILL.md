@@ -1,216 +1,137 @@
 ---
 name: anthropic-performance-tuning
 description: |
-  Optimize Anthropic API performance with caching, batching, and connection pooling.
-  Use when experiencing slow API responses, implementing caching strategies,
-  or optimizing request throughput for Anthropic integrations.
-  Trigger with phrases like "anthropic performance", "optimize anthropic",
-  "anthropic latency", "anthropic caching", "anthropic slow", "anthropic batch".
+  Optimize Anthropic API latency — streaming, prompt caching, model selection,
+  connection reuse, and parallel requests.
+  Trigger with "anthropic slow", "claude latency", "speed up anthropic",
+  "anthropic performance", "claude response time".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code
-tags: [saas, anthropic]
+tags: [saas, anthropic, claude, performance, latency]
 ---
 
 # Anthropic Performance Tuning
 
 ## Overview
-Optimize Anthropic API performance with caching, batching, and connection pooling.
+Claude latency has two components: **time to first token (TTFT)** and **tokens per second (TPS)**. Different strategies target each.
 
-## Prerequisites
-- Anthropic SDK installed
-- Understanding of async patterns
-- Redis or in-memory cache available (optional)
-- Performance monitoring in place
+## Latency Benchmarks (approximate)
 
-## Latency Benchmarks
+| Model | TTFT (p50) | TTFT (p95) | Output TPS |
+|-------|-----------|-----------|------------|
+| Claude Haiku 4.5 | 200ms | 600ms | ~150 |
+| Claude Sonnet 4 | 400ms | 1.2s | ~90 |
+| Claude Opus 4 | 800ms | 2.5s | ~40 |
 
-| Operation | P50 | P95 | P99 |
-|-----------|-----|-----|-----|
-| Chat Completion (streaming first token) | 200ms | 800ms | 2000ms |
-| Embedding Generation | 50ms | 150ms | 400ms |
-| Batch Inference (100 items) | 15s | 45s | 120s |
+## Optimization Strategies
 
-## Caching Strategy
-
-### Response Caching
+### 1. Always Stream
 ```typescript
-import { LRUCache } from 'lru-cache';
+// Streaming delivers the first token ASAP — user sees response instantly
+// instead of waiting for the full response to generate
 
-const cache = new LRUCache<string, any>({
-  max: 1000,
-  ttl: 60000, // 1 minute
-  updateAgeOnGet: true,
+const stream = client.messages.stream({
+  model: 'claude-sonnet-4-20250514',
+  max_tokens: 1024,
+  messages,
 });
 
-async function cachedAnthropicRequest<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttl?: number
-): Promise<T> {
-  const cached = cache.get(key);
-  if (cached) return cached as T;
-
-  const result = await fetcher();
-  cache.set(key, result, { ttl });
-  return result;
-}
-```
-
-### Redis Caching (Distributed)
-```typescript
-import Redis from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function cachedWithRedis<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttlSeconds = 60
-): Promise<T> {
-  const cached = await redis.get(key);
-  if (cached) return JSON.parse(cached);
-
-  const result = await fetcher();
-  await redis.setex(key, ttlSeconds, JSON.stringify(result));
-  return result;
-}
-```
-
-## Request Batching
-
-```typescript
-import DataLoader from 'dataloader';
-
-const anthropicLoader = new DataLoader<string, any>(
-  async (ids) => {
-    // Batch fetch from Anthropic
-    const results = await anthropicClient.batchGet(ids);
-    return ids.map(id => results.find(r => r.id === id) || null);
-  },
-  {
-    maxBatchSize: 100,
-    batchScheduleFn: callback => setTimeout(callback, 10),
+// First token arrives in ~400ms (Sonnet)
+// Full response may take 5-10s, but user sees progress immediately
+for await (const event of stream) {
+  if (event.type === 'content_block_delta') {
+    yield event.delta.text;
   }
-);
+}
+```
 
-// Usage - automatically batched
-const [item1, item2, item3] = await Promise.all([
-  anthropicLoader.load('id-1'),
-  anthropicLoader.load('id-2'),
-  anthropicLoader.load('id-3'),
+### 2. Prompt Caching — Faster TTFT
+```typescript
+// Cached prompts skip re-processing — dramatically lower TTFT for large system prompts
+const message = await client.messages.create({
+  model: 'claude-sonnet-4-20250514',
+  max_tokens: 1024,
+  system: [{
+    type: 'text',
+    text: largeSystemPrompt, // 10K+ tokens
+    cache_control: { type: 'ephemeral' },
+  }],
+  messages,
+}, {
+  headers: { 'anthropic-beta': 'prompt-caching-2024-07-31' },
+});
+// TTFT drops from ~2s to ~500ms on cache hit with large prompts
+```
+
+### 3. Use Haiku for Speed-Critical Paths
+```typescript
+// Haiku is 2-4x faster than Sonnet with 80% quality for many tasks
+// Use for: classification, extraction, simple Q&A, routing decisions
+
+const route = await client.messages.create({
+  model: 'claude-haiku-4-5-20251001', // 200ms TTFT
+  max_tokens: 10,
+  system: 'Classify the intent. Reply with exactly one word: search, create, update, delete.',
+  messages: [{ role: 'user', content: userInput }],
+});
+
+// Then use Sonnet/Opus for the actual task
+```
+
+### 4. Reuse Client Instance
+```typescript
+// BAD — creates new connection pool per request
+app.get('/api/chat', async (req, res) => {
+  const client = new Anthropic(); // DON'T
+  // ...
+});
+
+// GOOD — single client shared across requests
+const client = new Anthropic(); // Module-level singleton
+
+app.get('/api/chat', async (req, res) => {
+  const message = await client.messages.create({ ... });
+  // ...
+});
+```
+
+### 5. Parallel Requests
+```typescript
+// When you need multiple independent Claude calls, fire them in parallel
+const [summary, sentiment, entities] = await Promise.all([
+  client.messages.create({ model: 'claude-haiku-4-5-20251001', max_tokens: 200,
+    messages: [{ role: 'user', content: `Summarize: ${text}` }] }),
+  client.messages.create({ model: 'claude-haiku-4-5-20251001', max_tokens: 20,
+    messages: [{ role: 'user', content: `Sentiment (positive/negative/neutral): ${text}` }] }),
+  client.messages.create({ model: 'claude-haiku-4-5-20251001', max_tokens: 200,
+    messages: [{ role: 'user', content: `Extract named entities from: ${text}` }] }),
 ]);
 ```
 
-## Connection Optimization
-
+### 6. Minimize Output Tokens
 ```typescript
-import { Agent } from 'https';
+// Fewer output tokens = faster response
+system: 'Be extremely concise. Use bullet points, not paragraphs.',
 
-// Keep-alive connection pooling
-const agent = new Agent({
-  keepAlive: true,
-  maxSockets: 10,
-  maxFreeSockets: 5,
-  timeout: 30000,
-});
-
-const client = new AnthropicClient({
-  apiKey: process.env.ANTHROPIC_API_KEY!,
-  httpAgent: agent,
-});
+// Set tight max_tokens
+max_tokens: 256, // Don't use 4096 for short answers
 ```
-
-## Pagination Optimization
-
-```typescript
-async function* paginatedAnthropicList<T>(
-  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
-): AsyncGenerator<T> {
-  let cursor: string | undefined;
-
-  do {
-    const { data, nextCursor } = await fetcher(cursor);
-    for (const item of data) {
-      yield item;
-    }
-    cursor = nextCursor;
-  } while (cursor);
-}
-
-// Usage
-for await (const item of paginatedAnthropicList(cursor =>
-  anthropicClient.list({ cursor, limit: 100 })
-)) {
-  await process(item);
-}
-```
-
-## Performance Monitoring
-
-```typescript
-async function measuredAnthropicCall<T>(
-  operation: string,
-  fn: () => Promise<T>
-): Promise<T> {
-  const start = performance.now();
-  try {
-    const result = await fn();
-    const duration = performance.now() - start;
-    console.log({ operation, duration, status: 'success' });
-    return result;
-  } catch (error) {
-    const duration = performance.now() - start;
-    console.error({ operation, duration, status: 'error', error });
-    throw error;
-  }
-}
-```
-
-## Instructions
-
-### Step 1: Establish Baseline
-Measure current latency for critical Anthropic operations.
-
-### Step 2: Implement Caching
-Add response caching for frequently accessed data.
-
-### Step 3: Enable Batching
-Use DataLoader or similar for automatic request batching.
-
-### Step 4: Optimize Connections
-Configure connection pooling with keep-alive.
-
-## Output
-- Reduced API latency
-- Caching layer implemented
-- Request batching enabled
-- Connection pooling configured
 
 ## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Cache miss storm | TTL expired | Use stale-while-revalidate |
-| Batch timeout | Too many items | Reduce batch size |
-| Connection exhausted | No pooling | Configure max sockets |
-| Memory pressure | Cache too large | Set max cache entries |
-
-## Examples
-
-### Quick Performance Wrapper
-```typescript
-const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
-  measuredAnthropicCall(name, () =>
-    cachedAnthropicRequest(`cache:${name}`, fn)
-  );
-```
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| TTFT > 3s | Large uncached prompt | Enable prompt caching |
+| Slow output | Using Opus for simple tasks | Downgrade to Haiku/Sonnet |
+| Timeouts | Long generation + default timeout | `new Anthropic({ timeout: 120_000 })` |
+| 529 overloaded | API capacity | SDK auto-retries; add fallback model |
 
 ## Resources
-- [Anthropic Performance Guide](https://docs.anthropic.com/performance)
-- [DataLoader Documentation](https://github.com/graphql/dataloader)
-- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
+- [Streaming Docs](https://docs.anthropic.com/en/api/messages-streaming)
+- [Prompt Caching](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching)
+- [Models Comparison](https://docs.anthropic.com/en/docs/about-claude/models)
 
 ## Next Steps
-For cost optimization, see `anthropic-cost-tuning`.
+See `anthropic-deploy-integration` for production deployment patterns.

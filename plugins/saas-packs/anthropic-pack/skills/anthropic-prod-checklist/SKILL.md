@@ -1,121 +1,82 @@
 ---
 name: anthropic-prod-checklist
 description: |
-  Execute Anthropic production deployment checklist and rollback procedures.
-  Use when deploying Anthropic integrations to production, preparing for launch,
-  or implementing go-live procedures.
-  Trigger with phrases like "anthropic production", "deploy anthropic",
-  "anthropic go-live", "anthropic launch checklist".
-allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
+  Production readiness checklist for Claude-powered applications —
+  error handling, monitoring, fallbacks, cost controls, and security.
+  Trigger with "anthropic production", "claude production ready",
+  "anthropic launch checklist", "go live with claude".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code
-tags: [saas, anthropic]
+tags: [saas, anthropic, claude, production, checklist]
 ---
 
 # Anthropic Production Checklist
 
 ## Overview
-Complete checklist for deploying Anthropic integrations to production.
+Before going live with a Claude-powered app, verify every item below.
 
-## Prerequisites
-- Staging environment tested and verified
-- Production API keys available
-- Deployment pipeline configured
-- Monitoring and alerting ready
-
-## Instructions
-
-### Step 1: Pre-Deployment Configuration
-- [ ] Production API keys in secure vault
-- [ ] Environment variables set in deployment platform
-- [ ] API key scopes are minimal (least privilege)
-- [ ] Webhook endpoints configured with HTTPS
-- [ ] Webhook secrets stored securely
-
-### Step 2: Code Quality Verification
-- [ ] All tests passing (`npm test`)
-- [ ] No hardcoded credentials
-- [ ] Error handling covers all Anthropic error types
-- [ ] Rate limiting/backoff implemented
-- [ ] Logging is production-appropriate
-
-### Step 3: Infrastructure Setup
-- [ ] Health check endpoint includes Anthropic connectivity
-- [ ] Monitoring/alerting configured
-- [ ] Circuit breaker pattern implemented
-- [ ] Graceful degradation configured
-
-### Step 4: Documentation Requirements
-- [ ] Incident runbook created
-- [ ] Key rotation procedure documented
-- [ ] Rollback procedure documented
-- [ ] On-call escalation path defined
-
-### Step 5: Deploy with Gradual Rollout
-```bash
-# Pre-flight checks
-curl -f https://staging.example.com/health
-curl -s https://status.anthropic.com
-
-# Gradual rollout - start with canary (10%)
-kubectl apply -f k8s/production.yaml
-kubectl set image deployment/anthropic-integration app=image:new --record
-kubectl rollout pause deployment/anthropic-integration
-
-# Monitor canary traffic for 10 minutes
-sleep 600
-# Check error rates and latency before continuing
-
-# If healthy, continue rollout to 50%
-kubectl rollout resume deployment/anthropic-integration
-kubectl rollout pause deployment/anthropic-integration
-sleep 300
-
-# Complete rollout to 100%
-kubectl rollout resume deployment/anthropic-integration
-kubectl rollout status deployment/anthropic-integration
-```
-
-## Output
-- Deployed Anthropic integration
-- Health checks passing
-- Monitoring active
-- Rollback procedure documented
+## Authentication & Security
+- [ ] API key stored in secrets manager (not in code or env file on disk)
+- [ ] Key rotated — not the same one used during development
+- [ ] Server-side only — no key exposed to client/browser
+- [ ] Per-user rate limiting in place
+- [ ] Input validation: max length, content filtering
+- [ ] System prompt includes injection guardrails
 
 ## Error Handling
-| Alert | Condition | Severity |
-|-------|-----------|----------|
-| API Down | 5xx errors > 10/min | P1 |
-| High Latency | p99 > 5000ms | P2 |
-| Rate Limited | 429 errors > 5/min | P2 |
-| Auth Failures | 401/403 errors > 0 | P1 |
+- [ ] All Anthropic API calls wrapped in try/catch
+- [ ] `RateLimitError` (429) → backoff and retry
+- [ ] `OverloadedError` (529) → fallback model or queue
+- [ ] `AuthenticationError` (401) → alert team, don't retry
+- [ ] `InvalidRequestError` (400) → log and fix, don't retry
+- [ ] Network errors → retry with backoff
+- [ ] Request IDs logged for every error (for support tickets)
 
-## Examples
+## Streaming
+- [ ] Using `client.messages.stream()` for user-facing responses
+- [ ] Stream errors handled (connection drops, incomplete responses)
+- [ ] `stop_reason` checked: `end_turn` vs `max_tokens` (incomplete)
 
-### Health Check Implementation
-```typescript
-async function healthCheck(): Promise<{ status: string; anthropic: any }> {
-  const start = Date.now();
-  try {
-    await anthropicClient.ping();
-    return { status: 'healthy', anthropic: { connected: true, latencyMs: Date.now() - start } };
-  } catch (error) {
-    return { status: 'degraded', anthropic: { connected: false, latencyMs: Date.now() - start } };
-  }
-}
-```
+## Cost Controls
+- [ ] `max_tokens` set to realistic values (not 4096 for short answers)
+- [ ] Correct model for each task (Haiku for simple, Sonnet for balanced)
+- [ ] Prompt caching enabled for repeated system prompts
+- [ ] Usage logging in place — tracking tokens and cost per request
+- [ ] Spending alerts set in Anthropic console
 
-### Immediate Rollback
-```bash
-kubectl rollout undo deployment/anthropic-integration
-kubectl rollout status deployment/anthropic-integration
-```
+## Monitoring
+- [ ] Response latency tracked (TTFT and total)
+- [ ] Token usage tracked (input/output per request)
+- [ ] Error rates dashboarded (by error type)
+- [ ] Anthropic status page monitored ([status.anthropic.com](https://status.anthropic.com))
+
+## Reliability
+- [ ] SDK `maxRetries` set (default 2 is fine for most)
+- [ ] Timeout configured for your use case (`timeout` option)
+- [ ] Single client instance reused (not created per request)
+- [ ] Graceful degradation if Claude is down (cached responses, fallback)
+
+## Content & Compliance
+- [ ] System prompt tested against edge cases and adversarial inputs
+- [ ] Output validated before showing to users (JSON parsing, length)
+- [ ] Data retention settings configured in Anthropic console
+- [ ] No unnecessary PII in prompts
+- [ ] Usage policy compliance (Anthropic's Acceptable Use Policy)
+
+## Performance
+- [ ] p95 latency acceptable for your UX
+- [ ] Prompt caching for latency-sensitive paths
+- [ ] Parallel requests where possible (`Promise.all`)
+- [ ] Client-side streaming UI implemented
 
 ## Resources
-- [Anthropic Status](https://status.anthropic.com)
-- [Anthropic Support](https://docs.anthropic.com/support)
+- [API Best Practices](https://docs.anthropic.com/en/docs/build-with-claude)
+- [Error Handling](https://docs.anthropic.com/en/api/errors)
+- [Rate Limits](https://docs.anthropic.com/en/api/rate-limits)
+- [Acceptable Use Policy](https://www.anthropic.com/policies/aup)
 
 ## Next Steps
-For version upgrades, see `anthropic-upgrade-migration`.
+See `anthropic-observability` for monitoring setup.

@@ -1,224 +1,61 @@
 ---
 name: anthropic-enterprise-rbac
 description: |
-  Configure Anthropic enterprise SSO, role-based access control, and organization management.
-  Use when implementing SSO integration, configuring role-based permissions,
-  or setting up organization-level controls for Anthropic.
-  Trigger with phrases like "anthropic SSO", "anthropic RBAC",
-  "anthropic enterprise", "anthropic roles", "anthropic permissions", "anthropic SAML".
+  Manage Anthropic workspaces, API keys, team access, and spending limits
+  for enterprise Claude deployments.
+  Trigger with "anthropic workspace", "anthropic team management",
+  "claude enterprise", "anthropic api key management".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code
-tags: [saas, anthropic]
+tags: [saas, anthropic, claude, enterprise, rbac]
 ---
 
-# Anthropic Enterprise RBAC
+# Anthropic Enterprise & Access Management
 
 ## Overview
-Configure enterprise-grade access control for Anthropic integrations.
+Anthropic uses **Organizations** and **Workspaces** for access control. API keys are scoped to workspaces.
 
-## Prerequisites
-- Anthropic Enterprise tier subscription
-- Identity Provider (IdP) with SAML/OIDC support
-- Understanding of role-based access patterns
-- Audit logging infrastructure
-
-## Role Definitions
-
-| Role | Permissions | Use Case |
-|------|-------------|----------|
-| Admin | Full access | Platform administrators |
-| Developer | Read/write, no delete | Active development |
-| Viewer | Read-only | Stakeholders, auditors |
-| Service | API access only | Automated systems |
-
-## Role Implementation
-
-```typescript
-enum AnthropicRole {
-  Admin = 'admin',
-  Developer = 'developer',
-  Viewer = 'viewer',
-  Service = 'service',
-}
-
-interface AnthropicPermissions {
-  read: boolean;
-  write: boolean;
-  delete: boolean;
-  admin: boolean;
-}
-
-const ROLE_PERMISSIONS: Record<AnthropicRole, AnthropicPermissions> = {
-  admin: { read: true, write: true, delete: true, admin: true },
-  developer: { read: true, write: true, delete: false, admin: false },
-  viewer: { read: true, write: false, delete: false, admin: false },
-  service: { read: true, write: true, delete: false, admin: false },
-};
-
-function checkPermission(
-  role: AnthropicRole,
-  action: keyof AnthropicPermissions
-): boolean {
-  return ROLE_PERMISSIONS[role][action];
-}
+## Organization Structure
+```
+Organization (your-company)
+├── Workspace: Production
+│   ├── API Key: prod-backend (Tier 4)
+│   └── API Key: prod-frontend-proxy (Tier 2)
+├── Workspace: Staging
+│   └── API Key: staging-all (Tier 2)
+└── Workspace: Development
+    └── API Key: dev-team (Tier 1)
 ```
 
-## SSO Integration
+## API Key Best Practices
+| Practice | Why |
+|----------|-----|
+| One key per service/environment | Isolate blast radius |
+| Name keys descriptively | `prod-recommendation-service` not `key-1` |
+| Set spending limits per key | Prevent runaway costs from bugs |
+| Rotate quarterly | Reduce exposure window |
+| Never share dev and prod keys | Different rate limit tiers |
 
-### SAML Configuration
+## Spending Limits
+Set in Anthropic Console → Settings → Limits:
+- **Monthly spend limit**: Hard cap on total spend
+- **Per-key limits**: Not yet available — use separate workspaces
 
-```typescript
-// Anthropic SAML setup
-const samlConfig = {
-  entryPoint: 'https://idp.company.com/saml/sso',
-  issuer: 'https://anthropic.com/saml/metadata',
-  cert: process.env.SAML_CERT,
-  callbackUrl: 'https://app.yourcompany.com/auth/anthropic/callback',
-};
-
-// Map IdP groups to Anthropic roles
-const groupRoleMapping: Record<string, AnthropicRole> = {
-  'Engineering': AnthropicRole.Developer,
-  'Platform-Admins': AnthropicRole.Admin,
-  'Data-Team': AnthropicRole.Viewer,
-};
-```
-
-### OAuth2/OIDC Integration
-
-```typescript
-import { OAuth2Client } from '@anthropic/sdk';
-
-const oauthClient = new OAuth2Client({
-  clientId: process.env.ANTHROPIC_OAUTH_CLIENT_ID!,
-  clientSecret: process.env.ANTHROPIC_OAUTH_CLIENT_SECRET!,
-  redirectUri: 'https://app.yourcompany.com/auth/anthropic/callback',
-  scopes: ['read', 'write'],
-});
-```
-
-## Organization Management
-
-```typescript
-interface AnthropicOrganization {
-  id: string;
-  name: string;
-  ssoEnabled: boolean;
-  enforceSso: boolean;
-  allowedDomains: string[];
-  defaultRole: AnthropicRole;
-}
-
-async function createOrganization(
-  config: AnthropicOrganization
-): Promise<void> {
-  await anthropicClient.organizations.create({
-    ...config,
-    settings: {
-      sso: {
-        enabled: config.ssoEnabled,
-        enforced: config.enforceSso,
-        domains: config.allowedDomains,
-      },
-    },
-  });
-}
-```
-
-## Access Control Middleware
-
-```typescript
-function requireAnthropicPermission(
-  requiredPermission: keyof AnthropicPermissions
-) {
-  return async (req: Request, res: Response, next: NextFunction) => {
-    const user = req.user as { anthropicRole: AnthropicRole };
-
-    if (!checkPermission(user.anthropicRole, requiredPermission)) {
-      return res.status(403).json({
-        error: 'Forbidden',
-        message: `Missing permission: ${requiredPermission}`,
-      });
-    }
-
-    next();
-  };
-}
-
-// Usage
-app.delete('/anthropic/resource/:id',
-  requireAnthropicPermission('delete'),
-  deleteResourceHandler
-);
-```
-
-## Audit Trail
-
-```typescript
-interface AnthropicAuditEntry {
-  timestamp: Date;
-  userId: string;
-  role: AnthropicRole;
-  action: string;
-  resource: string;
-  success: boolean;
-  ipAddress: string;
-}
-
-async function logAnthropicAccess(entry: AnthropicAuditEntry): Promise<void> {
-  await auditDb.insert(entry);
-
-  // Alert on suspicious activity
-  if (entry.action === 'delete' && !entry.success) {
-    await alertOnSuspiciousActivity(entry);
-  }
-}
-```
-
-## Instructions
-
-### Step 1: Define Roles
-Map organizational roles to Anthropic permissions.
-
-### Step 2: Configure SSO
-Set up SAML or OIDC integration with your IdP.
-
-### Step 3: Implement Middleware
-Add permission checks to API endpoints.
-
-### Step 4: Enable Audit Logging
-Track all access for compliance.
-
-## Output
-- Role definitions implemented
-- SSO integration configured
-- Permission middleware active
-- Audit trail enabled
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| SSO login fails | Wrong callback URL | Verify IdP config |
-| Permission denied | Missing role mapping | Update group mappings |
-| Token expired | Short TTL | Refresh token logic |
-| Audit gaps | Async logging failed | Check log pipeline |
-
-## Examples
-
-### Quick Permission Check
-```typescript
-if (!checkPermission(user.role, 'write')) {
-  throw new ForbiddenError('Write permission required');
-}
-```
+## Access Control Checklist
+- [ ] Separate workspaces for dev/staging/prod
+- [ ] Separate API keys per service
+- [ ] Spending alerts configured
+- [ ] Key rotation schedule (90 days)
+- [ ] Offboarding process: revoke keys when team members leave
+- [ ] Audit log review (Console → Logs)
 
 ## Resources
-- [Anthropic Enterprise Guide](https://docs.anthropic.com/enterprise)
-- [SAML 2.0 Specification](https://wiki.oasis-open.org/security/FrontPage)
-- [OpenID Connect Spec](https://openid.net/specs/openid-connect-core-1_0.html)
+- [Console Dashboard](https://console.anthropic.com)
+- [Organization Settings](https://console.anthropic.com/settings)
+- [Enterprise Plans](https://www.anthropic.com/enterprise)
 
 ## Next Steps
-For major migrations, see `anthropic-migration-deep-dive`.
+See `anthropic-migration-deep-dive` for migrating from other LLM providers.

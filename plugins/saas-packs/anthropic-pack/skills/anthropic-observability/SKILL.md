@@ -1,252 +1,91 @@
 ---
 name: anthropic-observability
 description: |
-  Set up comprehensive observability for Anthropic integrations with metrics, traces, and alerts.
-  Use when implementing monitoring for Anthropic operations, setting up dashboards,
-  or configuring alerting for Anthropic integration health.
-  Trigger with phrases like "anthropic monitoring", "anthropic metrics",
-  "anthropic observability", "monitor anthropic", "anthropic alerts", "anthropic tracing".
+  Monitor Claude API calls — log tokens, latency, costs, errors, and
+  set up alerts for production Claude integrations.
+  Trigger with "anthropic monitoring", "claude observability",
+  "track claude usage", "anthropic logging".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code
-tags: [saas, anthropic]
+tags: [saas, anthropic, claude, monitoring, observability]
 ---
 
 # Anthropic Observability
 
 ## Overview
-Set up comprehensive observability for Anthropic integrations.
+Every `messages.create` call should be instrumented. Track tokens, latency, cost, model, and errors.
 
-## Prerequisites
-- Prometheus or compatible metrics backend
-- OpenTelemetry SDK installed
-- Grafana or similar dashboarding tool
-- AlertManager configured
-
-## Metrics Collection
-
-### Key Metrics
-| Metric | Type | Description |
-|--------|------|-------------|
-| `anthropic_requests_total` | Counter | Total API requests |
-| `anthropic_request_duration_seconds` | Histogram | Request latency |
-| `anthropic_errors_total` | Counter | Error count by type |
-| `anthropic_rate_limit_remaining` | Gauge | Rate limit headroom |
-
-### Prometheus Metrics
-
+## Logging Wrapper
 ```typescript
-import { Registry, Counter, Histogram, Gauge } from 'prom-client';
+import Anthropic from '@anthropic-ai/sdk';
 
-const registry = new Registry();
+const client = new Anthropic();
 
-const requestCounter = new Counter({
-  name: 'anthropic_requests_total',
-  help: 'Total Anthropic API requests',
-  labelNames: ['method', 'status'],
-  registers: [registry],
-});
-
-const requestDuration = new Histogram({
-  name: 'anthropic_request_duration_seconds',
-  help: 'Anthropic request duration',
-  labelNames: ['method'],
-  buckets: [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5],
-  registers: [registry],
-});
-
-const errorCounter = new Counter({
-  name: 'anthropic_errors_total',
-  help: 'Anthropic errors by type',
-  labelNames: ['error_type'],
-  registers: [registry],
-});
-```
-
-### Instrumented Client
-
-```typescript
-async function instrumentedRequest<T>(
-  method: string,
-  operation: () => Promise<T>
-): Promise<T> {
-  const timer = requestDuration.startTimer({ method });
-
+async function trackedCreate(params: Anthropic.MessageCreateParams) {
+  const start = performance.now();
   try {
-    const result = await operation();
-    requestCounter.inc({ method, status: 'success' });
-    return result;
-  } catch (error: any) {
-    requestCounter.inc({ method, status: 'error' });
-    errorCounter.inc({ error_type: error.code || 'unknown' });
-    throw error;
-  } finally {
-    timer();
+    const message = await client.messages.create(params);
+    const durationMs = Math.round(performance.now() - start);
+
+    const log = {
+      timestamp: new Date().toISOString(),
+      model: message.model,
+      input_tokens: message.usage.input_tokens,
+      output_tokens: message.usage.output_tokens,
+      cache_read_tokens: message.usage.cache_read_input_tokens || 0,
+      duration_ms: durationMs,
+      stop_reason: message.stop_reason,
+      estimated_cost: estimateCost(message.model, message.usage),
+    };
+    console.log('anthropic_request', JSON.stringify(log));
+
+    return message;
+  } catch (err) {
+    const durationMs = Math.round(performance.now() - start);
+    console.error('anthropic_error', JSON.stringify({
+      timestamp: new Date().toISOString(),
+      model: params.model,
+      error_type: err instanceof Anthropic.APIError ? err.error?.type : 'unknown',
+      status: err instanceof Anthropic.APIError ? err.status : null,
+      request_id: err instanceof Anthropic.APIError ? err.headers?.['request-id'] : null,
+      duration_ms: durationMs,
+    }));
+    throw err;
   }
 }
-```
 
-## Distributed Tracing
-
-### OpenTelemetry Setup
-
-```typescript
-import { trace, SpanStatusCode } from '@opentelemetry/api';
-
-const tracer = trace.getTracer('anthropic-client');
-
-async function tracedAnthropicCall<T>(
-  operationName: string,
-  operation: () => Promise<T>
-): Promise<T> {
-  return tracer.startActiveSpan(`anthropic.${operationName}`, async (span) => {
-    try {
-      const result = await operation();
-      span.setStatus({ code: SpanStatusCode.OK });
-      return result;
-    } catch (error: any) {
-      span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });
-      span.recordException(error);
-      throw error;
-    } finally {
-      span.end();
-    }
-  });
+function estimateCost(model: string, usage: Anthropic.Usage): number {
+  const rates: Record<string, [number, number]> = {
+    'claude-opus-4-20250514': [15, 75],
+    'claude-sonnet-4-20250514': [3, 15],
+    'claude-haiku-4-5-20251001': [0.80, 4],
+  };
+  const [inputRate, outputRate] = rates[model] || [3, 15];
+  return (usage.input_tokens * inputRate + usage.output_tokens * outputRate) / 1_000_000;
 }
 ```
 
-## Logging Strategy
+## Key Metrics to Track
+| Metric | Source | Alert Threshold |
+|--------|--------|----------------|
+| Error rate | error logs | > 5% over 5 minutes |
+| p95 latency | duration_ms | > 10s (Sonnet) |
+| Daily cost | estimated_cost sum | > 2x daily average |
+| 429 rate | error_type = rate_limit | > 10/minute |
+| 529 rate | error_type = overloaded | > 5/minute |
+| Token usage | input_tokens + output_tokens | > daily budget |
 
-### Structured Logging
-
-```typescript
-import pino from 'pino';
-
-const logger = pino({
-  name: 'anthropic',
-  level: process.env.LOG_LEVEL || 'info',
-});
-
-function logAnthropicOperation(
-  operation: string,
-  data: Record<string, any>,
-  duration: number
-) {
-  logger.info({
-    service: 'anthropic',
-    operation,
-    duration_ms: duration,
-    ...data,
-  });
-}
-```
-
-## Alert Configuration
-
-### Prometheus AlertManager Rules
-
-```yaml
-# anthropic_alerts.yaml
-groups:
-  - name: anthropic_alerts
-    rules:
-      - alert: AnthropicHighErrorRate
-        expr: |
-          rate(anthropic_errors_total[5m]) /
-          rate(anthropic_requests_total[5m]) > 0.05
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Anthropic error rate > 5%"
-
-      - alert: AnthropicHighLatency
-        expr: |
-          histogram_quantile(0.95,
-            rate(anthropic_request_duration_seconds_bucket[5m])
-          ) > 2
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Anthropic P95 latency > 2s"
-
-      - alert: AnthropicDown
-        expr: up{job="anthropic"} == 0
-        for: 1m
-        labels:
-          severity: critical
-        annotations:
-          summary: "Anthropic integration is down"
-```
-
-## Dashboard
-
-### Grafana Panel Queries
-
-```json
-{
-  "panels": [
-    {
-      "title": "Anthropic Request Rate",
-      "targets": [{
-        "expr": "rate(anthropic_requests_total[5m])"
-      }]
-    },
-    {
-      "title": "Anthropic Latency P50/P95/P99",
-      "targets": [{
-        "expr": "histogram_quantile(0.5, rate(anthropic_request_duration_seconds_bucket[5m]))"
-      }]
-    }
-  ]
-}
-```
-
-## Instructions
-
-### Step 1: Set Up Metrics Collection
-Implement Prometheus counters, histograms, and gauges for key operations.
-
-### Step 2: Add Distributed Tracing
-Integrate OpenTelemetry for end-to-end request tracing.
-
-### Step 3: Configure Structured Logging
-Set up JSON logging with consistent field names.
-
-### Step 4: Create Alert Rules
-Define Prometheus alerting rules for error rates and latency.
-
-## Output
-- Metrics collection enabled
-- Distributed tracing configured
-- Structured logging implemented
-- Alert rules deployed
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Missing metrics | No instrumentation | Wrap client calls |
-| Trace gaps | Missing propagation | Check context headers |
-| Alert storms | Wrong thresholds | Tune alert rules |
-| High cardinality | Too many labels | Reduce label values |
-
-## Examples
-
-### Quick Metrics Endpoint
-```typescript
-app.get('/metrics', async (req, res) => {
-  res.set('Content-Type', registry.contentType);
-  res.send(await registry.metrics());
-});
-```
+## Anthropic Console Monitoring
+- **Usage dashboard**: console.anthropic.com → Usage
+- **Spending limits**: console.anthropic.com → Settings → Limits
+- **API logs**: Not available via API — use your own logging
 
 ## Resources
-- [Prometheus Best Practices](https://prometheus.io/docs/practices/naming/)
-- [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
-- [Anthropic Observability Guide](https://docs.anthropic.com/observability)
+- [Usage Dashboard](https://console.anthropic.com/settings/usage)
+- [Rate Limits](https://docs.anthropic.com/en/api/rate-limits)
 
 ## Next Steps
-For incident response, see `anthropic-incident-runbook`.
+See `anthropic-incident-runbook` for when things go wrong.

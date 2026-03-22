@@ -1,122 +1,112 @@
 ---
 name: anthropic-hello-world
 description: |
-  Create a minimal working Anthropic example.
-  Use when starting a new Anthropic integration, testing your setup,
-  or learning basic Anthropic API patterns.
-  Trigger with phrases like "anthropic hello world", "anthropic example",
-  "anthropic quick start", "simple anthropic code".
+  Send your first message to Claude using the Anthropic SDK.
+  Use when starting a new Claude integration, testing your setup,
+  or learning the Messages API basics.
+  Trigger with phrases like "anthropic hello world", "claude api example",
+  "first claude call", "anthropic quick start".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code
-tags: [saas, anthropic]
+tags: [saas, anthropic, claude, messages-api]
 ---
 
 # Anthropic Hello World
 
 ## Overview
-
-Send your first prompt to the Anthropic API and get a model response back.
-
+Send your first message to Claude and get a response using the Messages API.
 
 ## Prerequisites
 - Completed `anthropic-install-auth` setup
-- Valid API credentials configured
-- Development environment ready
+- `ANTHROPIC_API_KEY` environment variable set
 
 ## Instructions
 
-### Step 1: Create Entry File
-Create a new file for your hello world example.
-
-### Step 2: Import and Initialize Client
+### Step 1: Basic Message
 ```typescript
-import { AnthropicClient } from '@anthropic/sdk';
+import Anthropic from '@anthropic-ai/sdk';
 
-const client = new AnthropicClient({
+const client = new Anthropic();
 
-  apiKey: process.env.ANTHROPIC_API_KEY,
+const message = await client.messages.create({
+  model: 'claude-sonnet-4-20250514',
+  max_tokens: 1024,
+  messages: [
+    { role: 'user', content: 'What is the capital of France?' }
+  ],
+});
 
+console.log(message.content[0].text);
+// "The capital of France is Paris."
+```
+
+### Step 2: Add a System Prompt
+```typescript
+const message = await client.messages.create({
+  model: 'claude-sonnet-4-20250514',
+  max_tokens: 1024,
+  system: 'You are a helpful geography expert. Be concise.',
+  messages: [
+    { role: 'user', content: 'What is the capital of France?' }
+  ],
 });
 ```
 
-### Step 3: Make Your First API Call
+### Step 3: Multi-Turn Conversation
 ```typescript
-async function main() {
-  const response = await client.chat.completions.create({
-  model: 'default',
-  messages: [{ role: 'user', content: 'Say hello in one sentence.' }],
-  max_tokens: 64,
+const message = await client.messages.create({
+  model: 'claude-sonnet-4-20250514',
+  max_tokens: 1024,
+  messages: [
+    { role: 'user', content: 'What is the capital of France?' },
+    { role: 'assistant', content: 'The capital of France is Paris.' },
+    { role: 'user', content: 'What is its population?' },
+  ],
 });
-console.log(response.choices[0].message.content);
+```
 
-}
+## Python Example
+```python
+import anthropic
 
-main().catch(console.error);
+client = anthropic.Anthropic()
+
+message = client.messages.create(
+    model="claude-sonnet-4-20250514",
+    max_tokens=1024,
+    messages=[
+        {"role": "user", "content": "What is the capital of France?"}
+    ],
+)
+print(message.content[0].text)
 ```
 
 ## Output
-- Working code file with Anthropic client initialization
-- Successful API response confirming connection
-- Console output showing:
-```
-Success! Your Anthropic connection is working.
-```
+- `message.content[0].text` — Claude's text response
+- `message.model` — model ID used
+- `message.usage.input_tokens` / `message.usage.output_tokens` — token counts
+- `message.stop_reason` — `end_turn`, `max_tokens`, or `tool_use`
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Import Error | SDK not installed | Verify with `npm list` or `pip show` |
-| Auth Error | Invalid credentials | Check environment variable is set |
-| Timeout | Network issues | Increase timeout or check connectivity |
-| Rate Limit | Too many requests | Wait and retry with exponential backoff |
+| `authentication_error` | Bad API key | Check `ANTHROPIC_API_KEY` |
+| `invalid_request_error` | Missing required field | Both `messages` and `max_tokens` are required |
+| `not_found_error` | Invalid model ID | Use a valid model like `claude-sonnet-4-20250514` |
 
-## Examples
-
-### TypeScript Example
-```typescript
-import { AnthropicClient } from '@anthropic/sdk';
-
-const client = new AnthropicClient({
-
-  apiKey: process.env.ANTHROPIC_API_KEY,
-
-});
-
-async function main() {
-  const response = await client.chat.completions.create({
-  model: 'default',
-  messages: [{ role: 'user', content: 'Say hello in one sentence.' }],
-  max_tokens: 64,
-});
-console.log(response.choices[0].message.content);
-
-}
-
-main().catch(console.error);
-```
-
-### Python Example
-```python
-from anthropic import AnthropicClient
-
-client = AnthropicClient()
-
-response = client.chat.completions.create(
-    model="default",
-    messages=[{"role": "user", "content": "Say hello in one sentence."}],
-    max_tokens=64,
-)
-print(response.choices[0].message.content)
-
-```
+## Available Models
+| Model | Best For | Context | Cost (input/output per MTok) |
+|-------|----------|---------|------------------------------|
+| `claude-opus-4-20250514` | Complex reasoning | 200K | $15 / $75 |
+| `claude-sonnet-4-20250514` | Balanced quality + speed | 200K | $3 / $15 |
+| `claude-haiku-4-5-20251001` | Fast, cheap tasks | 200K | $0.80 / $4 |
 
 ## Resources
-- [Anthropic Getting Started](https://docs.anthropic.com/getting-started)
-- [Anthropic API Reference](https://docs.anthropic.com/api)
-- [Anthropic Examples](https://docs.anthropic.com/examples)
+- [Messages API Reference](https://docs.anthropic.com/en/api/messages)
+- [Model Overview](https://docs.anthropic.com/en/docs/about-claude/models)
 
 ## Next Steps
-Proceed to `anthropic-local-dev-loop` for development workflow setup.
+Proceed to `anthropic-model-inference` for streaming and advanced patterns.

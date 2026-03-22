@@ -1,286 +1,140 @@
 ---
 name: anthropic-architecture-variants
 description: |
-  Choose and implement Anthropic validated architecture blueprints for different scales.
-  Use when designing new Anthropic integrations, choosing between monolith/service/microservice
-  architectures, or planning migration paths for Anthropic applications.
-  Trigger with phrases like "anthropic architecture", "anthropic blueprint",
-  "how to structure anthropic", "anthropic project layout", "anthropic microservice".
-allowed-tools: Read, Grep
+  Build different types of Claude-powered applications — chatbots, RAG systems,
+  agents, content pipelines, and code generation tools.
+  Trigger with "claude architecture", "anthropic rag", "build with claude",
+  "claude agent pattern", "anthropic app design".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code
-tags: [saas, anthropic]
+tags: [saas, anthropic, claude, architecture, rag, agents]
 ---
 
-# Anthropic Architecture Variants
+# Claude Architecture Variants
 
-## Overview
-Three validated architecture blueprints for Anthropic integrations.
-
-## Prerequisites
-- Understanding of team size and DAU requirements
-- Knowledge of deployment infrastructure
-- Clear SLA requirements
-- Growth projections available
-
-## Variant A: Monolith (Simple)
-
-**Best for:** MVPs, small teams, < 10K daily active users
-
-```
-my-app/
-├── src/
-│   ├── anthropic/
-│   │   ├── client.ts          # Singleton client
-│   │   ├── types.ts           # Types
-│   │   └── middleware.ts      # Express middleware
-│   ├── routes/
-│   │   └── api/
-│   │       └── anthropic.ts    # API routes
-│   └── index.ts
-├── tests/
-│   └── anthropic.test.ts
-└── package.json
-```
-
-### Key Characteristics
-- Single deployment unit
-- Synchronous Anthropic calls in request path
-- In-memory caching
-- Simple error handling
-
-### Code Pattern
+## 1. Chatbot (Stateless API Wrapper)
+Simplest pattern — proxy Claude with a system prompt.
 ```typescript
-// Direct integration in route handler
-app.post('/api/create', async (req, res) => {
-  try {
-    const result = await anthropicClient.create(req.body);
-    res.json(result);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+// api/chat.ts
+export async function POST(req: Request) {
+  const { messages } = await req.json();
+  const response = await client.messages.create({
+    model: 'claude-sonnet-4-20250514',
+    max_tokens: 2048,
+    system: 'You are a helpful assistant for our SaaS product.',
+    messages,
+    stream: true,
+  });
+  return new Response(response.toReadableStream());
+}
+```
+**Best for:** Customer support, Q&A, simple conversational interfaces.
+
+## 2. RAG (Retrieval-Augmented Generation)
+Fetch relevant context, inject into prompt, generate grounded answer.
+```typescript
+async function ragQuery(question: string) {
+  // 1. Embed the question (use Voyage, OpenAI, or Cohere — not Anthropic)
+  const embedding = await embeddingClient.embed(question);
+
+  // 2. Search vector DB for relevant chunks
+  const chunks = await vectorDb.query(embedding, { topK: 5 });
+
+  // 3. Send to Claude with context
+  const message = await client.messages.create({
+    model: 'claude-sonnet-4-20250514',
+    max_tokens: 2048,
+    system: `Answer based on the provided context. If the context doesn't contain the answer, say so.`,
+    messages: [{
+      role: 'user',
+      content: `Context:\n${chunks.map(c => c.text).join('\n---\n')}\n\nQuestion: ${question}`,
+    }],
+  });
+  return message.content[0].text;
+}
+```
+**Best for:** Documentation Q&A, knowledge bases, support with source citations.
+
+## 3. Agent (Tool Use Loop)
+Claude decides which tools to call, you execute them, loop until done.
+```typescript
+async function agentLoop(userInput: string, tools: Anthropic.Tool[]) {
+  let messages: MessageParam[] = [{ role: 'user', content: userInput }];
+
+  while (true) {
+    const response = await client.messages.create({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 4096,
+      tools,
+      messages,
+    });
+    messages.push({ role: 'assistant', content: response.content });
+
+    if (response.stop_reason === 'end_turn') {
+      return response.content.find(b => b.type === 'text')?.text;
+    }
+
+    // Execute tools
+    const results = [];
+    for (const block of response.content) {
+      if (block.type === 'tool_use') {
+        const result = await executeTool(block.name, block.input);
+        results.push({ type: 'tool_result', tool_use_id: block.id, content: JSON.stringify(result) });
+      }
+    }
+    messages.push({ role: 'user', content: results });
   }
+}
+```
+**Best for:** Data analysis, code generation, multi-step workflows.
+
+## 4. Content Pipeline (Batch Processing)
+Process thousands of documents through Claude asynchronously.
+```typescript
+const batch = await client.messages.batches.create({
+  requests: documents.map((doc, i) => ({
+    custom_id: doc.id,
+    params: {
+      model: 'claude-haiku-4-5-20251001', // Cheap for bulk
+      max_tokens: 512,
+      messages: [{ role: 'user', content: `Extract entities: ${doc.text}` }],
+    },
+  })),
+});
+// 50% cheaper, processes within 24h
+```
+**Best for:** Summarization, classification, extraction at scale.
+
+## 5. Evaluation / Grading
+Use Claude to evaluate other AI outputs or human content.
+```typescript
+const evaluation = await client.messages.create({
+  model: 'claude-opus-4-20250514', // Best judgment
+  max_tokens: 1024,
+  system: `You are an expert evaluator. Score the response 1-5 on accuracy, relevance, and completeness. Return JSON: { "accuracy": N, "relevance": N, "completeness": N, "reasoning": "..." }`,
+  messages: [{
+    role: 'user',
+    content: `Question: ${question}\nResponse to evaluate: ${candidateResponse}`,
+  }],
 });
 ```
+**Best for:** AI output quality, content moderation, automated grading.
 
----
-
-## Variant B: Service Layer (Moderate)
-
-**Best for:** Growing startups, 10K-100K DAU, multiple integrations
-
-```
-my-app/
-├── src/
-│   ├── services/
-│   │   ├── anthropic/
-│   │   │   ├── client.ts      # Client wrapper
-│   │   │   ├── service.ts     # Business logic
-│   │   │   ├── repository.ts  # Data access
-│   │   │   └── types.ts
-│   │   └── index.ts           # Service exports
-│   ├── controllers/
-│   │   └── anthropic.ts
-│   ├── routes/
-│   ├── middleware/
-│   ├── queue/
-│   │   └── anthropic-processor.ts  # Async processing
-│   └── index.ts
-├── config/
-│   └── anthropic/
-└── package.json
-```
-
-### Key Characteristics
-- Separation of concerns
-- Background job processing
-- Redis caching
-- Circuit breaker pattern
-- Structured error handling
-
-### Code Pattern
-```typescript
-// Service layer abstraction
-class AnthropicService {
-  constructor(
-    private client: AnthropicClient,
-    private cache: CacheService,
-    private queue: QueueService
-  ) {}
-
-  async createResource(data: CreateInput): Promise<Resource> {
-    // Business logic before API call
-    const validated = this.validate(data);
-
-    // Check cache
-    const cached = await this.cache.get(cacheKey);
-    if (cached) return cached;
-
-    // API call with retry
-    const result = await this.withRetry(() =>
-      this.client.create(validated)
-    );
-
-    // Cache result
-    await this.cache.set(cacheKey, result, 300);
-
-    // Async follow-up
-    await this.queue.enqueue('anthropic.post-create', result);
-
-    return result;
-  }
-}
-```
-
----
-
-## Variant C: Microservice (Complex)
-
-**Best for:** Enterprise, 100K+ DAU, strict SLAs
-
-```
-anthropic-service/              # Dedicated microservice
-├── src/
-│   ├── api/
-│   │   ├── grpc/
-│   │   │   └── anthropic.proto
-│   │   └── rest/
-│   │       └── routes.ts
-│   ├── domain/
-│   │   ├── entities/
-│   │   ├── events/
-│   │   └── services/
-│   ├── infrastructure/
-│   │   ├── anthropic/
-│   │   │   ├── client.ts
-│   │   │   ├── mapper.ts
-│   │   │   └── circuit-breaker.ts
-│   │   ├── cache/
-│   │   ├── queue/
-│   │   └── database/
-│   └── index.ts
-├── config/
-├── k8s/
-│   ├── deployment.yaml
-│   ├── service.yaml
-│   └── hpa.yaml
-└── package.json
-
-other-services/
-├── order-service/       # Calls anthropic-service
-├── payment-service/
-└── notification-service/
-```
-
-### Key Characteristics
-- Dedicated Anthropic microservice
-- gRPC for internal communication
-- Event-driven architecture
-- Database per service
-- Kubernetes autoscaling
-- Distributed tracing
-- Circuit breaker per service
-
-### Code Pattern
-```typescript
-// Event-driven with domain isolation
-class AnthropicAggregate {
-  private events: DomainEvent[] = [];
-
-  process(command: AnthropicCommand): void {
-    // Domain logic
-    const result = this.execute(command);
-
-    // Emit domain event
-    this.events.push(new AnthropicProcessedEvent(result));
-  }
-
-  getUncommittedEvents(): DomainEvent[] {
-    return [...this.events];
-  }
-}
-
-// Event handler
-@EventHandler(AnthropicProcessedEvent)
-class AnthropicEventHandler {
-  async handle(event: AnthropicProcessedEvent): Promise<void> {
-    // Saga orchestration
-    await this.sagaOrchestrator.continue(event);
-  }
-}
-```
-
----
-
-## Decision Matrix
-
-| Factor | Monolith | Service Layer | Microservice |
-|--------|----------|---------------|--------------|
-| Team Size | 1-5 | 5-20 | 20+ |
-| DAU | < 10K | 10K-100K | 100K+ |
-| Deployment Frequency | Weekly | Daily | Continuous |
-| Failure Isolation | None | Partial | Full |
-| Operational Complexity | Low | Medium | High |
-| Time to Market | Fastest | Moderate | Slowest |
-
-## Migration Path
-
-```
-Monolith → Service Layer:
-1. Extract Anthropic code to service/
-2. Add caching layer
-3. Add background processing
-
-Service Layer → Microservice:
-1. Create dedicated anthropic-service repo
-2. Define gRPC contract
-3. Add event bus
-4. Deploy to Kubernetes
-5. Migrate traffic gradually
-```
-
-## Instructions
-
-### Step 1: Assess Requirements
-Use the decision matrix to identify appropriate variant.
-
-### Step 2: Choose Architecture
-Select Monolith, Service Layer, or Microservice based on needs.
-
-### Step 3: Implement Structure
-Set up project layout following the chosen blueprint.
-
-### Step 4: Plan Migration Path
-Document upgrade path for future scaling.
-
-## Output
-- Architecture variant selected
-- Project structure implemented
-- Migration path documented
-- Appropriate patterns applied
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Over-engineering | Wrong variant choice | Start simpler |
-| Performance issues | Wrong layer | Add caching/async |
-| Team friction | Complex architecture | Simplify or train |
-| Deployment complexity | Microservice overhead | Consider service layer |
-
-## Examples
-
-### Quick Variant Check
-```bash
-# Count team size and DAU to select variant
-echo "Team: $(git log --format='%ae' | sort -u | wc -l) developers"
-echo "DAU: Check analytics dashboard"
-```
+## Choosing a Pattern
+| Pattern | Latency | Cost | Complexity |
+|---------|---------|------|------------|
+| Chatbot | Low (streaming) | Low | Simple |
+| RAG | Medium (embed + search + generate) | Medium | Medium |
+| Agent | High (multi-turn) | High | Complex |
+| Pipeline | High (async batch) | Low (50% off) | Simple |
+| Evaluation | Medium | Varies | Simple |
 
 ## Resources
-- [Monolith First](https://martinfowler.com/bliki/MonolithFirst.html)
-- [Microservices Guide](https://martinfowler.com/microservices/)
-- [Anthropic Architecture Guide](https://docs.anthropic.com/architecture)
+- [Tool Use Guide](https://docs.anthropic.com/en/docs/build-with-claude/tool-use)
+- [Prompt Engineering](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering)
 
 ## Next Steps
-For common anti-patterns, see `anthropic-known-pitfalls`.
+See `anthropic-known-pitfalls` for common mistakes.

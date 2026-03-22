@@ -1,203 +1,129 @@
 ---
 name: anthropic-cost-tuning
 description: |
-  Optimize Anthropic costs through tier selection, sampling, and usage monitoring.
-  Use when analyzing Anthropic billing, reducing API costs,
-  or implementing usage monitoring and budget alerts.
-  Trigger with phrases like "anthropic cost", "anthropic billing",
-  "reduce anthropic costs", "anthropic pricing", "anthropic expensive", "anthropic budget".
-allowed-tools: Read, Grep
+  Optimize Anthropic API costs — model selection, prompt caching, batches,
+  token reduction, and usage monitoring.
+  Trigger with "anthropic pricing", "claude cost", "reduce anthropic spend",
+  "anthropic billing", "claude cheaper".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code
-tags: [saas, anthropic]
+tags: [saas, anthropic, claude, cost, pricing]
 ---
 
 # Anthropic Cost Tuning
 
 ## Overview
-Optimize Anthropic costs through smart tier selection, sampling, and usage monitoring.
+Anthropic charges per token. Input tokens, output tokens, and cached tokens each have different prices. Here's how to minimize cost without losing quality.
 
-## Prerequisites
-- Access to Anthropic billing dashboard
-- Understanding of current usage patterns
-- Database for usage tracking (optional)
-- Alerting system configured (optional)
+## Pricing (per million tokens)
 
-## Pricing Tiers
-
-| Tier | Monthly Cost | Included | Overage |
-|------|-------------|----------|---------|
-| Free / Developer | $0 | 1,000 requests | N/A |
-| Pro / Growth | $99 | 100,000 requests | $0.001/request |
-| Enterprise | Custom | Unlimited | Volume discounts |
-
-## Cost Estimation
-
-```typescript
-interface UsageEstimate {
-  requestsPerMonth: number;
-  tier: string;
-  estimatedCost: number;
-  recommendation?: string;
-}
-
-function estimateAnthropicCost(requestsPerMonth: number): UsageEstimate {
-  if (requestsPerMonth <= 1000) {
-    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
-  }
-
-  if (requestsPerMonth <= 100000) {
-    return { requestsPerMonth, tier: 'Pro', estimatedCost: 99 };
-  }
-
-  const proOverage = (requestsPerMonth - 100000) * 0.001;
-  const proCost = 99 + proOverage;
-
-  return {
-    requestsPerMonth,
-    tier: 'Pro (with overage)',
-    estimatedCost: proCost,
-    recommendation: proCost > 500
-      ? 'Consider Enterprise tier for volume discounts'
-      : undefined,
-  };
-}
-```
-
-## Usage Monitoring
-
-```typescript
-class AnthropicUsageMonitor {
-  private requestCount = 0;
-  private bytesTransferred = 0;
-  private alertThreshold: number;
-
-  constructor(monthlyBudget: number) {
-    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
-  }
-
-  track(request: { bytes: number }) {
-    this.requestCount++;
-    this.bytesTransferred += request.bytes;
-
-    if (this.estimatedCost() > this.alertThreshold) {
-      this.sendAlert('Approaching Anthropic budget limit');
-    }
-  }
-
-  estimatedCost(): number {
-    return estimateAnthropicCost(this.requestCount).estimatedCost;
-  }
-
-  private sendAlert(message: string) {
-    // Send to Slack, email, PagerDuty, etc.
-  }
-}
-```
+| Model | Input | Output | Cached Input | Batch Input | Batch Output |
+|-------|-------|--------|-------------|-------------|--------------|
+| Claude Opus 4 | $15.00 | $75.00 | $1.50 | $7.50 | $37.50 |
+| Claude Sonnet 4 | $3.00 | $15.00 | $0.30 | $1.50 | $7.50 |
+| Claude Haiku 4.5 | $0.80 | $4.00 | $0.08 | $0.40 | $2.00 |
 
 ## Cost Reduction Strategies
 
-### Step 1: Request Sampling
+### 1. Right-Size Your Model
 ```typescript
-function shouldSample(samplingRate = 0.1): boolean {
-  return Math.random() < samplingRate;
-}
+// DON'T use Opus for everything
+// DO match model to task complexity:
 
-// Use for non-critical telemetry
-if (shouldSample(0.1)) { // 10% sample
-  await anthropicClient.trackEvent(event);
-}
+// Simple classification/extraction → Haiku (cheapest)
+const category = await classify(text, 'claude-haiku-4-5-20251001');
+
+// General coding/writing → Sonnet (balanced)
+const code = await generate(spec, 'claude-sonnet-4-20250514');
+
+// Complex multi-step reasoning → Opus (best quality)
+const analysis = await analyze(data, 'claude-opus-4-20250514');
 ```
 
-### Step 2: Batching Requests
+### 2. Prompt Caching (90% off input tokens)
 ```typescript
-// Instead of N individual calls
-await Promise.all(ids.map(id => anthropicClient.get(id)));
-
-// Use batch endpoint (1 call)
-await anthropicClient.batchGet(ids);
-```
-
-### Step 3: Caching (from P16)
-- Cache frequently accessed data
-- Use cache invalidation webhooks
-- Set appropriate TTLs
-
-### Step 4: Compression
-```typescript
-const client = new AnthropicClient({
-  compression: true, // Enable gzip
+// Cache your system prompt — pays for itself after 2 calls
+const message = await client.messages.create({
+  model: 'claude-sonnet-4-20250514',
+  max_tokens: 1024,
+  system: [{
+    type: 'text',
+    text: longSystemPrompt, // Must be 1024+ tokens
+    cache_control: { type: 'ephemeral' }, // Cache for 5 minutes
+  }],
+  messages,
+}, {
+  headers: { 'anthropic-beta': 'prompt-caching-2024-07-31' },
 });
+
+// First call: cache_creation_input_tokens charged at 1.25x
+// Subsequent calls: cache_read_input_tokens charged at 0.1x (90% savings!)
 ```
 
-## Budget Alerts
-
-```bash
-# Set up billing alerts in Anthropic dashboard
-# Or use API if available:
-# Check Anthropic documentation for billing APIs
-```
-
-## Cost Dashboard Query
-
-```sql
--- If tracking usage in your database
-SELECT
-  DATE_TRUNC('day', created_at) as date,
-  COUNT(*) as requests,
-  SUM(response_bytes) as bytes,
-  COUNT(*) * 0.001 as estimated_cost
-FROM anthropic_api_logs
-WHERE created_at >= NOW() - INTERVAL '30 days'
-GROUP BY 1
-ORDER BY 1;
-```
-
-## Instructions
-
-### Step 1: Analyze Current Usage
-Review Anthropic dashboard for usage patterns and costs.
-
-### Step 2: Select Optimal Tier
-Use the cost estimation function to find the right tier.
-
-### Step 3: Implement Monitoring
-Add usage tracking to catch budget overruns early.
-
-### Step 4: Apply Optimizations
-Enable batching, caching, and sampling where appropriate.
-
-## Output
-- Optimized tier selection
-- Usage monitoring implemented
-- Budget alerts configured
-- Cost reduction strategies applied
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Unexpected charges | Untracked usage | Implement monitoring |
-| Overage fees | Wrong tier | Upgrade tier |
-| Budget exceeded | No alerts | Set up alerts |
-| Inefficient usage | No batching | Enable batch requests |
-
-## Examples
-
-### Quick Cost Check
+### 3. Message Batches (50% off everything)
 ```typescript
-// Estimate monthly cost for your usage
-const estimate = estimateAnthropicCost(yourMonthlyRequests);
-console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
-if (estimate.recommendation) {
-  console.log(`💡 ${estimate.recommendation}`);
+// For non-urgent work — 50% cheaper, 24h processing SLA
+const batch = await client.messages.batches.create({
+  requests: prompts.map((p, i) => ({
+    custom_id: `job-${i}`,
+    params: {
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1024,
+      messages: [{ role: 'user', content: p }],
+    },
+  })),
+});
+// Sonnet: $1.50/$7.50 per MTok instead of $3/$15
+```
+
+### 4. Reduce Token Count
+```typescript
+// Trim conversation history — keep system + last N turns
+function trimMessages(messages: MessageParam[], maxTurns = 10) {
+  if (messages.length <= maxTurns * 2) return messages;
+  return messages.slice(-(maxTurns * 2));
+}
+
+// Set tight max_tokens — don't pay for output you won't use
+const message = await client.messages.create({
+  model: 'claude-sonnet-4-20250514',
+  max_tokens: 256, // Not 4096 if you only need a short answer
+  messages,
+});
+
+// Use concise system prompts
+system: 'Reply in 1-2 sentences.' // Not a 500-word personality description
+```
+
+### 5. Monitor Usage
+```typescript
+// Log every call's cost
+function logUsage(message: Anthropic.Message) {
+  const { input_tokens, output_tokens } = message.usage;
+  const cost = (input_tokens * 3 + output_tokens * 15) / 1_000_000; // Sonnet pricing
+  console.log(`Tokens: ${input_tokens}in/${output_tokens}out | Cost: $${cost.toFixed(4)}`);
 }
 ```
+
+## Cost Comparison Example
+Processing 10,000 documents (avg 500 tokens each, 200 token response):
+
+| Strategy | Input Cost | Output Cost | Total |
+|----------|-----------|-------------|-------|
+| Opus, no optimization | $75.00 | $150.00 | $225.00 |
+| Sonnet, no optimization | $15.00 | $30.00 | $45.00 |
+| Sonnet + Batches | $7.50 | $15.00 | $22.50 |
+| Haiku + Batches | $2.00 | $4.00 | $6.00 |
+| Haiku + Batches + Caching | ~$1.00 | $4.00 | ~$5.00 |
 
 ## Resources
-- [Anthropic Pricing](https://anthropic.com/pricing)
-- [Anthropic Billing Dashboard](https://dashboard.anthropic.com/billing)
+- [Pricing](https://www.anthropic.com/pricing)
+- [Prompt Caching](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching)
+- [Message Batches](https://docs.anthropic.com/en/api/creating-message-batches)
+- [Token Counting](https://docs.anthropic.com/en/api/counting-tokens)
 
 ## Next Steps
-For architecture patterns, see `anthropic-reference-architecture`.
+See `anthropic-performance-tuning` for latency optimization.

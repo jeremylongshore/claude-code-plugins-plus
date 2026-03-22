@@ -1,115 +1,179 @@
 ---
 name: anthropic-embeddings-search
 description: |
-  Execute Anthropic secondary workflow: Embeddings & Semantic Search.
-  Use when building a RAG pipeline over documents,
-  or semantic similarity search across content.
-  Trigger with phrases like "anthropic embeddings",
-  "generate embeddings with anthropic".
+  Implement tool use (function calling) with Claude to let it execute actions,
+  query databases, call APIs, and interact with external systems.
+  Trigger with "anthropic tool use", "claude function calling", "claude tools",
+  "anthropic structured output with tools".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code
-tags: [saas, anthropic]
+tags: [saas, anthropic, claude, tool-use, function-calling]
 ---
 
-# Anthropic Embeddings & Semantic Search
+# Anthropic Tool Use (Function Calling)
 
 ## Overview
-Generate vector embeddings for text and build semantic search over your data.
-Essential for RAG pipelines, similarity matching, and knowledge retrieval.
+Tool use lets Claude call functions you define — query databases, hit APIs, read files, do math. Claude decides when to call a tool, you execute it, and feed the result back. This is how you build Claude-powered agents.
 
+> **Note:** Anthropic does not offer an embeddings API. For embeddings + vector search, pair Claude with a dedicated embedding model (OpenAI, Cohere, or Voyage).
 
 ## Prerequisites
-- Completed `anthropic-install-auth` setup
-- Familiarity with `anthropic-model-inference`
-- Valid API credentials configured
+- Completed `anthropic-model-inference`
+- Understanding of JSON Schema for tool definitions
 
 ## Instructions
 
-### Step 1: Generate Embeddings
+### Step 1: Define Tools
 ```typescript
-const embedding = await client.embeddings.create({
-  model: 'text-embedding-3-small',
-  input: 'Your text to embed',
-});
-const vector = embedding.data[0].embedding; // float[] of 1536 dims
+import Anthropic from '@anthropic-ai/sdk';
 
+const client = new Anthropic();
+
+const tools: Anthropic.Tool[] = [
+  {
+    name: 'get_weather',
+    description: 'Get current weather for a city. Call this when the user asks about weather.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        city: { type: 'string', description: 'City name, e.g. "San Francisco"' },
+        unit: { type: 'string', enum: ['celsius', 'fahrenheit'], description: 'Temperature unit' },
+      },
+      required: ['city'],
+    },
+  },
+];
 ```
 
-### Step 2: Store in Vector Database
+### Step 2: Send Message with Tools
 ```typescript
-// Store embedding with metadata
-await vectorDb.upsert({
-  id: doc.id,
-  values: vector,
-  metadata: { source: doc.source, text: doc.text },
+const response = await client.messages.create({
+  model: 'claude-sonnet-4-20250514',
+  max_tokens: 1024,
+  tools,
+  messages: [{ role: 'user', content: "What's the weather in San Francisco?" }],
 });
 
+// Claude responds with stop_reason: 'tool_use'
+// response.content includes a tool_use block:
+// { type: 'tool_use', id: 'toolu_01...', name: 'get_weather', input: { city: 'San Francisco' } }
 ```
 
-### Step 3: Query Similar Documents
+### Step 3: Execute Tool and Return Result
 ```typescript
-const queryEmbed = await client.embeddings.create({
-  model: 'text-embedding-3-small',
-  input: userQuery,
-});
-const results = await vectorDb.query({
-  vector: queryEmbed.data[0].embedding,
-  topK: 5,
+// Find the tool use block
+const toolUse = response.content.find(block => block.type === 'tool_use');
+
+// Execute your function
+const weatherData = await fetchWeather(toolUse.input.city);
+
+// Send result back to Claude
+const finalResponse = await client.messages.create({
+  model: 'claude-sonnet-4-20250514',
+  max_tokens: 1024,
+  tools,
+  messages: [
+    { role: 'user', content: "What's the weather in San Francisco?" },
+    { role: 'assistant', content: response.content },
+    {
+      role: 'user',
+      content: [{
+        type: 'tool_result',
+        tool_use_id: toolUse.id,
+        content: JSON.stringify(weatherData),
+      }],
+    },
+  ],
 });
 
+console.log(finalResponse.content[0].text);
+// "The weather in San Francisco is currently 65°F and partly cloudy."
 ```
 
-## Output
-- Completed Embeddings & Semantic Search execution
+## Python Example
+```python
+import anthropic
 
-- Vector embeddings generated and stored
-- Semantic search results ranked by similarity
+client = anthropic.Anthropic()
 
-- Success confirmation or error details
+tools = [{
+    "name": "get_weather",
+    "description": "Get current weather for a city.",
+    "input_schema": {
+        "type": "object",
+        "properties": {
+            "city": {"type": "string"},
+        },
+        "required": ["city"],
+    },
+}]
+
+response = client.messages.create(
+    model="claude-sonnet-4-20250514",
+    max_tokens=1024,
+    tools=tools,
+    messages=[{"role": "user", "content": "Weather in Paris?"}],
+)
+
+# Process tool_use blocks in response.content
+for block in response.content:
+    if block.type == "tool_use":
+        result = execute_tool(block.name, block.input)
+        # Send tool_result back...
+```
+
+## Agentic Tool Loop
+```typescript
+// Keep calling Claude until it stops requesting tools
+let messages = [{ role: 'user', content: userInput }];
+
+while (true) {
+  const response = await client.messages.create({
+    model: 'claude-sonnet-4-20250514',
+    max_tokens: 4096,
+    tools,
+    messages,
+  });
+
+  // Add assistant response to conversation
+  messages.push({ role: 'assistant', content: response.content });
+
+  if (response.stop_reason === 'end_turn') {
+    // Claude is done — extract final text
+    const text = response.content.find(b => b.type === 'text')?.text;
+    console.log(text);
+    break;
+  }
+
+  // Execute all tool calls and send results
+  const toolResults = [];
+  for (const block of response.content) {
+    if (block.type === 'tool_use') {
+      const result = await executeTool(block.name, block.input);
+      toolResults.push({
+        type: 'tool_result',
+        tool_use_id: block.id,
+        content: JSON.stringify(result),
+      });
+    }
+  }
+  messages.push({ role: 'user', content: toolResults });
+}
+```
 
 ## Error Handling
-| Aspect | Model Inference Pipeline | Embeddings & Semantic Search |
-|--------|------------|------------|
-| Use Case | sending chat completions with system prompts | building a RAG pipeline over documents |
-| Complexity | Medium | Medium |
-| Performance | Standard | Fast (50-200ms per embedding) |
-
-## Examples
-
-### Complete Workflow
-```typescript
-// Full RAG retrieval pipeline
-async function retrieve(query: string, topK = 5) {
-  const queryEmbed = await client.embeddings.create({
-    model: 'text-embedding-3-small',
-    input: query,
-  });
-  return vectorDb.query({ vector: queryEmbed.data[0].embedding, topK });
-}
-
-```
-
-### Error Recovery
-```typescript
-try {
-  const result = await client.embeddings.create({ model: 'text-embedding-3-small', input: text });
-  return result.data[0].embedding;
-} catch (err) {
-  if (err.status === 429) {
-    await new Promise(r => setTimeout(r, 1000));
-    return retry(text); // exponential backoff
-  }
-  throw err;
-}
-
-```
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `invalid_request_error` | Bad tool schema | Validate JSON Schema. `input_schema` must be a valid JSON Schema object |
+| `tool_use` with no matching name | Claude hallucinated a tool | Check `tool_use.name` against your defined tools before executing |
+| `tool_result` mismatch | Wrong `tool_use_id` | Each `tool_result` must reference the exact `id` from the `tool_use` block |
 
 ## Resources
-- [Anthropic Documentation](https://docs.anthropic.com)
-- [Anthropic API Reference](https://docs.anthropic.com/api)
+- [Tool Use Guide](https://docs.anthropic.com/en/docs/build-with-claude/tool-use)
+- [Tool Use API Reference](https://docs.anthropic.com/en/api/messages)
 
 ## Next Steps
-For common errors, see `anthropic-common-errors`.
+See `anthropic-common-errors` for error handling patterns.

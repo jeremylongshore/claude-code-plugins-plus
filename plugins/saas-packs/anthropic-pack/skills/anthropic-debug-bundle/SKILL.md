@@ -1,113 +1,112 @@
 ---
 name: anthropic-debug-bundle
 description: |
-  Collect Anthropic debug evidence for support tickets and troubleshooting.
-  Use when encountering persistent issues, preparing support tickets,
-  or collecting diagnostic information for Anthropic problems.
-  Trigger with phrases like "anthropic debug", "anthropic support bundle",
-  "collect anthropic logs", "anthropic diagnostic".
-allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
+  Collect debug evidence for Anthropic API issues — request IDs, headers,
+  error payloads, and reproduction steps for support tickets.
+  Trigger with "anthropic debug", "claude support ticket", "anthropic request id",
+  "debug claude api call".
+allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code
-tags: [saas, anthropic]
+tags: [saas, anthropic, claude, debugging]
 ---
 
 # Anthropic Debug Bundle
 
 ## Overview
-Collect all necessary diagnostic information for Anthropic support tickets.
-
-## Prerequisites
-- Anthropic SDK installed
-- Access to application logs
-- Permission to collect environment info
+When you need to file a support ticket or debug a persistent issue, collect these items.
 
 ## Instructions
 
-### Step 1: Create Debug Bundle Script
-```bash
-#!/bin/bash
-# anthropic-debug-bundle.sh
+### Step 1: Get the Request ID
+Every Anthropic API response includes a `request-id` header. This is the single most important thing for support tickets.
 
-BUNDLE_DIR="anthropic-debug-$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$BUNDLE_DIR"
-
-echo "=== Anthropic Debug Bundle ===" > "$BUNDLE_DIR/summary.txt"
-echo "Generated: $(date)" >> "$BUNDLE_DIR/summary.txt"
+```typescript
+try {
+  const message = await client.messages.create({ ... });
+  // Access response headers via the raw response
+} catch (err) {
+  if (err instanceof Anthropic.APIError) {
+    console.error('Request ID:', err.headers?.['request-id']);
+    console.error('Status:', err.status);
+    console.error('Error type:', err.error?.type);
+    console.error('Message:', err.message);
+  }
+}
 ```
 
-### Step 2: Collect Environment Info
-```bash
-# Environment info
-echo "--- Environment ---" >> "$BUNDLE_DIR/summary.txt"
-node --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-npm --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-echo "ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:+[SET]}" >> "$BUNDLE_DIR/summary.txt"
+### Step 2: Log Full Error Details
+```typescript
+function logAnthropicError(err: unknown) {
+  if (err instanceof Anthropic.APIError) {
+    const bundle = {
+      timestamp: new Date().toISOString(),
+      request_id: err.headers?.['request-id'],
+      status: err.status,
+      error_type: err.error?.type,
+      error_message: err.message,
+      rate_limit_remaining: err.headers?.['anthropic-ratelimit-requests-remaining'],
+      rate_limit_reset: err.headers?.['anthropic-ratelimit-requests-reset'],
+    };
+    console.error('Anthropic Debug Bundle:', JSON.stringify(bundle, null, 2));
+    return bundle;
+  }
+  console.error('Non-API error:', err);
+}
 ```
 
-### Step 3: Gather SDK and Logs
+### Step 3: Test with curl
 ```bash
-# SDK version
-npm list @anthropic/sdk 2>/dev/null >> "$BUNDLE_DIR/summary.txt"
-
-# Recent logs (redacted)
-grep -i "anthropic" ~/.npm/_logs/*.log 2>/dev/null | tail -50 >> "$BUNDLE_DIR/logs.txt"
-
-# Configuration (redacted - secrets masked)
-echo "--- Config (redacted) ---" >> "$BUNDLE_DIR/summary.txt"
-cat .env 2>/dev/null | sed 's/=.*/=***REDACTED***/' >> "$BUNDLE_DIR/config-redacted.txt"
-
-# Network connectivity test
-echo "--- Network Test ---" >> "$BUNDLE_DIR/summary.txt"
-echo -n "API Health: " >> "$BUNDLE_DIR/summary.txt"
-curl -s -o /dev/null -w "%{http_code}" https://api.anthropic.com/health >> "$BUNDLE_DIR/summary.txt"
-echo "" >> "$BUNDLE_DIR/summary.txt"
+# Minimal reproduction — include this in support tickets
+curl -v https://api.anthropic.com/v1/messages \
+  -H "x-api-key: $ANTHROPIC_API_KEY" \
+  -H "anthropic-version: 2023-06-01" \
+  -H "content-type: application/json" \
+  -d '{
+    "model": "claude-sonnet-4-20250514",
+    "max_tokens": 100,
+    "messages": [{"role": "user", "content": "test"}]
+  }' 2>&1 | grep -E "request-id|HTTP|error"
 ```
 
-### Step 4: Package Bundle
+### Step 4: Check Status
 ```bash
-tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
-echo "Bundle created: $BUNDLE_DIR.tar.gz"
+# API status
+curl -s https://status.anthropic.com/api/v2/status.json | python3 -m json.tool
+
+# Recent incidents
+curl -s https://status.anthropic.com/api/v2/incidents.json | python3 -c "
+import json, sys
+data = json.load(sys.stdin)
+for inc in data['incidents'][:3]:
+    print(f\"{inc['created_at'][:10]}: {inc['name']} ({inc['status']})\")
+"
 ```
 
-## Output
-- `anthropic-debug-YYYYMMDD-HHMMSS.tar.gz` archive containing:
-  - `summary.txt` - Environment and SDK info
-  - `logs.txt` - Recent redacted logs
-  - `config-redacted.txt` - Configuration (secrets removed)
+## What to Include in Support Tickets
+1. **Request ID** (from `request-id` header)
+2. **Timestamp** (UTC)
+3. **Model** used
+4. **Error type and message** (full JSON)
+5. **curl reproduction** (sanitize your API key)
+6. **SDK version** (`npm list @anthropic-ai/sdk` or `pip show anthropic`)
 
-## Error Handling
-| Item | Purpose | Included |
-|------|---------|----------|
-| Environment versions | Compatibility check | ✓ |
-| SDK version | Version-specific bugs | ✓ |
-| Error logs (redacted) | Root cause analysis | ✓ |
-| Config (redacted) | Configuration issues | ✓ |
-| Network test | Connectivity issues | ✓ |
-
-## Examples
-
-### Sensitive Data Handling
-**ALWAYS REDACT:**
-- API keys and tokens
-- Passwords and secrets
-- PII (emails, names, IDs)
-
-**Safe to Include:**
-- Error messages
-- Stack traces (redacted)
-- SDK/runtime versions
-
-### Submit to Support
-1. Create bundle: `bash anthropic-debug-bundle.sh`
-2. Review for sensitive data
-3. Upload to Anthropic support portal
+## Python Debug
+```python
+try:
+    message = client.messages.create(...)
+except anthropic.APIStatusError as e:
+    print(f"Request ID: {e.response.headers.get('request-id')}")
+    print(f"Status: {e.status_code}")
+    print(f"Error: {e.message}")
+```
 
 ## Resources
-- [Anthropic Support](https://docs.anthropic.com/support)
 - [Anthropic Status](https://status.anthropic.com)
+- [Error Types](https://docs.anthropic.com/en/api/errors)
+- [Support](https://support.anthropic.com)
 
 ## Next Steps
-For rate limit issues, see `anthropic-rate-limits`.
+See `anthropic-common-errors` for specific error solutions.

@@ -1,224 +1,84 @@
 ---
 name: anthropic-multi-env-setup
 description: |
-  Configure Anthropic across development, staging, and production environments.
-  Use when setting up multi-environment deployments, configuring per-environment secrets,
-  or implementing environment-specific Anthropic configurations.
-  Trigger with phrases like "anthropic environments", "anthropic staging",
-  "anthropic dev prod", "anthropic environment setup", "anthropic config by env".
-allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
+  Configure Claude across dev, staging, and production with different
+  models, keys, and rate limits per environment.
+  Trigger with "anthropic environments", "claude staging",
+  "anthropic dev vs prod", "claude multi-environment".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code
-tags: [saas, anthropic]
+tags: [saas, anthropic, claude, environments, config]
 ---
 
 # Anthropic Multi-Environment Setup
 
 ## Overview
-Configure Anthropic across development, staging, and production environments.
+Use different API keys, models, and limits across dev/staging/prod.
 
-## Prerequisites
-- Separate Anthropic accounts or API keys per environment
-- Secret management solution (Vault, AWS Secrets Manager, etc.)
-- CI/CD pipeline with environment variables
-- Environment detection in application
-
-## Environment Strategy
-
-| Environment | Purpose | API Keys | Data |
-|-------------|---------|----------|------|
-| Development | Local dev | Test keys | Sandbox |
-| Staging | Pre-prod validation | Staging keys | Test data |
-| Production | Live traffic | Production keys | Real data |
-
-## Configuration Structure
-
-```
-config/
-├── anthropic/
-│   ├── base.json           # Shared config
-│   ├── development.json    # Dev overrides
-│   ├── staging.json        # Staging overrides
-│   └── production.json     # Prod overrides
-```
-
-### base.json
-```json
-{
-  "timeout": 30000,
-  "retries": 3,
-  "cache": {
-    "enabled": true,
-    "ttlSeconds": 60
-  }
-}
-```
-
-### development.json
-```json
-{
-  "apiKey": "${ANTHROPIC_API_KEY}",
-  "baseUrl": "https://api-sandbox.anthropic.com",
-  "debug": true,
-  "cache": {
-    "enabled": false
-  }
-}
-```
-
-### staging.json
-```json
-{
-  "apiKey": "${ANTHROPIC_API_KEY_STAGING}",
-  "baseUrl": "https://api-staging.anthropic.com",
-  "debug": false
-}
-```
-
-### production.json
-```json
-{
-  "apiKey": "${ANTHROPIC_API_KEY_PROD}",
-  "baseUrl": "https://api.anthropic.com",
-  "debug": false,
-  "retries": 5
-}
-```
-
-## Environment Detection
-
+## Environment Configuration
 ```typescript
-// src/anthropic/config.ts
-import baseConfig from '../../config/anthropic/base.json';
-
-type Environment = 'development' | 'staging' | 'production';
-
-function detectEnvironment(): Environment {
-  const env = process.env.NODE_ENV || 'development';
-  const validEnvs: Environment[] = ['development', 'staging', 'production'];
-  return validEnvs.includes(env as Environment)
-    ? (env as Environment)
-    : 'development';
+// config/anthropic.ts
+interface AnthropicConfig {
+  apiKey: string;
+  model: string;
+  maxTokens: number;
+  maxRetries: number;
 }
 
-export function getAnthropicConfig() {
-  const env = detectEnvironment();
-  const envConfig = require(`../../config/anthropic/${env}.json`);
-
-  return {
-    ...baseConfig,
-    ...envConfig,
-    environment: env,
-  };
-}
-```
-
-## Secret Management by Environment
-
-### Local Development
-```bash
-# .env.local (git-ignored)
-ANTHROPIC_API_KEY=sk_test_dev_***
-```
-
-### CI/CD (GitHub Actions)
-```yaml
-env:
-  ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY_${{ matrix.environment }} }}
-```
-
-### Production (Vault/Secrets Manager)
-```bash
-# AWS Secrets Manager
-aws secretsmanager get-secret-value --secret-id anthropic/production/api-key
-
-# GCP Secret Manager
-gcloud secrets versions access latest --secret=anthropic-api-key
-
-# HashiCorp Vault
-vault kv get -field=api_key secret/anthropic/production
-```
-
-## Environment Isolation
-
-```typescript
-// Prevent production operations in non-prod
-function guardProductionOperation(operation: string): void {
-  const config = getAnthropicConfig();
-
-  if (config.environment !== 'production') {
-    console.warn(`[anthropic] ${operation} blocked in ${config.environment}`);
-    throw new Error(`${operation} only allowed in production`);
-  }
-}
-
-// Usage
-async function deleteAllData() {
-  guardProductionOperation('deleteAllData');
-  // Dangerous operation here
-}
-```
-
-## Feature Flags by Environment
-
-```typescript
-const featureFlags: Record<Environment, Record<string, boolean>> = {
+const configs: Record<string, AnthropicConfig> = {
   development: {
-    newFeature: true,
-    betaApi: true,
+    apiKey: process.env.ANTHROPIC_API_KEY!,
+    model: 'claude-haiku-4-5-20251001', // Cheap for dev
+    maxTokens: 256,
+    maxRetries: 1,
   },
   staging: {
-    newFeature: true,
-    betaApi: false,
+    apiKey: process.env.ANTHROPIC_API_KEY!,
+    model: 'claude-sonnet-4-20250514',
+    maxTokens: 1024,
+    maxRetries: 2,
   },
   production: {
-    newFeature: false,
-    betaApi: false,
+    apiKey: process.env.ANTHROPIC_API_KEY!,
+    model: 'claude-sonnet-4-20250514',
+    maxTokens: 4096,
+    maxRetries: 3,
   },
 };
+
+export const config = configs[process.env.NODE_ENV || 'development'];
 ```
 
-## Instructions
+## Separate API Keys Per Environment
+Use different Anthropic API keys for each environment:
+- **Dev key**: Low tier, spending alerts at $10
+- **Staging key**: Medium tier, spending alerts at $50
+- **Prod key**: Highest tier, spending alerts at usage baseline + 50%
 
-### Step 1: Create Config Structure
-Set up the base and per-environment configuration files.
+```bash
+# .env.development
+ANTHROPIC_API_KEY=sk-ant-dev-...
 
-### Step 2: Implement Environment Detection
-Add logic to detect and load environment-specific config.
+# .env.staging
+ANTHROPIC_API_KEY=sk-ant-staging-...
 
-### Step 3: Configure Secrets
-Store API keys securely using your secret management solution.
-
-### Step 4: Add Environment Guards
-Implement safeguards for production-only operations.
-
-## Output
-- Multi-environment config structure
-- Environment detection logic
-- Secure secret management
-- Production safeguards enabled
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Wrong environment | Missing NODE_ENV | Set environment variable |
-| Secret not found | Wrong secret path | Verify secret manager config |
-| Config merge fails | Invalid JSON | Validate config files |
-| Production guard triggered | Wrong environment | Check NODE_ENV value |
-
-## Examples
-
-### Quick Environment Check
-```typescript
-const env = getAnthropicConfig();
-console.log(`Running in ${env.environment} with ${env.baseUrl}`);
+# .env.production
+ANTHROPIC_API_KEY=sk-ant-prod-...
 ```
+
+## Model Selection Strategy
+| Environment | Model | Why |
+|-------------|-------|-----|
+| Development | Haiku | Fast iteration, cheap |
+| Staging | Sonnet | Match prod quality |
+| Production | Sonnet (default) | Balanced cost/quality |
+| Production (complex) | Opus | Complex reasoning tasks |
 
 ## Resources
-- [Anthropic Environments Guide](https://docs.anthropic.com/environments)
-- [12-Factor App Config](https://12factor.net/config)
+- [API Key Management](https://console.anthropic.com/settings/keys)
 
 ## Next Steps
-For observability setup, see `anthropic-observability`.
+See `anthropic-observability` for monitoring across environments.

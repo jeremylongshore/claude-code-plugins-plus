@@ -1,114 +1,70 @@
 ---
 name: anthropic-upgrade-migration
 description: |
-  Analyze, plan, and execute Anthropic SDK upgrades with breaking change detection.
-  Use when upgrading Anthropic SDK versions, detecting deprecations,
-  or migrating to new API versions.
-  Trigger with phrases like "upgrade anthropic", "anthropic migration",
-  "anthropic breaking changes", "update anthropic SDK", "analyze anthropic version".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
+  Upgrade Anthropic SDK versions and migrate between Claude model generations.
+  Trigger with "upgrade anthropic sdk", "migrate claude model",
+  "anthropic breaking changes", "new claude model".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code
-tags: [saas, anthropic]
+tags: [saas, anthropic, claude, migration, upgrade]
 ---
 
 # Anthropic Upgrade & Migration
 
-## Overview
-Guide for upgrading Anthropic SDK versions and handling breaking changes.
-
-## Prerequisites
-- Current Anthropic SDK installed
-- Git for version control
-- Test suite available
-- Staging environment
-
-## Instructions
-
-### Step 1: Check Current Version
+## SDK Upgrade
 ```bash
-npm list @anthropic/sdk
-npm view @anthropic/sdk version
+# Check current version
+npm list @anthropic-ai/sdk
+pip show anthropic
+
+# Upgrade to latest
+npm install @anthropic-ai/sdk@latest
+pip install --upgrade anthropic
+
+# Check changelog for breaking changes
+# https://github.com/anthropics/anthropic-sdk-typescript/releases
 ```
 
-### Step 2: Review Changelog
+## Model Migration Checklist
+When Anthropic releases new model versions:
+
+1. **Read the model card** — check for behavior changes, new capabilities
+2. **Update model IDs** — find and replace old IDs
 ```bash
-open https://github.com/anthropic/sdk/releases
+# Find all model references in your codebase
+grep -r "claude-" --include="*.ts" --include="*.py" --include="*.json" .
 ```
+3. **Test with new model** — run integration tests against both old and new
+4. **Compare outputs** — spot-check key prompts for quality regression
+5. **Update max_tokens** — new models may have different limits
+6. **Gradual rollout** — use env var to control model selection
 
-### Step 3: Create Upgrade Branch
-```bash
-git checkout -b upgrade/anthropic-sdk-vX.Y.Z
-npm install @anthropic/sdk@latest
-npm test
-```
-
-### Step 4: Handle Breaking Changes
-Update import statements, configuration, and method signatures as needed.
-
-## Output
-- Updated SDK version
-- Fixed breaking changes
-- Passing test suite
-- Documented rollback procedure
-
-## Error Handling
-| SDK Version | API Version | Node.js | Breaking Changes |
-|-------------|-------------|---------|------------------|
-| 3.x | 2024-01 | 18+ | Major refactor |
-| 2.x | 2023-06 | 16+ | Auth changes |
-| 1.x | 2022-01 | 14+ | Initial release |
-
-## Examples
-
-### Import Changes
 ```typescript
-// Before (v1.x)
-import { Client } from '@anthropic/sdk';
+// Environment-based model selection for safe rollout
+const MODEL = process.env.CLAUDE_MODEL || 'claude-sonnet-4-20250514';
 
-// After (v2.x)
-import { AnthropicClient } from '@anthropic/sdk';
-```
-
-### Configuration Changes
-```typescript
-// Before (v1.x)
-const client = new Client({ key: 'xxx' });
-
-// After (v2.x)
-const client = new AnthropicClient({
-  apiKey: 'xxx',
+const message = await client.messages.create({
+  model: MODEL,
+  max_tokens: 1024,
+  messages,
 });
 ```
 
-### Rollback Procedure
-```bash
-npm install @anthropic/sdk@1.x.x --save-exact
-```
-
-### Deprecation Handling
-```typescript
-// Monitor for deprecation warnings in development
-if (process.env.NODE_ENV === 'development') {
-  process.on('warning', (warning) => {
-    if (warning.name === 'DeprecationWarning') {
-      console.warn('[Anthropic]', warning.message);
-      // Log to tracking system for proactive updates
-    }
-  });
-}
-
-// Common deprecation patterns to watch for:
-// - Renamed methods: client.oldMethod() -> client.newMethod()
-// - Changed parameters: { key: 'x' } -> { apiKey: 'x' }
-// - Removed features: Check release notes before upgrading
-```
+## Common Migration Issues
+| Issue | Fix |
+|-------|-----|
+| Model ID not found (404) | Update to current model ID |
+| Different output format | Adjust parsing — test with real prompts |
+| Higher/lower token usage | Re-evaluate max_tokens and cost estimates |
+| Deprecated SDK method | Check SDK changelog for replacement |
 
 ## Resources
-- [Anthropic Changelog](https://github.com/anthropic/sdk/releases)
-- [Anthropic Migration Guide](https://docs.anthropic.com/migration)
+- [SDK Releases (TS)](https://github.com/anthropics/anthropic-sdk-typescript/releases)
+- [SDK Releases (Python)](https://github.com/anthropics/anthropic-sdk-python/releases)
+- [Model Deprecation Policy](https://docs.anthropic.com/en/docs/about-claude/models)
 
 ## Next Steps
-For CI integration during upgrades, see `anthropic-ci-integration`.
+See `anthropic-known-pitfalls` for common mistakes to avoid.
