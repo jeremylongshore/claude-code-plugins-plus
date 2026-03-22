@@ -165,12 +165,16 @@ reviews:
       instructions: "Flag any hardcoded secrets, API keys, or credentials."
 ```
 
-## Resources
-- [CodeRabbit Configuration](https://docs.coderabbit.ai/configuration)
-- [CodeRabbit Path Filters](https://docs.coderabbit.ai/guides/review-instructions)
-
 ## Output
+- Sensitive files excluded from AI review via path_filters
+- Secret detection instructions configured for all code paths
+- Review scope limited to source code only (not data files)
+- Security-focused path_instructions for database, API, and auth code
 
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+## Resources
+- [CodeRabbit Configuration](https://docs.coderabbit.ai/reference/configuration)
+- [CodeRabbit Path Filters](https://docs.coderabbit.ai/guides/review-instructions)
+- [CodeRabbit Security](https://coderabbit.ai/security)
+
+## Next Steps
+For security hardening, see `coderabbit-security-basics`.

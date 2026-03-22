@@ -166,11 +166,12 @@ async function handleCheckRunComplete(payload: any) {
 - [GitHub Webhooks Guide](https://docs.github.com/en/webhooks)
 - [CodeRabbit Configuration](https://docs.coderabbit.ai/configuration)
 
+## Output
+- GitHub webhook receiver with signature validation
+- CodeRabbit event routing for reviews, comments, and check runs
+- Review result processing with team notifications
+- Auto-merge eligibility check on CodeRabbit approval
+- Review metrics tracking via check run events
+
 ## Next Steps
 For deployment setup, see `coderabbit-deploy-integration`.
-
-## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
