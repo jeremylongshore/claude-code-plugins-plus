@@ -1,216 +1,304 @@
 ---
 name: bamboohr-performance-tuning
 description: |
-  Optimize BambooHR API performance with caching, batching, and connection pooling.
-  Use when experiencing slow API responses, implementing caching strategies,
-  or optimizing request throughput for BambooHR integrations.
+  Optimize BambooHR API performance with caching, batch reports, incremental sync,
+  and connection pooling. Use when experiencing slow API responses,
+  implementing caching, or optimizing sync throughput.
   Trigger with phrases like "bamboohr performance", "optimize bamboohr",
   "bamboohr latency", "bamboohr caching", "bamboohr slow", "bamboohr batch".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hr, bamboohr]
+tags: [saas, hr, bamboohr, performance]
 compatible-with: claude-code
 ---
 
 # BambooHR Performance Tuning
 
 ## Overview
-Optimize BambooHR API performance with caching, batching, and connection pooling.
+
+Optimize BambooHR API performance through request reduction, caching, incremental sync, and connection pooling. The biggest wins come from eliminating N+1 query patterns using custom reports and the changed-since endpoint.
 
 ## Prerequisites
-- BambooHR SDK installed
-- Understanding of async patterns
+
+- BambooHR API client configured
 - Redis or in-memory cache available (optional)
 - Performance monitoring in place
 
-## Latency Benchmarks
+## Instructions
 
-| Operation | P50 | P95 | P99 |
-|-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
+### Step 1: Eliminate N+1 Queries with Custom Reports
 
-## Caching Strategy
+The single biggest performance improvement: use `POST /reports/custom` instead of individual employee GETs.
 
-### Response Caching
 ```typescript
-import { LRUCache } from 'lru-cache';
+// BAD: 501 API calls for 500 employees
+const dir = await client.getDirectory();                      // 1 call
+for (const emp of dir.employees) {
+  await client.getEmployee(emp.id, ['salary', 'hireDate']);   // 500 calls
+}
 
-const cache = new LRUCache<string, any>({
-  max: 1000,
-  ttl: 60000, // 1 minute
-  updateAgeOnGet: true,
-});
+// GOOD: 1 API call for all employees with all needed fields
+const report = await client.customReport([
+  'firstName', 'lastName', 'department', 'jobTitle',
+  'hireDate', 'workEmail', 'status', 'location',
+  'supervisor', 'employeeNumber',
+]);
+// 1 call, returns all employees with all fields
+```
 
-async function cachedBambooHRRequest<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttl?: number
-): Promise<T> {
-  const cached = cache.get(key);
-  if (cached) return cached as T;
+**Performance impact:** 500x reduction in API calls. Custom reports return all active employees in one request.
 
-  const result = await fetcher();
-  cache.set(key, result, { ttl });
-  return result;
+### Step 2: Incremental Sync with Changed-Since
+
+```typescript
+import { readFileSync, writeFileSync } from 'fs';
+
+const LAST_SYNC_FILE = '.bamboohr-last-sync';
+
+async function incrementalSync(client: BambooHRClient): Promise<string[]> {
+  // Read last sync timestamp
+  let lastSync: string;
+  try {
+    lastSync = readFileSync(LAST_SYNC_FILE, 'utf-8').trim();
+  } catch {
+    lastSync = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(); // Default: 24h ago
+  }
+
+  // GET /employees/changed/?since=... — returns only changed employee IDs
+  const changed = await client.request<{
+    employees: Record<string, { id: string; lastChanged: string }>;
+  }>('GET', `/employees/changed/?since=${lastSync}`);
+
+  const changedIds = Object.keys(changed.employees || {});
+  console.log(`${changedIds.length} employees changed since ${lastSync}`);
+
+  if (changedIds.length === 0) return [];
+
+  // Fetch only changed employees' details
+  // For large sets, use custom report with filter; for small sets, individual GETs
+  if (changedIds.length > 20) {
+    // Bulk: use custom report (returns all, then filter client-side)
+    const report = await client.customReport([
+      'firstName', 'lastName', 'department', 'status',
+    ]);
+    const changedData = report.employees.filter(e =>
+      changedIds.includes(e.id?.toString()),
+    );
+    // Process changedData...
+  } else {
+    // Small set: individual GETs are fine
+    for (const id of changedIds) {
+      const emp = await client.getEmployee(id, ['firstName', 'lastName', 'department', 'status']);
+      // Process emp...
+    }
+  }
+
+  // Save sync timestamp
+  writeFileSync(LAST_SYNC_FILE, new Date().toISOString());
+  return changedIds;
 }
 ```
 
-### Redis Caching (Distributed)
+**Also available for table data:**
+
+```typescript
+// GET /employees/changed/tables/{tableName}?since=...
+const changedJobs = await client.request<any>(
+  'GET', `/employees/changed/tables/jobInfo?since=${lastSync}`,
+);
+// Returns { employees: { "123": { lastChanged: "..." }, ... } }
+```
+
+### Step 3: Response Caching
+
+```typescript
+import { LRUCache } from 'lru-cache';
+
+// BambooHR directory data changes infrequently — cache aggressively
+const cache = new LRUCache<string, any>({
+  max: 500,
+  ttl: 5 * 60 * 1000, // 5 minutes for directory data
+});
+
+async function cachedRequest<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttlMs?: number,
+): Promise<T> {
+  const cached = cache.get(key) as T | undefined;
+  if (cached) {
+    console.log(`Cache hit: ${key}`);
+    return cached;
+  }
+
+  const result = await fetcher();
+  cache.set(key, result, { ttl: ttlMs });
+  return result;
+}
+
+// Usage
+const directory = await cachedRequest(
+  'directory',
+  () => client.getDirectory(),
+  5 * 60 * 1000, // Cache for 5 min
+);
+
+// Single employee — shorter cache
+const employee = await cachedRequest(
+  `employee:${id}`,
+  () => client.getEmployee(id, fields),
+  60 * 1000, // Cache for 1 min
+);
+```
+
+**Redis caching for multi-instance deployments:**
+
 ```typescript
 import Redis from 'ioredis';
 
 const redis = new Redis(process.env.REDIS_URL);
 
-async function cachedWithRedis<T>(
+async function redisCached<T>(
   key: string,
   fetcher: () => Promise<T>,
-  ttlSeconds = 60
+  ttlSec = 300,
 ): Promise<T> {
-  const cached = await redis.get(key);
+  const cached = await redis.get(`bamboohr:${key}`);
   if (cached) return JSON.parse(cached);
 
   const result = await fetcher();
-  await redis.setex(key, ttlSeconds, JSON.stringify(result));
+  await redis.setex(`bamboohr:${key}`, ttlSec, JSON.stringify(result));
   return result;
+}
+
+// Invalidate on webhook
+async function invalidateCache(employeeId: string) {
+  await redis.del(`bamboohr:employee:${employeeId}`);
+  await redis.del('bamboohr:directory'); // Directory includes this employee
 }
 ```
 
-## Request Batching
-
-```typescript
-import DataLoader from 'dataloader';
-
-const bamboohrLoader = new DataLoader<string, any>(
-  async (ids) => {
-    // Batch fetch from BambooHR
-    const results = await bamboohrClient.batchGet(ids);
-    return ids.map(id => results.find(r => r.id === id) || null);
-  },
-  {
-    maxBatchSize: 100,
-    batchScheduleFn: callback => setTimeout(callback, 10),
-  }
-);
-
-// Usage - automatically batched
-const [item1, item2, item3] = await Promise.all([
-  bamboohrLoader.load('id-1'),
-  bamboohrLoader.load('id-2'),
-  bamboohrLoader.load('id-3'),
-]);
-```
-
-## Connection Optimization
+### Step 4: Connection Pooling
 
 ```typescript
 import { Agent } from 'https';
 
-// Keep-alive connection pooling
-const agent = new Agent({
+// Reuse TCP connections for BambooHR API calls
+const keepAliveAgent = new Agent({
   keepAlive: true,
-  maxSockets: 10,
-  maxFreeSockets: 5,
-  timeout: 30000,
+  maxSockets: 5,        // Max 5 parallel connections
+  maxFreeSockets: 2,
+  timeout: 30_000,
+  keepAliveMsecs: 10_000,
 });
 
-const client = new BambooHRClient({
-  apiKey: process.env.BAMBOOHR_API_KEY!,
-  httpAgent: agent,
-});
+// Pass to fetch via undici or node-fetch
+// For native fetch in Node 20+, connection pooling is automatic
 ```
 
-## Pagination Optimization
+### Step 5: Request Batching with DataLoader
 
 ```typescript
-async function* paginatedBambooHRList<T>(
-  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
-): AsyncGenerator<T> {
-  let cursor: string | undefined;
+import DataLoader from 'dataloader';
 
-  do {
-    const { data, nextCursor } = await fetcher(cursor);
-    for (const item of data) {
-      yield item;
+// Batch individual employee GETs into a custom report
+const employeeLoader = new DataLoader<string, Record<string, string>>(
+  async (ids) => {
+    // One custom report instead of N individual GETs
+    const report = await client.customReport([
+      'id', 'firstName', 'lastName', 'department', 'jobTitle',
+    ]);
+
+    const byId = new Map(report.employees.map(e => [e.id, e]));
+    return ids.map(id => byId.get(id) || new Error(`Employee ${id} not found`));
+  },
+  {
+    maxBatchSize: 100,
+    batchScheduleFn: cb => setTimeout(cb, 50), // Batch window: 50ms
+    cache: true,
+  },
+);
+
+// Usage — automatically batched into one API call
+const [emp1, emp2, emp3] = await Promise.all([
+  employeeLoader.load('1'),
+  employeeLoader.load('2'),
+  employeeLoader.load('3'),
+]);
+```
+
+### Step 6: Performance Monitoring
+
+```typescript
+class BambooHRMetrics {
+  private requests: { duration: number; status: number; endpoint: string }[] = [];
+
+  record(endpoint: string, status: number, durationMs: number) {
+    this.requests.push({ duration: durationMs, status, endpoint });
+
+    // Keep last 1000 requests
+    if (this.requests.length > 1000) this.requests.shift();
+  }
+
+  summary() {
+    const durations = this.requests.map(r => r.duration).sort((a, b) => a - b);
+    const errors = this.requests.filter(r => r.status >= 400);
+
+    return {
+      totalRequests: this.requests.length,
+      errorRate: (errors.length / Math.max(this.requests.length, 1) * 100).toFixed(1) + '%',
+      p50: durations[Math.floor(durations.length * 0.5)] || 0,
+      p95: durations[Math.floor(durations.length * 0.95)] || 0,
+      p99: durations[Math.floor(durations.length * 0.99)] || 0,
+      topEndpoints: this.topEndpoints(),
+    };
+  }
+
+  private topEndpoints() {
+    const counts = new Map<string, number>();
+    for (const r of this.requests) {
+      counts.set(r.endpoint, (counts.get(r.endpoint) || 0) + 1);
     }
-    cursor = nextCursor;
-  } while (cursor);
-}
-
-// Usage
-for await (const item of paginatedBambooHRList(cursor =>
-  bamboohrClient.list({ cursor, limit: 100 })
-)) {
-  await process(item);
-}
-```
-
-## Performance Monitoring
-
-```typescript
-async function measuredBambooHRCall<T>(
-  operation: string,
-  fn: () => Promise<T>
-): Promise<T> {
-  const start = performance.now();
-  try {
-    const result = await fn();
-    const duration = performance.now() - start;
-    console.log({ operation, duration, status: 'success' });
-    return result;
-  } catch (error) {
-    const duration = performance.now() - start;
-    console.error({ operation, duration, status: 'error', error });
-    throw error;
+    return [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5);
   }
 }
 ```
 
-## Instructions
-
-### Step 1: Establish Baseline
-Measure current latency for critical BambooHR operations.
-
-### Step 2: Implement Caching
-Add response caching for frequently accessed data.
-
-### Step 3: Enable Batching
-Use DataLoader or similar for automatic request batching.
-
-### Step 4: Optimize Connections
-Configure connection pooling with keep-alive.
-
 ## Output
-- Reduced API latency
-- Caching layer implemented
-- Request batching enabled
-- Connection pooling configured
+
+- N+1 queries eliminated via custom reports (500x reduction)
+- Incremental sync using changed-since endpoint
+- Multi-tier caching (LRU in-memory + Redis)
+- Connection pooling with keep-alive
+- DataLoader-based request batching
+- Performance metrics with p50/p95/p99
+
+## Performance Reference
+
+| Optimization | Before | After | Improvement |
+|-------------|--------|-------|-------------|
+| Custom reports vs N+1 | 501 calls | 1 call | 500x |
+| Incremental sync | Full pull | Delta only | 10-100x |
+| Directory caching (5 min) | Every request | 1/5 min | 50x |
+| Connection pooling | New conn/request | Reused | 2-3x latency |
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Cache miss storm | TTL expired | Use stale-while-revalidate |
-| Batch timeout | Too many items | Reduce batch size |
-| Connection exhausted | No pooling | Configure max sockets |
-| Memory pressure | Cache too large | Set max cache entries |
-
-## Examples
-
-### Quick Performance Wrapper
-```typescript
-const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
-  measuredBambooHRCall(name, () =>
-    cachedBambooHRRequest(`cache:${name}`, fn)
-  );
-```
+| Cache stampede | All caches expire simultaneously | Stagger TTLs with jitter |
+| Stale data | Cache TTL too long | Invalidate on webhook events |
+| DataLoader timeout | Custom report too slow | Reduce batch size |
+| Memory pressure | LRU cache too large | Set `max` entries limit |
 
 ## Resources
-- [BambooHR Performance Guide](https://docs.bamboohr.com/performance)
+
+- [BambooHR API Technical Overview](https://documentation.bamboohr.com/docs/api-details)
 - [DataLoader Documentation](https://github.com/graphql/dataloader)
 - [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
 
 ## Next Steps
+
 For cost optimization, see `bamboohr-cost-tuning`.
