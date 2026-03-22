@@ -2,239 +2,358 @@
 name: assemblyai-reference-architecture
 description: |
   Implement AssemblyAI reference architecture with best-practice project layout.
-  Use when designing new AssemblyAI integrations, reviewing project structure,
-  or establishing architecture standards for AssemblyAI applications.
+  Use when designing new AssemblyAI transcription services, reviewing project structure,
+  or building production-grade speech-to-text applications.
   Trigger with phrases like "assemblyai architecture", "assemblyai best practices",
-  "assemblyai project structure", "how to organize assemblyai", "assemblyai layout".
+  "assemblyai project structure", "how to organize assemblyai", "assemblyai design".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, speech-to-text, assemblyai]
+tags: [saas, ai, speech-to-text, assemblyai, transcription, architecture]
 compatible-with: claude-code
 ---
 
 # AssemblyAI Reference Architecture
 
 ## Overview
-Production-ready architecture patterns for AssemblyAI integrations.
+Production-ready architecture for AssemblyAI-powered transcription services with layered design, webhook-driven processing, and LeMUR analysis pipelines.
 
 ## Prerequisites
 - Understanding of layered architecture
-- AssemblyAI SDK knowledge
+- `assemblyai` npm package
 - TypeScript project setup
-- Testing framework configured
+- Database for transcript storage
 
 ## Project Structure
 
 ```
-my-assemblyai-project/
+my-transcription-service/
 ├── src/
 │   ├── assemblyai/
-│   │   ├── client.ts           # Singleton client wrapper
-│   │   ├── config.ts           # Environment configuration
-│   │   ├── types.ts            # TypeScript types
-│   │   ├── errors.ts           # Custom error classes
-│   │   └── handlers/
-│   │       ├── webhooks.ts     # Webhook handlers
-│   │       └── events.ts       # Event processing
-│   ├── services/
-│   │   └── assemblyai/
-│   │       ├── index.ts        # Service facade
-│   │       ├── sync.ts         # Data synchronization
-│   │       └── cache.ts        # Caching layer
+│   │   ├── client.ts              # Singleton client
+│   │   ├── transcription.ts       # Transcription service
+│   │   ├── streaming.ts           # Streaming service
+│   │   ├── lemur.ts               # LeMUR analysis service
+│   │   └── types.ts               # Domain types
 │   ├── api/
-│   │   └── assemblyai/
-│   │       └── webhook.ts      # Webhook endpoint
-│   └── jobs/
-│       └── assemblyai/
-│           └── sync.ts         # Background sync job
+│   │   ├── transcribe.ts          # POST /api/transcribe
+│   │   ├── transcripts.ts         # GET /api/transcripts/:id
+│   │   ├── streaming-token.ts     # GET /api/streaming-token
+│   │   └── webhooks/
+│   │       └── assemblyai.ts      # POST /webhooks/assemblyai
+│   ├── services/
+│   │   ├── audio-processor.ts     # Audio validation & preprocessing
+│   │   └── transcript-store.ts    # Database storage
+│   ├── jobs/
+│   │   └── batch-transcriber.ts   # Background batch processing
+│   └── config.ts
 ├── tests/
 │   ├── unit/
-│   │   └── assemblyai/
+│   │   ├── transcription.test.ts
+│   │   └── lemur.test.ts
 │   └── integration/
-│       └── assemblyai/
-├── config/
-│   ├── assemblyai.development.json
-│   ├── assemblyai.staging.json
-│   └── assemblyai.production.json
-└── docs/
-    └── assemblyai/
-        ├── SETUP.md
-        └── RUNBOOK.md
+│       └── assemblyai.test.ts
+└── package.json
 ```
 
-## Layer Architecture
+## Architecture Layers
 
 ```
-┌─────────────────────────────────────────┐
-│             API Layer                    │
-│   (Controllers, Routes, Webhooks)        │
-├─────────────────────────────────────────┤
-│           Service Layer                  │
-│  (Business Logic, Orchestration)         │
-├─────────────────────────────────────────┤
-│          AssemblyAI Layer        │
-│   (Client, Types, Error Handling)        │
-├─────────────────────────────────────────┤
-│         Infrastructure Layer             │
-│    (Cache, Queue, Monitoring)            │
-└─────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────┐
+│                    API Layer                          │
+│  Transcribe endpoint, Webhook handler, Stream token  │
+├──────────────────────────────────────────────────────┤
+│                  Service Layer                        │
+│  TranscriptionService, LeMURService, AudioProcessor  │
+├──────────────────────────────────────────────────────┤
+│                AssemblyAI SDK Layer                   │
+│  client.transcripts, client.streaming, client.lemur  │
+├──────────────────────────────────────────────────────┤
+│               Infrastructure Layer                    │
+│  Database, Redis Cache, Job Queue, Monitoring        │
+└──────────────────────────────────────────────────────┘
 ```
 
-## Key Components
+## Instructions
 
-### Step 1: Client Wrapper
+### Step 1: Client Layer
+
 ```typescript
 // src/assemblyai/client.ts
-export class AssemblyAIService {
-  private client: AssemblyAIClient;
-  private cache: Cache;
-  private monitor: Monitor;
+import { AssemblyAI } from 'assemblyai';
 
-  constructor(config: AssemblyAIConfig) {
-    this.client = new AssemblyAIClient(config);
-    this.cache = new Cache(config.cacheOptions);
-    this.monitor = new Monitor('assemblyai');
+let client: AssemblyAI | null = null;
+
+export function getClient(): AssemblyAI {
+  if (!client) {
+    client = new AssemblyAI({
+      apiKey: process.env.ASSEMBLYAI_API_KEY!,
+    });
+  }
+  return client;
+}
+```
+
+### Step 2: Transcription Service
+
+```typescript
+// src/assemblyai/transcription.ts
+import { type Transcript, type TranscriptParams } from 'assemblyai';
+import { getClient } from './client';
+
+export interface TranscriptionOptions {
+  speakerLabels?: boolean;
+  sentimentAnalysis?: boolean;
+  entityDetection?: boolean;
+  piiRedaction?: boolean;
+  webhookUrl?: string;
+  model?: 'best' | 'nano';
+}
+
+export class TranscriptionService {
+  private client = getClient();
+
+  // Async transcription with webhook (production pattern)
+  async submitForTranscription(
+    audio: string,
+    options: TranscriptionOptions = {}
+  ): Promise<{ transcriptId: string; status: string }> {
+    const params: TranscriptParams = {
+      audio,
+      speech_model: options.model ?? 'best',
+      speaker_labels: options.speakerLabels ?? false,
+      sentiment_analysis: options.sentimentAnalysis ?? false,
+      entity_detection: options.entityDetection ?? false,
+      redact_pii: options.piiRedaction ?? false,
+    };
+
+    if (options.webhookUrl) {
+      params.webhook_url = options.webhookUrl;
+      params.webhook_auth_header_name = 'X-Webhook-Secret';
+      params.webhook_auth_header_value = process.env.ASSEMBLYAI_WEBHOOK_SECRET!;
+    }
+
+    const transcript = options.webhookUrl
+      ? await this.client.transcripts.submit(params)
+      : await this.client.transcripts.transcribe(params);
+
+    return { transcriptId: transcript.id, status: transcript.status };
   }
 
-  async get(id: string): Promise<Resource> {
-    return this.cache.getOrFetch(id, () =>
-      this.monitor.track('get', () => this.client.get(id))
+  // Get completed transcript with all data
+  async getTranscript(id: string): Promise<Transcript> {
+    return this.client.transcripts.get(id);
+  }
+
+  // Delete for GDPR compliance
+  async deleteTranscript(id: string): Promise<void> {
+    await this.client.transcripts.delete(id);
+  }
+
+  // Batch processing
+  async batchTranscribe(audioUrls: string[], options: TranscriptionOptions = {}) {
+    const PQueue = (await import('p-queue')).default;
+    const queue = new PQueue({ concurrency: 5 });
+
+    return Promise.all(
+      audioUrls.map(url =>
+        queue.add(() => this.submitForTranscription(url, options))
+      )
     );
   }
 }
 ```
 
-### Step 2: Error Boundary
+### Step 3: LeMUR Analysis Service
+
 ```typescript
-// src/assemblyai/errors.ts
-export class AssemblyAIServiceError extends Error {
-  constructor(
-    message: string,
-    public readonly code: string,
-    public readonly retryable: boolean,
-    public readonly originalError?: Error
-  ) {
-    super(message);
-    this.name = 'AssemblyAIServiceError';
+// src/assemblyai/lemur.ts
+import { getClient } from './client';
+
+export class LeMURService {
+  private client = getClient();
+
+  async summarize(transcriptIds: string[], context?: string) {
+    const { response } = await this.client.lemur.summary({
+      transcript_ids: transcriptIds,
+      context,
+      answer_format: 'bullet points',
+    });
+    return response;
+  }
+
+  async extractActionItems(transcriptIds: string[]) {
+    const { response } = await this.client.lemur.actionItems({
+      transcript_ids: transcriptIds,
+    });
+    return response;
+  }
+
+  async askQuestions(transcriptIds: string[], questions: string[]) {
+    const { response } = await this.client.lemur.questionAnswer({
+      transcript_ids: transcriptIds,
+      questions: questions.map(q => ({ question: q })),
+    });
+    return response;
+  }
+
+  async customTask(transcriptIds: string[], prompt: string) {
+    const { response } = await this.client.lemur.task({
+      transcript_ids: transcriptIds,
+      prompt,
+    });
+    return response;
   }
 }
-
-export function wrapAssemblyAIError(error: unknown): AssemblyAIServiceError {
-  // Transform SDK errors to application errors
-}
 ```
 
-### Step 3: Health Check
+### Step 4: Streaming Service
+
 ```typescript
-// src/assemblyai/health.ts
-export async function checkAssemblyAIHealth(): Promise<HealthStatus> {
-  try {
-    const start = Date.now();
-    await assemblyaiClient.ping();
-    return {
-      status: 'healthy',
-      latencyMs: Date.now() - start,
-    };
-  } catch (error) {
-    return { status: 'unhealthy', error: error.message };
+// src/assemblyai/streaming.ts
+import { getClient } from './client';
+
+export class StreamingService {
+  private client = getClient();
+
+  async createToken(expiresInSeconds = 300) {
+    return this.client.streaming.createTemporaryToken({
+      expires_in_seconds: expiresInSeconds,
+    });
+  }
+
+  createTranscriber(options: {
+    sampleRate?: number;
+    model?: string;
+    wordBoost?: string[];
+  } = {}) {
+    return this.client.streaming.createService({
+      speech_model: (options.model as any) ?? 'nova-3',
+      sample_rate: options.sampleRate ?? 16000,
+      word_boost: options.wordBoost,
+    });
   }
 }
 ```
 
-## Data Flow Diagram
-
-```
-User Request
-     │
-     ▼
-┌─────────────┐
-│   API       │
-│   Gateway   │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐    ┌─────────────┐
-│   Service   │───▶│   Cache     │
-│   Layer     │    │   (Redis)   │
-└──────┬──────┘    └─────────────┘
-       │
-       ▼
-┌─────────────┐
-│ AssemblyAI    │
-│   Client    │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│ AssemblyAI    │
-│   API       │
-└─────────────┘
-```
-
-## Configuration Management
+### Step 5: Webhook Handler
 
 ```typescript
-// config/assemblyai.ts
-export interface AssemblyAIConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  timeout: number;
-  retries: number;
-  cache: {
-    enabled: boolean;
-    ttlSeconds: number;
-  };
-}
+// src/api/webhooks/assemblyai.ts
+import { TranscriptionService } from '../../assemblyai/transcription';
+import { LeMURService } from '../../assemblyai/lemur';
 
-export function loadAssemblyAIConfig(): AssemblyAIConfig {
-  const env = process.env.NODE_ENV || 'development';
-  return require(`./assemblyai.${env}.json`);
+const transcription = new TranscriptionService();
+const lemur = new LeMURService();
+
+export async function handleWebhook(req: Request): Promise<Response> {
+  // Verify auth
+  const secret = req.headers.get('x-webhook-secret');
+  if (secret !== process.env.ASSEMBLYAI_WEBHOOK_SECRET) {
+    return new Response('Unauthorized', { status: 401 });
+  }
+
+  const { transcript_id, status } = await req.json();
+
+  // Respond immediately
+  const response = new Response(JSON.stringify({ received: true }), { status: 200 });
+
+  // Process asynchronously
+  if (status === 'completed') {
+    const transcript = await transcription.getTranscript(transcript_id);
+
+    // Auto-analyze with LeMUR
+    const summary = await lemur.summarize([transcript_id]);
+    const actionItems = await lemur.extractActionItems([transcript_id]);
+
+    // Store results in your database
+    await storeResults(transcript, summary, actionItems);
+  }
+
+  return response;
 }
 ```
 
-## Instructions
+### Step 6: Data Flow
 
-### Step 1: Create Directory Structure
-Set up the project layout following the reference structure above.
+```
+User uploads audio
+        │
+        ▼
+┌─────────────────┐
+│  API: /transcribe│
+│  submit() + URL  │
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│  AssemblyAI API  │  ← Processes audio (seconds to minutes)
+│  (async queue)   │
+└────────┬────────┘
+         │ webhook POST
+         ▼
+┌─────────────────┐
+│ Webhook Handler  │
+│ get() transcript │
+└────────┬────────┘
+         │
+    ┌────┴────┐
+    ▼         ▼
+┌────────┐ ┌────────┐
+│ Store  │ │ LeMUR  │  ← Auto-summarize, extract action items
+│ in DB  │ │ Analyze│
+└────────┘ └────────┘
+```
 
-### Step 2: Implement Client Wrapper
-Create the singleton client with caching and monitoring.
+## Configuration
 
-### Step 3: Add Error Handling
-Implement custom error classes for AssemblyAI operations.
-
-### Step 4: Configure Health Checks
-Add health check endpoint for AssemblyAI connectivity.
+```typescript
+// src/config.ts
+export const config = {
+  assemblyai: {
+    model: (process.env.ASSEMBLYAI_MODEL ?? 'best') as 'best' | 'nano',
+    webhookUrl: process.env.ASSEMBLYAI_WEBHOOK_URL,
+    webhookSecret: process.env.ASSEMBLYAI_WEBHOOK_SECRET,
+    defaultFeatures: {
+      speakerLabels: true,
+      sentimentAnalysis: false,
+      entityDetection: false,
+      piiRedaction: process.env.NODE_ENV === 'production',
+    },
+    streaming: {
+      tokenExpiry: 300,
+      sampleRate: 16000,
+      model: 'nova-3',
+    },
+    batch: {
+      concurrency: 5,
+      retries: 3,
+    },
+  },
+};
+```
 
 ## Output
-- Structured project layout
-- Client wrapper with caching
-- Error boundary implemented
-- Health checks configured
+- Layered architecture with clear separation of concerns
+- Transcription service with webhook-based async processing
+- LeMUR analysis pipeline auto-triggered on completion
+- Streaming service with temporary token management
+- Batch processing with concurrency control
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Circular dependencies | Wrong layering | Separate concerns by layer |
-| Config not loading | Wrong paths | Verify config file locations |
-| Type errors | Missing types | Add AssemblyAI types |
-| Test isolation | Shared state | Use dependency injection |
-
-## Examples
-
-### Quick Setup Script
-```bash
-# Create reference structure
-mkdir -p src/assemblyai/{handlers} src/services/assemblyai src/api/assemblyai
-touch src/assemblyai/{client,config,types,errors}.ts
-touch src/services/assemblyai/{index,sync,cache}.ts
-```
+| Circular dependencies | Wrong layer boundaries | Services depend on SDK layer, never on API layer |
+| Webhook missed | Processing took too long | Return 200 immediately, process async |
+| LeMUR timeout | Too many transcripts | Batch transcript_ids in groups of 10 |
+| Streaming disconnect | Network interruption | Implement reconnection in StreamingService |
 
 ## Resources
-- [AssemblyAI SDK Documentation](https://docs.assemblyai.com/sdk)
-- [AssemblyAI Best Practices](https://docs.assemblyai.com/best-practices)
+- [AssemblyAI Documentation](https://www.assemblyai.com/docs)
+- [AssemblyAI Node SDK](https://github.com/AssemblyAI/assemblyai-node-sdk)
+- [AssemblyAI API Reference](https://www.assemblyai.com/docs/api-reference/overview)
+- [AssemblyAI Blog — Best Practices](https://www.assemblyai.com/blog)
 
-## Flagship Skills
-For multi-environment setup, see `assemblyai-multi-env-setup`.
+## Next Steps
+For getting started quickly, see `assemblyai-hello-world`.

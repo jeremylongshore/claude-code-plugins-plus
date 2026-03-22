@@ -1,60 +1,85 @@
 ---
 name: assemblyai-rate-limits
 description: |
-  Implement AssemblyAI rate limiting, backoff, and idempotency patterns.
+  Implement AssemblyAI rate limiting, backoff, and queue-based throttling.
   Use when handling rate limit errors, implementing retry logic,
-  or optimizing API request throughput for AssemblyAI.
+  or managing concurrent transcription throughput.
   Trigger with phrases like "assemblyai rate limit", "assemblyai throttling",
   "assemblyai 429", "assemblyai retry", "assemblyai backoff".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, speech-to-text, assemblyai]
+tags: [saas, ai, speech-to-text, assemblyai, transcription]
 compatible-with: claude-code
 ---
 
 # AssemblyAI Rate Limits
 
 ## Overview
-Handle AssemblyAI rate limits gracefully with exponential backoff and idempotency.
+Handle AssemblyAI rate limits with exponential backoff, queue-based throttling, and concurrency management. AssemblyAI auto-scales limits for paid users.
 
 ## Prerequisites
-- AssemblyAI SDK installed
+- `assemblyai` package installed
 - Understanding of async/await patterns
-- Access to rate limit headers
+
+## Rate Limit Tiers (Actual)
+
+### Async Transcription API
+| Endpoint | Free | Pay-as-you-go |
+|----------|------|---------------|
+| `POST /v2/transcript` | 5/min | Scales with usage |
+| `GET /v2/transcript/:id` | No hard limit | No hard limit |
+| `POST /v2/upload` | 5/min | Scales with usage |
+
+### Streaming (WebSocket)
+| Metric | Free | Pay-as-you-go |
+|--------|------|---------------|
+| New streams/min | 5 | 100 (auto-scales) |
+| Concurrent streams | ~5 | Unlimited (auto-scales 10% every 60s at 70% usage) |
+
+### LeMUR
+| Metric | Free | Paid |
+|--------|------|------|
+| Requests/min | Limited | Scales with usage |
+| Max audio input | 100 hours per request | 100 hours per request |
+
+**Note:** AssemblyAI auto-scales paid limits. At 70%+ utilization, the new session rate limit increases by 10% every 60 seconds with no ceiling cap.
 
 ## Instructions
 
-### Step 1: Understand Rate Limit Tiers
-
-| Tier | Requests/min | Requests/day | Burst |
-|------|-------------|--------------|-------|
-| Free | 60 | 1,000 | 10 |
-| Pro | 300 | 10,000 | 50 |
-| Enterprise | 1,000 | 100,000 | 200 |
-
-### Step 2: Implement Exponential Backoff with Jitter
+### Step 1: Exponential Backoff with Jitter
 
 ```typescript
-async function withExponentialBackoff<T>(
-  operation: () => Promise<T>,
-  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 32000, jitterMs: 500 }
-): Promise<T> {
+import { AssemblyAI, type Transcript } from 'assemblyai';
+
+const client = new AssemblyAI({
+  apiKey: process.env.ASSEMBLYAI_API_KEY!,
+});
+
+async function transcribeWithBackoff(
+  audioUrl: string,
+  options: Record<string, any> = {},
+  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 30000 }
+): Promise<Transcript> {
   for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
     try {
-      return await operation();
-    } catch (error: any) {
-      if (attempt === config.maxRetries) throw error;
-      const status = error.status || error.response?.status;
-      if (status !== 429 && (status < 500 || status >= 600)) throw error;
+      return await client.transcripts.transcribe({
+        audio: audioUrl,
+        ...options,
+      });
+    } catch (err: any) {
+      if (attempt === config.maxRetries) throw err;
 
-      // Exponential delay with jitter to prevent thundering herd
+      const status = err.status ?? err.statusCode;
+      // Only retry on 429 (rate limit) and 5xx (server errors)
+      if (status && status !== 429 && (status < 500 || status >= 600)) throw err;
+
       const exponentialDelay = config.baseDelayMs * Math.pow(2, attempt);
-      const jitter = Math.random() * config.jitterMs;
+      const jitter = Math.random() * config.baseDelayMs;
       const delay = Math.min(exponentialDelay + jitter, config.maxDelayMs);
 
-      console.log(`Rate limited. Retrying in ${delay.toFixed(0)}ms...`);
+      console.warn(`[${attempt + 1}/${config.maxRetries}] Retrying in ${delay.toFixed(0)}ms...`);
       await new Promise(r => setTimeout(r, delay));
     }
   }
@@ -62,90 +87,117 @@ async function withExponentialBackoff<T>(
 }
 ```
 
-### Step 3: Add Idempotency Keys
+### Step 2: Queue-Based Concurrency Control
 
 ```typescript
-import { v4 as uuidv4 } from 'uuid';
-import crypto from 'crypto';
+import PQueue from 'p-queue';
 
-// Generate deterministic key from operation params (for safe retries)
-function generateIdempotencyKey(operation: string, params: Record<string, any>): string {
-  const data = JSON.stringify({ operation, params });
-  return crypto.createHash('sha256').update(data).digest('hex');
+// Limit to N concurrent transcription jobs
+const transcriptionQueue = new PQueue({
+  concurrency: 5,           // Max 5 concurrent jobs
+  interval: 60_000,         // Per minute window
+  intervalCap: 50,           // Max 50 new jobs per minute
+});
+
+async function queuedTranscribe(audioUrl: string): Promise<Transcript> {
+  return transcriptionQueue.add(() =>
+    transcribeWithBackoff(audioUrl)
+  );
 }
 
-async function idempotentRequest<T>(
-  client: AssemblyAIClient,
-  params: Record<string, any>,
-  idempotencyKey?: string  // Pass existing key for retries
-): Promise<T> {
-  // Use provided key (for retries) or generate deterministic key from params
-  const key = idempotencyKey || generateIdempotencyKey(params.method || 'POST', params);
-  return client.request({
-    ...params,
-    headers: { 'Idempotency-Key': key, ...params.headers },
-  });
+// Process a batch of files
+const audioUrls = [
+  'https://example.com/audio1.mp3',
+  'https://example.com/audio2.mp3',
+  'https://example.com/audio3.mp3',
+];
+
+const results = await Promise.all(
+  audioUrls.map(url => queuedTranscribe(url))
+);
+
+console.log(`Completed ${results.length} transcriptions`);
+console.log(`Queue size: ${transcriptionQueue.size}, pending: ${transcriptionQueue.pending}`);
+```
+
+### Step 3: Batch Processing with Progress
+
+```typescript
+async function batchTranscribe(
+  audioUrls: string[],
+  onProgress?: (completed: number, total: number) => void
+): Promise<Transcript[]> {
+  const queue = new PQueue({ concurrency: 5 });
+  const results: Transcript[] = [];
+  let completed = 0;
+
+  const promises = audioUrls.map(url =>
+    queue.add(async () => {
+      const transcript = await transcribeWithBackoff(url);
+      completed++;
+      onProgress?.(completed, audioUrls.length);
+      return transcript;
+    })
+  );
+
+  return Promise.all(promises);
+}
+
+// Usage
+await batchTranscribe(
+  urls,
+  (done, total) => console.log(`Progress: ${done}/${total}`)
+);
+```
+
+### Step 4: Streaming Rate Limit Handling
+
+```typescript
+async function connectStreamingWithRetry(maxRetries = 3) {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      const transcriber = client.streaming.createService({
+        speech_model: 'nova-3',
+        sample_rate: 16000,
+      });
+
+      transcriber.on('error', (error) => {
+        console.error('Streaming error:', error);
+      });
+
+      await transcriber.connect();
+      return transcriber;
+    } catch (err: any) {
+      if (attempt === maxRetries) throw err;
+
+      // WebSocket code 4008 = session limit
+      const delay = Math.pow(2, attempt) * 2000;
+      console.warn(`Stream connect failed. Retrying in ${delay}ms...`);
+      await new Promise(r => setTimeout(r, delay));
+    }
+  }
 }
 ```
 
 ## Output
-- Reliable API calls with automatic retry
-- Idempotent requests preventing duplicates
-- Rate limit headers properly handled
+- Automatic retry with exponential backoff and jitter
+- Queue-based concurrency control with p-queue
+- Batch transcription with progress reporting
+- Streaming reconnection logic
 
 ## Error Handling
-| Header | Description | Action |
-|--------|-------------|--------|
-| X-RateLimit-Limit | Max requests | Monitor usage |
-| X-RateLimit-Remaining | Remaining requests | Throttle if low |
-| X-RateLimit-Reset | Reset timestamp | Wait until reset |
-| Retry-After | Seconds to wait | Honor this value |
-
-## Examples
-
-### Queue-Based Rate Limiting
-```typescript
-import PQueue from 'p-queue';
-
-const queue = new PQueue({
-  concurrency: 5,
-  interval: 1000,
-  intervalCap: 10,
-});
-
-async function queuedRequest<T>(operation: () => Promise<T>): Promise<T> {
-  return queue.add(operation);
-}
-```
-
-### Monitor Rate Limit Usage
-```typescript
-class RateLimitMonitor {
-  private remaining: number = 60;
-  private resetAt: Date = new Date();
-
-  updateFromHeaders(headers: Headers) {
-    this.remaining = parseInt(headers.get('X-RateLimit-Remaining') || '60');
-    const resetTimestamp = headers.get('X-RateLimit-Reset');
-    if (resetTimestamp) {
-      this.resetAt = new Date(parseInt(resetTimestamp) * 1000);
-    }
-  }
-
-  shouldThrottle(): boolean {
-    // Only throttle if low remaining AND reset hasn't happened yet
-    return this.remaining < 5 && new Date() < this.resetAt;
-  }
-
-  getWaitTime(): number {
-    return Math.max(0, this.resetAt.getTime() - Date.now());
-  }
-}
-```
+| Scenario | Status | Strategy |
+|----------|--------|----------|
+| Rate limited (async) | 429 | Exponential backoff, honor `Retry-After` header |
+| Server error | 500-503 | Retry with backoff |
+| Session limit (streaming) | WS 4008 | Wait and reconnect |
+| Auth error | 401 | Do not retry, fix credentials |
+| Invalid input | 400 | Do not retry, fix request |
 
 ## Resources
-- [AssemblyAI Rate Limits](https://docs.assemblyai.com/rate-limits)
+- [AssemblyAI Rate Limits](https://www.assemblyai.com/docs/deployment/account-management)
 - [p-queue Documentation](https://github.com/sindresorhus/p-queue)
+- [AssemblyAI Streaming Limits](https://www.assemblyai.com/docs/streaming)
 
 ## Next Steps
 For security configuration, see `assemblyai-security-basics`.

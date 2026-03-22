@@ -1,216 +1,239 @@
 ---
 name: assemblyai-performance-tuning
 description: |
-  Optimize AssemblyAI API performance with caching, batching, and connection pooling.
-  Use when experiencing slow API responses, implementing caching strategies,
-  or optimizing request throughput for AssemblyAI integrations.
+  Optimize AssemblyAI API performance with caching, parallel processing, and model selection.
+  Use when experiencing slow transcriptions, implementing caching strategies,
+  or optimizing throughput for batch transcription workloads.
   Trigger with phrases like "assemblyai performance", "optimize assemblyai",
   "assemblyai latency", "assemblyai caching", "assemblyai slow", "assemblyai batch".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, speech-to-text, assemblyai]
+tags: [saas, ai, speech-to-text, assemblyai, transcription, performance]
 compatible-with: claude-code
 ---
 
 # AssemblyAI Performance Tuning
 
 ## Overview
-Optimize AssemblyAI API performance with caching, batching, and connection pooling.
+Optimize AssemblyAI transcription performance through model selection, parallel processing, caching, and webhook-based architectures.
 
 ## Prerequisites
-- AssemblyAI SDK installed
+- `assemblyai` package installed
 - Understanding of async patterns
 - Redis or in-memory cache available (optional)
-- Performance monitoring in place
 
-## Latency Benchmarks
+## Latency Benchmarks (Actual)
 
-| Operation | P50 | P95 | P99 |
-|-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
+### Async Transcription
+| Audio Duration | Approx. Processing Time | Notes |
+|----------------|------------------------|-------|
+| 30 seconds | ~10-15 seconds | Includes queue time |
+| 5 minutes | ~30-60 seconds | Scales sub-linearly |
+| 1 hour | ~3-5 minutes | Depends on queue load |
+| 10 hours | ~15-30 minutes | Max async duration |
 
-## Caching Strategy
+### Streaming
+| Metric | Value |
+|--------|-------|
+| First partial transcript | ~300ms (P50) |
+| Final transcript latency | ~500ms (P50) |
+| End-of-turn detection | Automatic with endpointing |
 
-### Response Caching
-```typescript
-import { LRUCache } from 'lru-cache';
-
-const cache = new LRUCache<string, any>({
-  max: 1000,
-  ttl: 60000, // 1 minute
-  updateAgeOnGet: true,
-});
-
-async function cachedAssemblyAIRequest<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttl?: number
-): Promise<T> {
-  const cached = cache.get(key);
-  if (cached) return cached as T;
-
-  const result = await fetcher();
-  cache.set(key, result, { ttl });
-  return result;
-}
-```
-
-### Redis Caching (Distributed)
-```typescript
-import Redis from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function cachedWithRedis<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttlSeconds = 60
-): Promise<T> {
-  const cached = await redis.get(key);
-  if (cached) return JSON.parse(cached);
-
-  const result = await fetcher();
-  await redis.setex(key, ttlSeconds, JSON.stringify(result));
-  return result;
-}
-```
-
-## Request Batching
-
-```typescript
-import DataLoader from 'dataloader';
-
-const assemblyaiLoader = new DataLoader<string, any>(
-  async (ids) => {
-    // Batch fetch from AssemblyAI
-    const results = await assemblyaiClient.batchGet(ids);
-    return ids.map(id => results.find(r => r.id === id) || null);
-  },
-  {
-    maxBatchSize: 100,
-    batchScheduleFn: callback => setTimeout(callback, 10),
-  }
-);
-
-// Usage - automatically batched
-const [item1, item2, item3] = await Promise.all([
-  assemblyaiLoader.load('id-1'),
-  assemblyaiLoader.load('id-2'),
-  assemblyaiLoader.load('id-3'),
-]);
-```
-
-## Connection Optimization
-
-```typescript
-import { Agent } from 'https';
-
-// Keep-alive connection pooling
-const agent = new Agent({
-  keepAlive: true,
-  maxSockets: 10,
-  maxFreeSockets: 5,
-  timeout: 30000,
-});
-
-const client = new AssemblyAIClient({
-  apiKey: process.env.ASSEMBLYAI_API_KEY!,
-  httpAgent: agent,
-});
-```
-
-## Pagination Optimization
-
-```typescript
-async function* paginatedAssemblyAIList<T>(
-  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
-): AsyncGenerator<T> {
-  let cursor: string | undefined;
-
-  do {
-    const { data, nextCursor } = await fetcher(cursor);
-    for (const item of data) {
-      yield item;
-    }
-    cursor = nextCursor;
-  } while (cursor);
-}
-
-// Usage
-for await (const item of paginatedAssemblyAIList(cursor =>
-  assemblyaiClient.list({ cursor, limit: 100 })
-)) {
-  await process(item);
-}
-```
-
-## Performance Monitoring
-
-```typescript
-async function measuredAssemblyAICall<T>(
-  operation: string,
-  fn: () => Promise<T>
-): Promise<T> {
-  const start = performance.now();
-  try {
-    const result = await fn();
-    const duration = performance.now() - start;
-    console.log({ operation, duration, status: 'success' });
-    return result;
-  } catch (error) {
-    const duration = performance.now() - start;
-    console.error({ operation, duration, status: 'error', error });
-    throw error;
-  }
-}
-```
+### Model Speed vs. Accuracy
+| Model | Speed | Accuracy | Price/hr |
+|-------|-------|----------|----------|
+| `nano` | Fastest | Good | $0.12 |
+| `best` (Universal-3) | Standard | Highest | $0.37 |
+| `nova-3` (streaming) | Real-time | High | $0.47 |
+| `nova-3-pro` (streaming) | Real-time | Highest | $0.47 |
 
 ## Instructions
 
-### Step 1: Establish Baseline
-Measure current latency for critical AssemblyAI operations.
+### Step 1: Choose the Right Model
 
-### Step 2: Implement Caching
-Add response caching for frequently accessed data.
+```typescript
+import { AssemblyAI } from 'assemblyai';
 
-### Step 3: Enable Batching
-Use DataLoader or similar for automatic request batching.
+const client = new AssemblyAI({
+  apiKey: process.env.ASSEMBLYAI_API_KEY!,
+});
 
-### Step 4: Optimize Connections
-Configure connection pooling with keep-alive.
+// For highest accuracy (default)
+const accurate = await client.transcripts.transcribe({
+  audio: audioUrl,
+  speech_model: 'best',
+});
+
+// For fastest processing and lowest cost
+const fast = await client.transcripts.transcribe({
+  audio: audioUrl,
+  speech_model: 'nano',
+});
+```
+
+### Step 2: Parallel Batch Processing
+
+```typescript
+import PQueue from 'p-queue';
+
+const queue = new PQueue({ concurrency: 10 });
+
+async function batchTranscribe(audioUrls: string[]) {
+  const results = await Promise.all(
+    audioUrls.map(url =>
+      queue.add(() =>
+        client.transcripts.transcribe({ audio: url, speech_model: 'nano' })
+      )
+    )
+  );
+
+  return results.filter(t => t.status === 'completed');
+}
+
+// Process 100 files with 10 concurrent jobs
+const urls = Array.from({ length: 100 }, (_, i) => `https://storage.example.com/audio-${i}.mp3`);
+const transcripts = await batchTranscribe(urls);
+console.log(`Completed: ${transcripts.length}/${urls.length}`);
+```
+
+### Step 3: Use Webhooks Instead of Polling
+
+```typescript
+// SLOW: transcribe() polls every 3 seconds until done
+const slow = await client.transcripts.transcribe({ audio: audioUrl });
+
+// FAST: submit() returns immediately, webhook notifies on completion
+const fast = await client.transcripts.submit({
+  audio: audioUrl,
+  webhook_url: 'https://your-app.com/webhooks/assemblyai',
+});
+// Your webhook handler processes the result — no polling overhead
+```
+
+### Step 4: Cache Transcript Results
+
+```typescript
+import { LRUCache } from 'lru-cache';
+import type { Transcript } from 'assemblyai';
+
+const transcriptCache = new LRUCache<string, Transcript>({
+  max: 500,
+  ttl: 60 * 60 * 1000, // 1 hour
+});
+
+async function getCachedTranscript(transcriptId: string): Promise<Transcript> {
+  const cached = transcriptCache.get(transcriptId);
+  if (cached) return cached;
+
+  const transcript = await client.transcripts.get(transcriptId);
+  if (transcript.status === 'completed') {
+    transcriptCache.set(transcriptId, transcript);
+  }
+  return transcript;
+}
+```
+
+### Step 5: Redis Cache for Distributed Systems
+
+```typescript
+import Redis from 'ioredis';
+
+const redis = new Redis(process.env.REDIS_URL!);
+
+async function getCachedTranscriptRedis(transcriptId: string): Promise<Transcript> {
+  const cached = await redis.get(`transcript:${transcriptId}`);
+  if (cached) return JSON.parse(cached);
+
+  const transcript = await client.transcripts.get(transcriptId);
+  if (transcript.status === 'completed') {
+    await redis.setex(
+      `transcript:${transcriptId}`,
+      3600, // 1 hour TTL
+      JSON.stringify(transcript)
+    );
+  }
+  return transcript;
+}
+```
+
+### Step 6: Minimize Feature Overhead
+
+```typescript
+// Only enable features you actually need — each adds processing time
+
+// Minimal (fastest)
+const minimal = await client.transcripts.transcribe({
+  audio: audioUrl,
+  speech_model: 'nano',
+  punctuate: true,
+  format_text: true,
+});
+
+// Full intelligence (slower, more expensive)
+const full = await client.transcripts.transcribe({
+  audio: audioUrl,
+  speech_model: 'best',
+  speaker_labels: true,
+  sentiment_analysis: true,
+  entity_detection: true,
+  auto_highlights: true,
+  content_safety: true,
+  iab_categories: true,
+  summarization: true,
+  summary_type: 'bullets',
+});
+```
+
+### Step 7: Performance Monitoring
+
+```typescript
+async function timedTranscribe(audioUrl: string, options: Record<string, any> = {}) {
+  const start = Date.now();
+  const transcript = await client.transcripts.transcribe({
+    audio: audioUrl,
+    ...options,
+  });
+  const durationMs = Date.now() - start;
+
+  const stats = {
+    transcriptId: transcript.id,
+    status: transcript.status,
+    audioDuration: transcript.audio_duration,
+    processingTimeMs: durationMs,
+    ratio: transcript.audio_duration
+      ? (durationMs / 1000 / transcript.audio_duration).toFixed(2)
+      : 'N/A',
+    wordCount: transcript.words?.length ?? 0,
+    model: options.speech_model ?? 'best',
+  };
+
+  console.log('Transcription stats:', stats);
+  return { transcript, stats };
+}
+```
 
 ## Output
-- Reduced API latency
-- Caching layer implemented
-- Request batching enabled
-- Connection pooling configured
+- Optimal model selection based on speed/accuracy/cost trade-offs
+- Parallel batch processing with concurrency control
+- Webhook-based architecture (eliminates polling overhead)
+- In-memory and Redis caching for transcript retrieval
+- Performance monitoring with processing time ratios
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Cache miss storm | TTL expired | Use stale-while-revalidate |
-| Batch timeout | Too many items | Reduce batch size |
-| Connection exhausted | No pooling | Configure max sockets |
-| Memory pressure | Cache too large | Set max cache entries |
-
-## Examples
-
-### Quick Performance Wrapper
-```typescript
-const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
-  measuredAssemblyAICall(name, () =>
-    cachedAssemblyAIRequest(`cache:${name}`, fn)
-  );
-```
+| Slow transcription | Large file + best model | Use `nano` model or split audio |
+| Queue backlog | Too many concurrent submissions | Limit concurrency with p-queue |
+| Cache stale data | Transcript re-processed | Set appropriate TTL, invalidate on webhook |
+| Polling overhead | Using `transcribe()` for many files | Switch to `submit()` + webhooks |
 
 ## Resources
-- [AssemblyAI Performance Guide](https://docs.assemblyai.com/performance)
-- [DataLoader Documentation](https://github.com/graphql/dataloader)
-- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
+- [AssemblyAI Speech Models](https://www.assemblyai.com/docs/speech-to-text/speech-recognition)
+- [AssemblyAI Processing FAQ](https://www.assemblyai.com/docs/concepts/faq)
+- [LRU Cache](https://github.com/isaacs/node-lru-cache)
+- [p-queue](https://github.com/sindresorhus/p-queue)
 
 ## Next Steps
 For cost optimization, see `assemblyai-cost-tuning`.
