@@ -1,7 +1,7 @@
 ---
 name: ideogram-incident-runbook
 description: |
-  Execute Ideogram incident response procedures with triage, mitigation, and postmortem.
+  Execute Ideogram incident response with triage, mitigation, and postmortem.
   Use when responding to Ideogram-related outages, investigating errors,
   or running post-incident reviews for Ideogram integration failures.
   Trigger with phrases like "ideogram incident", "ideogram outage",
@@ -17,195 +17,206 @@ tags: [saas, ideogram, incident-response]
 # Ideogram Incident Runbook
 
 ## Overview
-Rapid incident response procedures for Ideogram-related outages.
-
-## Prerequisites
-- Access to Ideogram dashboard and status page
-- kubectl access to production cluster
-- Prometheus/Grafana access
-- Communication channels (Slack, PagerDuty)
+Rapid incident response for Ideogram API outages, auth failures, rate limiting, and degraded generation quality. Covers triage, immediate remediation, fallback activation, and postmortem process.
 
 ## Severity Levels
 
-| Level | Definition | Response Time | Examples |
-|-------|------------|---------------|----------|
-| P1 | Complete outage | < 15 min | Ideogram API unreachable |
-| P2 | Degraded service | < 1 hour | High latency, partial failures |
-| P3 | Minor impact | < 4 hours | Webhook delays, non-critical errors |
-| P4 | No user impact | Next business day | Monitoring gaps |
+| Level | Definition | Response Time | Example |
+|-------|------------|---------------|---------|
+| P1 | API unreachable or all requests failing | < 15 min | 401 on valid key, 500 on all requests |
+| P2 | Degraded quality or performance | < 1 hour | P95 latency > 30s, high 429 rate |
+| P3 | Minor impact, workaround exists | < 4 hours | Occasional safety rejections, slow downloads |
+| P4 | No user impact | Next business day | Monitoring gaps, stale cache |
 
-## Quick Triage
+## Quick Triage (Run These First)
 
 ```bash
 set -euo pipefail
-# 1. Check Ideogram status
-curl -s https://status.ideogram.com | jq
 
-# 2. Check our integration health
-curl -s https://api.yourapp.com/health | jq '.services.ideogram'
+echo "=== IDEOGRAM TRIAGE ==="
 
-# 3. Check error rate (last 5 min)
-curl -s localhost:9090/api/v1/query?query=rate(ideogram_errors_total[5m])  # 9090: Prometheus port
+# 1. Test API connectivity and auth
+echo -n "API status: "
+curl -s -o /dev/null -w "%{http_code}" \
+  -X POST https://api.ideogram.ai/generate \
+  -H "Api-Key: $IDEOGRAM_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"image_request":{"prompt":"triage test","model":"V_2_TURBO","magic_prompt_option":"OFF"}}'
+echo ""
 
-# 4. Recent error logs
-kubectl logs -l app=ideogram-integration --since=5m | grep -i error | tail -20
+# 2. Test V3 endpoint
+echo -n "V3 status: "
+curl -s -o /dev/null -w "%{http_code}" \
+  -X POST https://api.ideogram.ai/v1/ideogram-v3/generate \
+  -H "Api-Key: $IDEOGRAM_API_KEY" \
+  -F "prompt=triage test" -F "rendering_speed=FLASH"
+echo ""
+
+# 3. Check DNS resolution
+echo -n "DNS: "
+nslookup api.ideogram.ai 2>/dev/null | grep -A1 "Name:" | tail -1 || echo "lookup failed"
+
+# 4. Measure latency
+echo -n "Latency: "
+curl -s -o /dev/null -w "%{time_total}s" \
+  -X POST https://api.ideogram.ai/generate \
+  -H "Api-Key: $IDEOGRAM_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"image_request":{"prompt":"latency test","model":"V_2_TURBO","magic_prompt_option":"OFF"}}'
+echo ""
 ```
 
 ## Decision Tree
 
 ```
-Ideogram API returning errors?
-├─ YES: Is status.ideogram.com showing incident?
-│   ├─ YES → Wait for Ideogram to resolve. Enable fallback.
-│   └─ NO → Our integration issue. Check credentials, config.
-└─ NO: Is our service healthy?
-    ├─ YES → Likely resolved or intermittent. Monitor.
-    └─ NO → Our infrastructure issue. Check pods, memory, network.
+Is api.ideogram.ai returning errors?
+├─ YES: What status code?
+│   ├─ 401 → Key revoked or misconfigured. See "Auth Failure" below.
+│   ├─ 402 → Credits exhausted. Top up immediately.
+│   ├─ 422 → Safety filter. Prompt issue, not outage.
+│   ├─ 429 → Rate limited. Reduce concurrency.
+│   ├─ 500/503 → Ideogram outage. Enable fallback.
+│   └─ Timeout → Network or Ideogram performance issue.
+├─ NO: Are images generating but quality is bad?
+│   ├─ YES → Check model version, style params, magic_prompt setting.
+│   └─ NO → Check image download (URLs may have expired).
+└─ Not sure: Run triage script above.
 ```
 
-## Immediate Actions by Error Type
+## Immediate Actions
 
-### 401/403 - Authentication
+### 401 -- Authentication Failure
 ```bash
 set -euo pipefail
-# Verify API key is set
-kubectl get secret ideogram-secrets -o jsonpath='{.data.api-key}' | base64 -d
+# Verify key is set
+echo "Key present: ${IDEOGRAM_API_KEY:+YES}${IDEOGRAM_API_KEY:-NO}"
+echo "Key length: ${#IDEOGRAM_API_KEY}"
 
-# Check if key was rotated
-# → Verify in Ideogram dashboard
+# If key was rotated, update everywhere:
+# 1. Ideogram dashboard: create new key
+# 2. Update secret manager / env vars
+# 3. Restart affected services
 
-# Remediation: Update secret and restart pods
-kubectl create secret generic ideogram-secrets --from-literal=api-key=NEW_KEY --dry-run=client -o yaml | kubectl apply -f -
-kubectl rollout restart deployment/ideogram-integration
+# Kubernetes
+kubectl create secret generic ideogram-secrets \
+  --from-literal=api-key="$NEW_KEY" \
+  --dry-run=client -o yaml | kubectl apply -f -
+kubectl rollout restart deployment/ideogram-service
 ```
 
-### 429 - Rate Limited
+### 429 -- Sustained Rate Limiting
 ```bash
 set -euo pipefail
-# Check rate limit headers
-curl -v https://api.ideogram.com 2>&1 | grep -i rate
+# Reduce concurrency immediately
+kubectl set env deployment/ideogram-service IDEOGRAM_CONCURRENCY=3
 
-# Enable request queuing
-kubectl set env deployment/ideogram-integration RATE_LIMIT_MODE=queue
-
-# Long-term: Contact Ideogram for limit increase
+# If sustained, contact Ideogram for limit increase
+# partnership@ideogram.ai
 ```
 
-### 500/503 - Ideogram Errors
+### 500/503 -- Ideogram Outage
 ```bash
 set -euo pipefail
-# Enable graceful degradation
-kubectl set env deployment/ideogram-integration IDEOGRAM_FALLBACK=true
+# Enable fallback mode (return placeholder images)
+kubectl set env deployment/ideogram-service IDEOGRAM_FALLBACK=true
+kubectl rollout restart deployment/ideogram-service
 
-# Notify users of degraded service
-# Update status page
+# Monitor for resolution, then disable fallback
+# kubectl set env deployment/ideogram-service IDEOGRAM_FALLBACK=false
+```
 
-# Monitor Ideogram status for resolution
+### 402 -- Credits Exhausted
+```
+1. Log into ideogram.ai > Settings > API Beta
+2. Check current balance
+3. Increase auto top-up amount
+4. Or manually add credits
+5. Verify generation works again
+```
+
+## Fallback Implementation
+```typescript
+const FALLBACK_ENABLED = process.env.IDEOGRAM_FALLBACK === "true";
+
+async function generateWithFallback(prompt: string, options: any = {}) {
+  if (FALLBACK_ENABLED) {
+    return {
+      data: [{
+        url: `https://placehold.co/1024x1024/333/fff?text=${encodeURIComponent("Image unavailable")}`,
+        seed: 0,
+        resolution: "1024x1024",
+        is_image_safe: true,
+        fallback: true,
+      }],
+    };
+  }
+
+  try {
+    return await generateImage(prompt, options);
+  } catch (err: any) {
+    if (err.status >= 500) {
+      console.error("Ideogram 5xx -- serving fallback");
+      return generateWithFallback(prompt, options);
+    }
+    throw err;
+  }
+}
 ```
 
 ## Communication Templates
 
 ### Internal (Slack)
 ```
-🔴 P1 INCIDENT: Ideogram Integration
-Status: INVESTIGATING
-Impact: [Describe user impact]
-Current action: [What you're doing]
-Next update: [Time]
-Incident commander: @[name]
+P[X] INCIDENT: Ideogram Integration
+Status: INVESTIGATING / MITIGATED / RESOLVED
+Impact: [e.g., Image generation unavailable for users]
+Cause: [e.g., API returning 500, or key revoked]
+Action: [e.g., Fallback enabled, monitoring for resolution]
+Next update: [time]
+Owner: @[name]
 ```
 
-### External (Status Page)
-```
-Ideogram Integration Issue
-
-We're experiencing issues with our Ideogram integration.
-Some users may experience [specific impact].
-
-We're actively investigating and will provide updates.
-
-Last updated: [timestamp]
-```
-
-## Post-Incident
-
-### Evidence Collection
-```bash
-set -euo pipefail
-# Generate debug bundle
-./scripts/ideogram-debug-bundle.sh
-
-# Export relevant logs
-kubectl logs -l app=ideogram-integration --since=1h > incident-logs.txt
-
-# Capture metrics
-curl "localhost:9090/api/v1/query_range?query=ideogram_errors_total&start=2h" > metrics.json  # 9090: Prometheus port
-```
-
-### Postmortem Template
+## Postmortem Template
 ```markdown
-## Incident: Ideogram [Error Type]
-**Date:** YYYY-MM-DD
-**Duration:** X hours Y minutes
-**Severity:** P[1-4]
+## Incident: Ideogram [Type]
+**Date:** YYYY-MM-DD | **Duration:** Xh Ym | **Severity:** P[1-4]
 
 ### Summary
-[1-2 sentence description]
+[1-2 sentences]
 
 ### Timeline
-- HH:MM - [Event]
-- HH:MM - [Event]
+- HH:MM - First alert triggered
+- HH:MM - Triage started
+- HH:MM - Fallback enabled
+- HH:MM - Root cause identified
+- HH:MM - Resolved
 
 ### Root Cause
 [Technical explanation]
 
-### Impact
-- Users affected: N
-- Revenue impact: $X
-
 ### Action Items
-- [ ] [Preventive measure] - Owner - Due date
+- [ ] [Fix] - Owner - Due date
+- [ ] [Prevention] - Owner - Due date
 ```
-
-## Instructions
-
-### Step 1: Quick Triage
-Run the triage commands to identify the issue source.
-
-### Step 2: Follow Decision Tree
-Determine if the issue is Ideogram-side or internal.
-
-### Step 3: Execute Immediate Actions
-Apply the appropriate remediation for the error type.
-
-### Step 4: Communicate Status
-Update internal and external stakeholders.
-
-## Output
-- Issue identified and categorized
-- Remediation applied
-- Stakeholders notified
-- Evidence collected for postmortem
 
 ## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Can't reach status page | Network issue | Use mobile or VPN |
-| kubectl fails | Auth expired | Re-authenticate |
-| Metrics unavailable | Prometheus down | Check backup metrics |
-| Secret rotation fails | Permission denied | Escalate to admin |
+| Issue | Detection | Mitigation |
+|-------|-----------|------------|
+| Total API outage | Health check fails | Enable fallback images |
+| Key revoked | 401 on valid config | Rotate key immediately |
+| Credits depleted | 402 responses | Top up, pause batch jobs |
+| Rate limit flood | Sustained 429 | Reduce concurrency to 3 |
 
-## Examples
-
-### One-Line Health Check
-```bash
-set -euo pipefail
-curl -sf https://api.yourapp.com/health | jq '.services.ideogram.status' || echo "UNHEALTHY"
-```
+## Output
+- Incident identified and categorized by severity
+- Immediate remediation applied
+- Fallback activated if needed
+- Stakeholders notified with template
+- Evidence collected for postmortem
 
 ## Resources
-- [Ideogram Status Page](https://status.ideogram.com)
-- [Ideogram Support](https://support.ideogram.com)
+- [Ideogram API Overview](https://developer.ideogram.ai/ideogram-api/api-overview)
+- Enterprise support: `partnership@ideogram.ai`
 
 ## Next Steps
-For data handling, see `ideogram-data-handling`.
+For data handling patterns, see `ideogram-data-handling`.

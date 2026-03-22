@@ -1,151 +1,188 @@
 ---
 name: ideogram-rate-limits
 description: |
-  Implement Ideogram rate limiting, backoff, and idempotency patterns.
+  Implement Ideogram rate limiting, backoff, and request queuing patterns.
   Use when handling rate limit errors, implementing retry logic,
   or optimizing API request throughput for Ideogram.
   Trigger with phrases like "ideogram rate limit", "ideogram throttling",
-  "ideogram 429", "ideogram retry", "ideogram backoff".
+  "ideogram 429", "ideogram retry", "ideogram backoff", "ideogram queue".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, ideogram, api]
+tags: [saas, ideogram, api, rate-limiting]
 
 ---
 # Ideogram Rate Limits
 
 ## Overview
-Handle Ideogram rate limits gracefully with exponential backoff and idempotency.
+Handle Ideogram's rate limits with exponential backoff, request queuing, and concurrency control. Ideogram enforces a default limit of **10 in-flight requests** (concurrent, not per-minute). Image generation takes 5-15 seconds per call, so this limit can be hit quickly during batch operations.
 
 ## Prerequisites
-- Ideogram SDK installed
-- Understanding of async/await patterns
-- Access to rate limit headers
+- `IDEOGRAM_API_KEY` configured
+- Understanding of async patterns
+- `p-queue` npm package (optional, for queue-based approach)
+
+## Ideogram Rate Limit Model
+
+| Aspect | Detail |
+|--------|--------|
+| Type | Concurrent in-flight requests |
+| Default limit | 10 simultaneous requests |
+| Error code | HTTP 429 |
+| Retry header | Not guaranteed -- use exponential backoff |
+| Higher limits | Contact `partnership@ideogram.ai` |
+| Generation time | 5-15s per image (varies by model/resolution) |
 
 ## Instructions
 
-### Step 1: Understand Rate Limit Tiers
-
-| Tier | Requests/min | Requests/day | Burst |
-|------|-------------|--------------|-------|
-| Free | 60 | 1,000 | 10 |
-| Pro | 300 | 10,000 | 50 |
-| Enterprise | 1,000 | 100,000 | 200 |
-
-### Step 2: Implement Exponential Backoff with Jitter
-
+### Step 1: Exponential Backoff with Jitter
 ```typescript
-async function withExponentialBackoff<T>(
+async function withBackoff<T>(
   operation: () => Promise<T>,
-  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 32000, jitterMs: 500 }  # 32000: 500: 1000: 1 second in ms
+  config = { maxRetries: 5, baseMs: 1000, maxMs: 30000, jitterMs: 500 }
 ): Promise<T> {
   for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
     try {
       return await operation();
-    } catch (error: any) {
-      if (attempt === config.maxRetries) throw error;
-      const status = error.status || error.response?.status;
-      if (status !== 429 && (status < 500 || status >= 600)) throw error;  # 600: HTTP 429 Too Many Requests
+    } catch (err: any) {
+      if (attempt === config.maxRetries) throw err;
 
-      // Exponential delay with jitter to prevent thundering herd
-      const exponentialDelay = config.baseDelayMs * Math.pow(2, attempt);
+      const status = err.status ?? err.response?.status;
+      // Only retry on 429 (rate limited) or 5xx (server error)
+      if (status && status !== 429 && status < 500) throw err;
+
+      const exponential = config.baseMs * Math.pow(2, attempt);
       const jitter = Math.random() * config.jitterMs;
-      const delay = Math.min(exponentialDelay + jitter, config.maxDelayMs);
+      const delay = Math.min(exponential + jitter, config.maxMs);
 
-      console.log(`Rate limited. Retrying in ${delay.toFixed(0)}ms...`);
+      console.warn(`Rate limited (attempt ${attempt + 1}/${config.maxRetries}). Waiting ${delay.toFixed(0)}ms`);
       await new Promise(r => setTimeout(r, delay));
     }
   }
-  throw new Error('Unreachable');
+  throw new Error("Unreachable");
 }
 ```
 
-### Step 3: Add Idempotency Keys
-
+### Step 2: Concurrency-Limited Queue
 ```typescript
-import { v4 as uuidv4 } from 'uuid';
-import crypto from 'crypto';
+import PQueue from "p-queue";
 
-// Generate deterministic key from operation params (for safe retries)
-function generateIdempotencyKey(operation: string, params: Record<string, any>): string {
-  const data = JSON.stringify({ operation, params });
-  return crypto.createHash('sha256').update(data).digest('hex');
-}
+// Ideogram allows 10 in-flight -- use 8 to leave headroom
+const ideogramQueue = new PQueue({ concurrency: 8 });
 
-async function idempotentRequest<T>(
-  client: IdeogramClient,
-  params: Record<string, any>,
-  idempotencyKey?: string  // Pass existing key for retries
-): Promise<T> {
-  // Use provided key (for retries) or generate deterministic key from params
-  const key = idempotencyKey || generateIdempotencyKey(params.method || 'POST', params);
-  return client.request({
-    ...params,
-    headers: { 'Idempotency-Key': key, ...params.headers },
+async function queuedGenerate(prompt: string, options: any = {}) {
+  return ideogramQueue.add(async () => {
+    const response = await fetch("https://api.ideogram.ai/generate", {
+      method: "POST",
+      headers: {
+        "Api-Key": process.env.IDEOGRAM_API_KEY!,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        image_request: { prompt, model: "V_2", ...options },
+      }),
+    });
+
+    if (response.status === 429) {
+      throw Object.assign(new Error("Rate limited"), { status: 429 });
+    }
+    if (!response.ok) throw new Error(`Generate failed: ${response.status}`);
+    return response.json();
   });
 }
+
+// Process 50 prompts safely -- queue manages concurrency
+const prompts = Array.from({ length: 50 }, (_, i) => `Design variant ${i + 1}`);
+const results = await Promise.all(prompts.map(p => queuedGenerate(p)));
 ```
 
-## Output
-- Reliable API calls with automatic retry
-- Idempotent requests preventing duplicates
-- Rate limit headers properly handled
+### Step 3: Token Bucket Rate Limiter
+```typescript
+class TokenBucket {
+  private tokens: number;
+  private lastRefill: number;
+
+  constructor(
+    private maxTokens: number = 10,
+    private refillRate: number = 1, // tokens per second
+  ) {
+    this.tokens = maxTokens;
+    this.lastRefill = Date.now();
+  }
+
+  async acquire(): Promise<void> {
+    this.refill();
+    if (this.tokens > 0) {
+      this.tokens--;
+      return;
+    }
+    // Wait for next token
+    const waitMs = (1 / this.refillRate) * 1000;
+    await new Promise(r => setTimeout(r, waitMs));
+    this.refill();
+    this.tokens--;
+  }
+
+  private refill() {
+    const now = Date.now();
+    const elapsed = (now - this.lastRefill) / 1000;
+    this.tokens = Math.min(this.maxTokens, this.tokens + elapsed * this.refillRate);
+    this.lastRefill = now;
+  }
+}
+
+const bucket = new TokenBucket(10, 1);
+
+async function throttledGenerate(prompt: string) {
+  await bucket.acquire();
+  return queuedGenerate(prompt);
+}
+```
+
+### Step 4: Batch with Progress Tracking
+```typescript
+async function batchGenerate(
+  prompts: string[],
+  onProgress?: (done: number, total: number) => void
+) {
+  const results: any[] = [];
+  const errors: { prompt: string; error: Error }[] = [];
+
+  for (let i = 0; i < prompts.length; i++) {
+    try {
+      const result = await withBackoff(() => queuedGenerate(prompts[i]));
+      results.push(result);
+    } catch (err) {
+      errors.push({ prompt: prompts[i], error: err as Error });
+    }
+    onProgress?.(i + 1, prompts.length);
+  }
+
+  console.log(`Batch complete: ${results.length} success, ${errors.length} failed`);
+  return { results, errors };
+}
+```
 
 ## Error Handling
-| Header | Description | Action |
-|--------|-------------|--------|
-| X-RateLimit-Limit | Max requests | Monitor usage |
-| X-RateLimit-Remaining | Remaining requests | Throttle if low |
-| X-RateLimit-Reset | Reset timestamp | Wait until reset |
-| Retry-After | Seconds to wait | Honor this value |
+| Scenario | Detection | Action |
+|----------|-----------|--------|
+| 429 received | HTTP status | Exponential backoff + retry |
+| All retries exhausted | Max attempts reached | Log and skip, continue batch |
+| Burst spike | Queue depth > 20 | Pause new submissions |
+| Credits exhausted | 402 status | Alert, stop batch immediately |
 
-## Examples
-
-### Queue-Based Rate Limiting
-```typescript
-import PQueue from 'p-queue';
-
-const queue = new PQueue({
-  concurrency: 5,
-  interval: 1000,  # 1000: 1 second in ms
-  intervalCap: 10,
-});
-
-async function queuedRequest<T>(operation: () => Promise<T>): Promise<T> {
-  return queue.add(operation);
-}
-```
-
-### Monitor Rate Limit Usage
-```typescript
-class RateLimitMonitor {
-  private remaining: number = 60;
-  private resetAt: Date = new Date();
-
-  updateFromHeaders(headers: Headers) {
-    this.remaining = parseInt(headers.get('X-RateLimit-Remaining') || '60');
-    const resetTimestamp = headers.get('X-RateLimit-Reset');
-    if (resetTimestamp) {
-      this.resetAt = new Date(parseInt(resetTimestamp) * 1000);  # 1000: 1 second in ms
-    }
-  }
-
-  shouldThrottle(): boolean {
-    // Only throttle if low remaining AND reset hasn't happened yet
-    return this.remaining < 5 && new Date() < this.resetAt;
-  }
-
-  getWaitTime(): number {
-    return Math.max(0, this.resetAt.getTime() - Date.now());
-  }
-}
-```
+## Output
+- Reliable API calls with automatic retry on 429
+- Concurrency-controlled request queue
+- Token bucket for sustained throughput
+- Batch processing with progress and error tracking
 
 ## Resources
-- [Ideogram Rate Limits](https://docs.ideogram.com/rate-limits)
-- [p-queue Documentation](https://github.com/sindresorhus/p-queue)
+- [Ideogram API Overview](https://developer.ideogram.ai/ideogram-api/api-overview)
+- [p-queue](https://github.com/sindresorhus/p-queue)
+- Enterprise limits: `partnership@ideogram.ai`
 
 ## Next Steps
 For security configuration, see `ideogram-security-basics`.

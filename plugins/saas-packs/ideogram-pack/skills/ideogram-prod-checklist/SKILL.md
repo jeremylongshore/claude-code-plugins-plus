@@ -5,119 +5,175 @@ description: |
   Use when deploying Ideogram integrations to production, preparing for launch,
   or implementing go-live procedures.
   Trigger with phrases like "ideogram production", "deploy ideogram",
-  "ideogram go-live", "ideogram launch checklist".
-allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
+  "ideogram go-live", "ideogram launch checklist", "ideogram production ready".
+allowed-tools: Read, Bash(curl:*), Bash(kubectl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, ideogram, deployment]
+tags: [saas, ideogram, deployment, production]
 
 ---
 # Ideogram Production Checklist
 
 ## Overview
-Complete checklist for deploying Ideogram integrations to production.
+Complete pre-flight checklist for deploying Ideogram image generation to production. Covers API key management, timeout configuration, image persistence, error handling, monitoring, and rollback procedures.
 
 ## Prerequisites
-- Staging environment tested and verified
-- Production API keys available
-- Deployment pipeline configured
-- Monitoring and alerting ready
+- Staging environment tested
+- Production API key created (separate from dev)
+- Image storage configured (S3, GCS, or R2)
+- Monitoring stack ready
 
-## Instructions
+## Pre-Deployment Checklist
 
-### Step 1: Pre-Deployment Configuration
-- [ ] Production API keys in secure vault
-- [ ] Environment variables set in deployment platform
-- [ ] API key scopes are minimal (least privilege)
-- [ ] Webhook endpoints configured with HTTPS
-- [ ] Webhook secrets stored securely
+### API Configuration
+- [ ] Production API key stored in secret manager (not `.env` file)
+- [ ] Key is separate from dev/staging keys
+- [ ] Auto top-up billing configured with appropriate limits
+- [ ] Base URL is `https://api.ideogram.ai` (no trailing slash)
 
-### Step 2: Code Quality Verification
-- [ ] All tests passing (`npm test`)
-- [ ] No hardcoded credentials
-- [ ] Error handling covers all Ideogram error types
-- [ ] Rate limiting/backoff implemented
-- [ ] Logging is production-appropriate
+### Request Handling
+- [ ] `Api-Key` header used (not `Authorization: Bearer`)
+- [ ] Request timeout set to 60s+ (generation takes 5-15s, complex prompts longer)
+- [ ] Retry logic with exponential backoff on 429 and 5xx
+- [ ] Concurrency limited to 8 (below the 10 in-flight limit)
+- [ ] Prompt length validated (max 10,000 chars)
 
-### Step 3: Infrastructure Setup
-- [ ] Health check endpoint includes Ideogram connectivity
-- [ ] Monitoring/alerting configured
-- [ ] Circuit breaker pattern implemented
-- [ ] Graceful degradation configured
+### Image Persistence
+- [ ] Images downloaded immediately after generation (URLs expire ~1 hour)
+- [ ] Downloaded to durable storage (S3/GCS/R2), not local filesystem
+- [ ] Filenames include seed for reproducibility tracking
+- [ ] Generation metadata (prompt, seed, model, style) stored in database
 
-### Step 4: Documentation Requirements
-- [ ] Incident runbook created
-- [ ] Key rotation procedure documented
-- [ ] Rollback procedure documented
-- [ ] On-call escalation path defined
+### Error Handling
+- [ ] 401 triggers key rotation alert
+- [ ] 422 (safety filter) logged with sanitized prompt for review
+- [ ] 429 handled with retry, not user-facing error
+- [ ] 402 (no credits) triggers billing alert and graceful degradation
+- [ ] Circuit breaker prevents cascading failures
 
-### Step 5: Deploy with Gradual Rollout
-```bash
-set -euo pipefail
-# Pre-flight checks
-curl -f https://staging.example.com/health
-curl -s https://status.ideogram.com
+### Content Safety
+- [ ] Prompt sanitization removes PII before API call
+- [ ] User-submitted prompts validated server-side
+- [ ] `is_image_safe` response field checked before displaying to users
+- [ ] Content moderation layer for user-facing applications
 
-# Gradual rollout - start with canary (10%)
-kubectl apply -f k8s/production.yaml
-kubectl set image deployment/ideogram-integration app=image:new --record
-kubectl rollout pause deployment/ideogram-integration
-
-# Monitor canary traffic for 10 minutes
-sleep 600  # 600: timeout: 10 minutes
-# Check error rates and latency before continuing
-
-# If healthy, continue rollout to 50%
-kubectl rollout resume deployment/ideogram-integration
-kubectl rollout pause deployment/ideogram-integration
-sleep 300  # 300: timeout: 5 minutes
-
-# Complete rollout to 100%
-kubectl rollout resume deployment/ideogram-integration
-kubectl rollout status deployment/ideogram-integration
-```
-
-## Output
-- Deployed Ideogram integration
-- Health checks passing
-- Monitoring active
-- Rollback procedure documented
-
-## Error Handling
-| Alert | Condition | Severity |
-|-------|-----------|----------|
-| API Down | 5xx errors > 10/min | P1 |
-| High Latency | p99 > 5000ms | P2 |
-| Rate Limited | 429 errors > 5/min | P2 |
-| Auth Failures | 401/403 errors > 0 | P1 |
-
-## Examples
-
-### Health Check Implementation
+## Production Health Check
 ```typescript
-async function healthCheck(): Promise<{ status: string; ideogram: any }> {
+async function ideogramHealthCheck(): Promise<{
+  status: "healthy" | "degraded" | "down";
+  latencyMs: number;
+  details: string;
+}> {
   const start = Date.now();
   try {
-    await ideogramClient.ping();
-    return { status: 'healthy', ideogram: { connected: true, latencyMs: Date.now() - start } };
-  } catch (error) {
-    return { status: 'degraded', ideogram: { connected: false, latencyMs: Date.now() - start } };
+    const response = await fetch("https://api.ideogram.ai/generate", {
+      method: "POST",
+      headers: {
+        "Api-Key": process.env.IDEOGRAM_API_KEY!,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        image_request: {
+          prompt: "health check: simple blue dot",
+          model: "V_2_TURBO",
+          magic_prompt_option: "OFF",
+        },
+      }),
+      signal: AbortSignal.timeout(30000),
+    });
+
+    const latencyMs = Date.now() - start;
+
+    if (response.ok) {
+      return { status: "healthy", latencyMs, details: "Generation succeeded" };
+    }
+    if (response.status === 429) {
+      return { status: "degraded", latencyMs, details: "Rate limited" };
+    }
+    return { status: "down", latencyMs, details: `HTTP ${response.status}` };
+  } catch (err: any) {
+    return { status: "down", latencyMs: Date.now() - start, details: err.message };
   }
 }
 ```
 
-### Immediate Rollback
+## Deployment Script
 ```bash
 set -euo pipefail
-kubectl rollout undo deployment/ideogram-integration
-kubectl rollout status deployment/ideogram-integration
+echo "=== Ideogram Pre-Flight Checks ==="
+
+# 1. Verify production key
+STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+  -X POST https://api.ideogram.ai/generate \
+  -H "Api-Key: $IDEOGRAM_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"image_request":{"prompt":"deploy check","model":"V_2_TURBO","magic_prompt_option":"OFF"}}')
+
+if [ "$STATUS" != "200" ]; then
+  echo "FAIL: API returned $STATUS"
+  exit 1
+fi
+echo "PASS: API key valid (HTTP $STATUS)"
+
+# 2. Verify image download
+IMAGE_URL=$(curl -s -X POST https://api.ideogram.ai/generate \
+  -H "Api-Key: $IDEOGRAM_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"image_request":{"prompt":"deploy check","model":"V_2_TURBO","magic_prompt_option":"OFF"}}' \
+  | jq -r '.data[0].url')
+
+DL_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$IMAGE_URL")
+echo "PASS: Image download works (HTTP $DL_STATUS)"
+
+echo "=== All pre-flight checks passed ==="
 ```
 
+## Alerting Rules
+
+| Alert | Condition | Severity |
+|-------|-----------|----------|
+| API Unreachable | Health check returns `down` | P1 |
+| Auth Failure | Any 401 response | P1 |
+| Rate Limited | >5 consecutive 429 responses | P2 |
+| Slow Generation | P95 latency > 30 seconds | P2 |
+| Credits Low | Balance below $10 | P2 |
+| Safety Rejections | >10% of prompts rejected | P3 |
+
+## Rollback Procedure
+```bash
+set -euo pipefail
+# If Ideogram is down or producing bad results
+# 1. Enable fallback mode (disable image generation, show placeholders)
+kubectl set env deployment/app IDEOGRAM_ENABLED=false
+kubectl rollout restart deployment/app
+
+# 2. Verify fallback is active
+curl -s https://app.example.com/health | jq '.services.ideogram'
+
+# 3. Re-enable when resolved
+kubectl set env deployment/app IDEOGRAM_ENABLED=true
+kubectl rollout restart deployment/app
+```
+
+## Error Handling
+| Alert | Condition | Action |
+|-------|-----------|--------|
+| API Down | 5xx or timeout | Enable fallback, notify on-call |
+| Key Revoked | 401 | Rotate key, update secrets |
+| Credits Empty | 402 | Top up billing, pause batch jobs |
+| Rate Flood | 429 sustained | Reduce concurrency, queue jobs |
+
+## Output
+- All checklist items verified
+- Health check endpoint configured
+- Alerting rules deployed
+- Rollback procedure tested
+
 ## Resources
-- [Ideogram Status](https://status.ideogram.com)
-- [Ideogram Support](https://docs.ideogram.com/support)
+- [Ideogram API Overview](https://developer.ideogram.ai/ideogram-api/api-overview)
+- [API Setup](https://developer.ideogram.ai/ideogram-api/api-setup)
 
 ## Next Steps
 For version upgrades, see `ideogram-upgrade-migration`.

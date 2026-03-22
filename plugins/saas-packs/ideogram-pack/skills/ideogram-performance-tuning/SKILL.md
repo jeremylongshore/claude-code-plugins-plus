@@ -1,11 +1,11 @@
 ---
 name: ideogram-performance-tuning
 description: |
-  Optimize Ideogram API performance with caching, batching, and connection pooling.
-  Use when experiencing slow API responses, implementing caching strategies,
-  or optimizing request throughput for Ideogram integrations.
+  Optimize Ideogram API performance with caching, model selection, and parallel generation.
+  Use when experiencing slow generation, implementing caching strategies,
+  or optimizing throughput for Ideogram integrations.
   Trigger with phrases like "ideogram performance", "optimize ideogram",
-  "ideogram latency", "ideogram caching", "ideogram slow", "ideogram batch".
+  "ideogram latency", "ideogram caching", "ideogram slow", "ideogram speed".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
@@ -17,159 +17,208 @@ tags: [saas, ideogram, api, performance]
 # Ideogram Performance Tuning
 
 ## Overview
-Optimize Ideogram image generation pipelines for throughput, cost, and latency. Focus on prompt reuse, resolution selection, parallel generation, and CDN caching for generated assets.
+Optimize Ideogram image generation for speed, cost, and throughput. Key levers: model and rendering speed selection, prompt-based caching, parallel generation with concurrency limits, and CDN delivery of generated assets.
 
-## Prerequisites
-- Ideogram API key
-- Image storage (S3, GCS, or local filesystem)
-- Understanding of Ideogram generation parameters
-- CDN or caching layer for generated images
+## Performance Baselines
+
+| Model / Speed | Typical Latency | Relative Cost | Quality |
+|---------------|-----------------|---------------|---------|
+| V_2_TURBO | 3-6s | ~$0.05/image | Good |
+| V_2 | 8-15s | ~$0.08/image | High |
+| V3 FLASH | 2-4s | Lowest | Draft |
+| V3 TURBO | 4-8s | Low | Good |
+| V3 DEFAULT | 8-15s | Standard | High |
+| V3 QUALITY | 15-25s | Premium | Highest |
 
 ## Instructions
 
-### Step 1: Optimize Generation Parameters
+### Step 1: Speed Tiers by Use Case
 ```typescript
-const IDEOGRAM_API = 'https://api.ideogram.ai/generate';
+const SPEED_CONFIGS = {
+  // Preview / draft mode -- fastest, cheapest
+  preview: {
+    endpoint: "https://api.ideogram.ai/generate",
+    model: "V_2_TURBO",
+    note: "3-6s, good enough for iteration",
+  },
+  // Standard production -- balanced
+  standard: {
+    endpoint: "https://api.ideogram.ai/generate",
+    model: "V_2",
+    note: "8-15s, high quality for final assets",
+  },
+  // V3 with speed control
+  v3_fast: {
+    endpoint: "https://api.ideogram.ai/v1/ideogram-v3/generate",
+    rendering_speed: "TURBO",
+    note: "4-8s, V3 quality at faster speed",
+  },
+  v3_quality: {
+    endpoint: "https://api.ideogram.ai/v1/ideogram-v3/generate",
+    rendering_speed: "QUALITY",
+    note: "15-25s, maximum quality",
+  },
+} as const;
 
-// Quality tiers for different use cases
-const QUALITY_PRESETS = {
-  draft: { resolution: '512x512', model: 'V_2', steps: 20 },
-  standard: { resolution: '1024x1024', model: 'V_2', steps: 30 },
-  premium: { resolution: '1024x1024', model: 'V_2_TURBO', steps: 50 },
-};
-
-async function generateImage(
-  prompt: string,
-  preset: keyof typeof QUALITY_PRESETS = 'standard'
-) {
-  const config = QUALITY_PRESETS[preset];
-  const response = await fetch(IDEOGRAM_API, {
-    method: 'POST',
-    headers: {
-      'Api-Key': process.env.IDEOGRAM_API_KEY!,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      image_request: {
-        prompt,
-        aspect_ratio: 'ASPECT_1_1',
-        model: config.model,
-        magic_prompt_option: 'AUTO',
-      },
-    }),
-  });
-  return response.json();
+function getConfig(tier: keyof typeof SPEED_CONFIGS) {
+  return SPEED_CONFIGS[tier];
 }
 ```
 
 ### Step 2: Prompt-Based Cache Layer
 ```typescript
-import { createHash } from 'crypto';
-import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
-import { join } from 'path';
+import { createHash } from "crypto";
+import { existsSync, readFileSync, writeFileSync, mkdirSync } from "fs";
+import { join } from "path";
 
-const CACHE_DIR = './image-cache';
+const CACHE_DIR = "./ideogram-cache";
 
-function promptHash(prompt: string, preset: string): string {
-  return createHash('sha256')
-    .update(`${preset}:${prompt.toLowerCase().trim()}`)
-    .digest('hex')
+function cacheKey(prompt: string, style: string, aspect: string): string {
+  return createHash("sha256")
+    .update(`${prompt.toLowerCase().trim()}:${style}:${aspect}`)
+    .digest("hex")
     .slice(0, 16);
 }
 
-async function cachedGenerate(prompt: string, preset = 'standard') {
-  const hash = promptHash(prompt, preset);
-  const cachePath = join(CACHE_DIR, `${hash}.json`);
+async function cachedGenerate(
+  prompt: string,
+  options: { style_type?: string; aspect_ratio?: string; model?: string } = {}
+) {
+  const style = options.style_type ?? "AUTO";
+  const aspect = options.aspect_ratio ?? "ASPECT_1_1";
+  const key = cacheKey(prompt, style, aspect);
+  const metaPath = join(CACHE_DIR, `${key}.json`);
+  const imgPath = join(CACHE_DIR, `${key}.png`);
 
-  if (existsSync(cachePath)) {
-    return JSON.parse(readFileSync(cachePath, 'utf-8'));
+  // Return cached if exists
+  if (existsSync(metaPath) && existsSync(imgPath)) {
+    console.log(`Cache hit: ${key}`);
+    return JSON.parse(readFileSync(metaPath, "utf-8"));
   }
 
-  const result = await generateImage(prompt, preset as any);
+  // Generate and cache
+  const response = await fetch("https://api.ideogram.ai/generate", {
+    method: "POST",
+    headers: {
+      "Api-Key": process.env.IDEOGRAM_API_KEY!,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      image_request: {
+        prompt,
+        model: options.model ?? "V_2",
+        style_type: style,
+        aspect_ratio: aspect,
+        magic_prompt_option: "AUTO",
+      },
+    }),
+  });
+
+  if (!response.ok) throw new Error(`Generate failed: ${response.status}`);
+  const result = await response.json();
+  const image = result.data[0];
+
+  // Download and cache
+  const imgResp = await fetch(image.url);
+  const buffer = Buffer.from(await imgResp.arrayBuffer());
 
   mkdirSync(CACHE_DIR, { recursive: true });
-  writeFileSync(cachePath, JSON.stringify(result));
-  return result;
+  writeFileSync(imgPath, buffer);
+  writeFileSync(metaPath, JSON.stringify({
+    ...image,
+    localPath: imgPath,
+    cachedAt: new Date().toISOString(),
+  }));
+
+  return { ...image, localPath: imgPath };
 }
 ```
 
-### Step 3: Batch Generation with Concurrency Control
+### Step 3: Parallel Generation with Concurrency Control
 ```typescript
-async function batchGenerate(
+import PQueue from "p-queue";
+
+// 8 concurrent (under Ideogram's 10 in-flight limit)
+const queue = new PQueue({ concurrency: 8 });
+
+async function parallelGenerate(
   prompts: string[],
-  concurrency = 2 // Ideogram rate limits are strict
+  options: { style_type?: string; model?: string } = {}
 ) {
-  const results: any[] = [];
+  const start = Date.now();
 
-  for (let i = 0; i < prompts.length; i += concurrency) {
-    const batch = prompts.slice(i, i + concurrency);
-    const batchResults = await Promise.all(
-      batch.map(p => cachedGenerate(p))
-    );
-    results.push(...batchResults);
+  const results = await Promise.all(
+    prompts.map(prompt =>
+      queue.add(() => cachedGenerate(prompt, options))
+    )
+  );
 
-    // Rate limit: ~10 requests/minute on standard plans
-    if (i + concurrency < prompts.length) {
-      await new Promise(r => setTimeout(r, 6000));  # 6000 = configured value
-    }
-  }
+  const elapsed = ((Date.now() - start) / 1000).toFixed(1);
+  console.log(`Generated ${results.length} images in ${elapsed}s`);
+  console.log(`Throughput: ${(results.length / (elapsed as any)).toFixed(2)} img/s`);
+
   return results;
 }
+
+// Generate 20 images -- queue manages concurrency automatically
+const prompts = Array.from({ length: 20 }, (_, i) => `Product design variant ${i + 1}`);
+await parallelGenerate(prompts, { style_type: "DESIGN", model: "V_2_TURBO" });
 ```
 
-### Step 4: Image Asset Pipeline
+### Step 4: CDN Upload for Fast Delivery
 ```typescript
-import { pipeline } from 'stream/promises';
-import { createWriteStream } from 'fs';
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 
-async function downloadAndStore(imageUrl: string, outputPath: string) {
-  const response = await fetch(imageUrl);
-  if (!response.ok) throw new Error(`Download failed: ${response.status}`);
+const s3 = new S3Client({ region: "us-east-1" });
 
-  const fileStream = createWriteStream(outputPath);
-  await pipeline(response.body as any, fileStream);
-  return outputPath;
-}
+async function generateWithCDN(prompt: string, options: any = {}) {
+  const result = await cachedGenerate(prompt, options);
 
-async function generateAndStore(prompt: string, outputDir: string) {
-  const result = await cachedGenerate(prompt);
-  const imageUrl = result.data?.[0]?.url;
-  if (!imageUrl) throw new Error('No image URL in response');
+  // Upload to S3 for CDN delivery
+  const key = `ideogram/${result.seed}.png`;
+  const buffer = readFileSync(result.localPath);
 
-  const hash = promptHash(prompt, 'standard');
-  const outputPath = join(outputDir, `${hash}.png`);
-  return downloadAndStore(imageUrl, outputPath);
+  await s3.send(new PutObjectCommand({
+    Bucket: process.env.S3_BUCKET!,
+    Key: key,
+    Body: buffer,
+    ContentType: "image/png",
+    CacheControl: "public, max-age=31536000, immutable",
+  }));
+
+  return {
+    cdnUrl: `https://${process.env.CDN_DOMAIN}/${key}`,
+    seed: result.seed,
+    resolution: result.resolution,
+  };
 }
 ```
+
+## Performance Tips
+1. **Use TURBO for drafts** -- V_2_TURBO is 2-3x faster than V_2 at lower cost
+2. **Cache by prompt hash** -- identical prompts produce cacheable results
+3. **Batch with num_images** -- 4 images in 1 call is faster than 4 separate calls
+4. **Download immediately** -- URLs expire; download in the same function
+5. **Set CDN headers** -- images are immutable once generated; cache forever
+6. **Use V3 FLASH for previews** -- fastest option for UI thumbnails
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Rate limit 429 | Too many concurrent requests | Limit concurrency to 2, add 6s delays |
-| Generation timeout | Complex prompt or high resolution | Use draft preset, simplify prompt |
-| NSFW rejection | Content filter triggered | Review prompt for flagged terms |
-| Expired URL | Image URLs are temporary | Download immediately, cache locally |
-
-## Examples
-
-### Brand Asset Batch Generation
-```typescript
-const brandPrompts = [
-  'Minimalist logo for tech startup, blue gradient, clean lines',
-  'Social media banner, abstract geometric pattern, brand colors',
-  'App icon, rounded square, modern flat design',
-];
-
-const assets = await batchGenerate(brandPrompts);
-console.log(`Generated ${assets.length} brand assets`);
-```
-
-## Resources
-- [Ideogram API Reference](https://docs.ideogram.ai/api)
-- [Ideogram Model Guide](https://docs.ideogram.ai/models)
+| Rate limit 429 | Concurrency too high | Reduce queue concurrency to 5-8 |
+| Slow generation | QUALITY speed or complex prompt | Use TURBO for drafts, simplify prompts |
+| Expired URL | Delayed download | Download immediately in same function |
+| Cache stale | Prompt changed slightly | Normalize prompts before hashing |
 
 ## Output
+- Speed-tiered configuration for different use cases
+- Prompt-based cache layer preventing duplicate generations
+- Parallel generation with concurrency control
+- CDN integration for fast image delivery
 
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+## Resources
+- [Ideogram API Reference](https://developer.ideogram.ai/api-reference)
+- [p-queue](https://github.com/sindresorhus/p-queue)
+
+## Next Steps
+For cost optimization, see `ideogram-cost-tuning`.

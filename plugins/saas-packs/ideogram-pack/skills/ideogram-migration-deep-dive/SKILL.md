@@ -1,12 +1,12 @@
 ---
 name: ideogram-migration-deep-dive
 description: |
-  Execute Ideogram major re-architecture and migration strategies with strangler fig pattern.
-  Use when migrating to or from Ideogram, performing major version upgrades,
-  or re-platforming existing integrations to Ideogram.
-  Trigger with phrases like "migrate ideogram", "ideogram migration",
-  "switch to ideogram", "ideogram replatform", "ideogram upgrade major".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
+  Migrate from other image generation APIs to Ideogram, or re-architect existing Ideogram integrations.
+  Use when switching from DALL-E/Midjourney/Stable Diffusion to Ideogram,
+  or performing major integration overhauls.
+  Trigger with phrases like "migrate to ideogram", "switch to ideogram",
+  "replace dall-e with ideogram", "ideogram replatform", "ideogram migration".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,237 +17,235 @@ tags: [saas, ideogram, migration]
 # Ideogram Migration Deep Dive
 
 ## Current State
-!`npm list 2>/dev/null | head -20`
-!`pip freeze 2>/dev/null | head -20`
+!`npm list 2>/dev/null | head -10`
 
 ## Overview
-Comprehensive guide for migrating to or from Ideogram, or major version upgrades.
-
-## Prerequisites
-- Current system documentation
-- Ideogram SDK installed
-- Feature flag infrastructure
-- Rollback strategy tested
+Comprehensive migration guide for moving to Ideogram from DALL-E, Midjourney, Stable Diffusion, or another image generation provider. Uses the strangler fig pattern for gradual migration. Key Ideogram advantages: superior text rendering in images, REST API with no SDK dependency, and flexible style/aspect ratio control.
 
 ## Migration Types
 
-| Type | Complexity | Duration | Risk |
-|------|-----------|----------|------|
-| Fresh install | Low | Days | Low |
-| From competitor | Medium | Weeks | Medium |
-| Major version | Medium | Weeks | Medium |
-| Full replatform | High | Months | High |
-
-## Pre-Migration Assessment
-
-### Step 1: Current State Analysis
-```bash
-set -euo pipefail
-# Document current implementation
-find . -name "*.ts" -o -name "*.py" | xargs grep -l "ideogram" > ideogram-files.txt
-
-# Count integration points
-wc -l ideogram-files.txt
-
-# Identify dependencies
-npm list | grep ideogram
-pip freeze | grep ideogram
-```
-
-### Step 2: Data Inventory
-```typescript
-interface MigrationInventory {
-  dataTypes: string[];
-  recordCounts: Record<string, number>;
-  dependencies: string[];
-  integrationPoints: string[];
-  customizations: string[];
-}
-
-async function assessIdeogramMigration(): Promise<MigrationInventory> {
-  return {
-    dataTypes: await getDataTypes(),
-    recordCounts: await getRecordCounts(),
-    dependencies: await analyzeDependencies(),
-    integrationPoints: await findIntegrationPoints(),
-    customizations: await documentCustomizations(),
-  };
-}
-```
-
-## Migration Strategy: Strangler Fig Pattern
-
-```
-Phase 1: Parallel Run
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   System    │ ──▶ │  Ideogram   │
-│   (100%)    │     │   (0%)      │
-└─────────────┘     └─────────────┘
-
-Phase 2: Gradual Shift
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   (50%)     │ ──▶ │   (50%)     │
-└─────────────┘     └─────────────┘
-
-Phase 3: Complete
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   (0%)      │ ──▶ │   (100%)    │
-└─────────────┘     └─────────────┘
-```
-
-## Implementation Plan
-
-### Phase 1: Setup (Week 1-2)
-```bash
-set -euo pipefail
-# Install Ideogram SDK
-npm install @ideogram/sdk
-
-# Configure credentials
-cp .env.example .env.ideogram
-# Edit with new credentials
-
-# Verify connectivity
-node -e "require('@ideogram/sdk').ping()"
-```
-
-### Phase 2: Adapter Layer (Week 3-4)
-```typescript
-// src/adapters/ideogram.ts
-interface ServiceAdapter {
-  create(data: CreateInput): Promise<Resource>;
-  read(id: string): Promise<Resource>;
-  update(id: string, data: UpdateInput): Promise<Resource>;
-  delete(id: string): Promise<void>;
-}
-
-class IdeogramAdapter implements ServiceAdapter {
-  async create(data: CreateInput): Promise<Resource> {
-    const ideogramData = this.transform(data);
-    return ideogramClient.create(ideogramData);
-  }
-
-  private transform(data: CreateInput): IdeogramInput {
-    // Map from old format to Ideogram format
-  }
-}
-```
-
-### Phase 3: Data Migration (Week 5-6)
-```typescript
-async function migrateIdeogramData(): Promise<MigrationResult> {
-  const batchSize = 100;
-  let processed = 0;
-  let errors: MigrationError[] = [];
-
-  for await (const batch of oldSystem.iterateBatches(batchSize)) {
-    try {
-      const transformed = batch.map(transform);
-      await ideogramClient.batchCreate(transformed);
-      processed += batch.length;
-    } catch (error) {
-      errors.push({ batch, error });
-    }
-
-    // Progress update
-    console.log(`Migrated ${processed} records`);
-  }
-
-  return { processed, errors };
-}
-```
-
-### Phase 4: Traffic Shift (Week 7-8)
-```typescript
-// Feature flag controlled traffic split
-function getServiceAdapter(): ServiceAdapter {
-  const ideogramPercentage = getFeatureFlag('ideogram_migration_percentage');
-
-  if (Math.random() * 100 < ideogramPercentage) {
-    return new IdeogramAdapter();
-  }
-
-  return new LegacyAdapter();
-}
-```
-
-## Rollback Plan
-
-```bash
-set -euo pipefail
-# Immediate rollback
-kubectl set env deployment/app IDEOGRAM_ENABLED=false
-kubectl rollout restart deployment/app
-
-# Data rollback (if needed)
-./scripts/restore-from-backup.sh --date YYYY-MM-DD
-
-# Verify rollback
-curl https://app.yourcompany.com/health | jq '.services.ideogram'
-```
-
-## Post-Migration Validation
-
-```typescript
-async function validateIdeogramMigration(): Promise<ValidationReport> {
-  const checks = [
-    { name: 'Data count match', fn: checkDataCounts },
-    { name: 'API functionality', fn: checkApiFunctionality },
-    { name: 'Performance baseline', fn: checkPerformance },
-    { name: 'Error rates', fn: checkErrorRates },
-  ];
-
-  const results = await Promise.all(
-    checks.map(async c => ({ name: c.name, result: await c.fn() }))
-  );
-
-  return { checks: results, passed: results.every(r => r.result.success) };
-}
-```
+| From | Complexity | Key Changes | Timeline |
+|------|-----------|-------------|----------|
+| DALL-E (OpenAI) | Low | Auth header, response format, aspect ratios | 1-2 days |
+| Midjourney (Discord bot) | Medium | Move from Discord to REST API | 1-2 weeks |
+| Stable Diffusion (local) | Medium | Cloud API vs local inference | 1-2 weeks |
+| Custom pipeline | High | Full integration overhaul | 2-4 weeks |
 
 ## Instructions
 
-### Assess current configuration
-Document existing implementation and data inventory.
+### Step 1: Audit Current Integration
+```bash
+set -euo pipefail
+# Find all image generation API calls
+grep -rn "openai\|dall-e\|dalle\|midjourney\|stability\|stablediffusion" \
+  --include="*.ts" --include="*.js" --include="*.py" . | head -30
 
-### Step 2: Build Adapter Layer
-Create abstraction layer for gradual migration.
+# Count integration points
+echo "Integration points:"
+grep -rl "images/generations\|api.openai.com\|api.stability.ai" \
+  --include="*.ts" --include="*.js" . | wc -l
+```
 
-### Step 3: Migrate Data
-Run batch data migration with error handling.
+### Step 2: API Mapping -- DALL-E to Ideogram
+```typescript
+// === DALL-E (Before) ===
+const dallEResponse = await fetch("https://api.openai.com/v1/images/generations", {
+  method: "POST",
+  headers: {
+    "Authorization": `Bearer ${OPENAI_API_KEY}`,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    model: "dall-e-3",
+    prompt: "A sunset over mountains",
+    n: 1,
+    size: "1024x1024",
+    quality: "standard",
+    style: "natural",
+  }),
+});
+const dallEResult = await dallEResponse.json();
+const imageUrl = dallEResult.data[0].url;
 
-### Step 4: Shift Traffic
-Gradually route traffic to new Ideogram integration.
+// === Ideogram (After) ===
+const ideogramResponse = await fetch("https://api.ideogram.ai/generate", {
+  method: "POST",
+  headers: {
+    "Api-Key": process.env.IDEOGRAM_API_KEY!,  // Note: Api-Key, not Authorization
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    image_request: {                             // Note: wrapped in image_request
+      prompt: "A sunset over mountains",
+      model: "V_2",
+      aspect_ratio: "ASPECT_1_1",               // Note: enum, not "1024x1024"
+      style_type: "REALISTIC",                   // Note: different style system
+      magic_prompt_option: "AUTO",
+    },
+  }),
+});
+const ideogramResult = await ideogramResponse.json();
+const imageUrl = ideogramResult.data[0].url;    // DOWNLOAD IMMEDIATELY - expires!
+```
 
-## Output
-- Migration assessment complete
-- Adapter layer implemented
-- Data migrated successfully
-- Traffic fully shifted to Ideogram
+### Step 3: Parameter Mapping Table
+
+| Concept | DALL-E | Ideogram (Legacy) | Ideogram (V3) |
+|---------|--------|-------------------|---------------|
+| Auth | `Authorization: Bearer` | `Api-Key: key` | `Api-Key: key` |
+| Body wrapper | None | `image_request` | FormData |
+| Size | `"1024x1024"` | `"ASPECT_1_1"` | `"1x1"` |
+| Widescreen | `"1792x1024"` | `"ASPECT_16_9"` | `"16x9"` |
+| Portrait | `"1024x1792"` | `"ASPECT_9_16"` | `"9x16"` |
+| Quality | `"standard"/"hd"` | Model choice (V_2/V_2_TURBO) | `rendering_speed` |
+| Style | `"natural"/"vivid"` | `style_type` enum | `style_type` + `style_preset` |
+| Prompt enhance | N/A | `magic_prompt_option` | `magic_prompt` |
+| Count | `n: 1-4` | `num_images: 1-4` | `num_images: 1-4` |
+| Negative prompt | N/A | `negative_prompt` | `negative_prompt` |
+| Reproducibility | N/A | `seed` | `seed` |
+| URL lifetime | ~1 hour | ~1 hour | ~1 hour |
+
+### Step 4: Adapter Pattern for Gradual Migration
+```typescript
+interface ImageGenerationRequest {
+  prompt: string;
+  aspectRatio: "square" | "landscape" | "portrait";
+  quality: "draft" | "standard" | "premium";
+  style: "natural" | "artistic" | "design";
+  count: number;
+}
+
+interface ImageGenerationResult {
+  images: Array<{ url: string; seed?: number }>;
+  provider: "dall-e" | "ideogram";
+}
+
+// Adapter interface
+interface ImageProvider {
+  generate(req: ImageGenerationRequest): Promise<ImageGenerationResult>;
+}
+
+// Ideogram implementation
+class IdeogramProvider implements ImageProvider {
+  private aspectMap = { square: "ASPECT_1_1", landscape: "ASPECT_16_9", portrait: "ASPECT_9_16" };
+  private modelMap = { draft: "V_2_TURBO", standard: "V_2", premium: "V_2" };
+  private styleMap = { natural: "REALISTIC", artistic: "GENERAL", design: "DESIGN" };
+
+  async generate(req: ImageGenerationRequest): Promise<ImageGenerationResult> {
+    const response = await fetch("https://api.ideogram.ai/generate", {
+      method: "POST",
+      headers: {
+        "Api-Key": process.env.IDEOGRAM_API_KEY!,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        image_request: {
+          prompt: req.prompt,
+          model: this.modelMap[req.quality],
+          aspect_ratio: this.aspectMap[req.aspectRatio],
+          style_type: this.styleMap[req.style],
+          num_images: req.count,
+          magic_prompt_option: "AUTO",
+        },
+      }),
+    });
+
+    if (!response.ok) throw new Error(`Ideogram: ${response.status}`);
+    const result = await response.json();
+
+    return {
+      images: result.data.map((d: any) => ({ url: d.url, seed: d.seed })),
+      provider: "ideogram",
+    };
+  }
+}
+```
+
+### Step 5: Feature-Flagged Traffic Split
+```typescript
+function getImageProvider(userId?: string): ImageProvider {
+  const percentage = parseInt(process.env.IDEOGRAM_MIGRATION_PCT ?? "0");
+
+  if (percentage >= 100) return new IdeogramProvider();
+  if (percentage <= 0) return new DallEProvider();
+
+  // Deterministic split by user ID
+  if (userId) {
+    const hash = Array.from(userId).reduce((h, c) => h * 31 + c.charCodeAt(0), 0);
+    if (Math.abs(hash) % 100 < percentage) return new IdeogramProvider();
+  }
+
+  return new DallEProvider();
+}
+
+// Migration rollout:
+// Week 1: IDEOGRAM_MIGRATION_PCT=10  (internal testing)
+// Week 2: IDEOGRAM_MIGRATION_PCT=25  (canary)
+// Week 3: IDEOGRAM_MIGRATION_PCT=50  (half traffic)
+// Week 4: IDEOGRAM_MIGRATION_PCT=100 (complete)
+```
+
+### Step 6: Migration Validation
+```typescript
+async function validateMigration(testPrompts: string[]) {
+  const results = { passed: 0, failed: 0, errors: [] as string[] };
+
+  for (const prompt of testPrompts) {
+    try {
+      const provider = new IdeogramProvider();
+      const result = await provider.generate({
+        prompt,
+        aspectRatio: "square",
+        quality: "draft",
+        style: "natural",
+        count: 1,
+      });
+
+      if (result.images.length > 0 && result.images[0].url) {
+        results.passed++;
+      } else {
+        results.failed++;
+        results.errors.push(`No image returned for: ${prompt.slice(0, 40)}`);
+      }
+    } catch (err: any) {
+      results.failed++;
+      results.errors.push(`${prompt.slice(0, 40)}: ${err.message}`);
+    }
+
+    await new Promise(r => setTimeout(r, 3000)); // Rate limit
+  }
+
+  console.log(`Migration validation: ${results.passed} passed, ${results.failed} failed`);
+  if (results.errors.length) console.log("Errors:", results.errors);
+}
+```
+
+## Ideogram Advantages Post-Migration
+- **Text rendering**: Ideogram generates legible text inside images (DALL-E struggles with this)
+- **Seed reproducibility**: Same seed + prompt = same image
+- **No SDK dependency**: Plain REST API, no `openai` package needed
+- **Style presets**: 50+ artistic presets in V3
+- **Negative prompts**: Explicit control over what to exclude
+- **Character consistency**: V3 character reference images
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Data mismatch | Transform errors | Validate transform logic |
-| Performance drop | No caching | Add caching layer |
-| Rollback triggered | Errors spiked | Reduce traffic percentage |
-| Validation failed | Missing data | Check batch processing |
+| Auth format wrong | Using `Authorization: Bearer` | Switch to `Api-Key` header |
+| Body format wrong | No `image_request` wrapper | Wrap params in `image_request` |
+| Size format wrong | Using pixel dimensions | Use enum (`ASPECT_16_9`) |
+| URL expired | Not downloading immediately | Download in same function |
 
-## Examples
-
-### Quick Migration Status
-```typescript
-const status = await validateIdeogramMigration();
-console.log(`Migration ${status.passed ? 'PASSED' : 'FAILED'}`);
-status.checks.forEach(c => console.log(`  ${c.name}: ${c.result.success}`));
-```
+## Output
+- Parameter mapping from DALL-E/Midjourney to Ideogram
+- Adapter pattern supporting multiple providers
+- Feature-flagged gradual migration
+- Validation script for migration testing
 
 ## Resources
+- [Ideogram API Reference](https://developer.ideogram.ai/api-reference)
+- [Ideogram 3.0 Features](https://ideogram.ai/features/3.0)
 - [Strangler Fig Pattern](https://martinfowler.com/bliki/StranglerFigApplication.html)
-- [Ideogram Migration Guide](https://docs.ideogram.com/migration)
 
-## Flagship+ Skills
-For advanced troubleshooting, see `ideogram-advanced-troubleshooting`.
+## Next Steps
+For advanced troubleshooting, see `ideogram-debug-bundle`.

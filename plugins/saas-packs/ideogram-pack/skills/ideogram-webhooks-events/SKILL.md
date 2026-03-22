@@ -1,65 +1,65 @@
 ---
 name: ideogram-webhooks-events
 description: |
-  Implement Ideogram webhook signature validation and event handling.
-  Use when setting up webhook endpoints, implementing signature verification,
-  or handling Ideogram event notifications securely.
+  Build event-driven workflows around Ideogram's synchronous API.
+  Use when implementing async generation queues, batch processing,
+  callback patterns, or image processing pipelines.
   Trigger with phrases like "ideogram webhook", "ideogram events",
-  "ideogram webhook signature", "handle ideogram events", "ideogram notifications".
+  "ideogram async", "ideogram queue", "ideogram batch pipeline".
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, ideogram, webhooks]
+tags: [saas, ideogram, webhooks, async, queue]
 
 ---
 # Ideogram Events & Async Patterns
 
 ## Overview
-Build event-driven workflows around Ideogram's AI image generation API. Ideogram's `api.ideogram.ai` endpoints handle text-to-image and image editing requests.
+Ideogram's API is synchronous -- each call blocks until the image is generated (5-15 seconds). For production applications, wrap it in async patterns: job queues for batch generation, callbacks for downstream processing, and pipelines for image post-processing. This skill covers BullMQ queue patterns, callback handlers, and asset processing pipelines.
 
 ## Prerequisites
-- Ideogram API key stored in `IDEOGRAM_API_KEY` environment variable
-- Storage solution for generated images (S3, GCS, Cloudflare R2)
-- Queue system for batch image generation
-- Understanding of Ideogram models (V_2, V_2_TURBO)
-
-## Event Patterns
-
-| Pattern | Trigger | Use Case |
-|---------|---------|----------|
-| Generation callback | Image generation completes | Asset pipeline processing |
-| Batch generation | Multiple prompts queued | Marketing asset creation |
-| Image ready notification | Post-processing done | CDN upload and cache warming |
-| Generation failure alert | API error or content filter | Retry or manual review |
+- `IDEOGRAM_API_KEY` configured
+- Redis for BullMQ job queue
+- Storage for generated images (S3, GCS, or R2)
+- Understanding of Ideogram models and style types
 
 ## Instructions
 
-### Step 1: Async Image Generation with Callbacks
+### Step 1: Job Queue for Async Generation
 ```typescript
 import { Queue, Worker } from "bullmq";
+import { writeFileSync, mkdirSync } from "fs";
+import { join } from "path";
 
 interface GenerationJob {
   prompt: string;
-  style: "REALISTIC" | "DESIGN" | "RENDER_3D" | "ANIME";
-  aspectRatio: "ASPECT_1_1" | "ASPECT_16_9" | "ASPECT_9_16";
+  style: string;
+  aspectRatio: string;
+  model: string;
   callbackUrl?: string;
-  model: "V_2" | "V_2_TURBO";
+  metadata?: Record<string, string>;
 }
 
-const imageQueue = new Queue("ideogram-generation");
+const connection = { host: "localhost", port: 6379 };
+const imageQueue = new Queue("ideogram-generation", { connection });
 
-async function queueGeneration(job: GenerationJob) {
+// Enqueue a generation job
+async function submitGeneration(job: GenerationJob) {
   return imageQueue.add("generate", job, {
     attempts: 3,
-    backoff: { type: "exponential", delay: 2000 },  # 2000: 2 seconds in ms
+    backoff: { type: "exponential", delay: 2000 },
+    removeOnComplete: 100,
+    removeOnFail: 50,
   });
 }
 
+// Worker processes jobs with concurrency limit
 const worker = new Worker("ideogram-generation", async (job) => {
-  const { prompt, style, aspectRatio, model, callbackUrl } = job.data;
+  const { prompt, style, aspectRatio, model, callbackUrl, metadata } = job.data;
 
+  // Call Ideogram API (synchronous, blocks 5-15s)
   const response = await fetch("https://api.ideogram.ai/generate", {
     method: "POST",
     headers: {
@@ -69,57 +69,79 @@ const worker = new Worker("ideogram-generation", async (job) => {
     body: JSON.stringify({
       image_request: {
         prompt,
-        model,
-        style_type: style,
-        aspect_ratio: aspectRatio,
+        model: model || "V_2",
+        style_type: style || "AUTO",
+        aspect_ratio: aspectRatio || "ASPECT_1_1",
         magic_prompt_option: "AUTO",
       },
     }),
   });
 
-  const result = await response.json();
-  const images = result.data;
-
-  // Upload generated images to storage
-  const uploadedUrls = [];
-  for (const image of images) {
-    const url = await uploadToStorage(image.url, `generated/${job.id}`);
-    uploadedUrls.push(url);
+  if (response.status === 429) {
+    throw new Error("Rate limited"); // BullMQ will retry with backoff
+  }
+  if (!response.ok) {
+    throw new Error(`Ideogram API error: ${response.status}`);
   }
 
-  // Fire callback
+  const result = await response.json();
+  const image = result.data[0];
+
+  // Download immediately (URLs expire)
+  const imgResp = await fetch(image.url);
+  const buffer = Buffer.from(await imgResp.arrayBuffer());
+  const outputDir = "./generated";
+  mkdirSync(outputDir, { recursive: true });
+  const filePath = join(outputDir, `${image.seed}.png`);
+  writeFileSync(filePath, buffer);
+
+  // Fire callback if provided
   if (callbackUrl) {
     await fetch(callbackUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        event: "ideogram.generation.completed",
+        event: "generation.completed",
         jobId: job.id,
         prompt,
-        images: uploadedUrls,
-        resolution: images[0]?.resolution,
+        seed: image.seed,
+        resolution: image.resolution,
+        filePath,
+        metadata,
       }),
     });
   }
 
-  return { images: uploadedUrls };
+  return { seed: image.seed, filePath, resolution: image.resolution };
+}, {
+  connection,
+  concurrency: 5, // Stay under 10 in-flight limit
+});
+
+worker.on("failed", (job, err) => {
+  console.error(`Job ${job?.id} failed:`, err.message);
 });
 ```
 
-### Step 2: Handle Generation Events
+### Step 2: Callback Handler
 ```typescript
-app.post("/webhooks/ideogram-callback", async (req, res) => {
-  const { event, jobId, images, prompt } = req.body;
-  res.status(200).json({ received: true });  # HTTP 200 OK
+import express from "express";
+
+const app = express();
+app.use(express.json());
+
+app.post("/callbacks/ideogram", async (req, res) => {
+  const { event, jobId, seed, filePath, metadata } = req.body;
+  res.status(200).json({ received: true });
 
   switch (event) {
-    case "ideogram.generation.completed":
-      console.log(`Generated ${images.length} images for: "${prompt}"`);
-      await processGeneratedImages(jobId, images);
+    case "generation.completed":
+      console.log(`Image generated: seed=${seed}, path=${filePath}`);
+      await processImage(filePath, metadata);
       break;
-    case "ideogram.generation.failed":
-      console.error(`Generation failed for job ${jobId}`);
-      await handleGenerationFailure(jobId, req.body.error);
+    case "generation.failed":
+      console.error(`Generation failed: job=${jobId}`);
+      await notifyFailure(jobId, req.body.error);
       break;
   }
 });
@@ -127,30 +149,60 @@ app.post("/webhooks/ideogram-callback", async (req, res) => {
 
 ### Step 3: Batch Marketing Asset Generation
 ```typescript
-async function generateMarketingAssets(campaign: string, prompts: string[]) {
-  const jobs = prompts.map(prompt =>
-    queueGeneration({
-      prompt,
-      style: "DESIGN",
-      aspectRatio: "ASPECT_16_9",
-      model: "V_2",
-      callbackUrl: `https://api.myapp.com/webhooks/ideogram-callback`,
-    })
-  );
+async function generateMarketingCampaign(
+  campaignName: string,
+  products: string[],
+  formats: Array<{ name: string; aspect: string; style: string }>
+) {
+  const jobs = [];
 
-  const results = await Promise.all(jobs);
-  return results.map(j => j.id);
+  for (const product of products) {
+    for (const format of formats) {
+      const job = await submitGeneration({
+        prompt: `${product}, professional ${format.name} design, high quality`,
+        style: format.style,
+        aspectRatio: format.aspect,
+        model: "V_2",
+        callbackUrl: "https://api.myapp.com/callbacks/ideogram",
+        metadata: { campaign: campaignName, product, format: format.name },
+      });
+      jobs.push(job);
+    }
+  }
+
+  console.log(`Submitted ${jobs.length} generation jobs for campaign: ${campaignName}`);
+  return jobs.map(j => j.id);
 }
+
+// Example: Generate all assets for a product launch
+await generateMarketingCampaign("Q1 Launch", [
+  "Cloud analytics dashboard",
+  "Mobile payment app",
+], [
+  { name: "social-square", aspect: "ASPECT_1_1", style: "DESIGN" },
+  { name: "story-vertical", aspect: "ASPECT_9_16", style: "DESIGN" },
+  { name: "blog-hero", aspect: "ASPECT_16_9", style: "REALISTIC" },
+]);
 ```
 
 ### Step 4: Image Post-Processing Pipeline
 ```typescript
-async function processGeneratedImages(jobId: string, imageUrls: string[]) {
-  for (const url of imageUrls) {
-    // Resize for different platforms
-    await imageProcessor.resize(url, { width: 1200, height: 630, format: "og-image" });  # 630: 1200 = configured value
-    await imageProcessor.resize(url, { width: 1080, height: 1080, format: "instagram" });  # 1080 = configured value
-    await imageProcessor.resize(url, { width: 1500, height: 500, format: "twitter-header" });  # 1500: HTTP 500 Internal Server Error
+import sharp from "sharp";
+
+async function processImage(filePath: string, metadata?: Record<string, string>) {
+  const variants = [
+    { suffix: "-og", width: 1200, height: 630 },       // Open Graph
+    { suffix: "-thumb", width: 400, height: 400 },      // Thumbnail
+    { suffix: "-social", width: 1080, height: 1080 },   // Instagram
+  ];
+
+  for (const variant of variants) {
+    const outputPath = filePath.replace(".png", `${variant.suffix}.webp`);
+    await sharp(filePath)
+      .resize(variant.width, variant.height, { fit: "cover" })
+      .webp({ quality: 85 })
+      .toFile(outputPath);
+    console.log(`Created variant: ${outputPath}`);
   }
 }
 ```
@@ -158,31 +210,22 @@ async function processGeneratedImages(jobId: string, imageUrls: string[]) {
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Content filtered | Prompt violates policy | Revise prompt, check content guidelines |
-| Rate limited | Too many requests | Queue jobs with concurrency limits |
-| Low quality output | Vague prompt | Add style details and negative prompts |
-| Timeout | Large batch | Process sequentially with delays |
-
-## Examples
-
-### Quick Single Generation
-```bash
-set -euo pipefail
-curl -X POST https://api.ideogram.ai/generate \
-  -H "Api-Key: $IDEOGRAM_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"image_request": {"prompt": "Modern logo for tech startup", "model": "V_2", "style_type": "DESIGN"}}'
-```
-
-## Resources
-- [Ideogram API Documentation](https://developer.ideogram.ai/api-reference)
-- [Ideogram Style Guide](https://developer.ideogram.ai/styles)
-
-## Next Steps
-For deployment setup, see `ideogram-deploy-integration`.
+| Rate limited | Too many concurrent jobs | Set worker concurrency to 5 |
+| Content filtered | Prompt violates policy | Log and skip, notify reviewer |
+| Expired URL | Worker too slow | Download in same worker step |
+| Queue stalled | Redis connection lost | Configure BullMQ connection retry |
+| Callback fails | Downstream service down | Fire-and-forget with retry queue |
 
 ## Output
+- BullMQ job queue for async generation
+- Callback handler for downstream processing
+- Batch generation for marketing campaigns
+- Post-processing pipeline with sharp
 
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+## Resources
+- [Ideogram API Reference](https://developer.ideogram.ai/api-reference)
+- [BullMQ Documentation](https://docs.bullmq.io/)
+- [sharp Image Processing](https://sharp.pixelplumbing.com/)
+
+## Next Steps
+For performance optimization, see `ideogram-performance-tuning`.

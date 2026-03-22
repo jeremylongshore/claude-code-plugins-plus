@@ -1,93 +1,160 @@
 ---
 name: ideogram-install-auth
 description: |
-  Install and configure Ideogram SDK/CLI authentication.
+  Install and configure Ideogram API authentication.
   Use when setting up a new Ideogram integration, configuring API keys,
   or initializing Ideogram in your project.
   Trigger with phrases like "install ideogram", "setup ideogram",
   "ideogram auth", "configure ideogram API key".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, ideogram, api, authentication]
+tags: [saas, ideogram, api, authentication, image-generation]
 
 ---
 # Ideogram Install & Auth
 
 ## Overview
-Set up Ideogram SDK/CLI and configure authentication credentials.
+Set up Ideogram API authentication for AI image generation. Ideogram provides a REST API at `api.ideogram.ai` for text-to-image generation, editing, remixing, upscaling, and describing images. Authentication uses an `Api-Key` header on every request.
 
 ## Prerequisites
 - Node.js 18+ or Python 3.10+
-- Package manager (npm, pnpm, or pip)
-- Ideogram account with API access
-- API key from Ideogram dashboard
+- Ideogram account at [ideogram.ai](https://ideogram.ai)
+- API key from Ideogram dashboard (Settings > API Beta)
+- Payment method configured (auto top-up billing)
 
 ## Instructions
 
-### Step 1: Install SDK
+### Step 1: Get Your API Key
+1. Log into [ideogram.ai](https://ideogram.ai)
+2. Navigate to **Settings** (burger icon) > **API Beta**
+3. Accept the Developer API Agreement
+4. Click **Manage Payment** and add billing info via Stripe
+5. Click **Create API key** -- store it immediately, it is shown only once
+
+### Step 2: Install HTTP Client
 ```bash
 set -euo pipefail
-# Node.js
-npm install @ideogram/sdk
+# Node.js (no SDK required -- Ideogram uses a plain REST API)
+npm install dotenv
 
 # Python
-pip install ideogram
+pip install requests python-dotenv
 ```
 
-### Step 2: Configure Authentication
+### Step 3: Configure Authentication
 ```bash
-# Set environment variable
-export IDEOGRAM_API_KEY="your-api-key"
+# Create .env file (NEVER commit to git)
+echo 'IDEOGRAM_API_KEY=your-api-key-here' >> .env
 
-# Or create .env file
-echo 'IDEOGRAM_API_KEY=your-api-key' >> .env
+# Add to .gitignore
+echo '.env' >> .gitignore
+echo '.env.local' >> .gitignore
 ```
 
-### Step 3: Verify Connection
+### Step 4: Verify Connection
 ```typescript
-// Test connection code here
+// verify-ideogram.ts
+import "dotenv/config";
+
+async function verifyIdeogramAuth() {
+  const response = await fetch("https://api.ideogram.ai/generate", {
+    method: "POST",
+    headers: {
+      "Api-Key": process.env.IDEOGRAM_API_KEY!,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      image_request: {
+        prompt: "A simple blue circle on white background",
+        model: "V_2_TURBO",
+        aspect_ratio: "ASPECT_1_1",
+        magic_prompt_option: "OFF",
+      },
+    }),
+  });
+
+  if (response.ok) {
+    const result = await response.json();
+    console.log("Auth verified. Image URL:", result.data[0].url);
+    console.log("Seed:", result.data[0].seed);
+  } else {
+    const err = await response.text();
+    console.error(`Auth failed (${response.status}):`, err);
+  }
+}
+
+verifyIdeogramAuth();
 ```
 
-## Output
-- Installed SDK package in node_modules or site-packages
-- Environment variable or .env file with API key
-- Successful connection verification output
+```python
+# verify_ideogram.py
+import os, requests
+from dotenv import load_dotenv
+
+load_dotenv()
+
+response = requests.post(
+    "https://api.ideogram.ai/generate",
+    headers={
+        "Api-Key": os.environ["IDEOGRAM_API_KEY"],
+        "Content-Type": "application/json",
+    },
+    json={
+        "image_request": {
+            "prompt": "A simple blue circle on white background",
+            "model": "V_2_TURBO",
+            "aspect_ratio": "ASPECT_1_1",
+            "magic_prompt_option": "OFF",
+        }
+    },
+)
+
+if response.ok:
+    data = response.json()
+    print("Auth verified. Image URL:", data["data"][0]["url"])
+else:
+    print(f"Auth failed ({response.status_code}):", response.text)
+```
+
+## API Base URLs
+
+| API Version | Base URL | Notes |
+|-------------|----------|-------|
+| Legacy (V_2) | `https://api.ideogram.ai/generate` | JSON body with `image_request` wrapper |
+| V3 Generate | `https://api.ideogram.ai/v1/ideogram-v3/generate` | Multipart form data |
+| V3 Edit | `https://api.ideogram.ai/v1/ideogram-v3/edit` | Multipart form data |
+| V3 Remix | `https://api.ideogram.ai/v1/ideogram-v3/remix` | Multipart form data |
+| V3 Reframe | `https://api.ideogram.ai/v1/ideogram-v3/reframe` | Multipart form data |
+| Upscale | `https://api.ideogram.ai/upscale` | Multipart form data |
+| Describe | `https://api.ideogram.ai/describe` | Multipart form data |
+
+## Billing Model
+- Auto top-up: balance refills to $20 when it drops below $10 (configurable)
+- Default rate limit: 10 in-flight requests
+- Image URLs expire -- download immediately after generation
+- Enterprise: contact `partnership@ideogram.ai` for higher limits
 
 ## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| Invalid API Key | Incorrect or expired key | Verify key in Ideogram dashboard |
-| Rate Limited | Exceeded quota | Check quota at https://docs.ideogram.com |
-| Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
-| Module Not Found | Installation failed | Run `npm install` or `pip install` again |
+| Error | HTTP Status | Cause | Solution |
+|-------|-------------|-------|----------|
+| Invalid API Key | 401 | Key missing or revoked | Verify key in dashboard, regenerate if needed |
+| Rate Limited | 429 | Exceeded 10 in-flight requests | Queue requests, add backoff |
+| Insufficient Credits | 402 | Balance depleted | Top up via dashboard billing |
+| Safety Rejected | 422 | Prompt or image failed safety check | Rephrase prompt, remove flagged content |
 
-## Examples
-
-### TypeScript Setup
-```typescript
-import { IdeogramClient } from '@ideogram/sdk';
-
-const client = new IdeogramClient({
-  apiKey: process.env.IDEOGRAM_API_KEY,
-});
-```
-
-### Python Setup
-```python
-from ideogram import IdeogramClient
-
-client = IdeogramClient(
-    api_key=os.environ.get('IDEOGRAM_API_KEY')
-)
-```
+## Output
+- Environment variable `IDEOGRAM_API_KEY` configured
+- `.env` file with key (git-ignored)
+- Successful test generation confirming connectivity
 
 ## Resources
-- [Ideogram Documentation](https://docs.ideogram.com)
-- [Ideogram Dashboard](https://api.ideogram.com)
-- [Ideogram Status](https://status.ideogram.com)
+- [Ideogram Developer Docs](https://developer.ideogram.ai)
+- [API Reference](https://developer.ideogram.ai/api-reference)
+- [API Setup Guide](https://developer.ideogram.ai/ideogram-api/api-setup)
+- [API Pricing](https://ideogram.ai/features/api-pricing)
 
 ## Next Steps
-After successful auth, proceed to `ideogram-hello-world` for your first API call.
+After successful auth, proceed to `ideogram-hello-world` for your first real generation.
