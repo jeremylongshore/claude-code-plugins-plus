@@ -1,114 +1,62 @@
 ---
 name: veeva-upgrade-migration
 description: |
-  Analyze, plan, and execute Veeva SDK upgrades with breaking change detection.
-  Use when upgrading Veeva SDK versions, detecting deprecations,
-  or migrating to new API versions.
-  Trigger with phrases like "upgrade veeva", "veeva migration",
-  "veeva breaking changes", "update veeva SDK", "analyze veeva version".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
+  Veeva Vault upgrade migration for REST API and clinical operations.
+  Use when working with Veeva Vault document management and CRM.
+  Trigger: "veeva upgrade migration".
+allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, pharma, crm, veeva]
+tags: [saas, life-sciences, crm, veeva]
 compatible-with: claude-code
 ---
 
-# Veeva Upgrade & Migration
+# Veeva Vault Upgrade Migration
 
 ## Overview
-Guide for upgrading Veeva SDK versions and handling breaking changes.
 
-## Prerequisites
-- Current Veeva SDK installed
-- Git for version control
-- Test suite available
-- Staging environment
+Guidance for upgrade migration with Veeva Vault REST API, VQL queries, and VAPIL Java SDK.
 
 ## Instructions
 
-### Step 1: Check Current Version
-```bash
-npm list @veeva/sdk
-npm view @veeva/sdk version
+### Key Vault API Concepts
+
+- **Authentication**: Session-based (username/password or OAuth 2.0)
+- **Base URL**: `https://{vault}.veevavault.com/api/v24.1/`
+- **VQL**: SQL-like query language for Vault data
+- **VAPIL**: Open-source Java SDK covering all Platform APIs
+- **Lifecycle**: Documents flow through states (Draft > In Review > Approved)
+
+### Common VQL Patterns
+
+```sql
+-- List documents by type
+SELECT id, name__v FROM documents WHERE type__v = 'Trial Document'
+
+-- Find objects
+SELECT id, name__v FROM site__v WHERE status__v = 'active__v'
+
+-- Join related objects
+SELECT id, name__v, study__vr.name__v FROM study_country__v
 ```
-
-### Step 2: Review Changelog
-```bash
-open https://github.com/veeva/sdk/releases
-```
-
-### Step 3: Create Upgrade Branch
-```bash
-git checkout -b upgrade/veeva-sdk-vX.Y.Z
-npm install @veeva/sdk@latest
-npm test
-```
-
-### Step 4: Handle Breaking Changes
-Update import statements, configuration, and method signatures as needed.
-
-## Output
-- Updated SDK version
-- Fixed breaking changes
-- Passing test suite
-- Documented rollback procedure
 
 ## Error Handling
-| SDK Version | API Version | Node.js | Breaking Changes |
-|-------------|-------------|---------|------------------|
-| 3.x | 2024-01 | 18+ | Major refactor |
-| 2.x | 2023-06 | 16+ | Auth changes |
-| 1.x | 2022-01 | 14+ | Initial release |
 
-## Examples
-
-### Import Changes
-```typescript
-// Before (v1.x)
-import { Client } from '@veeva/sdk';
-
-// After (v2.x)
-import { VeevaClient } from '@veeva/sdk';
-```
-
-### Configuration Changes
-```typescript
-// Before (v1.x)
-const client = new Client({ key: 'xxx' });
-
-// After (v2.x)
-const client = new VeevaClient({
-  apiKey: 'xxx',
-});
-```
-
-### Rollback Procedure
-```bash
-npm install @veeva/sdk@1.x.x --save-exact
-```
-
-### Deprecation Handling
-```typescript
-// Monitor for deprecation warnings in development
-if (process.env.NODE_ENV === 'development') {
-  process.on('warning', (warning) => {
-    if (warning.name === 'DeprecationWarning') {
-      console.warn('[Veeva]', warning.message);
-      // Log to tracking system for proactive updates
-    }
-  });
-}
-
-// Common deprecation patterns to watch for:
-// - Renamed methods: client.oldMethod() -> client.newMethod()
-// - Changed parameters: { key: 'x' } -> { apiKey: 'x' }
-// - Removed features: Check release notes before upgrading
-```
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `INVALID_SESSION_ID` | Session expired | Re-authenticate |
+| `INSUFFICIENT_ACCESS` | Missing permissions | Check security profile |
+| `INVALID_DATA` | Bad VQL or field name | Validate against metadata |
+| `OPERATION_NOT_ALLOWED` | Lifecycle state conflict | Check document state |
 
 ## Resources
-- [Veeva Changelog](https://github.com/veeva/sdk/releases)
-- [Veeva Migration Guide](https://docs.veeva.com/migration)
+
+- [Vault API Reference](https://developer.veevavault.com/api/)
+- [VQL Reference](https://developer.veevavault.com/vql/)
+- [VAPIL SDK](https://developer.veevavault.com/sdk/)
+- [Developer Portal](https://developer.veevavault.com/)
 
 ## Next Steps
-For CI integration during upgrades, see `veeva-ci-integration`.
+
+See related Veeva Vault skills for more patterns.

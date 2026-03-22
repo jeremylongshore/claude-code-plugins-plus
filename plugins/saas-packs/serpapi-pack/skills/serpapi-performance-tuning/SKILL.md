@@ -1,11 +1,10 @@
 ---
 name: serpapi-performance-tuning
 description: |
-  Optimize SerpApi API performance with caching, batching, and connection pooling.
-  Use when experiencing slow API responses, implementing caching strategies,
-  or optimizing request throughput for SerpApi integrations.
-  Trigger with phrases like "serpapi performance", "optimize serpapi",
-  "serpapi latency", "serpapi caching", "serpapi slow", "serpapi batch".
+  Optimize SerpApi performance with caching, async searches, and result filtering.
+  Use when reducing latency, minimizing credit consumption,
+  or optimizing search throughput.
+  Trigger: "serpapi performance", "optimize serpapi", "serpapi caching", "serpapi slow".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
@@ -17,200 +16,116 @@ compatible-with: claude-code
 # SerpApi Performance Tuning
 
 ## Overview
-Optimize SerpApi API performance with caching, batching, and connection pooling.
 
-## Prerequisites
-- SerpApi SDK installed
-- Understanding of async patterns
-- Redis or in-memory cache available (optional)
-- Performance monitoring in place
-
-## Latency Benchmarks
-
-| Operation | P50 | P95 | P99 |
-|-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
-
-## Caching Strategy
-
-### Response Caching
-```typescript
-import { LRUCache } from 'lru-cache';
-
-const cache = new LRUCache<string, any>({
-  max: 1000,
-  ttl: 60000, // 1 minute
-  updateAgeOnGet: true,
-});
-
-async function cachedSerpApiRequest<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttl?: number
-): Promise<T> {
-  const cached = cache.get(key);
-  if (cached) return cached as T;
-
-  const result = await fetcher();
-  cache.set(key, result, { ttl });
-  return result;
-}
-```
-
-### Redis Caching (Distributed)
-```typescript
-import Redis from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function cachedWithRedis<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttlSeconds = 60
-): Promise<T> {
-  const cached = await redis.get(key);
-  if (cached) return JSON.parse(cached);
-
-  const result = await fetcher();
-  await redis.setex(key, ttlSeconds, JSON.stringify(result));
-  return result;
-}
-```
-
-## Request Batching
-
-```typescript
-import DataLoader from 'dataloader';
-
-const serpapiLoader = new DataLoader<string, any>(
-  async (ids) => {
-    // Batch fetch from SerpApi
-    const results = await serpapiClient.batchGet(ids);
-    return ids.map(id => results.find(r => r.id === id) || null);
-  },
-  {
-    maxBatchSize: 100,
-    batchScheduleFn: callback => setTimeout(callback, 10),
-  }
-);
-
-// Usage - automatically batched
-const [item1, item2, item3] = await Promise.all([
-  serpapiLoader.load('id-1'),
-  serpapiLoader.load('id-2'),
-  serpapiLoader.load('id-3'),
-]);
-```
-
-## Connection Optimization
-
-```typescript
-import { Agent } from 'https';
-
-// Keep-alive connection pooling
-const agent = new Agent({
-  keepAlive: true,
-  maxSockets: 10,
-  maxFreeSockets: 5,
-  timeout: 30000,
-});
-
-const client = new SerpApiClient({
-  apiKey: process.env.SERPAPI_API_KEY!,
-  httpAgent: agent,
-});
-```
-
-## Pagination Optimization
-
-```typescript
-async function* paginatedSerpApiList<T>(
-  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
-): AsyncGenerator<T> {
-  let cursor: string | undefined;
-
-  do {
-    const { data, nextCursor } = await fetcher(cursor);
-    for (const item of data) {
-      yield item;
-    }
-    cursor = nextCursor;
-  } while (cursor);
-}
-
-// Usage
-for await (const item of paginatedSerpApiList(cursor =>
-  serpapiClient.list({ cursor, limit: 100 })
-)) {
-  await process(item);
-}
-```
-
-## Performance Monitoring
-
-```typescript
-async function measuredSerpApiCall<T>(
-  operation: string,
-  fn: () => Promise<T>
-): Promise<T> {
-  const start = performance.now();
-  try {
-    const result = await fn();
-    const duration = performance.now() - start;
-    console.log({ operation, duration, status: 'success' });
-    return result;
-  } catch (error) {
-    const duration = performance.now() - start;
-    console.error({ operation, duration, status: 'error', error });
-    throw error;
-  }
-}
-```
+SerpApi typical latency: 2-5 seconds per search (real-time scraping). Main optimization: aggressive caching since search results change slowly. Secondary: use Google Light API for faster responses, reduce `num` parameter, and parallelize independent searches.
 
 ## Instructions
 
-### Step 1: Establish Baseline
-Measure current latency for critical SerpApi operations.
+### Step 1: Multi-Layer Caching
 
-### Step 2: Implement Caching
-Add response caching for frequently accessed data.
-
-### Step 3: Enable Batching
-Use DataLoader or similar for automatic request batching.
-
-### Step 4: Optimize Connections
-Configure connection pooling with keep-alive.
-
-## Output
-- Reduced API latency
-- Caching layer implemented
-- Request batching enabled
-- Connection pooling configured
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Cache miss storm | TTL expired | Use stale-while-revalidate |
-| Batch timeout | Too many items | Reduce batch size |
-| Connection exhausted | No pooling | Configure max sockets |
-| Memory pressure | Cache too large | Set max cache entries |
-
-## Examples
-
-### Quick Performance Wrapper
 ```typescript
-const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
-  measuredSerpApiCall(name, () =>
-    cachedSerpApiRequest(`cache:${name}`, fn)
-  );
+import { LRUCache } from 'lru-cache';
+import { Redis } from 'ioredis';
+import { getJson } from 'serpapi';
+
+// L1: In-memory (fastest, per-instance)
+const l1 = new LRUCache<string, any>({ max: 1000, ttl: 600_000 }); // 10 min
+
+// L2: Redis (shared across instances)
+const redis = new Redis(process.env.REDIS_URL!);
+
+async function cachedSearch(params: Record<string, any>): Promise<any> {
+  const key = `serpapi:${JSON.stringify(params)}`;
+
+  // L1 check
+  const l1Hit = l1.get(key);
+  if (l1Hit) return l1Hit;
+
+  // L2 check
+  const l2Hit = await redis.get(key);
+  if (l2Hit) {
+    const parsed = JSON.parse(l2Hit);
+    l1.set(key, parsed);
+    return parsed;
+  }
+
+  // Cache miss: real API call
+  const result = await getJson({ ...params, api_key: process.env.SERPAPI_API_KEY });
+  l1.set(key, result);
+  await redis.setex(key, 3600, JSON.stringify(result)); // 1 hour in Redis
+  return result;
+}
 ```
 
+### Step 2: Google Light API (Faster)
+
+```python
+# Google Light API: ~1s instead of 2-5s, limited result fields
+result = client.search(engine="google_light", q="fast query", num=5)
+# Returns: organic_results with title, link, snippet only
+# No knowledge_graph, answer_box, or rich snippets
+```
+
+### Step 3: Reduce Response Size
+
+```python
+# Only get the fields you need
+result = client.search(
+    engine="google", q="query",
+    num=5,         # Fewer results = faster
+    no_cache=False, # Use SerpApi's server-side cache (default)
+)
+
+# Strip metadata to reduce memory/storage
+clean = {
+    "organic_results": result.get("organic_results", []),
+    "answer_box": result.get("answer_box"),
+    "search_id": result["search_metadata"]["id"],
+}
+```
+
+### Step 4: Parallel Search
+
+```typescript
+import PQueue from 'p-queue';
+
+const queue = new PQueue({ concurrency: 5, interval: 1000, intervalCap: 5 });
+
+async function batchSearch(queries: string[]): Promise<any[]> {
+  return Promise.all(
+    queries.map(q =>
+      queue.add(() => cachedSearch({ engine: 'google', q, num: 5 }))
+    )
+  );
+}
+
+// 10 queries, 5 parallel, rate limited: ~4 seconds total
+const results = await batchSearch(['query1', 'query2', /* ... */]);
+```
+
+## Latency Benchmarks
+
+| Method | Typical Latency | Credits |
+|--------|----------------|---------|
+| Google Search (uncached) | 2-5s | 1 |
+| Google Light | 1-2s | 1 |
+| L1 cache hit | < 1ms | 0 |
+| Redis cache hit | 1-5ms | 0 |
+| Archive retrieval | 500ms | 0 |
+
+## Error Handling
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Cache stampede | TTL expiry under load | Stale-while-revalidate |
+| High latency | Complex queries | Use Google Light API |
+| Memory pressure | Large cache | Limit LRU max entries |
+
 ## Resources
-- [SerpApi Performance Guide](https://docs.serpapi.com/performance)
-- [DataLoader Documentation](https://github.com/graphql/dataloader)
-- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
+
+- [Google Light API](https://serpapi.com/google-light-api)
+- [SerpApi Caching](https://serpapi.com/search-api#api-parameters-serpapi-parameters-no-cache)
 
 ## Next Steps
+
 For cost optimization, see `serpapi-cost-tuning`.

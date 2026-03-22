@@ -1,12 +1,11 @@
 ---
 name: workhuman-install-auth
 description: |
-  Install and configure Workhuman SDK/CLI authentication.
-  Use when setting up a new Workhuman integration, configuring API keys,
-  or initializing Workhuman in your project.
-  Trigger with phrases like "install workhuman", "setup workhuman",
-  "workhuman auth", "configure workhuman API key".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
+  Workhuman install auth for employee recognition and rewards API.
+  Use when integrating Workhuman Social Recognition,
+  or building recognition workflows with HRIS systems.
+  Trigger: "workhuman install auth".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,76 +16,95 @@ compatible-with: claude-code
 # Workhuman Install & Auth
 
 ## Overview
-Set up Workhuman SDK/CLI and configure authentication credentials.
+
+Configure Workhuman API access for Social Recognition, rewards, and HRIS integration. Workhuman uses OAuth 2.0 for API authentication. The API enables programmatic recognition nominations, reward redemption, and employee data sync.
 
 ## Prerequisites
-- Node.js 18+ or Python 3.10+
-- Package manager (npm, pnpm, or pip)
-- Workhuman account with API access
-- API key from Workhuman dashboard
+
+- Workhuman enterprise account with API access enabled
+- OAuth client credentials from Workhuman admin portal
+- HTTPS endpoint for redirect URI (if using auth code flow)
 
 ## Instructions
 
-### Step 1: Install SDK
-```bash
-# Node.js
-npm install @workhuman/sdk
+### Step 1: Configure OAuth Credentials
 
-# Python
-pip install workhuman
+```bash
+# .env
+WORKHUMAN_CLIENT_ID=your-client-id
+WORKHUMAN_CLIENT_SECRET=your-client-secret
+WORKHUMAN_BASE_URL=https://api.workhuman.com
+WORKHUMAN_TENANT_ID=your-tenant-id
 ```
 
-### Step 2: Configure Authentication
-```bash
-# Set environment variable
-export WORKHUMAN_API_KEY="your-api-key"
+### Step 2: Obtain Access Token (Client Credentials)
 
-# Or create .env file
-echo 'WORKHUMAN_API_KEY=your-api-key' >> .env
+```typescript
+import axios from 'axios';
+
+async function getWorkhmanToken(): Promise<string> {
+  const { data } = await axios.post(
+    `${process.env.WORKHUMAN_BASE_URL}/oauth/token`,
+    new URLSearchParams({
+      grant_type: 'client_credentials',
+      client_id: process.env.WORKHUMAN_CLIENT_ID!,
+      client_secret: process.env.WORKHUMAN_CLIENT_SECRET!,
+    }),
+    { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } },
+  );
+  return data.access_token;
+}
 ```
 
 ### Step 3: Verify Connection
+
 ```typescript
-// Test connection code here
+const token = await getWorkhmanToken();
+const api = axios.create({
+  baseURL: process.env.WORKHUMAN_BASE_URL,
+  headers: { Authorization: `Bearer ${token}` },
+});
+
+const { data } = await api.get('/api/v1/users/me');
+console.log(`Connected as: ${data.displayName}`);
 ```
 
-## Output
-- Installed SDK package in node_modules or site-packages
-- Environment variable or .env file with API key
-- Successful connection verification output
+### Step 4: Python Client
+
+```python
+import requests, os
+
+class WorkhumanClient:
+    def __init__(self):
+        self.base = os.environ["WORKHUMAN_BASE_URL"]
+        self.token = self._authenticate()
+
+    def _authenticate(self):
+        resp = requests.post(f"{self.base}/oauth/token", data={
+            "grant_type": "client_credentials",
+            "client_id": os.environ["WORKHUMAN_CLIENT_ID"],
+            "client_secret": os.environ["WORKHUMAN_CLIENT_SECRET"],
+        })
+        return resp.json()["access_token"]
+
+    def get(self, endpoint, **params):
+        return requests.get(f"{self.base}{endpoint}",
+            headers={"Authorization": f"Bearer {self.token}"}, params=params).json()
+```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Invalid API Key | Incorrect or expired key | Verify key in Workhuman dashboard |
-| Rate Limited | Exceeded quota | Check quota at https://docs.workhuman.com |
-| Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
-| Module Not Found | Installation failed | Run `npm install` or `pip install` again |
-
-## Examples
-
-### TypeScript Setup
-```typescript
-import { WorkhumanClient } from '@workhuman/sdk';
-
-const client = new WorkhumanClient({
-  apiKey: process.env.WORKHUMAN_API_KEY,
-});
-```
-
-### Python Setup
-```python
-from workhuman import WorkhumanClient
-
-client = WorkhumanClient(
-    api_key=os.environ.get('WORKHUMAN_API_KEY')
-)
-```
+| `401 Unauthorized` | Invalid credentials | Check client_id/secret |
+| `403 Forbidden` | Insufficient permissions | Contact Workhuman admin |
+| `invalid_grant` | Wrong grant type | Use client_credentials |
 
 ## Resources
-- [Workhuman Documentation](https://docs.workhuman.com)
-- [Workhuman Dashboard](https://api.workhuman.com)
-- [Workhuman Status](https://status.workhuman.com)
+
+- [Workhuman Platform](https://www.workhuman.com/)
+- [Workhuman Integrations](https://www.workhuman.com/capabilities/integrations/)
 
 ## Next Steps
-After successful auth, proceed to `workhuman-hello-world` for your first API call.
+
+Proceed to `workhuman-hello-world` for your first recognition nomination.

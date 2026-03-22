@@ -1,201 +1,49 @@
 ---
 name: wispr-webhooks-events
 description: |
-  Implement Wispr webhook signature validation and event handling.
-  Use when setting up webhook endpoints, implementing signature verification,
-  or handling Wispr event notifications securely.
-  Trigger with phrases like "wispr webhook", "wispr events",
-  "wispr webhook signature", "handle wispr events", "wispr notifications".
-allowed-tools: Read, Write, Edit, Bash(curl:*)
+  Wispr Flow webhooks events for voice-to-text API integration.
+  Use when integrating Wispr Flow dictation, WebSocket streaming,
+  or building voice-powered applications.
+  Trigger: "wispr webhooks events".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, voice, productivity, wispr]
+tags: [saas, voice, dictation, wispr]
 compatible-with: claude-code
 ---
 
-# Wispr Webhooks & Events
+# Wispr Flow Webhooks Events
 
 ## Overview
-Securely handle Wispr webhooks with signature validation and replay protection.
 
-## Prerequisites
-- Wispr webhook secret configured
-- HTTPS endpoint accessible from internet
-- Understanding of cryptographic signatures
-- Redis or database for idempotency (optional)
-
-## Webhook Endpoint Setup
-
-### Express.js
-```typescript
-import express from 'express';
-import crypto from 'crypto';
-
-const app = express();
-
-// IMPORTANT: Raw body needed for signature verification
-app.post('/webhooks/wispr',
-  express.raw({ type: 'application/json' }),
-  async (req, res) => {
-    const signature = req.headers['x-wispr-signature'] as string;
-    const timestamp = req.headers['x-wispr-timestamp'] as string;
-
-    if (!verifyWisprSignature(req.body, signature, timestamp)) {
-      return res.status(401).json({ error: 'Invalid signature' });
-    }
-
-    const event = JSON.parse(req.body.toString());
-    await handleWisprEvent(event);
-
-    res.status(200).json({ received: true });
-  }
-);
-```
-
-## Signature Verification
-
-```typescript
-function verifyWisprSignature(
-  payload: Buffer,
-  signature: string,
-  timestamp: string
-): boolean {
-  const secret = process.env.WISPR_WEBHOOK_SECRET!;
-
-  // Reject old timestamps (replay attack protection)
-  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
-  if (timestampAge > 300000) { // 5 minutes
-    console.error('Webhook timestamp too old');
-    return false;
-  }
-
-  // Compute expected signature
-  const signedPayload = `${timestamp}.${payload.toString()}`;
-  const expectedSignature = crypto
-    .createHmac('sha256', secret)
-    .update(signedPayload)
-    .digest('hex');
-
-  // Timing-safe comparison
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
-  );
-}
-```
-
-## Event Handler Pattern
-
-```typescript
-type WisprEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
-
-interface WisprEvent {
-  id: string;
-  type: WisprEventType;
-  data: Record<string, any>;
-  created: string;
-}
-
-const eventHandlers: Record<WisprEventType, (data: any) => Promise<void>> = {
-  'resource.created': async (data) => { /* handle */ },
-  'resource.updated': async (data) => { /* handle */ },
-  'resource.deleted': async (data) => { /* handle */ }
-};
-
-async function handleWisprEvent(event: WisprEvent): Promise<void> {
-  const handler = eventHandlers[event.type];
-
-  if (!handler) {
-    console.log(`Unhandled event type: ${event.type}`);
-    return;
-  }
-
-  try {
-    await handler(event.data);
-    console.log(`Processed ${event.type}: ${event.id}`);
-  } catch (error) {
-    console.error(`Failed to process ${event.type}: ${event.id}`, error);
-    throw error; // Rethrow to trigger retry
-  }
-}
-```
-
-## Idempotency Handling
-
-```typescript
-import { Redis } from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function isEventProcessed(eventId: string): Promise<boolean> {
-  const key = `wispr:event:${eventId}`;
-  const exists = await redis.exists(key);
-  return exists === 1;
-}
-
-async function markEventProcessed(eventId: string): Promise<void> {
-  const key = `wispr:event:${eventId}`;
-  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
-}
-```
-
-## Webhook Testing
-
-```bash
-# Use Wispr CLI to send test events
-wispr webhooks trigger resource.created --url http://localhost:3000/webhooks/wispr
-
-# Or use webhook.site for debugging
-curl -X POST https://webhook.site/your-uuid \
-  -H "Content-Type: application/json" \
-  -d '{"type": "resource.created", "data": {}}'
-```
+Guidance for webhooks events with Wispr Flow voice-to-text API.
 
 ## Instructions
 
-### Step 1: Register Webhook Endpoint
-Configure your webhook URL in the Wispr dashboard.
+### Key Wispr Flow Concepts
 
-### Step 2: Implement Signature Verification
-Use the signature verification code to validate incoming webhooks.
-
-### Step 3: Handle Events
-Implement handlers for each event type your application needs.
-
-### Step 4: Add Idempotency
-Prevent duplicate processing with event ID tracking.
-
-## Output
-- Secure webhook endpoint
-- Signature validation enabled
-- Event handlers implemented
-- Replay attack protection active
+- **WebSocket API**: `wss://api.wisprflow.ai/api/v1/ws` (recommended, low latency)
+- **REST API**: `POST /api/v1/transcribe` (simpler, higher latency)
+- **Auth**: API key (backend) or access token (client-side)
+- **Audio format**: 16kHz mono PCM preferred
+- **Context awareness**: Understands code, CLI commands, dev jargon
+- **Platforms**: Mac, Windows, iOS, browser API
 
 ## Error Handling
-| Issue | Cause | Solution |
+
+| Error | Cause | Solution |
 |-------|-------|----------|
-| Invalid signature | Wrong secret | Verify webhook secret |
-| Timestamp rejected | Clock drift | Check server time sync |
-| Duplicate events | Missing idempotency | Implement event ID tracking |
-| Handler timeout | Slow processing | Use async queue |
-
-## Examples
-
-### Testing Webhooks Locally
-```bash
-# Use ngrok to expose local server
-ngrok http 3000
-
-# Send test webhook
-curl -X POST https://your-ngrok-url/webhooks/wispr \
-  -H "Content-Type: application/json" \
-  -d '{"type": "test", "data": {}}'
-```
+| `401 Unauthorized` | Invalid key | Check at wisprflow.ai/developers |
+| WebSocket closed | Network issue | Reconnect with backoff |
+| Poor accuracy | Wrong context | Set context to 'programming' for code |
 
 ## Resources
-- [Wispr Webhooks Guide](https://docs.wispr.com/webhooks)
-- [Webhook Security Best Practices](https://docs.wispr.com/webhooks/security)
+
+- [Wispr Flow Developers](https://wisprflow.ai/developers)
+- [API Docs](https://api-docs.wisprflow.ai/introduction)
+- [WebSocket Quickstart](https://api-docs.wisprflow.ai/websocket_quickstart)
 
 ## Next Steps
-For performance optimization, see `wispr-performance-tuning`.
+
+See related Wispr Flow skills for more patterns.

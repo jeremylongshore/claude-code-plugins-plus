@@ -1,203 +1,62 @@
 ---
 name: veeva-cost-tuning
 description: |
-  Optimize Veeva costs through tier selection, sampling, and usage monitoring.
-  Use when analyzing Veeva billing, reducing API costs,
-  or implementing usage monitoring and budget alerts.
-  Trigger with phrases like "veeva cost", "veeva billing",
-  "reduce veeva costs", "veeva pricing", "veeva expensive", "veeva budget".
-allowed-tools: Read, Grep
+  Veeva Vault cost tuning for REST API and clinical operations.
+  Use when working with Veeva Vault document management and CRM.
+  Trigger: "veeva cost tuning".
+allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, pharma, crm, veeva]
+tags: [saas, life-sciences, crm, veeva]
 compatible-with: claude-code
 ---
 
-# Veeva Cost Tuning
+# Veeva Vault Cost Tuning
 
 ## Overview
-Optimize Veeva costs through smart tier selection, sampling, and usage monitoring.
 
-## Prerequisites
-- Access to Veeva billing dashboard
-- Understanding of current usage patterns
-- Database for usage tracking (optional)
-- Alerting system configured (optional)
-
-## Pricing Tiers
-
-| Tier | Monthly Cost | Included | Overage |
-|------|-------------|----------|---------|
-| Free | $0 | 1,000 requests | N/A |
-| Pro | $99 | 100,000 requests | $0.001/request |
-| Enterprise | Custom | Unlimited | Volume discounts |
-
-## Cost Estimation
-
-```typescript
-interface UsageEstimate {
-  requestsPerMonth: number;
-  tier: string;
-  estimatedCost: number;
-  recommendation?: string;
-}
-
-function estimateVeevaCost(requestsPerMonth: number): UsageEstimate {
-  if (requestsPerMonth <= 1000) {
-    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
-  }
-
-  if (requestsPerMonth <= 100000) {
-    return { requestsPerMonth, tier: 'Pro', estimatedCost: 99 };
-  }
-
-  const proOverage = (requestsPerMonth - 100000) * 0.001;
-  const proCost = 99 + proOverage;
-
-  return {
-    requestsPerMonth,
-    tier: 'Pro (with overage)',
-    estimatedCost: proCost,
-    recommendation: proCost > 500
-      ? 'Consider Enterprise tier for volume discounts'
-      : undefined,
-  };
-}
-```
-
-## Usage Monitoring
-
-```typescript
-class VeevaUsageMonitor {
-  private requestCount = 0;
-  private bytesTransferred = 0;
-  private alertThreshold: number;
-
-  constructor(monthlyBudget: number) {
-    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
-  }
-
-  track(request: { bytes: number }) {
-    this.requestCount++;
-    this.bytesTransferred += request.bytes;
-
-    if (this.estimatedCost() > this.alertThreshold) {
-      this.sendAlert('Approaching Veeva budget limit');
-    }
-  }
-
-  estimatedCost(): number {
-    return estimateVeevaCost(this.requestCount).estimatedCost;
-  }
-
-  private sendAlert(message: string) {
-    // Send to Slack, email, PagerDuty, etc.
-  }
-}
-```
-
-## Cost Reduction Strategies
-
-### Step 1: Request Sampling
-```typescript
-function shouldSample(samplingRate = 0.1): boolean {
-  return Math.random() < samplingRate;
-}
-
-// Use for non-critical telemetry
-if (shouldSample(0.1)) { // 10% sample
-  await veevaClient.trackEvent(event);
-}
-```
-
-### Step 2: Batching Requests
-```typescript
-// Instead of N individual calls
-await Promise.all(ids.map(id => veevaClient.get(id)));
-
-// Use batch endpoint (1 call)
-await veevaClient.batchGet(ids);
-```
-
-### Step 3: Caching (from P16)
-- Cache frequently accessed data
-- Use cache invalidation webhooks
-- Set appropriate TTLs
-
-### Step 4: Compression
-```typescript
-const client = new VeevaClient({
-  compression: true, // Enable gzip
-});
-```
-
-## Budget Alerts
-
-```bash
-# Set up billing alerts in Veeva dashboard
-# Or use API if available:
-# Check Veeva documentation for billing APIs
-```
-
-## Cost Dashboard Query
-
-```sql
--- If tracking usage in your database
-SELECT
-  DATE_TRUNC('day', created_at) as date,
-  COUNT(*) as requests,
-  SUM(response_bytes) as bytes,
-  COUNT(*) * 0.001 as estimated_cost
-FROM veeva_api_logs
-WHERE created_at >= NOW() - INTERVAL '30 days'
-GROUP BY 1
-ORDER BY 1;
-```
+Guidance for cost tuning with Veeva Vault REST API, VQL queries, and VAPIL Java SDK.
 
 ## Instructions
 
-### Step 1: Analyze Current Usage
-Review Veeva dashboard for usage patterns and costs.
+### Key Vault API Concepts
 
-### Step 2: Select Optimal Tier
-Use the cost estimation function to find the right tier.
+- **Authentication**: Session-based (username/password or OAuth 2.0)
+- **Base URL**: `https://{vault}.veevavault.com/api/v24.1/`
+- **VQL**: SQL-like query language for Vault data
+- **VAPIL**: Open-source Java SDK covering all Platform APIs
+- **Lifecycle**: Documents flow through states (Draft > In Review > Approved)
 
-### Step 3: Implement Monitoring
-Add usage tracking to catch budget overruns early.
+### Common VQL Patterns
 
-### Step 4: Apply Optimizations
-Enable batching, caching, and sampling where appropriate.
+```sql
+-- List documents by type
+SELECT id, name__v FROM documents WHERE type__v = 'Trial Document'
 
-## Output
-- Optimized tier selection
-- Usage monitoring implemented
-- Budget alerts configured
-- Cost reduction strategies applied
+-- Find objects
+SELECT id, name__v FROM site__v WHERE status__v = 'active__v'
 
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Unexpected charges | Untracked usage | Implement monitoring |
-| Overage fees | Wrong tier | Upgrade tier |
-| Budget exceeded | No alerts | Set up alerts |
-| Inefficient usage | No batching | Enable batch requests |
-
-## Examples
-
-### Quick Cost Check
-```typescript
-// Estimate monthly cost for your usage
-const estimate = estimateVeevaCost(yourMonthlyRequests);
-console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
-if (estimate.recommendation) {
-  console.log(`💡 ${estimate.recommendation}`);
-}
+-- Join related objects
+SELECT id, name__v, study__vr.name__v FROM study_country__v
 ```
 
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `INVALID_SESSION_ID` | Session expired | Re-authenticate |
+| `INSUFFICIENT_ACCESS` | Missing permissions | Check security profile |
+| `INVALID_DATA` | Bad VQL or field name | Validate against metadata |
+| `OPERATION_NOT_ALLOWED` | Lifecycle state conflict | Check document state |
+
 ## Resources
-- [Veeva Pricing](https://veeva.com/pricing)
-- [Veeva Billing Dashboard](https://dashboard.veeva.com/billing)
+
+- [Vault API Reference](https://developer.veevavault.com/api/)
+- [VQL Reference](https://developer.veevavault.com/vql/)
+- [VAPIL SDK](https://developer.veevavault.com/sdk/)
+- [Developer Portal](https://developer.veevavault.com/)
 
 ## Next Steps
-For architecture patterns, see `veeva-reference-architecture`.
+
+See related Veeva Vault skills for more patterns.

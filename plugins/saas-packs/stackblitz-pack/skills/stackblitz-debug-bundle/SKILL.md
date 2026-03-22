@@ -1,113 +1,90 @@
 ---
 name: stackblitz-debug-bundle
 description: |
-  Collect StackBlitz debug evidence for support tickets and troubleshooting.
-  Use when encountering persistent issues, preparing support tickets,
-  or collecting diagnostic information for StackBlitz problems.
-  Trigger with phrases like "stackblitz debug", "stackblitz support bundle",
-  "collect stackblitz logs", "stackblitz diagnostic".
-allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
+  Collect WebContainer diagnostic info: boot state, file system, process list.
+  Use when working with WebContainers or StackBlitz SDK.
+  Trigger: "stackblitz debug".
+allowed-tools: Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ide, cloud, stackblitz]
+tags: [saas, ide, webcontainers, stackblitz]
 compatible-with: claude-code
 ---
 
 # StackBlitz Debug Bundle
 
 ## Overview
-Collect all necessary diagnostic information for StackBlitz support tickets.
 
-## Prerequisites
-- StackBlitz SDK installed
-- Access to application logs
-- Permission to collect environment info
+Collect WebContainer diagnostic info: boot state, file system, process list.
 
 ## Instructions
 
-### Step 1: Create Debug Bundle Script
-```bash
-#!/bin/bash
-# stackblitz-debug-bundle.sh
+### Step 1: Check Boot State
 
-BUNDLE_DIR="stackblitz-debug-$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$BUNDLE_DIR"
+```typescript
+async function diagnoseWebContainer(wc: WebContainer) {
+  const report: Record<string, any> = {};
 
-echo "=== StackBlitz Debug Bundle ===" > "$BUNDLE_DIR/summary.txt"
-echo "Generated: $(date)" >> "$BUNDLE_DIR/summary.txt"
+  // File system check
+  try {
+    const entries = await wc.fs.readdir('/');
+    report.filesystem = { status: 'ok', rootEntries: entries.length };
+  } catch (e: any) {
+    report.filesystem = { status: 'error', message: e.message };
+  }
+
+  // Node.js check
+  try {
+    const proc = await wc.spawn('node', ['-e', 'console.log(JSON.stringify({version: process.version, arch: process.arch}))']);
+    let output = '';
+    proc.output.pipeTo(new WritableStream({ write(data) { output += data; } }));
+    await proc.exit;
+    report.node = JSON.parse(output);
+  } catch (e: any) {
+    report.node = { status: 'error', message: e.message };
+  }
+
+  // Memory check
+  try {
+    const proc = await wc.spawn('node', ['-e', 'console.log(JSON.stringify(process.memoryUsage()))']);
+    let output = '';
+    proc.output.pipeTo(new WritableStream({ write(data) { output += data; } }));
+    await proc.exit;
+    report.memory = JSON.parse(output);
+  } catch { report.memory = 'unavailable'; }
+
+  return report;
+}
 ```
 
-### Step 2: Collect Environment Info
-```bash
-# Environment info
-echo "--- Environment ---" >> "$BUNDLE_DIR/summary.txt"
-node --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-npm --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-echo "STACKBLITZ_API_KEY: ${STACKBLITZ_API_KEY:+[SET]}" >> "$BUNDLE_DIR/summary.txt"
+### Step 2: Check Browser Support
+
+```typescript
+function checkBrowserSupport() {
+  return {
+    sharedArrayBuffer: typeof SharedArrayBuffer !== 'undefined',
+    crossOriginIsolated: window.crossOriginIsolated,
+    serviceWorker: 'serviceWorker' in navigator,
+    userAgent: navigator.userAgent,
+  };
+}
 ```
-
-### Step 3: Gather SDK and Logs
-```bash
-# SDK version
-npm list @stackblitz/sdk 2>/dev/null >> "$BUNDLE_DIR/summary.txt"
-
-# Recent logs (redacted)
-grep -i "stackblitz" ~/.npm/_logs/*.log 2>/dev/null | tail -50 >> "$BUNDLE_DIR/logs.txt"
-
-# Configuration (redacted - secrets masked)
-echo "--- Config (redacted) ---" >> "$BUNDLE_DIR/summary.txt"
-cat .env 2>/dev/null | sed 's/=.*/=***REDACTED***/' >> "$BUNDLE_DIR/config-redacted.txt"
-
-# Network connectivity test
-echo "--- Network Test ---" >> "$BUNDLE_DIR/summary.txt"
-echo -n "API Health: " >> "$BUNDLE_DIR/summary.txt"
-curl -s -o /dev/null -w "%{http_code}" https://api.stackblitz.com/health >> "$BUNDLE_DIR/summary.txt"
-echo "" >> "$BUNDLE_DIR/summary.txt"
-```
-
-### Step 4: Package Bundle
-```bash
-tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
-echo "Bundle created: $BUNDLE_DIR.tar.gz"
-```
-
-## Output
-- `stackblitz-debug-YYYYMMDD-HHMMSS.tar.gz` archive containing:
-  - `summary.txt` - Environment and SDK info
-  - `logs.txt` - Recent redacted logs
-  - `config-redacted.txt` - Configuration (secrets removed)
 
 ## Error Handling
-| Item | Purpose | Included |
-|------|---------|----------|
-| Environment versions | Compatibility check | ✓ |
-| SDK version | Version-specific bugs | ✓ |
-| Error logs (redacted) | Root cause analysis | ✓ |
-| Config (redacted) | Configuration issues | ✓ |
-| Network test | Connectivity issues | ✓ |
 
-## Examples
-
-### Sensitive Data Handling
-**ALWAYS REDACT:**
-- API keys and tokens
-- Passwords and secrets
-- PII (emails, names, IDs)
-
-**Safe to Include:**
-- Error messages
-- Stack traces (redacted)
-- SDK/runtime versions
-
-### Submit to Support
-1. Create bundle: `bash stackblitz-debug-bundle.sh`
-2. Review for sensitive data
-3. Upload to StackBlitz support portal
+| Check | Expected | Failed Action |
+|-------|----------|---------------|
+| SharedArrayBuffer | defined | Add COOP/COEP headers |
+| crossOriginIsolated | true | Check all headers present |
+| Node.js version | v18+ | WebContainer ships its own |
+| Root FS entries | > 0 | Re-mount files |
 
 ## Resources
-- [StackBlitz Support](https://docs.stackblitz.com/support)
-- [StackBlitz Status](https://status.stackblitz.com)
+
+- [WebContainer API Reference](https://webcontainers.io/api)
+- [Browser Support](https://webcontainers.io/guides/browser-support)
 
 ## Next Steps
-For rate limit issues, see `stackblitz-rate-limits`.
+
+For resource limits, see `stackblitz-rate-limits`.

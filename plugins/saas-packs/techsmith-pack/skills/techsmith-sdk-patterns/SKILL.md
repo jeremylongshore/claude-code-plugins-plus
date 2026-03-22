@@ -1,149 +1,98 @@
 ---
 name: techsmith-sdk-patterns
 description: |
-  Apply production-ready TechSmith SDK patterns for TypeScript and Python.
-  Use when implementing TechSmith integrations, refactoring SDK usage,
-  or establishing team coding standards for TechSmith.
-  Trigger with phrases like "techsmith SDK patterns", "techsmith best practices",
-  "techsmith code patterns", "idiomatic techsmith".
-allowed-tools: Read, Write, Edit
+  TechSmith sdk patterns for Snagit COM API and Camtasia automation.
+  Use when working with TechSmith screen capture and video editing automation.
+  Trigger: "techsmith sdk patterns".
+allowed-tools: Read, Write, Edit, Bash(powershell:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, screen-recording, documentation, techsmith]
+tags: [saas, screen-capture, video, techsmith]
 compatible-with: claude-code
 ---
 
-# TechSmith SDK Patterns
+# TechSmith Sdk Patterns
 
 ## Overview
-Production-ready patterns for TechSmith SDK usage in TypeScript and Python.
 
-## Prerequisites
-- Completed `techsmith-install-auth` setup
-- Familiarity with async/await patterns
-- Understanding of error handling best practices
+Production patterns for TechSmith COM API: capture factories, output configuration, and batch processing.
 
 ## Instructions
 
-### Step 1: Implement Singleton Pattern (Recommended)
-```typescript
-// src/techsmith/client.ts
-import { TechSmithClient } from '@techsmith/sdk';
+### Step 1: Capture Factory Pattern
 
-let instance: TechSmithClient | null = null;
+```powershell
+function New-SnagitCapture {
+    param(
+        [ValidateSet('Desktop', 'Window', 'Region')]
+        [string]$InputType = 'Window',
+        [ValidateSet('PNG', 'JPEG', 'BMP', 'GIF')]
+        [string]$Format = 'PNG',
+        [string]$OutputDir = "C:\Screenshots",
+        [bool]$Preview = $false
+    )
 
-export function getTechSmithClient(): TechSmithClient {
-  if (!instance) {
-    instance = new TechSmithClient({
-      apiKey: process.env.TECHSMITH_API_KEY!,
-      // Additional options
-    });
-  }
-  return instance;
+    $inputMap = @{ Desktop = 0; Window = 4; Region = 2 }
+    $formatMap = @{ PNG = 3; JPEG = 4; BMP = 0; GIF = 2 }
+
+    $capture = New-Object -ComObject Snagit.ImageCapture
+    $capture.Input = $inputMap[$InputType]
+    $capture.Output = 2  # File
+    $capture.OutputImageFile.FileType = $formatMap[$Format]
+    $capture.OutputImageFile.Directory = $OutputDir
+    $capture.OutputImageFile.Filename = "capture_$(Get-Date -Format 'yyyyMMdd_HHmmss')"
+    $capture.EnablePreview = $Preview
+
+    return $capture
 }
+
+# Usage
+$cap = New-SnagitCapture -InputType Window -Format PNG
+$cap.Capture()
 ```
 
-### Step 2: Add Error Handling Wrapper
-```typescript
-import { TechSmithError } from '@techsmith/sdk';
+### Step 2: Batch Camtasia Rendering
 
-async function safeTechSmithCall<T>(
-  operation: () => Promise<T>
-): Promise<{ data: T | null; error: Error | null }> {
-  try {
-    const data = await operation();
-    return { data, error: null };
-  } catch (err) {
-    if (err instanceof TechSmithError) {
-      console.error({
-        code: err.code,
-        message: err.message,
-      });
+```powershell
+function Invoke-CamtasiaBatchRender {
+    param(
+        [string[]]$ProjectFiles,
+        [string]$OutputDir,
+        [string]$Preset = "MP4 - Smart Player (up to 1080p)"
+    )
+
+    $producer = "C:\Program Files\TechSmith\Camtasia 2025\CamtasiaProducer.exe"
+    $results = @()
+
+    foreach ($project in $ProjectFiles) {
+        $name = [System.IO.Path]::GetFileNameWithoutExtension($project)
+        $output = Join-Path $OutputDir "$name.mp4"
+
+        $proc = Start-Process -FilePath $producer -ArgumentList @(
+            "/i", "`"$project`"",
+            "/o", "`"$output`"",
+            "/preset", "`"$Preset`""
+        ) -Wait -PassThru
+
+        $results += @{ File = $name; ExitCode = $proc.ExitCode }
     }
-    return { data: null, error: err as Error };
-  }
+    return $results
 }
 ```
-
-### Step 3: Implement Retry Logic
-```typescript
-async function withRetry<T>(
-  operation: () => Promise<T>,
-  maxRetries = 3,
-  backoffMs = 1000
-): Promise<T> {
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      return await operation();
-    } catch (err) {
-      if (attempt === maxRetries) throw err;
-      const delay = backoffMs * Math.pow(2, attempt - 1);
-      await new Promise(r => setTimeout(r, delay));
-    }
-  }
-  throw new Error('Unreachable');
-}
-```
-
-## Output
-- Type-safe client singleton
-- Robust error handling with structured logging
-- Automatic retry with exponential backoff
-- Runtime validation for API responses
 
 ## Error Handling
+
 | Pattern | Use Case | Benefit |
 |---------|----------|---------|
-| Safe wrapper | All API calls | Prevents uncaught exceptions |
-| Retry logic | Transient failures | Improves reliability |
-| Type guards | Response validation | Catches API changes |
-| Logging | All operations | Debugging and monitoring |
-
-## Examples
-
-### Factory Pattern (Multi-tenant)
-```typescript
-const clients = new Map<string, TechSmithClient>();
-
-export function getClientForTenant(tenantId: string): TechSmithClient {
-  if (!clients.has(tenantId)) {
-    const apiKey = getTenantApiKey(tenantId);
-    clients.set(tenantId, new TechSmithClient({ apiKey }));
-  }
-  return clients.get(tenantId)!;
-}
-```
-
-### Python Context Manager
-```python
-from contextlib import asynccontextmanager
-from techsmith import TechSmithClient
-
-@asynccontextmanager
-async def get_techsmith_client():
-    client = TechSmithClient()
-    try:
-        yield client
-    finally:
-        await client.close()
-```
-
-### Zod Validation
-```typescript
-import { z } from 'zod';
-
-const techsmithResponseSchema = z.object({
-  id: z.string(),
-  status: z.enum(['active', 'inactive']),
-  createdAt: z.string().datetime(),
-});
-```
+| Factory function | Different capture types | Consistent configuration |
+| Batch rendering | Multiple projects | Automated pipeline |
+| Timestamped names | Avoid overwrites | Unique filenames |
 
 ## Resources
-- [TechSmith SDK Reference](https://docs.techsmith.com/sdk)
-- [TechSmith API Types](https://docs.techsmith.com/types)
-- [Zod Documentation](https://zod.dev/)
+
+- [Snagit COM Server Guide](https://assets.techsmith.com/Docs/Snagit-2022-COM-Server-Guide.pdf)
 
 ## Next Steps
-Apply patterns in `techsmith-core-workflow-a` for real-world usage.
+
+Apply patterns in `techsmith-core-workflow-a`.

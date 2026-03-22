@@ -1,126 +1,48 @@
 ---
 name: together-ci-integration
 description: |
-  Configure Together AI CI/CD integration with GitHub Actions and testing.
-  Use when setting up automated testing, configuring CI pipelines,
-  or integrating Together AI tests into your build process.
-  Trigger with phrases like "together CI", "together GitHub Actions",
-  "together automated tests", "CI together".
-allowed-tools: Read, Write, Edit, Bash(gh:*)
+  Together AI ci integration for inference, fine-tuning, and model deployment.
+  Use when working with Together AI's OpenAI-compatible API.
+  Trigger: "together ci integration".
+allowed-tools: Read, Write, Edit, Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, llm, together]
+tags: [saas, ai, inference, together]
 compatible-with: claude-code
 ---
 
-# Together AI CI Integration
+# Together AI Ci Integration
 
 ## Overview
-Set up CI/CD pipelines for Together AI integrations with automated testing.
 
-## Prerequisites
-- GitHub repository with Actions enabled
-- Together AI test API key
-- npm/pnpm project configured
+Guidance for ci integration with Together AI inference and fine-tuning API.
 
 ## Instructions
 
-### Step 1: Create GitHub Actions Workflow
-Create `.github/workflows/together-integration.yml`:
+### Key Points
 
-```yaml
-name: Together AI Integration Tests
-
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-
-env:
-  TOGETHER_API_KEY: ${{ secrets.TOGETHER_API_KEY }}
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    env:
-      TOGETHER_API_KEY: ${{ secrets.TOGETHER_API_KEY }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-      - run: npm ci
-      - run: npm test -- --coverage
-      - run: npm run test:integration
-```
-
-### Step 2: Configure Secrets
-```bash
-gh secret set TOGETHER_API_KEY --body "sk_test_***"
-```
-
-### Step 3: Add Integration Tests
-```typescript
-describe('Together AI Integration', () => {
-  it.skipIf(!process.env.TOGETHER_API_KEY)('should connect', async () => {
-    const client = getTogether AIClient();
-    const result = await client.healthCheck();
-    expect(result.status).toBe('ok');
-  });
-});
-```
-
-## Output
-- Automated test pipeline
-- PR checks configured
-- Coverage reports uploaded
-- Release workflow ready
+- Together AI is OpenAI-compatible: `base_url = 'https://api.together.xyz/v1'`
+- Use the `together` Python SDK or any OpenAI client library
+- Supports 100+ open-source models (Llama, Mixtral, Qwen, FLUX)
+- Fine-tuning available for supported models
+- Batch inference at 50% cost reduction
 
 ## Error Handling
-| Issue | Cause | Solution |
+
+| Error | Cause | Solution |
 |-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via `gh secret set` |
-| Tests timeout | Network issues | Increase timeout or mock |
-| Auth failures | Invalid key | Check secret value |
-
-## Examples
-
-### Release Workflow
-```yaml
-on:
-  push:
-    tags: ['v*']
-
-jobs:
-  release:
-    runs-on: ubuntu-latest
-    env:
-      TOGETHER_API_KEY: ${{ secrets.TOGETHER_API_KEY_PROD }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - run: npm ci
-      - name: Verify Together AI production readiness
-        run: npm run test:integration
-      - run: npm run build
-      - run: npm publish
-```
-
-### Branch Protection
-```yaml
-required_status_checks:
-  - "test"
-  - "together-integration"
-```
+| `401 Unauthorized` | Invalid API key | Check at api.together.xyz |
+| `Model not found` | Wrong model ID | Use `client.models.list()` |
+| `429 Rate limit` | Too many requests | Implement backoff |
+| `500 Server error` | Model overloaded | Retry with backoff |
 
 ## Resources
-- [GitHub Actions Documentation](https://docs.github.com/en/actions)
-- [Together AI CI Guide](https://docs.together.com/ci)
+
+- [Together AI Docs](https://docs.together.ai/)
+- [API Reference](https://docs.together.ai/reference/chat-completions-1)
+- [Model List](https://docs.together.ai/docs/inference-models)
 
 ## Next Steps
-For deployment patterns, see `together-deploy-integration`.
+
+See related Together AI skills for more patterns.

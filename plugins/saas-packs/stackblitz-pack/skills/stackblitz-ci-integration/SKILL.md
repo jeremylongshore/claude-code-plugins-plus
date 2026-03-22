@@ -1,126 +1,41 @@
 ---
 name: stackblitz-ci-integration
 description: |
-  Configure StackBlitz CI/CD integration with GitHub Actions and testing.
-  Use when setting up automated testing, configuring CI pipelines,
-  or integrating StackBlitz tests into your build process.
-  Trigger with phrases like "stackblitz CI", "stackblitz GitHub Actions",
-  "stackblitz automated tests", "CI stackblitz".
+  CI testing for WebContainer apps with Playwright browser tests.
+  Use when working with WebContainers or StackBlitz SDK.
+  Trigger: "stackblitz CI".
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ide, cloud, stackblitz]
+tags: [saas, ide, webcontainers, stackblitz]
 compatible-with: claude-code
 ---
 
-# StackBlitz CI Integration
+# StackBlitz Ci Integration
 
 ## Overview
-Set up CI/CD pipelines for StackBlitz integrations with automated testing.
 
-## Prerequisites
-- GitHub repository with Actions enabled
-- StackBlitz test API key
-- npm/pnpm project configured
+CI testing for WebContainer apps with Playwright browser tests.
 
 ## Instructions
 
-### Step 1: Create GitHub Actions Workflow
-Create `.github/workflows/stackblitz-integration.yml`:
+### Refer to the WebContainer API documentation for detailed guidance.
 
-```yaml
-name: StackBlitz Integration Tests
-
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-
-env:
-  STACKBLITZ_API_KEY: ${{ secrets.STACKBLITZ_API_KEY }}
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    env:
-      STACKBLITZ_API_KEY: ${{ secrets.STACKBLITZ_API_KEY }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-      - run: npm ci
-      - run: npm test -- --coverage
-      - run: npm run test:integration
-```
-
-### Step 2: Configure Secrets
-```bash
-gh secret set STACKBLITZ_API_KEY --body "sk_test_***"
-```
-
-### Step 3: Add Integration Tests
-```typescript
-describe('StackBlitz Integration', () => {
-  it.skipIf(!process.env.STACKBLITZ_API_KEY)('should connect', async () => {
-    const client = getStackBlitzClient();
-    const result = await client.healthCheck();
-    expect(result.status).toBe('ok');
-  });
-});
-```
-
-## Output
-- Automated test pipeline
-- PR checks configured
-- Coverage reports uploaded
-- Release workflow ready
+See the core workflow skills for implementation patterns.
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via `gh secret set` |
-| Tests timeout | Network issues | Increase timeout or mock |
-| Auth failures | Invalid key | Check secret value |
-
-## Examples
-
-### Release Workflow
-```yaml
-on:
-  push:
-    tags: ['v*']
-
-jobs:
-  release:
-    runs-on: ubuntu-latest
-    env:
-      STACKBLITZ_API_KEY: ${{ secrets.STACKBLITZ_API_KEY_PROD }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - run: npm ci
-      - name: Verify StackBlitz production readiness
-        run: npm run test:integration
-      - run: npm run build
-      - run: npm publish
-```
-
-### Branch Protection
-```yaml
-required_status_checks:
-  - "test"
-  - "stackblitz-integration"
-```
+| Configuration error | Wrong setup | Check WebContainer docs |
+| Build failure | Missing deps | Run npm install |
 
 ## Resources
-- [GitHub Actions Documentation](https://docs.github.com/en/actions)
-- [StackBlitz CI Guide](https://docs.stackblitz.com/ci)
+
+- [WebContainer API Docs](https://webcontainers.io/)
+- [StackBlitz SDK](https://developer.stackblitz.com/)
 
 ## Next Steps
-For deployment patterns, see `stackblitz-deploy-integration`.
+
+See related skills for more patterns.

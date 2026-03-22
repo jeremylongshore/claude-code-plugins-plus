@@ -1,71 +1,49 @@
 ---
 name: wispr-core-workflow-a
 description: |
-  Execute Wispr primary workflow: Core Workflow A.
-  Use when implementing primary use case,
-  building main features, or core integration tasks.
-  Trigger with phrases like "wispr main workflow",
-  "primary task with wispr".
+  Wispr Flow core workflow a for voice-to-text API integration.
+  Use when integrating Wispr Flow dictation, WebSocket streaming,
+  or building voice-powered applications.
+  Trigger: "wispr core workflow a".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, voice, productivity, wispr]
+tags: [saas, voice, dictation, wispr]
 compatible-with: claude-code
 ---
 
-# Wispr Core Workflow A
+# Wispr Flow Core Workflow A
 
 ## Overview
-Primary money-path workflow for Wispr. This is the most common use case.
 
-## Prerequisites
-- Completed `wispr-install-auth` setup
-- Understanding of Wispr core concepts
-- Valid API credentials configured
+Guidance for core workflow a with Wispr Flow voice-to-text API.
 
 ## Instructions
 
-### Step 1: Initialize
-```typescript
-// Step 1 implementation
-```
+### Key Wispr Flow Concepts
 
-### Step 2: Execute
-```typescript
-// Step 2 implementation
-```
-
-### Step 3: Finalize
-```typescript
-// Step 3 implementation
-```
-
-## Output
-- Completed Core Workflow A execution
-- Expected results from Wispr API
-- Success confirmation or error details
+- **WebSocket API**: `wss://api.wisprflow.ai/api/v1/ws` (recommended, low latency)
+- **REST API**: `POST /api/v1/transcribe` (simpler, higher latency)
+- **Auth**: API key (backend) or access token (client-side)
+- **Audio format**: 16kHz mono PCM preferred
+- **Context awareness**: Understands code, CLI commands, dev jargon
+- **Platforms**: Mac, Windows, iOS, browser API
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Error 1 | Cause | Solution |
-| Error 2 | Cause | Solution |
-
-## Examples
-
-### Complete Workflow
-```typescript
-// Complete workflow example
-```
-
-### Common Variations
-- Variation 1: Description
-- Variation 2: Description
+| `401 Unauthorized` | Invalid key | Check at wisprflow.ai/developers |
+| WebSocket closed | Network issue | Reconnect with backoff |
+| Poor accuracy | Wrong context | Set context to 'programming' for code |
 
 ## Resources
-- [Wispr Documentation](https://docs.wispr.com)
-- [Wispr API Reference](https://docs.wispr.com/api)
+
+- [Wispr Flow Developers](https://wisprflow.ai/developers)
+- [API Docs](https://api-docs.wisprflow.ai/introduction)
+- [WebSocket Quickstart](https://api-docs.wisprflow.ai/websocket_quickstart)
 
 ## Next Steps
-For secondary workflow, see `wispr-core-workflow-b`.
+
+See related Wispr Flow skills for more patterns.

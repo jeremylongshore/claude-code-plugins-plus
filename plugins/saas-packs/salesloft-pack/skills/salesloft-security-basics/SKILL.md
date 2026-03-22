@@ -1,11 +1,10 @@
 ---
 name: salesloft-security-basics
 description: |
-  Apply Salesloft security best practices for secrets and access control.
-  Use when securing API keys, implementing least privilege access,
-  or auditing Salesloft security configuration.
-  Trigger with phrases like "salesloft security", "salesloft secrets",
-  "secure salesloft", "salesloft API key security".
+  Secure SalesLoft OAuth tokens, API keys, and webhook signatures.
+  Use when implementing token rotation, securing webhook endpoints,
+  or auditing SalesLoft API access controls.
+  Trigger: "salesloft security", "salesloft secrets", "secure salesloft", "salesloft token rotation".
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
@@ -14,129 +13,117 @@ tags: [saas, sales, outreach, salesloft]
 compatible-with: claude-code
 ---
 
-# Salesloft Security Basics
+# SalesLoft Security Basics
 
 ## Overview
-Security best practices for Salesloft API keys, tokens, and access control.
 
-## Prerequisites
-- Salesloft SDK installed
-- Understanding of environment variables
-- Access to Salesloft dashboard
+Secure SalesLoft API integrations: OAuth token management, webhook signature verification, secret storage, and scope-based access control. SalesLoft uses OAuth 2.0 bearer tokens and HMAC-SHA256 webhook signatures.
 
 ## Instructions
 
-### Step 1: Configure Environment Variables
-```bash
-# .env (NEVER commit to git)
-SALESLOFT_API_KEY=sk_live_***
-SALESLOFT_SECRET=***
+### Step 1: Secret Storage
 
-# .gitignore
+```bash
+# .gitignore -- NEVER commit credentials
 .env
 .env.local
 .env.*.local
+
+# .env
+SALESLOFT_CLIENT_ID=app-client-id
+SALESLOFT_CLIENT_SECRET=app-secret
+SALESLOFT_WEBHOOK_SECRET=webhook-signing-secret
 ```
 
-### Step 2: Implement Secret Rotation
-```bash
-# 1. Generate new key in Salesloft dashboard
-# 2. Update environment variable
-export SALESLOFT_API_KEY="new_key_here"
-
-# 3. Verify new key works
-curl -H "Authorization: Bearer ${SALESLOFT_API_KEY}" \
-  https://api.salesloft.com/health
-
-# 4. Revoke old key in dashboard
-```
-
-### Step 3: Apply Least Privilege
-| Environment | Recommended Scopes |
-|-------------|-------------------|
-| Development | `read:*` |
-| Staging | `read:*, write:limited` |
-| Production | `Only required scopes` |
-
-## Output
-- Secure API key storage
-- Environment-specific access controls
-- Audit logging enabled
-
-## Error Handling
-| Security Issue | Detection | Mitigation |
-|----------------|-----------|------------|
-| Exposed API key | Git scanning | Rotate immediately |
-| Excessive scopes | Audit logs | Reduce permissions |
-| Missing rotation | Key age check | Schedule rotation |
-
-## Examples
-
-### Service Account Pattern
 ```typescript
-const clients = {
-  reader: new SalesloftClient({
-    apiKey: process.env.SALESLOFT_READ_KEY,
-  }),
-  writer: new SalesloftClient({
-    apiKey: process.env.SALESLOFT_WRITE_KEY,
-  }),
-};
+// Validate secrets at startup
+const required = ['SALESLOFT_CLIENT_ID', 'SALESLOFT_CLIENT_SECRET'];
+for (const key of required) {
+  if (!process.env[key]) throw new Error(`Missing required env: ${key}`);
+}
 ```
 
-### Webhook Signature Verification
+### Step 2: Token Lifecycle Management
+
+```typescript
+// Store tokens securely with expiry tracking
+interface TokenStore {
+  accessToken: string;
+  refreshToken: string;
+  expiresAt: number; // Unix timestamp
+}
+
+async function getValidToken(store: TokenStore): Promise<string> {
+  // Refresh 5 minutes before expiry
+  if (Date.now() > (store.expiresAt - 300) * 1000) {
+    const refreshed = await refreshAccessToken(store.refreshToken);
+    store.accessToken = refreshed.access_token;
+    store.refreshToken = refreshed.refresh_token;
+    store.expiresAt = Math.floor(Date.now() / 1000) + refreshed.expires_in;
+    await persistTokenStore(store); // Save to DB or secret manager
+  }
+  return store.accessToken;
+}
+```
+
+### Step 3: Webhook Signature Verification
+
 ```typescript
 import crypto from 'crypto';
 
 function verifyWebhookSignature(
-  payload: string, signature: string, secret: string
+  rawBody: Buffer,
+  signature: string,
+  timestamp: string,
+  secret: string,
 ): boolean {
-  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
-  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
+  // Reject stale webhooks (replay attack prevention)
+  const age = Math.abs(Date.now() / 1000 - parseInt(timestamp));
+  if (age > 300) return false; // 5-minute window
+
+  const expected = crypto
+    .createHmac('sha256', secret)
+    .update(`${timestamp}.${rawBody.toString()}`)
+    .digest('hex');
+
+  return crypto.timingSafeEqual(
+    Buffer.from(signature), Buffer.from(expected)
+  );
 }
 ```
 
-### Security Checklist
-- [ ] API keys in environment variables
+### Step 4: OAuth Scope Minimization
+
+| Use Case | Required Scopes | Avoid |
+|----------|----------------|-------|
+| Read-only dashboard | `people:read`, `cadences:read` | `*:write` |
+| Cadence enrollment | `people:read`, `cadence_memberships:create` | `admin` |
+| Full sync | `people:*`, `cadences:*`, `activities:read` | Team admin scopes |
+
+### Step 5: Security Checklist
+
+- [ ] OAuth tokens stored in secret manager (not env files in prod)
+- [ ] Refresh tokens encrypted at rest
+- [ ] Webhook endpoints verify signatures before processing
 - [ ] `.env` files in `.gitignore`
-- [ ] Different keys for dev/staging/prod
-- [ ] Minimal scopes per environment
-- [ ] Webhook signatures validated
-- [ ] Audit logging enabled
+- [ ] Different OAuth apps for dev/staging/prod
+- [ ] Token refresh runs before expiry (not after 401)
+- [ ] API logs monitored for unusual access patterns
 
-### Audit Logging
-```typescript
-interface AuditEntry {
-  timestamp: Date;
-  action: string;
-  userId: string;
-  resource: string;
-  result: 'success' | 'failure';
-  metadata?: Record<string, any>;
-}
+## Error Handling
 
-async function auditLog(entry: Omit<AuditEntry, 'timestamp'>): Promise<void> {
-  const log: AuditEntry = { ...entry, timestamp: new Date() };
-
-  // Log to Salesloft analytics
-  await salesloftClient.track('audit', log);
-
-  // Also log locally for compliance
-  console.log('[AUDIT]', JSON.stringify(log));
-}
-
-// Usage
-await auditLog({
-  action: 'salesloft.api.call',
-  userId: currentUser.id,
-  resource: '/v1/resource',
-  result: 'success',
-});
-```
+| Issue | Detection | Response |
+|-------|-----------|----------|
+| Token leaked in git | GitHub secret scanning alerts | Revoke immediately, rotate |
+| Webhook replay attack | Timestamp > 5 min old | Reject request |
+| Brute force on webhook | High 401 rate | Rate limit webhook endpoint |
 
 ## Resources
-- [Salesloft Security Guide](https://docs.salesloft.com/security)
-- [Salesloft API Scopes](https://docs.salesloft.com/scopes)
+
+- [OAuth Authorization Code](https://developers.salesloft.com/docs/platform/api-basics/oauth-authentication/)
+- [Client Credentials](https://developers.salesloft.com/docs/platform/api-basics/client-creds/)
+- [API Logs](https://developers.salesloft.com/docs/platform/guides/api-logs/)
 
 ## Next Steps
+
 For production deployment, see `salesloft-prod-checklist`.

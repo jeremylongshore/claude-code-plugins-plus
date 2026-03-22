@@ -1,6 +1,10 @@
 # Veeva Skill Pack
 
-> Claude Code skill pack for Veeva integration (24 skills)
+> 24 production-ready Claude Code skills for Veeva Vault -- real REST API, VQL queries, and VAPIL SDK code for life sciences.
+
+## What This Is
+
+A complete skill pack for integrating with Veeva Vault. Every skill contains real Vault REST API code: session authentication, VQL queries, document CRUD, lifecycle management, and clinical operations patterns. Built for life sciences teams working with regulatory documents, clinical trials, and quality management.
 
 ## Installation
 
@@ -8,51 +12,43 @@
 /plugin install veeva-pack@claude-code-plugins-plus
 ```
 
-## Skills Included
+## Skills
 
 ### Standard Skills (S01-S12)
-| Skill | Description |
-|-------|-------------|
-| `veeva-install-auth` | Install Auth |
-| `veeva-hello-world` | Hello World |
-| `veeva-local-dev-loop` | Local Dev Loop |
-| `veeva-sdk-patterns` | Sdk Patterns |
-| `veeva-core-workflow-a` | Core Workflow A |
-| `veeva-core-workflow-b` | Core Workflow B |
-| `veeva-common-errors` | Common Errors |
-| `veeva-debug-bundle` | Debug Bundle |
-| `veeva-rate-limits` | Rate Limits |
-| `veeva-security-basics` | Security Basics |
-| `veeva-prod-checklist` | Prod Checklist |
-| `veeva-upgrade-migration` | Upgrade Migration |
 
-### Pro Skills (P13-P18)
-| Skill | Description |
-|-------|-------------|
-| `veeva-ci-integration` | Ci Integration |
-| `veeva-deploy-integration` | Deploy Integration |
-| `veeva-webhooks-events` | Webhooks Events |
-| `veeva-performance-tuning` | Performance Tuning |
-| `veeva-cost-tuning` | Cost Tuning |
-| `veeva-reference-architecture` | Reference Architecture |
+| # | Skill | What It Does |
+|---|-------|-------------|
+| S01 | `veeva-install-auth` | Session auth, VAPIL setup, VQL connection test |
+| S02 | `veeva-hello-world` | Document CRUD, VQL queries, file upload |
+| S03 | `veeva-local-dev-loop` | Sandbox environment, mock responses, VQL testing |
+| S04 | `veeva-sdk-patterns` | VAPIL patterns, typed responses, session management |
+| S05 | `veeva-core-workflow-a` | Document lifecycle, state transitions, approvals |
+| S06 | `veeva-core-workflow-b` | Object CRUD, relationships, bulk operations |
+| S07 | `veeva-common-errors` | Session expiry, VQL errors, permission issues |
+| S08 | `veeva-debug-bundle` | Session diagnostics, API version check, VQL validation |
+| S09 | `veeva-rate-limits` | API burst limits, bulk operation throttling |
+| S10 | `veeva-security-basics` | Security profiles, session management, data access |
+| S11 | `veeva-prod-checklist` | Validation, compliance checks, go-live requirements |
+| S12 | `veeva-upgrade-migration` | API version migration, VQL changes, VAPIL updates |
 
-### Flagship Skills (F19-F24)
-| Skill | Description |
-|-------|-------------|
-| `veeva-multi-env-setup` | Multi Env Setup |
-| `veeva-observability` | Observability |
-| `veeva-incident-runbook` | Incident Runbook |
-| `veeva-data-handling` | Data Handling |
-| `veeva-enterprise-rbac` | Enterprise Rbac |
-| `veeva-migration-deep-dive` | Migration Deep Dive |
+### Pro + Flagship Skills (P13-F24)
 
-## Usage
+| # | Skill | What It Does |
+|---|-------|-------------|
+| P13 | `veeva-ci-integration` | Automated VQL validation, deployment pipelines |
+| P14 | `veeva-deploy-integration` | Multi-vault deployment, configuration management |
+| P15 | `veeva-webhooks-events` | Vault notifications, event-driven processing |
+| P16 | `veeva-performance-tuning` | VQL optimization, bulk API, pagination |
+| P17 | `veeva-cost-tuning` | API call optimization, bulk vs single operations |
+| P18 | `veeva-reference-architecture` | Integration hub, ETL pipelines, clinical data flow |
 
-Skills trigger automatically when you discuss Veeva topics. For example:
+## Key Concepts
 
-- "Help me set up Veeva" → triggers `veeva-install-auth`
-- "Debug this Veeva error" → triggers `veeva-common-errors`
-- "Deploy my Veeva integration" → triggers `veeva-deploy-integration`
+- **Auth**: Session-based (POST /auth with username/password)
+- **VQL**: SQL-like query language for Vault data retrieval
+- **VAPIL**: Open-source Java SDK for all Platform APIs
+- **Lifecycle**: Documents flow through regulated states
+- **API Versioning**: `v24.1`, `v24.2`, etc. (versioned per release)
 
 ## License
 

@@ -1,12 +1,11 @@
 ---
 name: serpapi-prod-checklist
 description: |
-  Execute SerpApi production deployment checklist and rollback procedures.
-  Use when deploying SerpApi integrations to production, preparing for launch,
-  or implementing go-live procedures.
-  Trigger with phrases like "serpapi production", "deploy serpapi",
-  "serpapi go-live", "serpapi launch checklist".
-allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
+  Production readiness checklist for SerpApi integrations.
+  Use when deploying search features, validating credit budgets,
+  or preparing SerpApi-powered apps for launch.
+  Trigger: "serpapi production", "deploy serpapi", "serpapi go-live".
+allowed-tools: Read, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -16,106 +15,72 @@ compatible-with: claude-code
 
 # SerpApi Production Checklist
 
-## Overview
-Complete checklist for deploying SerpApi integrations to production.
+## Checklist
 
-## Prerequisites
-- Staging environment tested and verified
-- Production API keys available
-- Deployment pipeline configured
-- Monitoring and alerting ready
+### API Key & Authentication
+- [ ] API key stored in secret manager (not env files)
+- [ ] Backend proxy for all client-side search requests
+- [ ] Key not exposed in frontend bundles or logs
+- [ ] Usage monitoring configured
 
-## Instructions
+### Credit Budget
+- [ ] Monthly search volume estimated
+- [ ] Plan tier matches expected volume
+- [ ] Response caching implemented (LRU or Redis)
+- [ ] Archive API used for result retrieval (free)
+- [ ] Budget alerts set (e.g., 80% threshold)
 
-### Step 1: Pre-Deployment Configuration
-- [ ] Production API keys in secure vault
-- [ ] Environment variables set in deployment platform
-- [ ] API key scopes are minimal (least privilege)
-- [ ] Webhook endpoints configured with HTTPS
-- [ ] Webhook secrets stored securely
+### Error Handling
+- [ ] Check `search_metadata.status` before using results
+- [ ] Handle `error` field in responses
+- [ ] Retry on 500/timeout (max 2 retries)
+- [ ] Graceful fallback when credits exhausted
+- [ ] Log search IDs for debugging (`search_metadata.id`)
 
-### Step 2: Code Quality Verification
-- [ ] All tests passing (`npm test`)
-- [ ] No hardcoded credentials
-- [ ] Error handling covers all SerpApi error types
-- [ ] Rate limiting/backoff implemented
-- [ ] Logging is production-appropriate
+### Performance
+- [ ] Response caching with appropriate TTL
+- [ ] Rate limiting per plan tier (see `serpapi-rate-limits`)
+- [ ] Async search for non-critical queries
+- [ ] Proxy endpoint rate-limited to prevent abuse
 
-### Step 3: Infrastructure Setup
-- [ ] Health check endpoint includes SerpApi connectivity
-- [ ] Monitoring/alerting configured
-- [ ] Circuit breaker pattern implemented
-- [ ] Graceful degradation configured
+### Health Check
 
-### Step 4: Documentation Requirements
-- [ ] Incident runbook created
-- [ ] Key rotation procedure documented
-- [ ] Rollback procedure documented
-- [ ] On-call escalation path defined
+```typescript
+app.get('/health', async (req, res) => {
+  try {
+    const account = await fetch(
+      `https://serpapi.com/account.json?api_key=${process.env.SERPAPI_API_KEY}`
+    ).then(r => r.json());
 
-### Step 5: Deploy with Gradual Rollout
-```bash
-# Pre-flight checks
-curl -f https://staging.example.com/health
-curl -s https://status.serpapi.com
-
-# Gradual rollout - start with canary (10%)
-kubectl apply -f k8s/production.yaml
-kubectl set image deployment/serpapi-integration app=image:new --record
-kubectl rollout pause deployment/serpapi-integration
-
-# Monitor canary traffic for 10 minutes
-sleep 600
-# Check error rates and latency before continuing
-
-# If healthy, continue rollout to 50%
-kubectl rollout resume deployment/serpapi-integration
-kubectl rollout pause deployment/serpapi-integration
-sleep 300
-
-# Complete rollout to 100%
-kubectl rollout resume deployment/serpapi-integration
-kubectl rollout status deployment/serpapi-integration
+    res.json({
+      status: account.plan_searches_left > 0 ? 'healthy' : 'degraded',
+      serpapi: {
+        plan: account.plan_name,
+        remaining: account.plan_searches_left,
+        used: account.this_month_usage,
+      },
+    });
+  } catch {
+    res.status(503).json({ status: 'unhealthy', serpapi: { error: 'unreachable' } });
+  }
+});
 ```
-
-## Output
-- Deployed SerpApi integration
-- Health checks passing
-- Monitoring active
-- Rollback procedure documented
 
 ## Error Handling
+
 | Alert | Condition | Severity |
 |-------|-----------|----------|
-| API Down | 5xx errors > 10/min | P1 |
-| High Latency | p99 > 5000ms | P2 |
-| Rate Limited | 429 errors > 5/min | P2 |
-| Auth Failures | 401/403 errors > 0 | P1 |
-
-## Examples
-
-### Health Check Implementation
-```typescript
-async function healthCheck(): Promise<{ status: string; serpapi: any }> {
-  const start = Date.now();
-  try {
-    await serpapiClient.ping();
-    return { status: 'healthy', serpapi: { connected: true, latencyMs: Date.now() - start } };
-  } catch (error) {
-    return { status: 'degraded', serpapi: { connected: false, latencyMs: Date.now() - start } };
-  }
-}
-```
-
-### Immediate Rollback
-```bash
-kubectl rollout undo deployment/serpapi-integration
-kubectl rollout status deployment/serpapi-integration
-```
+| Credits Low | remaining < 10% | P2 |
+| Credits Exhausted | remaining = 0 | P1 |
+| API Unreachable | Account check fails | P1 |
+| High Error Rate | > 5% searches fail | P2 |
 
 ## Resources
-- [SerpApi Status](https://status.serpapi.com)
-- [SerpApi Support](https://docs.serpapi.com/support)
+
+- [SerpApi Status](https://serpapi.com/status)
+- [Account API](https://serpapi.com/account-api)
+- [SerpApi Pricing](https://serpapi.com/pricing)
 
 ## Next Steps
+
 For version upgrades, see `serpapi-upgrade-migration`.

@@ -1,73 +1,62 @@
 ---
 name: veeva-core-workflow-b
 description: |
-  Execute Veeva secondary workflow: Core Workflow B.
-  Use when implementing secondary use case,
-  or complementing primary workflow.
-  Trigger with phrases like "veeva secondary workflow",
-  "secondary task with veeva".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
+  Veeva Vault core workflow b for REST API and clinical operations.
+  Use when working with Veeva Vault document management and CRM.
+  Trigger: "veeva core workflow b".
+allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, pharma, crm, veeva]
+tags: [saas, life-sciences, crm, veeva]
 compatible-with: claude-code
 ---
 
-# Veeva Core Workflow B
+# Veeva Vault Core Workflow B
 
 ## Overview
-Secondary workflow for Veeva. Complements the primary workflow.
 
-## Prerequisites
-- Completed `veeva-install-auth` setup
-- Familiarity with `veeva-core-workflow-a`
-- Valid API credentials configured
+Guidance for core workflow b with Veeva Vault REST API, VQL queries, and VAPIL Java SDK.
 
 ## Instructions
 
-### Step 1: Setup
-```typescript
-// Step 1 implementation
-```
+### Key Vault API Concepts
 
-### Step 2: Process
-```typescript
-// Step 2 implementation
-```
+- **Authentication**: Session-based (username/password or OAuth 2.0)
+- **Base URL**: `https://{vault}.veevavault.com/api/v24.1/`
+- **VQL**: SQL-like query language for Vault data
+- **VAPIL**: Open-source Java SDK covering all Platform APIs
+- **Lifecycle**: Documents flow through states (Draft > In Review > Approved)
 
-### Step 3: Complete
-```typescript
-// Step 3 implementation
-```
+### Common VQL Patterns
 
-## Output
-- Completed Core Workflow B execution
-- Results from Veeva API
-- Success confirmation or error details
+```sql
+-- List documents by type
+SELECT id, name__v FROM documents WHERE type__v = 'Trial Document'
+
+-- Find objects
+SELECT id, name__v FROM site__v WHERE status__v = 'active__v'
+
+-- Join related objects
+SELECT id, name__v, study__vr.name__v FROM study_country__v
+```
 
 ## Error Handling
-| Aspect | Workflow A | Workflow B |
-|--------|------------|------------|
-| Use Case | Primary | Secondary |
-| Complexity | Medium | Lower |
-| Performance | Standard | Optimized |
 
-## Examples
-
-### Complete Workflow
-```typescript
-// Complete workflow example
-```
-
-### Error Recovery
-```typescript
-// Error handling code
-```
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `INVALID_SESSION_ID` | Session expired | Re-authenticate |
+| `INSUFFICIENT_ACCESS` | Missing permissions | Check security profile |
+| `INVALID_DATA` | Bad VQL or field name | Validate against metadata |
+| `OPERATION_NOT_ALLOWED` | Lifecycle state conflict | Check document state |
 
 ## Resources
-- [Veeva Documentation](https://docs.veeva.com)
-- [Veeva API Reference](https://docs.veeva.com/api)
+
+- [Vault API Reference](https://developer.veevavault.com/api/)
+- [VQL Reference](https://developer.veevavault.com/vql/)
+- [VAPIL SDK](https://developer.veevavault.com/sdk/)
+- [Developer Portal](https://developer.veevavault.com/)
 
 ## Next Steps
-For common errors, see `veeva-common-errors`.
+
+See related Veeva Vault skills for more patterns.

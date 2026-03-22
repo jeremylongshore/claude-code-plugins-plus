@@ -1,11 +1,10 @@
 ---
 name: serpapi-sdk-patterns
 description: |
-  Apply production-ready SerpApi SDK patterns for TypeScript and Python.
-  Use when implementing SerpApi integrations, refactoring SDK usage,
-  or establishing team coding standards for SerpApi.
-  Trigger with phrases like "serpapi SDK patterns", "serpapi best practices",
-  "serpapi code patterns", "idiomatic serpapi".
+  Production-ready SerpApi client patterns with caching, typing, and multi-engine support.
+  Use when building search services, implementing result caching,
+  or wrapping SerpApi with typed responses.
+  Trigger: "serpapi patterns", "serpapi best practices", "serpapi client wrapper".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
@@ -17,133 +16,125 @@ compatible-with: claude-code
 # SerpApi SDK Patterns
 
 ## Overview
-Production-ready patterns for SerpApi SDK usage in TypeScript and Python.
 
-## Prerequisites
-- Completed `serpapi-install-auth` setup
-- Familiarity with async/await patterns
-- Understanding of error handling best practices
+Production patterns for SerpApi: typed result interfaces, response caching (critical since each search costs credits), multi-engine abstraction, and async search with the Searches Archive API.
 
 ## Instructions
 
-### Step 1: Implement Singleton Pattern (Recommended)
+### Step 1: Typed Result Interfaces
+
 ```typescript
-// src/serpapi/client.ts
-import { SerpApiClient } from '@serpapi/sdk';
+interface SerpApiOrganicResult {
+  position: number;
+  title: string;
+  link: string;
+  snippet: string;
+  displayed_link: string;
+  source?: string;
+}
 
-let instance: SerpApiClient | null = null;
-
-export function getSerpApiClient(): SerpApiClient {
-  if (!instance) {
-    instance = new SerpApiClient({
-      apiKey: process.env.SERPAPI_API_KEY!,
-      // Additional options
-    });
-  }
-  return instance;
+interface SerpApiSearchResult {
+  search_metadata: { id: string; status: string; created_at: string };
+  search_parameters: Record<string, string>;
+  organic_results: SerpApiOrganicResult[];
+  answer_box?: { answer?: string; snippet?: string; title?: string };
+  knowledge_graph?: { title: string; description?: string; type?: string };
+  related_questions?: Array<{ question: string; snippet: string }>;
+  pagination?: { next: string };
 }
 ```
 
-### Step 2: Add Error Handling Wrapper
-```typescript
-import { SerpApiError } from '@serpapi/sdk';
+### Step 2: Cached Search Client
 
-async function safeSerpApiCall<T>(
-  operation: () => Promise<T>
-): Promise<{ data: T | null; error: Error | null }> {
-  try {
-    const data = await operation();
-    return { data, error: null };
-  } catch (err) {
-    if (err instanceof SerpApiError) {
-      console.error({
-        code: err.code,
-        message: err.message,
-      });
+```typescript
+import { getJson } from 'serpapi';
+import { LRUCache } from 'lru-cache';
+
+const cache = new LRUCache<string, SerpApiSearchResult>({
+  max: 500,
+  ttl: 3600_000, // 1 hour -- search results are relatively stable
+});
+
+async function cachedSearch(params: Record<string, any>): Promise<SerpApiSearchResult> {
+  const key = JSON.stringify(params);
+  const cached = cache.get(key);
+  if (cached) return cached;
+
+  const result = await getJson({
+    ...params,
+    api_key: process.env.SERPAPI_API_KEY,
+  }) as SerpApiSearchResult;
+
+  cache.set(key, result);
+  return result;
+}
+```
+
+### Step 3: Multi-Engine Search Abstraction
+
+```python
+import serpapi, os
+
+class SearchService:
+    ENGINES = {
+        "web": {"engine": "google", "query_param": "q"},
+        "news": {"engine": "google_news", "query_param": "q"},
+        "images": {"engine": "google_images", "query_param": "q"},
+        "youtube": {"engine": "youtube", "query_param": "search_query"},
+        "bing": {"engine": "bing", "query_param": "q"},
+        "shopping": {"engine": "google_shopping", "query_param": "q"},
     }
-    return { data: null, error: err as Error };
-  }
-}
+
+    def __init__(self):
+        self.client = serpapi.Client(api_key=os.environ["SERPAPI_API_KEY"])
+
+    def search(self, query: str, engine: str = "web", **kwargs) -> dict:
+        config = self.ENGINES[engine]
+        params = {
+            "engine": config["engine"],
+            config["query_param"]: query,
+            **kwargs,
+        }
+        return self.client.search(**params)
+
+# Usage
+svc = SearchService()
+web = svc.search("Claude AI")
+news = svc.search("Claude AI", engine="news")
+videos = svc.search("Claude AI tutorial", engine="youtube")
 ```
 
-### Step 3: Implement Retry Logic
-```typescript
-async function withRetry<T>(
-  operation: () => Promise<T>,
-  maxRetries = 3,
-  backoffMs = 1000
-): Promise<T> {
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      return await operation();
-    } catch (err) {
-      if (attempt === maxRetries) throw err;
-      const delay = backoffMs * Math.pow(2, attempt - 1);
-      await new Promise(r => setTimeout(r, delay));
-    }
-  }
-  throw new Error('Unreachable');
-}
-```
+### Step 4: Async Search (Background Processing)
 
-## Output
-- Type-safe client singleton
-- Robust error handling with structured logging
-- Automatic retry with exponential backoff
-- Runtime validation for API responses
+```python
+# Submit search asynchronously -- retrieve later
+result = client.search(engine="google", q="expensive query", async_search=True)
+search_id = result["search_metadata"]["id"]
+
+# Later: retrieve from archive (no extra credit charge)
+import time
+while True:
+    archived = client.search(engine="google", search_id=search_id)
+    if archived["search_metadata"]["status"] == "Success":
+        break
+    time.sleep(2)
+```
 
 ## Error Handling
+
 | Pattern | Use Case | Benefit |
 |---------|----------|---------|
-| Safe wrapper | All API calls | Prevents uncaught exceptions |
-| Retry logic | Transient failures | Improves reliability |
-| Type guards | Response validation | Catches API changes |
-| Logging | All operations | Debugging and monitoring |
-
-## Examples
-
-### Factory Pattern (Multi-tenant)
-```typescript
-const clients = new Map<string, SerpApiClient>();
-
-export function getClientForTenant(tenantId: string): SerpApiClient {
-  if (!clients.has(tenantId)) {
-    const apiKey = getTenantApiKey(tenantId);
-    clients.set(tenantId, new SerpApiClient({ apiKey }));
-  }
-  return clients.get(tenantId)!;
-}
-```
-
-### Python Context Manager
-```python
-from contextlib import asynccontextmanager
-from serpapi import SerpApiClient
-
-@asynccontextmanager
-async def get_serpapi_client():
-    client = SerpApiClient()
-    try:
-        yield client
-    finally:
-        await client.close()
-```
-
-### Zod Validation
-```typescript
-import { z } from 'zod';
-
-const serpapiResponseSchema = z.object({
-  id: z.string(),
-  status: z.enum(['active', 'inactive']),
-  createdAt: z.string().datetime(),
-});
-```
+| LRU cache | Repeated queries | Saves API credits |
+| Engine abstraction | Multi-engine | Clean API for consumers |
+| Async search | Heavy queries | Non-blocking, same credit cost |
+| Type interfaces | All usage | Catch response changes early |
 
 ## Resources
-- [SerpApi SDK Reference](https://docs.serpapi.com/sdk)
-- [SerpApi API Types](https://docs.serpapi.com/types)
-- [Zod Documentation](https://zod.dev/)
+
+- [SerpApi Python Client](https://github.com/serpapi/serpapi-python)
+- [Searches Archive API](https://serpapi.com/search-archive-api)
+- [All Engines](https://serpapi.com/)
 
 ## Next Steps
+
 Apply patterns in `serpapi-core-workflow-a` for real-world usage.

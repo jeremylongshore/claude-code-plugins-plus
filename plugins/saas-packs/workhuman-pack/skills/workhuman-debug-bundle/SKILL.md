@@ -1,12 +1,11 @@
 ---
 name: workhuman-debug-bundle
 description: |
-  Collect Workhuman debug evidence for support tickets and troubleshooting.
-  Use when encountering persistent issues, preparing support tickets,
-  or collecting diagnostic information for Workhuman problems.
-  Trigger with phrases like "workhuman debug", "workhuman support bundle",
-  "collect workhuman logs", "workhuman diagnostic".
-allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
+  Workhuman debug bundle for employee recognition and rewards API.
+  Use when integrating Workhuman Social Recognition,
+  or building recognition workflows with HRIS systems.
+  Trigger: "workhuman debug bundle".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,97 +16,45 @@ compatible-with: claude-code
 # Workhuman Debug Bundle
 
 ## Overview
-Collect all necessary diagnostic information for Workhuman support tickets.
 
-## Prerequisites
-- Workhuman SDK installed
-- Access to application logs
-- Permission to collect environment info
+Guidance for debug bundle with Workhuman Social Recognition and rewards API.
 
 ## Instructions
 
-### Step 1: Create Debug Bundle Script
-```bash
-#!/bin/bash
-# workhuman-debug-bundle.sh
+### Key Workhuman API Concepts
 
-BUNDLE_DIR="workhuman-debug-$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$BUNDLE_DIR"
+- **Auth**: OAuth 2.0 client credentials flow
+- **Recognition**: Peer-to-peer and manager nominations with points
+- **Awards**: Configurable levels (bronze, silver, gold, platinum)
+- **Values**: Company values attached to recognitions
+- **HRIS Sync**: Bidirectional sync with Workday, SAP SuccessFactors
+- **Integrations**: Microsoft Teams, Slack, Outlook native plugins
 
-echo "=== Workhuman Debug Bundle ===" > "$BUNDLE_DIR/summary.txt"
-echo "Generated: $(date)" >> "$BUNDLE_DIR/summary.txt"
-```
+### Core API Endpoints
 
-### Step 2: Collect Environment Info
-```bash
-# Environment info
-echo "--- Environment ---" >> "$BUNDLE_DIR/summary.txt"
-node --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-npm --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-echo "WORKHUMAN_API_KEY: ${WORKHUMAN_API_KEY:+[SET]}" >> "$BUNDLE_DIR/summary.txt"
-```
-
-### Step 3: Gather SDK and Logs
-```bash
-# SDK version
-npm list @workhuman/sdk 2>/dev/null >> "$BUNDLE_DIR/summary.txt"
-
-# Recent logs (redacted)
-grep -i "workhuman" ~/.npm/_logs/*.log 2>/dev/null | tail -50 >> "$BUNDLE_DIR/logs.txt"
-
-# Configuration (redacted - secrets masked)
-echo "--- Config (redacted) ---" >> "$BUNDLE_DIR/summary.txt"
-cat .env 2>/dev/null | sed 's/=.*/=***REDACTED***/' >> "$BUNDLE_DIR/config-redacted.txt"
-
-# Network connectivity test
-echo "--- Network Test ---" >> "$BUNDLE_DIR/summary.txt"
-echo -n "API Health: " >> "$BUNDLE_DIR/summary.txt"
-curl -s -o /dev/null -w "%{http_code}" https://api.workhuman.com/health >> "$BUNDLE_DIR/summary.txt"
-echo "" >> "$BUNDLE_DIR/summary.txt"
-```
-
-### Step 4: Package Bundle
-```bash
-tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
-echo "Bundle created: $BUNDLE_DIR.tar.gz"
-```
-
-## Output
-- `workhuman-debug-YYYYMMDD-HHMMSS.tar.gz` archive containing:
-  - `summary.txt` - Environment and SDK info
-  - `logs.txt` - Recent redacted logs
-  - `config-redacted.txt` - Configuration (secrets removed)
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/v1/recognitions` | GET | List recognitions |
+| `/api/v1/recognitions` | POST | Create nomination |
+| `/api/v1/recognitions/:id` | GET | Get recognition status |
+| `/api/v1/users` | GET | List employees |
+| `/api/v1/rewards/catalog` | GET | Browse reward catalog |
+| `/api/v1/rewards/redeem` | POST | Redeem points for reward |
 
 ## Error Handling
-| Item | Purpose | Included |
-|------|---------|----------|
-| Environment versions | Compatibility check | ✓ |
-| SDK version | Version-specific bugs | ✓ |
-| Error logs (redacted) | Root cause analysis | ✓ |
-| Config (redacted) | Configuration issues | ✓ |
-| Network test | Connectivity issues | ✓ |
 
-## Examples
-
-### Sensitive Data Handling
-**ALWAYS REDACT:**
-- API keys and tokens
-- Passwords and secrets
-- PII (emails, names, IDs)
-
-**Safe to Include:**
-- Error messages
-- Stack traces (redacted)
-- SDK/runtime versions
-
-### Submit to Support
-1. Create bundle: `bash workhuman-debug-bundle.sh`
-2. Review for sensitive data
-3. Upload to Workhuman support portal
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `401 Unauthorized` | Token expired | Re-authenticate |
+| `403 Forbidden` | Insufficient permissions | Check role/permissions |
+| `422 Validation` | Missing fields | Check required fields |
+| `404 Not Found` | Invalid ID | Verify resource exists |
 
 ## Resources
-- [Workhuman Support](https://docs.workhuman.com/support)
-- [Workhuman Status](https://status.workhuman.com)
+
+- [Workhuman Platform](https://www.workhuman.com/)
+- [Workhuman Integrations](https://www.workhuman.com/capabilities/integrations/)
 
 ## Next Steps
-For rate limit issues, see `workhuman-rate-limits`.
+
+See related Workhuman skills for more patterns.

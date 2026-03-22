@@ -1,12 +1,11 @@
 ---
 name: workhuman-webhooks-events
 description: |
-  Implement Workhuman webhook signature validation and event handling.
-  Use when setting up webhook endpoints, implementing signature verification,
-  or handling Workhuman event notifications securely.
-  Trigger with phrases like "workhuman webhook", "workhuman events",
-  "workhuman webhook signature", "handle workhuman events", "workhuman notifications".
-allowed-tools: Read, Write, Edit, Bash(curl:*)
+  Workhuman webhooks events for employee recognition and rewards API.
+  Use when integrating Workhuman Social Recognition,
+  or building recognition workflows with HRIS systems.
+  Trigger: "workhuman webhooks events".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -14,188 +13,48 @@ tags: [saas, hr, recognition, workhuman]
 compatible-with: claude-code
 ---
 
-# Workhuman Webhooks & Events
+# Workhuman Webhooks Events
 
 ## Overview
-Securely handle Workhuman webhooks with signature validation and replay protection.
 
-## Prerequisites
-- Workhuman webhook secret configured
-- HTTPS endpoint accessible from internet
-- Understanding of cryptographic signatures
-- Redis or database for idempotency (optional)
-
-## Webhook Endpoint Setup
-
-### Express.js
-```typescript
-import express from 'express';
-import crypto from 'crypto';
-
-const app = express();
-
-// IMPORTANT: Raw body needed for signature verification
-app.post('/webhooks/workhuman',
-  express.raw({ type: 'application/json' }),
-  async (req, res) => {
-    const signature = req.headers['x-workhuman-signature'] as string;
-    const timestamp = req.headers['x-workhuman-timestamp'] as string;
-
-    if (!verifyWorkhumanSignature(req.body, signature, timestamp)) {
-      return res.status(401).json({ error: 'Invalid signature' });
-    }
-
-    const event = JSON.parse(req.body.toString());
-    await handleWorkhumanEvent(event);
-
-    res.status(200).json({ received: true });
-  }
-);
-```
-
-## Signature Verification
-
-```typescript
-function verifyWorkhumanSignature(
-  payload: Buffer,
-  signature: string,
-  timestamp: string
-): boolean {
-  const secret = process.env.WORKHUMAN_WEBHOOK_SECRET!;
-
-  // Reject old timestamps (replay attack protection)
-  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
-  if (timestampAge > 300000) { // 5 minutes
-    console.error('Webhook timestamp too old');
-    return false;
-  }
-
-  // Compute expected signature
-  const signedPayload = `${timestamp}.${payload.toString()}`;
-  const expectedSignature = crypto
-    .createHmac('sha256', secret)
-    .update(signedPayload)
-    .digest('hex');
-
-  // Timing-safe comparison
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
-  );
-}
-```
-
-## Event Handler Pattern
-
-```typescript
-type WorkhumanEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
-
-interface WorkhumanEvent {
-  id: string;
-  type: WorkhumanEventType;
-  data: Record<string, any>;
-  created: string;
-}
-
-const eventHandlers: Record<WorkhumanEventType, (data: any) => Promise<void>> = {
-  'resource.created': async (data) => { /* handle */ },
-  'resource.updated': async (data) => { /* handle */ },
-  'resource.deleted': async (data) => { /* handle */ }
-};
-
-async function handleWorkhumanEvent(event: WorkhumanEvent): Promise<void> {
-  const handler = eventHandlers[event.type];
-
-  if (!handler) {
-    console.log(`Unhandled event type: ${event.type}`);
-    return;
-  }
-
-  try {
-    await handler(event.data);
-    console.log(`Processed ${event.type}: ${event.id}`);
-  } catch (error) {
-    console.error(`Failed to process ${event.type}: ${event.id}`, error);
-    throw error; // Rethrow to trigger retry
-  }
-}
-```
-
-## Idempotency Handling
-
-```typescript
-import { Redis } from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function isEventProcessed(eventId: string): Promise<boolean> {
-  const key = `workhuman:event:${eventId}`;
-  const exists = await redis.exists(key);
-  return exists === 1;
-}
-
-async function markEventProcessed(eventId: string): Promise<void> {
-  const key = `workhuman:event:${eventId}`;
-  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
-}
-```
-
-## Webhook Testing
-
-```bash
-# Use Workhuman CLI to send test events
-workhuman webhooks trigger resource.created --url http://localhost:3000/webhooks/workhuman
-
-# Or use webhook.site for debugging
-curl -X POST https://webhook.site/your-uuid \
-  -H "Content-Type: application/json" \
-  -d '{"type": "resource.created", "data": {}}'
-```
+Guidance for webhooks events with Workhuman Social Recognition and rewards API.
 
 ## Instructions
 
-### Step 1: Register Webhook Endpoint
-Configure your webhook URL in the Workhuman dashboard.
+### Key Workhuman API Concepts
 
-### Step 2: Implement Signature Verification
-Use the signature verification code to validate incoming webhooks.
+- **Auth**: OAuth 2.0 client credentials flow
+- **Recognition**: Peer-to-peer and manager nominations with points
+- **Awards**: Configurable levels (bronze, silver, gold, platinum)
+- **Values**: Company values attached to recognitions
+- **HRIS Sync**: Bidirectional sync with Workday, SAP SuccessFactors
+- **Integrations**: Microsoft Teams, Slack, Outlook native plugins
 
-### Step 3: Handle Events
-Implement handlers for each event type your application needs.
+### Core API Endpoints
 
-### Step 4: Add Idempotency
-Prevent duplicate processing with event ID tracking.
-
-## Output
-- Secure webhook endpoint
-- Signature validation enabled
-- Event handlers implemented
-- Replay attack protection active
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/v1/recognitions` | GET | List recognitions |
+| `/api/v1/recognitions` | POST | Create nomination |
+| `/api/v1/recognitions/:id` | GET | Get recognition status |
+| `/api/v1/users` | GET | List employees |
+| `/api/v1/rewards/catalog` | GET | Browse reward catalog |
+| `/api/v1/rewards/redeem` | POST | Redeem points for reward |
 
 ## Error Handling
-| Issue | Cause | Solution |
+
+| Error | Cause | Solution |
 |-------|-------|----------|
-| Invalid signature | Wrong secret | Verify webhook secret |
-| Timestamp rejected | Clock drift | Check server time sync |
-| Duplicate events | Missing idempotency | Implement event ID tracking |
-| Handler timeout | Slow processing | Use async queue |
-
-## Examples
-
-### Testing Webhooks Locally
-```bash
-# Use ngrok to expose local server
-ngrok http 3000
-
-# Send test webhook
-curl -X POST https://your-ngrok-url/webhooks/workhuman \
-  -H "Content-Type: application/json" \
-  -d '{"type": "test", "data": {}}'
-```
+| `401 Unauthorized` | Token expired | Re-authenticate |
+| `403 Forbidden` | Insufficient permissions | Check role/permissions |
+| `422 Validation` | Missing fields | Check required fields |
+| `404 Not Found` | Invalid ID | Verify resource exists |
 
 ## Resources
-- [Workhuman Webhooks Guide](https://docs.workhuman.com/webhooks)
-- [Webhook Security Best Practices](https://docs.workhuman.com/webhooks/security)
+
+- [Workhuman Platform](https://www.workhuman.com/)
+- [Workhuman Integrations](https://www.workhuman.com/capabilities/integrations/)
 
 ## Next Steps
-For performance optimization, see `workhuman-performance-tuning`.
+
+See related Workhuman skills for more patterns.

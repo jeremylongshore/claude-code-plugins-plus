@@ -1,11 +1,10 @@
 ---
 name: serpapi-ci-integration
 description: |
-  Configure SerpApi CI/CD integration with GitHub Actions and testing.
-  Use when setting up automated testing, configuring CI pipelines,
-  or integrating SerpApi tests into your build process.
-  Trigger with phrases like "serpapi CI", "serpapi GitHub Actions",
-  "serpapi automated tests", "CI serpapi".
+  Set up CI/CD for SerpApi integrations with fixture-based testing.
+  Use when automating SerpApi tests without consuming credits,
+  or validating search result parsing in CI.
+  Trigger: "serpapi CI", "serpapi GitHub Actions", "serpapi automated tests".
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
@@ -17,110 +16,102 @@ compatible-with: claude-code
 # SerpApi CI Integration
 
 ## Overview
-Set up CI/CD pipelines for SerpApi integrations with automated testing.
 
-## Prerequisites
-- GitHub repository with Actions enabled
-- SerpApi test API key
-- npm/pnpm project configured
+CI for SerpApi should use fixture-based tests (no API credits consumed) for PRs, with optional live integration tests on main branch only.
 
 ## Instructions
 
-### Step 1: Create GitHub Actions Workflow
-Create `.github/workflows/serpapi-integration.yml`:
+### Step 1: GitHub Actions Workflow
 
 ```yaml
-name: SerpApi Integration Tests
-
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-
-env:
-  SERPAPI_API_KEY: ${{ secrets.SERPAPI_API_KEY }}
+name: SerpApi Tests
+on: [push, pull_request]
 
 jobs:
-  test:
+  unit-tests:
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install serpapi pytest
+      - run: pytest tests/ -v  # Uses fixtures, no API key needed
+
+  integration:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
     env:
       SERPAPI_API_KEY: ${{ secrets.SERPAPI_API_KEY }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-      - run: npm ci
-      - run: npm test -- --coverage
-      - run: npm run test:integration
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install serpapi pytest
+      - run: pytest tests/integration/ -v --timeout=30
 ```
 
-### Step 2: Configure Secrets
-```bash
-gh secret set SERPAPI_API_KEY --body "sk_test_***"
+### Step 2: Fixture-Based Unit Tests
+
+```python
+# tests/test_search_parser.py
+import json, pytest
+
+def load_fixture(name):
+    with open(f"tests/fixtures/{name}.json") as f:
+        return json.load(f)
+
+def test_parse_organic_results():
+    result = load_fixture("google_python_tutorial")
+    assert "organic_results" in result
+    assert len(result["organic_results"]) > 0
+    assert result["organic_results"][0]["title"]
+
+def test_parse_youtube_results():
+    result = load_fixture("youtube_react_hooks")
+    assert "video_results" in result
+    assert result["video_results"][0]["length"]
+
+def test_handle_no_results():
+    result = load_fixture("google_no_results")
+    assert result.get("organic_results", []) == []
 ```
 
-### Step 3: Add Integration Tests
-```typescript
-describe('SerpApi Integration', () => {
-  it.skipIf(!process.env.SERPAPI_API_KEY)('should connect', async () => {
-    const client = getSerpApiClient();
-    const result = await client.healthCheck();
-    expect(result.status).toBe('ok');
-  });
-});
-```
+### Step 3: Live Integration Test (Controlled)
 
-## Output
-- Automated test pipeline
-- PR checks configured
-- Coverage reports uploaded
-- Release workflow ready
+```python
+# tests/integration/test_serpapi_live.py
+import serpapi, os, pytest
+
+@pytest.fixture
+def client():
+    key = os.environ.get("SERPAPI_API_KEY")
+    if not key:
+        pytest.skip("SERPAPI_API_KEY not set")
+    return serpapi.Client(api_key=key)
+
+def test_account_has_credits(client):
+    account = client.account()
+    assert account["plan_searches_left"] > 0
+
+def test_google_search_returns_results(client):
+    result = client.search(engine="google", q="python", num=1)
+    assert result["search_metadata"]["status"] == "Success"
+    assert len(result["organic_results"]) > 0
+```
 
 ## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via `gh secret set` |
-| Tests timeout | Network issues | Increase timeout or mock |
-| Auth failures | Invalid key | Check secret value |
 
-## Examples
-
-### Release Workflow
-```yaml
-on:
-  push:
-    tags: ['v*']
-
-jobs:
-  release:
-    runs-on: ubuntu-latest
-    env:
-      SERPAPI_API_KEY: ${{ secrets.SERPAPI_API_KEY_PROD }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - run: npm ci
-      - name: Verify SerpApi production readiness
-        run: npm run test:integration
-      - run: npm run build
-      - run: npm publish
-```
-
-### Branch Protection
-```yaml
-required_status_checks:
-  - "test"
-  - "serpapi-integration"
-```
+| CI Issue | Cause | Solution |
+|----------|-------|----------|
+| Fixture not found | Missing test data | Record fixtures with `record_fixture()` |
+| Integration test uses credits | Tests on every PR | Only run on `main` branch |
+| Flaky results | Search results change | Use fixtures for deterministic tests |
 
 ## Resources
-- [GitHub Actions Documentation](https://docs.github.com/en/actions)
-- [SerpApi CI Guide](https://docs.serpapi.com/ci)
+
+- [SerpApi Playground](https://serpapi.com/playground)
+- [pytest Docs](https://docs.pytest.org/)
 
 ## Next Steps
+
 For deployment patterns, see `serpapi-deploy-integration`.

@@ -1,12 +1,11 @@
 ---
 name: workhuman-common-errors
 description: |
-  Diagnose and fix Workhuman common errors and exceptions.
-  Use when encountering Workhuman errors, debugging failed requests,
-  or troubleshooting integration issues.
-  Trigger with phrases like "workhuman error", "fix workhuman",
-  "workhuman not working", "debug workhuman".
-allowed-tools: Read, Grep, Bash(curl:*)
+  Workhuman common errors for employee recognition and rewards API.
+  Use when integrating Workhuman Social Recognition,
+  or building recognition workflows with HRIS systems.
+  Trigger: "workhuman common errors".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,97 +16,45 @@ compatible-with: claude-code
 # Workhuman Common Errors
 
 ## Overview
-Quick reference for the top 10 most common Workhuman errors and their solutions.
 
-## Prerequisites
-- Workhuman SDK installed
-- API credentials configured
-- Access to error logs
+Guidance for common errors with Workhuman Social Recognition and rewards API.
 
 ## Instructions
 
-### Step 1: Identify the Error
-Check error message and code in your logs or console.
+### Key Workhuman API Concepts
 
-### Step 2: Find Matching Error Below
-Match your error to one of the documented cases.
+- **Auth**: OAuth 2.0 client credentials flow
+- **Recognition**: Peer-to-peer and manager nominations with points
+- **Awards**: Configurable levels (bronze, silver, gold, platinum)
+- **Values**: Company values attached to recognitions
+- **HRIS Sync**: Bidirectional sync with Workday, SAP SuccessFactors
+- **Integrations**: Microsoft Teams, Slack, Outlook native plugins
 
-### Step 3: Apply Solution
-Follow the solution steps for your specific error.
+### Core API Endpoints
 
-## Output
-- Identified error cause
-- Applied fix
-- Verified resolution
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/v1/recognitions` | GET | List recognitions |
+| `/api/v1/recognitions` | POST | Create nomination |
+| `/api/v1/recognitions/:id` | GET | Get recognition status |
+| `/api/v1/users` | GET | List employees |
+| `/api/v1/rewards/catalog` | GET | Browse reward catalog |
+| `/api/v1/rewards/redeem` | POST | Redeem points for reward |
 
 ## Error Handling
 
-### Authentication Failed
-**Error Message:**
-```
-Authentication error: Invalid API key
-```
-
-**Cause:** API key is missing, expired, or invalid.
-
-**Solution:**
-```bash
-# Verify API key is set
-echo $WORKHUMAN_API_KEY
-```
-
----
-
-### Rate Limit Exceeded
-**Error Message:**
-```
-Rate limit exceeded. Please retry after X seconds.
-```
-
-**Cause:** Too many requests in a short period.
-
-**Solution:**
-Implement exponential backoff. See `workhuman-rate-limits` skill.
-
----
-
-### Network Timeout
-**Error Message:**
-```
-Request timeout after 30000ms
-```
-
-**Cause:** Network connectivity or server latency issues.
-
-**Solution:**
-```typescript
-// Increase timeout
-const client = new Client({ timeout: 60000 });
-```
-
-## Examples
-
-### Quick Diagnostic Commands
-```bash
-# Check Workhuman status
-curl -s https://status.workhuman.com
-
-# Verify API connectivity
-curl -I https://api.workhuman.com
-
-# Check local configuration
-env | grep WORKHUMAN
-```
-
-### Escalation Path
-1. Collect evidence with `workhuman-debug-bundle`
-2. Check Workhuman status page
-3. Contact support with request ID
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `401 Unauthorized` | Token expired | Re-authenticate |
+| `403 Forbidden` | Insufficient permissions | Check role/permissions |
+| `422 Validation` | Missing fields | Check required fields |
+| `404 Not Found` | Invalid ID | Verify resource exists |
 
 ## Resources
-- [Workhuman Status Page](https://status.workhuman.com)
-- [Workhuman Support](https://docs.workhuman.com/support)
-- [Workhuman Error Codes](https://docs.workhuman.com/errors)
+
+- [Workhuman Platform](https://www.workhuman.com/)
+- [Workhuman Integrations](https://www.workhuman.com/capabilities/integrations/)
 
 ## Next Steps
-For comprehensive debugging, see `workhuman-debug-bundle`.
+
+See related Workhuman skills for more patterns.

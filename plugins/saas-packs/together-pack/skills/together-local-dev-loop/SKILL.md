@@ -1,119 +1,48 @@
 ---
 name: together-local-dev-loop
 description: |
-  Configure Together AI local development with hot reload and testing.
-  Use when setting up a development environment, configuring test workflows,
-  or establishing a fast iteration cycle with Together AI.
-  Trigger with phrases like "together dev setup", "together local development",
-  "together dev environment", "develop with together".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
+  Together AI local dev loop for inference, fine-tuning, and model deployment.
+  Use when working with Together AI's OpenAI-compatible API.
+  Trigger: "together local dev loop".
+allowed-tools: Read, Write, Edit, Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, llm, together]
+tags: [saas, ai, inference, together]
 compatible-with: claude-code
 ---
 
 # Together AI Local Dev Loop
 
 ## Overview
-Set up a fast, reproducible local development workflow for Together AI.
 
-## Prerequisites
-- Completed `together-install-auth` setup
-- Node.js 18+ with npm/pnpm
-- Code editor with TypeScript support
-- Git for version control
+Guidance for local dev loop with Together AI inference and fine-tuning API.
 
 ## Instructions
 
-### Step 1: Create Project Structure
-```
-my-together-project/
-├── src/
-│   ├── together/
-│   │   ├── client.ts       # Together AI client wrapper
-│   │   ├── config.ts       # Configuration management
-│   │   └── utils.ts        # Helper functions
-│   └── index.ts
-├── tests/
-│   └── together.test.ts
-├── .env.local              # Local secrets (git-ignored)
-├── .env.example            # Template for team
-└── package.json
-```
+### Key Points
 
-### Step 2: Configure Environment
-```bash
-# Copy environment template
-cp .env.example .env.local
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-```
-
-### Step 3: Setup Hot Reload
-```json
-{
-  "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "test": "vitest",
-    "test:watch": "vitest --watch"
-  }
-}
-```
-
-### Step 4: Configure Testing
-```typescript
-import { describe, it, expect, vi } from 'vitest';
-import { TogetherAIClient } from '../src/together/client';
-
-describe('Together AI Client', () => {
-  it('should initialize with API key', () => {
-    const client = new TogetherAIClient({ apiKey: 'test-key' });
-    expect(client).toBeDefined();
-  });
-});
-```
-
-## Output
-- Working development environment with hot reload
-- Configured test suite with mocking
-- Environment variable management
-- Fast iteration cycle for Together AI development
+- Together AI is OpenAI-compatible: `base_url = 'https://api.together.xyz/v1'`
+- Use the `together` Python SDK or any OpenAI client library
+- Supports 100+ open-source models (Llama, Mixtral, Qwen, FLUX)
+- Fine-tuning available for supported models
+- Batch inference at 50% cost reduction
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Module not found | Missing dependency | Run `npm install` |
-| Port in use | Another process | Kill process or change port |
-| Env not loaded | Missing .env.local | Copy from .env.example |
-| Test timeout | Slow network | Increase test timeout |
-
-## Examples
-
-### Mock Together AI Responses
-```typescript
-vi.mock('@together/sdk', () => ({
-  TogetherAIClient: vi.fn().mockImplementation(() => ({
-    // Mock methods here
-  })),
-}));
-```
-
-### Debug Mode
-```bash
-# Enable verbose logging
-DEBUG=TOGETHER=* npm run dev
-```
+| `401 Unauthorized` | Invalid API key | Check at api.together.xyz |
+| `Model not found` | Wrong model ID | Use `client.models.list()` |
+| `429 Rate limit` | Too many requests | Implement backoff |
+| `500 Server error` | Model overloaded | Retry with backoff |
 
 ## Resources
-- [Together AI SDK Reference](https://docs.together.com/sdk)
-- [Vitest Documentation](https://vitest.dev/)
-- [tsx Documentation](https://github.com/esbuild-kit/tsx)
+
+- [Together AI Docs](https://docs.together.ai/)
+- [API Reference](https://docs.together.ai/reference/chat-completions-1)
+- [Model List](https://docs.together.ai/docs/inference-models)
 
 ## Next Steps
-See `together-sdk-patterns` for production-ready code patterns.
+
+See related Together AI skills for more patterns.

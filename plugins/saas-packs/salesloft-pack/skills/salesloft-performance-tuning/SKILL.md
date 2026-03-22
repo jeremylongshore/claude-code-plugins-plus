@@ -1,11 +1,10 @@
 ---
 name: salesloft-performance-tuning
 description: |
-  Optimize Salesloft API performance with caching, batching, and connection pooling.
-  Use when experiencing slow API responses, implementing caching strategies,
-  or optimizing request throughput for Salesloft integrations.
-  Trigger with phrases like "salesloft performance", "optimize salesloft",
-  "salesloft latency", "salesloft caching", "salesloft slow", "salesloft batch".
+  Optimize SalesLoft API performance with caching, pagination strategies, and connection pooling.
+  Use when experiencing slow API responses, reducing latency for bulk operations,
+  or optimizing cadence sync throughput.
+  Trigger: "salesloft performance", "optimize salesloft", "salesloft slow", "salesloft caching".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
@@ -14,203 +13,130 @@ tags: [saas, sales, outreach, salesloft]
 compatible-with: claude-code
 ---
 
-# Salesloft Performance Tuning
+# SalesLoft Performance Tuning
 
 ## Overview
-Optimize Salesloft API performance with caching, batching, and connection pooling.
 
-## Prerequisites
-- Salesloft SDK installed
-- Understanding of async patterns
-- Redis or in-memory cache available (optional)
-- Performance monitoring in place
+Optimize SalesLoft REST API v2 performance. Key bottlenecks: deep pagination (cost multiplier), no batch endpoints, and per-minute rate limits. Solutions: caching, incremental sync, and pagination-aware request planning.
 
 ## Latency Benchmarks
 
-| Operation | P50 | P95 | P99 |
-|-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
+| Operation | Typical | With Caching |
+|-----------|---------|-------------|
+| GET /me.json | 80ms | N/A (auth) |
+| GET /people.json (page 1) | 120ms | 1ms (cached) |
+| POST /people.json | 200ms | N/A (write) |
+| GET /activities/emails.json | 150ms | 1ms (cached) |
+| Full sync (10k people) | ~20min | ~5min (incremental) |
 
-## Caching Strategy
+## Instructions
 
-### Response Caching
+### Step 1: Response Caching
+
 ```typescript
 import { LRUCache } from 'lru-cache';
 
-const cache = new LRUCache<string, any>({
-  max: 1000,
-  ttl: 60000, // 1 minute
-  updateAgeOnGet: true,
-});
+const cache = new LRUCache<string, any>({ max: 5000, ttl: 60_000 });
 
-async function cachedSalesloftRequest<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttl?: number
-): Promise<T> {
-  const cached = cache.get(key);
-  if (cached) return cached as T;
+async function cachedGet<T>(endpoint: string, params?: Record<string, any>): Promise<T> {
+  const key = `${endpoint}:${JSON.stringify(params || {})}`;
+  const hit = cache.get(key);
+  if (hit) return hit as T;
 
-  const result = await fetcher();
-  cache.set(key, result, { ttl });
-  return result;
+  const { data } = await api.get(endpoint, { params });
+  cache.set(key, data);
+  return data;
 }
+
+// Cache people lookups (frequent during cadence enrollment)
+const person = await cachedGet('/people.json', { email_addresses: ['alex@co.com'] });
 ```
 
-### Redis Caching (Distributed)
-```typescript
-import Redis from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function cachedWithRedis<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttlSeconds = 60
-): Promise<T> {
-  const cached = await redis.get(key);
-  if (cached) return JSON.parse(cached);
-
-  const result = await fetcher();
-  await redis.setex(key, ttlSeconds, JSON.stringify(result));
-  return result;
-}
-```
-
-## Request Batching
+### Step 2: Incremental Sync with updated_at
 
 ```typescript
-import DataLoader from 'dataloader';
+// Only fetch records changed since last sync
+async function incrementalSync(lastSyncTime: string) {
+  const updated: any[] = [];
+  let page = 1;
 
-const salesloftLoader = new DataLoader<string, any>(
-  async (ids) => {
-    // Batch fetch from Salesloft
-    const results = await salesloftClient.batchGet(ids);
-    return ids.map(id => results.find(r => r.id === id) || null);
-  },
-  {
-    maxBatchSize: 100,
-    batchScheduleFn: callback => setTimeout(callback, 10),
+  while (true) {
+    const { data } = await api.get('/people.json', {
+      params: {
+        updated_at: { gt: lastSyncTime }, // ISO 8601
+        per_page: 100,
+        page,
+        sort_by: 'updated_at',
+        sort_direction: 'ASC',
+      },
+    });
+    updated.push(...data.data);
+    if (page >= data.metadata.paging.total_pages) break;
+    page++;
   }
-);
 
-// Usage - automatically batched
-const [item1, item2, item3] = await Promise.all([
-  salesloftLoader.load('id-1'),
-  salesloftLoader.load('id-2'),
-  salesloftLoader.load('id-3'),
-]);
+  return { updated, newSyncTime: new Date().toISOString() };
+}
 ```
 
-## Connection Optimization
+### Step 3: Avoid Deep Pagination Cost
+
+```typescript
+// Deep pages cost 3-30x. Instead of paginating all 25k records,
+// use updated_at filter to get incremental changes
+function shouldUseIncremental(totalCount: number): boolean {
+  // If total records > 1000, incremental sync is more efficient
+  // Full pagination of 250 pages = 910 cost points vs.
+  // incremental of last 50 changes = 1 page = 1 point
+  return totalCount > 1000;
+}
+```
+
+### Step 4: Connection Pooling
 
 ```typescript
 import { Agent } from 'https';
 
-// Keep-alive connection pooling
 const agent = new Agent({
   keepAlive: true,
-  maxSockets: 10,
-  maxFreeSockets: 5,
-  timeout: 30000,
+  maxSockets: 10,     // Max concurrent connections
+  maxFreeSockets: 5,  // Keep idle connections alive
+  timeout: 30_000,
 });
 
-const client = new SalesloftClient({
-  apiKey: process.env.SALESLOFT_API_KEY!,
-  httpAgent: agent,
+const api = axios.create({
+  baseURL: 'https://api.salesloft.com/v2',
+  headers: { Authorization: `Bearer ${process.env.SALESLOFT_API_KEY}` },
+  httpsAgent: agent,
 });
 ```
 
-## Pagination Optimization
+### Step 5: Parallel Safe Reads
 
 ```typescript
-async function* paginatedSalesloftList<T>(
-  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
-): AsyncGenerator<T> {
-  let cursor: string | undefined;
-
-  do {
-    const { data, nextCursor } = await fetcher(cursor);
-    for (const item of data) {
-      yield item;
-    }
-    cursor = nextCursor;
-  } while (cursor);
-}
-
-// Usage
-for await (const item of paginatedSalesloftList(cursor =>
-  salesloftClient.list({ cursor, limit: 100 })
-)) {
-  await process(item);
-}
+// Parallelize independent reads (each costs 1 point)
+const [people, cadences, activities] = await Promise.all([
+  api.get('/people.json', { params: { per_page: 100 } }),
+  api.get('/cadences.json', { params: { per_page: 50 } }),
+  api.get('/activities/emails.json', { params: { per_page: 100 } }),
+]);
+// 3 points total, ~120ms parallel vs ~360ms sequential
 ```
-
-## Performance Monitoring
-
-```typescript
-async function measuredSalesloftCall<T>(
-  operation: string,
-  fn: () => Promise<T>
-): Promise<T> {
-  const start = performance.now();
-  try {
-    const result = await fn();
-    const duration = performance.now() - start;
-    console.log({ operation, duration, status: 'success' });
-    return result;
-  } catch (error) {
-    const duration = performance.now() - start;
-    console.error({ operation, duration, status: 'error', error });
-    throw error;
-  }
-}
-```
-
-## Instructions
-
-### Step 1: Establish Baseline
-Measure current latency for critical Salesloft operations.
-
-### Step 2: Implement Caching
-Add response caching for frequently accessed data.
-
-### Step 3: Enable Batching
-Use DataLoader or similar for automatic request batching.
-
-### Step 4: Optimize Connections
-Configure connection pooling with keep-alive.
-
-## Output
-- Reduced API latency
-- Caching layer implemented
-- Request batching enabled
-- Connection pooling configured
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Cache miss storm | TTL expired | Use stale-while-revalidate |
-| Batch timeout | Too many items | Reduce batch size |
-| Connection exhausted | No pooling | Configure max sockets |
-| Memory pressure | Cache too large | Set max cache entries |
-
-## Examples
-
-### Quick Performance Wrapper
-```typescript
-const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
-  measuredSalesloftCall(name, () =>
-    cachedSalesloftRequest(`cache:${name}`, fn)
-  );
-```
+| Cache stampede | TTL expiry under load | Stale-while-revalidate pattern |
+| Incremental misses | Clock skew | Use `updated_at` from last response, not local clock |
+| Connection timeout | Pool exhausted | Increase `maxSockets` or reduce concurrency |
+| Rate limit on bulk | Too many parallel requests | Use `p-queue` with `intervalCap: 10` |
 
 ## Resources
-- [Salesloft Performance Guide](https://docs.salesloft.com/performance)
-- [DataLoader Documentation](https://github.com/graphql/dataloader)
-- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
+
+- [SalesLoft Rate Limits](https://developers.salesloft.com/docs/platform/api-basics/rate-limits/)
+- [LRU Cache](https://github.com/isaacs/node-lru-cache)
 
 ## Next Steps
+
 For cost optimization, see `salesloft-cost-tuning`.

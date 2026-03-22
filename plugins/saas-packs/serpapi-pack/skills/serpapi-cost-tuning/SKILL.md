@@ -1,11 +1,10 @@
 ---
 name: serpapi-cost-tuning
 description: |
-  Optimize SerpApi costs through tier selection, sampling, and usage monitoring.
-  Use when analyzing SerpApi billing, reducing API costs,
-  or implementing usage monitoring and budget alerts.
-  Trigger with phrases like "serpapi cost", "serpapi billing",
-  "reduce serpapi costs", "serpapi pricing", "serpapi expensive", "serpapi budget".
+  Optimize SerpApi costs by reducing credit consumption and choosing the right plan.
+  Use when analyzing search usage, reducing monthly costs,
+  or implementing credit-saving strategies.
+  Trigger: "serpapi cost", "serpapi pricing", "reduce serpapi costs", "serpapi credits".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
@@ -17,187 +16,107 @@ compatible-with: claude-code
 # SerpApi Cost Tuning
 
 ## Overview
-Optimize SerpApi costs through smart tier selection, sampling, and usage monitoring.
 
-## Prerequisites
-- Access to SerpApi billing dashboard
-- Understanding of current usage patterns
-- Database for usage tracking (optional)
-- Alerting system configured (optional)
+SerpApi charges per search (1 credit each). Plans: Free (100/mo), Developer ($75, 5K/mo), Business ($200, 15K/mo), Enterprise (custom). Key savings: caching, archive retrieval (free), and Google Light API.
 
-## Pricing Tiers
+## Cost Strategies
 
-| Tier | Monthly Cost | Included | Overage |
-|------|-------------|----------|---------|
-| Free | $0 | 1,000 requests | N/A |
-| Pro | $99 | 100,000 requests | $0.001/request |
-| Enterprise | Custom | Unlimited | Volume discounts |
+### Strategy 1: Aggressive Caching (Biggest Savings)
 
-## Cost Estimation
+```python
+# Search results rarely change within an hour
+# Cache for 1 hour = up to 24x credit reduction for hourly queries
+# Cache for 1 day = up to 720x for queries checked every 2 minutes
 
-```typescript
-interface UsageEstimate {
-  requestsPerMonth: number;
-  tier: string;
-  estimatedCost: number;
-  recommendation?: string;
-}
+import hashlib, json, redis, serpapi, os
 
-function estimateSerpApiCost(requestsPerMonth: number): UsageEstimate {
-  if (requestsPerMonth <= 1000) {
-    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
-  }
+r = redis.Redis.from_url(os.environ["REDIS_URL"])
+client = serpapi.Client(api_key=os.environ["SERPAPI_API_KEY"])
 
-  if (requestsPerMonth <= 100000) {
-    return { requestsPerMonth, tier: 'Pro', estimatedCost: 99 };
-  }
+def cached_search(ttl_seconds=3600, **params):
+    key = f"serpapi:{hashlib.md5(json.dumps(params, sort_keys=True).encode()).hexdigest()}"
+    cached = r.get(key)
+    if cached:
+        return json.loads(cached)  # FREE: no credit consumed
+    result = client.search(**params)   # 1 credit
+    r.setex(key, ttl_seconds, json.dumps(dict(result)))
+    return result
+```
 
-  const proOverage = (requestsPerMonth - 100000) * 0.001;
-  const proCost = 99 + proOverage;
+### Strategy 2: Archive API (Free Retrieval)
 
-  return {
-    requestsPerMonth,
-    tier: 'Pro (with overage)',
-    estimatedCost: proCost,
-    recommendation: proCost > 500
-      ? 'Consider Enterprise tier for volume discounts'
-      : undefined,
-  };
-}
+```python
+# Every search result is stored in the archive
+# Retrieve by search_id at no cost
+archived = client.search(engine="google", search_id="previous_id")
+# 0 credits -- use for re-processing or delayed access
+```
+
+### Strategy 3: Google Light API (Same Cost, Faster)
+
+```python
+# Same 1 credit but faster response (~1s vs 3-5s)
+# Good for: organic results only, no knowledge graph needed
+result = client.search(engine="google_light", q="query")
+```
+
+### Strategy 4: Reduce num Parameter
+
+```python
+# Default num=10 (10 results). If you only need top 3:
+result = client.search(engine="google", q="query", num=3)
+# Still 1 credit, but faster response
+```
+
+## Cost Calculator
+
+```python
+def estimate_monthly_cost(
+    daily_searches: int,
+    cache_hit_rate: float = 0.7,  # 70% cache hits typical
+) -> dict:
+    actual_api_calls = daily_searches * 30 * (1 - cache_hit_rate)
+    plans = [
+        ("Free", 100, 0), ("Developer", 5000, 75),
+        ("Business", 15000, 200), ("Enterprise", 50000, 500),
+    ]
+    for name, limit, price in plans:
+        if actual_api_calls <= limit:
+            return {"plan": name, "price": f"${price}/mo",
+                    "api_calls": int(actual_api_calls), "raw_searches": daily_searches * 30}
+    return {"plan": "Enterprise+", "price": "Custom", "api_calls": int(actual_api_calls)}
+
+# Examples:
+# 100 searches/day, 70% cache = 900 API calls/mo = Developer ($75)
+# 500 searches/day, 80% cache = 3000 API calls/mo = Developer ($75)
+# 1000 searches/day, 50% cache = 15000 API calls/mo = Business ($200)
 ```
 
 ## Usage Monitoring
 
-```typescript
-class SerpApiUsageMonitor {
-  private requestCount = 0;
-  private bytesTransferred = 0;
-  private alertThreshold: number;
-
-  constructor(monthlyBudget: number) {
-    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
-  }
-
-  track(request: { bytes: number }) {
-    this.requestCount++;
-    this.bytesTransferred += request.bytes;
-
-    if (this.estimatedCost() > this.alertThreshold) {
-      this.sendAlert('Approaching SerpApi budget limit');
-    }
-  }
-
-  estimatedCost(): number {
-    return estimateSerpApiCost(this.requestCount).estimatedCost;
-  }
-
-  private sendAlert(message: string) {
-    // Send to Slack, email, PagerDuty, etc.
-  }
-}
-```
-
-## Cost Reduction Strategies
-
-### Step 1: Request Sampling
-```typescript
-function shouldSample(samplingRate = 0.1): boolean {
-  return Math.random() < samplingRate;
-}
-
-// Use for non-critical telemetry
-if (shouldSample(0.1)) { // 10% sample
-  await serpapiClient.trackEvent(event);
-}
-```
-
-### Step 2: Batching Requests
-```typescript
-// Instead of N individual calls
-await Promise.all(ids.map(id => serpapiClient.get(id)));
-
-// Use batch endpoint (1 call)
-await serpapiClient.batchGet(ids);
-```
-
-### Step 3: Caching (from P16)
-- Cache frequently accessed data
-- Use cache invalidation webhooks
-- Set appropriate TTLs
-
-### Step 4: Compression
-```typescript
-const client = new SerpApiClient({
-  compression: true, // Enable gzip
-});
-```
-
-## Budget Alerts
-
 ```bash
-# Set up billing alerts in SerpApi dashboard
-# Or use API if available:
-# Check SerpApi documentation for billing APIs
+# Daily credit check
+curl -s "https://serpapi.com/account.json?api_key=$SERPAPI_API_KEY" | jq '{
+  plan: .plan_name,
+  used: .this_month_usage,
+  remaining: .plan_searches_left,
+  daily_avg: (.this_month_usage / ([1, (now | strftime("%d") | tonumber)] | max))
+}'
 ```
-
-## Cost Dashboard Query
-
-```sql
--- If tracking usage in your database
-SELECT
-  DATE_TRUNC('day', created_at) as date,
-  COUNT(*) as requests,
-  SUM(response_bytes) as bytes,
-  COUNT(*) * 0.001 as estimated_cost
-FROM serpapi_api_logs
-WHERE created_at >= NOW() - INTERVAL '30 days'
-GROUP BY 1
-ORDER BY 1;
-```
-
-## Instructions
-
-### Step 1: Analyze Current Usage
-Review SerpApi dashboard for usage patterns and costs.
-
-### Step 2: Select Optimal Tier
-Use the cost estimation function to find the right tier.
-
-### Step 3: Implement Monitoring
-Add usage tracking to catch budget overruns early.
-
-### Step 4: Apply Optimizations
-Enable batching, caching, and sampling where appropriate.
-
-## Output
-- Optimized tier selection
-- Usage monitoring implemented
-- Budget alerts configured
-- Cost reduction strategies applied
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Unexpected charges | Untracked usage | Implement monitoring |
-| Overage fees | Wrong tier | Upgrade tier |
-| Budget exceeded | No alerts | Set up alerts |
-| Inefficient usage | No batching | Enable batch requests |
-
-## Examples
-
-### Quick Cost Check
-```typescript
-// Estimate monthly cost for your usage
-const estimate = estimateSerpApiCost(yourMonthlyRequests);
-console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
-if (estimate.recommendation) {
-  console.log(`💡 ${estimate.recommendation}`);
-}
-```
+| Unexpected costs | No caching | Implement Redis/LRU cache |
+| Credits exhausted mid-month | Underestimated volume | Upgrade plan or increase cache TTL |
+| Cache miss rate high | Short TTL | Increase cache TTL to 1-4 hours |
 
 ## Resources
+
 - [SerpApi Pricing](https://serpapi.com/pricing)
-- [SerpApi Billing Dashboard](https://dashboard.serpapi.com/billing)
+- [Account API](https://serpapi.com/account-api)
 
 ## Next Steps
+
 For architecture patterns, see `serpapi-reference-architecture`.

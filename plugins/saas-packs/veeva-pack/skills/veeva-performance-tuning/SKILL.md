@@ -1,216 +1,62 @@
 ---
 name: veeva-performance-tuning
 description: |
-  Optimize Veeva API performance with caching, batching, and connection pooling.
-  Use when experiencing slow API responses, implementing caching strategies,
-  or optimizing request throughput for Veeva integrations.
-  Trigger with phrases like "veeva performance", "optimize veeva",
-  "veeva latency", "veeva caching", "veeva slow", "veeva batch".
-allowed-tools: Read, Write, Edit
+  Veeva Vault performance tuning for REST API and clinical operations.
+  Use when working with Veeva Vault document management and CRM.
+  Trigger: "veeva performance tuning".
+allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, pharma, crm, veeva]
+tags: [saas, life-sciences, crm, veeva]
 compatible-with: claude-code
 ---
 
-# Veeva Performance Tuning
+# Veeva Vault Performance Tuning
 
 ## Overview
-Optimize Veeva API performance with caching, batching, and connection pooling.
 
-## Prerequisites
-- Veeva SDK installed
-- Understanding of async patterns
-- Redis or in-memory cache available (optional)
-- Performance monitoring in place
-
-## Latency Benchmarks
-
-| Operation | P50 | P95 | P99 |
-|-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
-
-## Caching Strategy
-
-### Response Caching
-```typescript
-import { LRUCache } from 'lru-cache';
-
-const cache = new LRUCache<string, any>({
-  max: 1000,
-  ttl: 60000, // 1 minute
-  updateAgeOnGet: true,
-});
-
-async function cachedVeevaRequest<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttl?: number
-): Promise<T> {
-  const cached = cache.get(key);
-  if (cached) return cached as T;
-
-  const result = await fetcher();
-  cache.set(key, result, { ttl });
-  return result;
-}
-```
-
-### Redis Caching (Distributed)
-```typescript
-import Redis from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function cachedWithRedis<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttlSeconds = 60
-): Promise<T> {
-  const cached = await redis.get(key);
-  if (cached) return JSON.parse(cached);
-
-  const result = await fetcher();
-  await redis.setex(key, ttlSeconds, JSON.stringify(result));
-  return result;
-}
-```
-
-## Request Batching
-
-```typescript
-import DataLoader from 'dataloader';
-
-const veevaLoader = new DataLoader<string, any>(
-  async (ids) => {
-    // Batch fetch from Veeva
-    const results = await veevaClient.batchGet(ids);
-    return ids.map(id => results.find(r => r.id === id) || null);
-  },
-  {
-    maxBatchSize: 100,
-    batchScheduleFn: callback => setTimeout(callback, 10),
-  }
-);
-
-// Usage - automatically batched
-const [item1, item2, item3] = await Promise.all([
-  veevaLoader.load('id-1'),
-  veevaLoader.load('id-2'),
-  veevaLoader.load('id-3'),
-]);
-```
-
-## Connection Optimization
-
-```typescript
-import { Agent } from 'https';
-
-// Keep-alive connection pooling
-const agent = new Agent({
-  keepAlive: true,
-  maxSockets: 10,
-  maxFreeSockets: 5,
-  timeout: 30000,
-});
-
-const client = new VeevaClient({
-  apiKey: process.env.VEEVA_API_KEY!,
-  httpAgent: agent,
-});
-```
-
-## Pagination Optimization
-
-```typescript
-async function* paginatedVeevaList<T>(
-  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
-): AsyncGenerator<T> {
-  let cursor: string | undefined;
-
-  do {
-    const { data, nextCursor } = await fetcher(cursor);
-    for (const item of data) {
-      yield item;
-    }
-    cursor = nextCursor;
-  } while (cursor);
-}
-
-// Usage
-for await (const item of paginatedVeevaList(cursor =>
-  veevaClient.list({ cursor, limit: 100 })
-)) {
-  await process(item);
-}
-```
-
-## Performance Monitoring
-
-```typescript
-async function measuredVeevaCall<T>(
-  operation: string,
-  fn: () => Promise<T>
-): Promise<T> {
-  const start = performance.now();
-  try {
-    const result = await fn();
-    const duration = performance.now() - start;
-    console.log({ operation, duration, status: 'success' });
-    return result;
-  } catch (error) {
-    const duration = performance.now() - start;
-    console.error({ operation, duration, status: 'error', error });
-    throw error;
-  }
-}
-```
+Guidance for performance tuning with Veeva Vault REST API, VQL queries, and VAPIL Java SDK.
 
 ## Instructions
 
-### Step 1: Establish Baseline
-Measure current latency for critical Veeva operations.
+### Key Vault API Concepts
 
-### Step 2: Implement Caching
-Add response caching for frequently accessed data.
+- **Authentication**: Session-based (username/password or OAuth 2.0)
+- **Base URL**: `https://{vault}.veevavault.com/api/v24.1/`
+- **VQL**: SQL-like query language for Vault data
+- **VAPIL**: Open-source Java SDK covering all Platform APIs
+- **Lifecycle**: Documents flow through states (Draft > In Review > Approved)
 
-### Step 3: Enable Batching
-Use DataLoader or similar for automatic request batching.
+### Common VQL Patterns
 
-### Step 4: Optimize Connections
-Configure connection pooling with keep-alive.
+```sql
+-- List documents by type
+SELECT id, name__v FROM documents WHERE type__v = 'Trial Document'
 
-## Output
-- Reduced API latency
-- Caching layer implemented
-- Request batching enabled
-- Connection pooling configured
+-- Find objects
+SELECT id, name__v FROM site__v WHERE status__v = 'active__v'
 
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Cache miss storm | TTL expired | Use stale-while-revalidate |
-| Batch timeout | Too many items | Reduce batch size |
-| Connection exhausted | No pooling | Configure max sockets |
-| Memory pressure | Cache too large | Set max cache entries |
-
-## Examples
-
-### Quick Performance Wrapper
-```typescript
-const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
-  measuredVeevaCall(name, () =>
-    cachedVeevaRequest(`cache:${name}`, fn)
-  );
+-- Join related objects
+SELECT id, name__v, study__vr.name__v FROM study_country__v
 ```
 
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `INVALID_SESSION_ID` | Session expired | Re-authenticate |
+| `INSUFFICIENT_ACCESS` | Missing permissions | Check security profile |
+| `INVALID_DATA` | Bad VQL or field name | Validate against metadata |
+| `OPERATION_NOT_ALLOWED` | Lifecycle state conflict | Check document state |
+
 ## Resources
-- [Veeva Performance Guide](https://docs.veeva.com/performance)
-- [DataLoader Documentation](https://github.com/graphql/dataloader)
-- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
+
+- [Vault API Reference](https://developer.veevavault.com/api/)
+- [VQL Reference](https://developer.veevavault.com/vql/)
+- [VAPIL SDK](https://developer.veevavault.com/sdk/)
+- [Developer Portal](https://developer.veevavault.com/)
 
 ## Next Steps
-For cost optimization, see `veeva-cost-tuning`.
+
+See related Veeva Vault skills for more patterns.

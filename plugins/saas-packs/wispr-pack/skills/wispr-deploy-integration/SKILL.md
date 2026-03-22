@@ -1,211 +1,49 @@
 ---
 name: wispr-deploy-integration
 description: |
-  Deploy Wispr integrations to Vercel, Fly.io, and Cloud Run platforms.
-  Use when deploying Wispr-powered applications to production,
-  configuring platform-specific secrets, or setting up deployment pipelines.
-  Trigger with phrases like "deploy wispr", "wispr Vercel",
-  "wispr production deploy", "wispr Cloud Run", "wispr Fly.io".
-allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
+  Wispr Flow deploy integration for voice-to-text API integration.
+  Use when integrating Wispr Flow dictation, WebSocket streaming,
+  or building voice-powered applications.
+  Trigger: "wispr deploy integration".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, voice, productivity, wispr]
+tags: [saas, voice, dictation, wispr]
 compatible-with: claude-code
 ---
 
-# Wispr Deploy Integration
+# Wispr Flow Deploy Integration
 
 ## Overview
-Deploy Wispr-powered applications to popular platforms with proper secrets management.
 
-## Prerequisites
-- Wispr API keys for production environment
-- Platform CLI installed (vercel, fly, or gcloud)
-- Application code ready for deployment
-- Environment variables documented
-
-## Vercel Deployment
-
-### Environment Setup
-```bash
-# Add Wispr secrets to Vercel
-vercel secrets add wispr_api_key sk_live_***
-vercel secrets add wispr_webhook_secret whsec_***
-
-# Link to project
-vercel link
-
-# Deploy preview
-vercel
-
-# Deploy production
-vercel --prod
-```
-
-### vercel.json Configuration
-```json
-{
-  "env": {
-    "WISPR_API_KEY": "@wispr_api_key"
-  },
-  "functions": {
-    "api/**/*.ts": {
-      "maxDuration": 30
-    }
-  }
-}
-```
-
-## Fly.io Deployment
-
-### fly.toml
-```toml
-app = "my-wispr-app"
-primary_region = "iad"
-
-[env]
-  NODE_ENV = "production"
-
-[http_service]
-  internal_port = 3000
-  force_https = true
-  auto_stop_machines = true
-  auto_start_machines = true
-```
-
-### Secrets
-```bash
-# Set Wispr secrets
-fly secrets set WISPR_API_KEY=sk_live_***
-fly secrets set WISPR_WEBHOOK_SECRET=whsec_***
-
-# Deploy
-fly deploy
-```
-
-## Google Cloud Run
-
-### Dockerfile
-```dockerfile
-FROM node:20-slim
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-CMD ["npm", "start"]
-```
-
-### Deploy Script
-```bash
-#!/bin/bash
-# deploy-cloud-run.sh
-
-PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
-SERVICE_NAME="wispr-service"
-REGION="us-central1"
-
-# Build and push image
-gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
-
-# Deploy to Cloud Run
-gcloud run deploy $SERVICE_NAME \
-  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
-  --region $REGION \
-  --platform managed \
-  --allow-unauthenticated \
-  --set-secrets=WISPR_API_KEY=wispr-api-key:latest
-```
-
-## Environment Configuration Pattern
-
-```typescript
-// config/wispr.ts
-interface WisprConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  webhookSecret?: string;
-}
-
-export function getWisprConfig(): WisprConfig {
-  const env = process.env.NODE_ENV || 'development';
-
-  return {
-    apiKey: process.env.WISPR_API_KEY!,
-    environment: env as WisprConfig['environment'],
-    webhookSecret: process.env.WISPR_WEBHOOK_SECRET,
-  };
-}
-```
-
-## Health Check Endpoint
-
-```typescript
-// api/health.ts
-export async function GET() {
-  const wisprStatus = await checkWisprConnection();
-
-  return Response.json({
-    status: wisprStatus ? 'healthy' : 'degraded',
-    services: {
-      wispr: wisprStatus,
-    },
-    timestamp: new Date().toISOString(),
-  });
-}
-```
+Guidance for deploy integration with Wispr Flow voice-to-text API.
 
 ## Instructions
 
-### Step 1: Choose Deployment Platform
-Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
+### Key Wispr Flow Concepts
 
-### Step 2: Configure Secrets
-Store Wispr API keys securely using the platform's secrets management.
-
-### Step 3: Deploy Application
-Use the platform CLI to deploy your application with Wispr integration.
-
-### Step 4: Verify Health
-Test the health check endpoint to confirm Wispr connectivity.
-
-## Output
-- Application deployed to production
-- Wispr secrets securely configured
-- Health check endpoint functional
-- Environment-specific configuration in place
+- **WebSocket API**: `wss://api.wisprflow.ai/api/v1/ws` (recommended, low latency)
+- **REST API**: `POST /api/v1/transcribe` (simpler, higher latency)
+- **Auth**: API key (backend) or access token (client-side)
+- **Audio format**: 16kHz mono PCM preferred
+- **Context awareness**: Understands code, CLI commands, dev jargon
+- **Platforms**: Mac, Windows, iOS, browser API
 
 ## Error Handling
-| Issue | Cause | Solution |
+
+| Error | Cause | Solution |
 |-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via platform CLI |
-| Deploy timeout | Large build | Increase build timeout |
-| Health check fails | Wrong API key | Verify environment variable |
-| Cold start issues | No warm-up | Configure minimum instances |
-
-## Examples
-
-### Quick Deploy Script
-```bash
-#!/bin/bash
-# Platform-agnostic deploy helper
-case "$1" in
-  vercel)
-    vercel secrets add wispr_api_key "$WISPR_API_KEY"
-    vercel --prod
-    ;;
-  fly)
-    fly secrets set WISPR_API_KEY="$WISPR_API_KEY"
-    fly deploy
-    ;;
-esac
-```
+| `401 Unauthorized` | Invalid key | Check at wisprflow.ai/developers |
+| WebSocket closed | Network issue | Reconnect with backoff |
+| Poor accuracy | Wrong context | Set context to 'programming' for code |
 
 ## Resources
-- [Vercel Documentation](https://vercel.com/docs)
-- [Fly.io Documentation](https://fly.io/docs)
-- [Cloud Run Documentation](https://cloud.google.com/run/docs)
-- [Wispr Deploy Guide](https://docs.wispr.com/deploy)
+
+- [Wispr Flow Developers](https://wisprflow.ai/developers)
+- [API Docs](https://api-docs.wisprflow.ai/introduction)
+- [WebSocket Quickstart](https://api-docs.wisprflow.ai/websocket_quickstart)
 
 ## Next Steps
-For webhook handling, see `wispr-webhooks-events`.
+
+See related Wispr Flow skills for more patterns.

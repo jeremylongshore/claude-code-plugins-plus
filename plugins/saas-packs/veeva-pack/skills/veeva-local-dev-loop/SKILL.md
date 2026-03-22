@@ -1,119 +1,62 @@
 ---
 name: veeva-local-dev-loop
 description: |
-  Configure Veeva local development with hot reload and testing.
-  Use when setting up a development environment, configuring test workflows,
-  or establishing a fast iteration cycle with Veeva.
-  Trigger with phrases like "veeva dev setup", "veeva local development",
-  "veeva dev environment", "develop with veeva".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
+  Veeva Vault local dev loop for REST API and clinical operations.
+  Use when working with Veeva Vault document management and CRM.
+  Trigger: "veeva local dev loop".
+allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, pharma, crm, veeva]
+tags: [saas, life-sciences, crm, veeva]
 compatible-with: claude-code
 ---
 
-# Veeva Local Dev Loop
+# Veeva Vault Local Dev Loop
 
 ## Overview
-Set up a fast, reproducible local development workflow for Veeva.
 
-## Prerequisites
-- Completed `veeva-install-auth` setup
-- Node.js 18+ with npm/pnpm
-- Code editor with TypeScript support
-- Git for version control
+Guidance for local dev loop with Veeva Vault REST API, VQL queries, and VAPIL Java SDK.
 
 ## Instructions
 
-### Step 1: Create Project Structure
+### Key Vault API Concepts
+
+- **Authentication**: Session-based (username/password or OAuth 2.0)
+- **Base URL**: `https://{vault}.veevavault.com/api/v24.1/`
+- **VQL**: SQL-like query language for Vault data
+- **VAPIL**: Open-source Java SDK covering all Platform APIs
+- **Lifecycle**: Documents flow through states (Draft > In Review > Approved)
+
+### Common VQL Patterns
+
+```sql
+-- List documents by type
+SELECT id, name__v FROM documents WHERE type__v = 'Trial Document'
+
+-- Find objects
+SELECT id, name__v FROM site__v WHERE status__v = 'active__v'
+
+-- Join related objects
+SELECT id, name__v, study__vr.name__v FROM study_country__v
 ```
-my-veeva-project/
-├── src/
-│   ├── veeva/
-│   │   ├── client.ts       # Veeva client wrapper
-│   │   ├── config.ts       # Configuration management
-│   │   └── utils.ts        # Helper functions
-│   └── index.ts
-├── tests/
-│   └── veeva.test.ts
-├── .env.local              # Local secrets (git-ignored)
-├── .env.example            # Template for team
-└── package.json
-```
-
-### Step 2: Configure Environment
-```bash
-# Copy environment template
-cp .env.example .env.local
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-```
-
-### Step 3: Setup Hot Reload
-```json
-{
-  "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "test": "vitest",
-    "test:watch": "vitest --watch"
-  }
-}
-```
-
-### Step 4: Configure Testing
-```typescript
-import { describe, it, expect, vi } from 'vitest';
-import { VeevaClient } from '../src/veeva/client';
-
-describe('Veeva Client', () => {
-  it('should initialize with API key', () => {
-    const client = new VeevaClient({ apiKey: 'test-key' });
-    expect(client).toBeDefined();
-  });
-});
-```
-
-## Output
-- Working development environment with hot reload
-- Configured test suite with mocking
-- Environment variable management
-- Fast iteration cycle for Veeva development
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Module not found | Missing dependency | Run `npm install` |
-| Port in use | Another process | Kill process or change port |
-| Env not loaded | Missing .env.local | Copy from .env.example |
-| Test timeout | Slow network | Increase test timeout |
-
-## Examples
-
-### Mock Veeva Responses
-```typescript
-vi.mock('@veeva/sdk', () => ({
-  VeevaClient: vi.fn().mockImplementation(() => ({
-    // Mock methods here
-  })),
-}));
-```
-
-### Debug Mode
-```bash
-# Enable verbose logging
-DEBUG=VEEVA=* npm run dev
-```
+| `INVALID_SESSION_ID` | Session expired | Re-authenticate |
+| `INSUFFICIENT_ACCESS` | Missing permissions | Check security profile |
+| `INVALID_DATA` | Bad VQL or field name | Validate against metadata |
+| `OPERATION_NOT_ALLOWED` | Lifecycle state conflict | Check document state |
 
 ## Resources
-- [Veeva SDK Reference](https://docs.veeva.com/sdk)
-- [Vitest Documentation](https://vitest.dev/)
-- [tsx Documentation](https://github.com/esbuild-kit/tsx)
+
+- [Vault API Reference](https://developer.veevavault.com/api/)
+- [VQL Reference](https://developer.veevavault.com/vql/)
+- [VAPIL SDK](https://developer.veevavault.com/sdk/)
+- [Developer Portal](https://developer.veevavault.com/)
 
 ## Next Steps
-See `veeva-sdk-patterns` for production-ready code patterns.
+
+See related Veeva Vault skills for more patterns.

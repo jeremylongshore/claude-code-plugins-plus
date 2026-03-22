@@ -1,126 +1,49 @@
 ---
 name: wispr-ci-integration
 description: |
-  Configure Wispr CI/CD integration with GitHub Actions and testing.
-  Use when setting up automated testing, configuring CI pipelines,
-  or integrating Wispr tests into your build process.
-  Trigger with phrases like "wispr CI", "wispr GitHub Actions",
-  "wispr automated tests", "CI wispr".
-allowed-tools: Read, Write, Edit, Bash(gh:*)
+  Wispr Flow ci integration for voice-to-text API integration.
+  Use when integrating Wispr Flow dictation, WebSocket streaming,
+  or building voice-powered applications.
+  Trigger: "wispr ci integration".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, voice, productivity, wispr]
+tags: [saas, voice, dictation, wispr]
 compatible-with: claude-code
 ---
 
-# Wispr CI Integration
+# Wispr Flow Ci Integration
 
 ## Overview
-Set up CI/CD pipelines for Wispr integrations with automated testing.
 
-## Prerequisites
-- GitHub repository with Actions enabled
-- Wispr test API key
-- npm/pnpm project configured
+Guidance for ci integration with Wispr Flow voice-to-text API.
 
 ## Instructions
 
-### Step 1: Create GitHub Actions Workflow
-Create `.github/workflows/wispr-integration.yml`:
+### Key Wispr Flow Concepts
 
-```yaml
-name: Wispr Integration Tests
-
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-
-env:
-  WISPR_API_KEY: ${{ secrets.WISPR_API_KEY }}
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    env:
-      WISPR_API_KEY: ${{ secrets.WISPR_API_KEY }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-      - run: npm ci
-      - run: npm test -- --coverage
-      - run: npm run test:integration
-```
-
-### Step 2: Configure Secrets
-```bash
-gh secret set WISPR_API_KEY --body "sk_test_***"
-```
-
-### Step 3: Add Integration Tests
-```typescript
-describe('Wispr Integration', () => {
-  it.skipIf(!process.env.WISPR_API_KEY)('should connect', async () => {
-    const client = getWisprClient();
-    const result = await client.healthCheck();
-    expect(result.status).toBe('ok');
-  });
-});
-```
-
-## Output
-- Automated test pipeline
-- PR checks configured
-- Coverage reports uploaded
-- Release workflow ready
+- **WebSocket API**: `wss://api.wisprflow.ai/api/v1/ws` (recommended, low latency)
+- **REST API**: `POST /api/v1/transcribe` (simpler, higher latency)
+- **Auth**: API key (backend) or access token (client-side)
+- **Audio format**: 16kHz mono PCM preferred
+- **Context awareness**: Understands code, CLI commands, dev jargon
+- **Platforms**: Mac, Windows, iOS, browser API
 
 ## Error Handling
-| Issue | Cause | Solution |
+
+| Error | Cause | Solution |
 |-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via `gh secret set` |
-| Tests timeout | Network issues | Increase timeout or mock |
-| Auth failures | Invalid key | Check secret value |
-
-## Examples
-
-### Release Workflow
-```yaml
-on:
-  push:
-    tags: ['v*']
-
-jobs:
-  release:
-    runs-on: ubuntu-latest
-    env:
-      WISPR_API_KEY: ${{ secrets.WISPR_API_KEY_PROD }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - run: npm ci
-      - name: Verify Wispr production readiness
-        run: npm run test:integration
-      - run: npm run build
-      - run: npm publish
-```
-
-### Branch Protection
-```yaml
-required_status_checks:
-  - "test"
-  - "wispr-integration"
-```
+| `401 Unauthorized` | Invalid key | Check at wisprflow.ai/developers |
+| WebSocket closed | Network issue | Reconnect with backoff |
+| Poor accuracy | Wrong context | Set context to 'programming' for code |
 
 ## Resources
-- [GitHub Actions Documentation](https://docs.github.com/en/actions)
-- [Wispr CI Guide](https://docs.wispr.com/ci)
+
+- [Wispr Flow Developers](https://wisprflow.ai/developers)
+- [API Docs](https://api-docs.wisprflow.ai/introduction)
+- [WebSocket Quickstart](https://api-docs.wisprflow.ai/websocket_quickstart)
 
 ## Next Steps
-For deployment patterns, see `wispr-deploy-integration`.
+
+See related Wispr Flow skills for more patterns.

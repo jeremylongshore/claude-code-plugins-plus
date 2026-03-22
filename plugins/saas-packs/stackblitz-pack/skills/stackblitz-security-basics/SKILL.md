@@ -1,142 +1,72 @@
 ---
 name: stackblitz-security-basics
 description: |
-  Apply StackBlitz security best practices for secrets and access control.
-  Use when securing API keys, implementing least privilege access,
-  or auditing StackBlitz security configuration.
-  Trigger with phrases like "stackblitz security", "stackblitz secrets",
-  "secure stackblitz", "stackblitz API key security".
+  Secure WebContainer deployments: CSP headers, sandbox isolation, input validation.
+  Use when working with WebContainers or StackBlitz SDK.
+  Trigger: "stackblitz security".
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ide, cloud, stackblitz]
+tags: [saas, ide, webcontainers, stackblitz]
 compatible-with: claude-code
 ---
 
 # StackBlitz Security Basics
 
 ## Overview
-Security best practices for StackBlitz API keys, tokens, and access control.
 
-## Prerequisites
-- StackBlitz SDK installed
-- Understanding of environment variables
-- Access to StackBlitz dashboard
+Secure WebContainer deployments: CSP headers, sandbox isolation, input validation.
 
 ## Instructions
 
-### Step 1: Configure Environment Variables
-```bash
-# .env (NEVER commit to git)
-STACKBLITZ_API_KEY=sk_live_***
-STACKBLITZ_SECRET=***
+### Step 1: WebContainer Security Model
 
-# .gitignore
-.env
-.env.local
-.env.*.local
-```
+WebContainers run in the browser sandbox -- no access to host filesystem, network is limited to HTTP, and all code runs in the user's browser tab. Key security points:
 
-### Step 2: Implement Secret Rotation
-```bash
-# 1. Generate new key in StackBlitz dashboard
-# 2. Update environment variable
-export STACKBLITZ_API_KEY="new_key_here"
-
-# 3. Verify new key works
-curl -H "Authorization: Bearer ${STACKBLITZ_API_KEY}" \
-  https://api.stackblitz.com/health
-
-# 4. Revoke old key in dashboard
-```
-
-### Step 3: Apply Least Privilege
-| Environment | Recommended Scopes |
-|-------------|-------------------|
-| Development | `read:*` |
-| Staging | `read:*, write:limited` |
-| Production | `Only required scopes` |
-
-## Output
-- Secure API key storage
-- Environment-specific access controls
-- Audit logging enabled
-
-## Error Handling
-| Security Issue | Detection | Mitigation |
-|----------------|-----------|------------|
-| Exposed API key | Git scanning | Rotate immediately |
-| Excessive scopes | Audit logs | Reduce permissions |
-| Missing rotation | Key age check | Schedule rotation |
-
-## Examples
-
-### Service Account Pattern
 ```typescript
-const clients = {
-  reader: new StackBlitzClient({
-    apiKey: process.env.STACKBLITZ_READ_KEY,
-  }),
-  writer: new StackBlitzClient({
-    apiKey: process.env.STACKBLITZ_WRITE_KEY,
-  }),
-};
+// WebContainers are inherently sandboxed:
+// - No file system access to host
+// - No raw network sockets
+// - Memory isolated to browser tab
+// - Cross-origin isolation via COOP/COEP headers
 ```
 
-### Webhook Signature Verification
-```typescript
-import crypto from 'crypto';
+### Step 2: Validate User Input
 
-function verifyWebhookSignature(
-  payload: string, signature: string, secret: string
-): boolean {
-  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
-  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
+```typescript
+// If users can provide code to run in WebContainer, validate:
+function sanitizeFileTree(tree: FileSystemTree): FileSystemTree {
+  const sanitized: FileSystemTree = {};
+  for (const [name, entry] of Object.entries(tree)) {
+    // Block path traversal
+    if (name.includes('..') || name.startsWith('/')) continue;
+    // Block sensitive files
+    if (name === '.env' || name.endsWith('.key')) continue;
+    sanitized[name] = entry;
+  }
+  return sanitized;
 }
 ```
 
-### Security Checklist
-- [ ] API keys in environment variables
-- [ ] `.env` files in `.gitignore`
-- [ ] Different keys for dev/staging/prod
-- [ ] Minimal scopes per environment
-- [ ] Webhook signatures validated
-- [ ] Audit logging enabled
+### Step 3: Content Security Policy
 
-### Audit Logging
-```typescript
-interface AuditEntry {
-  timestamp: Date;
-  action: string;
-  userId: string;
-  resource: string;
-  result: 'success' | 'failure';
-  metadata?: Record<string, any>;
-}
-
-async function auditLog(entry: Omit<AuditEntry, 'timestamp'>): Promise<void> {
-  const log: AuditEntry = { ...entry, timestamp: new Date() };
-
-  // Log to StackBlitz analytics
-  await stackblitzClient.track('audit', log);
-
-  // Also log locally for compliance
-  console.log('[AUDIT]', JSON.stringify(log));
-}
-
-// Usage
-await auditLog({
-  action: 'stackblitz.api.call',
-  userId: currentUser.id,
-  resource: '/v1/resource',
-  result: 'success',
-});
 ```
+Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; frame-src https://*.webcontainer.io;
+```
+
+## Security Checklist
+
+- [ ] COOP/COEP headers set correctly
+- [ ] User-provided code sandboxed in WebContainer
+- [ ] No secrets passed to WebContainer file system
+- [ ] CSP headers configured
+- [ ] Input validation on file paths
 
 ## Resources
-- [StackBlitz Security Guide](https://docs.stackblitz.com/security)
-- [StackBlitz API Scopes](https://docs.stackblitz.com/scopes)
+
+- [WebContainer Security](https://webcontainers.io/guides/introduction)
 
 ## Next Steps
-For production deployment, see `stackblitz-prod-checklist`.
+
+For production, see `stackblitz-prod-checklist`.

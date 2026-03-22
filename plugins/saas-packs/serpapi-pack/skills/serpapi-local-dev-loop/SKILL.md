@@ -1,12 +1,11 @@
 ---
 name: serpapi-local-dev-loop
 description: |
-  Configure SerpApi local development with hot reload and testing.
-  Use when setting up a development environment, configuring test workflows,
-  or establishing a fast iteration cycle with SerpApi.
-  Trigger with phrases like "serpapi dev setup", "serpapi local development",
-  "serpapi dev environment", "develop with serpapi".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
+  Configure SerpApi local development with cached responses and test fixtures.
+  Use when building search integrations, avoiding API calls during development,
+  or setting up reproducible test data from SerpApi.
+  Trigger: "serpapi dev setup", "serpapi local", "test serpapi locally".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,103 +16,106 @@ compatible-with: claude-code
 # SerpApi Local Dev Loop
 
 ## Overview
-Set up a fast, reproducible local development workflow for SerpApi.
 
-## Prerequisites
-- Completed `serpapi-install-auth` setup
-- Node.js 18+ with npm/pnpm
-- Code editor with TypeScript support
-- Git for version control
+Set up local development for SerpApi with response caching, fixture recording, and offline testing. SerpApi charges per search, so caching results locally is critical for cost-effective development.
 
 ## Instructions
 
-### Step 1: Create Project Structure
-```
-my-serpapi-project/
-├── src/
-│   ├── serpapi/
-│   │   ├── client.ts       # SerpApi client wrapper
-│   │   ├── config.ts       # Configuration management
-│   │   └── utils.ts        # Helper functions
-│   └── index.ts
-├── tests/
-│   └── serpapi.test.ts
-├── .env.local              # Local secrets (git-ignored)
-├── .env.example            # Template for team
-└── package.json
-```
+### Step 1: Record Real Responses as Fixtures
 
-### Step 2: Configure Environment
-```bash
-# Copy environment template
-cp .env.example .env.local
+```python
+import serpapi, json, os, hashlib
 
-# Install dependencies
-npm install
+def record_fixture(params: dict, fixtures_dir="tests/fixtures"):
+    """Run a real search and save the response as a fixture file."""
+    os.makedirs(fixtures_dir, exist_ok=True)
+    client = serpapi.Client(api_key=os.environ["SERPAPI_API_KEY"])
+    result = client.search(**params)
 
-# Start development server
-npm run dev
+    # Deterministic filename from params
+    key = hashlib.md5(json.dumps(params, sort_keys=True).encode()).hexdigest()[:12]
+    path = os.path.join(fixtures_dir, f"{params['engine']}_{key}.json")
+
+    with open(path, "w") as f:
+        json.dump(dict(result), f, indent=2)
+    print(f"Recorded: {path}")
+
+# Record fixtures for common queries
+record_fixture({"engine": "google", "q": "python tutorial", "num": 5})
+record_fixture({"engine": "youtube", "search_query": "react hooks"})
+record_fixture({"engine": "bing", "q": "machine learning"})
 ```
 
-### Step 3: Setup Hot Reload
-```json
-{
-  "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "test": "vitest",
-    "test:watch": "vitest --watch"
-  }
-}
+### Step 2: Mock Client for Testing
+
+```python
+import json, os
+
+class MockSerpApiClient:
+    def __init__(self, fixtures_dir="tests/fixtures"):
+        self.fixtures_dir = fixtures_dir
+
+    def search(self, **params):
+        key = hashlib.md5(json.dumps(params, sort_keys=True).encode()).hexdigest()[:12]
+        path = os.path.join(self.fixtures_dir, f"{params['engine']}_{key}.json")
+        if os.path.exists(path):
+            with open(path) as f:
+                return json.load(f)
+        raise FileNotFoundError(f"No fixture for {params}. Run record_fixture() first.")
 ```
 
-### Step 4: Configure Testing
+### Step 3: Vitest Mocking (Node.js)
+
 ```typescript
+// tests/serpapi.test.ts
 import { describe, it, expect, vi } from 'vitest';
-import { SerpApiClient } from '../src/serpapi/client';
+import { readFileSync } from 'fs';
 
-describe('SerpApi Client', () => {
-  it('should initialize with API key', () => {
-    const client = new SerpApiClient({ apiKey: 'test-key' });
-    expect(client).toBeDefined();
+vi.mock('serpapi', () => ({
+  getJson: vi.fn(async (params) => {
+    const fixture = JSON.parse(
+      readFileSync(`tests/fixtures/google_sample.json`, 'utf-8')
+    );
+    return fixture;
+  }),
+}));
+
+describe('Search Service', () => {
+  it('parses organic results', async () => {
+    const { getJson } = await import('serpapi');
+    const result = await getJson({ engine: 'google', q: 'test' });
+    expect(result.organic_results).toBeDefined();
+    expect(result.organic_results[0]).toHaveProperty('title');
+    expect(result.organic_results[0]).toHaveProperty('link');
   });
 });
 ```
 
-## Output
-- Working development environment with hot reload
-- Configured test suite with mocking
-- Environment variable management
-- Fast iteration cycle for SerpApi development
+### Step 4: Environment Separation
+
+```bash
+# .env.development (uses real API, low num for cost)
+SERPAPI_API_KEY=real-key-here
+SERPAPI_DEFAULT_NUM=3
+
+# .env.test (uses fixtures, no API calls)
+SERPAPI_API_KEY=not-needed
+SERPAPI_USE_FIXTURES=true
+```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Module not found | Missing dependency | Run `npm install` |
-| Port in use | Another process | Kill process or change port |
-| Env not loaded | Missing .env.local | Copy from .env.example |
-| Test timeout | Slow network | Increase test timeout |
-
-## Examples
-
-### Mock SerpApi Responses
-```typescript
-vi.mock('@serpapi/sdk', () => ({
-  SerpApiClient: vi.fn().mockImplementation(() => ({
-    // Mock methods here
-  })),
-}));
-```
-
-### Debug Mode
-```bash
-# Enable verbose logging
-DEBUG=SERPAPI=* npm run dev
-```
+| `FileNotFoundError` fixture | Missing fixture | Run `record_fixture()` with real API key |
+| Stale fixtures | Search results changed | Re-record periodically |
+| `Invalid API key` in dev | Env not loaded | Check `.env.development` loading |
 
 ## Resources
-- [SerpApi SDK Reference](https://docs.serpapi.com/sdk)
-- [Vitest Documentation](https://vitest.dev/)
-- [tsx Documentation](https://github.com/esbuild-kit/tsx)
+
+- [SerpApi Playground](https://serpapi.com/playground)
+- [Vitest Mocking](https://vitest.dev/guide/mocking.html)
 
 ## Next Steps
-See `serpapi-sdk-patterns` for production-ready code patterns.
+
+Proceed to `serpapi-sdk-patterns` for production patterns.

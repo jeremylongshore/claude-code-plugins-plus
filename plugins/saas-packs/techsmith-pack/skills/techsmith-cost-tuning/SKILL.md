@@ -1,203 +1,62 @@
 ---
 name: techsmith-cost-tuning
 description: |
-  Optimize TechSmith costs through tier selection, sampling, and usage monitoring.
-  Use when analyzing TechSmith billing, reducing API costs,
-  or implementing usage monitoring and budget alerts.
-  Trigger with phrases like "techsmith cost", "techsmith billing",
-  "reduce techsmith costs", "techsmith pricing", "techsmith expensive", "techsmith budget".
-allowed-tools: Read, Grep
+  TechSmith cost tuning for Snagit COM API and Camtasia automation.
+  Use when working with TechSmith screen capture and video editing automation.
+  Trigger: "techsmith cost tuning".
+allowed-tools: Read, Write, Edit, Bash(powershell:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, screen-recording, documentation, techsmith]
+tags: [saas, screen-capture, video, techsmith]
 compatible-with: claude-code
 ---
 
 # TechSmith Cost Tuning
 
 ## Overview
-Optimize TechSmith costs through smart tier selection, sampling, and usage monitoring.
 
-## Prerequisites
-- Access to TechSmith billing dashboard
-- Understanding of current usage patterns
-- Database for usage tracking (optional)
-- Alerting system configured (optional)
-
-## Pricing Tiers
-
-| Tier | Monthly Cost | Included | Overage |
-|------|-------------|----------|---------|
-| Free | $0 | 1,000 requests | N/A |
-| Pro | $99 | 100,000 requests | $0.001/request |
-| Enterprise | Custom | Unlimited | Volume discounts |
-
-## Cost Estimation
-
-```typescript
-interface UsageEstimate {
-  requestsPerMonth: number;
-  tier: string;
-  estimatedCost: number;
-  recommendation?: string;
-}
-
-function estimateTechSmithCost(requestsPerMonth: number): UsageEstimate {
-  if (requestsPerMonth <= 1000) {
-    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
-  }
-
-  if (requestsPerMonth <= 100000) {
-    return { requestsPerMonth, tier: 'Pro', estimatedCost: 99 };
-  }
-
-  const proOverage = (requestsPerMonth - 100000) * 0.001;
-  const proCost = 99 + proOverage;
-
-  return {
-    requestsPerMonth,
-    tier: 'Pro (with overage)',
-    estimatedCost: proCost,
-    recommendation: proCost > 500
-      ? 'Consider Enterprise tier for volume discounts'
-      : undefined,
-  };
-}
-```
-
-## Usage Monitoring
-
-```typescript
-class TechSmithUsageMonitor {
-  private requestCount = 0;
-  private bytesTransferred = 0;
-  private alertThreshold: number;
-
-  constructor(monthlyBudget: number) {
-    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
-  }
-
-  track(request: { bytes: number }) {
-    this.requestCount++;
-    this.bytesTransferred += request.bytes;
-
-    if (this.estimatedCost() > this.alertThreshold) {
-      this.sendAlert('Approaching TechSmith budget limit');
-    }
-  }
-
-  estimatedCost(): number {
-    return estimateTechSmithCost(this.requestCount).estimatedCost;
-  }
-
-  private sendAlert(message: string) {
-    // Send to Slack, email, PagerDuty, etc.
-  }
-}
-```
-
-## Cost Reduction Strategies
-
-### Step 1: Request Sampling
-```typescript
-function shouldSample(samplingRate = 0.1): boolean {
-  return Math.random() < samplingRate;
-}
-
-// Use for non-critical telemetry
-if (shouldSample(0.1)) { // 10% sample
-  await techsmithClient.trackEvent(event);
-}
-```
-
-### Step 2: Batching Requests
-```typescript
-// Instead of N individual calls
-await Promise.all(ids.map(id => techsmithClient.get(id)));
-
-// Use batch endpoint (1 call)
-await techsmithClient.batchGet(ids);
-```
-
-### Step 3: Caching (from P16)
-- Cache frequently accessed data
-- Use cache invalidation webhooks
-- Set appropriate TTLs
-
-### Step 4: Compression
-```typescript
-const client = new TechSmithClient({
-  compression: true, // Enable gzip
-});
-```
-
-## Budget Alerts
-
-```bash
-# Set up billing alerts in TechSmith dashboard
-# Or use API if available:
-# Check TechSmith documentation for billing APIs
-```
-
-## Cost Dashboard Query
-
-```sql
--- If tracking usage in your database
-SELECT
-  DATE_TRUNC('day', created_at) as date,
-  COUNT(*) as requests,
-  SUM(response_bytes) as bytes,
-  COUNT(*) * 0.001 as estimated_cost
-FROM techsmith_api_logs
-WHERE created_at >= NOW() - INTERVAL '30 days'
-GROUP BY 1
-ORDER BY 1;
-```
+Guidance for cost tuning with TechSmith Snagit COM API and Camtasia automation.
 
 ## Instructions
 
-### Step 1: Analyze Current Usage
-Review TechSmith dashboard for usage patterns and costs.
+### Key Considerations
 
-### Step 2: Select Optimal Tier
-Use the cost estimation function to find the right tier.
+- Snagit COM API is Windows-only (requires COM registration)
+- Camtasia Producer CLI for batch rendering
+- PowerShell is the primary scripting language
+- Python interop via `pywin32` (`pip install pywin32`)
 
-### Step 3: Implement Monitoring
-Add usage tracking to catch budget overruns early.
+### Snagit COM Input Types
 
-### Step 4: Apply Optimizations
-Enable batching, caching, and sampling where appropriate.
+| Value | Constant | Description |
+|-------|----------|-------------|
+| 0 | siiDesktop | Full desktop |
+| 2 | siiRegion | User-selected region |
+| 4 | siiWindow | Active window |
+| 5 | siiFile | From file |
 
-## Output
-- Optimized tier selection
-- Usage monitoring implemented
-- Budget alerts configured
-- Cost reduction strategies applied
+### Snagit COM Output Types
+
+| Value | Constant | Description |
+|-------|----------|-------------|
+| 1 | sioClipboard | Copy to clipboard |
+| 2 | sioFile | Save to file |
+| 4 | sioPrinter | Send to printer |
 
 ## Error Handling
-| Issue | Cause | Solution |
+
+| Error | Cause | Solution |
 |-------|-------|----------|
-| Unexpected charges | Untracked usage | Implement monitoring |
-| Overage fees | Wrong tier | Upgrade tier |
-| Budget exceeded | No alerts | Set up alerts |
-| Inefficient usage | No batching | Enable batch requests |
-
-## Examples
-
-### Quick Cost Check
-```typescript
-// Estimate monthly cost for your usage
-const estimate = estimateTechSmithCost(yourMonthlyRequests);
-console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
-if (estimate.recommendation) {
-  console.log(`💡 ${estimate.recommendation}`);
-}
-```
+| COM not registered | Snagit not installed | Install and register COM server |
+| Permission denied | Not running as admin | Elevate PowerShell |
+| File locked | Snagit Editor has file open | Close editor first |
 
 ## Resources
-- [TechSmith Pricing](https://techsmith.com/pricing)
-- [TechSmith Billing Dashboard](https://dashboard.techsmith.com/billing)
+
+- [Snagit COM Samples](https://github.com/TechSmith/Snagit-COM-Samples)
+- [TechSmith Support](https://support.techsmith.com/)
 
 ## Next Steps
-For architecture patterns, see `techsmith-reference-architecture`.
+
+See related TechSmith skills for more automation patterns.

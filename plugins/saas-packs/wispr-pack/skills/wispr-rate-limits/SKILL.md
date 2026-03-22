@@ -1,151 +1,49 @@
 ---
 name: wispr-rate-limits
 description: |
-  Implement Wispr rate limiting, backoff, and idempotency patterns.
-  Use when handling rate limit errors, implementing retry logic,
-  or optimizing API request throughput for Wispr.
-  Trigger with phrases like "wispr rate limit", "wispr throttling",
-  "wispr 429", "wispr retry", "wispr backoff".
-allowed-tools: Read, Write, Edit
+  Wispr Flow rate limits for voice-to-text API integration.
+  Use when integrating Wispr Flow dictation, WebSocket streaming,
+  or building voice-powered applications.
+  Trigger: "wispr rate limits".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, voice, productivity, wispr]
+tags: [saas, voice, dictation, wispr]
 compatible-with: claude-code
 ---
 
-# Wispr Rate Limits
+# Wispr Flow Rate Limits
 
 ## Overview
-Handle Wispr rate limits gracefully with exponential backoff and idempotency.
 
-## Prerequisites
-- Wispr SDK installed
-- Understanding of async/await patterns
-- Access to rate limit headers
+Guidance for rate limits with Wispr Flow voice-to-text API.
 
 ## Instructions
 
-### Step 1: Understand Rate Limit Tiers
+### Key Wispr Flow Concepts
 
-| Tier | Requests/min | Requests/day | Burst |
-|------|-------------|--------------|-------|
-| Free | 60 | 1,000 | 10 |
-| Pro | 300 | 10,000 | 50 |
-| Enterprise | 1,000 | 100,000 | 200 |
-
-### Step 2: Implement Exponential Backoff with Jitter
-
-```typescript
-async function withExponentialBackoff<T>(
-  operation: () => Promise<T>,
-  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 32000, jitterMs: 500 }
-): Promise<T> {
-  for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
-    try {
-      return await operation();
-    } catch (error: any) {
-      if (attempt === config.maxRetries) throw error;
-      const status = error.status || error.response?.status;
-      if (status !== 429 && (status < 500 || status >= 600)) throw error;
-
-      // Exponential delay with jitter to prevent thundering herd
-      const exponentialDelay = config.baseDelayMs * Math.pow(2, attempt);
-      const jitter = Math.random() * config.jitterMs;
-      const delay = Math.min(exponentialDelay + jitter, config.maxDelayMs);
-
-      console.log(`Rate limited. Retrying in ${delay.toFixed(0)}ms...`);
-      await new Promise(r => setTimeout(r, delay));
-    }
-  }
-  throw new Error('Unreachable');
-}
-```
-
-### Step 3: Add Idempotency Keys
-
-```typescript
-import { v4 as uuidv4 } from 'uuid';
-import crypto from 'crypto';
-
-// Generate deterministic key from operation params (for safe retries)
-function generateIdempotencyKey(operation: string, params: Record<string, any>): string {
-  const data = JSON.stringify({ operation, params });
-  return crypto.createHash('sha256').update(data).digest('hex');
-}
-
-async function idempotentRequest<T>(
-  client: WisprClient,
-  params: Record<string, any>,
-  idempotencyKey?: string  // Pass existing key for retries
-): Promise<T> {
-  // Use provided key (for retries) or generate deterministic key from params
-  const key = idempotencyKey || generateIdempotencyKey(params.method || 'POST', params);
-  return client.request({
-    ...params,
-    headers: { 'Idempotency-Key': key, ...params.headers },
-  });
-}
-```
-
-## Output
-- Reliable API calls with automatic retry
-- Idempotent requests preventing duplicates
-- Rate limit headers properly handled
+- **WebSocket API**: `wss://api.wisprflow.ai/api/v1/ws` (recommended, low latency)
+- **REST API**: `POST /api/v1/transcribe` (simpler, higher latency)
+- **Auth**: API key (backend) or access token (client-side)
+- **Audio format**: 16kHz mono PCM preferred
+- **Context awareness**: Understands code, CLI commands, dev jargon
+- **Platforms**: Mac, Windows, iOS, browser API
 
 ## Error Handling
-| Header | Description | Action |
-|--------|-------------|--------|
-| X-RateLimit-Limit | Max requests | Monitor usage |
-| X-RateLimit-Remaining | Remaining requests | Throttle if low |
-| X-RateLimit-Reset | Reset timestamp | Wait until reset |
-| Retry-After | Seconds to wait | Honor this value |
 
-## Examples
-
-### Queue-Based Rate Limiting
-```typescript
-import PQueue from 'p-queue';
-
-const queue = new PQueue({
-  concurrency: 5,
-  interval: 1000,
-  intervalCap: 10,
-});
-
-async function queuedRequest<T>(operation: () => Promise<T>): Promise<T> {
-  return queue.add(operation);
-}
-```
-
-### Monitor Rate Limit Usage
-```typescript
-class RateLimitMonitor {
-  private remaining: number = 60;
-  private resetAt: Date = new Date();
-
-  updateFromHeaders(headers: Headers) {
-    this.remaining = parseInt(headers.get('X-RateLimit-Remaining') || '60');
-    const resetTimestamp = headers.get('X-RateLimit-Reset');
-    if (resetTimestamp) {
-      this.resetAt = new Date(parseInt(resetTimestamp) * 1000);
-    }
-  }
-
-  shouldThrottle(): boolean {
-    // Only throttle if low remaining AND reset hasn't happened yet
-    return this.remaining < 5 && new Date() < this.resetAt;
-  }
-
-  getWaitTime(): number {
-    return Math.max(0, this.resetAt.getTime() - Date.now());
-  }
-}
-```
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `401 Unauthorized` | Invalid key | Check at wisprflow.ai/developers |
+| WebSocket closed | Network issue | Reconnect with backoff |
+| Poor accuracy | Wrong context | Set context to 'programming' for code |
 
 ## Resources
-- [Wispr Rate Limits](https://docs.wispr.com/rate-limits)
-- [p-queue Documentation](https://github.com/sindresorhus/p-queue)
+
+- [Wispr Flow Developers](https://wisprflow.ai/developers)
+- [API Docs](https://api-docs.wisprflow.ai/introduction)
+- [WebSocket Quickstart](https://api-docs.wisprflow.ai/websocket_quickstart)
 
 ## Next Steps
-For security configuration, see `wispr-security-basics`.
+
+See related Wispr Flow skills for more patterns.

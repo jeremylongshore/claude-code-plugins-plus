@@ -1,113 +1,49 @@
 ---
 name: wispr-common-errors
 description: |
-  Diagnose and fix Wispr common errors and exceptions.
-  Use when encountering Wispr errors, debugging failed requests,
-  or troubleshooting integration issues.
-  Trigger with phrases like "wispr error", "fix wispr",
-  "wispr not working", "debug wispr".
-allowed-tools: Read, Grep, Bash(curl:*)
+  Wispr Flow common errors for voice-to-text API integration.
+  Use when integrating Wispr Flow dictation, WebSocket streaming,
+  or building voice-powered applications.
+  Trigger: "wispr common errors".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, voice, productivity, wispr]
+tags: [saas, voice, dictation, wispr]
 compatible-with: claude-code
 ---
 
-# Wispr Common Errors
+# Wispr Flow Common Errors
 
 ## Overview
-Quick reference for the top 10 most common Wispr errors and their solutions.
 
-## Prerequisites
-- Wispr SDK installed
-- API credentials configured
-- Access to error logs
+Guidance for common errors with Wispr Flow voice-to-text API.
 
 ## Instructions
 
-### Step 1: Identify the Error
-Check error message and code in your logs or console.
+### Key Wispr Flow Concepts
 
-### Step 2: Find Matching Error Below
-Match your error to one of the documented cases.
-
-### Step 3: Apply Solution
-Follow the solution steps for your specific error.
-
-## Output
-- Identified error cause
-- Applied fix
-- Verified resolution
+- **WebSocket API**: `wss://api.wisprflow.ai/api/v1/ws` (recommended, low latency)
+- **REST API**: `POST /api/v1/transcribe` (simpler, higher latency)
+- **Auth**: API key (backend) or access token (client-side)
+- **Audio format**: 16kHz mono PCM preferred
+- **Context awareness**: Understands code, CLI commands, dev jargon
+- **Platforms**: Mac, Windows, iOS, browser API
 
 ## Error Handling
 
-### Authentication Failed
-**Error Message:**
-```
-Authentication error: Invalid API key
-```
-
-**Cause:** API key is missing, expired, or invalid.
-
-**Solution:**
-```bash
-# Verify API key is set
-echo $WISPR_API_KEY
-```
-
----
-
-### Rate Limit Exceeded
-**Error Message:**
-```
-Rate limit exceeded. Please retry after X seconds.
-```
-
-**Cause:** Too many requests in a short period.
-
-**Solution:**
-Implement exponential backoff. See `wispr-rate-limits` skill.
-
----
-
-### Network Timeout
-**Error Message:**
-```
-Request timeout after 30000ms
-```
-
-**Cause:** Network connectivity or server latency issues.
-
-**Solution:**
-```typescript
-// Increase timeout
-const client = new Client({ timeout: 60000 });
-```
-
-## Examples
-
-### Quick Diagnostic Commands
-```bash
-# Check Wispr status
-curl -s https://status.wispr.com
-
-# Verify API connectivity
-curl -I https://api.wispr.com
-
-# Check local configuration
-env | grep WISPR
-```
-
-### Escalation Path
-1. Collect evidence with `wispr-debug-bundle`
-2. Check Wispr status page
-3. Contact support with request ID
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `401 Unauthorized` | Invalid key | Check at wisprflow.ai/developers |
+| WebSocket closed | Network issue | Reconnect with backoff |
+| Poor accuracy | Wrong context | Set context to 'programming' for code |
 
 ## Resources
-- [Wispr Status Page](https://status.wispr.com)
-- [Wispr Support](https://docs.wispr.com/support)
-- [Wispr Error Codes](https://docs.wispr.com/errors)
+
+- [Wispr Flow Developers](https://wisprflow.ai/developers)
+- [API Docs](https://api-docs.wisprflow.ai/introduction)
+- [WebSocket Quickstart](https://api-docs.wisprflow.ai/websocket_quickstart)
 
 ## Next Steps
-For comprehensive debugging, see `wispr-debug-bundle`.
+
+See related Wispr Flow skills for more patterns.

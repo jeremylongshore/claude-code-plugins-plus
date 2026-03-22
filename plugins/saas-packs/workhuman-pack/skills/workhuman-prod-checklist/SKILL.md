@@ -1,12 +1,11 @@
 ---
 name: workhuman-prod-checklist
 description: |
-  Execute Workhuman production deployment checklist and rollback procedures.
-  Use when deploying Workhuman integrations to production, preparing for launch,
-  or implementing go-live procedures.
-  Trigger with phrases like "workhuman production", "deploy workhuman",
-  "workhuman go-live", "workhuman launch checklist".
-allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
+  Workhuman prod checklist for employee recognition and rewards API.
+  Use when integrating Workhuman Social Recognition,
+  or building recognition workflows with HRIS systems.
+  Trigger: "workhuman prod checklist".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -14,108 +13,48 @@ tags: [saas, hr, recognition, workhuman]
 compatible-with: claude-code
 ---
 
-# Workhuman Production Checklist
+# Workhuman Prod Checklist
 
 ## Overview
-Complete checklist for deploying Workhuman integrations to production.
 
-## Prerequisites
-- Staging environment tested and verified
-- Production API keys available
-- Deployment pipeline configured
-- Monitoring and alerting ready
+Guidance for prod checklist with Workhuman Social Recognition and rewards API.
 
 ## Instructions
 
-### Step 1: Pre-Deployment Configuration
-- [ ] Production API keys in secure vault
-- [ ] Environment variables set in deployment platform
-- [ ] API key scopes are minimal (least privilege)
-- [ ] Webhook endpoints configured with HTTPS
-- [ ] Webhook secrets stored securely
+### Key Workhuman API Concepts
 
-### Step 2: Code Quality Verification
-- [ ] All tests passing (`npm test`)
-- [ ] No hardcoded credentials
-- [ ] Error handling covers all Workhuman error types
-- [ ] Rate limiting/backoff implemented
-- [ ] Logging is production-appropriate
+- **Auth**: OAuth 2.0 client credentials flow
+- **Recognition**: Peer-to-peer and manager nominations with points
+- **Awards**: Configurable levels (bronze, silver, gold, platinum)
+- **Values**: Company values attached to recognitions
+- **HRIS Sync**: Bidirectional sync with Workday, SAP SuccessFactors
+- **Integrations**: Microsoft Teams, Slack, Outlook native plugins
 
-### Step 3: Infrastructure Setup
-- [ ] Health check endpoint includes Workhuman connectivity
-- [ ] Monitoring/alerting configured
-- [ ] Circuit breaker pattern implemented
-- [ ] Graceful degradation configured
+### Core API Endpoints
 
-### Step 4: Documentation Requirements
-- [ ] Incident runbook created
-- [ ] Key rotation procedure documented
-- [ ] Rollback procedure documented
-- [ ] On-call escalation path defined
-
-### Step 5: Deploy with Gradual Rollout
-```bash
-# Pre-flight checks
-curl -f https://staging.example.com/health
-curl -s https://status.workhuman.com
-
-# Gradual rollout - start with canary (10%)
-kubectl apply -f k8s/production.yaml
-kubectl set image deployment/workhuman-integration app=image:new --record
-kubectl rollout pause deployment/workhuman-integration
-
-# Monitor canary traffic for 10 minutes
-sleep 600
-# Check error rates and latency before continuing
-
-# If healthy, continue rollout to 50%
-kubectl rollout resume deployment/workhuman-integration
-kubectl rollout pause deployment/workhuman-integration
-sleep 300
-
-# Complete rollout to 100%
-kubectl rollout resume deployment/workhuman-integration
-kubectl rollout status deployment/workhuman-integration
-```
-
-## Output
-- Deployed Workhuman integration
-- Health checks passing
-- Monitoring active
-- Rollback procedure documented
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/v1/recognitions` | GET | List recognitions |
+| `/api/v1/recognitions` | POST | Create nomination |
+| `/api/v1/recognitions/:id` | GET | Get recognition status |
+| `/api/v1/users` | GET | List employees |
+| `/api/v1/rewards/catalog` | GET | Browse reward catalog |
+| `/api/v1/rewards/redeem` | POST | Redeem points for reward |
 
 ## Error Handling
-| Alert | Condition | Severity |
-|-------|-----------|----------|
-| API Down | 5xx errors > 10/min | P1 |
-| High Latency | p99 > 5000ms | P2 |
-| Rate Limited | 429 errors > 5/min | P2 |
-| Auth Failures | 401/403 errors > 0 | P1 |
 
-## Examples
-
-### Health Check Implementation
-```typescript
-async function healthCheck(): Promise<{ status: string; workhuman: any }> {
-  const start = Date.now();
-  try {
-    await workhumanClient.ping();
-    return { status: 'healthy', workhuman: { connected: true, latencyMs: Date.now() - start } };
-  } catch (error) {
-    return { status: 'degraded', workhuman: { connected: false, latencyMs: Date.now() - start } };
-  }
-}
-```
-
-### Immediate Rollback
-```bash
-kubectl rollout undo deployment/workhuman-integration
-kubectl rollout status deployment/workhuman-integration
-```
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `401 Unauthorized` | Token expired | Re-authenticate |
+| `403 Forbidden` | Insufficient permissions | Check role/permissions |
+| `422 Validation` | Missing fields | Check required fields |
+| `404 Not Found` | Invalid ID | Verify resource exists |
 
 ## Resources
-- [Workhuman Status](https://status.workhuman.com)
-- [Workhuman Support](https://docs.workhuman.com/support)
+
+- [Workhuman Platform](https://www.workhuman.com/)
+- [Workhuman Integrations](https://www.workhuman.com/capabilities/integrations/)
 
 ## Next Steps
-For version upgrades, see `workhuman-upgrade-migration`.
+
+See related Workhuman skills for more patterns.

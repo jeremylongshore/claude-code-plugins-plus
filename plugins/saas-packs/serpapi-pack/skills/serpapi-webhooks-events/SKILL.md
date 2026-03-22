@@ -1,11 +1,10 @@
 ---
 name: serpapi-webhooks-events
 description: |
-  Implement SerpApi webhook signature validation and event handling.
-  Use when setting up webhook endpoints, implementing signature verification,
-  or handling SerpApi event notifications securely.
-  Trigger with phrases like "serpapi webhook", "serpapi events",
-  "serpapi webhook signature", "handle serpapi events", "serpapi notifications".
+  Implement SerpApi async search callbacks and scheduled search monitoring.
+  Use when setting up search monitoring, SERP tracking pipelines,
+  or async search result retrieval.
+  Trigger: "serpapi webhooks", "serpapi monitoring", "serpapi scheduled search", "serpapi async".
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
@@ -17,185 +16,120 @@ compatible-with: claude-code
 # SerpApi Webhooks & Events
 
 ## Overview
-Securely handle SerpApi webhooks with signature validation and replay protection.
 
-## Prerequisites
-- SerpApi webhook secret configured
-- HTTPS endpoint accessible from internet
-- Understanding of cryptographic signatures
-- Redis or database for idempotency (optional)
-
-## Webhook Endpoint Setup
-
-### Express.js
-```typescript
-import express from 'express';
-import crypto from 'crypto';
-
-const app = express();
-
-// IMPORTANT: Raw body needed for signature verification
-app.post('/webhooks/serpapi',
-  express.raw({ type: 'application/json' }),
-  async (req, res) => {
-    const signature = req.headers['x-serpapi-signature'] as string;
-    const timestamp = req.headers['x-serpapi-timestamp'] as string;
-
-    if (!verifySerpApiSignature(req.body, signature, timestamp)) {
-      return res.status(401).json({ error: 'Invalid signature' });
-    }
-
-    const event = JSON.parse(req.body.toString());
-    await handleSerpApiEvent(event);
-
-    res.status(200).json({ received: true });
-  }
-);
-```
-
-## Signature Verification
-
-```typescript
-function verifySerpApiSignature(
-  payload: Buffer,
-  signature: string,
-  timestamp: string
-): boolean {
-  const secret = process.env.SERPAPI_WEBHOOK_SECRET!;
-
-  // Reject old timestamps (replay attack protection)
-  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
-  if (timestampAge > 300000) { // 5 minutes
-    console.error('Webhook timestamp too old');
-    return false;
-  }
-
-  // Compute expected signature
-  const signedPayload = `${timestamp}.${payload.toString()}`;
-  const expectedSignature = crypto
-    .createHmac('sha256', secret)
-    .update(signedPayload)
-    .digest('hex');
-
-  // Timing-safe comparison
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
-  );
-}
-```
-
-## Event Handler Pattern
-
-```typescript
-type SerpApiEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
-
-interface SerpApiEvent {
-  id: string;
-  type: SerpApiEventType;
-  data: Record<string, any>;
-  created: string;
-}
-
-const eventHandlers: Record<SerpApiEventType, (data: any) => Promise<void>> = {
-  'resource.created': async (data) => { /* handle */ },
-  'resource.updated': async (data) => { /* handle */ },
-  'resource.deleted': async (data) => { /* handle */ }
-};
-
-async function handleSerpApiEvent(event: SerpApiEvent): Promise<void> {
-  const handler = eventHandlers[event.type];
-
-  if (!handler) {
-    console.log(`Unhandled event type: ${event.type}`);
-    return;
-  }
-
-  try {
-    await handler(event.data);
-    console.log(`Processed ${event.type}: ${event.id}`);
-  } catch (error) {
-    console.error(`Failed to process ${event.type}: ${event.id}`, error);
-    throw error; // Rethrow to trigger retry
-  }
-}
-```
-
-## Idempotency Handling
-
-```typescript
-import { Redis } from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function isEventProcessed(eventId: string): Promise<boolean> {
-  const key = `serpapi:event:${eventId}`;
-  const exists = await redis.exists(key);
-  return exists === 1;
-}
-
-async function markEventProcessed(eventId: string): Promise<void> {
-  const key = `serpapi:event:${eventId}`;
-  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
-}
-```
-
-## Webhook Testing
-
-```bash
-# Use SerpApi CLI to send test events
-serpapi webhooks trigger resource.created --url http://localhost:3000/webhooks/serpapi
-
-# Or use webhook.site for debugging
-curl -X POST https://webhook.site/your-uuid \
-  -H "Content-Type: application/json" \
-  -d '{"type": "resource.created", "data": {}}'
-```
+SerpApi does not have traditional webhooks, but supports async searches and the Searches Archive API. Build SERP monitoring by combining scheduled searches with change detection. Common use case: track keyword rankings over time.
 
 ## Instructions
 
-### Step 1: Register Webhook Endpoint
-Configure your webhook URL in the SerpApi dashboard.
+### Step 1: Async Search with Polling
 
-### Step 2: Implement Signature Verification
-Use the signature verification code to validate incoming webhooks.
+```python
+import serpapi, os, time
 
-### Step 3: Handle Events
-Implement handlers for each event type your application needs.
+client = serpapi.Client(api_key=os.environ["SERPAPI_API_KEY"])
 
-### Step 4: Add Idempotency
-Prevent duplicate processing with event ID tracking.
+# Submit async search (returns immediately)
+result = client.search(engine="google", q="your keyword", async_search=True)
+search_id = result["search_metadata"]["id"]
+print(f"Submitted: {search_id}")
 
-## Output
-- Secure webhook endpoint
-- Signature validation enabled
-- Event handlers implemented
-- Replay attack protection active
+# Poll for completion
+while True:
+    archived = client.search(engine="google", search_id=search_id)
+    status = archived["search_metadata"]["status"]
+    if status == "Success":
+        break
+    elif status == "Error":
+        raise Exception(f"Search failed: {archived.get('error')}")
+    time.sleep(2)
 
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Invalid signature | Wrong secret | Verify webhook secret |
-| Timestamp rejected | Clock drift | Check server time sync |
-| Duplicate events | Missing idempotency | Implement event ID tracking |
-| Handler timeout | Slow processing | Use async queue |
-
-## Examples
-
-### Testing Webhooks Locally
-```bash
-# Use ngrok to expose local server
-ngrok http 3000
-
-# Send test webhook
-curl -X POST https://your-ngrok-url/webhooks/serpapi \
-  -H "Content-Type: application/json" \
-  -d '{"type": "test", "data": {}}'
+print(f"Results: {len(archived.get('organic_results', []))}")
 ```
 
+### Step 2: SERP Monitoring Pipeline
+
+```python
+import json, hashlib
+from datetime import datetime
+
+class SerpMonitor:
+    def __init__(self, client, db):
+        self.client = client
+        self.db = db
+
+    def track_keyword(self, keyword: str, domain: str):
+        """Track a domain's ranking position for a keyword."""
+        result = self.client.search(engine="google", q=keyword, num=100)
+        organic = result.get("organic_results", [])
+
+        position = None
+        for r in organic:
+            if domain in r.get("link", ""):
+                position = r["position"]
+                break
+
+        self.db.insert({
+            "keyword": keyword,
+            "domain": domain,
+            "position": position,  # None if not in top 100
+            "total_results": result.get("search_information", {}).get("total_results"),
+            "checked_at": datetime.utcnow().isoformat(),
+            "search_id": result["search_metadata"]["id"],
+        })
+
+        return position
+
+    def detect_changes(self, keyword: str, domain: str):
+        """Compare current vs previous ranking."""
+        current = self.track_keyword(keyword, domain)
+        previous = self.db.get_previous_position(keyword, domain)
+
+        if previous and current:
+            change = previous - current  # Positive = improved
+            if abs(change) >= 3:
+                self.notify(f"Ranking change for '{keyword}': {previous} -> {current} ({'+' if change > 0 else ''}{change})")
+```
+
+### Step 3: Scheduled Monitoring (Cron)
+
+```typescript
+// Run daily keyword tracking
+import cron from 'node-cron';
+import { getJson } from 'serpapi';
+
+const keywords = ['react framework', 'next.js tutorial', 'typescript guide'];
+const targetDomain = 'yoursite.com';
+
+cron.schedule('0 8 * * *', async () => { // Daily at 8 AM
+  for (const keyword of keywords) {
+    const result = await getJson({
+      engine: 'google', q: keyword, num: 100,
+      api_key: process.env.SERPAPI_API_KEY,
+    });
+
+    const position = result.organic_results?.findIndex(
+      (r: any) => r.link?.includes(targetDomain)
+    );
+
+    console.log(`${keyword}: Position ${position >= 0 ? position + 1 : 'Not found'}`);
+    // Save to database, send alerts on changes
+  }
+});
+```
+
+## Error Handling
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Async search never completes | Server issue | Timeout after 60s, retry |
+| Position tracking uses many credits | 100 results per search | Run daily not hourly |
+| Ranking fluctuates | Normal SERP volatility | Track 7-day moving average |
+
 ## Resources
-- [SerpApi Webhooks Guide](https://docs.serpapi.com/webhooks)
-- [Webhook Security Best Practices](https://docs.serpapi.com/webhooks/security)
+
+- [Async Search](https://serpapi.com/search-api#api-parameters-serpapi-parameters-async)
+- [Searches Archive](https://serpapi.com/search-archive-api)
 
 ## Next Steps
+
 For performance optimization, see `serpapi-performance-tuning`.

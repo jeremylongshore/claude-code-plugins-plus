@@ -1,121 +1,48 @@
 ---
 name: together-prod-checklist
 description: |
-  Execute Together AI production deployment checklist and rollback procedures.
-  Use when deploying Together AI integrations to production, preparing for launch,
-  or implementing go-live procedures.
-  Trigger with phrases like "together production", "deploy together",
-  "together go-live", "together launch checklist".
-allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
+  Together AI prod checklist for inference, fine-tuning, and model deployment.
+  Use when working with Together AI's OpenAI-compatible API.
+  Trigger: "together prod checklist".
+allowed-tools: Read, Write, Edit, Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, llm, together]
+tags: [saas, ai, inference, together]
 compatible-with: claude-code
 ---
 
-# Together AI Production Checklist
+# Together AI Prod Checklist
 
 ## Overview
-Complete checklist for deploying Together AI integrations to production.
 
-## Prerequisites
-- Staging environment tested and verified
-- Production API keys available
-- Deployment pipeline configured
-- Monitoring and alerting ready
+Guidance for prod checklist with Together AI inference and fine-tuning API.
 
 ## Instructions
 
-### Step 1: Pre-Deployment Configuration
-- [ ] Production API keys in secure vault
-- [ ] Environment variables set in deployment platform
-- [ ] API key scopes are minimal (least privilege)
-- [ ] Webhook endpoints configured with HTTPS
-- [ ] Webhook secrets stored securely
+### Key Points
 
-### Step 2: Code Quality Verification
-- [ ] All tests passing (`npm test`)
-- [ ] No hardcoded credentials
-- [ ] Error handling covers all Together AI error types
-- [ ] Rate limiting/backoff implemented
-- [ ] Logging is production-appropriate
-
-### Step 3: Infrastructure Setup
-- [ ] Health check endpoint includes Together AI connectivity
-- [ ] Monitoring/alerting configured
-- [ ] Circuit breaker pattern implemented
-- [ ] Graceful degradation configured
-
-### Step 4: Documentation Requirements
-- [ ] Incident runbook created
-- [ ] Key rotation procedure documented
-- [ ] Rollback procedure documented
-- [ ] On-call escalation path defined
-
-### Step 5: Deploy with Gradual Rollout
-```bash
-# Pre-flight checks
-curl -f https://staging.example.com/health
-curl -s https://status.together.com
-
-# Gradual rollout - start with canary (10%)
-kubectl apply -f k8s/production.yaml
-kubectl set image deployment/together-integration app=image:new --record
-kubectl rollout pause deployment/together-integration
-
-# Monitor canary traffic for 10 minutes
-sleep 600
-# Check error rates and latency before continuing
-
-# If healthy, continue rollout to 50%
-kubectl rollout resume deployment/together-integration
-kubectl rollout pause deployment/together-integration
-sleep 300
-
-# Complete rollout to 100%
-kubectl rollout resume deployment/together-integration
-kubectl rollout status deployment/together-integration
-```
-
-## Output
-- Deployed Together AI integration
-- Health checks passing
-- Monitoring active
-- Rollback procedure documented
+- Together AI is OpenAI-compatible: `base_url = 'https://api.together.xyz/v1'`
+- Use the `together` Python SDK or any OpenAI client library
+- Supports 100+ open-source models (Llama, Mixtral, Qwen, FLUX)
+- Fine-tuning available for supported models
+- Batch inference at 50% cost reduction
 
 ## Error Handling
-| Alert | Condition | Severity |
-|-------|-----------|----------|
-| API Down | 5xx errors > 10/min | P1 |
-| High Latency | p99 > 5000ms | P2 |
-| Rate Limited | 429 errors > 5/min | P2 |
-| Auth Failures | 401/403 errors > 0 | P1 |
 
-## Examples
-
-### Health Check Implementation
-```typescript
-async function healthCheck(): Promise<{ status: string; together: any }> {
-  const start = Date.now();
-  try {
-    await togetherClient.ping();
-    return { status: 'healthy', together: { connected: true, latencyMs: Date.now() - start } };
-  } catch (error) {
-    return { status: 'degraded', together: { connected: false, latencyMs: Date.now() - start } };
-  }
-}
-```
-
-### Immediate Rollback
-```bash
-kubectl rollout undo deployment/together-integration
-kubectl rollout status deployment/together-integration
-```
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `401 Unauthorized` | Invalid API key | Check at api.together.xyz |
+| `Model not found` | Wrong model ID | Use `client.models.list()` |
+| `429 Rate limit` | Too many requests | Implement backoff |
+| `500 Server error` | Model overloaded | Retry with backoff |
 
 ## Resources
-- [Together AI Status](https://status.together.com)
-- [Together AI Support](https://docs.together.com/support)
+
+- [Together AI Docs](https://docs.together.ai/)
+- [API Reference](https://docs.together.ai/reference/chat-completions-1)
+- [Model List](https://docs.together.ai/docs/inference-models)
 
 ## Next Steps
-For version upgrades, see `together-upgrade-migration`.
+
+See related Together AI skills for more patterns.

@@ -1,211 +1,62 @@
 ---
 name: veeva-deploy-integration
 description: |
-  Deploy Veeva integrations to Vercel, Fly.io, and Cloud Run platforms.
-  Use when deploying Veeva-powered applications to production,
-  configuring platform-specific secrets, or setting up deployment pipelines.
-  Trigger with phrases like "deploy veeva", "veeva Vercel",
-  "veeva production deploy", "veeva Cloud Run", "veeva Fly.io".
-allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
+  Veeva Vault deploy integration for REST API and clinical operations.
+  Use when working with Veeva Vault document management and CRM.
+  Trigger: "veeva deploy integration".
+allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, pharma, crm, veeva]
+tags: [saas, life-sciences, crm, veeva]
 compatible-with: claude-code
 ---
 
-# Veeva Deploy Integration
+# Veeva Vault Deploy Integration
 
 ## Overview
-Deploy Veeva-powered applications to popular platforms with proper secrets management.
 
-## Prerequisites
-- Veeva API keys for production environment
-- Platform CLI installed (vercel, fly, or gcloud)
-- Application code ready for deployment
-- Environment variables documented
-
-## Vercel Deployment
-
-### Environment Setup
-```bash
-# Add Veeva secrets to Vercel
-vercel secrets add veeva_api_key sk_live_***
-vercel secrets add veeva_webhook_secret whsec_***
-
-# Link to project
-vercel link
-
-# Deploy preview
-vercel
-
-# Deploy production
-vercel --prod
-```
-
-### vercel.json Configuration
-```json
-{
-  "env": {
-    "VEEVA_API_KEY": "@veeva_api_key"
-  },
-  "functions": {
-    "api/**/*.ts": {
-      "maxDuration": 30
-    }
-  }
-}
-```
-
-## Fly.io Deployment
-
-### fly.toml
-```toml
-app = "my-veeva-app"
-primary_region = "iad"
-
-[env]
-  NODE_ENV = "production"
-
-[http_service]
-  internal_port = 3000
-  force_https = true
-  auto_stop_machines = true
-  auto_start_machines = true
-```
-
-### Secrets
-```bash
-# Set Veeva secrets
-fly secrets set VEEVA_API_KEY=sk_live_***
-fly secrets set VEEVA_WEBHOOK_SECRET=whsec_***
-
-# Deploy
-fly deploy
-```
-
-## Google Cloud Run
-
-### Dockerfile
-```dockerfile
-FROM node:20-slim
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-CMD ["npm", "start"]
-```
-
-### Deploy Script
-```bash
-#!/bin/bash
-# deploy-cloud-run.sh
-
-PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
-SERVICE_NAME="veeva-service"
-REGION="us-central1"
-
-# Build and push image
-gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
-
-# Deploy to Cloud Run
-gcloud run deploy $SERVICE_NAME \
-  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
-  --region $REGION \
-  --platform managed \
-  --allow-unauthenticated \
-  --set-secrets=VEEVA_API_KEY=veeva-api-key:latest
-```
-
-## Environment Configuration Pattern
-
-```typescript
-// config/veeva.ts
-interface VeevaConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  webhookSecret?: string;
-}
-
-export function getVeevaConfig(): VeevaConfig {
-  const env = process.env.NODE_ENV || 'development';
-
-  return {
-    apiKey: process.env.VEEVA_API_KEY!,
-    environment: env as VeevaConfig['environment'],
-    webhookSecret: process.env.VEEVA_WEBHOOK_SECRET,
-  };
-}
-```
-
-## Health Check Endpoint
-
-```typescript
-// api/health.ts
-export async function GET() {
-  const veevaStatus = await checkVeevaConnection();
-
-  return Response.json({
-    status: veevaStatus ? 'healthy' : 'degraded',
-    services: {
-      veeva: veevaStatus,
-    },
-    timestamp: new Date().toISOString(),
-  });
-}
-```
+Guidance for deploy integration with Veeva Vault REST API, VQL queries, and VAPIL Java SDK.
 
 ## Instructions
 
-### Step 1: Choose Deployment Platform
-Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
+### Key Vault API Concepts
 
-### Step 2: Configure Secrets
-Store Veeva API keys securely using the platform's secrets management.
+- **Authentication**: Session-based (username/password or OAuth 2.0)
+- **Base URL**: `https://{vault}.veevavault.com/api/v24.1/`
+- **VQL**: SQL-like query language for Vault data
+- **VAPIL**: Open-source Java SDK covering all Platform APIs
+- **Lifecycle**: Documents flow through states (Draft > In Review > Approved)
 
-### Step 3: Deploy Application
-Use the platform CLI to deploy your application with Veeva integration.
+### Common VQL Patterns
 
-### Step 4: Verify Health
-Test the health check endpoint to confirm Veeva connectivity.
+```sql
+-- List documents by type
+SELECT id, name__v FROM documents WHERE type__v = 'Trial Document'
 
-## Output
-- Application deployed to production
-- Veeva secrets securely configured
-- Health check endpoint functional
-- Environment-specific configuration in place
+-- Find objects
+SELECT id, name__v FROM site__v WHERE status__v = 'active__v'
 
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via platform CLI |
-| Deploy timeout | Large build | Increase build timeout |
-| Health check fails | Wrong API key | Verify environment variable |
-| Cold start issues | No warm-up | Configure minimum instances |
-
-## Examples
-
-### Quick Deploy Script
-```bash
-#!/bin/bash
-# Platform-agnostic deploy helper
-case "$1" in
-  vercel)
-    vercel secrets add veeva_api_key "$VEEVA_API_KEY"
-    vercel --prod
-    ;;
-  fly)
-    fly secrets set VEEVA_API_KEY="$VEEVA_API_KEY"
-    fly deploy
-    ;;
-esac
+-- Join related objects
+SELECT id, name__v, study__vr.name__v FROM study_country__v
 ```
 
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `INVALID_SESSION_ID` | Session expired | Re-authenticate |
+| `INSUFFICIENT_ACCESS` | Missing permissions | Check security profile |
+| `INVALID_DATA` | Bad VQL or field name | Validate against metadata |
+| `OPERATION_NOT_ALLOWED` | Lifecycle state conflict | Check document state |
+
 ## Resources
-- [Vercel Documentation](https://vercel.com/docs)
-- [Fly.io Documentation](https://fly.io/docs)
-- [Cloud Run Documentation](https://cloud.google.com/run/docs)
-- [Veeva Deploy Guide](https://docs.veeva.com/deploy)
+
+- [Vault API Reference](https://developer.veevavault.com/api/)
+- [VQL Reference](https://developer.veevavault.com/vql/)
+- [VAPIL SDK](https://developer.veevavault.com/sdk/)
+- [Developer Portal](https://developer.veevavault.com/)
 
 ## Next Steps
-For webhook handling, see `veeva-webhooks-events`.
+
+See related Veeva Vault skills for more patterns.

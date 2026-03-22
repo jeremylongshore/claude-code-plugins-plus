@@ -1,11 +1,10 @@
 ---
 name: salesloft-rate-limits
 description: |
-  Implement Salesloft rate limiting, backoff, and idempotency patterns.
-  Use when handling rate limit errors, implementing retry logic,
-  or optimizing API request throughput for Salesloft.
-  Trigger with phrases like "salesloft rate limit", "salesloft throttling",
-  "salesloft 429", "salesloft retry", "salesloft backoff".
+  Handle SalesLoft cost-based rate limiting with backoff and request budgeting.
+  Use when hitting 429 errors, optimizing API throughput,
+  or implementing pagination-aware rate limit strategies.
+  Trigger: "salesloft rate limit", "salesloft 429", "salesloft throttling".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
@@ -14,138 +13,132 @@ tags: [saas, sales, outreach, salesloft]
 compatible-with: claude-code
 ---
 
-# Salesloft Rate Limits
+# SalesLoft Rate Limits
 
 ## Overview
-Handle Salesloft rate limits gracefully with exponential backoff and idempotency.
 
-## Prerequisites
-- Salesloft SDK installed
-- Understanding of async/await patterns
-- Access to rate limit headers
+SalesLoft uses cost-based rate limiting at 600 cost per minute. Each request costs 1 point by default, but deep pagination multiplies the cost. Rate limit state is returned in response headers.
+
+## Rate Limit Model
+
+### Cost per Request
+
+| Page Range | Cost per Request | Example: 1000 records at 100/page |
+|------------|-----------------|-----------------------------------|
+| 1-100 | 1 point | Pages 1-10: 10 points |
+| 101-150 | 3 points | N/A for this example |
+| 151-250 | 8 points | N/A |
+| 251-500 | 10 points | N/A |
+| 501+ | 30 points | N/A |
+
+**Budget: 600 points/minute.** A simple 10-page pagination costs 10 points. But paginating to page 500 costs 10 + 150 + 800 + 2500 = 3460 points (nearly 6 minutes of budget).
+
+### Response Headers
+
+```
+X-RateLimit-Limit-Per-Minute: 600
+X-RateLimit-Remaining-Per-Minute: 487
+Retry-After: 42          # Only present on 429 responses
+X-Request-Id: abc-123    # For support tickets
+```
 
 ## Instructions
 
-### Step 1: Understand Rate Limit Tiers
-
-| Tier | Requests/min | Requests/day | Burst |
-|------|-------------|--------------|-------|
-| Free | 60 | 1,000 | 10 |
-| Pro | 300 | 10,000 | 50 |
-| Enterprise | 1,000 | 100,000 | 200 |
-
-### Step 2: Implement Exponential Backoff with Jitter
+### Step 1: Rate-Limit-Aware Client
 
 ```typescript
-async function withExponentialBackoff<T>(
-  operation: () => Promise<T>,
-  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 32000, jitterMs: 500 }
-): Promise<T> {
-  for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
-    try {
-      return await operation();
-    } catch (error: any) {
-      if (attempt === config.maxRetries) throw error;
-      const status = error.status || error.response?.status;
-      if (status !== 429 && (status < 500 || status >= 600)) throw error;
+import axios, { AxiosInstance } from 'axios';
 
-      // Exponential delay with jitter to prevent thundering herd
-      const exponentialDelay = config.baseDelayMs * Math.pow(2, attempt);
-      const jitter = Math.random() * config.jitterMs;
-      const delay = Math.min(exponentialDelay + jitter, config.maxDelayMs);
+class SalesloftRateLimiter {
+  private remaining = 600;
+  private resetAt = Date.now();
 
-      console.log(`Rate limited. Retrying in ${delay.toFixed(0)}ms...`);
-      await new Promise(r => setTimeout(r, delay));
-    }
+  constructor(private client: AxiosInstance) {
+    client.interceptors.response.use(
+      (res) => {
+        this.remaining = parseInt(res.headers['x-ratelimit-remaining-per-minute'] || '600');
+        return res;
+      },
+      async (err) => {
+        if (err.response?.status === 429) {
+          const wait = parseInt(err.response.headers['retry-after'] || '60');
+          console.warn(`Rate limited. Waiting ${wait}s (X-Request-Id: ${err.response.headers['x-request-id']})`);
+          await this.sleep(wait * 1000);
+          return this.client.request(err.config);
+        }
+        throw err;
+      }
+    );
   }
-  throw new Error('Unreachable');
+
+  async throttledRequest<T>(fn: () => Promise<T>): Promise<T> {
+    if (this.remaining < 10) {
+      const waitMs = Math.max(0, this.resetAt - Date.now());
+      if (waitMs > 0) await this.sleep(waitMs);
+    }
+    return fn();
+  }
+
+  private sleep(ms: number) { return new Promise(r => setTimeout(r, ms)); }
 }
 ```
 
-### Step 3: Add Idempotency Keys
+### Step 2: Pagination Cost Calculator
 
 ```typescript
-import { v4 as uuidv4 } from 'uuid';
-import crypto from 'crypto';
-
-// Generate deterministic key from operation params (for safe retries)
-function generateIdempotencyKey(operation: string, params: Record<string, any>): string {
-  const data = JSON.stringify({ operation, params });
-  return crypto.createHash('sha256').update(data).digest('hex');
+function paginationCost(totalRecords: number, perPage: number = 100): number {
+  const totalPages = Math.ceil(totalRecords / perPage);
+  let cost = 0;
+  for (let p = 1; p <= totalPages; p++) {
+    if (p <= 100) cost += 1;
+    else if (p <= 150) cost += 3;
+    else if (p <= 250) cost += 8;
+    else if (p <= 500) cost += 10;
+    else cost += 30;
+  }
+  return cost;
 }
 
-async function idempotentRequest<T>(
-  client: SalesloftClient,
-  params: Record<string, any>,
-  idempotencyKey?: string  // Pass existing key for retries
-): Promise<T> {
-  // Use provided key (for retries) or generate deterministic key from params
-  const key = idempotencyKey || generateIdempotencyKey(params.method || 'POST', params);
-  return client.request({
-    ...params,
-    headers: { 'Idempotency-Key': key, ...params.headers },
-  });
-}
+// Budget check before large exports
+const totalPeople = 25000; // from metadata.paging.total_count
+const cost = paginationCost(totalPeople);
+const minutes = Math.ceil(cost / 600);
+console.log(`Export will cost ${cost} points (~${minutes} minutes at rate limit)`);
 ```
 
-## Output
-- Reliable API calls with automatic retry
-- Idempotent requests preventing duplicates
-- Rate limit headers properly handled
+### Step 3: Queue-Based Throttling for Bulk Operations
 
-## Error Handling
-| Header | Description | Action |
-|--------|-------------|--------|
-| X-RateLimit-Limit | Max requests | Monitor usage |
-| X-RateLimit-Remaining | Remaining requests | Throttle if low |
-| X-RateLimit-Reset | Reset timestamp | Wait until reset |
-| Retry-After | Seconds to wait | Honor this value |
-
-## Examples
-
-### Queue-Based Rate Limiting
 ```typescript
 import PQueue from 'p-queue';
 
-const queue = new PQueue({
-  concurrency: 5,
-  interval: 1000,
-  intervalCap: 10,
-});
+// Max 5 concurrent, 10 per second (600/min = 10/sec)
+const queue = new PQueue({ concurrency: 5, interval: 1000, intervalCap: 10 });
 
-async function queuedRequest<T>(operation: () => Promise<T>): Promise<T> {
-  return queue.add(operation);
+async function bulkCreatePeople(people: any[]) {
+  const results = await Promise.allSettled(
+    people.map(person =>
+      queue.add(() => api.post('/people.json', person))
+    )
+  );
+  const succeeded = results.filter(r => r.status === 'fulfilled').length;
+  console.log(`Created ${succeeded}/${people.length} people`);
 }
 ```
 
-### Monitor Rate Limit Usage
-```typescript
-class RateLimitMonitor {
-  private remaining: number = 60;
-  private resetAt: Date = new Date();
+## Error Handling
 
-  updateFromHeaders(headers: Headers) {
-    this.remaining = parseInt(headers.get('X-RateLimit-Remaining') || '60');
-    const resetTimestamp = headers.get('X-RateLimit-Reset');
-    if (resetTimestamp) {
-      this.resetAt = new Date(parseInt(resetTimestamp) * 1000);
-    }
-  }
-
-  shouldThrottle(): boolean {
-    // Only throttle if low remaining AND reset hasn't happened yet
-    return this.remaining < 5 && new Date() < this.resetAt;
-  }
-
-  getWaitTime(): number {
-    return Math.max(0, this.resetAt.getTime() - Date.now());
-  }
-}
-```
+| Scenario | Cost Impact | Strategy |
+|----------|-------------|----------|
+| Simple list (page 1-10) | 10 points | No throttle needed |
+| Full export (250 pages) | 910 points | ~2 min, add delays |
+| Bulk create (500 records) | 500 points | Queue with intervalCap |
+| Deep pagination (page 500) | 3460 points | Cache or use webhooks instead |
 
 ## Resources
-- [Salesloft Rate Limits](https://docs.salesloft.com/rate-limits)
-- [p-queue Documentation](https://github.com/sindresorhus/p-queue)
+
+- [SalesLoft Rate Limits](https://developers.salesloft.com/docs/platform/api-basics/rate-limits/)
+- [p-queue](https://github.com/sindresorhus/p-queue)
 
 ## Next Steps
+
 For security configuration, see `salesloft-security-basics`.

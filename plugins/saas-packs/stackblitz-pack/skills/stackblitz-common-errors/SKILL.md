@@ -1,113 +1,108 @@
 ---
 name: stackblitz-common-errors
 description: |
-  Diagnose and fix StackBlitz common errors and exceptions.
-  Use when encountering StackBlitz errors, debugging failed requests,
-  or troubleshooting integration issues.
-  Trigger with phrases like "stackblitz error", "fix stackblitz",
-  "stackblitz not working", "debug stackblitz".
+  Fix WebContainer and StackBlitz errors: COOP/COEP, SharedArrayBuffer, boot failures.
+  Use when WebContainers fail to boot, embeds don't load,
+  or processes crash inside WebContainers.
+  Trigger: "stackblitz error", "webcontainer error", "SharedArrayBuffer not defined".
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ide, cloud, stackblitz]
+tags: [saas, ide, webcontainers, stackblitz]
 compatible-with: claude-code
 ---
 
 # StackBlitz Common Errors
 
-## Overview
-Quick reference for the top 10 most common StackBlitz errors and their solutions.
+## Error Reference
 
-## Prerequisites
-- StackBlitz SDK installed
-- API credentials configured
-- Access to error logs
+### SharedArrayBuffer is not defined
+**Cause:** Missing cross-origin isolation headers.
+```
+Cross-Origin-Embedder-Policy: require-corp
+Cross-Origin-Opener-Policy: same-origin
+```
+**Fix:** Add both headers to your server. In Vite: `server.headers` config.
 
-## Instructions
+### Failed to boot WebContainer
+**Cause:** Only one WebContainer instance allowed per page.
+```typescript
+// BAD: Multiple boot calls
+const wc1 = await WebContainer.boot();
+const wc2 = await WebContainer.boot(); // Fails!
 
-### Step 1: Identify the Error
-Check error message and code in your logs or console.
+// GOOD: Singleton pattern
+let instance: WebContainer | null = null;
+async function getWC() {
+  if (!instance) instance = await WebContainer.boot();
+  return instance;
+}
+```
 
-### Step 2: Find Matching Error Below
-Match your error to one of the documented cases.
+### npm install hangs or fails
+**Cause:** Large dependency tree or network issue in WebContainer.
+```typescript
+// Use --prefer-offline and minimal deps
+const proc = await wc.spawn('npm', ['install', '--prefer-offline']);
+const code = await proc.exit;
+if (code !== 0) {
+  console.error('Install failed, retrying...');
+  const retry = await wc.spawn('npm', ['install']);
+  await retry.exit;
+}
+```
 
-### Step 3: Apply Solution
-Follow the solution steps for your specific error.
+### server-ready event never fires
+**Cause:** Application not listening on a port.
+```typescript
+// Ensure your app calls listen()
+// app.listen(3000) -- required for server-ready event
+// Also check process exit code for crashes
+wc.on('error', (err) => console.error('WC error:', err));
+```
 
-## Output
-- Identified error cause
-- Applied fix
-- Verified resolution
+### File operations fail with ENOENT
+**Cause:** Parent directory doesn't exist.
+```typescript
+// Create parent directories first
+await wc.fs.mkdir('/src/components', { recursive: true });
+await wc.fs.writeFile('/src/components/Button.tsx', content);
+```
+
+## Quick Diagnostic
+
+```typescript
+// Check WebContainer state
+async function diagnose(wc: WebContainer) {
+  try {
+    await wc.fs.readdir('/');
+    console.log('FS: OK');
+  } catch { console.error('FS: FAILED'); }
+
+  try {
+    const proc = await wc.spawn('node', ['-v']);
+    await proc.exit;
+    console.log('Node: OK');
+  } catch { console.error('Node: FAILED'); }
+}
+```
 
 ## Error Handling
 
-### Authentication Failed
-**Error Message:**
-```
-Authentication error: Invalid API key
-```
-
-**Cause:** API key is missing, expired, or invalid.
-
-**Solution:**
-```bash
-# Verify API key is set
-echo $STACKBLITZ_API_KEY
-```
-
----
-
-### Rate Limit Exceeded
-**Error Message:**
-```
-Rate limit exceeded. Please retry after X seconds.
-```
-
-**Cause:** Too many requests in a short period.
-
-**Solution:**
-Implement exponential backoff. See `stackblitz-rate-limits` skill.
-
----
-
-### Network Timeout
-**Error Message:**
-```
-Request timeout after 30000ms
-```
-
-**Cause:** Network connectivity or server latency issues.
-
-**Solution:**
-```typescript
-// Increase timeout
-const client = new Client({ timeout: 60000 });
-```
-
-## Examples
-
-### Quick Diagnostic Commands
-```bash
-# Check StackBlitz status
-curl -s https://status.stackblitz.com
-
-# Verify API connectivity
-curl -I https://api.stackblitz.com
-
-# Check local configuration
-env | grep STACKBLITZ
-```
-
-### Escalation Path
-1. Collect evidence with `stackblitz-debug-bundle`
-2. Check StackBlitz status page
-3. Contact support with request ID
+| Error | Retryable | Action |
+|-------|-----------|--------|
+| Missing COOP/COEP | No | Fix server headers |
+| Multiple boot | No | Use singleton pattern |
+| npm install fail | Yes | Retry once, then report |
+| ENOENT | No | Create parent dirs |
+| Process crash | Yes | Restart process |
 
 ## Resources
-- [StackBlitz Status Page](https://status.stackblitz.com)
-- [StackBlitz Support](https://docs.stackblitz.com/support)
-- [StackBlitz Error Codes](https://docs.stackblitz.com/errors)
+
+- [WebContainer API Reference](https://webcontainers.io/api)
+- [Browser Compatibility](https://webcontainers.io/guides/browser-support)
 
 ## Next Steps
-For comprehensive debugging, see `stackblitz-debug-bundle`.
+
+For debugging, see `stackblitz-debug-bundle`.

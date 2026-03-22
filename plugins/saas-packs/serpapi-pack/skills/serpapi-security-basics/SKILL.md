@@ -1,11 +1,10 @@
 ---
 name: serpapi-security-basics
 description: |
-  Apply SerpApi security best practices for secrets and access control.
-  Use when securing API keys, implementing least privilege access,
-  or auditing SerpApi security configuration.
-  Trigger with phrases like "serpapi security", "serpapi secrets",
-  "secure serpapi", "serpapi API key security".
+  Secure SerpApi API keys and prevent credit abuse.
+  Use when storing API keys, implementing backend proxies,
+  or auditing SerpApi access patterns.
+  Trigger: "serpapi security", "serpapi API key security", "secure serpapi".
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
@@ -17,126 +16,85 @@ compatible-with: claude-code
 # SerpApi Security Basics
 
 ## Overview
-Security best practices for SerpApi API keys, tokens, and access control.
 
-## Prerequisites
-- SerpApi SDK installed
-- Understanding of environment variables
-- Access to SerpApi dashboard
+SerpApi uses a single API key for authentication. The key grants full account access -- there are no scoped keys or OAuth. Protect it like a credit card: never expose in frontend code, always proxy through your backend.
 
 ## Instructions
 
-### Step 1: Configure Environment Variables
-```bash
-# .env (NEVER commit to git)
-SERPAPI_API_KEY=sk_live_***
-SERPAPI_SECRET=***
+### Step 1: Never Expose API Key in Frontend
 
+```typescript
+// BAD: API key in browser-side code
+const result = await fetch(`https://serpapi.com/search.json?q=${query}&api_key=YOUR_KEY`);
+
+// GOOD: Proxy through your backend
+// Frontend
+const result = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+
+// Backend (api/search.ts)
+export async function GET(req: Request) {
+  const url = new URL(req.url);
+  const q = url.searchParams.get('q');
+  const result = await getJson({
+    engine: 'google', q,
+    api_key: process.env.SERPAPI_API_KEY, // Server-side only
+  });
+  return Response.json(result.organic_results);
+}
+```
+
+### Step 2: Secure Storage
+
+```bash
 # .gitignore
 .env
 .env.local
-.env.*.local
+
+# Use platform secret managers in production
+gh secret set SERPAPI_API_KEY       # GitHub Actions
+vercel env add SERPAPI_API_KEY      # Vercel
+fly secrets set SERPAPI_API_KEY=x   # Fly.io
 ```
 
-### Step 2: Implement Secret Rotation
-```bash
-# 1. Generate new key in SerpApi dashboard
-# 2. Update environment variable
-export SERPAPI_API_KEY="new_key_here"
+### Step 3: Rate Limit Your Proxy
 
-# 3. Verify new key works
-curl -H "Authorization: Bearer ${SERPAPI_API_KEY}" \
-  https://api.serpapi.com/health
-
-# 4. Revoke old key in dashboard
-```
-
-### Step 3: Apply Least Privilege
-| Environment | Recommended Scopes |
-|-------------|-------------------|
-| Development | `read:*` |
-| Staging | `read:*, write:limited` |
-| Production | `Only required scopes` |
-
-## Output
-- Secure API key storage
-- Environment-specific access controls
-- Audit logging enabled
-
-## Error Handling
-| Security Issue | Detection | Mitigation |
-|----------------|-----------|------------|
-| Exposed API key | Git scanning | Rotate immediately |
-| Excessive scopes | Audit logs | Reduce permissions |
-| Missing rotation | Key age check | Schedule rotation |
-
-## Examples
-
-### Service Account Pattern
 ```typescript
-const clients = {
-  reader: new SerpApiClient({
-    apiKey: process.env.SERPAPI_READ_KEY,
-  }),
-  writer: new SerpApiClient({
-    apiKey: process.env.SERPAPI_WRITE_KEY,
-  }),
-};
-```
+// Prevent abuse of your search proxy endpoint
+import rateLimit from 'express-rate-limit';
 
-### Webhook Signature Verification
-```typescript
-import crypto from 'crypto';
-
-function verifyWebhookSignature(
-  payload: string, signature: string, secret: string
-): boolean {
-  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
-  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
-}
-```
-
-### Security Checklist
-- [ ] API keys in environment variables
-- [ ] `.env` files in `.gitignore`
-- [ ] Different keys for dev/staging/prod
-- [ ] Minimal scopes per environment
-- [ ] Webhook signatures validated
-- [ ] Audit logging enabled
-
-### Audit Logging
-```typescript
-interface AuditEntry {
-  timestamp: Date;
-  action: string;
-  userId: string;
-  resource: string;
-  result: 'success' | 'failure';
-  metadata?: Record<string, any>;
-}
-
-async function auditLog(entry: Omit<AuditEntry, 'timestamp'>): Promise<void> {
-  const log: AuditEntry = { ...entry, timestamp: new Date() };
-
-  // Log to SerpApi analytics
-  await serpapiClient.track('audit', log);
-
-  // Also log locally for compliance
-  console.log('[AUDIT]', JSON.stringify(log));
-}
-
-// Usage
-await auditLog({
-  action: 'serpapi.api.call',
-  userId: currentUser.id,
-  resource: '/v1/resource',
-  result: 'success',
+const searchLimiter = rateLimit({
+  windowMs: 60_000,    // 1 minute
+  max: 10,             // 10 searches per minute per IP
+  message: 'Too many searches, try again later',
 });
+
+app.get('/api/search', searchLimiter, searchHandler);
 ```
+
+### Step 4: Monitor Usage
+
+```bash
+# Set up daily usage check
+curl -s "https://serpapi.com/account.json?api_key=$SERPAPI_API_KEY" \
+  | jq '{used: .this_month_usage, remaining: .plan_searches_left}'
+
+# Alert if usage is unexpectedly high
+```
+
+## Security Checklist
+
+- [ ] API key in environment variables only
+- [ ] `.env` in `.gitignore`
+- [ ] Backend proxy for all search requests
+- [ ] Rate limiting on proxy endpoints
+- [ ] Usage monitoring and alerts
+- [ ] Separate keys for dev/prod (if available)
 
 ## Resources
-- [SerpApi Security Guide](https://docs.serpapi.com/security)
-- [SerpApi API Scopes](https://docs.serpapi.com/scopes)
+
+- [SerpApi Dashboard](https://serpapi.com/dashboard)
+- [Manage API Key](https://serpapi.com/manage-api-key)
 
 ## Next Steps
+
 For production deployment, see `serpapi-prod-checklist`.

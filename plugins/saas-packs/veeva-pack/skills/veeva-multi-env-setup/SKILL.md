@@ -1,224 +1,44 @@
 ---
 name: veeva-multi-env-setup
 description: |
-  Configure Veeva across development, staging, and production environments.
-  Use when setting up multi-environment deployments, configuring per-environment secrets,
-  or implementing environment-specific Veeva configurations.
-  Trigger with phrases like "veeva environments", "veeva staging",
-  "veeva dev prod", "veeva environment setup", "veeva config by env".
-allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
+  Veeva Vault multi env setup for enterprise operations.
+  Use when implementing advanced Veeva Vault patterns.
+  Trigger: "veeva multi env setup".
+allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, pharma, crm, veeva]
+tags: [saas, life-sciences, crm, veeva]
 compatible-with: claude-code
 ---
 
-# Veeva Multi-Environment Setup
+# Veeva Vault Multi Env Setup
 
 ## Overview
-Configure Veeva across development, staging, and production environments.
 
-## Prerequisites
-- Separate Veeva accounts or API keys per environment
-- Secret management solution (Vault, AWS Secrets Manager, etc.)
-- CI/CD pipeline with environment variables
-- Environment detection in application
-
-## Environment Strategy
-
-| Environment | Purpose | API Keys | Data |
-|-------------|---------|----------|------|
-| Development | Local dev | Test keys | Sandbox |
-| Staging | Pre-prod validation | Staging keys | Test data |
-| Production | Live traffic | Production keys | Real data |
-
-## Configuration Structure
-
-```
-config/
-├── veeva/
-│   ├── base.json           # Shared config
-│   ├── development.json    # Dev overrides
-│   ├── staging.json        # Staging overrides
-│   └── production.json     # Prod overrides
-```
-
-### base.json
-```json
-{
-  "timeout": 30000,
-  "retries": 3,
-  "cache": {
-    "enabled": true,
-    "ttlSeconds": 60
-  }
-}
-```
-
-### development.json
-```json
-{
-  "apiKey": "${VEEVA_API_KEY}",
-  "baseUrl": "https://api-sandbox.veeva.com",
-  "debug": true,
-  "cache": {
-    "enabled": false
-  }
-}
-```
-
-### staging.json
-```json
-{
-  "apiKey": "${VEEVA_API_KEY_STAGING}",
-  "baseUrl": "https://api-staging.veeva.com",
-  "debug": false
-}
-```
-
-### production.json
-```json
-{
-  "apiKey": "${VEEVA_API_KEY_PROD}",
-  "baseUrl": "https://api.veeva.com",
-  "debug": false,
-  "retries": 5
-}
-```
-
-## Environment Detection
-
-```typescript
-// src/veeva/config.ts
-import baseConfig from '../../config/veeva/base.json';
-
-type Environment = 'development' | 'staging' | 'production';
-
-function detectEnvironment(): Environment {
-  const env = process.env.NODE_ENV || 'development';
-  const validEnvs: Environment[] = ['development', 'staging', 'production'];
-  return validEnvs.includes(env as Environment)
-    ? (env as Environment)
-    : 'development';
-}
-
-export function getVeevaConfig() {
-  const env = detectEnvironment();
-  const envConfig = require(`../../config/veeva/${env}.json`);
-
-  return {
-    ...baseConfig,
-    ...envConfig,
-    environment: env,
-  };
-}
-```
-
-## Secret Management by Environment
-
-### Local Development
-```bash
-# .env.local (git-ignored)
-VEEVA_API_KEY=sk_test_dev_***
-```
-
-### CI/CD (GitHub Actions)
-```yaml
-env:
-  VEEVA_API_KEY: ${{ secrets.VEEVA_API_KEY_${{ matrix.environment }} }}
-```
-
-### Production (Vault/Secrets Manager)
-```bash
-# AWS Secrets Manager
-aws secretsmanager get-secret-value --secret-id veeva/production/api-key
-
-# GCP Secret Manager
-gcloud secrets versions access latest --secret=veeva-api-key
-
-# HashiCorp Vault
-vault kv get -field=api_key secret/veeva/production
-```
-
-## Environment Isolation
-
-```typescript
-// Prevent production operations in non-prod
-function guardProductionOperation(operation: string): void {
-  const config = getVeevaConfig();
-
-  if (config.environment !== 'production') {
-    console.warn(`[veeva] ${operation} blocked in ${config.environment}`);
-    throw new Error(`${operation} only allowed in production`);
-  }
-}
-
-// Usage
-async function deleteAllData() {
-  guardProductionOperation('deleteAllData');
-  // Dangerous operation here
-}
-```
-
-## Feature Flags by Environment
-
-```typescript
-const featureFlags: Record<Environment, Record<string, boolean>> = {
-  development: {
-    newFeature: true,
-    betaApi: true,
-  },
-  staging: {
-    newFeature: true,
-    betaApi: false,
-  },
-  production: {
-    newFeature: false,
-    betaApi: false,
-  },
-};
-```
+Enterprise-grade multi env setup patterns for Veeva Vault deployments.
 
 ## Instructions
 
-### Step 1: Create Config Structure
-Set up the base and per-environment configuration files.
+### Key Considerations
 
-### Step 2: Implement Environment Detection
-Add logic to detect and load environment-specific config.
-
-### Step 3: Configure Secrets
-Store API keys securely using your secret management solution.
-
-### Step 4: Add Environment Guards
-Implement safeguards for production-only operations.
-
-## Output
-- Multi-environment config structure
-- Environment detection logic
-- Secure secret management
-- Production safeguards enabled
+- Veeva Vault is purpose-built for regulated life sciences
+- All API changes should be validated against compliance requirements
+- Use VQL for efficient data retrieval
+- VAPIL provides Java-native API coverage
 
 ## Error Handling
-| Issue | Cause | Solution |
+
+| Error | Cause | Solution |
 |-------|-------|----------|
-| Wrong environment | Missing NODE_ENV | Set environment variable |
-| Secret not found | Wrong secret path | Verify secret manager config |
-| Config merge fails | Invalid JSON | Validate config files |
-| Production guard triggered | Wrong environment | Check NODE_ENV value |
-
-## Examples
-
-### Quick Environment Check
-```typescript
-const env = getVeevaConfig();
-console.log(`Running in ${env.environment} with ${env.baseUrl}`);
-```
+| Access denied | Security profile | Update profile permissions |
+| Data validation | Required fields | Check object metadata |
 
 ## Resources
-- [Veeva Environments Guide](https://docs.veeva.com/environments)
-- [12-Factor App Config](https://12factor.net/config)
+
+- [Vault API Reference](https://developer.veevavault.com/api/)
+- [Vault Documentation](https://developer.veevavault.com/docs/)
 
 ## Next Steps
-For observability setup, see `veeva-observability`.
+
+See related Veeva Vault skills.

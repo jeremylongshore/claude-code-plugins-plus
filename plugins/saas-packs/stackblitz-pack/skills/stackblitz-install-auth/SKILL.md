@@ -1,92 +1,103 @@
 ---
 name: stackblitz-install-auth
 description: |
-  Install and configure StackBlitz SDK/CLI authentication.
-  Use when setting up a new StackBlitz integration, configuring API keys,
-  or initializing StackBlitz in your project.
-  Trigger with phrases like "install stackblitz", "setup stackblitz",
-  "stackblitz auth", "configure stackblitz API key".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
+  Install the WebContainer API and configure StackBlitz SDK for browser-based Node.js.
+  Use when setting up WebContainers, embedding StackBlitz projects,
+  or initializing the @stackblitz/sdk package.
+  Trigger: "install stackblitz", "setup webcontainers", "stackblitz SDK".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ide, cloud, stackblitz]
+tags: [saas, ide, webcontainers, stackblitz]
 compatible-with: claude-code
 ---
 
 # StackBlitz Install & Auth
 
 ## Overview
-Set up StackBlitz SDK/CLI and configure authentication credentials.
+
+Set up the WebContainer API for running Node.js in the browser, or the StackBlitz SDK for embedding interactive code editors. WebContainers require no auth -- they run entirely client-side. The StackBlitz SDK is for embedding projects from stackblitz.com.
 
 ## Prerequisites
-- Node.js 18+ or Python 3.10+
-- Package manager (npm, pnpm, or pip)
-- StackBlitz account with API access
-- API key from StackBlitz dashboard
+
+- Node.js 18+ for build tooling
+- Modern browser with SharedArrayBuffer support (requires HTTPS + COOP/COEP headers)
 
 ## Instructions
 
-### Step 1: Install SDK
+### Step 1: Install WebContainer API
+
 ```bash
-# Node.js
+npm install @webcontainer/api
+```
+
+### Step 2: Install StackBlitz SDK (for embedding)
+
+```bash
 npm install @stackblitz/sdk
-
-# Python
-pip install stackblitz
 ```
 
-### Step 2: Configure Authentication
-```bash
-# Set environment variable
-export STACKBLITZ_API_KEY="your-api-key"
+### Step 3: Configure Required HTTP Headers
 
-# Or create .env file
-echo 'STACKBLITZ_API_KEY=your-api-key' >> .env
-```
+WebContainers require cross-origin isolation. Add these headers to your server:
 
-### Step 3: Verify Connection
 ```typescript
-// Test connection code here
-```
-
-## Output
-- Installed SDK package in node_modules or site-packages
-- Environment variable or .env file with API key
-- Successful connection verification output
-
-## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| Invalid API Key | Incorrect or expired key | Verify key in StackBlitz dashboard |
-| Rate Limited | Exceeded quota | Check quota at https://docs.stackblitz.com |
-| Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
-| Module Not Found | Installation failed | Run `npm install` or `pip install` again |
-
-## Examples
-
-### TypeScript Setup
-```typescript
-import { StackBlitzClient } from '@stackblitz/sdk';
-
-const client = new StackBlitzClient({
-  apiKey: process.env.STACKBLITZ_API_KEY,
+// Express middleware
+app.use((req, res, next) => {
+  res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
+  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+  next();
 });
 ```
 
-### Python Setup
-```python
-from stackblitz import StackBlitzClient
-
-client = StackBlitzClient(
-    api_key=os.environ.get('STACKBLITZ_API_KEY')
-)
+```javascript
+// Vite config
+export default defineConfig({
+  server: {
+    headers: {
+      'Cross-Origin-Embedder-Policy': 'require-corp',
+      'Cross-Origin-Opener-Policy': 'same-origin',
+    },
+  },
+});
 ```
 
+### Step 4: Verify WebContainer Boot
+
+```typescript
+import { WebContainer } from '@webcontainer/api';
+
+const wc = await WebContainer.boot();
+console.log('WebContainer booted successfully');
+
+// Verify filesystem works
+await wc.mount({ 'test.txt': { file: { contents: 'Hello WebContainers!' } } });
+const content = await wc.fs.readFile('/test.txt', 'utf-8');
+console.log(`File content: ${content}`);
+```
+
+## Output
+
+```
+WebContainer booted successfully
+File content: Hello WebContainers!
+```
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `SharedArrayBuffer is not defined` | Missing COOP/COEP headers | Add cross-origin isolation headers |
+| `Failed to boot` | Multiple instances | Only one WebContainer per page |
+| `Not in secure context` | HTTP instead of HTTPS | Use HTTPS or localhost |
+
 ## Resources
-- [StackBlitz Documentation](https://docs.stackblitz.com)
-- [StackBlitz Dashboard](https://api.stackblitz.com)
-- [StackBlitz Status](https://status.stackblitz.com)
+
+- [WebContainer API Docs](https://webcontainers.io/)
+- [WebContainer Quickstart](https://webcontainers.io/guides/quickstart)
+- [StackBlitz SDK](https://developer.stackblitz.com/platform/api/javascript-sdk)
 
 ## Next Steps
-After successful auth, proceed to `stackblitz-hello-world` for your first API call.
+
+Proceed to `stackblitz-hello-world` for your first WebContainer project.

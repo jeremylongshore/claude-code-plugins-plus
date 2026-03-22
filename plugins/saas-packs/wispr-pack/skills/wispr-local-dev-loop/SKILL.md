@@ -1,119 +1,49 @@
 ---
 name: wispr-local-dev-loop
 description: |
-  Configure Wispr local development with hot reload and testing.
-  Use when setting up a development environment, configuring test workflows,
-  or establishing a fast iteration cycle with Wispr.
-  Trigger with phrases like "wispr dev setup", "wispr local development",
-  "wispr dev environment", "develop with wispr".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
+  Wispr Flow local dev loop for voice-to-text API integration.
+  Use when integrating Wispr Flow dictation, WebSocket streaming,
+  or building voice-powered applications.
+  Trigger: "wispr local dev loop".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, voice, productivity, wispr]
+tags: [saas, voice, dictation, wispr]
 compatible-with: claude-code
 ---
 
-# Wispr Local Dev Loop
+# Wispr Flow Local Dev Loop
 
 ## Overview
-Set up a fast, reproducible local development workflow for Wispr.
 
-## Prerequisites
-- Completed `wispr-install-auth` setup
-- Node.js 18+ with npm/pnpm
-- Code editor with TypeScript support
-- Git for version control
+Guidance for local dev loop with Wispr Flow voice-to-text API.
 
 ## Instructions
 
-### Step 1: Create Project Structure
-```
-my-wispr-project/
-├── src/
-│   ├── wispr/
-│   │   ├── client.ts       # Wispr client wrapper
-│   │   ├── config.ts       # Configuration management
-│   │   └── utils.ts        # Helper functions
-│   └── index.ts
-├── tests/
-│   └── wispr.test.ts
-├── .env.local              # Local secrets (git-ignored)
-├── .env.example            # Template for team
-└── package.json
-```
+### Key Wispr Flow Concepts
 
-### Step 2: Configure Environment
-```bash
-# Copy environment template
-cp .env.example .env.local
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-```
-
-### Step 3: Setup Hot Reload
-```json
-{
-  "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "test": "vitest",
-    "test:watch": "vitest --watch"
-  }
-}
-```
-
-### Step 4: Configure Testing
-```typescript
-import { describe, it, expect, vi } from 'vitest';
-import { WisprClient } from '../src/wispr/client';
-
-describe('Wispr Client', () => {
-  it('should initialize with API key', () => {
-    const client = new WisprClient({ apiKey: 'test-key' });
-    expect(client).toBeDefined();
-  });
-});
-```
-
-## Output
-- Working development environment with hot reload
-- Configured test suite with mocking
-- Environment variable management
-- Fast iteration cycle for Wispr development
+- **WebSocket API**: `wss://api.wisprflow.ai/api/v1/ws` (recommended, low latency)
+- **REST API**: `POST /api/v1/transcribe` (simpler, higher latency)
+- **Auth**: API key (backend) or access token (client-side)
+- **Audio format**: 16kHz mono PCM preferred
+- **Context awareness**: Understands code, CLI commands, dev jargon
+- **Platforms**: Mac, Windows, iOS, browser API
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Module not found | Missing dependency | Run `npm install` |
-| Port in use | Another process | Kill process or change port |
-| Env not loaded | Missing .env.local | Copy from .env.example |
-| Test timeout | Slow network | Increase test timeout |
-
-## Examples
-
-### Mock Wispr Responses
-```typescript
-vi.mock('@wispr/sdk', () => ({
-  WisprClient: vi.fn().mockImplementation(() => ({
-    // Mock methods here
-  })),
-}));
-```
-
-### Debug Mode
-```bash
-# Enable verbose logging
-DEBUG=WISPR=* npm run dev
-```
+| `401 Unauthorized` | Invalid key | Check at wisprflow.ai/developers |
+| WebSocket closed | Network issue | Reconnect with backoff |
+| Poor accuracy | Wrong context | Set context to 'programming' for code |
 
 ## Resources
-- [Wispr SDK Reference](https://docs.wispr.com/sdk)
-- [Vitest Documentation](https://vitest.dev/)
-- [tsx Documentation](https://github.com/esbuild-kit/tsx)
+
+- [Wispr Flow Developers](https://wisprflow.ai/developers)
+- [API Docs](https://api-docs.wisprflow.ai/introduction)
+- [WebSocket Quickstart](https://api-docs.wisprflow.ai/websocket_quickstart)
 
 ## Next Steps
-See `wispr-sdk-patterns` for production-ready code patterns.
+
+See related Wispr Flow skills for more patterns.

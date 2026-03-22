@@ -1,6 +1,10 @@
 # Together AI Skill Pack
 
-> Claude Code skill pack for Together AI integration (18 skills)
+> 18 production-ready Claude Code skills for Together AI -- real OpenAI-compatible inference, fine-tuning, and model deployment code.
+
+## What This Is
+
+A complete skill pack for building AI applications with Together AI. Every skill contains real API code: chat completions, streaming, image generation, embeddings, fine-tuning jobs, batch inference, and model management. Uses the official `together` Python SDK and OpenAI-compatible Node.js client.
 
 ## Installation
 
@@ -8,41 +12,44 @@
 /plugin install together-pack@claude-code-plugins-plus
 ```
 
-## Skills Included
+## Skills
 
 ### Standard Skills (S01-S12)
-| Skill | Description |
-|-------|-------------|
-| `together-install-auth` | Install Auth |
-| `together-hello-world` | Hello World |
-| `together-local-dev-loop` | Local Dev Loop |
-| `together-sdk-patterns` | Sdk Patterns |
-| `together-core-workflow-a` | Core Workflow A |
-| `together-core-workflow-b` | Core Workflow B |
-| `together-common-errors` | Common Errors |
-| `together-debug-bundle` | Debug Bundle |
-| `together-rate-limits` | Rate Limits |
-| `together-security-basics` | Security Basics |
-| `together-prod-checklist` | Prod Checklist |
-| `together-upgrade-migration` | Upgrade Migration |
+
+| # | Skill | What It Does |
+|---|-------|-------------|
+| S01 | `together-install-auth` | Install `together` SDK, configure API key, verify with model list |
+| S02 | `together-hello-world` | Chat completions, streaming, image generation, embeddings |
+| S03 | `together-local-dev-loop` | Mock responses, test fixtures, environment separation |
+| S04 | `together-sdk-patterns` | OpenAI client wrapper, model selection, typed responses |
+| S05 | `together-core-workflow-a` | Fine-tuning: JSONL prep, upload, create job, monitor, deploy |
+| S06 | `together-core-workflow-b` | Batch inference, dedicated endpoints, model comparison |
+| S07 | `together-common-errors` | Fix 401, model not found, rate limits, timeout errors |
+| S08 | `together-debug-bundle` | API connectivity, model availability, usage diagnostics |
+| S09 | `together-rate-limits` | Per-model rate limits, request throttling, queue management |
+| S10 | `together-security-basics` | API key protection, input validation, output filtering |
+| S11 | `together-prod-checklist` | Model selection, fallback chains, monitoring, health checks |
+| S12 | `together-upgrade-migration` | SDK version updates, model deprecations, API changes |
 
 ### Pro Skills (P13-P18)
-| Skill | Description |
-|-------|-------------|
-| `together-ci-integration` | Ci Integration |
-| `together-deploy-integration` | Deploy Integration |
-| `together-webhooks-events` | Webhooks Events |
-| `together-performance-tuning` | Performance Tuning |
-| `together-cost-tuning` | Cost Tuning |
-| `together-reference-architecture` | Reference Architecture |
 
-## Usage
+| # | Skill | What It Does |
+|---|-------|-------------|
+| P13 | `together-ci-integration` | GitHub Actions for model testing, fine-tuning validation |
+| P14 | `together-deploy-integration` | Deploy inference endpoints to Vercel/Cloud Run |
+| P15 | `together-webhooks-events` | Fine-tuning job status polling, completion callbacks |
+| P16 | `together-performance-tuning` | Streaming, model warm-up, concurrent requests |
+| P17 | `together-cost-tuning` | Model tier pricing, batch inference (50% off), caching |
+| P18 | `together-reference-architecture` | AI service layer, model routing, fallback chains |
 
-Skills trigger automatically when you discuss Together AI topics. For example:
+## Key Concepts
 
-- "Help me set up Together AI" → triggers `together-install-auth`
-- "Debug this Together AI error" → triggers `together-common-errors`
-- "Deploy my Together AI integration" → triggers `together-deploy-integration`
+- **Base URL**: `https://api.together.xyz/v1` (OpenAI-compatible)
+- **Models**: Llama 3.3, Mixtral, Qwen 2.5, DeepSeek V3, FLUX.1
+- **Endpoints**: `/chat/completions`, `/completions`, `/embeddings`, `/images/generations`
+- **Fine-tuning**: Upload JSONL, create job, monitor, deploy custom model
+- **Batch**: 50% cost reduction for async processing
+- **Pricing**: $0.10-5.00 per 1M tokens depending on model size
 
 ## License
 

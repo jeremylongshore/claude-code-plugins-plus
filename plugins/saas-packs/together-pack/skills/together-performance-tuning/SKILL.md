@@ -1,216 +1,48 @@
 ---
 name: together-performance-tuning
 description: |
-  Optimize Together AI API performance with caching, batching, and connection pooling.
-  Use when experiencing slow API responses, implementing caching strategies,
-  or optimizing request throughput for Together AI integrations.
-  Trigger with phrases like "together performance", "optimize together",
-  "together latency", "together caching", "together slow", "together batch".
-allowed-tools: Read, Write, Edit
+  Together AI performance tuning for inference, fine-tuning, and model deployment.
+  Use when working with Together AI's OpenAI-compatible API.
+  Trigger: "together performance tuning".
+allowed-tools: Read, Write, Edit, Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, llm, together]
+tags: [saas, ai, inference, together]
 compatible-with: claude-code
 ---
 
 # Together AI Performance Tuning
 
 ## Overview
-Optimize Together AI API performance with caching, batching, and connection pooling.
 
-## Prerequisites
-- Together AI SDK installed
-- Understanding of async patterns
-- Redis or in-memory cache available (optional)
-- Performance monitoring in place
-
-## Latency Benchmarks
-
-| Operation | P50 | P95 | P99 |
-|-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
-
-## Caching Strategy
-
-### Response Caching
-```typescript
-import { LRUCache } from 'lru-cache';
-
-const cache = new LRUCache<string, any>({
-  max: 1000,
-  ttl: 60000, // 1 minute
-  updateAgeOnGet: true,
-});
-
-async function cachedTogether AIRequest<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttl?: number
-): Promise<T> {
-  const cached = cache.get(key);
-  if (cached) return cached as T;
-
-  const result = await fetcher();
-  cache.set(key, result, { ttl });
-  return result;
-}
-```
-
-### Redis Caching (Distributed)
-```typescript
-import Redis from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function cachedWithRedis<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttlSeconds = 60
-): Promise<T> {
-  const cached = await redis.get(key);
-  if (cached) return JSON.parse(cached);
-
-  const result = await fetcher();
-  await redis.setex(key, ttlSeconds, JSON.stringify(result));
-  return result;
-}
-```
-
-## Request Batching
-
-```typescript
-import DataLoader from 'dataloader';
-
-const togetherLoader = new DataLoader<string, any>(
-  async (ids) => {
-    // Batch fetch from Together AI
-    const results = await togetherClient.batchGet(ids);
-    return ids.map(id => results.find(r => r.id === id) || null);
-  },
-  {
-    maxBatchSize: 100,
-    batchScheduleFn: callback => setTimeout(callback, 10),
-  }
-);
-
-// Usage - automatically batched
-const [item1, item2, item3] = await Promise.all([
-  togetherLoader.load('id-1'),
-  togetherLoader.load('id-2'),
-  togetherLoader.load('id-3'),
-]);
-```
-
-## Connection Optimization
-
-```typescript
-import { Agent } from 'https';
-
-// Keep-alive connection pooling
-const agent = new Agent({
-  keepAlive: true,
-  maxSockets: 10,
-  maxFreeSockets: 5,
-  timeout: 30000,
-});
-
-const client = new TogetherAIClient({
-  apiKey: process.env.TOGETHER_API_KEY!,
-  httpAgent: agent,
-});
-```
-
-## Pagination Optimization
-
-```typescript
-async function* paginatedTogether AIList<T>(
-  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
-): AsyncGenerator<T> {
-  let cursor: string | undefined;
-
-  do {
-    const { data, nextCursor } = await fetcher(cursor);
-    for (const item of data) {
-      yield item;
-    }
-    cursor = nextCursor;
-  } while (cursor);
-}
-
-// Usage
-for await (const item of paginatedTogether AIList(cursor =>
-  togetherClient.list({ cursor, limit: 100 })
-)) {
-  await process(item);
-}
-```
-
-## Performance Monitoring
-
-```typescript
-async function measuredTogether AICall<T>(
-  operation: string,
-  fn: () => Promise<T>
-): Promise<T> {
-  const start = performance.now();
-  try {
-    const result = await fn();
-    const duration = performance.now() - start;
-    console.log({ operation, duration, status: 'success' });
-    return result;
-  } catch (error) {
-    const duration = performance.now() - start;
-    console.error({ operation, duration, status: 'error', error });
-    throw error;
-  }
-}
-```
+Guidance for performance tuning with Together AI inference and fine-tuning API.
 
 ## Instructions
 
-### Step 1: Establish Baseline
-Measure current latency for critical Together AI operations.
+### Key Points
 
-### Step 2: Implement Caching
-Add response caching for frequently accessed data.
-
-### Step 3: Enable Batching
-Use DataLoader or similar for automatic request batching.
-
-### Step 4: Optimize Connections
-Configure connection pooling with keep-alive.
-
-## Output
-- Reduced API latency
-- Caching layer implemented
-- Request batching enabled
-- Connection pooling configured
+- Together AI is OpenAI-compatible: `base_url = 'https://api.together.xyz/v1'`
+- Use the `together` Python SDK or any OpenAI client library
+- Supports 100+ open-source models (Llama, Mixtral, Qwen, FLUX)
+- Fine-tuning available for supported models
+- Batch inference at 50% cost reduction
 
 ## Error Handling
-| Issue | Cause | Solution |
+
+| Error | Cause | Solution |
 |-------|-------|----------|
-| Cache miss storm | TTL expired | Use stale-while-revalidate |
-| Batch timeout | Too many items | Reduce batch size |
-| Connection exhausted | No pooling | Configure max sockets |
-| Memory pressure | Cache too large | Set max cache entries |
-
-## Examples
-
-### Quick Performance Wrapper
-```typescript
-const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
-  measuredTogether AICall(name, () =>
-    cachedTogether AIRequest(`cache:${name}`, fn)
-  );
-```
+| `401 Unauthorized` | Invalid API key | Check at api.together.xyz |
+| `Model not found` | Wrong model ID | Use `client.models.list()` |
+| `429 Rate limit` | Too many requests | Implement backoff |
+| `500 Server error` | Model overloaded | Retry with backoff |
 
 ## Resources
-- [Together AI Performance Guide](https://docs.together.com/performance)
-- [DataLoader Documentation](https://github.com/graphql/dataloader)
-- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
+
+- [Together AI Docs](https://docs.together.ai/)
+- [API Reference](https://docs.together.ai/reference/chat-completions-1)
+- [Model List](https://docs.together.ai/docs/inference-models)
 
 ## Next Steps
-For cost optimization, see `together-cost-tuning`.
+
+See related Together AI skills for more patterns.

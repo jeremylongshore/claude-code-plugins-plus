@@ -1,11 +1,9 @@
 ---
 name: serpapi-common-errors
 description: |
-  Diagnose and fix SerpApi common errors and exceptions.
-  Use when encountering SerpApi errors, debugging failed requests,
-  or troubleshooting integration issues.
-  Trigger with phrases like "serpapi error", "fix serpapi",
-  "serpapi not working", "debug serpapi".
+  Diagnose and fix SerpApi errors: invalid keys, exhausted credits, blocked searches.
+  Use when SerpApi returns errors, empty results, or unexpected status codes.
+  Trigger: "serpapi error", "fix serpapi", "serpapi not working", "serpapi empty results".
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
@@ -17,97 +15,81 @@ compatible-with: claude-code
 # SerpApi Common Errors
 
 ## Overview
-Quick reference for the top 10 most common SerpApi errors and their solutions.
 
-## Prerequisites
-- SerpApi SDK installed
-- API credentials configured
-- Access to error logs
+Quick reference for SerpApi errors. Check `search_metadata.status` first -- it will be `Success` or `Error`. Error details are in `search_metadata.error` or `error` at the top level.
 
-## Instructions
+## Error Reference
 
-### Step 1: Identify the Error
-Check error message and code in your logs or console.
+### Invalid API Key
+```json
+{ "error": "Invalid API key. Your API key should be here: https://serpapi.com/manage-api-key" }
+```
+**Fix:** Verify key at serpapi.com/manage-api-key. Check env var is loaded.
 
-### Step 2: Find Matching Error Below
-Match your error to one of the documented cases.
+### Account Disabled / Searches Exhausted
+```json
+{ "error": "Your searches for the month have run out. You can upgrade your plan at https://serpapi.com/pricing" }
+```
+**Fix:** Check usage: `curl "https://serpapi.com/account.json?api_key=$SERPAPI_API_KEY"`. Upgrade plan or wait for monthly reset.
 
-### Step 3: Apply Solution
-Follow the solution steps for your specific error.
+### Missing Required Parameter
+```json
+{ "error": "Missing parameter: q. Please provide a search query." }
+```
+**Fix:** Each engine has different query params. Google/Bing use `q`, YouTube uses `search_query`.
 
-## Output
-- Identified error cause
-- Applied fix
-- Verified resolution
+### Google CAPTCHA / Blocked
+```json
+{ "search_metadata": { "status": "Error" }, "error": "Google hasn't returned any results for this query." }
+```
+**Fix:** SerpApi handles CAPTCHAs automatically, but unusual queries or very high volume may trigger blocks. Try different `location` or wait.
+
+### Empty Organic Results (Not an Error)
+
+```python
+result = client.search(engine="google", q="xyzzy123nonexistent")
+if not result.get("organic_results"):
+    # Not an error -- query just has no results
+    # Check for answer_box, knowledge_graph, etc.
+    print("No organic results, checking other components...")
+    print(f"Answer box: {result.get('answer_box')}")
+    print(f"Related searches: {result.get('related_searches')}")
+```
+
+## Quick Diagnostic
+
+```bash
+# 1. Check API key and account status
+curl -s "https://serpapi.com/account.json?api_key=$SERPAPI_API_KEY" | jq '{
+  plan: .plan_name, used: .this_month_usage, remaining: .plan_searches_left
+}'
+
+# 2. Test basic search
+curl -s "https://serpapi.com/search.json?q=test&engine=google&api_key=$SERPAPI_API_KEY" \
+  | jq '.search_metadata.status'
+
+# 3. Check search archive (last 10 searches)
+curl -s "https://serpapi.com/searches.json?api_key=$SERPAPI_API_KEY" \
+  | jq '.[0:3] | .[] | {id: .id, status: .status, query: .search_parameters.q}'
+```
 
 ## Error Handling
 
-### Authentication Failed
-**Error Message:**
-```
-Authentication error: Invalid API key
-```
-
-**Cause:** API key is missing, expired, or invalid.
-
-**Solution:**
-```bash
-# Verify API key is set
-echo $SERPAPI_API_KEY
-```
-
----
-
-### Rate Limit Exceeded
-**Error Message:**
-```
-Rate limit exceeded. Please retry after X seconds.
-```
-
-**Cause:** Too many requests in a short period.
-
-**Solution:**
-Implement exponential backoff. See `serpapi-rate-limits` skill.
-
----
-
-### Network Timeout
-**Error Message:**
-```
-Request timeout after 30000ms
-```
-
-**Cause:** Network connectivity or server latency issues.
-
-**Solution:**
-```typescript
-// Increase timeout
-const client = new Client({ timeout: 60000 });
-```
-
-## Examples
-
-### Quick Diagnostic Commands
-```bash
-# Check SerpApi status
-curl -s https://status.serpapi.com
-
-# Verify API connectivity
-curl -I https://api.serpapi.com
-
-# Check local configuration
-env | grep SERPAPI
-```
-
-### Escalation Path
-1. Collect evidence with `serpapi-debug-bundle`
-2. Check SerpApi status page
-3. Contact support with request ID
+| Error | Retryable | Action |
+|-------|-----------|--------|
+| Invalid API key | No | Fix key |
+| Searches exhausted | No | Upgrade plan |
+| CAPTCHA/blocked | Sometimes | Change location, wait |
+| Timeout | Yes | Retry with backoff |
+| Missing parameter | No | Fix request params |
+| 500 server error | Yes | Retry 2-3 times |
 
 ## Resources
-- [SerpApi Status Page](https://status.serpapi.com)
-- [SerpApi Support](https://docs.serpapi.com/support)
-- [SerpApi Error Codes](https://docs.serpapi.com/errors)
+
+- [SerpApi Status](https://serpapi.com/status)
+- [Account API](https://serpapi.com/account-api)
+- [Playground](https://serpapi.com/playground) (test queries interactively)
 
 ## Next Steps
+
 For comprehensive debugging, see `serpapi-debug-bundle`.

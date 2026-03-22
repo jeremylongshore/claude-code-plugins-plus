@@ -1,12 +1,11 @@
 ---
 name: workhuman-upgrade-migration
 description: |
-  Analyze, plan, and execute Workhuman SDK upgrades with breaking change detection.
-  Use when upgrading Workhuman SDK versions, detecting deprecations,
-  or migrating to new API versions.
-  Trigger with phrases like "upgrade workhuman", "workhuman migration",
-  "workhuman breaking changes", "update workhuman SDK", "analyze workhuman version".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
+  Workhuman upgrade migration for employee recognition and rewards API.
+  Use when integrating Workhuman Social Recognition,
+  or building recognition workflows with HRIS systems.
+  Trigger: "workhuman upgrade migration".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -14,101 +13,48 @@ tags: [saas, hr, recognition, workhuman]
 compatible-with: claude-code
 ---
 
-# Workhuman Upgrade & Migration
+# Workhuman Upgrade Migration
 
 ## Overview
-Guide for upgrading Workhuman SDK versions and handling breaking changes.
 
-## Prerequisites
-- Current Workhuman SDK installed
-- Git for version control
-- Test suite available
-- Staging environment
+Guidance for upgrade migration with Workhuman Social Recognition and rewards API.
 
 ## Instructions
 
-### Step 1: Check Current Version
-```bash
-npm list @workhuman/sdk
-npm view @workhuman/sdk version
-```
+### Key Workhuman API Concepts
 
-### Step 2: Review Changelog
-```bash
-open https://github.com/workhuman/sdk/releases
-```
+- **Auth**: OAuth 2.0 client credentials flow
+- **Recognition**: Peer-to-peer and manager nominations with points
+- **Awards**: Configurable levels (bronze, silver, gold, platinum)
+- **Values**: Company values attached to recognitions
+- **HRIS Sync**: Bidirectional sync with Workday, SAP SuccessFactors
+- **Integrations**: Microsoft Teams, Slack, Outlook native plugins
 
-### Step 3: Create Upgrade Branch
-```bash
-git checkout -b upgrade/workhuman-sdk-vX.Y.Z
-npm install @workhuman/sdk@latest
-npm test
-```
+### Core API Endpoints
 
-### Step 4: Handle Breaking Changes
-Update import statements, configuration, and method signatures as needed.
-
-## Output
-- Updated SDK version
-- Fixed breaking changes
-- Passing test suite
-- Documented rollback procedure
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/v1/recognitions` | GET | List recognitions |
+| `/api/v1/recognitions` | POST | Create nomination |
+| `/api/v1/recognitions/:id` | GET | Get recognition status |
+| `/api/v1/users` | GET | List employees |
+| `/api/v1/rewards/catalog` | GET | Browse reward catalog |
+| `/api/v1/rewards/redeem` | POST | Redeem points for reward |
 
 ## Error Handling
-| SDK Version | API Version | Node.js | Breaking Changes |
-|-------------|-------------|---------|------------------|
-| 3.x | 2024-01 | 18+ | Major refactor |
-| 2.x | 2023-06 | 16+ | Auth changes |
-| 1.x | 2022-01 | 14+ | Initial release |
 
-## Examples
-
-### Import Changes
-```typescript
-// Before (v1.x)
-import { Client } from '@workhuman/sdk';
-
-// After (v2.x)
-import { WorkhumanClient } from '@workhuman/sdk';
-```
-
-### Configuration Changes
-```typescript
-// Before (v1.x)
-const client = new Client({ key: 'xxx' });
-
-// After (v2.x)
-const client = new WorkhumanClient({
-  apiKey: 'xxx',
-});
-```
-
-### Rollback Procedure
-```bash
-npm install @workhuman/sdk@1.x.x --save-exact
-```
-
-### Deprecation Handling
-```typescript
-// Monitor for deprecation warnings in development
-if (process.env.NODE_ENV === 'development') {
-  process.on('warning', (warning) => {
-    if (warning.name === 'DeprecationWarning') {
-      console.warn('[Workhuman]', warning.message);
-      // Log to tracking system for proactive updates
-    }
-  });
-}
-
-// Common deprecation patterns to watch for:
-// - Renamed methods: client.oldMethod() -> client.newMethod()
-// - Changed parameters: { key: 'x' } -> { apiKey: 'x' }
-// - Removed features: Check release notes before upgrading
-```
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `401 Unauthorized` | Token expired | Re-authenticate |
+| `403 Forbidden` | Insufficient permissions | Check role/permissions |
+| `422 Validation` | Missing fields | Check required fields |
+| `404 Not Found` | Invalid ID | Verify resource exists |
 
 ## Resources
-- [Workhuman Changelog](https://github.com/workhuman/sdk/releases)
-- [Workhuman Migration Guide](https://docs.workhuman.com/migration)
+
+- [Workhuman Platform](https://www.workhuman.com/)
+- [Workhuman Integrations](https://www.workhuman.com/capabilities/integrations/)
 
 ## Next Steps
-For CI integration during upgrades, see `workhuman-ci-integration`.
+
+See related Workhuman skills for more patterns.

@@ -1,73 +1,107 @@
 ---
 name: stackblitz-core-workflow-b
 description: |
-  Execute StackBlitz secondary workflow: Core Workflow B.
-  Use when implementing secondary use case,
-  or complementing primary workflow.
-  Trigger with phrases like "stackblitz secondary workflow",
-  "secondary task with stackblitz".
+  Embed StackBlitz projects and manage WebContainer snapshots for sharing.
+  Use when embedding code playgrounds in docs, creating shareable examples,
+  or building interactive tutorials with StackBlitz.
+  Trigger: "embed stackblitz", "stackblitz embed", "stackblitz share project".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ide, cloud, stackblitz]
+tags: [saas, ide, webcontainers, stackblitz]
 compatible-with: claude-code
 ---
 
-# StackBlitz Core Workflow B
+# StackBlitz Core Workflow B: Embedding & Sharing
 
 ## Overview
-Secondary workflow for StackBlitz. Complements the primary workflow.
 
-## Prerequisites
-- Completed `stackblitz-install-auth` setup
-- Familiarity with `stackblitz-core-workflow-a`
-- Valid API credentials configured
+Embed interactive StackBlitz projects in documentation, blog posts, and tutorials using the StackBlitz SDK. Supports embedding from GitHub repos, existing StackBlitz projects, or inline code.
 
 ## Instructions
 
-### Step 1: Setup
+### Step 1: Embed from GitHub
+
 ```typescript
-// Step 1 implementation
+import sdk from '@stackblitz/sdk';
+
+// Embed a GitHub repo as an interactive editor
+sdk.embedGithubProject('embed-container', 'vitejs/vite/packages/create-vite/template-react-ts', {
+  openFile: 'src/App.tsx',
+  height: 500,
+  theme: 'dark',
+  clickToLoad: true,  // Don't load until user clicks
+});
 ```
 
-### Step 2: Process
+### Step 2: Embed Inline Project
+
 ```typescript
-// Step 2 implementation
+sdk.embedProject('embed-container', {
+  title: 'React Counter Demo',
+  template: 'node',
+  files: {
+    'src/App.tsx': `
+import { useState } from 'react';
+export default function App() {
+  const [count, setCount] = useState(0);
+  return <button onClick={() => setCount(c => c + 1)}>Count: {count}</button>;
+}`,
+    'package.json': JSON.stringify({
+      dependencies: { react: '^18', 'react-dom': '^18' },
+    }),
+  },
+}, {
+  openFile: 'src/App.tsx',
+  terminalHeight: 25,
+});
 ```
 
-### Step 3: Complete
+### Step 3: Open in New Tab
+
 ```typescript
-// Step 3 implementation
+// Open project in full StackBlitz editor
+sdk.openGithubProject('user/repo', { openFile: 'README.md' });
+
+// Open inline project
+sdk.openProject({
+  title: 'Quick Demo',
+  template: 'node',
+  files: { 'index.js': 'console.log("Hello!")' },
+});
 ```
 
-## Output
-- Completed Core Workflow B execution
-- Results from StackBlitz API
-- Success confirmation or error details
+### Step 4: URL-Based Embedding
+
+```html
+<!-- iframe embed (no SDK needed) -->
+<iframe
+  src="https://stackblitz.com/edit/vitejs-vite?embed=1&file=src/main.ts&theme=dark"
+  style="width:100%;height:500px;border:0;border-radius:4px;overflow:hidden;"
+></iframe>
+
+<!-- GitHub repo embed -->
+<iframe
+  src="https://stackblitz.com/github/user/repo?embed=1&file=README.md"
+  style="width:100%;height:500px;border:0;"
+></iframe>
+```
 
 ## Error Handling
-| Aspect | Workflow A | Workflow B |
-|--------|------------|------------|
-| Use Case | Primary | Secondary |
-| Complexity | Medium | Lower |
-| Performance | Standard | Optimized |
 
-## Examples
-
-### Complete Workflow
-```typescript
-// Complete workflow example
-```
-
-### Error Recovery
-```typescript
-// Error handling code
-```
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Embed shows loading forever | Missing template files | Ensure `package.json` is included |
+| `clickToLoad` not working | SDK version mismatch | Update `@stackblitz/sdk` |
+| GitHub embed 404 | Wrong repo path | Use `owner/repo/path/to/subdir` format |
 
 ## Resources
-- [StackBlitz Documentation](https://docs.stackblitz.com)
-- [StackBlitz API Reference](https://docs.stackblitz.com/api)
+
+- [StackBlitz SDK](https://developer.stackblitz.com/platform/api/javascript-sdk)
+- [Embed URL Parameters](https://developer.stackblitz.com/platform/api/embed-url)
+- [WebContainer API](https://developer.stackblitz.com/platform/api/webcontainer-api)
 
 ## Next Steps
+
 For common errors, see `stackblitz-common-errors`.

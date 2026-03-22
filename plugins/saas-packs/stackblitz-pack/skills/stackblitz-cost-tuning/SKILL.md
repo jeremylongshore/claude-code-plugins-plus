@@ -1,203 +1,41 @@
 ---
 name: stackblitz-cost-tuning
 description: |
-  Optimize StackBlitz costs through tier selection, sampling, and usage monitoring.
-  Use when analyzing StackBlitz billing, reducing API costs,
-  or implementing usage monitoring and budget alerts.
-  Trigger with phrases like "stackblitz cost", "stackblitz billing",
-  "reduce stackblitz costs", "stackblitz pricing", "stackblitz expensive", "stackblitz budget".
+  StackBlitz pricing tiers: free embedding, WebContainer API commercial licensing.
+  Use when working with WebContainers or StackBlitz SDK.
+  Trigger: "stackblitz cost".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ide, cloud, stackblitz]
+tags: [saas, ide, webcontainers, stackblitz]
 compatible-with: claude-code
 ---
 
 # StackBlitz Cost Tuning
 
 ## Overview
-Optimize StackBlitz costs through smart tier selection, sampling, and usage monitoring.
 
-## Prerequisites
-- Access to StackBlitz billing dashboard
-- Understanding of current usage patterns
-- Database for usage tracking (optional)
-- Alerting system configured (optional)
-
-## Pricing Tiers
-
-| Tier | Monthly Cost | Included | Overage |
-|------|-------------|----------|---------|
-| Free | $0 | 1,000 requests | N/A |
-| Pro | $99 | 100,000 requests | $0.001/request |
-| Enterprise | Custom | Unlimited | Volume discounts |
-
-## Cost Estimation
-
-```typescript
-interface UsageEstimate {
-  requestsPerMonth: number;
-  tier: string;
-  estimatedCost: number;
-  recommendation?: string;
-}
-
-function estimateStackBlitzCost(requestsPerMonth: number): UsageEstimate {
-  if (requestsPerMonth <= 1000) {
-    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
-  }
-
-  if (requestsPerMonth <= 100000) {
-    return { requestsPerMonth, tier: 'Pro', estimatedCost: 99 };
-  }
-
-  const proOverage = (requestsPerMonth - 100000) * 0.001;
-  const proCost = 99 + proOverage;
-
-  return {
-    requestsPerMonth,
-    tier: 'Pro (with overage)',
-    estimatedCost: proCost,
-    recommendation: proCost > 500
-      ? 'Consider Enterprise tier for volume discounts'
-      : undefined,
-  };
-}
-```
-
-## Usage Monitoring
-
-```typescript
-class StackBlitzUsageMonitor {
-  private requestCount = 0;
-  private bytesTransferred = 0;
-  private alertThreshold: number;
-
-  constructor(monthlyBudget: number) {
-    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
-  }
-
-  track(request: { bytes: number }) {
-    this.requestCount++;
-    this.bytesTransferred += request.bytes;
-
-    if (this.estimatedCost() > this.alertThreshold) {
-      this.sendAlert('Approaching StackBlitz budget limit');
-    }
-  }
-
-  estimatedCost(): number {
-    return estimateStackBlitzCost(this.requestCount).estimatedCost;
-  }
-
-  private sendAlert(message: string) {
-    // Send to Slack, email, PagerDuty, etc.
-  }
-}
-```
-
-## Cost Reduction Strategies
-
-### Step 1: Request Sampling
-```typescript
-function shouldSample(samplingRate = 0.1): boolean {
-  return Math.random() < samplingRate;
-}
-
-// Use for non-critical telemetry
-if (shouldSample(0.1)) { // 10% sample
-  await stackblitzClient.trackEvent(event);
-}
-```
-
-### Step 2: Batching Requests
-```typescript
-// Instead of N individual calls
-await Promise.all(ids.map(id => stackblitzClient.get(id)));
-
-// Use batch endpoint (1 call)
-await stackblitzClient.batchGet(ids);
-```
-
-### Step 3: Caching (from P16)
-- Cache frequently accessed data
-- Use cache invalidation webhooks
-- Set appropriate TTLs
-
-### Step 4: Compression
-```typescript
-const client = new StackBlitzClient({
-  compression: true, // Enable gzip
-});
-```
-
-## Budget Alerts
-
-```bash
-# Set up billing alerts in StackBlitz dashboard
-# Or use API if available:
-# Check StackBlitz documentation for billing APIs
-```
-
-## Cost Dashboard Query
-
-```sql
--- If tracking usage in your database
-SELECT
-  DATE_TRUNC('day', created_at) as date,
-  COUNT(*) as requests,
-  SUM(response_bytes) as bytes,
-  COUNT(*) * 0.001 as estimated_cost
-FROM stackblitz_api_logs
-WHERE created_at >= NOW() - INTERVAL '30 days'
-GROUP BY 1
-ORDER BY 1;
-```
+StackBlitz pricing tiers: free embedding, WebContainer API commercial licensing.
 
 ## Instructions
 
-### Step 1: Analyze Current Usage
-Review StackBlitz dashboard for usage patterns and costs.
+### Refer to the WebContainer API documentation for detailed guidance.
 
-### Step 2: Select Optimal Tier
-Use the cost estimation function to find the right tier.
-
-### Step 3: Implement Monitoring
-Add usage tracking to catch budget overruns early.
-
-### Step 4: Apply Optimizations
-Enable batching, caching, and sampling where appropriate.
-
-## Output
-- Optimized tier selection
-- Usage monitoring implemented
-- Budget alerts configured
-- Cost reduction strategies applied
+See the core workflow skills for implementation patterns.
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Unexpected charges | Untracked usage | Implement monitoring |
-| Overage fees | Wrong tier | Upgrade tier |
-| Budget exceeded | No alerts | Set up alerts |
-| Inefficient usage | No batching | Enable batch requests |
-
-## Examples
-
-### Quick Cost Check
-```typescript
-// Estimate monthly cost for your usage
-const estimate = estimateStackBlitzCost(yourMonthlyRequests);
-console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
-if (estimate.recommendation) {
-  console.log(`💡 ${estimate.recommendation}`);
-}
-```
+| Configuration error | Wrong setup | Check WebContainer docs |
+| Build failure | Missing deps | Run npm install |
 
 ## Resources
-- [StackBlitz Pricing](https://stackblitz.com/pricing)
-- [StackBlitz Billing Dashboard](https://dashboard.stackblitz.com/billing)
+
+- [WebContainer API Docs](https://webcontainers.io/)
+- [StackBlitz SDK](https://developer.stackblitz.com/)
 
 ## Next Steps
-For architecture patterns, see `stackblitz-reference-architecture`.
+
+See related skills for more patterns.

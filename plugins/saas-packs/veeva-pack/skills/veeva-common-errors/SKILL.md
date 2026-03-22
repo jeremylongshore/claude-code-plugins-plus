@@ -1,113 +1,62 @@
 ---
 name: veeva-common-errors
 description: |
-  Diagnose and fix Veeva common errors and exceptions.
-  Use when encountering Veeva errors, debugging failed requests,
-  or troubleshooting integration issues.
-  Trigger with phrases like "veeva error", "fix veeva",
-  "veeva not working", "debug veeva".
-allowed-tools: Read, Grep, Bash(curl:*)
+  Veeva Vault common errors for REST API and clinical operations.
+  Use when working with Veeva Vault document management and CRM.
+  Trigger: "veeva common errors".
+allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, pharma, crm, veeva]
+tags: [saas, life-sciences, crm, veeva]
 compatible-with: claude-code
 ---
 
-# Veeva Common Errors
+# Veeva Vault Common Errors
 
 ## Overview
-Quick reference for the top 10 most common Veeva errors and their solutions.
 
-## Prerequisites
-- Veeva SDK installed
-- API credentials configured
-- Access to error logs
+Guidance for common errors with Veeva Vault REST API, VQL queries, and VAPIL Java SDK.
 
 ## Instructions
 
-### Step 1: Identify the Error
-Check error message and code in your logs or console.
+### Key Vault API Concepts
 
-### Step 2: Find Matching Error Below
-Match your error to one of the documented cases.
+- **Authentication**: Session-based (username/password or OAuth 2.0)
+- **Base URL**: `https://{vault}.veevavault.com/api/v24.1/`
+- **VQL**: SQL-like query language for Vault data
+- **VAPIL**: Open-source Java SDK covering all Platform APIs
+- **Lifecycle**: Documents flow through states (Draft > In Review > Approved)
 
-### Step 3: Apply Solution
-Follow the solution steps for your specific error.
+### Common VQL Patterns
 
-## Output
-- Identified error cause
-- Applied fix
-- Verified resolution
+```sql
+-- List documents by type
+SELECT id, name__v FROM documents WHERE type__v = 'Trial Document'
+
+-- Find objects
+SELECT id, name__v FROM site__v WHERE status__v = 'active__v'
+
+-- Join related objects
+SELECT id, name__v, study__vr.name__v FROM study_country__v
+```
 
 ## Error Handling
 
-### Authentication Failed
-**Error Message:**
-```
-Authentication error: Invalid API key
-```
-
-**Cause:** API key is missing, expired, or invalid.
-
-**Solution:**
-```bash
-# Verify API key is set
-echo $VEEVA_API_KEY
-```
-
----
-
-### Rate Limit Exceeded
-**Error Message:**
-```
-Rate limit exceeded. Please retry after X seconds.
-```
-
-**Cause:** Too many requests in a short period.
-
-**Solution:**
-Implement exponential backoff. See `veeva-rate-limits` skill.
-
----
-
-### Network Timeout
-**Error Message:**
-```
-Request timeout after 30000ms
-```
-
-**Cause:** Network connectivity or server latency issues.
-
-**Solution:**
-```typescript
-// Increase timeout
-const client = new Client({ timeout: 60000 });
-```
-
-## Examples
-
-### Quick Diagnostic Commands
-```bash
-# Check Veeva status
-curl -s https://status.veeva.com
-
-# Verify API connectivity
-curl -I https://api.veeva.com
-
-# Check local configuration
-env | grep VEEVA
-```
-
-### Escalation Path
-1. Collect evidence with `veeva-debug-bundle`
-2. Check Veeva status page
-3. Contact support with request ID
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `INVALID_SESSION_ID` | Session expired | Re-authenticate |
+| `INSUFFICIENT_ACCESS` | Missing permissions | Check security profile |
+| `INVALID_DATA` | Bad VQL or field name | Validate against metadata |
+| `OPERATION_NOT_ALLOWED` | Lifecycle state conflict | Check document state |
 
 ## Resources
-- [Veeva Status Page](https://status.veeva.com)
-- [Veeva Support](https://docs.veeva.com/support)
-- [Veeva Error Codes](https://docs.veeva.com/errors)
+
+- [Vault API Reference](https://developer.veevavault.com/api/)
+- [VQL Reference](https://developer.veevavault.com/vql/)
+- [VAPIL SDK](https://developer.veevavault.com/sdk/)
+- [Developer Portal](https://developer.veevavault.com/)
 
 ## Next Steps
-For comprehensive debugging, see `veeva-debug-bundle`.
+
+See related Veeva Vault skills for more patterns.

@@ -1,71 +1,62 @@
 ---
 name: veeva-core-workflow-a
 description: |
-  Execute Veeva primary workflow: Core Workflow A.
-  Use when implementing primary use case,
-  building main features, or core integration tasks.
-  Trigger with phrases like "veeva main workflow",
-  "primary task with veeva".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
+  Veeva Vault core workflow a for REST API and clinical operations.
+  Use when working with Veeva Vault document management and CRM.
+  Trigger: "veeva core workflow a".
+allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, pharma, crm, veeva]
+tags: [saas, life-sciences, crm, veeva]
 compatible-with: claude-code
 ---
 
-# Veeva Core Workflow A
+# Veeva Vault Core Workflow A
 
 ## Overview
-Primary money-path workflow for Veeva. This is the most common use case.
 
-## Prerequisites
-- Completed `veeva-install-auth` setup
-- Understanding of Veeva core concepts
-- Valid API credentials configured
+Guidance for core workflow a with Veeva Vault REST API, VQL queries, and VAPIL Java SDK.
 
 ## Instructions
 
-### Step 1: Initialize
-```typescript
-// Step 1 implementation
-```
+### Key Vault API Concepts
 
-### Step 2: Execute
-```typescript
-// Step 2 implementation
-```
+- **Authentication**: Session-based (username/password or OAuth 2.0)
+- **Base URL**: `https://{vault}.veevavault.com/api/v24.1/`
+- **VQL**: SQL-like query language for Vault data
+- **VAPIL**: Open-source Java SDK covering all Platform APIs
+- **Lifecycle**: Documents flow through states (Draft > In Review > Approved)
 
-### Step 3: Finalize
-```typescript
-// Step 3 implementation
-```
+### Common VQL Patterns
 
-## Output
-- Completed Core Workflow A execution
-- Expected results from Veeva API
-- Success confirmation or error details
+```sql
+-- List documents by type
+SELECT id, name__v FROM documents WHERE type__v = 'Trial Document'
+
+-- Find objects
+SELECT id, name__v FROM site__v WHERE status__v = 'active__v'
+
+-- Join related objects
+SELECT id, name__v, study__vr.name__v FROM study_country__v
+```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Error 1 | Cause | Solution |
-| Error 2 | Cause | Solution |
-
-## Examples
-
-### Complete Workflow
-```typescript
-// Complete workflow example
-```
-
-### Common Variations
-- Variation 1: Description
-- Variation 2: Description
+| `INVALID_SESSION_ID` | Session expired | Re-authenticate |
+| `INSUFFICIENT_ACCESS` | Missing permissions | Check security profile |
+| `INVALID_DATA` | Bad VQL or field name | Validate against metadata |
+| `OPERATION_NOT_ALLOWED` | Lifecycle state conflict | Check document state |
 
 ## Resources
-- [Veeva Documentation](https://docs.veeva.com)
-- [Veeva API Reference](https://docs.veeva.com/api)
+
+- [Vault API Reference](https://developer.veevavault.com/api/)
+- [VQL Reference](https://developer.veevavault.com/vql/)
+- [VAPIL SDK](https://developer.veevavault.com/sdk/)
+- [Developer Portal](https://developer.veevavault.com/)
 
 ## Next Steps
-For secondary workflow, see `veeva-core-workflow-b`.
+
+See related Veeva Vault skills for more patterns.

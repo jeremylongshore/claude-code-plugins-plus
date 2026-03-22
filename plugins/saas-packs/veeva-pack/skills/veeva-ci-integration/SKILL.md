@@ -1,126 +1,62 @@
 ---
 name: veeva-ci-integration
 description: |
-  Configure Veeva CI/CD integration with GitHub Actions and testing.
-  Use when setting up automated testing, configuring CI pipelines,
-  or integrating Veeva tests into your build process.
-  Trigger with phrases like "veeva CI", "veeva GitHub Actions",
-  "veeva automated tests", "CI veeva".
-allowed-tools: Read, Write, Edit, Bash(gh:*)
+  Veeva Vault ci integration for REST API and clinical operations.
+  Use when working with Veeva Vault document management and CRM.
+  Trigger: "veeva ci integration".
+allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, pharma, crm, veeva]
+tags: [saas, life-sciences, crm, veeva]
 compatible-with: claude-code
 ---
 
-# Veeva CI Integration
+# Veeva Vault Ci Integration
 
 ## Overview
-Set up CI/CD pipelines for Veeva integrations with automated testing.
 
-## Prerequisites
-- GitHub repository with Actions enabled
-- Veeva test API key
-- npm/pnpm project configured
+Guidance for ci integration with Veeva Vault REST API, VQL queries, and VAPIL Java SDK.
 
 ## Instructions
 
-### Step 1: Create GitHub Actions Workflow
-Create `.github/workflows/veeva-integration.yml`:
+### Key Vault API Concepts
 
-```yaml
-name: Veeva Integration Tests
+- **Authentication**: Session-based (username/password or OAuth 2.0)
+- **Base URL**: `https://{vault}.veevavault.com/api/v24.1/`
+- **VQL**: SQL-like query language for Vault data
+- **VAPIL**: Open-source Java SDK covering all Platform APIs
+- **Lifecycle**: Documents flow through states (Draft > In Review > Approved)
 
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+### Common VQL Patterns
 
-env:
-  VEEVA_API_KEY: ${{ secrets.VEEVA_API_KEY }}
+```sql
+-- List documents by type
+SELECT id, name__v FROM documents WHERE type__v = 'Trial Document'
 
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    env:
-      VEEVA_API_KEY: ${{ secrets.VEEVA_API_KEY }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-      - run: npm ci
-      - run: npm test -- --coverage
-      - run: npm run test:integration
+-- Find objects
+SELECT id, name__v FROM site__v WHERE status__v = 'active__v'
+
+-- Join related objects
+SELECT id, name__v, study__vr.name__v FROM study_country__v
 ```
-
-### Step 2: Configure Secrets
-```bash
-gh secret set VEEVA_API_KEY --body "sk_test_***"
-```
-
-### Step 3: Add Integration Tests
-```typescript
-describe('Veeva Integration', () => {
-  it.skipIf(!process.env.VEEVA_API_KEY)('should connect', async () => {
-    const client = getVeevaClient();
-    const result = await client.healthCheck();
-    expect(result.status).toBe('ok');
-  });
-});
-```
-
-## Output
-- Automated test pipeline
-- PR checks configured
-- Coverage reports uploaded
-- Release workflow ready
 
 ## Error Handling
-| Issue | Cause | Solution |
+
+| Error | Cause | Solution |
 |-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via `gh secret set` |
-| Tests timeout | Network issues | Increase timeout or mock |
-| Auth failures | Invalid key | Check secret value |
-
-## Examples
-
-### Release Workflow
-```yaml
-on:
-  push:
-    tags: ['v*']
-
-jobs:
-  release:
-    runs-on: ubuntu-latest
-    env:
-      VEEVA_API_KEY: ${{ secrets.VEEVA_API_KEY_PROD }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - run: npm ci
-      - name: Verify Veeva production readiness
-        run: npm run test:integration
-      - run: npm run build
-      - run: npm publish
-```
-
-### Branch Protection
-```yaml
-required_status_checks:
-  - "test"
-  - "veeva-integration"
-```
+| `INVALID_SESSION_ID` | Session expired | Re-authenticate |
+| `INSUFFICIENT_ACCESS` | Missing permissions | Check security profile |
+| `INVALID_DATA` | Bad VQL or field name | Validate against metadata |
+| `OPERATION_NOT_ALLOWED` | Lifecycle state conflict | Check document state |
 
 ## Resources
-- [GitHub Actions Documentation](https://docs.github.com/en/actions)
-- [Veeva CI Guide](https://docs.veeva.com/ci)
+
+- [Vault API Reference](https://developer.veevavault.com/api/)
+- [VQL Reference](https://developer.veevavault.com/vql/)
+- [VAPIL SDK](https://developer.veevavault.com/sdk/)
+- [Developer Portal](https://developer.veevavault.com/)
 
 ## Next Steps
-For deployment patterns, see `veeva-deploy-integration`.
+
+See related Veeva Vault skills for more patterns.

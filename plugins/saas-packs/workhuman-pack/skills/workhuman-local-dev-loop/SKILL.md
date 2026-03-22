@@ -1,12 +1,11 @@
 ---
 name: workhuman-local-dev-loop
 description: |
-  Configure Workhuman local development with hot reload and testing.
-  Use when setting up a development environment, configuring test workflows,
-  or establishing a fast iteration cycle with Workhuman.
-  Trigger with phrases like "workhuman dev setup", "workhuman local development",
-  "workhuman dev environment", "develop with workhuman".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
+  Workhuman local dev loop for employee recognition and rewards API.
+  Use when integrating Workhuman Social Recognition,
+  or building recognition workflows with HRIS systems.
+  Trigger: "workhuman local dev loop".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,103 +16,45 @@ compatible-with: claude-code
 # Workhuman Local Dev Loop
 
 ## Overview
-Set up a fast, reproducible local development workflow for Workhuman.
 
-## Prerequisites
-- Completed `workhuman-install-auth` setup
-- Node.js 18+ with npm/pnpm
-- Code editor with TypeScript support
-- Git for version control
+Guidance for local dev loop with Workhuman Social Recognition and rewards API.
 
 ## Instructions
 
-### Step 1: Create Project Structure
-```
-my-workhuman-project/
-├── src/
-│   ├── workhuman/
-│   │   ├── client.ts       # Workhuman client wrapper
-│   │   ├── config.ts       # Configuration management
-│   │   └── utils.ts        # Helper functions
-│   └── index.ts
-├── tests/
-│   └── workhuman.test.ts
-├── .env.local              # Local secrets (git-ignored)
-├── .env.example            # Template for team
-└── package.json
-```
+### Key Workhuman API Concepts
 
-### Step 2: Configure Environment
-```bash
-# Copy environment template
-cp .env.example .env.local
+- **Auth**: OAuth 2.0 client credentials flow
+- **Recognition**: Peer-to-peer and manager nominations with points
+- **Awards**: Configurable levels (bronze, silver, gold, platinum)
+- **Values**: Company values attached to recognitions
+- **HRIS Sync**: Bidirectional sync with Workday, SAP SuccessFactors
+- **Integrations**: Microsoft Teams, Slack, Outlook native plugins
 
-# Install dependencies
-npm install
+### Core API Endpoints
 
-# Start development server
-npm run dev
-```
-
-### Step 3: Setup Hot Reload
-```json
-{
-  "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "test": "vitest",
-    "test:watch": "vitest --watch"
-  }
-}
-```
-
-### Step 4: Configure Testing
-```typescript
-import { describe, it, expect, vi } from 'vitest';
-import { WorkhumanClient } from '../src/workhuman/client';
-
-describe('Workhuman Client', () => {
-  it('should initialize with API key', () => {
-    const client = new WorkhumanClient({ apiKey: 'test-key' });
-    expect(client).toBeDefined();
-  });
-});
-```
-
-## Output
-- Working development environment with hot reload
-- Configured test suite with mocking
-- Environment variable management
-- Fast iteration cycle for Workhuman development
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/v1/recognitions` | GET | List recognitions |
+| `/api/v1/recognitions` | POST | Create nomination |
+| `/api/v1/recognitions/:id` | GET | Get recognition status |
+| `/api/v1/users` | GET | List employees |
+| `/api/v1/rewards/catalog` | GET | Browse reward catalog |
+| `/api/v1/rewards/redeem` | POST | Redeem points for reward |
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Module not found | Missing dependency | Run `npm install` |
-| Port in use | Another process | Kill process or change port |
-| Env not loaded | Missing .env.local | Copy from .env.example |
-| Test timeout | Slow network | Increase test timeout |
-
-## Examples
-
-### Mock Workhuman Responses
-```typescript
-vi.mock('@workhuman/sdk', () => ({
-  WorkhumanClient: vi.fn().mockImplementation(() => ({
-    // Mock methods here
-  })),
-}));
-```
-
-### Debug Mode
-```bash
-# Enable verbose logging
-DEBUG=WORKHUMAN=* npm run dev
-```
+| `401 Unauthorized` | Token expired | Re-authenticate |
+| `403 Forbidden` | Insufficient permissions | Check role/permissions |
+| `422 Validation` | Missing fields | Check required fields |
+| `404 Not Found` | Invalid ID | Verify resource exists |
 
 ## Resources
-- [Workhuman SDK Reference](https://docs.workhuman.com/sdk)
-- [Vitest Documentation](https://vitest.dev/)
-- [tsx Documentation](https://github.com/esbuild-kit/tsx)
+
+- [Workhuman Platform](https://www.workhuman.com/)
+- [Workhuman Integrations](https://www.workhuman.com/capabilities/integrations/)
 
 ## Next Steps
-See `workhuman-sdk-patterns` for production-ready code patterns.
+
+See related Workhuman skills for more patterns.

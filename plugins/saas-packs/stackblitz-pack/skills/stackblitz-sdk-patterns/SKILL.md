@@ -1,149 +1,174 @@
 ---
 name: stackblitz-sdk-patterns
 description: |
-  Apply production-ready StackBlitz SDK patterns for TypeScript and Python.
-  Use when implementing StackBlitz integrations, refactoring SDK usage,
-  or establishing team coding standards for StackBlitz.
-  Trigger with phrases like "stackblitz SDK patterns", "stackblitz best practices",
-  "stackblitz code patterns", "idiomatic stackblitz".
+  Production patterns for WebContainer API: file system operations, process management, and jsh shell.
+  Use when building browser IDEs, managing WebContainer lifecycle,
+  or implementing terminal emulation with jsh.
+  Trigger: "webcontainer patterns", "stackblitz best practices", "webcontainer file system".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ide, cloud, stackblitz]
+tags: [saas, ide, webcontainers, stackblitz]
 compatible-with: claude-code
 ---
 
 # StackBlitz SDK Patterns
 
 ## Overview
-Production-ready patterns for StackBlitz SDK usage in TypeScript and Python.
 
-## Prerequisites
-- Completed `stackblitz-install-auth` setup
-- Familiarity with async/await patterns
-- Understanding of error handling best practices
+Production patterns for the WebContainer API: singleton boot, file system CRUD, process spawning and management, jsh interactive shell, and the StackBlitz SDK for embedding projects.
 
 ## Instructions
 
-### Step 1: Implement Singleton Pattern (Recommended)
+### Step 1: Singleton WebContainer Instance
+
 ```typescript
-// src/stackblitz/client.ts
-import { StackBlitzClient } from '@stackblitz/sdk';
+import { WebContainer } from '@webcontainer/api';
 
-let instance: StackBlitzClient | null = null;
+let instance: WebContainer | null = null;
 
-export function getStackBlitzClient(): StackBlitzClient {
+export async function getWebContainer(): Promise<WebContainer> {
   if (!instance) {
-    instance = new StackBlitzClient({
-      apiKey: process.env.STACKBLITZ_API_KEY!,
-      // Additional options
-    });
+    instance = await WebContainer.boot();
   }
   return instance;
 }
-```
 
-### Step 2: Add Error Handling Wrapper
-```typescript
-import { StackBlitzError } from '@stackblitz/sdk';
-
-async function safeStackBlitzCall<T>(
-  operation: () => Promise<T>
-): Promise<{ data: T | null; error: Error | null }> {
-  try {
-    const data = await operation();
-    return { data, error: null };
-  } catch (err) {
-    if (err instanceof StackBlitzError) {
-      console.error({
-        code: err.code,
-        message: err.message,
-      });
-    }
-    return { data: null, error: err as Error };
+// Teardown
+export async function teardownWebContainer() {
+  if (instance) {
+    instance.teardown();
+    instance = null;
   }
 }
 ```
 
-### Step 3: Implement Retry Logic
+### Step 2: File System Operations
+
 ```typescript
-async function withRetry<T>(
-  operation: () => Promise<T>,
-  maxRetries = 3,
-  backoffMs = 1000
-): Promise<T> {
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      return await operation();
-    } catch (err) {
-      if (attempt === maxRetries) throw err;
-      const delay = backoffMs * Math.pow(2, attempt - 1);
-      await new Promise(r => setTimeout(r, delay));
-    }
-  }
-  throw new Error('Unreachable');
-}
-```
+const wc = await getWebContainer();
 
-## Output
-- Type-safe client singleton
-- Robust error handling with structured logging
-- Automatic retry with exponential backoff
-- Runtime validation for API responses
+// Write file
+await wc.fs.writeFile('/src/app.ts', 'export const hello = "world";');
 
-## Error Handling
-| Pattern | Use Case | Benefit |
-|---------|----------|---------|
-| Safe wrapper | All API calls | Prevents uncaught exceptions |
-| Retry logic | Transient failures | Improves reliability |
-| Type guards | Response validation | Catches API changes |
-| Logging | All operations | Debugging and monitoring |
+// Read file
+const content = await wc.fs.readFile('/src/app.ts', 'utf-8');
 
-## Examples
+// Read directory
+const entries = await wc.fs.readdir('/src', { withFileTypes: true });
+entries.forEach(entry => {
+  console.log(`${entry.name} (${entry.isDirectory() ? 'dir' : 'file'})`);
+});
 
-### Factory Pattern (Multi-tenant)
-```typescript
-const clients = new Map<string, StackBlitzClient>();
+// Create directory
+await wc.fs.mkdir('/src/components', { recursive: true });
 
-export function getClientForTenant(tenantId: string): StackBlitzClient {
-  if (!clients.has(tenantId)) {
-    const apiKey = getTenantApiKey(tenantId);
-    clients.set(tenantId, new StackBlitzClient({ apiKey }));
-  }
-  return clients.get(tenantId)!;
-}
-```
+// Delete file
+await wc.fs.rm('/src/old.ts');
 
-### Python Context Manager
-```python
-from contextlib import asynccontextmanager
-from stackblitz import StackBlitzClient
+// Delete directory
+await wc.fs.rm('/dist', { recursive: true });
 
-@asynccontextmanager
-async def get_stackblitz_client():
-    client = StackBlitzClient()
-    try:
-        yield client
-    finally:
-        await client.close()
-```
-
-### Zod Validation
-```typescript
-import { z } from 'zod';
-
-const stackblitzResponseSchema = z.object({
-  id: z.string(),
-  status: z.enum(['active', 'inactive']),
-  createdAt: z.string().datetime(),
+// Watch for changes
+wc.fs.watch('/src', { recursive: true }, (event, filename) => {
+  console.log(`${event}: ${filename}`);
 });
 ```
 
+### Step 3: Process Management
+
+```typescript
+// Spawn a process
+const proc = await wc.spawn('node', ['script.js']);
+
+// Stream stdout
+const reader = proc.output.getReader();
+while (true) {
+  const { done, value } = await reader.read();
+  if (done) break;
+  console.log(value);
+}
+
+// Write to stdin
+const writer = proc.input.getWriter();
+await writer.write('user input\n');
+await writer.close();
+
+// Wait for exit
+const exitCode = await proc.exit;
+
+// Kill a process
+proc.kill();
+```
+
+### Step 4: jsh Interactive Shell
+
+```typescript
+// jsh is WebContainer's built-in shell
+const jshProcess = await wc.spawn('jsh', {
+  terminal: { cols: 80, rows: 24 },
+});
+
+// Connect to xterm.js
+import { Terminal } from 'xterm';
+const terminal = new Terminal();
+terminal.open(document.getElementById('terminal')!);
+
+jshProcess.output.pipeTo(new WritableStream({
+  write(data) { terminal.write(data); },
+}));
+
+terminal.onData((data) => {
+  const writer = jshProcess.input.getWriter();
+  writer.write(data);
+  writer.releaseLock();
+});
+```
+
+### Step 5: StackBlitz SDK (Embedding)
+
+```typescript
+import sdk from '@stackblitz/sdk';
+
+// Embed an existing project
+sdk.embedProjectId('container', 'vitejs-vite-template', {
+  height: 500,
+  openFile: 'src/App.tsx',
+  terminalHeight: 30,
+});
+
+// Embed from GitHub
+sdk.embedGithubProject('container', 'user/repo', {
+  openFile: 'README.md',
+});
+
+// Create new project programmatically
+sdk.embedProject('container', {
+  title: 'My Project',
+  template: 'node',
+  files: {
+    'index.js': 'console.log("Hello!")',
+    'package.json': '{"name":"demo","scripts":{"start":"node index.js"}}',
+  },
+});
+```
+
+## Error Handling
+
+| Pattern | Use Case | Benefit |
+|---------|----------|---------|
+| Singleton boot | Multiple components need WC | Only one instance allowed per page |
+| Process kill on teardown | Page navigation | Prevents orphaned processes |
+| fs.watch | Live preview | Auto-rebuild on file changes |
+| jsh + xterm.js | Terminal emulator | Full shell experience in browser |
+
 ## Resources
-- [StackBlitz SDK Reference](https://docs.stackblitz.com/sdk)
-- [StackBlitz API Types](https://docs.stackblitz.com/types)
-- [Zod Documentation](https://zod.dev/)
+
+- [WebContainer API Reference](https://webcontainers.io/api)
+- [File System Guide](https://webcontainers.io/guides/working-with-the-file-system)
+- [StackBlitz SDK Reference](https://developer.stackblitz.com/platform/api/javascript-sdk)
 
 ## Next Steps
-Apply patterns in `stackblitz-core-workflow-a` for real-world usage.
+
+Apply patterns in `stackblitz-core-workflow-a`.

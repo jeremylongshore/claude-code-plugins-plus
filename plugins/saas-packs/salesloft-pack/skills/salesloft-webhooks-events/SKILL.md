@@ -1,11 +1,10 @@
 ---
 name: salesloft-webhooks-events
 description: |
-  Implement Salesloft webhook signature validation and event handling.
-  Use when setting up webhook endpoints, implementing signature verification,
-  or handling Salesloft event notifications securely.
-  Trigger with phrases like "salesloft webhook", "salesloft events",
-  "salesloft webhook signature", "handle salesloft events", "salesloft notifications".
+  Implement SalesLoft webhook handling with signature verification and event routing.
+  Use when setting up webhook endpoints, handling activity notifications,
+  or syncing SalesLoft data to external systems in real-time.
+  Trigger: "salesloft webhook", "salesloft events", "salesloft notifications".
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
@@ -14,188 +13,155 @@ tags: [saas, sales, outreach, salesloft]
 compatible-with: claude-code
 ---
 
-# Salesloft Webhooks & Events
+# SalesLoft Webhooks & Events
 
 ## Overview
-Securely handle Salesloft webhooks with signature validation and replay protection.
 
-## Prerequisites
-- Salesloft webhook secret configured
-- HTTPS endpoint accessible from internet
-- Understanding of cryptographic signatures
-- Redis or database for idempotency (optional)
+Handle SalesLoft webhook notifications for real-time data sync. SalesLoft sends webhooks for person updates, email events (sent, opened, clicked, replied, bounced), call completions, and cadence membership changes. Webhooks use HMAC-SHA256 signatures.
 
-## Webhook Endpoint Setup
+## Instructions
 
-### Express.js
+### Step 1: Register Webhook in SalesLoft
+
+Configure webhooks in SalesLoft Settings > Integrations > Webhooks:
+- URL: `https://your-app.com/webhooks/salesloft`
+- Events: Select specific events (person.updated, email.sent, etc.)
+- Copy the webhook signing secret
+
+### Step 2: Signature Verification
+
 ```typescript
-import express from 'express';
 import crypto from 'crypto';
+import express from 'express';
 
+function verifySalesloftWebhook(
+  rawBody: Buffer,
+  signature: string,
+  timestamp: string,
+): boolean {
+  const secret = process.env.SALESLOFT_WEBHOOK_SECRET!;
+
+  // Replay protection: reject webhooks older than 5 minutes
+  const age = Math.abs(Date.now() / 1000 - parseInt(timestamp));
+  if (age > 300) return false;
+
+  const expected = crypto
+    .createHmac('sha256', secret)
+    .update(`${timestamp}.${rawBody.toString()}`)
+    .digest('hex');
+
+  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
+}
+```
+
+### Step 3: Event Router
+
+```typescript
+interface SalesloftWebhookEvent {
+  event_type: string; // e.g., 'person.created', 'email.sent', 'call.completed'
+  event_id: string;
+  data: Record<string, any>;
+  created_at: string;
+}
+
+const handlers: Record<string, (data: any) => Promise<void>> = {
+  'person.created': async (data) => {
+    console.log(`New person: ${data.email_address}`);
+    await syncToExternalCRM(data);
+  },
+  'person.updated': async (data) => {
+    await updateExternalCRM(data.id, data);
+  },
+  'email.sent': async (data) => {
+    await logActivity('email_sent', data);
+  },
+  'email.opened': async (data) => {
+    await logActivity('email_opened', data);
+  },
+  'email.clicked': async (data) => {
+    await logActivity('email_clicked', data);
+  },
+  'email.replied': async (data) => {
+    await logActivity('email_replied', data);
+    await notifySalesRep(data.person_id, 'Reply received!');
+  },
+  'email.bounced': async (data) => {
+    await markEmailInvalid(data.person_id);
+  },
+  'call.completed': async (data) => {
+    await logActivity('call', { ...data, duration: data.duration });
+  },
+};
+```
+
+### Step 4: Express Webhook Endpoint
+
+```typescript
 const app = express();
 
-// IMPORTANT: Raw body needed for signature verification
 app.post('/webhooks/salesloft',
   express.raw({ type: 'application/json' }),
   async (req, res) => {
-    const signature = req.headers['x-salesloft-signature'] as string;
-    const timestamp = req.headers['x-salesloft-timestamp'] as string;
+    const sig = req.headers['x-salesloft-signature'] as string;
+    const ts = req.headers['x-salesloft-timestamp'] as string;
 
-    if (!verifySalesloftSignature(req.body, signature, timestamp)) {
+    if (!verifySalesloftWebhook(req.body, sig, ts)) {
       return res.status(401).json({ error: 'Invalid signature' });
     }
 
-    const event = JSON.parse(req.body.toString());
-    await handleSalesloftEvent(event);
+    const event: SalesloftWebhookEvent = JSON.parse(req.body.toString());
 
+    // Idempotency: skip already-processed events
+    if (await isProcessed(event.event_id)) {
+      return res.status(200).json({ status: 'already_processed' });
+    }
+
+    // Respond immediately, process async
     res.status(200).json({ received: true });
+
+    try {
+      const handler = handlers[event.event_type];
+      if (handler) {
+        await handler(event.data);
+        await markProcessed(event.event_id);
+      }
+    } catch (err) {
+      console.error(`Failed: ${event.event_type} ${event.event_id}`, err);
+      await queueForRetry(event);
+    }
   }
 );
 ```
 
-## Signature Verification
-
-```typescript
-function verifySalesloftSignature(
-  payload: Buffer,
-  signature: string,
-  timestamp: string
-): boolean {
-  const secret = process.env.SALESLOFT_WEBHOOK_SECRET!;
-
-  // Reject old timestamps (replay attack protection)
-  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
-  if (timestampAge > 300000) { // 5 minutes
-    console.error('Webhook timestamp too old');
-    return false;
-  }
-
-  // Compute expected signature
-  const signedPayload = `${timestamp}.${payload.toString()}`;
-  const expectedSignature = crypto
-    .createHmac('sha256', secret)
-    .update(signedPayload)
-    .digest('hex');
-
-  // Timing-safe comparison
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
-  );
-}
-```
-
-## Event Handler Pattern
-
-```typescript
-type SalesloftEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
-
-interface SalesloftEvent {
-  id: string;
-  type: SalesloftEventType;
-  data: Record<string, any>;
-  created: string;
-}
-
-const eventHandlers: Record<SalesloftEventType, (data: any) => Promise<void>> = {
-  'resource.created': async (data) => { /* handle */ },
-  'resource.updated': async (data) => { /* handle */ },
-  'resource.deleted': async (data) => { /* handle */ }
-};
-
-async function handleSalesloftEvent(event: SalesloftEvent): Promise<void> {
-  const handler = eventHandlers[event.type];
-
-  if (!handler) {
-    console.log(`Unhandled event type: ${event.type}`);
-    return;
-  }
-
-  try {
-    await handler(event.data);
-    console.log(`Processed ${event.type}: ${event.id}`);
-  } catch (error) {
-    console.error(`Failed to process ${event.type}: ${event.id}`, error);
-    throw error; // Rethrow to trigger retry
-  }
-}
-```
-
-## Idempotency Handling
+### Step 5: Idempotency Store
 
 ```typescript
 import { Redis } from 'ioredis';
+const redis = new Redis(process.env.REDIS_URL!);
 
-const redis = new Redis(process.env.REDIS_URL);
-
-async function isEventProcessed(eventId: string): Promise<boolean> {
-  const key = `salesloft:event:${eventId}`;
-  const exists = await redis.exists(key);
-  return exists === 1;
+async function isProcessed(eventId: string): Promise<boolean> {
+  return (await redis.exists(`sl:event:${eventId}`)) === 1;
 }
 
-async function markEventProcessed(eventId: string): Promise<void> {
-  const key = `salesloft:event:${eventId}`;
-  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
+async function markProcessed(eventId: string): Promise<void> {
+  await redis.set(`sl:event:${eventId}`, '1', 'EX', 604800); // 7-day TTL
 }
 ```
-
-## Webhook Testing
-
-```bash
-# Use Salesloft CLI to send test events
-salesloft webhooks trigger resource.created --url http://localhost:3000/webhooks/salesloft
-
-# Or use webhook.site for debugging
-curl -X POST https://webhook.site/your-uuid \
-  -H "Content-Type: application/json" \
-  -d '{"type": "resource.created", "data": {}}'
-```
-
-## Instructions
-
-### Step 1: Register Webhook Endpoint
-Configure your webhook URL in the Salesloft dashboard.
-
-### Step 2: Implement Signature Verification
-Use the signature verification code to validate incoming webhooks.
-
-### Step 3: Handle Events
-Implement handlers for each event type your application needs.
-
-### Step 4: Add Idempotency
-Prevent duplicate processing with event ID tracking.
-
-## Output
-- Secure webhook endpoint
-- Signature validation enabled
-- Event handlers implemented
-- Replay attack protection active
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Invalid signature | Wrong secret | Verify webhook secret |
-| Timestamp rejected | Clock drift | Check server time sync |
-| Duplicate events | Missing idempotency | Implement event ID tracking |
-| Handler timeout | Slow processing | Use async queue |
-
-## Examples
-
-### Testing Webhooks Locally
-```bash
-# Use ngrok to expose local server
-ngrok http 3000
-
-# Send test webhook
-curl -X POST https://your-ngrok-url/webhooks/salesloft \
-  -H "Content-Type: application/json" \
-  -d '{"type": "test", "data": {}}'
-```
+| Invalid signature | Wrong secret or body parsing | Use raw body parser, verify secret |
+| Duplicate events | Webhook retries | Idempotency check by `event_id` |
+| Timeout on processing | Heavy handler logic | Respond 200 immediately, process async |
+| Missing events | Wrong event subscription | Check webhook config in SalesLoft dashboard |
 
 ## Resources
-- [Salesloft Webhooks Guide](https://docs.salesloft.com/webhooks)
-- [Webhook Security Best Practices](https://docs.salesloft.com/webhooks/security)
+
+- [SalesLoft API Basics](https://developers.salesloft.com/docs/platform/api-basics/)
+- [SalesLoft Developer Portal](https://developers.salesloft.com/)
 
 ## Next Steps
+
 For performance optimization, see `salesloft-performance-tuning`.

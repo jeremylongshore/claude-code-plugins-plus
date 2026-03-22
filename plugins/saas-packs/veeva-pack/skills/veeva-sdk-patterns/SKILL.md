@@ -1,149 +1,62 @@
 ---
 name: veeva-sdk-patterns
 description: |
-  Apply production-ready Veeva SDK patterns for TypeScript and Python.
-  Use when implementing Veeva integrations, refactoring SDK usage,
-  or establishing team coding standards for Veeva.
-  Trigger with phrases like "veeva SDK patterns", "veeva best practices",
-  "veeva code patterns", "idiomatic veeva".
-allowed-tools: Read, Write, Edit
+  Veeva Vault sdk patterns for REST API and clinical operations.
+  Use when working with Veeva Vault document management and CRM.
+  Trigger: "veeva sdk patterns".
+allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, pharma, crm, veeva]
+tags: [saas, life-sciences, crm, veeva]
 compatible-with: claude-code
 ---
 
-# Veeva SDK Patterns
+# Veeva Vault Sdk Patterns
 
 ## Overview
-Production-ready patterns for Veeva SDK usage in TypeScript and Python.
 
-## Prerequisites
-- Completed `veeva-install-auth` setup
-- Familiarity with async/await patterns
-- Understanding of error handling best practices
+Guidance for sdk patterns with Veeva Vault REST API, VQL queries, and VAPIL Java SDK.
 
 ## Instructions
 
-### Step 1: Implement Singleton Pattern (Recommended)
-```typescript
-// src/veeva/client.ts
-import { VeevaClient } from '@veeva/sdk';
+### Key Vault API Concepts
 
-let instance: VeevaClient | null = null;
+- **Authentication**: Session-based (username/password or OAuth 2.0)
+- **Base URL**: `https://{vault}.veevavault.com/api/v24.1/`
+- **VQL**: SQL-like query language for Vault data
+- **VAPIL**: Open-source Java SDK covering all Platform APIs
+- **Lifecycle**: Documents flow through states (Draft > In Review > Approved)
 
-export function getVeevaClient(): VeevaClient {
-  if (!instance) {
-    instance = new VeevaClient({
-      apiKey: process.env.VEEVA_API_KEY!,
-      // Additional options
-    });
-  }
-  return instance;
-}
+### Common VQL Patterns
+
+```sql
+-- List documents by type
+SELECT id, name__v FROM documents WHERE type__v = 'Trial Document'
+
+-- Find objects
+SELECT id, name__v FROM site__v WHERE status__v = 'active__v'
+
+-- Join related objects
+SELECT id, name__v, study__vr.name__v FROM study_country__v
 ```
-
-### Step 2: Add Error Handling Wrapper
-```typescript
-import { VeevaError } from '@veeva/sdk';
-
-async function safeVeevaCall<T>(
-  operation: () => Promise<T>
-): Promise<{ data: T | null; error: Error | null }> {
-  try {
-    const data = await operation();
-    return { data, error: null };
-  } catch (err) {
-    if (err instanceof VeevaError) {
-      console.error({
-        code: err.code,
-        message: err.message,
-      });
-    }
-    return { data: null, error: err as Error };
-  }
-}
-```
-
-### Step 3: Implement Retry Logic
-```typescript
-async function withRetry<T>(
-  operation: () => Promise<T>,
-  maxRetries = 3,
-  backoffMs = 1000
-): Promise<T> {
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      return await operation();
-    } catch (err) {
-      if (attempt === maxRetries) throw err;
-      const delay = backoffMs * Math.pow(2, attempt - 1);
-      await new Promise(r => setTimeout(r, delay));
-    }
-  }
-  throw new Error('Unreachable');
-}
-```
-
-## Output
-- Type-safe client singleton
-- Robust error handling with structured logging
-- Automatic retry with exponential backoff
-- Runtime validation for API responses
 
 ## Error Handling
-| Pattern | Use Case | Benefit |
-|---------|----------|---------|
-| Safe wrapper | All API calls | Prevents uncaught exceptions |
-| Retry logic | Transient failures | Improves reliability |
-| Type guards | Response validation | Catches API changes |
-| Logging | All operations | Debugging and monitoring |
 
-## Examples
-
-### Factory Pattern (Multi-tenant)
-```typescript
-const clients = new Map<string, VeevaClient>();
-
-export function getClientForTenant(tenantId: string): VeevaClient {
-  if (!clients.has(tenantId)) {
-    const apiKey = getTenantApiKey(tenantId);
-    clients.set(tenantId, new VeevaClient({ apiKey }));
-  }
-  return clients.get(tenantId)!;
-}
-```
-
-### Python Context Manager
-```python
-from contextlib import asynccontextmanager
-from veeva import VeevaClient
-
-@asynccontextmanager
-async def get_veeva_client():
-    client = VeevaClient()
-    try:
-        yield client
-    finally:
-        await client.close()
-```
-
-### Zod Validation
-```typescript
-import { z } from 'zod';
-
-const veevaResponseSchema = z.object({
-  id: z.string(),
-  status: z.enum(['active', 'inactive']),
-  createdAt: z.string().datetime(),
-});
-```
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `INVALID_SESSION_ID` | Session expired | Re-authenticate |
+| `INSUFFICIENT_ACCESS` | Missing permissions | Check security profile |
+| `INVALID_DATA` | Bad VQL or field name | Validate against metadata |
+| `OPERATION_NOT_ALLOWED` | Lifecycle state conflict | Check document state |
 
 ## Resources
-- [Veeva SDK Reference](https://docs.veeva.com/sdk)
-- [Veeva API Types](https://docs.veeva.com/types)
-- [Zod Documentation](https://zod.dev/)
+
+- [Vault API Reference](https://developer.veevavault.com/api/)
+- [VQL Reference](https://developer.veevavault.com/vql/)
+- [VAPIL SDK](https://developer.veevavault.com/sdk/)
+- [Developer Portal](https://developer.veevavault.com/)
 
 ## Next Steps
-Apply patterns in `veeva-core-workflow-a` for real-world usage.
+
+See related Veeva Vault skills for more patterns.

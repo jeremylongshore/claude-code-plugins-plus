@@ -1,113 +1,62 @@
 ---
 name: techsmith-debug-bundle
 description: |
-  Collect TechSmith debug evidence for support tickets and troubleshooting.
-  Use when encountering persistent issues, preparing support tickets,
-  or collecting diagnostic information for TechSmith problems.
-  Trigger with phrases like "techsmith debug", "techsmith support bundle",
-  "collect techsmith logs", "techsmith diagnostic".
-allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
+  TechSmith debug bundle for Snagit COM API and Camtasia automation.
+  Use when working with TechSmith screen capture and video editing automation.
+  Trigger: "techsmith debug bundle".
+allowed-tools: Read, Write, Edit, Bash(powershell:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, screen-recording, documentation, techsmith]
+tags: [saas, screen-capture, video, techsmith]
 compatible-with: claude-code
 ---
 
 # TechSmith Debug Bundle
 
 ## Overview
-Collect all necessary diagnostic information for TechSmith support tickets.
 
-## Prerequisites
-- TechSmith SDK installed
-- Access to application logs
-- Permission to collect environment info
+Guidance for debug bundle with TechSmith Snagit COM API and Camtasia automation.
 
 ## Instructions
 
-### Step 1: Create Debug Bundle Script
-```bash
-#!/bin/bash
-# techsmith-debug-bundle.sh
+### Key Considerations
 
-BUNDLE_DIR="techsmith-debug-$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$BUNDLE_DIR"
+- Snagit COM API is Windows-only (requires COM registration)
+- Camtasia Producer CLI for batch rendering
+- PowerShell is the primary scripting language
+- Python interop via `pywin32` (`pip install pywin32`)
 
-echo "=== TechSmith Debug Bundle ===" > "$BUNDLE_DIR/summary.txt"
-echo "Generated: $(date)" >> "$BUNDLE_DIR/summary.txt"
-```
+### Snagit COM Input Types
 
-### Step 2: Collect Environment Info
-```bash
-# Environment info
-echo "--- Environment ---" >> "$BUNDLE_DIR/summary.txt"
-node --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-npm --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-echo "TECHSMITH_API_KEY: ${TECHSMITH_API_KEY:+[SET]}" >> "$BUNDLE_DIR/summary.txt"
-```
+| Value | Constant | Description |
+|-------|----------|-------------|
+| 0 | siiDesktop | Full desktop |
+| 2 | siiRegion | User-selected region |
+| 4 | siiWindow | Active window |
+| 5 | siiFile | From file |
 
-### Step 3: Gather SDK and Logs
-```bash
-# SDK version
-npm list @techsmith/sdk 2>/dev/null >> "$BUNDLE_DIR/summary.txt"
+### Snagit COM Output Types
 
-# Recent logs (redacted)
-grep -i "techsmith" ~/.npm/_logs/*.log 2>/dev/null | tail -50 >> "$BUNDLE_DIR/logs.txt"
-
-# Configuration (redacted - secrets masked)
-echo "--- Config (redacted) ---" >> "$BUNDLE_DIR/summary.txt"
-cat .env 2>/dev/null | sed 's/=.*/=***REDACTED***/' >> "$BUNDLE_DIR/config-redacted.txt"
-
-# Network connectivity test
-echo "--- Network Test ---" >> "$BUNDLE_DIR/summary.txt"
-echo -n "API Health: " >> "$BUNDLE_DIR/summary.txt"
-curl -s -o /dev/null -w "%{http_code}" https://api.techsmith.com/health >> "$BUNDLE_DIR/summary.txt"
-echo "" >> "$BUNDLE_DIR/summary.txt"
-```
-
-### Step 4: Package Bundle
-```bash
-tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
-echo "Bundle created: $BUNDLE_DIR.tar.gz"
-```
-
-## Output
-- `techsmith-debug-YYYYMMDD-HHMMSS.tar.gz` archive containing:
-  - `summary.txt` - Environment and SDK info
-  - `logs.txt` - Recent redacted logs
-  - `config-redacted.txt` - Configuration (secrets removed)
+| Value | Constant | Description |
+|-------|----------|-------------|
+| 1 | sioClipboard | Copy to clipboard |
+| 2 | sioFile | Save to file |
+| 4 | sioPrinter | Send to printer |
 
 ## Error Handling
-| Item | Purpose | Included |
-|------|---------|----------|
-| Environment versions | Compatibility check | ✓ |
-| SDK version | Version-specific bugs | ✓ |
-| Error logs (redacted) | Root cause analysis | ✓ |
-| Config (redacted) | Configuration issues | ✓ |
-| Network test | Connectivity issues | ✓ |
 
-## Examples
-
-### Sensitive Data Handling
-**ALWAYS REDACT:**
-- API keys and tokens
-- Passwords and secrets
-- PII (emails, names, IDs)
-
-**Safe to Include:**
-- Error messages
-- Stack traces (redacted)
-- SDK/runtime versions
-
-### Submit to Support
-1. Create bundle: `bash techsmith-debug-bundle.sh`
-2. Review for sensitive data
-3. Upload to TechSmith support portal
+| Error | Cause | Solution |
+|-------|-------|----------|
+| COM not registered | Snagit not installed | Install and register COM server |
+| Permission denied | Not running as admin | Elevate PowerShell |
+| File locked | Snagit Editor has file open | Close editor first |
 
 ## Resources
-- [TechSmith Support](https://docs.techsmith.com/support)
-- [TechSmith Status](https://status.techsmith.com)
+
+- [Snagit COM Samples](https://github.com/TechSmith/Snagit-COM-Samples)
+- [TechSmith Support](https://support.techsmith.com/)
 
 ## Next Steps
-For rate limit issues, see `techsmith-rate-limits`.
+
+See related TechSmith skills for more automation patterns.

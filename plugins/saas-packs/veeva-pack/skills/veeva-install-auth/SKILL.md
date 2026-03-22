@@ -1,92 +1,84 @@
 ---
 name: veeva-install-auth
 description: |
-  Install and configure Veeva SDK/CLI authentication.
-  Use when setting up a new Veeva integration, configuring API keys,
-  or initializing Veeva in your project.
-  Trigger with phrases like "install veeva", "setup veeva",
-  "veeva auth", "configure veeva API key".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
+  Veeva Vault install auth with REST API and VQL.
+  Use when integrating with Veeva Vault for life sciences document management.
+  Trigger: "veeva install auth".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, pharma, crm, veeva]
+tags: [saas, life-sciences, crm, veeva]
 compatible-with: claude-code
 ---
 
-# Veeva Install & Auth
+# Veeva Vault Install & Auth
 
 ## Overview
-Set up Veeva SDK/CLI and configure authentication credentials.
 
-## Prerequisites
-- Node.js 18+ or Python 3.10+
-- Package manager (npm, pnpm, or pip)
-- Veeva account with API access
-- API key from Veeva dashboard
+Authenticate with Veeva Vault REST API using session-based auth. Base URL: `https://{vault}.veevavault.com/api/{version}/`. All requests require a session ID obtained via username/password or OAuth 2.0.
 
 ## Instructions
 
-### Step 1: Install SDK
+### Step 1: Install VAPIL (Java) or HTTP Client
+
 ```bash
-# Node.js
-npm install @veeva/sdk
+# Java (VAPIL - Vault API Library)
+# Add to pom.xml or gradle
+# https://github.com/veeva/vault-api-library
 
-# Python
-pip install veeva
+# Python/Node.js -- use HTTP client
+pip install requests
+# or
+npm install axios
 ```
 
-### Step 2: Configure Authentication
-```bash
-# Set environment variable
-export VEEVA_API_KEY="your-api-key"
+### Step 2: Obtain Session ID
 
-# Or create .env file
-echo 'VEEVA_API_KEY=your-api-key' >> .env
+```python
+import requests
+
+vault_url = "https://myvault.veevavault.com/api/v24.1"
+auth_response = requests.post(f"{vault_url}/auth", data={
+    "username": os.environ["VEEVA_USERNAME"],
+    "password": os.environ["VEEVA_PASSWORD"],
+})
+session_id = auth_response.json()["sessionId"]
+print(f"Session ID: {session_id[:20]}...")
 ```
 
-### Step 3: Verify Connection
-```typescript
-// Test connection code here
+### Step 3: Make Authenticated Request
+
+```python
+headers = {"Authorization": session_id}
+response = requests.get(f"{vault_url}/metadata/objects", headers=headers)
+print(f"Objects: {len(response.json()['objects'])}")
 ```
 
-## Output
-- Installed SDK package in node_modules or site-packages
-- Environment variable or .env file with API key
-- Successful connection verification output
+### Step 4: VQL Query
+
+```python
+query = "SELECT id, name__v, status__v FROM documents WHERE status__v = 'Approved'"
+response = requests.post(f"{vault_url}/query", headers=headers, data={"q": query})
+for doc in response.json().get("data", []):
+    print(f"  {doc['name__v']} (ID: {doc['id']})")
+```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Invalid API Key | Incorrect or expired key | Verify key in Veeva dashboard |
-| Rate Limited | Exceeded quota | Check quota at https://docs.veeva.com |
-| Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
-| Module Not Found | Installation failed | Run `npm install` or `pip install` again |
-
-## Examples
-
-### TypeScript Setup
-```typescript
-import { VeevaClient } from '@veeva/sdk';
-
-const client = new VeevaClient({
-  apiKey: process.env.VEEVA_API_KEY,
-});
-```
-
-### Python Setup
-```python
-from veeva import VeevaClient
-
-client = VeevaClient(
-    api_key=os.environ.get('VEEVA_API_KEY')
-)
-```
+| `INVALID_SESSION_ID` | Session expired | Re-authenticate |
+| `INSUFFICIENT_ACCESS` | Missing permissions | Check security profile |
+| `INVALID_DATA` | Bad VQL syntax | Validate query syntax |
 
 ## Resources
-- [Veeva Documentation](https://docs.veeva.com)
-- [Veeva Dashboard](https://api.veeva.com)
-- [Veeva Status](https://status.veeva.com)
+
+- [Vault API Reference](https://developer.veevavault.com/api/)
+- [VQL Reference](https://developer.veevavault.com/vql/)
+- [VAPIL Java SDK](https://developer.veevavault.com/sdk/)
+- [Developer Portal](https://developer.veevavault.com/)
 
 ## Next Steps
-After successful auth, proceed to `veeva-hello-world` for your first API call.
+
+Proceed to `veeva-hello-world` for document operations.

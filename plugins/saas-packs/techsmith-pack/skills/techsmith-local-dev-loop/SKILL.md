@@ -1,119 +1,76 @@
 ---
 name: techsmith-local-dev-loop
 description: |
-  Configure TechSmith local development with hot reload and testing.
-  Use when setting up a development environment, configuring test workflows,
-  or establishing a fast iteration cycle with TechSmith.
-  Trigger with phrases like "techsmith dev setup", "techsmith local development",
-  "techsmith dev environment", "develop with techsmith".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
+  TechSmith local dev loop for Snagit COM API and Camtasia automation.
+  Use when working with TechSmith screen capture and video editing automation.
+  Trigger: "techsmith local dev loop".
+allowed-tools: Read, Write, Edit, Bash(powershell:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, screen-recording, documentation, techsmith]
+tags: [saas, screen-capture, video, techsmith]
 compatible-with: claude-code
 ---
 
 # TechSmith Local Dev Loop
 
 ## Overview
-Set up a fast, reproducible local development workflow for TechSmith.
 
-## Prerequisites
-- Completed `techsmith-install-auth` setup
-- Node.js 18+ with npm/pnpm
-- Code editor with TypeScript support
-- Git for version control
+Set up a development workflow for TechSmith automation scripts with PowerShell testing.
 
 ## Instructions
 
-### Step 1: Create Project Structure
+### Step 1: Project Structure
+
 ```
-my-techsmith-project/
-├── src/
-│   ├── techsmith/
-│   │   ├── client.ts       # TechSmith client wrapper
-│   │   ├── config.ts       # Configuration management
-│   │   └── utils.ts        # Helper functions
-│   └── index.ts
+techsmith-automation/
+├── scripts/
+│   ├── capture-screenshot.ps1
+│   ├── batch-render.ps1
+│   └── capture-video.ps1
 ├── tests/
-│   └── techsmith.test.ts
-├── .env.local              # Local secrets (git-ignored)
-├── .env.example            # Template for team
-└── package.json
+│   └── test-com-connection.ps1
+├── output/
+└── templates/
+    └── camtasia-presets/
 ```
 
-### Step 2: Configure Environment
-```bash
-# Copy environment template
-cp .env.example .env.local
+### Step 2: Test COM Connection
 
-# Install dependencies
-npm install
+```powershell
+# tests/test-com-connection.ps1
+Describe "Snagit COM Server" {
+    It "Should create ImageCapture object" {
+        $capture = New-Object -ComObject Snagit.ImageCapture
+        $capture | Should -Not -BeNullOrEmpty
+    }
 
-# Start development server
-npm run dev
-```
-
-### Step 3: Setup Hot Reload
-```json
-{
-  "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "test": "vitest",
-    "test:watch": "vitest --watch"
-  }
+    It "Should create VideoCapture object" {
+        $video = New-Object -ComObject Snagit.VideoCapture
+        $video | Should -Not -BeNullOrEmpty
+    }
 }
 ```
 
-### Step 4: Configure Testing
-```typescript
-import { describe, it, expect, vi } from 'vitest';
-import { TechSmithClient } from '../src/techsmith/client';
+### Step 3: Run Tests with Pester
 
-describe('TechSmith Client', () => {
-  it('should initialize with API key', () => {
-    const client = new TechSmithClient({ apiKey: 'test-key' });
-    expect(client).toBeDefined();
-  });
-});
+```powershell
+Install-Module -Name Pester -Force -SkipPublisherCheck
+Invoke-Pester ./tests/ -Output Detailed
 ```
-
-## Output
-- Working development environment with hot reload
-- Configured test suite with mocking
-- Environment variable management
-- Fast iteration cycle for TechSmith development
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Module not found | Missing dependency | Run `npm install` |
-| Port in use | Another process | Kill process or change port |
-| Env not loaded | Missing .env.local | Copy from .env.example |
-| Test timeout | Slow network | Increase test timeout |
-
-## Examples
-
-### Mock TechSmith Responses
-```typescript
-vi.mock('@techsmith/sdk', () => ({
-  TechSmithClient: vi.fn().mockImplementation(() => ({
-    // Mock methods here
-  })),
-}));
-```
-
-### Debug Mode
-```bash
-# Enable verbose logging
-DEBUG=TECHSMITH=* npm run dev
-```
+| COM not available | Snagit not installed | Install Snagit on dev machine |
+| Pester not found | Module missing | `Install-Module Pester` |
 
 ## Resources
-- [TechSmith SDK Reference](https://docs.techsmith.com/sdk)
-- [Vitest Documentation](https://vitest.dev/)
-- [tsx Documentation](https://github.com/esbuild-kit/tsx)
+
+- [Pester Testing Framework](https://pester.dev/)
+- [Snagit COM Samples](https://github.com/TechSmith/Snagit-COM-Samples)
 
 ## Next Steps
-See `techsmith-sdk-patterns` for production-ready code patterns.
+
+Proceed to `techsmith-sdk-patterns`.

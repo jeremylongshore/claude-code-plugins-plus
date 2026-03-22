@@ -1,12 +1,11 @@
 ---
 name: serpapi-debug-bundle
 description: |
-  Collect SerpApi debug evidence for support tickets and troubleshooting.
-  Use when encountering persistent issues, preparing support tickets,
-  or collecting diagnostic information for SerpApi problems.
-  Trigger with phrases like "serpapi debug", "serpapi support bundle",
-  "collect serpapi logs", "serpapi diagnostic".
-allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
+  Collect SerpApi debug diagnostics: account status, recent searches, and error logs.
+  Use when troubleshooting SerpApi issues, checking credit usage,
+  or preparing support tickets.
+  Trigger: "serpapi debug", "serpapi diagnostic", "serpapi support".
+allowed-tools: Read, Bash(curl:*), Bash(tar:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,97 +16,71 @@ compatible-with: claude-code
 # SerpApi Debug Bundle
 
 ## Overview
-Collect all necessary diagnostic information for SerpApi support tickets.
 
-## Prerequisites
-- SerpApi SDK installed
-- Access to application logs
-- Permission to collect environment info
+Collect diagnostic data for SerpApi issues using the Account API and Searches Archive API. SerpApi stores all search results for retrieval without additional credit charges.
 
 ## Instructions
 
-### Step 1: Create Debug Bundle Script
+### Step 1: Collect Diagnostics
+
 ```bash
 #!/bin/bash
-# serpapi-debug-bundle.sh
+BUNDLE="serpapi-debug-$(date +%Y%m%d-%H%M%S)"
+mkdir -p "$BUNDLE"
+KEY="${SERPAPI_API_KEY:?Set SERPAPI_API_KEY}"
 
-BUNDLE_DIR="serpapi-debug-$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$BUNDLE_DIR"
+# Account status
+curl -s "https://serpapi.com/account.json?api_key=$KEY" \
+  | jq '{plan: .plan_name, used: .this_month_usage, remaining: .plan_searches_left, rate_limit: .searches_per_month}' \
+  > "$BUNDLE/account.json"
 
-echo "=== SerpApi Debug Bundle ===" > "$BUNDLE_DIR/summary.txt"
-echo "Generated: $(date)" >> "$BUNDLE_DIR/summary.txt"
+# Recent searches (last 10)
+curl -s "https://serpapi.com/searches.json?api_key=$KEY" \
+  | jq '.[0:10] | .[] | {id: .id, status: .status, engine: .search_parameters.engine, query: .search_parameters.q, created: .created_at}' \
+  > "$BUNDLE/recent-searches.json"
+
+# Test search
+curl -s "https://serpapi.com/search.json?q=test&engine=google&num=1&api_key=$KEY" \
+  | jq '.search_metadata' > "$BUNDLE/test-search.json"
+
+# Environment
+echo "Node: $(node --version 2>/dev/null || echo N/A)" > "$BUNDLE/env.txt"
+echo "Python: $(python3 --version 2>/dev/null || echo N/A)" >> "$BUNDLE/env.txt"
+pip show serpapi 2>/dev/null >> "$BUNDLE/env.txt" || true
+npm list serpapi 2>/dev/null >> "$BUNDLE/env.txt" || true
+
+tar -czf "$BUNDLE.tar.gz" "$BUNDLE"
+echo "Bundle: $BUNDLE.tar.gz"
 ```
 
-### Step 2: Collect Environment Info
-```bash
-# Environment info
-echo "--- Environment ---" >> "$BUNDLE_DIR/summary.txt"
-node --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-npm --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-echo "SERPAPI_API_KEY: ${SERPAPI_API_KEY:+[SET]}" >> "$BUNDLE_DIR/summary.txt"
+### Step 2: Retrieve Failed Search Details
+
+```python
+# Use the Searches Archive API to get details of any past search
+import serpapi, os
+
+client = serpapi.Client(api_key=os.environ["SERPAPI_API_KEY"])
+
+# Get a specific search by ID (no credit charge)
+result = client.search(engine="google", search_id="YOUR_SEARCH_ID")
+print(f"Status: {result['search_metadata']['status']}")
+if "error" in result:
+    print(f"Error: {result['error']}")
 ```
-
-### Step 3: Gather SDK and Logs
-```bash
-# SDK version
-npm list @serpapi/sdk 2>/dev/null >> "$BUNDLE_DIR/summary.txt"
-
-# Recent logs (redacted)
-grep -i "serpapi" ~/.npm/_logs/*.log 2>/dev/null | tail -50 >> "$BUNDLE_DIR/logs.txt"
-
-# Configuration (redacted - secrets masked)
-echo "--- Config (redacted) ---" >> "$BUNDLE_DIR/summary.txt"
-cat .env 2>/dev/null | sed 's/=.*/=***REDACTED***/' >> "$BUNDLE_DIR/config-redacted.txt"
-
-# Network connectivity test
-echo "--- Network Test ---" >> "$BUNDLE_DIR/summary.txt"
-echo -n "API Health: " >> "$BUNDLE_DIR/summary.txt"
-curl -s -o /dev/null -w "%{http_code}" https://api.serpapi.com/health >> "$BUNDLE_DIR/summary.txt"
-echo "" >> "$BUNDLE_DIR/summary.txt"
-```
-
-### Step 4: Package Bundle
-```bash
-tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
-echo "Bundle created: $BUNDLE_DIR.tar.gz"
-```
-
-## Output
-- `serpapi-debug-YYYYMMDD-HHMMSS.tar.gz` archive containing:
-  - `summary.txt` - Environment and SDK info
-  - `logs.txt` - Recent redacted logs
-  - `config-redacted.txt` - Configuration (secrets removed)
 
 ## Error Handling
-| Item | Purpose | Included |
-|------|---------|----------|
-| Environment versions | Compatibility check | ✓ |
-| SDK version | Version-specific bugs | ✓ |
-| Error logs (redacted) | Root cause analysis | ✓ |
-| Config (redacted) | Configuration issues | ✓ |
-| Network test | Connectivity issues | ✓ |
 
-## Examples
-
-### Sensitive Data Handling
-**ALWAYS REDACT:**
-- API keys and tokens
-- Passwords and secrets
-- PII (emails, names, IDs)
-
-**Safe to Include:**
-- Error messages
-- Stack traces (redacted)
-- SDK/runtime versions
-
-### Submit to Support
-1. Create bundle: `bash serpapi-debug-bundle.sh`
-2. Review for sensitive data
-3. Upload to SerpApi support portal
+| Finding | Likely Issue | Action |
+|---------|-------------|--------|
+| `remaining: 0` | Credits exhausted | Upgrade plan or wait for monthly reset |
+| Test search fails | API key issue | Re-check key at serpapi.com |
+| Recent searches show errors | Bad parameters | Check engine-specific param requirements |
 
 ## Resources
-- [SerpApi Support](https://docs.serpapi.com/support)
-- [SerpApi Status](https://status.serpapi.com)
+
+- [Account API](https://serpapi.com/account-api)
+- [Searches Archive](https://serpapi.com/search-archive-api)
 
 ## Next Steps
+
 For rate limit issues, see `serpapi-rate-limits`.

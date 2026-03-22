@@ -1,11 +1,10 @@
 ---
 name: salesloft-cost-tuning
 description: |
-  Optimize Salesloft costs through tier selection, sampling, and usage monitoring.
-  Use when analyzing Salesloft billing, reducing API costs,
-  or implementing usage monitoring and budget alerts.
-  Trigger with phrases like "salesloft cost", "salesloft billing",
-  "reduce salesloft costs", "salesloft pricing", "salesloft expensive", "salesloft budget".
+  Optimize SalesLoft API costs by reducing request volume and deep pagination.
+  Use when analyzing API usage, reducing rate limit consumption,
+  or planning capacity for bulk operations.
+  Trigger: "salesloft cost", "salesloft billing", "reduce salesloft API usage".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
@@ -14,190 +13,137 @@ tags: [saas, sales, outreach, salesloft]
 compatible-with: claude-code
 ---
 
-# Salesloft Cost Tuning
+# SalesLoft Cost Tuning
 
 ## Overview
-Optimize Salesloft costs through smart tier selection, sampling, and usage monitoring.
 
-## Prerequisites
-- Access to Salesloft billing dashboard
-- Understanding of current usage patterns
-- Database for usage tracking (optional)
-- Alerting system configured (optional)
+SalesLoft API cost is rate-limit-based (600 cost points/minute), not dollar-based. The primary cost driver is deep pagination -- pages beyond 100 cost 3-30x more. Optimize by using incremental sync, caching, and avoiding full table scans.
 
-## Pricing Tiers
+## Cost Model
 
-| Tier | Monthly Cost | Included | Overage |
-|------|-------------|----------|---------|
-| Free | $0 | 1,000 requests | N/A |
-| Pro | $99 | 100,000 requests | $0.001/request |
-| Enterprise | Custom | Unlimited | Volume discounts |
+### Rate Limit Cost Structure
 
-## Cost Estimation
+| Page Range | Cost per Request | Notes |
+|------------|-----------------|-------|
+| 1-100 | 1 point | Standard |
+| 101-150 | 3 points | 3x multiplier |
+| 151-250 | 8 points | 8x multiplier |
+| 251-500 | 10 points | 10x multiplier |
+| 501+ | 30 points | 30x multiplier |
+
+**Budget: 600 points/minute.** This is the ceiling regardless of SalesLoft plan tier.
+
+### Cost Calculator
 
 ```typescript
-interface UsageEstimate {
-  requestsPerMonth: number;
-  tier: string;
-  estimatedCost: number;
-  recommendation?: string;
+function calculateSyncCost(totalRecords: number, perPage = 100) {
+  const pages = Math.ceil(totalRecords / perPage);
+  let cost = 0;
+  for (let p = 1; p <= pages; p++) {
+    if (p <= 100) cost += 1;
+    else if (p <= 150) cost += 3;
+    else if (p <= 250) cost += 8;
+    else if (p <= 500) cost += 10;
+    else cost += 30;
+  }
+  const minutes = Math.ceil(cost / 600);
+  return { pages, cost, minutes, pointsPerMinute: 600 };
 }
 
-function estimateSalesloftCost(requestsPerMonth: number): UsageEstimate {
-  if (requestsPerMonth <= 1000) {
-    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
-  }
+// Examples:
+// 1,000 records = 10 pages = 10 points = instant
+// 10,000 records = 100 pages = 100 points = instant
+// 25,000 records = 250 pages = 100 + 150 + 800 = 1050 points = ~2 min
+// 50,000 records = 500 pages = 100 + 150 + 800 + 2500 = 3550 points = ~6 min
+```
 
-  if (requestsPerMonth <= 100000) {
-    return { requestsPerMonth, tier: 'Pro', estimatedCost: 99 };
-  }
+## Cost Reduction Strategies
 
-  const proOverage = (requestsPerMonth - 100000) * 0.001;
-  const proCost = 99 + proOverage;
+### Strategy 1: Incremental Sync (Biggest Win)
 
-  return {
-    requestsPerMonth,
-    tier: 'Pro (with overage)',
-    estimatedCost: proCost,
-    recommendation: proCost > 500
-      ? 'Consider Enterprise tier for volume discounts'
-      : undefined,
-  };
-}
+```typescript
+// Full sync of 25k people: 1050 points
+// Incremental sync of last hour's changes: ~1-5 points
+const { data } = await api.get('/people.json', {
+  params: {
+    updated_at: { gt: lastSyncTime }, // Only changed records
+    per_page: 100,
+    page: 1,
+  },
+});
+```
+
+### Strategy 2: Cache Frequently Accessed Data
+
+```typescript
+// Cadence list rarely changes -- cache for 5 minutes
+const cadences = await cachedGet('/cadences.json', { per_page: 100 }, 300_000);
+
+// Person lookup by email -- cache for 1 minute
+const person = await cachedGet('/people.json', { email_addresses: [email] }, 60_000);
+```
+
+### Strategy 3: Webhook-Driven Instead of Polling
+
+```typescript
+// EXPENSIVE: Poll every minute for changes
+setInterval(() => api.get('/people.json', { params: { updated_at: { gt: lastCheck } }}), 60_000);
+
+// FREE: Receive webhooks for changes (0 API cost)
+app.post('/webhooks/salesloft', (req, res) => {
+  handlePersonUpdate(req.body.data);
+  res.status(200).send();
+});
+```
+
+### Strategy 4: Request Consolidation
+
+```typescript
+// EXPENSIVE: 3 separate requests = 3 points
+const person = await api.get(`/people/${id}.json`);
+const cadences = await api.get('/cadences.json');
+const activities = await api.get('/activities/emails.json');
+
+// CHEAPER: Parallel but still 3 points -- at least saves wall-clock time
+const [person, cadences, activities] = await Promise.all([...]);
 ```
 
 ## Usage Monitoring
 
 ```typescript
-class SalesloftUsageMonitor {
-  private requestCount = 0;
-  private bytesTransferred = 0;
-  private alertThreshold: number;
+class ApiCostTracker {
+  private costs: { timestamp: number; endpoint: string; cost: number }[] = [];
 
-  constructor(monthlyBudget: number) {
-    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
+  track(endpoint: string, page: number) {
+    let cost = 1;
+    if (page > 500) cost = 30;
+    else if (page > 250) cost = 10;
+    else if (page > 150) cost = 8;
+    else if (page > 100) cost = 3;
+
+    this.costs.push({ timestamp: Date.now(), endpoint, cost });
   }
 
-  track(request: { bytes: number }) {
-    this.requestCount++;
-    this.bytesTransferred += request.bytes;
-
-    if (this.estimatedCost() > this.alertThreshold) {
-      this.sendAlert('Approaching Salesloft budget limit');
-    }
-  }
-
-  estimatedCost(): number {
-    return estimateSalesloftCost(this.requestCount).estimatedCost;
-  }
-
-  private sendAlert(message: string) {
-    // Send to Slack, email, PagerDuty, etc.
+  lastMinuteCost(): number {
+    const cutoff = Date.now() - 60_000;
+    return this.costs.filter(c => c.timestamp > cutoff).reduce((sum, c) => sum + c.cost, 0);
   }
 }
 ```
-
-## Cost Reduction Strategies
-
-### Step 1: Request Sampling
-```typescript
-function shouldSample(samplingRate = 0.1): boolean {
-  return Math.random() < samplingRate;
-}
-
-// Use for non-critical telemetry
-if (shouldSample(0.1)) { // 10% sample
-  await salesloftClient.trackEvent(event);
-}
-```
-
-### Step 2: Batching Requests
-```typescript
-// Instead of N individual calls
-await Promise.all(ids.map(id => salesloftClient.get(id)));
-
-// Use batch endpoint (1 call)
-await salesloftClient.batchGet(ids);
-```
-
-### Step 3: Caching (from P16)
-- Cache frequently accessed data
-- Use cache invalidation webhooks
-- Set appropriate TTLs
-
-### Step 4: Compression
-```typescript
-const client = new SalesloftClient({
-  compression: true, // Enable gzip
-});
-```
-
-## Budget Alerts
-
-```bash
-# Set up billing alerts in Salesloft dashboard
-# Or use API if available:
-# Check Salesloft documentation for billing APIs
-```
-
-## Cost Dashboard Query
-
-```sql
--- If tracking usage in your database
-SELECT
-  DATE_TRUNC('day', created_at) as date,
-  COUNT(*) as requests,
-  SUM(response_bytes) as bytes,
-  COUNT(*) * 0.001 as estimated_cost
-FROM salesloft_api_logs
-WHERE created_at >= NOW() - INTERVAL '30 days'
-GROUP BY 1
-ORDER BY 1;
-```
-
-## Instructions
-
-### Step 1: Analyze Current Usage
-Review Salesloft dashboard for usage patterns and costs.
-
-### Step 2: Select Optimal Tier
-Use the cost estimation function to find the right tier.
-
-### Step 3: Implement Monitoring
-Add usage tracking to catch budget overruns early.
-
-### Step 4: Apply Optimizations
-Enable batching, caching, and sampling where appropriate.
-
-## Output
-- Optimized tier selection
-- Usage monitoring implemented
-- Budget alerts configured
-- Cost reduction strategies applied
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Unexpected charges | Untracked usage | Implement monitoring |
-| Overage fees | Wrong tier | Upgrade tier |
-| Budget exceeded | No alerts | Set up alerts |
-| Inefficient usage | No batching | Enable batch requests |
-
-## Examples
-
-### Quick Cost Check
-```typescript
-// Estimate monthly cost for your usage
-const estimate = estimateSalesloftCost(yourMonthlyRequests);
-console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
-if (estimate.recommendation) {
-  console.log(`💡 ${estimate.recommendation}`);
-}
-```
+| Frequent 429s | Deep pagination or polling | Switch to incremental sync + webhooks |
+| Sync takes hours | Full table scan nightly | Switch to incremental with 5-min intervals |
+| Rate limit exhausted | Multiple integrations sharing key | Use separate OAuth apps |
 
 ## Resources
-- [Salesloft Pricing](https://salesloft.com/pricing)
-- [Salesloft Billing Dashboard](https://dashboard.salesloft.com/billing)
+
+- [SalesLoft Rate Limits](https://developers.salesloft.com/docs/platform/api-basics/rate-limits/)
+- [SalesLoft Pricing](https://salesloft.com/pricing)
 
 ## Next Steps
+
 For architecture patterns, see `salesloft-reference-architecture`.

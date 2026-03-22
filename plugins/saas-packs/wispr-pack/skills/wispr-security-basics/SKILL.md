@@ -1,142 +1,49 @@
 ---
 name: wispr-security-basics
 description: |
-  Apply Wispr security best practices for secrets and access control.
-  Use when securing API keys, implementing least privilege access,
-  or auditing Wispr security configuration.
-  Trigger with phrases like "wispr security", "wispr secrets",
-  "secure wispr", "wispr API key security".
-allowed-tools: Read, Write, Grep
+  Wispr Flow security basics for voice-to-text API integration.
+  Use when integrating Wispr Flow dictation, WebSocket streaming,
+  or building voice-powered applications.
+  Trigger: "wispr security basics".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, voice, productivity, wispr]
+tags: [saas, voice, dictation, wispr]
 compatible-with: claude-code
 ---
 
-# Wispr Security Basics
+# Wispr Flow Security Basics
 
 ## Overview
-Security best practices for Wispr API keys, tokens, and access control.
 
-## Prerequisites
-- Wispr SDK installed
-- Understanding of environment variables
-- Access to Wispr dashboard
+Guidance for security basics with Wispr Flow voice-to-text API.
 
 ## Instructions
 
-### Step 1: Configure Environment Variables
-```bash
-# .env (NEVER commit to git)
-WISPR_API_KEY=sk_live_***
-WISPR_SECRET=***
+### Key Wispr Flow Concepts
 
-# .gitignore
-.env
-.env.local
-.env.*.local
-```
-
-### Step 2: Implement Secret Rotation
-```bash
-# 1. Generate new key in Wispr dashboard
-# 2. Update environment variable
-export WISPR_API_KEY="new_key_here"
-
-# 3. Verify new key works
-curl -H "Authorization: Bearer ${WISPR_API_KEY}" \
-  https://api.wispr.com/health
-
-# 4. Revoke old key in dashboard
-```
-
-### Step 3: Apply Least Privilege
-| Environment | Recommended Scopes |
-|-------------|-------------------|
-| Development | `read:*` |
-| Staging | `read:*, write:limited` |
-| Production | `Only required scopes` |
-
-## Output
-- Secure API key storage
-- Environment-specific access controls
-- Audit logging enabled
+- **WebSocket API**: `wss://api.wisprflow.ai/api/v1/ws` (recommended, low latency)
+- **REST API**: `POST /api/v1/transcribe` (simpler, higher latency)
+- **Auth**: API key (backend) or access token (client-side)
+- **Audio format**: 16kHz mono PCM preferred
+- **Context awareness**: Understands code, CLI commands, dev jargon
+- **Platforms**: Mac, Windows, iOS, browser API
 
 ## Error Handling
-| Security Issue | Detection | Mitigation |
-|----------------|-----------|------------|
-| Exposed API key | Git scanning | Rotate immediately |
-| Excessive scopes | Audit logs | Reduce permissions |
-| Missing rotation | Key age check | Schedule rotation |
 
-## Examples
-
-### Service Account Pattern
-```typescript
-const clients = {
-  reader: new WisprClient({
-    apiKey: process.env.WISPR_READ_KEY,
-  }),
-  writer: new WisprClient({
-    apiKey: process.env.WISPR_WRITE_KEY,
-  }),
-};
-```
-
-### Webhook Signature Verification
-```typescript
-import crypto from 'crypto';
-
-function verifyWebhookSignature(
-  payload: string, signature: string, secret: string
-): boolean {
-  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
-  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
-}
-```
-
-### Security Checklist
-- [ ] API keys in environment variables
-- [ ] `.env` files in `.gitignore`
-- [ ] Different keys for dev/staging/prod
-- [ ] Minimal scopes per environment
-- [ ] Webhook signatures validated
-- [ ] Audit logging enabled
-
-### Audit Logging
-```typescript
-interface AuditEntry {
-  timestamp: Date;
-  action: string;
-  userId: string;
-  resource: string;
-  result: 'success' | 'failure';
-  metadata?: Record<string, any>;
-}
-
-async function auditLog(entry: Omit<AuditEntry, 'timestamp'>): Promise<void> {
-  const log: AuditEntry = { ...entry, timestamp: new Date() };
-
-  // Log to Wispr analytics
-  await wisprClient.track('audit', log);
-
-  // Also log locally for compliance
-  console.log('[AUDIT]', JSON.stringify(log));
-}
-
-// Usage
-await auditLog({
-  action: 'wispr.api.call',
-  userId: currentUser.id,
-  resource: '/v1/resource',
-  result: 'success',
-});
-```
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `401 Unauthorized` | Invalid key | Check at wisprflow.ai/developers |
+| WebSocket closed | Network issue | Reconnect with backoff |
+| Poor accuracy | Wrong context | Set context to 'programming' for code |
 
 ## Resources
-- [Wispr Security Guide](https://docs.wispr.com/security)
-- [Wispr API Scopes](https://docs.wispr.com/scopes)
+
+- [Wispr Flow Developers](https://wisprflow.ai/developers)
+- [API Docs](https://api-docs.wisprflow.ai/introduction)
+- [WebSocket Quickstart](https://api-docs.wisprflow.ai/websocket_quickstart)
 
 ## Next Steps
-For production deployment, see `wispr-prod-checklist`.
+
+See related Wispr Flow skills for more patterns.

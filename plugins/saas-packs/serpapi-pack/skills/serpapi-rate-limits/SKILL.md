@@ -1,11 +1,10 @@
 ---
 name: serpapi-rate-limits
 description: |
-  Implement SerpApi rate limiting, backoff, and idempotency patterns.
-  Use when handling rate limit errors, implementing retry logic,
-  or optimizing API request throughput for SerpApi.
-  Trigger with phrases like "serpapi rate limit", "serpapi throttling",
-  "serpapi 429", "serpapi retry", "serpapi backoff".
+  Handle SerpApi rate limits and credit-based usage quotas.
+  Use when managing API credit consumption, implementing request throttling,
+  or optimizing search volume for your plan tier.
+  Trigger: "serpapi rate limit", "serpapi credits", "serpapi quota", "serpapi throttle".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
@@ -17,135 +16,110 @@ compatible-with: claude-code
 # SerpApi Rate Limits
 
 ## Overview
-Handle SerpApi rate limits gracefully with exponential backoff and idempotency.
 
-## Prerequisites
-- SerpApi SDK installed
-- Understanding of async/await patterns
-- Access to rate limit headers
+SerpApi uses credit-based pricing (each search = 1 credit) plus per-second rate limits. Retrieving cached/archived searches does not consume credits. Plans range from 100 searches/month (free) to unlimited (enterprise).
+
+## Plan Limits
+
+| Plan | Searches/Month | Rate Limit | Price |
+|------|---------------|------------|-------|
+| Free | 100 | 1/second | $0 |
+| Developer | 5,000 | 5/second | $75/mo |
+| Business | 15,000 | 10/second | $200/mo |
+| Enterprise | 50,000+ | 15/second | Custom |
 
 ## Instructions
 
-### Step 1: Understand Rate Limit Tiers
+### Step 1: Monitor Credit Usage
 
-| Tier | Requests/min | Requests/day | Burst |
-|------|-------------|--------------|-------|
-| Free | 60 | 1,000 | 10 |
-| Pro | 300 | 10,000 | 50 |
-| Enterprise | 1,000 | 100,000 | 200 |
+```python
+import serpapi, os
 
-### Step 2: Implement Exponential Backoff with Jitter
+client = serpapi.Client(api_key=os.environ["SERPAPI_API_KEY"])
 
-```typescript
-async function withExponentialBackoff<T>(
-  operation: () => Promise<T>,
-  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 32000, jitterMs: 500 }
-): Promise<T> {
-  for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
-    try {
-      return await operation();
-    } catch (error: any) {
-      if (attempt === config.maxRetries) throw error;
-      const status = error.status || error.response?.status;
-      if (status !== 429 && (status < 500 || status >= 600)) throw error;
+# Check remaining credits before batch operations
+account = client.account()
+remaining = account["plan_searches_left"]
+used = account["this_month_usage"]
+total = account["total_searches_left"]
 
-      // Exponential delay with jitter to prevent thundering herd
-      const exponentialDelay = config.baseDelayMs * Math.pow(2, attempt);
-      const jitter = Math.random() * config.jitterMs;
-      const delay = Math.min(exponentialDelay + jitter, config.maxDelayMs);
-
-      console.log(`Rate limited. Retrying in ${delay.toFixed(0)}ms...`);
-      await new Promise(r => setTimeout(r, delay));
-    }
-  }
-  throw new Error('Unreachable');
-}
+print(f"Used: {used}, Remaining: {remaining}")
+if remaining < 100:
+    print("WARNING: Low credits remaining")
 ```
 
-### Step 3: Add Idempotency Keys
+### Step 2: Request Throttling
 
-```typescript
-import { v4 as uuidv4 } from 'uuid';
-import crypto from 'crypto';
+```python
+import time
+from threading import Semaphore
 
-// Generate deterministic key from operation params (for safe retries)
-function generateIdempotencyKey(operation: string, params: Record<string, any>): string {
-  const data = JSON.stringify({ operation, params });
-  return crypto.createHash('sha256').update(data).digest('hex');
-}
+class ThrottledSerpApi:
+    def __init__(self, api_key: str, max_per_second: int = 5):
+        self.client = serpapi.Client(api_key=api_key)
+        self.semaphore = Semaphore(max_per_second)
+        self.last_request = 0
 
-async function idempotentRequest<T>(
-  client: SerpApiClient,
-  params: Record<string, any>,
-  idempotencyKey?: string  // Pass existing key for retries
-): Promise<T> {
-  // Use provided key (for retries) or generate deterministic key from params
-  const key = idempotencyKey || generateIdempotencyKey(params.method || 'POST', params);
-  return client.request({
-    ...params,
-    headers: { 'Idempotency-Key': key, ...params.headers },
-  });
-}
+    def search(self, **params) -> dict:
+        with self.semaphore:
+            # Enforce minimum interval
+            elapsed = time.time() - self.last_request
+            if elapsed < 0.2:  # 5/sec max
+                time.sleep(0.2 - elapsed)
+            self.last_request = time.time()
+            return self.client.search(**params)
 ```
 
-## Output
-- Reliable API calls with automatic retry
-- Idempotent requests preventing duplicates
-- Rate limit headers properly handled
+### Step 3: Use Archive to Avoid Credit Waste
 
-## Error Handling
-| Header | Description | Action |
-|--------|-------------|--------|
-| X-RateLimit-Limit | Max requests | Monitor usage |
-| X-RateLimit-Remaining | Remaining requests | Throttle if low |
-| X-RateLimit-Reset | Reset timestamp | Wait until reset |
-| Retry-After | Seconds to wait | Honor this value |
+```python
+# Retrieve a previous search result by ID (FREE, no credit charge)
+archived = client.search(engine="google", search_id="previous_search_id")
 
-## Examples
+# Check if a query was recently searched before spending a credit
+# Store search IDs in your database keyed by query+params hash
+```
 
-### Queue-Based Rate Limiting
+### Step 4: Node.js Rate Limiter
+
 ```typescript
 import PQueue from 'p-queue';
+import { getJson } from 'serpapi';
 
 const queue = new PQueue({
-  concurrency: 5,
-  interval: 1000,
-  intervalCap: 10,
+  concurrency: 3,       // Max parallel requests
+  interval: 1000,       // Per second
+  intervalCap: 5,       // Max 5 per second
 });
 
-async function queuedRequest<T>(operation: () => Promise<T>): Promise<T> {
-  return queue.add(operation);
+async function throttledSearch(params: Record<string, any>) {
+  return queue.add(() => getJson({
+    ...params,
+    api_key: process.env.SERPAPI_API_KEY,
+  }));
 }
+
+// Batch search with automatic throttling
+const queries = ['query1', 'query2', 'query3'];
+const results = await Promise.all(
+  queries.map(q => throttledSearch({ engine: 'google', q }))
+);
 ```
 
-### Monitor Rate Limit Usage
-```typescript
-class RateLimitMonitor {
-  private remaining: number = 60;
-  private resetAt: Date = new Date();
+## Error Handling
 
-  updateFromHeaders(headers: Headers) {
-    this.remaining = parseInt(headers.get('X-RateLimit-Remaining') || '60');
-    const resetTimestamp = headers.get('X-RateLimit-Reset');
-    if (resetTimestamp) {
-      this.resetAt = new Date(parseInt(resetTimestamp) * 1000);
-    }
-  }
-
-  shouldThrottle(): boolean {
-    // Only throttle if low remaining AND reset hasn't happened yet
-    return this.remaining < 5 && new Date() < this.resetAt;
-  }
-
-  getWaitTime(): number {
-    return Math.max(0, this.resetAt.getTime() - Date.now());
-  }
-}
-```
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `429 Too Many Requests` | Rate limit exceeded | Slow down, check plan tier |
+| `Searches exhausted` | Monthly credits used up | Cache results, upgrade plan |
+| `Account disabled` | Payment issue or abuse | Contact SerpApi support |
 
 ## Resources
-- [SerpApi Rate Limits](https://docs.serpapi.com/rate-limits)
-- [p-queue Documentation](https://github.com/sindresorhus/p-queue)
+
+- [SerpApi Pricing](https://serpapi.com/pricing)
+- [Account API](https://serpapi.com/account-api)
+- [Searches Archive](https://serpapi.com/search-archive-api)
 
 ## Next Steps
+
 For security configuration, see `serpapi-security-basics`.

@@ -1,119 +1,97 @@
 ---
 name: stackblitz-local-dev-loop
 description: |
-  Configure StackBlitz local development with hot reload and testing.
-  Use when setting up a development environment, configuring test workflows,
-  or establishing a fast iteration cycle with StackBlitz.
-  Trigger with phrases like "stackblitz dev setup", "stackblitz local development",
-  "stackblitz dev environment", "develop with stackblitz".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
+  Configure local development for WebContainer applications with hot reload and testing.
+  Use when building browser-based IDEs, testing WebContainer file operations,
+  or setting up development workflows for WebContainer projects.
+  Trigger: "stackblitz dev setup", "webcontainer local", "test webcontainers locally".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ide, cloud, stackblitz]
+tags: [saas, ide, webcontainers, stackblitz]
 compatible-with: claude-code
 ---
 
 # StackBlitz Local Dev Loop
 
 ## Overview
-Set up a fast, reproducible local development workflow for StackBlitz.
 
-## Prerequisites
-- Completed `stackblitz-install-auth` setup
-- Node.js 18+ with npm/pnpm
-- Code editor with TypeScript support
-- Git for version control
+Set up a Vite-based development environment for WebContainer applications with cross-origin headers, hot module replacement, and Vitest for testing file system operations.
 
 ## Instructions
 
-### Step 1: Create Project Structure
-```
-my-stackblitz-project/
-├── src/
-│   ├── stackblitz/
-│   │   ├── client.ts       # StackBlitz client wrapper
-│   │   ├── config.ts       # Configuration management
-│   │   └── utils.ts        # Helper functions
-│   └── index.ts
-├── tests/
-│   └── stackblitz.test.ts
-├── .env.local              # Local secrets (git-ignored)
-├── .env.example            # Template for team
-└── package.json
-```
+### Step 1: Vite Project with WebContainers
 
-### Step 2: Configure Environment
 ```bash
-# Copy environment template
-cp .env.example .env.local
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
+npm create vite@latest wc-app -- --template vanilla-ts
+cd wc-app
+npm install @webcontainer/api
 ```
 
-### Step 3: Setup Hot Reload
-```json
-{
-  "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "test": "vitest",
-    "test:watch": "vitest --watch"
-  }
-}
-```
+### Step 2: Configure Vite Headers
 
-### Step 4: Configure Testing
 ```typescript
-import { describe, it, expect, vi } from 'vitest';
-import { StackBlitzClient } from '../src/stackblitz/client';
+// vite.config.ts
+import { defineConfig } from 'vite';
 
-describe('StackBlitz Client', () => {
-  it('should initialize with API key', () => {
-    const client = new StackBlitzClient({ apiKey: 'test-key' });
-    expect(client).toBeDefined();
-  });
+export default defineConfig({
+  server: {
+    headers: {
+      'Cross-Origin-Embedder-Policy': 'require-corp',
+      'Cross-Origin-Opener-Policy': 'same-origin',
+    },
+  },
 });
 ```
 
-## Output
-- Working development environment with hot reload
-- Configured test suite with mocking
-- Environment variable management
-- Fast iteration cycle for StackBlitz development
+### Step 3: Test WebContainer Operations
+
+```typescript
+// tests/webcontainer.test.ts
+import { describe, it, expect } from 'vitest';
+
+// Note: WebContainer tests require a browser environment
+// Use Playwright for full integration tests
+describe('FileSystemTree Builder', () => {
+  it('creates valid tree from flat paths', () => {
+    const tree = buildFileTree({
+      'src/index.ts': 'console.log("hello")',
+      'package.json': '{"name":"test"}',
+    });
+    expect(tree['package.json']).toHaveProperty('file');
+    expect(tree.src).toHaveProperty('directory');
+  });
+});
+
+function buildFileTree(flatFiles: Record<string, string>) {
+  const tree: any = {};
+  for (const [path, contents] of Object.entries(flatFiles)) {
+    const parts = path.split('/');
+    let current = tree;
+    for (let i = 0; i < parts.length - 1; i++) {
+      if (!current[parts[i]]) current[parts[i]] = { directory: {} };
+      current = current[parts[i]].directory;
+    }
+    current[parts[parts.length - 1]] = { file: { contents } };
+  }
+  return tree;
+}
+```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Module not found | Missing dependency | Run `npm install` |
-| Port in use | Another process | Kill process or change port |
-| Env not loaded | Missing .env.local | Copy from .env.example |
-| Test timeout | Slow network | Increase test timeout |
-
-## Examples
-
-### Mock StackBlitz Responses
-```typescript
-vi.mock('@stackblitz/sdk', () => ({
-  StackBlitzClient: vi.fn().mockImplementation(() => ({
-    // Mock methods here
-  })),
-}));
-```
-
-### Debug Mode
-```bash
-# Enable verbose logging
-DEBUG=STACKBLITZ=* npm run dev
-```
+| COOP/COEP errors | Missing headers | Add to vite.config.ts |
+| `SharedArrayBuffer` undefined | Not cross-origin isolated | Check response headers |
+| Test failures | WebContainer needs browser | Use Playwright for integration |
 
 ## Resources
-- [StackBlitz SDK Reference](https://docs.stackblitz.com/sdk)
-- [Vitest Documentation](https://vitest.dev/)
-- [tsx Documentation](https://github.com/esbuild-kit/tsx)
+
+- [Vite Config](https://vitejs.dev/config/)
+- [WebContainer Guides](https://webcontainers.io/guides/introduction)
 
 ## Next Steps
-See `stackblitz-sdk-patterns` for production-ready code patterns.
+
+Proceed to `stackblitz-sdk-patterns` for production patterns.

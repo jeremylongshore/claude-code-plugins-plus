@@ -1,92 +1,90 @@
 ---
 name: techsmith-install-auth
 description: |
-  Install and configure TechSmith SDK/CLI authentication.
-  Use when setting up a new TechSmith integration, configuring API keys,
-  or initializing TechSmith in your project.
-  Trigger with phrases like "install techsmith", "setup techsmith",
-  "techsmith auth", "configure techsmith API key".
+  Install TechSmith Snagit COM API and register the COM server for automation.
+  Use when setting up Snagit automation, configuring COM interop,
+  or initializing Camtasia batch processing.
+  Trigger: "install techsmith, setup snagit, techsmith COM API".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, screen-recording, documentation, techsmith]
+tags: [saas, screen-capture, video, techsmith]
 compatible-with: claude-code
 ---
 
 # TechSmith Install & Auth
 
 ## Overview
-Set up TechSmith SDK/CLI and configure authentication credentials.
+
+TechSmith products (Snagit, Camtasia) offer automation through the Snagit COM Server API (Windows) and Camtasia's command-line batch processing. No traditional API keys -- COM registration is the auth mechanism.
 
 ## Prerequisites
-- Node.js 18+ or Python 3.10+
-- Package manager (npm, pnpm, or pip)
-- TechSmith account with API access
-- API key from TechSmith dashboard
+
+- Windows OS (COM API is Windows-only)
+- Snagit 2023+ or Camtasia 2023+ installed
+- PowerShell 5.1+ or .NET SDK for COM interop
 
 ## Instructions
 
-### Step 1: Install SDK
-```bash
-# Node.js
-npm install @techsmith/sdk
+### Step 1: Verify Snagit COM Server Registration
 
-# Python
-pip install techsmith
+```powershell
+# Check if Snagit COM server is registered
+$snagit = New-Object -ComObject Snagit.ImageCapture
+if ($snagit) { Write-Host "Snagit COM server registered successfully" }
 ```
 
-### Step 2: Configure Authentication
-```bash
-# Set environment variable
-export TECHSMITH_API_KEY="your-api-key"
+### Step 2: Re-register COM Server (if needed)
 
-# Or create .env file
-echo 'TECHSMITH_API_KEY=your-api-key' >> .env
+```powershell
+# Run as Administrator
+$snagitPath = "C:\Program Files\TechSmith\Snagit 2025\Snagit32.exe"
+& $snagitPath /register
 ```
 
-### Step 3: Verify Connection
-```typescript
-// Test connection code here
+### Step 3: Python COM Interop
+
+```python
+# pip install pywin32
+import win32com.client
+
+snagit = win32com.client.Dispatch("Snagit.ImageCapture")
+print(f"Snagit version: Connected via COM")
 ```
 
-## Output
-- Installed SDK package in node_modules or site-packages
-- Environment variable or .env file with API key
-- Successful connection verification output
+### Step 4: C# COM Interop
+
+```csharp
+using SNAGITLib;
+
+var capture = new ImageCaptureClass();
+Console.WriteLine("Snagit COM initialized");
+```
+
+### Step 5: Verify Camtasia CLI
+
+```powershell
+# Camtasia batch producer
+$camtasia = "C:\Program Files\TechSmith\Camtasia 2025\CamtasiaProducer.exe"
+& $camtasia --help
+```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Invalid API Key | Incorrect or expired key | Verify key in TechSmith dashboard |
-| Rate Limited | Exceeded quota | Check quota at https://docs.techsmith.com |
-| Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
-| Module Not Found | Installation failed | Run `npm install` or `pip install` again |
-
-## Examples
-
-### TypeScript Setup
-```typescript
-import { TechSmithClient } from '@techsmith/sdk';
-
-const client = new TechSmithClient({
-  apiKey: process.env.TECHSMITH_API_KEY,
-});
-```
-
-### Python Setup
-```python
-from techsmith import TechSmithClient
-
-client = TechSmithClient(
-    api_key=os.environ.get('TECHSMITH_API_KEY')
-)
-```
+| `REGDB_E_CLASSNOTREG` | COM not registered | Run Snagit32.exe /register as admin |
+| `Class not registered` | Wrong bitness | Use 32-bit PowerShell for 32-bit Snagit |
+| `pywin32 not found` | Missing package | `pip install pywin32` |
+| Camtasia CLI not found | Not in PATH | Use full path to CamtasiaProducer.exe |
 
 ## Resources
-- [TechSmith Documentation](https://docs.techsmith.com)
-- [TechSmith Dashboard](https://api.techsmith.com)
-- [TechSmith Status](https://status.techsmith.com)
+
+- [Snagit COM Samples](https://github.com/TechSmith/Snagit-COM-Samples)
+- [Snagit COM Server Guide (PDF)](https://assets.techsmith.com/Docs/Snagit-2022-COM-Server-Guide.pdf)
+- [TechSmith GitHub](https://github.com/TechSmith)
 
 ## Next Steps
-After successful auth, proceed to `techsmith-hello-world` for your first API call.
+
+Proceed to `techsmith-hello-world` for your first capture.

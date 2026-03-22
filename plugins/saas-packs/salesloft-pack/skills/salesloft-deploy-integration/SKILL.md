@@ -1,11 +1,10 @@
 ---
 name: salesloft-deploy-integration
 description: |
-  Deploy Salesloft integrations to Vercel, Fly.io, and Cloud Run platforms.
-  Use when deploying Salesloft-powered applications to production,
-  configuring platform-specific secrets, or setting up deployment pipelines.
-  Trigger with phrases like "deploy salesloft", "salesloft Vercel",
-  "salesloft production deploy", "salesloft Cloud Run", "salesloft Fly.io".
+  Deploy SalesLoft integrations to Vercel, Fly.io, and Cloud Run.
+  Use when deploying SalesLoft-powered apps to production,
+  configuring platform secrets, or setting up webhook endpoints.
+  Trigger: "deploy salesloft", "salesloft Vercel", "salesloft Cloud Run".
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
@@ -14,54 +13,52 @@ tags: [saas, sales, outreach, salesloft]
 compatible-with: claude-code
 ---
 
-# Salesloft Deploy Integration
+# SalesLoft Deploy Integration
 
 ## Overview
-Deploy Salesloft-powered applications to popular platforms with proper secrets management.
 
-## Prerequisites
-- Salesloft API keys for production environment
-- Platform CLI installed (vercel, fly, or gcloud)
-- Application code ready for deployment
-- Environment variables documented
+Deploy SalesLoft-powered applications to cloud platforms with proper secrets management, webhook endpoint configuration, and health checks. SalesLoft requires HTTPS webhook endpoints and OAuth tokens stored securely.
 
-## Vercel Deployment
+## Instructions
 
-### Environment Setup
+### Vercel Deployment
+
 ```bash
-# Add Salesloft secrets to Vercel
-vercel secrets add salesloft_api_key sk_live_***
-vercel secrets add salesloft_webhook_secret whsec_***
+# Set secrets
+vercel env add SALESLOFT_CLIENT_ID production
+vercel env add SALESLOFT_CLIENT_SECRET production
+vercel env add SALESLOFT_WEBHOOK_SECRET production
 
-# Link to project
-vercel link
-
-# Deploy preview
-vercel
-
-# Deploy production
+# Deploy
 vercel --prod
 ```
 
-### vercel.json Configuration
-```json
-{
-  "env": {
-    "SALESLOFT_API_KEY": "@salesloft_api_key"
-  },
-  "functions": {
-    "api/**/*.ts": {
-      "maxDuration": 30
-    }
+```typescript
+// api/webhooks/salesloft.ts (Vercel serverless function)
+import { verifyWebhookSignature } from '../../lib/salesloft';
+
+export const config = { api: { bodyParser: false } }; // Raw body for HMAC
+
+export default async function handler(req: Request) {
+  const body = await req.text();
+  const sig = req.headers.get('x-salesloft-signature')!;
+  const ts = req.headers.get('x-salesloft-timestamp')!;
+
+  if (!verifyWebhookSignature(Buffer.from(body), sig, ts, process.env.SALESLOFT_WEBHOOK_SECRET!)) {
+    return new Response('Invalid signature', { status: 401 });
   }
+
+  const event = JSON.parse(body);
+  // Process event...
+  return new Response(JSON.stringify({ received: true }), { status: 200 });
 }
 ```
 
-## Fly.io Deployment
+### Fly.io Deployment
 
-### fly.toml
 ```toml
-app = "my-salesloft-app"
+# fly.toml
+app = "salesloft-sync"
 primary_region = "iad"
 
 [env]
@@ -72,140 +69,71 @@ primary_region = "iad"
   force_https = true
   auto_stop_machines = true
   auto_start_machines = true
+
+[[services.http_checks]]
+  interval = "30s"
+  timeout = "5s"
+  path = "/health"
 ```
 
-### Secrets
 ```bash
-# Set Salesloft secrets
-fly secrets set SALESLOFT_API_KEY=sk_live_***
-fly secrets set SALESLOFT_WEBHOOK_SECRET=whsec_***
-
-# Deploy
+fly secrets set SALESLOFT_CLIENT_ID=xxx SALESLOFT_CLIENT_SECRET=xxx
+fly secrets set SALESLOFT_WEBHOOK_SECRET=xxx
 fly deploy
 ```
 
-## Google Cloud Run
+### Cloud Run Deployment
 
-### Dockerfile
-```dockerfile
-FROM node:20-slim
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-CMD ["npm", "start"]
-```
-
-### Deploy Script
 ```bash
-#!/bin/bash
-# deploy-cloud-run.sh
+# Store secrets in Secret Manager
+echo -n "client-id" | gcloud secrets create salesloft-client-id --data-file=-
+echo -n "client-secret" | gcloud secrets create salesloft-client-secret --data-file=-
 
-PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
-SERVICE_NAME="salesloft-service"
-REGION="us-central1"
-
-# Build and push image
-gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
-
-# Deploy to Cloud Run
-gcloud run deploy $SERVICE_NAME \
-  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
-  --region $REGION \
-  --platform managed \
-  --allow-unauthenticated \
-  --set-secrets=SALESLOFT_API_KEY=salesloft-api-key:latest
+# Deploy with secret mounts
+gcloud run deploy salesloft-sync \
+  --image gcr.io/$PROJECT_ID/salesloft-sync \
+  --region us-central1 \
+  --set-secrets=SALESLOFT_CLIENT_ID=salesloft-client-id:latest \
+  --set-secrets=SALESLOFT_CLIENT_SECRET=salesloft-client-secret:latest \
+  --allow-unauthenticated
 ```
 
-## Environment Configuration Pattern
+### Health Check (All Platforms)
 
 ```typescript
-// config/salesloft.ts
-interface SalesloftConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  webhookSecret?: string;
-}
-
-export function getSalesloftConfig(): SalesloftConfig {
-  const env = process.env.NODE_ENV || 'development';
-
-  return {
-    apiKey: process.env.SALESLOFT_API_KEY!,
-    environment: env as SalesloftConfig['environment'],
-    webhookSecret: process.env.SALESLOFT_WEBHOOK_SECRET,
-  };
-}
+app.get('/health', async (req, res) => {
+  const start = Date.now();
+  try {
+    const { data } = await api.get('/me.json');
+    res.json({
+      status: 'healthy',
+      salesloft: { user: data.data.email, latencyMs: Date.now() - start },
+    });
+  } catch (err: any) {
+    res.status(503).json({
+      status: 'degraded',
+      salesloft: { error: err.message, latencyMs: Date.now() - start },
+    });
+  }
+});
 ```
-
-## Health Check Endpoint
-
-```typescript
-// api/health.ts
-export async function GET() {
-  const salesloftStatus = await checkSalesloftConnection();
-
-  return Response.json({
-    status: salesloftStatus ? 'healthy' : 'degraded',
-    services: {
-      salesloft: salesloftStatus,
-    },
-    timestamp: new Date().toISOString(),
-  });
-}
-```
-
-## Instructions
-
-### Step 1: Choose Deployment Platform
-Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
-
-### Step 2: Configure Secrets
-Store Salesloft API keys securely using the platform's secrets management.
-
-### Step 3: Deploy Application
-Use the platform CLI to deploy your application with Salesloft integration.
-
-### Step 4: Verify Health
-Test the health check endpoint to confirm Salesloft connectivity.
-
-## Output
-- Application deployed to production
-- Salesloft secrets securely configured
-- Health check endpoint functional
-- Environment-specific configuration in place
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via platform CLI |
-| Deploy timeout | Large build | Increase build timeout |
-| Health check fails | Wrong API key | Verify environment variable |
-| Cold start issues | No warm-up | Configure minimum instances |
-
-## Examples
-
-### Quick Deploy Script
-```bash
-#!/bin/bash
-# Platform-agnostic deploy helper
-case "$1" in
-  vercel)
-    vercel secrets add salesloft_api_key "$SALESLOFT_API_KEY"
-    vercel --prod
-    ;;
-  fly)
-    fly secrets set SALESLOFT_API_KEY="$SALESLOFT_API_KEY"
-    fly deploy
-    ;;
-esac
-```
+| Webhook 401 | Wrong signing secret | Verify secret matches SalesLoft config |
+| Cold start timeout | Webhook response > 30s | Process async, respond 200 immediately |
+| Secret not found | Missing env var | Check platform secret configuration |
+| Health check fails | Token expired | Ensure token refresh is automated |
 
 ## Resources
-- [Vercel Documentation](https://vercel.com/docs)
-- [Fly.io Documentation](https://fly.io/docs)
-- [Cloud Run Documentation](https://cloud.google.com/run/docs)
-- [Salesloft Deploy Guide](https://docs.salesloft.com/deploy)
+
+- [SalesLoft API Basics](https://developers.salesloft.com/docs/platform/api-basics/)
+- [Vercel Serverless Functions](https://vercel.com/docs/functions)
+- [Fly.io Docs](https://fly.io/docs)
+- [Cloud Run Docs](https://cloud.google.com/run/docs)
 
 ## Next Steps
+
 For webhook handling, see `salesloft-webhooks-events`.

@@ -1,12 +1,11 @@
 ---
 name: workhuman-security-basics
 description: |
-  Apply Workhuman security best practices for secrets and access control.
-  Use when securing API keys, implementing least privilege access,
-  or auditing Workhuman security configuration.
-  Trigger with phrases like "workhuman security", "workhuman secrets",
-  "secure workhuman", "workhuman API key security".
-allowed-tools: Read, Write, Grep
+  Workhuman security basics for employee recognition and rewards API.
+  Use when integrating Workhuman Social Recognition,
+  or building recognition workflows with HRIS systems.
+  Trigger: "workhuman security basics".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,126 +16,45 @@ compatible-with: claude-code
 # Workhuman Security Basics
 
 ## Overview
-Security best practices for Workhuman API keys, tokens, and access control.
 
-## Prerequisites
-- Workhuman SDK installed
-- Understanding of environment variables
-- Access to Workhuman dashboard
+Guidance for security basics with Workhuman Social Recognition and rewards API.
 
 ## Instructions
 
-### Step 1: Configure Environment Variables
-```bash
-# .env (NEVER commit to git)
-WORKHUMAN_API_KEY=sk_live_***
-WORKHUMAN_SECRET=***
+### Key Workhuman API Concepts
 
-# .gitignore
-.env
-.env.local
-.env.*.local
-```
+- **Auth**: OAuth 2.0 client credentials flow
+- **Recognition**: Peer-to-peer and manager nominations with points
+- **Awards**: Configurable levels (bronze, silver, gold, platinum)
+- **Values**: Company values attached to recognitions
+- **HRIS Sync**: Bidirectional sync with Workday, SAP SuccessFactors
+- **Integrations**: Microsoft Teams, Slack, Outlook native plugins
 
-### Step 2: Implement Secret Rotation
-```bash
-# 1. Generate new key in Workhuman dashboard
-# 2. Update environment variable
-export WORKHUMAN_API_KEY="new_key_here"
+### Core API Endpoints
 
-# 3. Verify new key works
-curl -H "Authorization: Bearer ${WORKHUMAN_API_KEY}" \
-  https://api.workhuman.com/health
-
-# 4. Revoke old key in dashboard
-```
-
-### Step 3: Apply Least Privilege
-| Environment | Recommended Scopes |
-|-------------|-------------------|
-| Development | `read:*` |
-| Staging | `read:*, write:limited` |
-| Production | `Only required scopes` |
-
-## Output
-- Secure API key storage
-- Environment-specific access controls
-- Audit logging enabled
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/v1/recognitions` | GET | List recognitions |
+| `/api/v1/recognitions` | POST | Create nomination |
+| `/api/v1/recognitions/:id` | GET | Get recognition status |
+| `/api/v1/users` | GET | List employees |
+| `/api/v1/rewards/catalog` | GET | Browse reward catalog |
+| `/api/v1/rewards/redeem` | POST | Redeem points for reward |
 
 ## Error Handling
-| Security Issue | Detection | Mitigation |
-|----------------|-----------|------------|
-| Exposed API key | Git scanning | Rotate immediately |
-| Excessive scopes | Audit logs | Reduce permissions |
-| Missing rotation | Key age check | Schedule rotation |
 
-## Examples
-
-### Service Account Pattern
-```typescript
-const clients = {
-  reader: new WorkhumanClient({
-    apiKey: process.env.WORKHUMAN_READ_KEY,
-  }),
-  writer: new WorkhumanClient({
-    apiKey: process.env.WORKHUMAN_WRITE_KEY,
-  }),
-};
-```
-
-### Webhook Signature Verification
-```typescript
-import crypto from 'crypto';
-
-function verifyWebhookSignature(
-  payload: string, signature: string, secret: string
-): boolean {
-  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
-  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
-}
-```
-
-### Security Checklist
-- [ ] API keys in environment variables
-- [ ] `.env` files in `.gitignore`
-- [ ] Different keys for dev/staging/prod
-- [ ] Minimal scopes per environment
-- [ ] Webhook signatures validated
-- [ ] Audit logging enabled
-
-### Audit Logging
-```typescript
-interface AuditEntry {
-  timestamp: Date;
-  action: string;
-  userId: string;
-  resource: string;
-  result: 'success' | 'failure';
-  metadata?: Record<string, any>;
-}
-
-async function auditLog(entry: Omit<AuditEntry, 'timestamp'>): Promise<void> {
-  const log: AuditEntry = { ...entry, timestamp: new Date() };
-
-  // Log to Workhuman analytics
-  await workhumanClient.track('audit', log);
-
-  // Also log locally for compliance
-  console.log('[AUDIT]', JSON.stringify(log));
-}
-
-// Usage
-await auditLog({
-  action: 'workhuman.api.call',
-  userId: currentUser.id,
-  resource: '/v1/resource',
-  result: 'success',
-});
-```
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `401 Unauthorized` | Token expired | Re-authenticate |
+| `403 Forbidden` | Insufficient permissions | Check role/permissions |
+| `422 Validation` | Missing fields | Check required fields |
+| `404 Not Found` | Invalid ID | Verify resource exists |
 
 ## Resources
-- [Workhuman Security Guide](https://docs.workhuman.com/security)
-- [Workhuman API Scopes](https://docs.workhuman.com/scopes)
+
+- [Workhuman Platform](https://www.workhuman.com/)
+- [Workhuman Integrations](https://www.workhuman.com/capabilities/integrations/)
 
 ## Next Steps
-For production deployment, see `workhuman-prod-checklist`.
+
+See related Workhuman skills for more patterns.
