@@ -1,11 +1,11 @@
 ---
 name: langchain-sdk-patterns
 description: |
-  Apply production-ready LangChain SDK patterns for chains, agents, and memory.
-  Use when implementing LangChain integrations, refactoring code,
-  or establishing team coding standards for LangChain applications.
-  Trigger with phrases like "langchain SDK patterns", "langchain best practices",
-  "langchain code patterns", "idiomatic langchain", "langchain architecture".
+  Apply production-ready LangChain SDK patterns for structured output,
+  fallbacks, batch processing, streaming, and caching.
+  Trigger: "langchain SDK patterns", "langchain best practices",
+  "idiomatic langchain", "langchain architecture", "withStructuredOutput",
+  "withFallbacks", "abatch".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
@@ -17,160 +17,206 @@ tags: [saas, langchain, langchain-sdk]
 # LangChain SDK Patterns
 
 ## Overview
-Production-ready patterns for LangChain applications including LCEL chains, structured output, and error handling.
 
-## Prerequisites
-- Completed `langchain-install-auth` setup
-- Familiarity with async/await patterns
-- Understanding of error handling best practices
+Production-grade patterns every LangChain application should use: type-safe structured output, provider fallbacks, async batch processing, streaming, caching, and retry logic.
 
-## Core Patterns
+## Pattern 1: Structured Output with Zod
 
-### Pattern 1: Type-Safe Chain with Pydantic
-```python
-from pydantic import BaseModel, Field
-from langchain_openai import ChatOpenAI
-from langchain_core.prompts import ChatPromptTemplate
+```typescript
+import { ChatOpenAI } from "@langchain/openai";
+import { ChatPromptTemplate } from "@langchain/core/prompts";
+import { z } from "zod";
 
-class SentimentResult(BaseModel):
-    """Structured output for sentiment analysis."""
-    sentiment: str = Field(description="positive, negative, or neutral")
-    confidence: float = Field(description="Confidence score 0-1")
-    reasoning: str = Field(description="Brief explanation")
+const ExtractedData = z.object({
+  entities: z.array(z.object({
+    name: z.string(),
+    type: z.enum(["person", "org", "location"]),
+    confidence: z.number().min(0).max(1),
+  })),
+  language: z.string(),
+  summary: z.string(),
+});
 
-llm = ChatOpenAI(model="gpt-4o-mini")
-structured_llm = llm.with_structured_output(SentimentResult)
+const model = new ChatOpenAI({ model: "gpt-4o-mini" });
+const structuredModel = model.withStructuredOutput(ExtractedData);
 
-prompt = ChatPromptTemplate.from_template(
-    "Analyze the sentiment of: {text}"
-)
+const prompt = ChatPromptTemplate.fromTemplate(
+  "Extract entities from this text:\n\n{text}"
+);
 
-chain = prompt | structured_llm
+const chain = prompt.pipe(structuredModel);
 
-# Returns typed SentimentResult
-result: SentimentResult = chain.invoke({"text": "I love LangChain!"})
-print(f"Sentiment: {result.sentiment} ({result.confidence})")
+const result = await chain.invoke({
+  text: "Satya Nadella announced Microsoft's new AI lab in Seattle.",
+});
+// result is fully typed: { entities: [...], language: "en", summary: "..." }
 ```
 
-### Pattern 2: Retry with Fallback
-```python
-from langchain_openai import ChatOpenAI
-from langchain_anthropic import ChatAnthropic
-from langchain_core.runnables import RunnableWithFallbacks
+## Pattern 2: Provider Fallbacks
 
-primary = ChatOpenAI(model="gpt-4o")
-fallback = ChatAnthropic(model="claude-3-5-sonnet-20241022")  # 20241022 = date/version stamp
+```typescript
+import { ChatOpenAI } from "@langchain/openai";
+import { ChatAnthropic } from "@langchain/anthropic";
 
-# Automatically falls back on failure
-robust_llm = primary.with_fallbacks([fallback])
+const primary = new ChatOpenAI({
+  model: "gpt-4o",
+  maxRetries: 2,
+  timeout: 10000,
+});
 
-response = robust_llm.invoke("Hello!")
+const fallback = new ChatAnthropic({
+  model: "claude-sonnet-4-20250514",
+});
+
+// Automatically falls back on any error (rate limit, timeout, 500)
+const robustModel = primary.withFallbacks({
+  fallbacks: [fallback],
+});
+
+// Works identically to a normal model
+const chain = prompt.pipe(robustModel).pipe(new StringOutputParser());
 ```
 
-### Pattern 3: Async Batch Processing
-```python
-import asyncio
-from langchain_openai import ChatOpenAI
-from langchain_core.prompts import ChatPromptTemplate
+## Pattern 3: Async Batch Processing
 
-llm = ChatOpenAI(model="gpt-4o-mini")
-prompt = ChatPromptTemplate.from_template("Summarize: {text}")
-chain = prompt | llm
+```typescript
+import { ChatOpenAI } from "@langchain/openai";
+import { ChatPromptTemplate } from "@langchain/core/prompts";
+import { StringOutputParser } from "@langchain/core/output_parsers";
 
-async def process_batch(texts: list[str]) -> list:
-    """Process multiple texts concurrently."""
-    inputs = [{"text": t} for t in texts]
-    results = await chain.abatch(inputs, config={"max_concurrency": 5})
-    return results
+const chain = ChatPromptTemplate.fromTemplate("Summarize: {text}")
+  .pipe(new ChatOpenAI({ model: "gpt-4o-mini" }))
+  .pipe(new StringOutputParser());
 
-# Usage
-results = asyncio.run(process_batch(["text1", "text2", "text3"]))
+const texts = ["Article 1...", "Article 2...", "Article 3..."];
+const inputs = texts.map((text) => ({ text }));
+
+// Process all inputs with controlled concurrency
+const results = await chain.batch(inputs, {
+  maxConcurrency: 5,   // max 5 parallel API calls
+});
+// results: string[] — one summary per input
 ```
 
-### Pattern 4: Streaming with Callbacks
-```python
-from langchain_openai import ChatOpenAI
-from langchain_core.callbacks import StreamingStdOutCallbackHandler
+## Pattern 4: Streaming with Token Callbacks
 
-llm = ChatOpenAI(
-    model="gpt-4o-mini",
-    streaming=True,
-    callbacks=[StreamingStdOutCallbackHandler()]
-)
+```typescript
+import { ChatOpenAI } from "@langchain/openai";
+import { ChatPromptTemplate } from "@langchain/core/prompts";
+import { StringOutputParser } from "@langchain/core/output_parsers";
 
-# Streams tokens to stdout as they arrive
-for chunk in llm.stream("Tell me a story"):
-    # Each chunk contains partial content
-    pass
+const chain = ChatPromptTemplate.fromTemplate("{input}")
+  .pipe(new ChatOpenAI({ model: "gpt-4o-mini", streaming: true }))
+  .pipe(new StringOutputParser());
+
+// Stream string chunks
+const stream = await chain.stream({ input: "Tell me a story" });
+for await (const chunk of stream) {
+  process.stdout.write(chunk);  // each chunk is a string fragment
+}
 ```
 
-### Pattern 5: Caching for Cost Reduction
+## Pattern 5: Retry with Exponential Backoff
+
+```typescript
+import { ChatOpenAI } from "@langchain/openai";
+
+// Built-in retry handles transient failures
+const model = new ChatOpenAI({
+  model: "gpt-4o-mini",
+  maxRetries: 3,        // retries with exponential backoff
+  timeout: 30000,       // 30s timeout per request
+});
+
+// Manual retry wrapper for custom logic
+async function invokeWithRetry<T>(
+  chain: { invoke: (input: any) => Promise<T> },
+  input: any,
+  maxRetries = 3,
+): Promise<T> {
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      return await chain.invoke(input);
+    } catch (error: any) {
+      if (attempt === maxRetries - 1) throw error;
+      const delay = Math.min(1000 * 2 ** attempt, 30000);
+      console.warn(`Retry ${attempt + 1}/${maxRetries} after ${delay}ms`);
+      await new Promise((r) => setTimeout(r, delay));
+    }
+  }
+  throw new Error("Unreachable");
+}
+```
+
+## Pattern 6: Caching (Python)
+
 ```python
 from langchain_openai import ChatOpenAI
 from langchain_core.globals import set_llm_cache
 from langchain_community.cache import SQLiteCache
 
-# Enable SQLite caching
+# Enable persistent caching — identical inputs skip the API
 set_llm_cache(SQLiteCache(database_path=".langchain_cache.db"))
 
 llm = ChatOpenAI(model="gpt-4o-mini")
 
-# First call hits API
-response1 = llm.invoke("What is 2+2?")
+# First call: hits API (~500ms)
+r1 = llm.invoke("What is 2+2?")
 
-# Second identical call uses cache (no API cost)
-response2 = llm.invoke("What is 2+2?")
+# Second identical call: cache hit (~0ms, no cost)
+r2 = llm.invoke("What is 2+2?")
 ```
 
-## Output
-- Type-safe chains with Pydantic models
-- Robust error handling with fallbacks
-- Efficient async batch processing
-- Cost-effective caching strategies
+## Pattern 7: RunnableLambda for Custom Logic
+
+```typescript
+import { RunnableLambda } from "@langchain/core/runnables";
+
+// Wrap any function as a Runnable to use in chains
+const cleanInput = RunnableLambda.from((input: { text: string }) => ({
+  text: input.text.trim().toLowerCase(),
+}));
+
+const addMetadata = RunnableLambda.from((result: string) => ({
+  answer: result,
+  timestamp: new Date().toISOString(),
+  model: "gpt-4o-mini",
+}));
+
+const chain = cleanInput
+  .pipe(prompt)
+  .pipe(model)
+  .pipe(new StringOutputParser())
+  .pipe(addMetadata);
+```
+
+## Anti-Patterns to Avoid
+
+| Anti-Pattern | Why | Better |
+|-------------|-----|--------|
+| Hardcoded API keys | Security risk | Use env vars + `dotenv` |
+| No error handling | Silent failures | Use `.withFallbacks()` + try/catch |
+| Sequential when parallel works | Slow | Use `RunnableParallel` or `.batch()` |
+| Parsing raw LLM text | Fragile | Use `.withStructuredOutput(zodSchema)` |
+| No timeout | Hanging requests | Set `timeout` on model constructor |
+| No streaming in UIs | Bad UX | Use `.stream()` for user-facing output |
 
 ## Error Handling
 
-### Standard Error Pattern
-```python
-from langchain_core.exceptions import OutputParserException
-from openai import RateLimitError, APIError
-
-def safe_invoke(chain, input_data, max_retries=3):
-    """Invoke chain with error handling."""
-    for attempt in range(max_retries):
-        try:
-            return chain.invoke(input_data)
-        except RateLimitError:
-            if attempt < max_retries - 1:
-                time.sleep(2 ** attempt)
-                continue
-            raise
-        except OutputParserException as e:
-            # Handle parsing failures
-            return {"error": str(e), "raw": e.llm_output}
-        except APIError as e:
-            raise RuntimeError(f"API error: {e}")
-```
+| Error | Cause | Fix |
+|-------|-------|-----|
+| `ZodError` | LLM output doesn't match schema | Improve prompt or relax schema with `.optional()` |
+| `RateLimitError` | API quota exceeded | Add `maxRetries`, use `.withFallbacks()` |
+| `TimeoutError` | Slow response | Increase `timeout`, try smaller model |
+| `OutputParserException` | Unparseable output | Switch to `.withStructuredOutput()` |
 
 ## Resources
-- [LCEL Documentation](https://python.langchain.com/docs/concepts/lcel/)
-- [Structured Output](https://python.langchain.com/docs/concepts/structured_outputs/)
-- [Fallbacks](https://python.langchain.com/docs/how_to/fallbacks/)
-- [Caching](https://python.langchain.com/docs/how_to/llm_caching/)
+
+- [LCEL How-To](https://js.langchain.com/docs/how_to/)
+- [Structured Output](https://js.langchain.com/docs/how_to/structured_output/)
+- [Fallbacks](https://js.langchain.com/docs/how_to/fallbacks/)
+- [Streaming](https://js.langchain.com/docs/how_to/streaming/)
 
 ## Next Steps
-Proceed to `langchain-core-workflow-a` for chains and prompts workflow.
 
-## Instructions
-
-1. Assess the current state of the Langchain Sdk Patterns configuration
-2. Identify the specific requirements and constraints
-3. Apply the recommended patterns from this skill
-4. Validate the changes against expected behavior
-5. Document the configuration for team reference
-
-## Examples
-
-**Basic usage**: Apply langchain sdk patterns to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize langchain sdk patterns for production environments with multiple constraints and team-specific requirements.
+Proceed to `langchain-data-handling` for data privacy patterns.

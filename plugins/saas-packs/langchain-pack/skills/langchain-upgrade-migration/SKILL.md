@@ -1,12 +1,11 @@
 ---
 name: langchain-upgrade-migration
 description: |
-  Manage LangChain SDK upgrades and migrations.
-  Use when upgrading LangChain versions, migrating from legacy patterns,
-  or updating to new APIs after breaking changes.
-  Trigger with phrases like "upgrade langchain", "langchain migration",
-  "langchain breaking changes", "update langchain version", "langchain 0.3".
-allowed-tools: Read, Write, Edit, Bash(pip:*), Grep
+  Upgrade LangChain SDK versions safely with import path migration,
+  LCEL conversion from legacy chains, and agent API updates.
+  Trigger: "upgrade langchain", "langchain migration", "langchain breaking changes",
+  "update langchain version", "langchain 0.3", "langchain deprecation".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,212 +16,200 @@ tags: [saas, langchain, migration]
 # LangChain Upgrade Migration
 
 ## Current State
-!`npm list 2>/dev/null | head -20`
-!`pip freeze 2>/dev/null | head -20`
+
+!`npm list @langchain/core @langchain/openai 2>/dev/null | head -10`
 
 ## Overview
-Guide for upgrading LangChain versions safely with migration strategies for breaking changes.
 
-## Prerequisites
-- Existing LangChain application
-- Version control with current code committed
-- Test suite covering core functionality
-- Staging environment for validation
+Safely upgrade LangChain versions: check compatibility, migrate import paths, convert legacy chains to LCEL, update agent APIs, and validate with tests.
 
-## Instructions
+## Breaking Changes Timeline
 
-### Step 1: Check Current Versions
+### 0.1.x to 0.2.x (Major Restructuring)
+
+- `@langchain/core` extracted as separate package
+- Chat models moved to provider packages (`@langchain/openai`, `@langchain/anthropic`)
+- Imports changed from `langchain/*` to `@langchain/core/*`
+
+### 0.2.x to 0.3.x (LCEL Standardization)
+
+- Legacy `LLMChain`, `ConversationChain` deprecated
+- `initialize_agent` deprecated (use `createToolCallingAgent`)
+- Memory API: `ConversationBufferMemory` replaced by `RunnableWithMessageHistory`
+- All chains should use LCEL pipe syntax
+
+## Step 1: Check Current Versions
+
 ```bash
-set -euo pipefail
-pip show langchain langchain-core langchain-openai langchain-community
+# Node.js
+npm ls @langchain/core @langchain/openai langchain 2>&1 | head -20
 
-# Output current requirements
-pip freeze | grep -i langchain > langchain_current.txt
+# Python
+pip show langchain langchain-core langchain-openai | grep -E "Name|Version"
 ```
 
-### Step 2: Review Breaking Changes
-```python
-# Key breaking changes by version:
+## Step 2: Migrate Import Paths (TypeScript)
 
-# 0.1.x -> 0.2.x (Major restructuring)
-# - langchain-core extracted as separate package
-# - Imports changed from langchain.* to langchain_core.*
-# - ChatModels moved to provider packages
+```typescript
+// OLD (pre-0.2)
+import { ChatOpenAI } from "langchain/chat_models/openai";
+import { PromptTemplate } from "langchain/prompts";
+import { LLMChain } from "langchain/chains";
+import { BufferMemory } from "langchain/memory";
 
-# 0.2.x -> 0.3.x (LCEL standardization)
-# - Legacy chains deprecated
-# - AgentExecutor changes
-# - Memory API updates
-
-# Check migration guides:
-# https://python.langchain.com/docs/versions/migrating_chains/
+// NEW (0.3+)
+import { ChatOpenAI } from "@langchain/openai";
+import { ChatPromptTemplate } from "@langchain/core/prompts";
+import { StringOutputParser } from "@langchain/core/output_parsers";
+// LLMChain replaced by LCEL: prompt.pipe(model).pipe(parser)
 ```
 
-### Step 3: Update Import Paths
 ```python
-# OLD (pre-0.2):
+# OLD (pre-0.2)
 from langchain.chat_models import ChatOpenAI
 from langchain.prompts import ChatPromptTemplate
 from langchain.chains import LLMChain
 
-# NEW (0.3+):
+# NEW (0.3+)
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
-
-# Migration script
-import re
-
-def migrate_imports(content: str) -> str:
-    """Migrate old imports to new pattern."""
-    migrations = [
-        (r"from langchain\.chat_models import ChatOpenAI",
-         "from langchain_openai import ChatOpenAI"),
-        (r"from langchain\.llms import OpenAI",
-         "from langchain_openai import OpenAI"),
-        (r"from langchain\.prompts import",
-         "from langchain_core.prompts import"),
-        (r"from langchain\.schema import",
-         "from langchain_core.messages import"),
-        (r"from langchain\.callbacks import",
-         "from langchain_core.callbacks import"),
-    ]
-    for old, new in migrations:
-        content = re.sub(old, new, content)
-    return content
 ```
 
-### Step 4: Migrate Legacy Chains to LCEL
-```python
-# OLD: LLMChain (deprecated)
-from langchain.chains import LLMChain
+## Step 3: Convert LLMChain to LCEL
 
+```typescript
+// OLD: LLMChain (deprecated)
+import { LLMChain } from "langchain/chains";
+const chain = new LLMChain({ llm, prompt });
+const result = await chain.call({ input: "hello" });
+
+// NEW: LCEL pipe syntax
+import { StringOutputParser } from "@langchain/core/output_parsers";
+const chain = prompt.pipe(model).pipe(new StringOutputParser());
+const result = await chain.invoke({ input: "hello" });
+```
+
+```python
+# OLD
+from langchain.chains import LLMChain
 chain = LLMChain(llm=llm, prompt=prompt)
 result = chain.run(input="hello")
 
-# NEW: LCEL (LangChain Expression Language)
-from langchain_core.output_parsers import StrOutputParser
-
+# NEW
 chain = prompt | llm | StrOutputParser()
 result = chain.invoke({"input": "hello"})
 ```
 
-### Step 5: Migrate Agents
-```python
-# OLD: initialize_agent (deprecated)
-from langchain.agents import initialize_agent, AgentType
+## Step 4: Migrate Agents
 
-agent = initialize_agent(
-    tools=tools,
-    llm=llm,
-    agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION
-)
+```typescript
+// OLD: initialize_agent (deprecated)
+import { initializeAgentExecutorWithOptions } from "langchain/agents";
+const executor = await initializeAgentExecutorWithOptions(tools, llm, {
+  agentType: "chat-conversational-react-description",
+});
 
-# NEW: create_tool_calling_agent
-from langchain.agents import create_tool_calling_agent, AgentExecutor
-from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+// NEW: createToolCallingAgent
+import { createToolCallingAgent, AgentExecutor } from "langchain/agents";
+import { ChatPromptTemplate, MessagesPlaceholder } from "@langchain/core/prompts";
 
-prompt = ChatPromptTemplate.from_messages([
-    ("system", "You are a helpful assistant."),
-    ("human", "{input}"),
-    MessagesPlaceholder(variable_name="agent_scratchpad"),
-])
+const prompt = ChatPromptTemplate.fromMessages([
+  ["system", "You are a helpful assistant."],
+  new MessagesPlaceholder("chat_history"),
+  ["human", "{input}"],
+  new MessagesPlaceholder("agent_scratchpad"),
+]);
 
-agent = create_tool_calling_agent(llm, tools, prompt)
-agent_executor = AgentExecutor(agent=agent, tools=tools)
+const agent = createToolCallingAgent({ llm, tools, prompt });
+const executor = new AgentExecutor({ agent, tools });
 ```
 
-### Step 6: Migrate Memory
-```python
-# OLD: ConversationBufferMemory
-from langchain.memory import ConversationBufferMemory
+## Step 5: Migrate Memory
 
-memory = ConversationBufferMemory()
-chain = LLMChain(llm=llm, prompt=prompt, memory=memory)
+```typescript
+// OLD: BufferMemory (deprecated)
+import { BufferMemory } from "langchain/memory";
+const memory = new BufferMemory();
+const chain = new ConversationChain({ llm, memory });
 
-# NEW: RunnableWithMessageHistory
-from langchain_core.chat_history import BaseChatMessageHistory
-from langchain_core.runnables.history import RunnableWithMessageHistory
-from langchain_community.chat_message_histories import ChatMessageHistory
+// NEW: RunnableWithMessageHistory
+import { RunnableWithMessageHistory } from "@langchain/core/runnables";
+import { ChatMessageHistory } from "@langchain/community/stores/message/in_memory";
 
-store = {}
+const store = new Map<string, ChatMessageHistory>();
 
-def get_session_history(session_id: str) -> BaseChatMessageHistory:
-    if session_id not in store:
-        store[session_id] = ChatMessageHistory()
-    return store[session_id]
+function getHistory(sessionId: string) {
+  if (!store.has(sessionId)) store.set(sessionId, new ChatMessageHistory());
+  return store.get(sessionId)!;
+}
 
-chain_with_history = RunnableWithMessageHistory(
-    chain,
-    get_session_history,
-    input_messages_key="input",
-    history_messages_key="history"
-)
+const chainWithHistory = new RunnableWithMessageHistory({
+  runnable: chain,
+  getMessageHistory: getHistory,
+  inputMessagesKey: "input",
+  historyMessagesKey: "history",
+});
+
+await chainWithHistory.invoke(
+  { input: "Hello" },
+  { configurable: { sessionId: "user-1" } }
+);
 ```
 
-### Step 7: Upgrade Packages
+## Step 6: Upgrade Packages
+
 ```bash
-set -euo pipefail
-# Create backup of current environment
-pip freeze > requirements_backup.txt
+# Node.js — update all @langchain/* together
+npm install @langchain/core@latest @langchain/openai@latest langchain@latest
 
-# Upgrade to latest stable
+# Verify no version conflicts
+npm ls @langchain/core
+
+# Python
 pip install --upgrade langchain langchain-core langchain-openai langchain-community
-
-# Or specific version
-pip install langchain==0.3.0 langchain-core==0.3.0
-
-# Verify versions
-pip show langchain langchain-core
+pip show langchain langchain-core | grep Version
 ```
 
-### Step 8: Run Tests
+## Step 7: Run Tests and Check Deprecations
+
 ```bash
-# Run test suite
-pytest tests/ -v
+# TypeScript
+npx vitest run
+npx tsc --noEmit
 
-# Check for deprecation warnings
-pytest tests/ -W error::DeprecationWarning
-
-# Run type checking
-mypy src/
+# Python — check for deprecation warnings
+pytest tests/ -W error::DeprecationWarning -v
 ```
 
 ## Migration Checklist
-- [ ] Current version documented
-- [ ] Breaking changes reviewed
-- [ ] Imports updated
-- [ ] LLMChain -> LCEL migrated
-- [ ] Agent initialization updated
-- [ ] Memory patterns updated
+
+- [ ] Current versions documented
+- [ ] Breaking changes reviewed for your version jump
+- [ ] All `langchain/*` imports updated to `@langchain/core/*` or provider packages
+- [ ] `LLMChain` replaced with LCEL `.pipe()` chains
+- [ ] `initializeAgent` replaced with `createToolCallingAgent`
+- [ ] `BufferMemory` replaced with `RunnableWithMessageHistory`
+- [ ] All `@langchain/*` packages on compatible versions
 - [ ] Tests passing
+- [ ] No deprecation warnings
 - [ ] Staging validation complete
 
 ## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| ImportError | Old import path | Update to new package imports |
-| AttributeError | Removed method | Check migration guide for replacement |
-| DeprecationWarning | Using old API | Migrate to new pattern |
-| TypeErrror | Changed signature | Update function arguments |
+
+| Error | Cause | Fix |
+|-------|-------|-----|
+| `Cannot find module` | Old import path | Update to `@langchain/core/*` or provider package |
+| `LLMChain is not a constructor` | Removed in 0.3+ | Convert to LCEL |
+| `DeprecationWarning` | Using old API | Follow migration guide for replacement |
+| Version conflict | Mixed `@langchain/*` versions | Update all packages together |
 
 ## Resources
-- [LangChain Migration Guide](https://python.langchain.com/docs/versions/migrating_chains/)
-- [LCEL Documentation](https://python.langchain.com/docs/concepts/lcel/)
-- [Release Notes](https://github.com/langchain-ai/langchain/releases)
-- [Deprecation Timeline](https://python.langchain.com/docs/versions/v0_3/)
+
+- [LangChain.js Migration Guide](https://js.langchain.com/docs/versions/)
+- [Python Migration Guide](https://python.langchain.com/docs/versions/migrating_chains/)
+- [Release Notes](https://github.com/langchain-ai/langchainjs/releases)
 
 ## Next Steps
+
 After upgrade, use `langchain-common-errors` to troubleshoot any issues.
-
-## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
-
-## Examples
-
-**Basic usage**: Apply langchain upgrade migration to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize langchain upgrade migration for production environments with multiple constraints and team-specific requirements.

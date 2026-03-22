@@ -1,11 +1,11 @@
 ---
 name: langchain-core-workflow-a
 description: |
-  Build LangChain chains and prompts for structured LLM workflows.
-  Use when creating prompt templates, building LCEL chains,
-  or implementing sequential processing pipelines.
-  Trigger with phrases like "langchain chains", "langchain prompts",
-  "LCEL workflow", "langchain pipeline", "prompt template".
+  Build LangChain LCEL chains with prompts, parsers, and composition.
+  Use when creating prompt templates, building RunnableSequence pipelines,
+  parallel/branching chains, or multi-step processing workflows.
+  Trigger: "langchain chains", "langchain prompts", "LCEL workflow",
+  "langchain pipeline", "prompt template", "RunnableSequence".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
@@ -17,158 +17,222 @@ tags: [saas, langchain, llm, workflow]
 # LangChain Core Workflow A: Chains & Prompts
 
 ## Overview
-Build production-ready chains using LangChain Expression Language (LCEL) with prompt templates, output parsers, and composition patterns.
+
+Build production chains using LCEL (LangChain Expression Language). Covers prompt templates, output parsers, RunnableSequence, RunnableParallel, RunnableBranch, RunnablePassthrough, and chain composition patterns.
 
 ## Prerequisites
-- Completed `langchain-install-auth` setup
-- Understanding of prompt engineering basics
-- Familiarity with Python type hints
 
-## Instructions
+- `langchain-install-auth` completed
+- `@langchain/core` and at least one provider installed
 
-### Step 1: Create Prompt Templates
-```python
-from langchain_core.prompts import (
-    ChatPromptTemplate,
-    SystemMessagePromptTemplate,
-    HumanMessagePromptTemplate,
-    MessagesPlaceholder
-)
+## Prompt Templates
 
-# Simple template
-simple_prompt = ChatPromptTemplate.from_template(
-    "Translate '{text}' to {language}"
-)
+### ChatPromptTemplate
 
-# Chat-style template
-chat_prompt = ChatPromptTemplate.from_messages([
-    SystemMessagePromptTemplate.from_template(
-        "You are a {role}. Respond in {style} style."
-    ),
-    MessagesPlaceholder(variable_name="history", optional=True),
-    HumanMessagePromptTemplate.from_template("{input}")
-])
+```typescript
+import { ChatPromptTemplate, MessagesPlaceholder } from "@langchain/core/prompts";
+
+// Simple template
+const simple = ChatPromptTemplate.fromTemplate(
+  "Translate '{text}' to {language}"
+);
+
+// Multi-message template with chat history slot
+const chat = ChatPromptTemplate.fromMessages([
+  ["system", "You are a {role}. Respond in {style} style."],
+  new MessagesPlaceholder("history"),  // dynamic message injection
+  ["human", "{input}"],
+]);
+
+// Inspect required variables
+console.log(chat.inputVariables);
+// ["role", "style", "history", "input"]
 ```
 
-### Step 2: Build LCEL Chains
-```python
-from langchain_openai import ChatOpenAI
-from langchain_core.output_parsers import StrOutputParser, JsonOutputParser
+### Partial Templates
 
-llm = ChatOpenAI(model="gpt-4o-mini")
+```typescript
+// Pre-fill some variables, leave others for later
+const partial = await chat.partial({
+  role: "senior engineer",
+  style: "concise",
+});
 
-# Basic chain: prompt -> llm -> parser
-basic_chain = simple_prompt | llm | StrOutputParser()
-
-# Invoke the chain
-result = basic_chain.invoke({
-    "text": "Hello, world!",
-    "language": "Spanish"
-})
-print(result)  # "Hola, mundo!"
+// Now only needs: history, input
+const result = await partial.invoke({
+  history: [],
+  input: "Explain LCEL",
+});
 ```
 
-### Step 3: Chain Composition
-```python
-from langchain_core.runnables import RunnablePassthrough, RunnableParallel
+## Output Parsers
 
-# Sequential chain
-chain1 = prompt1 | llm | StrOutputParser()
-chain2 = prompt2 | llm | StrOutputParser()
+```typescript
+import { StringOutputParser } from "@langchain/core/output_parsers";
+import { JsonOutputParser } from "@langchain/core/output_parsers";
+import { StructuredOutputParser } from "@langchain/core/output_parsers";
+import { z } from "zod";
 
-sequential = chain1 | (lambda x: {"summary": x}) | chain2
+// String output (most common)
+const strParser = new StringOutputParser();
 
-# Parallel execution
-parallel = RunnableParallel(
-    summary=prompt1 | llm | StrOutputParser(),
-    keywords=prompt2 | llm | StrOutputParser(),
-    sentiment=prompt3 | llm | StrOutputParser()
-)
+// JSON output with Zod schema
+const jsonParser = StructuredOutputParser.fromZodSchema(
+  z.object({
+    answer: z.string(),
+    confidence: z.number(),
+    sources: z.array(z.string()),
+  })
+);
 
-results = parallel.invoke({"text": "Your input text"})
-# Returns: {"summary": "...", "keywords": "...", "sentiment": "..."}
+// Get format instructions to inject into prompt
+const instructions = jsonParser.getFormatInstructions();
 ```
 
-### Step 4: Branching Logic
-```python
-from langchain_core.runnables import RunnableBranch
+## Chain Composition Patterns
 
-# Conditional branching
-branch = RunnableBranch(
-    (lambda x: x["type"] == "question", question_chain),
-    (lambda x: x["type"] == "command", command_chain),
-    default_chain  # Fallback
-)
+### Sequential Chain (RunnableSequence)
 
-result = branch.invoke({"type": "question", "input": "What is AI?"})
+```typescript
+import { ChatOpenAI } from "@langchain/openai";
+import { ChatPromptTemplate } from "@langchain/core/prompts";
+import { StringOutputParser } from "@langchain/core/output_parsers";
+import { RunnableSequence } from "@langchain/core/runnables";
+
+const model = new ChatOpenAI({ model: "gpt-4o-mini" });
+
+// Extract key points, then summarize
+const extractPrompt = ChatPromptTemplate.fromTemplate(
+  "Extract 3 key points from:\n{text}"
+);
+const summarizePrompt = ChatPromptTemplate.fromTemplate(
+  "Summarize these points in one sentence:\n{points}"
+);
+
+const chain = RunnableSequence.from([
+  // Step 1: extract points
+  {
+    points: extractPrompt
+      .pipe(model)
+      .pipe(new StringOutputParser()),
+  },
+  // Step 2: summarize
+  summarizePrompt,
+  model,
+  new StringOutputParser(),
+]);
+
+const summary = await chain.invoke({
+  text: "Long article text here...",
+});
 ```
 
-## Output
-- Reusable prompt templates with variable substitution
-- Type-safe LCEL chains with clear data flow
-- Composable chain patterns (sequential, parallel, branching)
-- Consistent output parsing
+### Parallel Execution (RunnableParallel)
 
-## Examples
+```typescript
+import { RunnableParallel } from "@langchain/core/runnables";
 
-### Multi-Step Processing Chain
+// Run multiple chains simultaneously on the same input
+const analysis = RunnableParallel.from({
+  summary: ChatPromptTemplate.fromTemplate("Summarize: {text}")
+    .pipe(model)
+    .pipe(new StringOutputParser()),
+
+  keywords: ChatPromptTemplate.fromTemplate("Extract 5 keywords from: {text}")
+    .pipe(model)
+    .pipe(new StringOutputParser()),
+
+  sentiment: ChatPromptTemplate.fromTemplate("Sentiment of: {text}")
+    .pipe(model)
+    .pipe(new StringOutputParser()),
+});
+
+const results = await analysis.invoke({ text: "Your input text" });
+// { summary: "...", keywords: "...", sentiment: "..." }
+```
+
+### Conditional Branching (RunnableBranch)
+
+```typescript
+import { RunnableBranch } from "@langchain/core/runnables";
+
+const technicalChain = ChatPromptTemplate.fromTemplate(
+  "Give a technical explanation: {input}"
+).pipe(model).pipe(new StringOutputParser());
+
+const simpleChain = ChatPromptTemplate.fromTemplate(
+  "Explain like I'm 5: {input}"
+).pipe(model).pipe(new StringOutputParser());
+
+const router = RunnableBranch.from([
+  [
+    (input: { input: string; level: string }) => input.level === "expert",
+    technicalChain,
+  ],
+  // Default fallback
+  simpleChain,
+]);
+
+const answer = await router.invoke({ input: "What is LCEL?", level: "expert" });
+```
+
+### Context Injection (RunnablePassthrough)
+
+```typescript
+import { RunnablePassthrough } from "@langchain/core/runnables";
+
+// Pass through original input while adding computed fields
+const chain = RunnablePassthrough.assign({
+  wordCount: (input: { text: string }) => input.text.split(" ").length,
+  uppercase: (input: { text: string }) => input.text.toUpperCase(),
+}).pipe(
+  ChatPromptTemplate.fromTemplate(
+    "The text has {wordCount} words. Summarize: {text}"
+  )
+).pipe(model).pipe(new StringOutputParser());
+```
+
+## Python Equivalent
+
 ```python
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
+from langchain_core.runnables import RunnableParallel, RunnablePassthrough
 
 llm = ChatOpenAI(model="gpt-4o-mini")
 
-# Step 1: Extract key points
-extract_prompt = ChatPromptTemplate.from_template(
-    "Extract 3 key points from: {text}"
+# Sequential: prompt | model | parser
+chain = ChatPromptTemplate.from_template("Summarize: {text}") | llm | StrOutputParser()
+
+# Parallel
+analysis = RunnableParallel(
+    summary=ChatPromptTemplate.from_template("Summarize: {text}") | llm | StrOutputParser(),
+    keywords=ChatPromptTemplate.from_template("Keywords: {text}") | llm | StrOutputParser(),
 )
 
-# Step 2: Summarize
-summarize_prompt = ChatPromptTemplate.from_template(
-    "Create a one-sentence summary from these points: {points}"
-)
-
-# Compose the chain
+# Passthrough with computed fields
 chain = (
-    {"points": extract_prompt | llm | StrOutputParser()}
-    | summarize_prompt
-    | llm
-    | StrOutputParser()
+    RunnablePassthrough.assign(context=lambda x: fetch_context(x["query"]))
+    | prompt | llm | StrOutputParser()
 )
-
-summary = chain.invoke({"text": "Long article text here..."})
-```
-
-### With Context Injection
-```python
-from langchain_core.runnables import RunnablePassthrough
-
-def get_context(input_dict):
-    """Fetch relevant context from database."""
-    return f"Context for: {input_dict['query']}"
-
-chain = (
-    RunnablePassthrough.assign(context=get_context)
-    | prompt
-    | llm
-    | StrOutputParser()
-)
-
-result = chain.invoke({"query": "user question"})
 ```
 
 ## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| Missing Variable | Template variable not provided | Check input dict keys match template |
-| Type Error | Wrong input type | Ensure inputs match expected schema |
-| Parse Error | Output doesn't match parser | Use more specific prompts or fallback |
+
+| Error | Cause | Fix |
+|-------|-------|-----|
+| `Missing value for input` | Template variable not provided | Check `inputVariables` on your prompt |
+| `Expected mapping type` | Passing string instead of object | Use `{ input: "text" }` not `"text"` |
+| `OutputParserException` | LLM output doesn't match schema | Use `.withStructuredOutput()` instead of manual parsing |
+| Parallel timeout | One branch hangs | Add `timeout` to model config |
 
 ## Resources
-- [LCEL Conceptual Guide](https://python.langchain.com/docs/concepts/lcel/)
-- [Prompt Templates](https://python.langchain.com/docs/concepts/prompt_templates/)
-- [Runnables](https://python.langchain.com/docs/concepts/runnables/)
+
+- [LCEL Guide](https://js.langchain.com/docs/concepts/lcel/)
+- [RunnableSequence API](https://v03.api.js.langchain.com/classes/_langchain_core.runnables.RunnableSequence.html)
+- [Prompt Templates](https://js.langchain.com/docs/concepts/prompt_templates/)
 
 ## Next Steps
-Proceed to `langchain-core-workflow-b` for agents and tools workflow.
+
+Proceed to `langchain-core-workflow-b` for agents and tool calling.

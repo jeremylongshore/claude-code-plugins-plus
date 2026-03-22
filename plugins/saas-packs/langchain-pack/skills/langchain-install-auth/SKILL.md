@@ -1,12 +1,12 @@
 ---
 name: langchain-install-auth
 description: |
-  Install and configure LangChain SDK/CLI authentication.
-  Use when setting up a new LangChain integration, configuring API keys,
-  or initializing LangChain in your project.
-  Trigger with phrases like "install langchain", "setup langchain",
-  "langchain auth", "configure langchain API key", "langchain credentials".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
+  Install and configure LangChain SDK with provider authentication.
+  Use when setting up a new LangChain project, configuring API keys
+  for OpenAI/Anthropic/Google, or initializing @langchain/core in Node.js or Python.
+  Trigger: "install langchain", "setup langchain", "langchain auth",
+  "configure langchain API key", "langchain credentials".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,109 +17,151 @@ tags: [saas, langchain, api, authentication]
 # LangChain Install & Auth
 
 ## Overview
-Set up LangChain SDK and configure LLM provider authentication credentials.
+
+Set up LangChain SDK packages and configure provider authentication. Covers the modular `@langchain/*` package ecosystem for Node.js/TypeScript and `langchain-*` packages for Python.
 
 ## Prerequisites
-- Python 3.9+ or Node.js 18+
-- Package manager (pip, poetry, or npm)
-- LLM provider account (OpenAI, Anthropic, Google, etc.)
-- API key from your LLM provider dashboard
+
+- Node.js 18+ or Python 3.9+
+- Package manager (npm/pnpm or pip/poetry)
+- API key from at least one LLM provider (OpenAI, Anthropic, Google)
 
 ## Instructions
 
-### Step 1: Install LangChain Core
+### Step 1: Install Core Packages (TypeScript)
+
 ```bash
 set -euo pipefail
-# Python (recommended)
-pip install langchain langchain-core langchain-community
+# Core + one provider (pick what you need)
+npm install @langchain/core @langchain/openai
 
-# Or with specific providers
-pip install langchain-openai langchain-anthropic langchain-google-genai
+# Additional providers
+npm install @langchain/anthropic          # Claude models
+npm install @langchain/google-genai       # Gemini models
+npm install @langchain/community          # 100+ community integrations
 
-# Node.js
-npm install langchain @langchain/core @langchain/community
+# Common companions
+npm install @langchain/textsplitters      # Text chunking for RAG
+npm install @langchain/pinecone           # Pinecone vector store
+npm install zod                           # Schema validation (structured output)
 ```
 
-### Step 2: Configure Authentication
+### Step 2: Install Core Packages (Python)
+
 ```bash
-# OpenAI
-export OPENAI_API_KEY="your-openai-key"
+set -euo pipefail
+pip install langchain langchain-core
 
-# Anthropic
-export ANTHROPIC_API_KEY="your-anthropic-key"
-
-# Google
-export GOOGLE_API_KEY="your-google-key"
-
-# Or create .env file
-echo 'OPENAI_API_KEY=your-openai-key' >> .env
+# Provider packages (install only what you need)
+pip install langchain-openai              # ChatOpenAI, OpenAIEmbeddings
+pip install langchain-anthropic           # ChatAnthropic
+pip install langchain-google-genai        # ChatGoogleGenerativeAI
+pip install langchain-community           # Community integrations
 ```
 
-### Step 3: Verify Connection
-```python
-from langchain_openai import ChatOpenAI
+### Step 3: Configure Authentication
 
-llm = ChatOpenAI(model="gpt-4o-mini")
-response = llm.invoke("Say hello!")
-print(response.content)
+```bash
+# Create .env file (add to .gitignore!)
+cat > .env << 'ENVEOF'
+# OpenAI — https://platform.openai.com/api-keys
+OPENAI_API_KEY=sk-...
+
+# Anthropic — https://console.anthropic.com/
+ANTHROPIC_API_KEY=sk-ant-...
+
+# Google — https://aistudio.google.com/apikey
+GOOGLE_API_KEY=AI...
+
+# LangSmith (optional but recommended) — https://smith.langchain.com
+LANGSMITH_TRACING=true
+LANGSMITH_API_KEY=lsv2_...
+LANGSMITH_PROJECT=my-project
+ENVEOF
+
+echo '.env' >> .gitignore
 ```
 
-## Output
-- Installed LangChain packages in virtual environment
-- Environment variables or .env file with API keys
-- Successful connection verification output
+### Step 4: Verify Connection (TypeScript)
 
-## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| Invalid API Key | Incorrect or expired key | Verify key in provider dashboard |
-| Rate Limited | Exceeded quota | Check quota limits, implement backoff |
-| Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
-| Module Not Found | Installation failed | Run `pip install` again, check Python version |
-| Provider Error | Service unavailable | Check provider status page |
-
-## Examples
-
-### Python Setup (OpenAI)
-```python
-import os
-from langchain_openai import ChatOpenAI
-
-# Ensure API key is set
-assert os.environ.get("OPENAI_API_KEY"), "Set OPENAI_API_KEY"
-
-llm = ChatOpenAI(
-    model="gpt-4o-mini",
-    temperature=0.7,
-    max_tokens=1000  # 1000: 1 second in ms
-)
-```
-
-### Python Setup (Anthropic)
-```python
-from langchain_anthropic import ChatAnthropic
-
-llm = ChatAnthropic(
-    model="claude-3-5-sonnet-20241022",  # 20241022 = date/version stamp
-    temperature=0.7
-)
-```
-
-### TypeScript Setup
 ```typescript
 import { ChatOpenAI } from "@langchain/openai";
+import { ChatAnthropic } from "@langchain/anthropic";
+import "dotenv/config";
 
-const llm = new ChatOpenAI({
-  modelName: "gpt-4o-mini",
-  temperature: 0.7
-});
+// OpenAI
+const openai = new ChatOpenAI({ model: "gpt-4o-mini", temperature: 0 });
+const res1 = await openai.invoke("Say 'OpenAI connected'");
+console.log("OpenAI:", res1.content);
+
+// Anthropic
+const anthropic = new ChatAnthropic({ model: "claude-sonnet-4-20250514" });
+const res2 = await anthropic.invoke("Say 'Anthropic connected'");
+console.log("Anthropic:", res2.content);
+```
+
+### Step 5: Verify Connection (Python)
+
+```python
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+from langchain_openai import ChatOpenAI
+from langchain_anthropic import ChatAnthropic
+
+# OpenAI
+llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+print(llm.invoke("Say 'connected'").content)
+
+# Anthropic
+llm2 = ChatAnthropic(model="claude-sonnet-4-20250514")
+print(llm2.invoke("Say 'connected'").content)
+```
+
+## Package Architecture
+
+```
+@langchain/core          # Base abstractions: Runnables, prompts, output parsers
+  ├── @langchain/openai  # ChatOpenAI, OpenAIEmbeddings
+  ├── @langchain/anthropic  # ChatAnthropic
+  ├── @langchain/google-genai  # ChatGoogleGenerativeAI
+  ├── @langchain/community  # 100+ integrations
+  ├── @langchain/pinecone   # PineconeStore
+  ├── @langchain/textsplitters  # RecursiveCharacterTextSplitter
+  └── langchain             # High-level: agents, chains, tools
+```
+
+Every `@langchain/*` package depends on `@langchain/core`. You never import from `langchain` directly for base types -- always use `@langchain/core` for prompts, output parsers, messages, and runnables.
+
+## Error Handling
+
+| Error | Cause | Fix |
+|-------|-------|-----|
+| `Cannot find module '@langchain/openai'` | Package not installed | `npm install @langchain/openai` |
+| `AuthenticationError: Incorrect API key` | Invalid or missing key | Check `.env` and `dotenv/config` import |
+| `Could not import @langchain/core` | Version mismatch | Ensure all `@langchain/*` packages share same minor version |
+| `RateLimitError` | Quota exceeded | Check provider dashboard, implement backoff |
+| `ENOTFOUND api.openai.com` | Network blocked | Check firewall/proxy settings |
+
+## Troubleshooting Version Conflicts
+
+```bash
+# Check installed versions (all should share same minor)
+npm ls @langchain/core
+
+# Fix version conflicts
+npm install @langchain/core@latest @langchain/openai@latest @langchain/anthropic@latest
 ```
 
 ## Resources
-- [LangChain Documentation](https://python.langchain.com/docs/)
-- [LangChain JS/TS](https://js.langchain.com/docs/)
+
+- [LangChain.js Docs](https://js.langchain.com/docs/)
+- [LangChain Python Docs](https://python.langchain.com/docs/)
 - [OpenAI API Keys](https://platform.openai.com/api-keys)
 - [Anthropic Console](https://console.anthropic.com/)
+- [LangSmith](https://smith.langchain.com)
 
 ## Next Steps
+
 After successful auth, proceed to `langchain-hello-world` for your first chain.

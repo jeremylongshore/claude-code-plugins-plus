@@ -1,11 +1,10 @@
 ---
 name: langchain-ci-integration
 description: |
-  Configure LangChain CI/CD integration with GitHub Actions and testing.
-  Use when setting up automated testing, configuring CI pipelines,
-  or integrating LangChain tests into your build process.
-  Trigger with phrases like "langchain CI", "langchain GitHub Actions",
-  "langchain automated tests", "CI langchain", "langchain pipeline".
+  Configure CI/CD for LangChain with GitHub Actions, mocked unit tests,
+  gated integration tests, and RAG pipeline validation.
+  Trigger: "langchain CI", "langchain GitHub Actions",
+  "langchain automated tests", "CI langchain", "langchain pipeline testing".
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
@@ -17,188 +16,215 @@ tags: [saas, langchain, testing, ci-cd]
 # LangChain CI Integration
 
 ## Overview
-Integrate LangChain chain and agent testing into CI/CD pipelines. Covers chain unit tests with mocked LLMs, RAG pipeline validation, agent tool testing, and integration tests with real LLM calls gated behind environment flags.
 
-## Prerequisites
-- LangChain installed (`langchain`, `langchain-openai`)
-- GitHub Actions configured
-- pytest for Python or Vitest for TypeScript
-- LLM API keys stored as GitHub secrets
+CI/CD pipeline for LangChain applications: mocked unit tests (free, fast), gated integration tests with real LLMs (costs money, slow), RAG pipeline validation, and LangSmith trace integration.
 
-## Instructions
+## GitHub Actions Workflow
 
-### Step 1: CI Workflow with Mocked and Live Tests
 ```yaml
 # .github/workflows/langchain-tests.yml
 name: LangChain Tests
 
 on:
   pull_request:
-    paths:
-      - 'src/chains/**'
-      - 'src/agents/**'
-      - 'src/tools/**'
-      - 'tests/**'
+    paths: ["src/**", "tests/**", "package.json"]
 
 jobs:
   unit-tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with: { python-version: '3.11' }
-      - run: pip install -r requirements.txt -r requirements-dev.txt
-
-      - name: Run unit tests (no API calls)
-        run: pytest tests/unit/ -v --tb=short
+      - uses: actions/setup-node@v4
+        with: { node-version: "20" }
+      - run: npm ci
+      - name: Unit tests (no API calls)
+        run: npx vitest run tests/unit/ --reporter=verbose
 
   integration-tests:
     runs-on: ubuntu-latest
     if: github.event.pull_request.draft == false
+    needs: unit-tests
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with: { python-version: '3.11' }
-      - run: pip install -r requirements.txt -r requirements-dev.txt
-
-      - name: Run integration tests (with LLM calls)
+      - uses: actions/setup-node@v4
+        with: { node-version: "20" }
+      - run: npm ci
+      - name: Integration tests (real LLM calls)
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          LANGCHAIN_TRACING_V2: "true"
-          LANGCHAIN_API_KEY: ${{ secrets.LANGCHAIN_API_KEY }}
-        run: pytest tests/integration/ -v --tb=short -m "not slow"
+          LANGSMITH_TRACING: "true"
+          LANGSMITH_API_KEY: ${{ secrets.LANGSMITH_API_KEY }}
+          LANGSMITH_PROJECT: "ci-${{ github.run_id }}"
+        run: npx vitest run tests/integration/ --reporter=verbose
+
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "20" }
+      - run: npm ci
+      - run: npx tsc --noEmit
 ```
 
-### Step 2: Chain Unit Tests with Mocked LLM
-```python
-# tests/unit/test_chains.py
-import pytest
-from unittest.mock import AsyncMock, patch
-from langchain_core.messages import AIMessage
+## Unit Tests: Mocked LLM (Free, Fast)
 
-from src.chains.summarize import create_summarize_chain
+```typescript
+// tests/unit/chains.test.ts
+import { describe, it, expect } from "vitest";
+import { FakeListChatModel } from "@langchain/core/utils/testing";
+import { ChatPromptTemplate } from "@langchain/core/prompts";
+import { StringOutputParser } from "@langchain/core/output_parsers";
 
-@pytest.fixture
-def mock_llm():
-    mock = AsyncMock()
-    mock.ainvoke.return_value = AIMessage(content="This is a summary of the document.")
-    return mock
+describe("Summarize Chain", () => {
+  const fakeLLM = new FakeListChatModel({
+    responses: ["Summary: LangChain enables LLM app development."],
+  });
 
-def test_summarize_chain_output_format(mock_llm):
-    """Test chain produces expected output structure."""
-    chain = create_summarize_chain(llm=mock_llm)
-    result = chain.invoke({"document": "Long document text here..."})
+  it("produces output from prompt -> model -> parser", async () => {
+    const chain = ChatPromptTemplate.fromTemplate("Summarize: {text}")
+      .pipe(fakeLLM)
+      .pipe(new StringOutputParser());
 
-    assert "summary" in result
-    assert len(result["summary"]) > 0
+    const result = await chain.invoke({ text: "Long document..." });
+    expect(result).toContain("LangChain");
+  });
 
-def test_summarize_chain_handles_empty_input(mock_llm):
-    """Test chain handles edge cases."""
-    chain = create_summarize_chain(llm=mock_llm)
-
-    with pytest.raises(ValueError, match="Document cannot be empty"):
-        chain.invoke({"document": ""})
-
-@patch("src.chains.summarize.ChatOpenAI")
-def test_chain_uses_correct_model(mock_chat):
-    """Test chain configures model correctly."""
-    mock_chat.return_value = AsyncMock()
-    chain = create_summarize_chain(model_name="gpt-4o-mini")
-
-    mock_chat.assert_called_once_with(model="gpt-4o-mini", temperature=0)
+  it("passes correct variables to prompt", () => {
+    const prompt = ChatPromptTemplate.fromTemplate("Translate {text} to {lang}");
+    expect(prompt.inputVariables).toContain("text");
+    expect(prompt.inputVariables).toContain("lang");
+  });
+});
 ```
 
-### Step 3: RAG Pipeline Validation
-```python
-# tests/integration/test_rag_pipeline.py
-import pytest
-from langchain_openai import OpenAIEmbeddings
-from langchain_community.vectorstores import FAISS
+## Unit Tests: Tool Validation
 
-from src.chains.rag import create_rag_chain
+```typescript
+// tests/unit/tools.test.ts
+import { describe, it, expect } from "vitest";
+import { calculator, searchTool } from "../../src/tools";
 
-@pytest.fixture(scope="session")
-def vector_store():
-    """Create test vector store with known documents."""
-    embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
-    texts = [
-        "Python was created by Guido van Rossum in 1991.",
-        "TypeScript was developed by Microsoft and released in 2012.",
-        "Rust was first released in 2010 by Mozilla.",  # 2010 = configured value
-    ]
-    return FAISS.from_texts(texts, embeddings)
+describe("Calculator Tool", () => {
+  it("evaluates valid expressions", async () => {
+    expect(await calculator.invoke({ expression: "10 * 5" })).toBe("50");
+  });
 
-@pytest.mark.integration
-def test_rag_retrieval_relevance(vector_store):
-    """Test RAG pipeline retrieves relevant documents."""
-    chain = create_rag_chain(vector_store)
-    result = chain.invoke({"question": "Who created Python?"})
+  it("returns error for invalid input", async () => {
+    const result = await calculator.invoke({ expression: "abc" });
+    expect(result).toContain("Error");
+  });
 
-    assert "guido" in result["answer"].lower()
-    assert len(result["source_documents"]) > 0
-
-@pytest.mark.integration
-def test_rag_no_hallucination(vector_store):
-    """Test RAG doesn't hallucinate when answer not in context."""
-    chain = create_rag_chain(vector_store)
-    result = chain.invoke({"question": "What is the capital of France?"})
-
-    # Should indicate it doesn't know from the context
-    assert any(phrase in result["answer"].lower()
-               for phrase in ["don't have", "not in", "cannot find", "no information"])
+  it("has correct metadata", () => {
+    expect(calculator.name).toBe("calculator");
+    expect(calculator.description).toBeTruthy();
+  });
+});
 ```
 
-### Step 4: Agent Tool Testing
-```python
-# tests/unit/test_tools.py
-import pytest
-from src.tools.calculator import calculator_tool
-from src.tools.search import search_tool
+## Integration Tests: RAG Pipeline
 
-def test_calculator_tool():
-    """Test calculator tool produces correct results."""
-    result = calculator_tool.invoke({"expression": "2 + 2"})
-    assert result == "4"
+```typescript
+// tests/integration/rag.test.ts
+import { describe, it, expect } from "vitest";
+import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
+import { MemoryVectorStore } from "langchain/vectorstores/memory";
+import { ChatPromptTemplate } from "@langchain/core/prompts";
+import { StringOutputParser } from "@langchain/core/output_parsers";
+import { RunnableSequence, RunnablePassthrough } from "@langchain/core/runnables";
 
-def test_calculator_tool_handles_invalid_input():
-    """Test tool handles bad input gracefully."""
-    result = calculator_tool.invoke({"expression": "not math"})
-    assert "error" in result.lower()
+describe.skipIf(!process.env.OPENAI_API_KEY)("RAG Pipeline", () => {
+  it("retrieves relevant documents and answers correctly", async () => {
+    const embeddings = new OpenAIEmbeddings({ model: "text-embedding-3-small" });
 
-@pytest.mark.integration
-def test_search_tool_returns_results():
-    """Test search tool (requires API key)."""
-    result = search_tool.invoke({"query": "LangChain framework"})
-    assert len(result) > 0
+    const store = await MemoryVectorStore.fromTexts(
+      [
+        "LangChain was created by Harrison Chase in 2022.",
+        "LCEL stands for LangChain Expression Language.",
+        "Pinecone is a vector database for AI applications.",
+      ],
+      [{}, {}, {}],
+      embeddings
+    );
+
+    const retriever = store.asRetriever({ k: 2 });
+    const model = new ChatOpenAI({ model: "gpt-4o-mini", temperature: 0 });
+
+    const prompt = ChatPromptTemplate.fromTemplate(
+      "Context: {context}\n\nQuestion: {question}\nAnswer:"
+    );
+
+    const chain = RunnableSequence.from([
+      {
+        context: retriever.pipe((docs) => docs.map((d) => d.pageContent).join("\n")),
+        question: new RunnablePassthrough(),
+      },
+      prompt,
+      model,
+      new StringOutputParser(),
+    ]);
+
+    const answer = await chain.invoke("Who created LangChain?");
+    expect(answer.toLowerCase()).toContain("harrison");
+  });
+
+  it("handles questions outside context gracefully", async () => {
+    // Test that RAG doesn't hallucinate
+    const embeddings = new OpenAIEmbeddings({ model: "text-embedding-3-small" });
+    const store = await MemoryVectorStore.fromTexts(
+      ["TypeScript is maintained by Microsoft."],
+      [{}],
+      embeddings
+    );
+
+    const retriever = store.asRetriever({ k: 1 });
+    const model = new ChatOpenAI({ model: "gpt-4o-mini", temperature: 0 });
+
+    const prompt = ChatPromptTemplate.fromTemplate(
+      "Based ONLY on this context, answer the question. Say 'I don't know' if not found.\n\nContext: {context}\n\nQuestion: {question}"
+    );
+
+    const chain = RunnableSequence.from([
+      {
+        context: retriever.pipe((docs) => docs.map((d) => d.pageContent).join("\n")),
+        question: new RunnablePassthrough(),
+      },
+      prompt,
+      model,
+      new StringOutputParser(),
+    ]);
+
+    const answer = await chain.invoke("What is the capital of France?");
+    expect(answer.toLowerCase()).toMatch(/don.t know|not (in|found)|no information/);
+  });
+});
+```
+
+## Cost Control in CI
+
+```yaml
+# Gate integration tests behind PR labels or manual trigger
+integration-tests:
+  if: |
+    github.event.pull_request.draft == false &&
+    contains(github.event.pull_request.labels.*.name, 'test:integration')
 ```
 
 ## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Unit tests call real API | Mock not applied | Use `@patch` or dependency injection |
-| Integration test fails | Missing API key | Gate behind `if` condition and secrets |
-| Flaky RAG tests | Embedding variability | Use deterministic test data, pin embeddings |
-| Agent test timeout | Tool execution slow | Set timeout on agent, mock external tools |
 
-## Examples
-
-### Quick Chain Smoke Test
-```python
-# Minimal test that chain constructs correctly
-def test_chain_builds():
-    from src.chains.summarize import create_summarize_chain
-    chain = create_summarize_chain()
-    assert chain is not None
-    assert hasattr(chain, 'invoke')
-```
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| Unit tests call real API | Didn't use `FakeListChatModel` | Replace `ChatOpenAI` with fake in tests |
+| Integration test missing key | Secret not configured | Add `OPENAI_API_KEY` to repo secrets |
+| Flaky RAG test | Embedding variability | Use deterministic data, set `temperature: 0` |
+| CI timeout | Model latency | Set `timeout: 15000` on test, use `gpt-4o-mini` |
 
 ## Resources
-- [LangChain Testing Guide](https://python.langchain.com/docs/contributing/testing)
-- [LangSmith Tracing](https://docs.smith.langchain.com/)
-- [LangChain CI Examples](https://github.com/langchain-ai/langchain/tree/master/.github)
 
-## Output
+- [LangChain Testing Utils](https://v03.api.js.langchain.com/modules/_langchain_core.utils_testing.html)
+- [Vitest Documentation](https://vitest.dev/)
+- [GitHub Actions Secrets](https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions)
 
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+## Next Steps
+
+For deployment, see `langchain-deploy-integration`.

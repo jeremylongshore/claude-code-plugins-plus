@@ -1,11 +1,10 @@
 ---
 name: langchain-incident-runbook
 description: |
-  Incident response procedures for LangChain production issues.
-  Use when responding to production incidents, diagnosing outages,
-  or implementing emergency procedures for LLM applications.
-  Trigger with phrases like "langchain incident", "langchain outage",
-  "langchain production issue", "langchain emergency", "langchain down".
+  Incident response procedures for LangChain production issues:
+  provider outages, high error rates, latency spikes, and cost overruns.
+  Trigger: "langchain incident", "langchain outage", "langchain production issue",
+  "langchain emergency", "langchain down", "LLM provider outage".
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
@@ -17,321 +16,229 @@ tags: [saas, langchain, llm, incident-response]
 # LangChain Incident Runbook
 
 ## Overview
-Standard operating procedures for responding to LangChain production incidents with diagnosis, mitigation, and recovery steps.
 
-## Prerequisites
-- Access to production infrastructure
-- Monitoring dashboards configured
-- LangSmith or equivalent tracing
-- On-call rotation established
+Standard operating procedures for LangChain production incidents: provider outages, error rate spikes, latency degradation, memory issues, and cost overruns.
 
-## Incident Classification
+## Severity Classification
 
-### Severity Levels
-| Level | Description | Response Time | Examples |
-|-------|-------------|---------------|----------|
+| Level | Description | Response Time | Example |
+|-------|-------------|---------------|---------|
 | SEV1 | Complete outage | 15 min | All LLM calls failing |
-| SEV2 | Major degradation | 30 min | 50%+ error rate, >10s latency |
+| SEV2 | Major degradation | 30 min | >50% error rate, >10s latency |
 | SEV3 | Minor degradation | 2 hours | <10% errors, slow responses |
-| SEV4 | Low impact | 24 hours | Intermittent issues |
+| SEV4 | Low impact | 24 hours | Intermittent issues, warnings |
 
-## Runbook: LLM Provider Outage
+## Runbook 1: LLM Provider Outage
 
-### Detection
+### Detect
+
 ```bash
-set -euo pipefail
-# Check if LLM provider is responding
-curl -s https://status.openai.com/api/v2/status.json | jq '.status.indicator'
-curl -s https://status.anthropic.com/api/v2/status.json | jq '.status.indicator'
-
-# Check your error rate
-# Prometheus query:
-# sum(rate(langchain_llm_requests_total{status="error"}[5m])) / sum(rate(langchain_llm_requests_total[5m]))
+# Check provider status pages
+curl -s https://status.openai.com/api/v2/status.json | jq '.status'
+curl -s https://status.anthropic.com/api/v2/status.json | jq '.status'
 ```
 
-### Diagnosis
-```python
-# Quick diagnostic script
-import asyncio
-from langchain_openai import ChatOpenAI
-from langchain_anthropic import ChatAnthropic
+### Diagnose
 
-async def diagnose_providers():
-    """Check all configured providers."""
-    results = {}
+```typescript
+async function diagnoseProviders() {
+  const results: Record<string, string> = {};
 
-    # Test OpenAI
-    try:
-        llm = ChatOpenAI(model="gpt-4o-mini", request_timeout=10)
-        await llm.ainvoke("test")
-        results["openai"] = "OK"
-    except Exception as e:
-        results["openai"] = f"FAIL: {e}"
+  try {
+    const openai = new ChatOpenAI({ model: "gpt-4o-mini", timeout: 10000 });
+    await openai.invoke("ping");
+    results.openai = "OK";
+  } catch (e: any) {
+    results.openai = `FAIL: ${e.message.slice(0, 100)}`;
+  }
 
-    # Test Anthropic
-    try:
-        llm = ChatAnthropic(model="claude-3-5-sonnet-20241022", timeout=10)  # 20241022 = date/version stamp
-        await llm.ainvoke("test")
-        results["anthropic"] = "OK"
-    except Exception as e:
-        results["anthropic"] = f"FAIL: {e}"
+  try {
+    const anthropic = new ChatAnthropic({ model: "claude-sonnet-4-20250514" });
+    await anthropic.invoke("ping");
+    results.anthropic = "OK";
+  } catch (e: any) {
+    results.anthropic = `FAIL: ${e.message.slice(0, 100)}`;
+  }
 
-    return results
-
-# Run
-print(asyncio.run(diagnose_providers()))
-```
-
-### Mitigation: Enable Fallback
-```python
-# Emergency fallback configuration
-from langchain_openai import ChatOpenAI
-from langchain_anthropic import ChatAnthropic
-
-# Original
-llm = ChatOpenAI(model="gpt-4o-mini")
-
-# With fallback
-primary = ChatOpenAI(model="gpt-4o-mini", max_retries=1, request_timeout=5)
-fallback = ChatAnthropic(model="claude-3-haiku-20240307")  # 20240307 = configured value
-
-llm = primary.with_fallbacks([fallback])
-```
-
-### Recovery
-1. Monitor provider status page
-2. Gradually remove fallback when primary recovers
-3. Document incident in post-mortem
-
----
-
-## Runbook: High Error Rate
-
-### Detection
-```bash
-# Check recent errors in logs
-grep -i "error" /var/log/langchain/app.log | tail -50
-
-# Check LangSmith for failed traces
-# Navigate to: https://smith.langchain.com/o/YOUR_ORG/projects/YOUR_PROJECT/runs?filter=error%3Atrue
-```
-
-### Diagnosis
-```python
-# Analyze error distribution
-from collections import Counter
-import json
-
-def analyze_errors(log_file: str) -> dict:
-    """Analyze error patterns from logs."""
-    errors = []
-
-    with open(log_file) as f:
-        for line in f:
-            if "error" in line.lower():
-                try:
-                    log = json.loads(line)
-                    errors.append(log.get("error_type", "unknown"))
-                except:
-                    pass
-
-    return dict(Counter(errors).most_common(10))
-
-# Common error types and causes
-ERROR_CAUSES = {
-    "RateLimitError": "Exceeded API quota - reduce load or increase limits",
-    "AuthenticationError": "Invalid API key - check secrets",
-    "Timeout": "Network issues or overloaded provider",
-    "OutputParserException": "LLM output format changed - check prompts",
-    "ValidationError": "Schema mismatch - update Pydantic models",
+  console.table(results);
+  return results;
 }
 ```
 
-### Mitigation
-```python
-# 1. Reduce load
-# Scale down instances or enable circuit breaker
+### Mitigate
 
-# 2. Emergency rate limiting
-from functools import wraps
-import time
+```typescript
+// Enable fallback — switch to healthy provider
+const primary = new ChatOpenAI({
+  model: "gpt-4o-mini",
+  maxRetries: 1,
+  timeout: 5000,
+});
 
-def emergency_rate_limit(calls_per_minute: int = 10):
-    """Emergency rate limiter decorator."""
-    interval = 60.0 / calls_per_minute
-    last_call = [0]
+const fallback = new ChatAnthropic({
+  model: "claude-sonnet-4-20250514",
+  maxRetries: 1,
+});
 
-    def decorator(func):
-        @wraps(func)
-        async def wrapper(*args, **kwargs):
-            elapsed = time.time() - last_call[0]
-            if elapsed < interval:
-                await asyncio.sleep(interval - elapsed)
-            last_call[0] = time.time()
-            return await func(*args, **kwargs)
-        return wrapper
-    return decorator
+const resilientModel = primary.withFallbacks({
+  fallbacks: [fallback],
+});
 
-# 3. Enable caching for repeated queries
-from langchain_core.globals import set_llm_cache
-from langchain_community.cache import InMemoryCache
-set_llm_cache(InMemoryCache())
+// All chains using resilientModel auto-failover
 ```
 
----
+### Recover
 
-## Runbook: Memory/Performance Issues
+1. Monitor provider status page for resolution
+2. Verify primary provider works: `await diagnoseProviders()`
+3. Remove fallback config (or keep it for resilience)
+4. Document incident timeline for post-mortem
 
-### Detection
+## Runbook 2: High Error Rate
+
+### Detect
+
 ```bash
-# Check memory usage
-ps aux | grep python | head -5
+# Check LangSmith for error spike
+# https://smith.langchain.com/o/YOUR_ORG/projects/YOUR_PROJECT/runs?filter=error:true
 
-# Check for memory leaks
-# Prometheus: process_resident_memory_bytes
+# Check application logs
+grep -c "Error\|error\|ERROR" /var/log/app/langchain.log | tail -5
 ```
 
-### Diagnosis
-```python
-# Memory profiling
-import tracemalloc
+### Diagnose
 
-tracemalloc.start()
-
-# Run your chain
-chain.invoke({"input": "test"})
-
-snapshot = tracemalloc.take_snapshot()
-top_stats = snapshot.statistics('lineno')
-
-print("Top 10 memory allocations:")
-for stat in top_stats[:10]:
-    print(stat)
+```typescript
+// Common error patterns
+const ERROR_CAUSES: Record<string, string> = {
+  "RateLimitError":     "API quota exceeded -> reduce concurrency",
+  "AuthenticationError": "API key invalid -> check secrets",
+  "Timeout":            "Provider slow -> increase timeout",
+  "OutputParserException": "LLM output format changed -> check prompts",
+  "ValidationError":    "Schema mismatch -> update Zod schemas",
+  "ContextLengthExceeded": "Input too long -> truncate or chunk",
+};
 ```
 
-### Mitigation
-```python
-# 1. Clear caches
-from langchain_core.globals import set_llm_cache
-set_llm_cache(None)
+### Mitigate
 
-# 2. Reduce batch sizes
-# Change from: chain.batch(inputs, config={"max_concurrency": 50})
-# To: chain.batch(inputs, config={"max_concurrency": 10})
+```typescript
+// 1. Reduce load
+// Lower maxConcurrency on batch operations
 
-# 3. Restart pods gracefully
-# kubectl rollout restart deployment/langchain-api
+// 2. Enable caching for repeated queries
+const cache = new Map();
+async function withCache(chain: any, input: any) {
+  const key = JSON.stringify(input);
+  if (cache.has(key)) return cache.get(key);
+  const result = await chain.invoke(input);
+  cache.set(key, result);
+  return result;
+}
+
+// 3. Enable fallback model
+const model = primary.withFallbacks({ fallbacks: [fallback] });
 ```
 
----
+## Runbook 3: Latency Spike
 
-## Runbook: Cost Spike
+### Detect
 
-### Detection
+```
+# Prometheus query
+histogram_quantile(0.95, rate(langchain_llm_latency_seconds_bucket[5m])) > 5
+```
+
+### Diagnose
+
+```typescript
+// Measure per-component latency
+const tracer = new MetricsCallback();
+await chain.invoke({ input: "test" }, { callbacks: [tracer] });
+console.table(tracer.getReport());
+// Check: is it the LLM, retriever, or tool that's slow?
+```
+
+### Mitigate
+
+1. Switch to faster model: `gpt-4o-mini` (200ms TTFT) vs `gpt-4o` (400ms)
+2. Enable streaming to reduce perceived latency
+3. Enable caching for repeated queries
+4. Reduce context length (shorter prompts)
+
+## Runbook 4: Cost Overrun
+
+### Detect
+
 ```bash
-# Check token usage
-# Prometheus: sum(increase(langchain_llm_tokens_total[1h]))
-
-# OpenAI usage dashboard
+# Check OpenAI usage dashboard
 # https://platform.openai.com/usage
 ```
 
-### Diagnosis
-```python
-# Identify high-cost operations
-def analyze_costs(traces: list) -> dict:
-    """Analyze cost from trace data."""
-    by_chain = {}
+### Mitigate
 
-    for trace in traces:
-        chain_name = trace.get("name", "unknown")
-        tokens = trace.get("total_tokens", 0)
+```typescript
+// 1. Emergency model downgrade
+// gpt-4o ($2.50/1M) -> gpt-4o-mini ($0.15/1M) = 17x cheaper
 
-        if chain_name not in by_chain:
-            by_chain[chain_name] = {"count": 0, "tokens": 0}
+// 2. Enable budget enforcement
+const budget = new BudgetEnforcer(50.0); // $50 daily limit
+const model = new ChatOpenAI({
+  model: "gpt-4o-mini",
+  callbacks: [budget],
+});
 
-        by_chain[chain_name]["count"] += 1
-        by_chain[chain_name]["tokens"] += tokens
-
-    return sorted(by_chain.items(), key=lambda x: x[1]["tokens"], reverse=True)
+// 3. Enable aggressive caching
+// (see langchain-cost-tuning skill)
 ```
 
-### Mitigation
-```python
-# 1. Emergency budget limit
-class BudgetExceeded(Exception):
-    pass
+## Runbook 5: Memory/OOM Issues
 
-daily_spend = 0
-DAILY_LIMIT = 100.0  # $100
+### Detect
 
-def check_budget(cost: float):
-    global daily_spend
-    daily_spend += cost
-    if daily_spend > DAILY_LIMIT:
-        raise BudgetExceeded(f"Daily limit ${DAILY_LIMIT} exceeded")
+```bash
+# Check process memory
+ps aux --sort=-%mem | head -5
 
-# 2. Switch to cheaper model
-# gpt-4o -> gpt-4o-mini (30x cheaper)
-# claude-3-5-sonnet -> claude-3-haiku (12x cheaper)
-
-# 3. Enable aggressive caching
+# Node.js heap stats
+node -e "console.log(process.memoryUsage())"
 ```
 
----
+### Mitigate
+
+1. Clear caches: reset in-memory caches
+2. Reduce batch sizes: lower `maxConcurrency`
+3. Use streaming instead of accumulating full responses
+4. Restart pods: `kubectl rollout restart deployment/langchain-api`
 
 ## Incident Response Checklist
 
 ### During Incident
-- [ ] Acknowledge incident in Slack/PagerDuty
-- [ ] Identify severity level
-- [ ] Start incident channel/call
-- [ ] Begin diagnosis
-- [ ] Implement mitigation
+
+- [ ] Acknowledge in incident channel
+- [ ] Classify severity (SEV1-4)
+- [ ] Check provider status pages
+- [ ] Run diagnostic script
+- [ ] Apply mitigation (fallback/cache/throttle)
 - [ ] Communicate status to stakeholders
 - [ ] Document timeline
 
 ### Post-Incident
+
 - [ ] Verify full recovery
-- [ ] Update status page
-- [ ] Schedule post-mortem
+- [ ] Schedule post-mortem (within 48h)
 - [ ] Write incident report
 - [ ] Create follow-up tickets
-- [ ] Update runbooks
+- [ ] Update monitoring/alerting rules
+- [ ] Update this runbook if needed
 
 ## Resources
+
 - [OpenAI Status](https://status.openai.com)
 - [Anthropic Status](https://status.anthropic.com)
 - [LangSmith](https://smith.langchain.com)
 - [PagerDuty Best Practices](https://response.pagerduty.com/)
 
 ## Next Steps
-Use `langchain-debug-bundle` for detailed evidence collection.
 
-## Instructions
-
-1. Assess the current state of the Langchain Incident Runbook configuration
-2. Identify the specific requirements and constraints
-3. Apply the recommended patterns from this skill
-4. Validate the changes against expected behavior
-5. Document the configuration for team reference
-
-## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
-
-## Error Handling
-
-| Error | Cause | Resolution |
-|-------|-------|------------|
-| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with Langchain Incident Runbook |
-| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
-| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
-
-## Examples
-
-**Basic usage**: Apply langchain incident runbook to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize langchain incident runbook for production environments with multiple constraints and team-specific requirements.
+Use `langchain-debug-bundle` for detailed evidence collection during incidents.

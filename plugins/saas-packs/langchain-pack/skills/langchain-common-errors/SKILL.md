@@ -2,10 +2,10 @@
 name: langchain-common-errors
 description: |
   Diagnose and fix common LangChain errors and exceptions.
-  Use when encountering LangChain errors, debugging failures,
-  or troubleshooting integration issues.
-  Trigger with phrases like "langchain error", "langchain exception",
-  "debug langchain", "langchain not working", "langchain troubleshoot".
+  Use when encountering LangChain import errors, auth failures,
+  output parsing issues, agent loops, or version conflicts.
+  Trigger: "langchain error", "langchain exception", "debug langchain",
+  "langchain not working", "langchain troubleshoot".
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
@@ -17,246 +17,253 @@ tags: [saas, langchain, debugging]
 # LangChain Common Errors
 
 ## Overview
-Quick reference for diagnosing and resolving the most common LangChain errors.
 
-## Prerequisites
-- LangChain installed and configured
-- Access to application logs
-- Understanding of your LangChain implementation
+Quick reference for the most frequent LangChain errors with exact error messages, root causes, and copy-paste fixes.
 
-## Error Reference
+## Import Errors
 
-### Authentication Errors
+### `Cannot find module '@langchain/openai'`
 
-#### `openai.AuthenticationError: Incorrect API key provided`
-```python
-# Cause: Invalid or missing API key
-# Solution:
-import os
-os.environ["OPENAI_API_KEY"] = "sk-..."  # Set correct key
-
-# Verify key is loaded
-from langchain_openai import ChatOpenAI
-llm = ChatOpenAI()  # Will raise error if key invalid
-```
-
-#### `anthropic.AuthenticationError: Invalid x-api-key`
-```python
-# Cause: Anthropic API key not set or invalid
-# Solution:
-os.environ["ANTHROPIC_API_KEY"] = "sk-ant-..."
-
-# Or pass directly
-from langchain_anthropic import ChatAnthropic
-llm = ChatAnthropic(api_key="sk-ant-...")
-```
-
-### Import Errors
-
-#### `ModuleNotFoundError: No module named 'langchain_openai'`
 ```bash
-set -euo pipefail
-# Cause: Provider package not installed
-# Solution:
-pip install langchain-openai
-
-# For other providers:
-pip install langchain-anthropic
-pip install langchain-google-genai
-pip install langchain-community
+# Provider package not installed
+npm install @langchain/openai
+# Also: @langchain/anthropic, @langchain/google-genai, @langchain/community
 ```
 
-#### `ImportError: cannot import name 'ChatOpenAI' from 'langchain'`
-```python
-# Cause: Using old import path (pre-0.2.0)
-# Old (deprecated):
-from langchain.chat_models import ChatOpenAI
+### `Cannot import name 'ChatOpenAI' from 'langchain'` (Python)
 
-# New (correct):
+```python
+# Old import path (pre-0.2). Use provider packages:
+# OLD: from langchain.chat_models import ChatOpenAI
+# NEW:
 from langchain_openai import ChatOpenAI
 ```
 
-### Rate Limiting
+### `@langchain/core version mismatch`
 
-#### `openai.RateLimitError: Rate limit reached`
-```python
-# Cause: Too many API requests
-# Solution: Implement retry with backoff
-from langchain_openai import ChatOpenAI
-from tenacity import retry, wait_exponential, stop_after_attempt
-
-@retry(wait=wait_exponential(min=1, max=60), stop=stop_after_attempt(5))
-def call_with_retry(llm, prompt):
-    return llm.invoke(prompt)
-
-# Or use LangChain's built-in retry
-llm = ChatOpenAI(max_retries=3)
+```bash
+# All @langchain/* packages must share the same minor version
+npm ls @langchain/core
+# Fix: update all together
+npm install @langchain/core@latest @langchain/openai@latest @langchain/anthropic@latest
 ```
 
-### Output Parsing Errors
+## Authentication Errors
 
-#### `OutputParserException: Failed to parse output`
-```python
-# Cause: LLM output doesn't match expected format
-# Solution 1: Use with_retry
-from langchain.output_parsers import RetryOutputParser
+### `AuthenticationError: Incorrect API key provided`
 
-parser = RetryOutputParser.from_llm(parser=your_parser, llm=llm)
+```typescript
+// Key not set or wrong format
+// Check:
+console.log("Key present:", !!process.env.OPENAI_API_KEY);
+console.log("Key prefix:", process.env.OPENAI_API_KEY?.slice(0, 7));
+// Should be "sk-..." for OpenAI, "sk-ant-..." for Anthropic
 
-# Solution 2: Use structured output (more reliable)
-from pydantic import BaseModel
-
-class Output(BaseModel):
-    answer: str
-
-llm_with_structure = llm.with_structured_output(Output)
+// Fix: ensure dotenv is loaded BEFORE imports
+import "dotenv/config";
+import { ChatOpenAI } from "@langchain/openai";
 ```
 
-#### `ValidationError: field required`
-```python
-# Cause: Pydantic model validation failed
-# Solution: Make fields optional or provide defaults
-from pydantic import BaseModel, Field
-from typing import Optional
+### `Error: OPENAI_API_KEY is not set`
 
-class Output(BaseModel):
-    answer: str
-    confidence: Optional[float] = Field(default=None)
+```typescript
+// Model constructor can't find the key
+// Option 1: environment variable
+process.env.OPENAI_API_KEY = "sk-...";
+
+// Option 2: pass directly (not recommended for production)
+const model = new ChatOpenAI({
+  model: "gpt-4o-mini",
+  apiKey: "sk-...",
+});
 ```
 
-### Chain Errors
+## Chain Errors
 
-#### `ValueError: Missing required input keys`
-```python
-# Cause: Input dict missing required variables
-# Debug:
-prompt = ChatPromptTemplate.from_template("Hello {name}, you are {age}")
-print(prompt.input_variables)  # ['name', 'age']
+### `Missing value for input variable "topic"`
 
-# Solution: Provide all required keys
-chain.invoke({"name": "Alice", "age": 30})
+```typescript
+// Template has variables not provided in invoke()
+const prompt = ChatPromptTemplate.fromTemplate("Tell me about {topic} in {language}");
+console.log(prompt.inputVariables); // ["topic", "language"]
+
+// Fix: provide ALL variables
+await chain.invoke({ topic: "AI", language: "English" }); // not just { topic: "AI" }
 ```
 
-#### `TypeError: Expected mapping type as input`
-```python
-# Cause: Passing wrong input type
-# Wrong:
-chain.invoke("hello")
+### `Expected mapping type as input to ChatPromptTemplate`
 
-# Correct:
-chain.invoke({"input": "hello"})
+```typescript
+// Passing a string instead of an object
+// WRONG:
+await chain.invoke("hello");
+
+// RIGHT:
+await chain.invoke({ input: "hello" });
 ```
 
-### Agent Errors
+## Output Parsing Errors
 
-#### `AgentExecutor: max iterations reached`
-```python
-# Cause: Agent stuck in loop
-# Solution: Increase iterations or improve prompts
-agent_executor = AgentExecutor(
-    agent=agent,
-    tools=tools,
-    max_iterations=20,  # Increase from default 15
-    early_stopping_method="force"  # Force stop after max
-)
+### `OutputParserException: Failed to parse`
+
+```typescript
+// LLM output doesn't match expected format
+// Fix 1: Use withStructuredOutput (most reliable)
+import { z } from "zod";
+
+const schema = z.object({
+  answer: z.string(),
+  confidence: z.number().optional(), // make fields optional for resilience
+});
+const structuredModel = model.withStructuredOutput(schema);
+
+// Fix 2: Add retry parser (Python)
+// from langchain.output_parsers import RetryWithErrorOutputParser
+// retry_parser = RetryWithErrorOutputParser.from_llm(parser=parser, llm=llm)
 ```
 
-#### `ToolException: Tool execution failed`
-```python
-# Cause: Tool raised an exception
-# Solution: Add error handling in tool
-@tool
-def my_tool(input: str) -> str:
-    """Tool description."""
-    try:
-        # Tool logic
-        return result
-    except Exception as e:
-        return f"Tool error: {str(e)}"
+### `ZodError: validation failed`
+
+```typescript
+// Structured output doesn't match Zod schema
+// Fix: make optional fields nullable, add defaults
+const Schema = z.object({
+  answer: z.string(),
+  confidence: z.number().min(0).max(1).default(0.5),
+  sources: z.array(z.string()).default([]),
+});
 ```
 
-### Memory Errors
+## Agent Errors
 
-#### `KeyError: 'chat_history'`
-```python
-# Cause: Memory key mismatch
-# Solution: Ensure consistent key names
-prompt = ChatPromptTemplate.from_messages([
-    MessagesPlaceholder(variable_name="chat_history"),  # Match this
-    ("human", "{input}")
-])
+### `AgentExecutor: max iterations reached`
 
-# When invoking:
-chain.invoke({
-    "input": "hello",
-    "chat_history": []  # Must match placeholder name
-})
+```typescript
+// Agent stuck in a tool-calling loop
+const executor = new AgentExecutor({
+  agent,
+  tools,
+  maxIterations: 15,          // increase from default 10
+  earlyStoppingMethod: "force", // force stop instead of error
+});
+
+// Root cause: usually a vague system prompt. Be specific about when to stop.
 ```
 
-## Debugging Tips
+### `Missing placeholder 'agent_scratchpad'`
 
-### Enable Verbose Mode
-```python
-import langchain
-langchain.debug = True  # Shows all chain steps
-
-# Or per-component
-agent_executor = AgentExecutor(verbose=True)
+```typescript
+// Agent prompt MUST include the scratchpad placeholder
+const prompt = ChatPromptTemplate.fromMessages([
+  ["system", "You are helpful."],
+  ["human", "{input}"],
+  new MessagesPlaceholder("agent_scratchpad"),  // REQUIRED
+]);
 ```
 
-### Trace with LangSmith
-```python
-# Set environment variables
-os.environ["LANGCHAIN_TRACING_V2"] = "true"
-os.environ["LANGCHAIN_API_KEY"] = "your-langsmith-key"
-os.environ["LANGCHAIN_PROJECT"] = "my-project"
+## Rate Limiting
 
-# All chains automatically traced
+### `429 Too Many Requests / RateLimitError`
+
+```typescript
+// Built-in retry handles this automatically
+const model = new ChatOpenAI({
+  model: "gpt-4o-mini",
+  maxRetries: 5,    // exponential backoff on 429
+});
+
+// For batch processing, control concurrency
+const results = await chain.batch(inputs, { maxConcurrency: 5 });
+```
+
+## Memory/History Errors
+
+### `KeyError: 'chat_history'`
+
+```typescript
+// MessagesPlaceholder name must match invoke key
+const prompt = ChatPromptTemplate.fromMessages([
+  new MessagesPlaceholder("chat_history"),  // this name...
+  ["human", "{input}"],
+]);
+
+await chain.invoke({
+  input: "hello",
+  chat_history: [],  // ...must match this key
+});
+```
+
+## Debugging Toolkit
+
+### Enable Debug Logging
+
+```typescript
+// See every step in chain execution
+import { setVerbose } from "@langchain/core";
+setVerbose(true);  // logs all chain steps
+
+// Python equivalent:
+// import langchain; langchain.debug = True
+```
+
+### Enable LangSmith Tracing
+
+```bash
+# Add to .env — all chains automatically traced
+LANGSMITH_TRACING=true
+LANGSMITH_API_KEY=lsv2_...
+LANGSMITH_PROJECT=my-debug-session
 ```
 
 ### Check Version Compatibility
-```bash
-set -euo pipefail
-pip show langchain langchain-core langchain-openai
 
-# Ensure versions are compatible:
-# langchain >= 0.3.0
-# langchain-core >= 0.3.0
-# langchain-openai >= 0.2.0
+```bash
+# All @langchain/* packages should be on compatible versions
+npm ls @langchain/core 2>&1 | head -20
+
+# Python
+pip show langchain langchain-core langchain-openai | grep -E "Name|Version"
+```
+
+## Quick Diagnostic Script
+
+```typescript
+import "dotenv/config";
+
+async function diagnose() {
+  const checks: Record<string, string> = {};
+
+  // Check env vars
+  checks["OPENAI_API_KEY"] = process.env.OPENAI_API_KEY ? "set" : "MISSING";
+  checks["ANTHROPIC_API_KEY"] = process.env.ANTHROPIC_API_KEY ? "set" : "MISSING";
+
+  // Check imports
+  try {
+    await import("@langchain/core");
+    checks["@langchain/core"] = "OK";
+  } catch { checks["@langchain/core"] = "MISSING"; }
+
+  try {
+    const { ChatOpenAI } = await import("@langchain/openai");
+    const llm = new ChatOpenAI({ model: "gpt-4o-mini" });
+    await llm.invoke("test");
+    checks["OpenAI connection"] = "OK";
+  } catch (e: any) {
+    checks["OpenAI connection"] = e.message.slice(0, 80);
+  }
+
+  console.table(checks);
+}
+
+await diagnose();
 ```
 
 ## Resources
-- [LangChain Troubleshooting](https://python.langchain.com/docs/troubleshooting/)
+
+- [LangChain Troubleshooting](https://js.langchain.com/docs/troubleshooting/)
 - [LangSmith Debugging](https://docs.smith.langchain.com/)
-- [GitHub Issues](https://github.com/langchain-ai/langchain/issues)
+- [GitHub Issues](https://github.com/langchain-ai/langchainjs/issues)
 
 ## Next Steps
-For complex debugging, use `langchain-debug-bundle` to collect evidence.
 
-## Instructions
-
-1. Assess the current state of the debugging configuration
-2. Identify the specific requirements and constraints
-3. Apply the recommended patterns from this skill
-4. Validate the changes against expected behavior
-5. Document the configuration for team reference
-
-## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
-
-## Error Handling
-
-| Error | Cause | Resolution |
-|-------|-------|------------|
-| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with debugging |
-| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
-| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
-
-## Examples
-
-**Basic usage**: Apply langchain common errors to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize langchain common errors for production environments with multiple constraints and team-specific requirements.
+For complex debugging, use `langchain-debug-bundle` to collect comprehensive evidence.

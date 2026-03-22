@@ -1,11 +1,11 @@
 ---
 name: langchain-core-workflow-b
 description: |
-  Build LangChain agents with tools for autonomous task execution.
-  Use when creating AI agents, implementing tool calling,
-  or building autonomous workflows with decision-making.
-  Trigger with phrases like "langchain agents", "langchain tools",
-  "tool calling", "langchain autonomous", "create agent", "function calling".
+  Build LangChain agents with tool calling for autonomous task execution.
+  Use when creating AI agents, implementing tool/function calling,
+  binding tools to models, or building autonomous multi-step workflows.
+  Trigger: "langchain agents", "langchain tools", "tool calling",
+  "create agent", "function calling", "createToolCallingAgent".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
@@ -17,173 +17,227 @@ tags: [saas, langchain, workflow]
 # LangChain Core Workflow B: Agents & Tools
 
 ## Overview
-Build autonomous agents that can use tools, make decisions, and execute multi-step tasks using LangChain's agent framework.
+
+Build autonomous agents that use tools, make decisions, and execute multi-step tasks. Covers tool definition with Zod schemas, `createToolCallingAgent`, `AgentExecutor`, streaming agent output, and conversation memory.
 
 ## Prerequisites
+
 - Completed `langchain-core-workflow-a` (chains)
-- Understanding of function/tool calling concepts
-- Familiarity with async programming
+- `npm install langchain @langchain/core @langchain/openai zod`
 
-## Instructions
+## Step 1: Define Tools (TypeScript)
 
-### Step 1: Define Tools
-```python
-from langchain_core.tools import tool
-from pydantic import BaseModel, Field
+```typescript
+import { tool } from "@langchain/core/tools";
+import { z } from "zod";
 
-class SearchInput(BaseModel):
-    query: str = Field(description="The search query")
+// Tool with Zod schema validation
+const calculator = tool(
+  async ({ expression }) => {
+    try {
+      // Use a safe math parser in production (e.g., mathjs)
+      const result = Function(`"use strict"; return (${expression})`)();
+      return String(result);
+    } catch (e) {
+      return `Error: invalid expression "${expression}"`;
+    }
+  },
+  {
+    name: "calculator",
+    description: "Evaluate a mathematical expression. Input: a math expression string.",
+    schema: z.object({
+      expression: z.string().describe("Math expression like '2 + 2' or '100 * 0.15'"),
+    }),
+  }
+);
 
-@tool(args_schema=SearchInput)
-def search_web(query: str) -> str:
-    """Search the web for information."""
-    # Implement actual search logic
-    return f"Search results for: {query}"
+const weatherLookup = tool(
+  async ({ city }) => {
+    // Replace with real API call
+    const data: Record<string, string> = {
+      "New York": "72F, sunny",
+      "London": "58F, cloudy",
+      "Tokyo": "80F, humid",
+    };
+    return data[city] ?? `No weather data for ${city}`;
+  },
+  {
+    name: "weather",
+    description: "Get current weather for a city.",
+    schema: z.object({
+      city: z.string().describe("City name"),
+    }),
+  }
+);
 
-@tool
-def calculate(expression: str) -> str:
-    """Evaluate a mathematical expression."""
-    try:
-        result = eval(expression)  # Use safer alternative in production
-        return str(result)
-    except Exception as e:
-        return f"Error: {e}"
-
-@tool
-def get_current_time() -> str:
-    """Get the current date and time."""
-    from datetime import datetime
-    return datetime.now().isoformat()
-
-tools = [search_web, calculate, get_current_time]
+const tools = [calculator, weatherLookup];
 ```
 
-### Step 2: Create Agent with Tools
+## Step 2: Create Agent with AgentExecutor
+
+```typescript
+import { ChatOpenAI } from "@langchain/openai";
+import { createToolCallingAgent, AgentExecutor } from "langchain/agents";
+import { ChatPromptTemplate, MessagesPlaceholder } from "@langchain/core/prompts";
+
+const llm = new ChatOpenAI({ model: "gpt-4o-mini" });
+
+const prompt = ChatPromptTemplate.fromMessages([
+  ["system", "You are a helpful assistant. Use tools when needed."],
+  new MessagesPlaceholder("chat_history"),
+  ["human", "{input}"],
+  new MessagesPlaceholder("agent_scratchpad"),
+]);
+
+const agent = createToolCallingAgent({
+  llm,
+  tools,
+  prompt,
+});
+
+const executor = new AgentExecutor({
+  agent,
+  tools,
+  verbose: true,           // Log reasoning steps
+  maxIterations: 10,       // Prevent infinite loops
+  returnIntermediateSteps: true,
+});
+```
+
+## Step 3: Run the Agent
+
+```typescript
+// Simple invocation
+const result = await executor.invoke({
+  input: "What's 25 * 4, and what's the weather in Tokyo?",
+  chat_history: [],
+});
+
+console.log(result.output);
+// "25 * 4 = 100. The weather in Tokyo is 80F and humid."
+
+// The agent decided to call both tools, then composed the answer.
+console.log(result.intermediateSteps);
+// Shows each tool call and its result
+```
+
+## Step 4: Agent with Conversation Memory
+
+```typescript
+import { ChatMessageHistory } from "@langchain/community/stores/message/in_memory";
+import { RunnableWithMessageHistory } from "@langchain/core/runnables";
+
+const messageHistory = new ChatMessageHistory();
+
+const agentWithHistory = new RunnableWithMessageHistory({
+  runnable: executor,
+  getMessageHistory: (_sessionId) => messageHistory,
+  inputMessagesKey: "input",
+  historyMessagesKey: "chat_history",
+});
+
+// First call
+await agentWithHistory.invoke(
+  { input: "My name is Alice" },
+  { configurable: { sessionId: "user-1" } }
+);
+
+// Second call -- agent remembers
+const res = await agentWithHistory.invoke(
+  { input: "What's my name?" },
+  { configurable: { sessionId: "user-1" } }
+);
+console.log(res.output); // "Your name is Alice!"
+```
+
+## Step 5: Stream Agent Events
+
+```typescript
+const eventStream = executor.streamEvents(
+  { input: "Calculate 15% tip on $85", chat_history: [] },
+  { version: "v2" }
+);
+
+for await (const event of eventStream) {
+  if (event.event === "on_chat_model_stream") {
+    process.stdout.write(event.data.chunk.content ?? "");
+  } else if (event.event === "on_tool_start") {
+    console.log(`\n[Calling tool: ${event.name}]`);
+  } else if (event.event === "on_tool_end") {
+    console.log(`[Tool result: ${event.data.output}]`);
+  }
+}
+```
+
+## Step 6: Bind Tools Directly (Without AgentExecutor)
+
+```typescript
+import { ChatOpenAI } from "@langchain/openai";
+import { HumanMessage } from "@langchain/core/messages";
+
+const model = new ChatOpenAI({ model: "gpt-4o-mini" });
+const modelWithTools = model.bindTools(tools);
+
+const response = await modelWithTools.invoke([
+  new HumanMessage("What's 42 * 17?"),
+]);
+
+// Check if model wants to call a tool
+if (response.tool_calls && response.tool_calls.length > 0) {
+  for (const tc of response.tool_calls) {
+    console.log(`Tool: ${tc.name}, Args: ${JSON.stringify(tc.args)}`);
+    // Execute tool manually
+    const toolResult = await tools
+      .find((t) => t.name === tc.name)!
+      .invoke(tc.args);
+    console.log(`Result: ${toolResult}`);
+  }
+}
+```
+
+## Python Equivalent
+
 ```python
 from langchain_openai import ChatOpenAI
 from langchain.agents import create_tool_calling_agent, AgentExecutor
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_core.tools import tool
 
+@tool
+def calculator(expression: str) -> str:
+    """Evaluate a math expression."""
+    return str(eval(expression))
+
+tools = [calculator]
 llm = ChatOpenAI(model="gpt-4o-mini")
 
 prompt = ChatPromptTemplate.from_messages([
-    ("system", "You are a helpful assistant with access to tools."),
-    MessagesPlaceholder(variable_name="chat_history", optional=True),
+    ("system", "You are a helpful assistant."),
+    MessagesPlaceholder("chat_history", optional=True),
     ("human", "{input}"),
-    MessagesPlaceholder(variable_name="agent_scratchpad"),
+    MessagesPlaceholder("agent_scratchpad"),
 ])
 
 agent = create_tool_calling_agent(llm, tools, prompt)
-
-agent_executor = AgentExecutor(
-    agent=agent,
-    tools=tools,
-    verbose=True,
-    max_iterations=10,
-    handle_parsing_errors=True
-)
-```
-
-### Step 3: Run the Agent
-```python
-# Simple invocation
-result = agent_executor.invoke({
-    "input": "What's 25 * 4 and what time is it?"
-})
-print(result["output"])
-
-# With chat history
-from langchain_core.messages import HumanMessage, AIMessage
-
-history = [
-    HumanMessage(content="Hi, I'm Alice"),
-    AIMessage(content="Hello Alice! How can I help you?")
-]
-
-result = agent_executor.invoke({
-    "input": "What's my name?",
-    "chat_history": history
-})
-```
-
-### Step 4: Streaming Agent Output
-```python
-async def stream_agent():
-    async for event in agent_executor.astream_events(
-        {"input": "Search for LangChain news"},
-        version="v2"
-    ):
-        if event["event"] == "on_chat_model_stream":
-            print(event["data"]["chunk"].content, end="", flush=True)
-        elif event["event"] == "on_tool_start":
-            print(f"\n[Using tool: {event['name']}]")
-```
-
-## Output
-- Typed tool definitions with Pydantic schemas
-- Configured agent executor with error handling
-- Working agent that can reason and use tools
-- Streaming output for real-time feedback
-
-## Advanced Patterns
-
-### Custom Tool with Async Support
-```python
-from langchain_core.tools import StructuredTool
-
-async def async_search(query: str) -> str:
-    """Async search implementation."""
-    import aiohttp
-    async with aiohttp.ClientSession() as session:
-        # Implement async search
-        return f"Async results for: {query}"
-
-search_tool = StructuredTool.from_function(
-    func=lambda q: "sync fallback",
-    coroutine=async_search,
-    name="search",
-    description="Search the web"
-)
-```
-
-### Agent with Memory
-```python
-from langchain_community.chat_message_histories import ChatMessageHistory
-from langchain_core.runnables.history import RunnableWithMessageHistory
-
-message_history = ChatMessageHistory()
-
-agent_with_memory = RunnableWithMessageHistory(
-    agent_executor,
-    lambda session_id: message_history,
-    input_messages_key="input",
-    history_messages_key="chat_history"
-)
-
-result = agent_with_memory.invoke(
-    {"input": "Remember, I prefer Python"},
-    config={"configurable": {"session_id": "user123"}}
-)
+executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
+result = executor.invoke({"input": "What is 25 * 4?", "chat_history": []})
 ```
 
 ## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| Tool Not Found | Tool name mismatch | Verify tool names in prompt |
-| Max Iterations | Agent stuck in loop | Increase limit or improve prompts |
-| Parse Error | Invalid tool call format | Enable `handle_parsing_errors` |
-| Tool Error | Tool execution failed | Add try/except in tool functions |
+
+| Error | Cause | Fix |
+|-------|-------|-----|
+| `Max iterations reached` | Agent stuck in loop | Increase `maxIterations` or improve system prompt |
+| `Tool not found` | Tool name mismatch | Verify tools array passed to both `createToolCallingAgent` and `AgentExecutor` |
+| `Missing agent_scratchpad` | Prompt missing placeholder | Add `new MessagesPlaceholder("agent_scratchpad")` |
+| Tool execution error | Tool throws exception | Wrap tool body in try/catch, return error string |
 
 ## Resources
-- [Agents Conceptual Guide](https://python.langchain.com/docs/concepts/agents/)
-- [Tool Calling](https://python.langchain.com/docs/concepts/tool_calling/)
-- [Agent Types](https://python.langchain.com/docs/how_to/agent_executor/)
+
+- [Agents Guide](https://js.langchain.com/docs/concepts/agents/)
+- [Tool Calling](https://js.langchain.com/docs/concepts/tool_calling/)
+- [createToolCallingAgent API](https://v03.api.js.langchain.com/functions/langchain.agents.createToolCallingAgent.html)
 
 ## Next Steps
+
 Proceed to `langchain-common-errors` for debugging guidance.
-
-## Examples
-
-**Basic usage**: Apply langchain core workflow b to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize langchain core workflow b for production environments with multiple constraints and team-specific requirements.

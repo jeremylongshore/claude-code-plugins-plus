@@ -1,10 +1,9 @@
 ---
 name: langchain-multi-env-setup
 description: |
-  Configure LangChain multi-environment setup for dev/staging/prod.
-  Use when managing multiple environments, configuring environment-specific settings,
-  or implementing environment promotion workflows.
-  Trigger with phrases like "langchain environments", "langchain staging",
+  Configure LangChain across dev/staging/production environments
+  with isolated API keys, environment-specific settings, and secrets.
+  Trigger: "langchain environments", "langchain staging",
   "langchain dev prod", "environment configuration", "langchain env setup".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
@@ -17,133 +16,140 @@ tags: [saas, langchain, workflow]
 # LangChain Multi-Environment Setup
 
 ## Overview
-Configure LangChain across development, staging, and production environments with isolated API keys, environment-specific settings, and proper secret management. Each environment gets its own credentials and configuration to prevent cross-environment data leakage.
 
-## Prerequisites
-- Separate LangChain API keys per environment
-- Secret management solution (environment variables, Vault, or cloud secrets)
-- CI/CD pipeline with environment-aware deployment
-- Application with environment detection logic
+Configure LangChain across development, staging, and production with separate API keys, environment-specific model settings, LangSmith project isolation, and validated configuration.
 
 ## Environment Strategy
 
-| Environment | Purpose | API Key Source | Settings |
-|-------------|---------|---------------|----------|
-| Development | Local development | `.env.local` | Debug enabled, relaxed limits |
-| Staging | Pre-production testing | CI/CD secrets | Production-like settings |
-| Production | Live traffic | Secret manager | Optimized, hardened |
+| Environment | API Key Source | Model | LangSmith Project | Cache |
+|-------------|---------------|-------|-------------------|-------|
+| Development | `.env.local` | gpt-4o-mini | `dev-{user}` | Off |
+| Staging | CI secrets | gpt-4o-mini | `staging` | Redis |
+| Production | Secret Manager | gpt-4o | `production` | Redis |
 
-## Instructions
+## Step 1: Configuration with Zod Validation
 
-### Step 1: Configuration Structure
-```
-config/
-  langchain/
-    base.ts           # Shared defaults
-    development.ts    # Dev overrides
-    staging.ts        # Staging overrides
-    production.ts     # Prod overrides
-    index.ts          # Environment resolver
-```
-
-### Step 2: Base Configuration
 ```typescript
-// config/langchain/base.ts
-export const baseConfig = {
-  timeout: 30000,  # 30000: 30 seconds in ms
-  maxRetries: 3,
-  cache: {
-    enabled: true,
-    ttlSeconds: 300,  # 300: timeout: 5 minutes
-  },
-};
-```
+// config/langchain.ts
+import { z } from "zod";
+import "dotenv/config";
 
-### Step 3: Environment-Specific Configs
-```typescript
-// config/langchain/development.ts
-import { baseConfig } from "./base";
+const EnvironmentSchema = z.enum(["development", "staging", "production"]);
 
-export const developmentConfig = {
-  ...baseConfig,
-  apiKey: process.env.OPENAI_API_KEY_DEV,
-  debug: true,
-  cache: { enabled: false, ttlSeconds: 60 },
-};
+const ConfigSchema = z.object({
+  environment: EnvironmentSchema,
+  openaiApiKey: z.string().min(1, "OPENAI_API_KEY is required"),
+  model: z.string().default("gpt-4o-mini"),
+  temperature: z.number().min(0).max(2).default(0),
+  maxRetries: z.number().default(3),
+  timeout: z.number().default(30000),
+  langsmith: z.object({
+    enabled: z.boolean(),
+    apiKey: z.string().optional(),
+    project: z.string(),
+  }),
+  cache: z.object({
+    enabled: z.boolean(),
+    ttlSeconds: z.number().default(300),
+  }),
+});
 
-// config/langchain/staging.ts
-import { baseConfig } from "./base";
+export type LangChainConfig = z.infer<typeof ConfigSchema>;
 
-export const stagingConfig = {
-  ...baseConfig,
-  apiKey: process.env.OPENAI_API_KEY_STAGING,
-  debug: false,
-};
-
-// config/langchain/production.ts
-import { baseConfig } from "./base";
-
-export const productionConfig = {
-  ...baseConfig,
-  apiKey: process.env.OPENAI_API_KEY_PROD,
-  debug: false,
-  timeout: 60000,  # 60000: 1 minute in ms
-  maxRetries: 5,
-  cache: { enabled: true, ttlSeconds: 600 },  # 600: timeout: 10 minutes
-};
-```
-
-### Step 4: Environment Resolver
-```typescript
-// config/langchain/index.ts
-import { developmentConfig } from "./development";
-import { stagingConfig } from "./staging";
-import { productionConfig } from "./production";
-
-type Environment = "development" | "staging" | "production";
-
-const configs = {
-  development: developmentConfig,
-  staging: stagingConfig,
-  production: productionConfig,
-};
-
-export function detectEnvironment(): Environment {
-  const env = process.env.NODE_ENV || "development";
+function detectEnvironment(): z.infer<typeof EnvironmentSchema> {
+  const env = process.env.NODE_ENV ?? "development";
   if (env === "production") return "production";
   if (env === "staging" || process.env.VERCEL_ENV === "preview") return "staging";
   return "development";
 }
 
-export function getLangChainConfig() {
+const ENV_CONFIGS: Record<string, Partial<z.infer<typeof ConfigSchema>>> = {
+  development: {
+    model: "gpt-4o-mini",
+    temperature: 0,
+    timeout: 60000,
+    langsmith: { enabled: true, project: `dev-${process.env.USER ?? "local"}` },
+    cache: { enabled: false, ttlSeconds: 60 },
+  },
+  staging: {
+    model: "gpt-4o-mini",
+    temperature: 0,
+    langsmith: { enabled: true, project: "staging" },
+    cache: { enabled: true, ttlSeconds: 300 },
+  },
+  production: {
+    model: "gpt-4o",
+    temperature: 0,
+    maxRetries: 5,
+    timeout: 60000,
+    langsmith: { enabled: true, project: "production" },
+    cache: { enabled: true, ttlSeconds: 600 },
+  },
+};
+
+export function loadConfig(): LangChainConfig {
   const env = detectEnvironment();
-  const config = configs[env];
+  const envConfig = ENV_CONFIGS[env];
 
-  if (!config.apiKey) {
-    throw new Error(`OPENAI_API_KEY not set for environment: ${env}`);
-  }
+  const raw = {
+    environment: env,
+    openaiApiKey: process.env.OPENAI_API_KEY,
+    ...envConfig,
+    langsmith: {
+      ...envConfig?.langsmith,
+      apiKey: process.env.LANGSMITH_API_KEY,
+      enabled: process.env.LANGSMITH_TRACING === "true",
+    },
+  };
 
-  return { ...config, environment: env };
+  const config = ConfigSchema.parse(raw);
+  console.log(`[config] Environment: ${config.environment}, Model: ${config.model}`);
+  return config;
 }
 ```
 
-### Step 5: Secret Management
-```bash
-# Local development (.env.local - git-ignored)
-OPENAI_API_KEY_DEV=your-dev-key
+## Step 2: Environment Files
 
-# GitHub Actions
-# Settings > Environments > staging/production > Secrets
-# Add OPENAI_API_KEY_STAGING and OPENAI_API_KEY_PROD
+```bash
+# .env.example (commit this)
+OPENAI_API_KEY=
+ANTHROPIC_API_KEY=
+LANGSMITH_API_KEY=
+LANGSMITH_TRACING=true
+NODE_ENV=development
+
+# .env.local (git-ignored, for local dev)
+OPENAI_API_KEY=sk-dev-...
+LANGSMITH_API_KEY=lsv2_pt_dev_...
+LANGSMITH_TRACING=true
+NODE_ENV=development
+```
+
+```bash
+# .gitignore
+.env
+.env.local
+.env.*.local
+```
+
+## Step 3: Secret Management
+
+```bash
+# GitHub Actions — use environments
+# Settings > Environments > staging > Secrets
+# OPENAI_API_KEY, LANGSMITH_API_KEY
+
+# GCP Secret Manager
+echo -n "sk-prod-..." | gcloud secrets create openai-api-key-prod --data-file=-
+echo -n "lsv2_..." | gcloud secrets create langsmith-api-key-prod --data-file=-
 
 # AWS Secrets Manager
 aws secretsmanager create-secret \
-  --name langchain/production/api-key \
-  --secret-string "your-prod-key"
-
-# GCP Secret Manager
-echo -n "your-prod-key" | gcloud secrets create langchain-api-key-prod --data-file=-
+  --name langchain/production/openai-key \
+  --secret-string "sk-prod-..."
 ```
+
+## Step 4: CI/CD with Environment Isolation
 
 ```yaml
 # .github/workflows/deploy.yml
@@ -151,53 +157,85 @@ jobs:
   deploy-staging:
     environment: staging
     env:
-      OPENAI_API_KEY_STAGING: ${{ secrets.OPENAI_API_KEY_STAGING }}
+      NODE_ENV: staging
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      LANGSMITH_API_KEY: ${{ secrets.LANGSMITH_API_KEY }}
+      LANGSMITH_TRACING: "true"
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci && npm run build
+      - run: npm test
+      - run: gcloud run deploy langchain-api-staging --source .
 
   deploy-production:
     environment: production
+    needs: deploy-staging
     env:
-      OPENAI_API_KEY_PROD: ${{ secrets.OPENAI_API_KEY_PROD }}
+      NODE_ENV: production
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      LANGSMITH_API_KEY: ${{ secrets.LANGSMITH_API_KEY }}
+      LANGSMITH_TRACING: "true"
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci && npm run build
+      - run: npm test
+      - run: gcloud run deploy langchain-api --source .
+```
+
+## Step 5: Use Config in Application
+
+```typescript
+// src/index.ts
+import { loadConfig } from "./config/langchain";
+import { createModel } from "./infra/llm/factory";
+
+const config = loadConfig();
+
+// Model automatically configured for environment
+const model = createModel({
+  provider: "openai",
+  model: config.model,
+  temperature: config.temperature,
+  maxRetries: config.maxRetries,
+  timeout: config.timeout,
+});
+
+// LangSmith tracing via env vars (automatic)
+if (config.langsmith.enabled) {
+  process.env.LANGSMITH_TRACING = "true";
+  process.env.LANGSMITH_API_KEY = config.langsmith.apiKey ?? "";
+  process.env.LANGSMITH_PROJECT = config.langsmith.project;
+}
+```
+
+## Startup Validation
+
+```typescript
+// Fail fast on missing config
+try {
+  const config = loadConfig();
+  console.log(`[startup] Config validated: ${config.environment}`);
+} catch (error) {
+  console.error("[startup] Invalid configuration:", error);
+  process.exit(1);
+}
 ```
 
 ## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Wrong environment | Missing NODE_ENV | Set environment variable in deployment |
-| Secret not found | Wrong secret path | Verify secret manager configuration |
+
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| Wrong environment detected | `NODE_ENV` not set | Set in deployment config |
+| Secret not found | Wrong secret path | Verify in cloud console |
 | Cross-env data leak | Shared API key | Use separate keys per environment |
-| Config validation fail | Missing field | Add startup validation with Zod schema |
-
-## Examples
-
-### Quick Environment Check
-```typescript
-const config = getLangChainConfig();
-console.log(`Running in ${config.environment}`);
-console.log(`Cache enabled: ${config.cache.enabled}`);
-```
-
-### Startup Validation
-```typescript
-import { z } from "zod";
-
-const configSchema = z.object({
-  apiKey: z.string().min(1, "OPENAI_API_KEY is required"),
-  environment: z.enum(["development", "staging", "production"]),
-  timeout: z.number().positive(),
-});
-
-const config = configSchema.parse(getLangChainConfig());
-```
+| Config validation fail | Missing env var | Check `.env.example` for required vars |
 
 ## Resources
-- [LangChain Configuration](https://python.langchain.com/docs/guides/deployment)
+
 - [LangSmith Environments](https://docs.smith.langchain.com)
+- [GitHub Environments](https://docs.github.com/en/actions/deployment/targeting-different-environments)
+- [GCP Secret Manager](https://cloud.google.com/secret-manager)
 
 ## Next Steps
+
 For deployment, see `langchain-deploy-integration`.
-
-## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
