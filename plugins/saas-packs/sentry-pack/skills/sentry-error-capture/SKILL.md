@@ -4,7 +4,7 @@ description: |
   Implement advanced error capture and context enrichment with Sentry.
   Use when adding captureException/captureMessage calls, enriching errors
   with user context, tags, breadcrumbs, or custom fingerprinting.
-  Trigger: "sentry error capture", "sentry context", "enrich sentry errors",
+  Trigger with "sentry error capture", "sentry context", "enrich sentry errors",
   "sentry exception handling", "sentry breadcrumbs", "sentry fingerprint".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(npm:*), Bash(npx:*), Bash(pip:*), Bash(python:*)
 version: 1.0.0
@@ -18,7 +18,7 @@ tags: [saas, sentry, error-tracking, context, breadcrumbs, observability]
 
 ## Overview
 
-Capture errors and enrich them with structured context so your team can diagnose production issues in seconds instead of hours. This skill covers the two core Sentry capture methods (`captureException` and `captureMessage`), scoped context enrichment (`withScope`, `push_scope`), breadcrumb trails, custom fingerprinting for issue grouping, and global event filtering via `beforeSend`. All patterns use real `@sentry/node` v8 (TypeScript) and `sentry-sdk` v2 (Python) APIs.
+Capture errors and enrich them with structured context so your team can diagnose production issues in seconds instead of hours. Covers `captureException`, `captureMessage`, scoped context (`withScope` / `push_scope`), breadcrumbs, custom fingerprinting, and `beforeSend` filtering using `@sentry/node` v8 and `sentry-sdk` v2 APIs.
 
 ## Prerequisites
 
@@ -166,18 +166,11 @@ Sentry.addBreadcrumb({
 });
 
 Sentry.addBreadcrumb({
-  category: 'navigation',
-  message: 'User navigated to /checkout',
-  level: 'info',
-});
-
-Sentry.addBreadcrumb({
   category: 'transaction',
   message: 'Payment initiated',
   level: 'info',
   data: { amount: 49.99, items: 3 },
 });
-
 // The next captured error includes all breadcrumbs above
 ```
 
@@ -262,91 +255,6 @@ Sentry.init({
 });
 ```
 
-## Express Error Handler
-
-```typescript
-import express from 'express';
-import * as Sentry from '@sentry/node';
-
-const app = express();
-
-// Sentry request handler -- must be first middleware
-Sentry.setupExpressErrorHandler(app);
-
-app.get('/api/users/:id', async (req, res) => {
-  Sentry.setUser({ id: req.params.id });
-
-  try {
-    const user = await getUser(req.params.id);
-    res.json(user);
-  } catch (error) {
-    Sentry.withScope((scope) => {
-      scope.setContext('request', {
-        params: req.params,
-        query: req.query,
-        method: req.method,
-      });
-      Sentry.captureException(error);
-    });
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
-```
-
-## Async Error Patterns
-
-```typescript
-// Promise.allSettled -- capture individual failures from batch operations
-async function processQueue(items: QueueItem[]) {
-  const results = await Promise.allSettled(
-    items.map(item => processItem(item))
-  );
-
-  results.forEach((result, index) => {
-    if (result.status === 'rejected') {
-      Sentry.withScope((scope) => {
-        scope.setTag('queue_item_index', String(index));
-        scope.setContext('item', items[index]);
-        Sentry.captureException(result.reason);
-      });
-    }
-  });
-}
-```
-
-## Domain-Specific Error Classes
-
-```typescript
-class AppError extends Error {
-  constructor(
-    message: string,
-    public code: string,
-    public severity: Sentry.SeverityLevel = 'error',
-    public context?: Record<string, unknown>
-  ) {
-    super(message);
-    this.name = 'AppError';
-  }
-}
-
-function captureAppError(error: AppError) {
-  Sentry.withScope((scope) => {
-    scope.setTag('error_code', error.code);
-    scope.setLevel(error.severity);
-    if (error.context) {
-      scope.setContext('app_error', error.context);
-    }
-    Sentry.captureException(error);
-  });
-}
-
-// Usage
-throw new AppError('Insufficient funds', 'PAYMENT_001', 'warning', {
-  balance: 10.00,
-  required: 49.99,
-});
-```
-
 ## Output
 
 - Errors with full stack traces and context in the Sentry Issues dashboard
@@ -368,46 +276,54 @@ throw new AppError('Insufficient funds', 'PAYMENT_001', 'warning', {
 
 ## Examples
 
-### TypeScript -- E-Commerce Checkout Error
+### TypeScript -- Express Route with Context
 
 ```typescript
+import express from 'express';
 import * as Sentry from '@sentry/node';
 
-async function processCheckout(cart: Cart, user: User) {
-  Sentry.addBreadcrumb({
-    category: 'checkout',
-    message: `Checkout started: ${cart.items.length} items, $${cart.total}`,
-    level: 'info',
-  });
+const app = express();
+Sentry.setupExpressErrorHandler(app);
 
+app.get('/api/users/:id', async (req, res) => {
+  Sentry.setUser({ id: req.params.id });
   try {
-    const charge = await paymentGateway.charge(cart.total, user.paymentMethod);
-    Sentry.addBreadcrumb({
-      category: 'payment',
-      message: `Charge succeeded: ${charge.id}`,
-      level: 'info',
-    });
-    return charge;
+    const user = await getUser(req.params.id);
+    res.json(user);
   } catch (error) {
     Sentry.withScope((scope) => {
-      scope.setUser({ id: user.id, email: user.email });
-      scope.setTag('feature', 'checkout');
-      scope.setTag('payment_method', user.paymentMethod.type);
-      scope.setLevel('fatal');
-      scope.setContext('cart', {
-        item_count: cart.items.length,
-        total: cart.total,
-        currency: cart.currency,
+      scope.setContext('request', {
+        params: req.params,
+        query: req.query,
+        method: req.method,
       });
-      scope.setFingerprint(['checkout-failure', user.paymentMethod.type]);
       Sentry.captureException(error);
     });
-    throw error;
+    res.status(500).json({ error: 'Internal server error' });
   }
+});
+```
+
+### TypeScript -- Batch Processing with Promise.allSettled
+
+```typescript
+async function processQueue(items: QueueItem[]) {
+  const results = await Promise.allSettled(
+    items.map(item => processItem(item))
+  );
+  results.forEach((result, index) => {
+    if (result.status === 'rejected') {
+      Sentry.withScope((scope) => {
+        scope.setTag('queue_item_index', String(index));
+        scope.setContext('item', items[index]);
+        Sentry.captureException(result.reason);
+      });
+    }
+  });
 }
 ```
 
-### Python -- Background Job Error with Context
+### Python -- Background Job Error
 
 ```python
 import sentry_sdk
@@ -418,19 +334,15 @@ def process_report(report_id: str, user_id: str):
         message=f"Report generation started: {report_id}",
         level="info",
     )
-
     try:
         data = fetch_report_data(report_id)
-        result = generate_pdf(data)
-        return result
+        return generate_pdf(data)
     except Exception as error:
         with sentry_sdk.push_scope() as scope:
             scope.user = {"id": user_id}
             scope.set_tag("job_type", "report_generation")
-            scope.set_tag("report_id", report_id)
             scope.set_context("report", {
                 "report_id": report_id,
-                "user_id": user_id,
                 "stage": "pdf_generation",
             })
             scope.fingerprint = ["report-failure", report_id]
