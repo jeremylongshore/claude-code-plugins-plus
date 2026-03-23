@@ -1,245 +1,345 @@
 ---
 name: supabase-performance-tuning
 description: |
-  Optimize Supabase performance with indexes, connection pooling, query optimization,
-  caching, and RLS policy performance.
-  Use when experiencing slow queries, high latency, connection exhaustion,
-  or needing to optimize Supabase for production traffic.
-  Trigger with phrases like "supabase performance", "supabase slow",
-  "supabase latency", "supabase caching", "optimize supabase", "supabase index".
-allowed-tools: Read, Write, Edit, Bash(supabase:*), Grep
+  Optimize Supabase query performance with indexes, EXPLAIN ANALYZE, connection pooling,
+  column selection, pagination, RPC functions, materialized views, and diagnostics.
+  Use when queries are slow, connections are exhausted, response payloads are bloated,
+  or when preparing a Supabase project for production-scale traffic.
+  Trigger with phrases like "supabase performance", "supabase slow queries",
+  "optimize supabase", "supabase index", "supabase connection pool",
+  "supabase pagination", "supabase explain analyze".
+allowed-tools: Read, Write, Edit, Bash(npx:supabase), Bash(supabase:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, supabase, performance, optimization]
-
+tags: [saas, supabase, performance, optimization, postgres]
 ---
+
 # Supabase Performance Tuning
 
 ## Overview
-Optimize Supabase from database to client: PostgreSQL indexing, query optimization, connection pooling via Supavisor, RLS policy performance, and client-side caching strategies.
+
+Systematically improve Supabase query and database performance across three layers: PostgreSQL engine (indexes, query plans, materialized views), Supabase infrastructure (Supavisor connection pooling, Edge Functions, read replicas), and client SDK patterns (column selection, pagination, RPC functions). Every technique here is measurable — run `EXPLAIN ANALYZE` before and after to confirm the improvement.
 
 ## Prerequisites
-- Supabase project with production data
-- `pg_stat_statements` extension enabled
-- Access to Supabase Dashboard Performance Advisor
+
+- Supabase project (local or hosted) with `@supabase/supabase-js` v2+ installed
+- Supabase CLI installed (`npx supabase --version` to verify)
+- Access to the SQL Editor in the Supabase Dashboard or a direct Postgres connection
+- `pg_stat_statements` extension enabled (Step 1 covers this)
 
 ## Instructions
 
-### Step 1: Identify Bottlenecks
+### Step 1: Diagnose — Find What Is Slow
+
+Start every performance effort with data. Enable `pg_stat_statements` and run the Supabase CLI diagnostics to identify bottlenecks before optimizing.
+
+**Enable the stats extension:**
 
 ```sql
--- Enable pg_stat_statements if not already
-create extension if not exists pg_stat_statements;
+CREATE EXTENSION IF NOT EXISTS pg_stat_statements;
+```
 
--- Top 10 slowest queries by average execution time
-select
+**Find the slowest queries by average execution time:**
+
+```sql
+SELECT
   query,
   calls,
-  mean_exec_time::numeric(10,2) as avg_ms,
-  total_exec_time::numeric(10,2) as total_ms,
+  mean_exec_time::numeric(10,2) AS avg_ms,
+  total_exec_time::numeric(10,2) AS total_ms,
   rows
-from pg_stat_statements
-order by mean_exec_time desc
-limit 10;
-
--- Top 10 most frequently called queries
-select query, calls, mean_exec_time::numeric(10,2) as avg_ms
-from pg_stat_statements
-order by calls desc
-limit 10;
-
--- Active connections and their state
-select state, count(*), max(age(now(), state_change)) as max_age
-from pg_stat_activity
-where datname = current_database()
-group by state;
+FROM pg_stat_statements
+ORDER BY mean_exec_time DESC
+LIMIT 10;
 ```
 
-### Step 2: Optimize Indexes
+**Check index usage and cache hit rates with the Supabase CLI:**
+
+```bash
+# Which indexes are actually being used?
+npx supabase inspect db index-usage
+
+# What percentage of queries are served from cache vs disk?
+npx supabase inspect db cache-hit
+
+# Tables consuming the most space
+npx supabase inspect db table-sizes
+```
+
+**Inspect active connections for pooling issues:**
 
 ```sql
--- Find missing indexes on foreign keys
-select
+SELECT state, count(*), max(age(now(), state_change)) AS max_age
+FROM pg_stat_activity
+WHERE datname = current_database()
+GROUP BY state;
+```
+
+If `idle` connections exceed your plan's limit or `active` queries show high `max_age`, connection pooling (Step 2) and query optimization (Step 3) are the priority.
+
+### Step 2: Indexes and Query Plans
+
+Indexes are the single highest-impact optimization. Use `EXPLAIN ANALYZE` to read query plans, then create targeted indexes.
+
+**Read a query plan:**
+
+```sql
+EXPLAIN (ANALYZE, BUFFERS, FORMAT TEXT)
+SELECT * FROM users WHERE email = 'alice@example.com';
+```
+
+Look for `Seq Scan` on large tables — that means no index is being used. After adding an index, the plan should show `Index Scan` or `Index Only Scan`.
+
+**Create a basic index:**
+
+```sql
+CREATE INDEX idx_users_email ON users(email);
+```
+
+**Create a composite index for multi-column filters:**
+
+```sql
+-- Optimizes: WHERE user_id = ? AND created_at > ? ORDER BY created_at DESC
+CREATE INDEX idx_orders_user_created
+  ON orders(user_id, created_at DESC);
+```
+
+**Create a partial index to cover a common filter pattern:**
+
+```sql
+-- Only indexes incomplete todos — much smaller and faster than full-table index
+CREATE INDEX idx_todos_user_incomplete
+  ON todos(user_id, inserted_at DESC)
+  WHERE is_complete = false;
+```
+
+**Find missing indexes on foreign keys (common source of slow JOINs):**
+
+```sql
+SELECT
   tc.table_name,
-  kcu.column_name as fk_column,
+  kcu.column_name AS fk_column,
   'CREATE INDEX idx_' || tc.table_name || '_' || kcu.column_name
-    || ' ON public.' || tc.table_name || '(' || kcu.column_name || ');' as fix
-from information_schema.table_constraints tc
-join information_schema.key_column_usage kcu
-  on tc.constraint_name = kcu.constraint_name
-left join pg_indexes i
-  on i.tablename = tc.table_name
-  and i.indexdef like '%' || kcu.column_name || '%'
-where tc.constraint_type = 'FOREIGN KEY'
-  and tc.table_schema = 'public'
-  and i.indexname is null;
-
--- Find unused indexes (candidates for removal)
-select schemaname, relname, indexrelname, idx_scan
-from pg_stat_user_indexes
-where idx_scan = 0
-  and schemaname = 'public'
-order by pg_relation_size(indexrelid) desc;
-
--- Analyze a specific query plan
-explain (analyze, buffers, format text)
-select * from todos
-where user_id = '...' and is_complete = false
-order by inserted_at desc
-limit 20;
-
--- Create composite index for common filter + sort pattern
-create index concurrently idx_todos_user_incomplete
-  on public.todos (user_id, inserted_at desc)
-  where is_complete = false;
+    || ' ON public.' || tc.table_name || '(' || kcu.column_name || ');' AS fix
+FROM information_schema.table_constraints tc
+JOIN information_schema.key_column_usage kcu
+  ON tc.constraint_name = kcu.constraint_name
+LEFT JOIN pg_indexes i
+  ON i.tablename = tc.table_name
+  AND i.indexdef LIKE '%' || kcu.column_name || '%'
+WHERE tc.constraint_type = 'FOREIGN KEY'
+  AND tc.table_schema = 'public'
+  AND i.indexname IS NULL;
 ```
 
-### Step 3: Optimize RLS Policies
+**Find unused indexes (candidates for removal to reduce write overhead):**
 
 ```sql
--- BAD: subquery in RLS runs for every row
-create policy "slow_policy" on public.tasks for select
-  using (
-    project_id in (
-      select p.id from projects p
-      join members m on m.organization_id = p.organization_id
-      where m.user_id = auth.uid()
-    )
-  );
-
--- GOOD: use a security definer function (cached per statement)
-create or replace function public.user_project_ids()
-returns setof uuid as $$
-  select p.id from public.projects p
-  join public.members m on m.organization_id = p.organization_id
-  where m.user_id = auth.uid()
-$$ language sql security definer stable;
-
-create policy "fast_policy" on public.tasks for select
-  using (project_id in (select public.user_project_ids()));
-
--- BETTER: use an EXISTS check (often faster than IN)
-create policy "fastest_policy" on public.tasks for select
-  using (
-    exists (
-      select 1 from public.members m
-      join public.projects p on p.organization_id = m.organization_id
-      where p.id = tasks.project_id
-      and m.user_id = auth.uid()
-    )
-  );
+SELECT schemaname, relname, indexrelname, idx_scan
+FROM pg_stat_user_indexes
+WHERE idx_scan = 0 AND schemaname = 'public'
+ORDER BY pg_relation_size(indexrelid) DESC;
 ```
 
-### Step 4: Connection Pooling
+Always use `CREATE INDEX CONCURRENTLY` on production tables to avoid locking writes during index creation.
+
+### Step 3: Client SDK and Infrastructure Optimization
+
+Optimize the Supabase JS client calls, then leverage infrastructure features for scale.
+
+**Select only needed columns — avoid `select('*')`:**
 
 ```typescript
-// Use the pooled connection string for serverless deployments
-// Transaction mode (Supavisor) — recommended for serverless
-const DATABASE_URL = 'postgres://postgres.[ref]:[pwd]@aws-0-[region].pooler.supabase.com:6543/postgres'
+import { createClient } from '@supabase/supabase-js'
 
-// For the JS SDK, connection pooling is automatic via the REST API
-// No changes needed — PostgREST manages its own pool
+const supabase = createClient(
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_ANON_KEY!
+)
 
-// For direct Postgres connections (Prisma, Drizzle, etc.):
-// Use the pooled connection string and set pool size low
+// BAD: fetches every column, large payloads
+const { data } = await supabase.from('users').select('*')
+
+// GOOD: only the columns you need
+const { data } = await supabase.from('users').select('id, name, avatar_url')
+```
+
+**Paginate with `.range()` instead of loading all rows:**
+
+```typescript
+// Page 1: rows 0-49
+const { data: page1 } = await supabase
+  .from('products')
+  .select('id, name, price')
+  .order('created_at', { ascending: false })
+  .range(0, 49)
+
+// Page 2: rows 50-99
+const { data: page2 } = await supabase
+  .from('products')
+  .select('id, name, price')
+  .order('created_at', { ascending: false })
+  .range(50, 99)
+```
+
+**Use RPC functions to push complex logic to Postgres:**
+
+```sql
+-- Create a server-side function for an expensive aggregation
+CREATE OR REPLACE FUNCTION get_dashboard_stats(org_id uuid)
+RETURNS json AS $$
+  SELECT json_build_object(
+    'total_users', (SELECT count(*) FROM users WHERE organization_id = org_id),
+    'active_projects', (SELECT count(*) FROM projects WHERE organization_id = org_id AND status = 'active'),
+    'tasks_completed_30d', (SELECT count(*) FROM tasks t
+      JOIN projects p ON p.id = t.project_id
+      WHERE p.organization_id = org_id
+      AND t.completed_at > now() - interval '30 days')
+  );
+$$ LANGUAGE sql STABLE;
+```
+
+```typescript
+// One network call instead of three separate queries
+const { data } = await supabase.rpc('get_dashboard_stats', {
+  org_id: 'your-org-uuid'
+})
+```
+
+**Create materialized views for expensive aggregations:**
+
+```sql
+-- Precompute a leaderboard instead of recalculating on every request
+CREATE MATERIALIZED VIEW leaderboard AS
+SELECT
+  u.id,
+  u.username,
+  count(t.id) AS tasks_completed,
+  rank() OVER (ORDER BY count(t.id) DESC) AS rank
+FROM users u
+LEFT JOIN tasks t ON t.assignee_id = u.id AND t.status = 'done'
+GROUP BY u.id, u.username;
+
+-- Create an index on the materialized view
+CREATE UNIQUE INDEX idx_leaderboard_user ON leaderboard(id);
+
+-- Refresh on a schedule (e.g., via pg_cron or a cron Edge Function)
+REFRESH MATERIALIZED VIEW CONCURRENTLY leaderboard;
+```
+
+**Configure connection pooling with Supavisor:**
+
+```typescript
+// For serverless environments (Vercel, Netlify, Cloudflare Workers):
+// Use the pooled connection string with transaction mode
+// Dashboard → Settings → Database → Connection string → "Transaction mode"
+
+// The JS SDK uses PostgREST (HTTP) which has its own pooling — no config needed.
+// Direct Postgres clients (Prisma, Drizzle, pg) need the pooled string:
+import { Pool } from 'pg'
+
 const pool = new Pool({
-  connectionString: DATABASE_URL,
-  max: 5,  // keep low in serverless; Supavisor handles the rest
+  connectionString: 'postgres://postgres.[ref]:[pwd]@aws-0-[region].pooler.supabase.com:6543/postgres',
+  max: 5,  // Keep low in serverless — Supavisor manages the upstream pool
   idleTimeoutMillis: 10000,
 })
 ```
 
-### Step 5: Client-Side Query Optimization
+**Use Edge Functions for compute-heavy operations close to data:**
 
 ```typescript
-// BAD: fetching all columns
-const { data } = await supabase.from('users').select('*')
+// supabase/functions/generate-report/index.ts
+// Edge Functions run in the same region as your database — low latency
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-// GOOD: only fetch needed columns
-const { data } = await supabase.from('users').select('id, name, avatar_url')
+Deno.serve(async (req) => {
+  const supabase = createClient(
+    Deno.env.get('SUPABASE_URL')!,
+    Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+  )
 
-// BAD: N+1 queries
-for (const project of projects) {
-  const { data: tasks } = await supabase
-    .from('tasks')
-    .select('*')
-    .eq('project_id', project.id)
-}
+  // Heavy aggregation runs next to the database, not in the user's browser
+  const { data } = await supabase.rpc('get_dashboard_stats', {
+    org_id: (await req.json()).org_id
+  })
 
-// GOOD: join in a single query
-const { data } = await supabase
-  .from('projects')
-  .select(`
-    id, name,
-    tasks (id, title, status)
-  `)
-  .eq('organization_id', orgId)
-
-// GOOD: use .in() for batch lookups
-const { data } = await supabase
-  .from('tasks')
-  .select('id, title, project_id')
-  .in('project_id', projectIds)
+  return new Response(JSON.stringify(data), {
+    headers: { 'Content-Type': 'application/json' }
+  })
+})
 ```
 
-### Step 6: Caching Strategy
-
-```typescript
-// Simple in-memory cache with TTL
-const cache = new Map<string, { data: any; expires: number }>()
-
-async function cachedQuery<T>(
-  key: string,
-  queryFn: () => Promise<T>,
-  ttlMs = 60_000
-): Promise<T> {
-  const cached = cache.get(key)
-  if (cached && cached.expires > Date.now()) return cached.data as T
-
-  const data = await queryFn()
-  cache.set(key, { data, expires: Date.now() + ttlMs })
-  return data
-}
-
-// Usage
-const profile = await cachedQuery(
-  `profile:${userId}`,
-  async () => {
-    const { data } = await supabase
-      .from('profiles')
-      .select('id, username, avatar_url')
-      .eq('id', userId)
-      .single()
-    return data
-  },
-  30_000  // 30 second TTL
-)
-```
+**Enable read replicas on Pro+ plans** for read-heavy workloads — route analytics and reporting queries to the replica to offload the primary.
 
 ## Output
-- Slow queries identified via `pg_stat_statements`
-- Missing indexes created (especially on foreign keys)
-- RLS policies optimized with security definer functions
-- Connection pooling configured for deployment environment
-- Client queries optimized (select specific columns, use joins)
-- Caching layer for frequently accessed data
+
+After completing these steps, you will have:
+- Diagnostic baseline from `pg_stat_statements`, `index-usage`, and `cache-hit`
+- Targeted indexes on slow query columns, foreign keys, and common filter patterns
+- Query plans verified with `EXPLAIN ANALYZE` showing Index Scan instead of Seq Scan
+- Client queries optimized with column selection, pagination, and joined queries
+- RPC functions and materialized views for expensive server-side aggregations
+- Connection pooling configured via Supavisor for serverless deployments
+- Edge Functions deployed for compute-heavy operations near the database
 
 ## Error Handling
 
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| `PGRST000: connection pool exhausted` | Too many concurrent connections | Use pooled connection string; reduce `max` pool size |
-| Slow RLS policies | Subqueries on every row | Use `security definer` functions; add indexes on join columns |
-| High P99 latency | Missing index | Run `explain analyze` and add appropriate index |
-| Stale cache data | TTL too long | Reduce TTL or use Realtime to invalidate |
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| `Seq Scan` in EXPLAIN output on large table | Missing index on filtered/sorted column | `CREATE INDEX` on the column(s) in the WHERE/ORDER BY clause |
+| `PGRST000: could not connect to server` | Connection pool exhausted | Switch to Supavisor pooled connection string; reduce `max` pool size in serverless |
+| Slow RLS policies (visible in `pg_stat_statements`) | Subquery in policy evaluates per row | Refactor to `security definer` function or use `EXISTS` instead of `IN` |
+| Response payloads > 1MB | `select('*')` returning all columns/rows | Use `.select('col1, col2')` and `.range()` for pagination |
+| Stale materialized view data | View not refreshed after writes | Set up `pg_cron` or a cron Edge Function to run `REFRESH MATERIALIZED VIEW CONCURRENTLY` |
+| `cache-hit` ratio below 99% | Working set exceeds RAM (shared_buffers) | Upgrade compute add-on or optimize queries to access fewer pages |
+| High latency on aggregation endpoints | Aggregation computed live on every request | Move to materialized view or RPC function; cache at the Edge Function layer |
+
+## Examples
+
+**Before/after index optimization:**
+
+```sql
+-- Before: 450ms, Seq Scan
+EXPLAIN (ANALYZE) SELECT * FROM orders WHERE customer_id = 'abc-123';
+-- Seq Scan on orders  (cost=0.00..15234.00 rows=50 width=128) (actual time=0.015..450.123 rows=50 loops=1)
+
+CREATE INDEX idx_orders_customer ON orders(customer_id);
+
+-- After: 0.8ms, Index Scan
+EXPLAIN (ANALYZE) SELECT * FROM orders WHERE customer_id = 'abc-123';
+-- Index Scan using idx_orders_customer on orders  (cost=0.42..8.44 rows=50 width=128) (actual time=0.025..0.812 rows=50 loops=1)
+```
+
+**Client query optimization — eliminating N+1:**
+
+```typescript
+// BAD: N+1 — one query per project (10 projects = 11 queries)
+const { data: projects } = await supabase.from('projects').select('id, name')
+for (const project of projects!) {
+  const { data: tasks } = await supabase
+    .from('tasks').select('*').eq('project_id', project.id)
+}
+
+// GOOD: Single query with embedded join (1 query total)
+const { data } = await supabase
+  .from('projects')
+  .select('id, name, tasks(id, title, status)')
+  .eq('organization_id', orgId)
+```
 
 ## Resources
-- [Performance Advisor](https://supabase.com/docs/guides/database/inspect)
-- [Connection Pooling](https://supabase.com/docs/guides/database/connecting-to-postgres#connection-pooler)
-- [RLS Performance](https://supabase.com/docs/guides/troubleshooting/rls-performance-and-best-practices-Z5Jjwv)
-- [Query Optimization](https://supabase.com/docs/guides/database/postgres/indexes)
+
+- [Supabase Performance Advisor](https://supabase.com/docs/guides/database/inspect) — built-in CLI diagnostics
+- [PostgreSQL Index Types](https://supabase.com/docs/guides/database/postgres/indexes) — B-tree, GIN, GiST, and when to use each
+- [Connection Pooling with Supavisor](https://supabase.com/docs/guides/database/connecting-to-postgres#connection-pooler) — transaction vs session mode
+- [Supabase Edge Functions](https://supabase.com/docs/guides/functions) — deploy serverless functions next to your database
+- [Read Replicas](https://supabase.com/docs/guides/platform/read-replicas) — offload read-heavy queries on Pro+ plans
+- [RLS Performance Best Practices](https://supabase.com/docs/guides/troubleshooting/rls-performance-and-best-practices-Z5Jjwv) — avoid per-row subqueries
 
 ## Next Steps
-For cost optimization, see `supabase-cost-tuning`.
+
+- For RLS policy design, see `supabase-rls-policies`
+- For cost optimization, see `supabase-cost-tuning`
+- For real-time subscriptions, see `supabase-realtime`
