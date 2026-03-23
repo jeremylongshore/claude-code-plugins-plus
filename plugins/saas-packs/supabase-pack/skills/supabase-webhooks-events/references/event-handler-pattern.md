@@ -1,37 +1,106 @@
 # Event Handler Pattern
 
-## Event Handler Pattern
+## Typed Event Dispatcher
+
+A registry-based pattern for routing Supabase webhook events to typed handlers. This eliminates switch statements and makes adding new event handlers declarative.
 
 ```typescript
-type SupabaseEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
+// types.ts
+type EventType = "INSERT" | "UPDATE" | "DELETE";
 
-interface SupabaseEvent {
-  id: string;
-  type: SupabaseEventType;
-  data: Record<string, any>;
-  created: string;
+interface WebhookPayload<T = Record<string, unknown>> {
+  type: EventType;
+  table: string;
+  schema: string;
+  record: T;
+  old_record: T | null;
 }
 
-const eventHandlers: Record<SupabaseEventType, (data: any) => Promise<void>> = {
-  'resource.created': async (data) => { /* handle */ },
-  'resource.updated': async (data) => { /* handle */ },
-  'resource.deleted': async (data) => { /* handle */ }
-};
+type EventHandler<T = Record<string, unknown>> = (
+  payload: WebhookPayload<T>
+) => Promise<void>;
 
-async function handleSupabaseEvent(event: SupabaseEvent): Promise<void> {
-  const handler = eventHandlers[event.type];
+interface HandlerRegistration {
+  table: string;
+  event: EventType | "*";
+  handler: EventHandler;
+}
+```
 
-  if (!handler) {
-    console.log(`Unhandled event type: ${event.type}`);
-    return;
+## Dispatcher Implementation
+
+```typescript
+// event-dispatcher.ts
+class EventDispatcher {
+  private handlers: HandlerRegistration[] = [];
+
+  on(table: string, event: EventType | "*", handler: EventHandler): void {
+    this.handlers.push({ table, event, handler });
   }
 
-  try {
-    await handler(event.data);
-    console.log(`Processed ${event.type}: ${event.id}`);
-  } catch (error) {
-    console.error(`Failed to process ${event.type}: ${event.id}`, error);
-    throw error; // Rethrow to trigger retry
+  async dispatch(payload: WebhookPayload): Promise<void> {
+    const matched = this.handlers.filter(
+      (h) =>
+        h.table === payload.table &&
+        (h.event === "*" || h.event === payload.type)
+    );
+
+    if (matched.length === 0) {
+      console.warn(
+        `No handler for ${payload.type} on ${payload.table}`
+      );
+      return;
+    }
+
+    // Run all matched handlers concurrently
+    const results = await Promise.allSettled(
+      matched.map((h) => h.handler(payload))
+    );
+
+    for (const result of results) {
+      if (result.status === "rejected") {
+        console.error("Handler failed:", result.reason);
+      }
+    }
   }
 }
 ```
+
+## Usage
+
+```typescript
+// Register handlers
+const dispatcher = new EventDispatcher();
+
+dispatcher.on("orders", "INSERT", async (payload) => {
+  await sendOrderConfirmationEmail(payload.record.email);
+  await updateInventoryCount(payload.record.product_id, -1);
+});
+
+dispatcher.on("orders", "UPDATE", async (payload) => {
+  if (payload.old_record?.status !== payload.record.status) {
+    await notifyStatusChange(payload.record);
+  }
+});
+
+dispatcher.on("profiles", "*", async (payload) => {
+  await syncToExternalCRM(payload.record);
+});
+
+// In your Edge Function serve() handler:
+serve(async (req) => {
+  const payload: WebhookPayload = await req.json();
+  await dispatcher.dispatch(payload);
+  return new Response(JSON.stringify({ ok: true }));
+});
+```
+
+## Benefits
+
+- **Type safety**: each handler receives typed payloads
+- **Separation of concerns**: one handler per side effect
+- **Testable**: handlers are pure async functions, easy to unit test
+- **Extensible**: add new handlers without modifying dispatch logic
+
+---
+*[Tons of Skills](https://tonsofskills.com) by [Intent Solutions](https://intentsolutions.io) | [jeremylongshore.com](https://jeremylongshore.com)*
