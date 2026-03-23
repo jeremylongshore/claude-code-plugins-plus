@@ -1,62 +1,109 @@
 ---
 name: supabase-observability
 description: |
-  Set up comprehensive observability for Supabase: query monitoring with pg_stat_statements,
-  structured logging, Supabase Log Explorer, metrics collection, and alerting.
-  Use when implementing monitoring, setting up dashboards,
+  Set up monitoring and observability for Supabase projects using Dashboard
+  reports, CLI inspect commands, pg_stat_statements, log drains, and alerting.
+  Use when implementing monitoring, diagnosing slow queries, forwarding logs,
   or configuring alerts for Supabase project health.
   Trigger with phrases like "supabase monitoring", "supabase metrics",
-  "supabase observability", "monitor supabase", "supabase alerts", "supabase logs".
-allowed-tools: Read, Write, Edit, Bash(supabase:*), Grep
+  "supabase observability", "supabase logs", "supabase alerts",
+  "supabase inspect", "supabase log drain".
+allowed-tools: Read, Write, Edit, Bash(npx supabase:*), Bash(supabase:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
+compatible-with: claude-code
 tags: [saas, supabase, monitoring, observability]
-
 ---
+
 # Supabase Observability
 
 ## Overview
-Implement monitoring and observability for Supabase projects using built-in tools (Log Explorer, pg_stat_statements, Dashboard metrics) and external integrations (Prometheus, Grafana, Sentry) for a complete picture of application health.
+Monitor Supabase projects end-to-end: Dashboard reports for API/database/auth metrics, `supabase inspect db` CLI for deep Postgres diagnostics, `pg_stat_statements` for query analytics, log drains for external aggregation, Edge Functions for custom metrics, and alerting on quota thresholds.
 
 ## Prerequisites
-- Supabase project on Pro plan or higher (for Log Explorer retention)
-- `pg_stat_statements` extension enabled
+- Supabase CLI installed (`npx supabase --version`)
+- Supabase project linked (`supabase link --project-ref <ref>`)
+- Pro plan or higher for log drain support and extended log retention
+- `@supabase/supabase-js` v2+ installed for application-level monitoring
 
 ## Instructions
 
-### Step 1: Supabase Built-In Monitoring
+### Step 1: Dashboard Reports and CLI Inspect Commands
 
-Supabase Dashboard provides several monitoring tools out of the box:
+Supabase Dashboard provides built-in reports under **Dashboard > Reports**:
 
-- **Database Health**: Dashboard > Database > Performance (CPU, memory, disk I/O, connections)
-- **API Logs**: Dashboard > Logs > API (PostgREST request logs)
-- **Auth Logs**: Dashboard > Logs > Auth (login attempts, signups, errors)
-- **Storage Logs**: Dashboard > Logs > Storage (uploads, downloads)
-- **Realtime Logs**: Dashboard > Logs > Realtime (connections, messages)
-- **Edge Function Logs**: Dashboard > Logs > Edge Functions (invocations, errors)
+| Report | What It Shows |
+|--------|---------------|
+| API Requests | Total requests, response times, error rates by endpoint |
+| Database | Active connections, query counts, replication lag |
+| Auth Usage | Signups, logins, provider breakdown, failed attempts |
+| Storage | Bandwidth, object counts, bucket usage |
+| Realtime | Active connections, messages per second, channel counts |
 
-### Step 2: Query Performance Monitoring
+For deeper Postgres diagnostics, use the CLI inspect commands:
+
+```bash
+# Table sizes — find the largest tables
+npx supabase inspect db table-sizes --linked
+
+# Index usage — find unused indexes wasting space
+npx supabase inspect db index-usage --linked
+
+# Cache hit ratio — should be > 99% (below 95% means upgrade compute)
+npx supabase inspect db cache-hit --linked
+
+# Sequential scans — tables needing indexes
+npx supabase inspect db seq-scans --linked
+
+# Long-running queries — find stuck queries
+npx supabase inspect db long-running-queries --linked
+
+# Table index sizes — compare index vs table size
+npx supabase inspect db table-index-sizes --linked
+
+# Bloat — estimate wasted space from dead tuples
+npx supabase inspect db bloat --linked
+
+# Blocking queries — find lock contention
+npx supabase inspect db blocking --linked
+
+# Replication slots — check replication health
+npx supabase inspect db replication-slots --linked
+```
+
+### Step 2: Query Analytics with pg_stat_statements and Log Drains
+
+Enable `pg_stat_statements` for detailed query-level metrics:
 
 ```sql
--- Enable pg_stat_statements
+-- Enable the extension (Dashboard > Database > Extensions, or SQL)
 create extension if not exists pg_stat_statements;
 
--- Dashboard view: slow queries
+-- Top 20 slowest queries by average execution time
 select
-  substring(query, 1, 100) as query_preview,
+  substring(query, 1, 80) as query_preview,
   calls,
-  mean_exec_time::numeric(10,2) as avg_ms,
-  max_exec_time::numeric(10,2) as max_ms,
-  stddev_exec_time::numeric(10,2) as stddev_ms,
+  round(mean_exec_time::numeric, 2) as avg_ms,
+  round(max_exec_time::numeric, 2) as max_ms,
+  round(total_exec_time::numeric, 2) as total_ms,
   rows
 from pg_stat_statements
-where mean_exec_time > 100  -- queries averaging over 100ms
+where mean_exec_time > 50
 order by mean_exec_time desc
 limit 20;
 
--- Connection monitoring
+-- Most-called queries (high call count may indicate N+1 problems)
+select
+  substring(query, 1, 80) as query_preview,
+  calls,
+  round(mean_exec_time::numeric, 2) as avg_ms,
+  rows
+from pg_stat_statements
+order by calls desc
+limit 20;
+
+-- Real-time connection monitoring
 select
   state,
   count(*) as connections,
@@ -66,217 +113,243 @@ where datname = current_database()
 group by state
 order by connections desc;
 
--- Cache hit ratio (should be > 99%)
-select
-  sum(heap_blks_hit) as hits,
-  sum(heap_blks_read) as misses,
-  round(sum(heap_blks_hit)::numeric /
-    nullif(sum(heap_blks_hit) + sum(heap_blks_read), 0) * 100, 2) as hit_ratio
-from pg_statio_user_tables;
+-- Reset stats after optimization (to measure improvement)
+select pg_stat_statements_reset();
 ```
 
-### Step 3: Application-Level Observability
+**Log drains** forward Supabase logs to external aggregation tools:
 
-```typescript
-// lib/supabase-instrumented.ts
-import { createClient, SupabaseClient } from '@supabase/supabase-js'
-import type { Database } from './database.types'
+```bash
+# Add a Datadog log drain
+npx supabase log-drains add \
+  --name datadog-drain \
+  --type datadog \
+  --datadog-api-key "$DATADOG_API_KEY" \
+  --datadog-region us1 \
+  --linked
 
-// Wrap Supabase calls with timing and error tracking
-export function createInstrumentedClient(): SupabaseClient<Database> {
-  const client = createClient<Database>(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_ANON_KEY!
-  )
+# Add a custom HTTP log drain (Logflare, Axiom, etc.)
+npx supabase log-drains add \
+  --name custom-drain \
+  --type webhook \
+  --url "https://api.logflare.app/logs/supabase" \
+  --linked
 
-  // Middleware: log all queries with timing
-  const originalFrom = client.from.bind(client)
-  client.from = ((table: string) => {
-    const start = performance.now()
-    const builder = originalFrom(table)
+# List active drains
+npx supabase log-drains list --linked
 
-    // Wrap the final execution
-    const originalThen = builder.then?.bind(builder)
-    if (originalThen) {
-      builder.then = ((resolve: any, reject: any) => {
-        return originalThen((result: any) => {
-          const duration = performance.now() - start
-          const logEntry = {
-            table,
-            duration_ms: Math.round(duration * 100) / 100,
-            error: result.error?.code ?? null,
-            count: result.data?.length ?? 0,
-            timestamp: new Date().toISOString(),
-          }
-
-          if (duration > 500) {
-            console.warn('[SLOW_QUERY]', JSON.stringify(logEntry))
-          }
-
-          if (result.error) {
-            console.error('[SUPABASE_ERROR]', JSON.stringify(logEntry))
-          }
-
-          return resolve(result)
-        }, reject)
-      }) as any
-    }
-
-    return builder
-  }) as any
-
-  return client
-}
+# Remove a drain
+npx supabase log-drains remove <drain-id> --linked
 ```
 
-### Step 4: Structured Logging
+Log drain events include API requests, Auth events, Postgres logs, Storage operations, and Edge Function invocations.
+
+### Step 3: Custom Metrics, Alerting, and Health Checks
+
+**Custom metrics via Edge Functions** — emit structured events for business-level monitoring:
 
 ```typescript
-// lib/logger.ts
-type LogLevel = 'info' | 'warn' | 'error'
+// supabase/functions/collect-metrics/index.ts
+import { createClient } from '@supabase/supabase-js';
+import { serve } from 'https://deno.land/std@0.177.0/http/server.ts';
 
-interface LogEntry {
-  level: LogLevel
-  service: string
-  operation: string
-  duration_ms?: number
-  error_code?: string
-  user_id?: string
-  metadata?: Record<string, any>
-  timestamp: string
-}
+serve(async () => {
+  const supabase = createClient(
+    Deno.env.get('SUPABASE_URL')!,
+    Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+  );
 
-export function log(entry: Omit<LogEntry, 'timestamp'>) {
-  const fullEntry: LogEntry = {
-    ...entry,
+  // Collect quota-relevant metrics
+  const { count: userCount } = await supabase
+    .from('profiles')
+    .select('*', { count: 'exact', head: true });
+
+  const { count: storageObjects } = await supabase
+    .storage.from('uploads')
+    .list('', { limit: 1, offset: 0 })
+    .then(({ data }) => ({ count: data?.length ?? 0 }));
+
+  const { data: dbSize } = await supabase
+    .rpc('get_database_size');
+
+  const metrics = {
     timestamp: new Date().toISOString(),
-  }
-  // Structured JSON for log aggregation (Datadog, CloudWatch, etc.)
-  console[entry.level === 'error' ? 'error' : 'log'](JSON.stringify(fullEntry))
-}
+    user_count: userCount,
+    db_size_mb: dbSize,
+    storage_objects: storageObjects,
+  };
 
-// Usage in services
-async function createOrder(order: OrderInsert) {
-  const start = Date.now()
-  try {
-    const { data, error } = await supabase.from('orders').insert(order).select().single()
-    if (error) throw error
+  // Store metrics for trend analysis
+  await supabase.from('app_metrics').insert(metrics);
 
-    log({
-      level: 'info',
-      service: 'OrderService',
-      operation: 'createOrder',
-      duration_ms: Date.now() - start,
-      metadata: { order_id: data.id },
-    })
-    return data
-  } catch (err: any) {
-    log({
-      level: 'error',
-      service: 'OrderService',
-      operation: 'createOrder',
-      duration_ms: Date.now() - start,
-      error_code: err.code,
-      metadata: { message: err.message },
-    })
-    throw err
+  // Alert on quota thresholds
+  const DB_LIMIT_MB = 8000; // 8GB Pro plan limit
+  if (dbSize > DB_LIMIT_MB * 0.85) {
+    console.warn(`[QUOTA_ALERT] Database at ${Math.round(dbSize / DB_LIMIT_MB * 100)}% capacity`);
+    // Send alert via webhook, email, or Slack
   }
-}
+
+  return new Response(JSON.stringify(metrics), {
+    headers: { 'Content-Type': 'application/json' },
+  });
+});
 ```
 
-### Step 5: Health Check with Detailed Metrics
+Schedule it with a cron trigger in `supabase/config.toml`:
+
+```toml
+[functions.collect-metrics]
+schedule = "*/15 * * * *"  # Every 15 minutes
+```
+
+**Health check endpoint** for uptime monitoring (Uptime Robot, Pingdom, etc.):
 
 ```typescript
-// api/health.ts
-export async function healthCheck() {
-  const checks: Record<string, { status: string; latency_ms: number; detail?: string }> = {}
+// supabase/functions/health/index.ts
+import { createClient } from '@supabase/supabase-js';
+import { serve } from 'https://deno.land/std@0.177.0/http/server.ts';
 
-  // Database
-  const dbStart = Date.now()
-  const { error: dbErr } = await supabaseAdmin.rpc('version')
+serve(async () => {
+  const supabase = createClient(
+    Deno.env.get('SUPABASE_URL')!,
+    Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+  );
+
+  const checks: Record<string, { status: string; latency_ms: number; detail?: string }> = {};
+
+  // Database check
+  const dbStart = Date.now();
+  const { error: dbErr } = await supabase.rpc('version');
   checks.database = {
     status: dbErr ? 'unhealthy' : 'healthy',
     latency_ms: Date.now() - dbStart,
-    detail: dbErr?.message,
-  }
+    ...(dbErr && { detail: dbErr.message }),
+  };
 
-  // Auth
-  const authStart = Date.now()
-  const { error: authErr } = await supabaseAdmin.auth.admin.listUsers({ perPage: 1 })
+  // Auth check
+  const authStart = Date.now();
+  const { error: authErr } = await supabase.auth.admin.listUsers({ perPage: 1 });
   checks.auth = {
     status: authErr ? 'unhealthy' : 'healthy',
     latency_ms: Date.now() - authStart,
-  }
+  };
 
-  // Storage
-  const storageStart = Date.now()
-  const { error: storageErr } = await supabaseAdmin.storage.listBuckets()
+  // Storage check
+  const storageStart = Date.now();
+  const { error: storageErr } = await supabase.storage.listBuckets();
   checks.storage = {
     status: storageErr ? 'unhealthy' : 'healthy',
     latency_ms: Date.now() - storageStart,
-  }
+  };
 
-  const overall = Object.values(checks).every(c => c.status === 'healthy')
-  return {
-    status: overall ? 'healthy' : 'degraded',
-    checks,
-    timestamp: new Date().toISOString(),
-  }
-}
+  const overall = Object.values(checks).every(c => c.status === 'healthy');
+  const statusCode = overall ? 200 : 503;
+
+  return new Response(
+    JSON.stringify({ status: overall ? 'healthy' : 'degraded', checks, timestamp: new Date().toISOString() }),
+    { status: statusCode, headers: { 'Content-Type': 'application/json' } }
+  );
+});
 ```
 
-### Step 6: Alerting Rules
+**Real-time connection monitoring** — track active Realtime connections:
 
-```yaml
-# Example: alert on high error rate (Prometheus/AlertManager)
-groups:
-  - name: supabase
-    rules:
-      - alert: HighSupabaseErrorRate
-        expr: rate(supabase_errors_total[5m]) > 0.05
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Supabase error rate above 5%"
+```typescript
+import { createClient } from '@supabase/supabase-js';
 
-      - alert: SlowSupabaseQueries
-        expr: supabase_query_duration_p95 > 1000
-        for: 10m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Supabase P95 latency above 1s"
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
-      - alert: SupabaseConnectionPoolExhausted
-        expr: supabase_active_connections > 50
-        for: 2m
-        labels:
-          severity: critical
-        annotations:
-          summary: "Supabase connection pool near limit"
+// Monitor channel state changes
+const channel = supabase.channel('monitoring');
+
+channel
+  .on('system', { event: '*' }, (payload) => {
+    console.log(`[REALTIME] System event:`, payload);
+  })
+  .subscribe((status) => {
+    console.log(`[REALTIME] Connection status: ${status}`);
+    if (status === 'CHANNEL_ERROR') {
+      console.error('[REALTIME] Connection lost — will auto-reconnect');
+    }
+  });
 ```
 
 ## Output
-- `pg_stat_statements` monitoring slow and frequent queries
-- Application-level instrumentation tracking query timing
-- Structured JSON logging for log aggregation
-- Health check endpoint covering database, auth, and storage
-- Alert rules for error rates, latency, and connection pool
+- Dashboard reports configured for API, database, and auth monitoring
+- CLI inspect commands available for Postgres diagnostics (table sizes, index usage, cache hits, sequential scans, long-running queries)
+- `pg_stat_statements` enabled with slow-query and high-frequency-query views
+- Log drains forwarding to external tools (Datadog, Logflare, or webhook)
+- Custom metrics Edge Function collecting quota-relevant data on a schedule
+- Health check endpoint returning per-service status with latency
+- Alerting on quota thresholds (database size, user count)
 
 ## Error Handling
 
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| `pg_stat_statements` empty | Extension not enabled | Enable via Dashboard > Extensions |
-| Log Explorer shows no logs | Free plan retention | Upgrade to Pro for extended log retention |
-| Health check timeout | Network or DNS issue | Check SUPABASE_URL; verify connectivity |
-| Cache hit ratio < 95% | Working set exceeds RAM | Consider upgrading compute or optimizing queries |
+| `pg_stat_statements` returns no rows | Extension not enabled | Enable via Dashboard > Database > Extensions |
+| `supabase inspect db` fails | CLI not linked to project | Run `supabase link --project-ref <ref>` |
+| Log drain not receiving events | API key invalid or region mismatch | Verify credentials; check `supabase log-drains list` |
+| Cache hit ratio below 95% | Working set exceeds RAM | Upgrade compute add-on or optimize queries |
+| Health check returns 503 | One or more services degraded | Check `detail` field in response; verify service role key |
+| Edge Function cron not firing | Missing `schedule` in config.toml | Add `[functions.<name>]` with `schedule` field and redeploy |
+| Long-running queries growing | Missing indexes or lock contention | Run `inspect db seq-scans` and `inspect db blocking` |
+
+## Examples
+
+### Quick Diagnostic Script
+```bash
+#!/bin/bash
+# supabase-health-check.sh — run all inspect commands at once
+echo "=== Table Sizes ==="
+npx supabase inspect db table-sizes --linked
+echo ""
+echo "=== Cache Hit Ratio ==="
+npx supabase inspect db cache-hit --linked
+echo ""
+echo "=== Sequential Scans ==="
+npx supabase inspect db seq-scans --linked
+echo ""
+echo "=== Long Running Queries ==="
+npx supabase inspect db long-running-queries --linked
+echo ""
+echo "=== Index Usage ==="
+npx supabase inspect db index-usage --linked
+```
+
+### Metrics Table Schema
+```sql
+create table if not exists app_metrics (
+  id bigint generated always as identity primary key,
+  timestamp timestamptz not null default now(),
+  user_count integer,
+  db_size_mb numeric,
+  storage_objects integer,
+  api_requests_24h integer,
+  avg_response_ms numeric
+);
+
+-- Index for time-series queries
+create index idx_app_metrics_timestamp on app_metrics (timestamp desc);
+
+-- Retention policy: keep 90 days
+create or replace function cleanup_old_metrics()
+returns void as $$
+  delete from app_metrics where timestamp < now() - interval '90 days';
+$$ language sql;
+```
 
 ## Resources
 - [Supabase Logs & Analytics](https://supabase.com/docs/guides/platform/logs)
-- [Database Performance](https://supabase.com/docs/guides/database/inspect)
-- [Supabase Reports](https://supabase.com/docs/guides/realtime/reports)
+- [Database Inspect Commands](https://supabase.com/docs/guides/database/inspect)
+- [Log Drains](https://supabase.com/docs/guides/platform/log-drains)
+- [Edge Functions Scheduling](https://supabase.com/docs/guides/functions/schedule-functions)
+- [pg_stat_statements](https://supabase.com/docs/guides/database/extensions/pg_stat_statements)
+- [Supabase JS Client](https://supabase.com/docs/reference/javascript/introduction)
 
 ## Next Steps
-For incident response, see `supabase-incident-runbook`.
+For incident response procedures, see `supabase-incident-runbook`.
+For performance optimization, see `supabase-performance-tuning`.
