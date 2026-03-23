@@ -3,171 +3,211 @@ name: supabase-install-auth
 description: |
   Install and configure Supabase SDK, CLI, and project authentication.
   Use when setting up a new Supabase project, installing @supabase/supabase-js,
-  configuring environment variables, or initializing the Supabase CLI.
-  Trigger with phrases like "install supabase", "setup supabase",
-  "supabase auth", "configure supabase", "supabase init".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(pnpm:*), Bash(supabase:*), Grep
+  configuring environment variables, or initializing the Supabase client.
+  Trigger with "install supabase", "setup supabase", "supabase auth config",
+  "configure supabase", "supabase init", "add supabase to project".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(pnpm:*), Bash(pip:*), Bash(supabase:*), Grep, Glob
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, supabase, setup, authentication]
-
+tags: [saas, supabase, setup, authentication, sdk]
 ---
+
 # Supabase Install & Auth
 
 ## Overview
-Set up the Supabase JavaScript SDK (`@supabase/supabase-js`), the Supabase CLI, and configure project credentials. This skill handles the full installation path from package install through verified connectivity.
+
+Install the Supabase SDK, CLI, and project credentials from scratch — covering package install, environment configuration, client initialization, and connection verification for both TypeScript (`@supabase/supabase-js`) and Python (`supabase`).
+
+**Key facts:**
+- **npm package:** `@supabase/supabase-js`
+- **Python package:** `supabase` (via pip)
+- **Client factory:** `createClient()` — never `new SupabaseClient()`
+- **Dashboard:** https://supabase.com/dashboard (Settings > API for keys)
+- **Docs:** https://supabase.com/docs
 
 ## Prerequisites
-- Node.js 18+ (or Deno / Bun)
-- Package manager (npm, pnpm, or yarn)
+
+- Node.js 18+ (for JS/TS) or Python 3.8+ (for Python)
+- Package manager: npm, pnpm, or yarn (JS) / pip (Python)
 - A Supabase project created at https://supabase.com/dashboard
+- Docker Desktop (only if using local development via `supabase start`)
 
 ## Instructions
 
-### Step 1: Install the SDK
+### Step 1 — Install the SDK and CLI
+
+Install the SDK and the Supabase CLI:
+
+**JavaScript / TypeScript:**
 
 ```bash
-# Install the JavaScript SDK
+# Install the SDK
 npm install @supabase/supabase-js
 
 # For SSR frameworks (Next.js, SvelteKit, Nuxt), also install:
 npm install @supabase/ssr
+
+# Install the Supabase CLI (for types, migrations, local dev)
+npm install -D supabase
 ```
 
-### Step 2: Install the Supabase CLI
+**Python:**
 
 ```bash
-# Via npm (recommended)
+# Install the SDK
+pip install supabase
+
+# Install the CLI (alternative: brew install supabase/tap/supabase)
 npm install -g supabase
-
-# Via Homebrew (macOS/Linux)
-brew install supabase/tap/supabase
-
-# Verify installation
-supabase --version
 ```
 
-### Step 3: Configure Environment Variables
-
-Create a `.env` or `.env.local` file with your project credentials from the Supabase Dashboard (Settings > API):
+Verify the CLI is available:
 
 ```bash
-# .env.local
-SUPABASE_URL=https://<project-ref>.supabase.co
-SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIs...  # safe for client-side
-SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1...  # server-side ONLY, never expose to browser
+npx supabase --version
 ```
 
-Add to `.gitignore`:
+### Step 2 — Configure Environment Variables
+
+Retrieve project credentials from the Supabase Dashboard (Settings > API) and create the env file:
+
+```bash
+# .env.local (or .env)
+SUPABASE_URL=https://<project-ref>.supabase.co
+SUPABASE_KEY=eyJhbGciOiJIUzI1NiIs...          # anon key — safe for client-side
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1...  # admin key — server-side ONLY
+```
+
+Add env files to `.gitignore` immediately:
+
 ```
 .env
 .env.local
 .env.*.local
 ```
 
-### Step 4: Initialize the Client
+**Security rules:**
+- The **anon key** (`SUPABASE_KEY`) is safe for client-side code. It respects Row Level Security (RLS) policies.
+- The **service role key** (`SUPABASE_SERVICE_ROLE_KEY`) bypasses RLS entirely. Use only on the server. Never bundle into client code or expose in browser.
+
+### Step 3 — Initialize the Client and Verify
+
+Create a client singleton and verify connectivity:
+
+**TypeScript — client-side (anon key):**
 
 ```typescript
 // lib/supabase.ts
 import { createClient } from '@supabase/supabase-js'
-import type { Database } from './database.types'  // generated types
 
-const supabaseUrl = process.env.SUPABASE_URL!
-const supabaseAnonKey = process.env.SUPABASE_ANON_KEY!
+const supabase = createClient(
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_KEY!
+)
 
-export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey)
+export default supabase
 ```
 
-For server-side operations (API routes, Edge Functions):
+**TypeScript — server-side (service role key):**
 
 ```typescript
 // lib/supabase-admin.ts
 import { createClient } from '@supabase/supabase-js'
-import type { Database } from './database.types'
 
-export const supabaseAdmin = createClient<Database>(
+export const supabaseAdmin = createClient(
   process.env.SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  { auth: { autoRefreshToken: false, persistSession: false } }
+  {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
+  }
 )
 ```
 
-### Step 5: Generate TypeScript Types
+**Python — client initialization:**
 
-```bash
-# Login to Supabase CLI
-supabase login
+```python
+# lib/supabase_client.py
+import os
+from supabase import create_client
 
-# Link to your project
-supabase link --project-ref <your-project-ref>
+url = os.environ["SUPABASE_URL"]
+key = os.environ["SUPABASE_KEY"]
 
-# Generate types from your database schema
-supabase gen types typescript --linked > lib/database.types.ts
+supabase = create_client(url, key)
 ```
 
-### Step 6: Verify Connection
+**Verify the connection:**
 
 ```typescript
-async function verifyConnection() {
-  const { data, error } = await supabase.from('_test').select('*').limit(1)
-  if (error && error.code !== 'PGRST116') {
-    // PGRST116 = table not found, which is fine for verification
-    console.error('Connection failed:', error.message)
-    return false
-  }
-  console.log('Supabase connection verified')
-  return true
+// Quick connectivity check
+const { data, error } = await supabase.from('_health_check').select('*').limit(1)
+if (error && error.code !== 'PGRST116') {
+  // PGRST116 = relation does not exist (expected if table doesn't exist yet)
+  throw new Error(`Supabase connection failed: ${error.message}`)
 }
+console.log('Supabase connected successfully')
 ```
 
-### Step 7: Initialize Local Development
+**Optional — generate TypeScript types from the database schema:**
 
 ```bash
-# Initialize Supabase in your project directory
-supabase init
+npx supabase login
+npx supabase link --project-ref <your-project-ref>
+npx supabase gen types typescript --linked > lib/database.types.ts
+```
 
-# Start local Supabase stack (Postgres, Auth, Storage, Edge Functions)
-supabase start
+Then add the type parameter to the client:
 
-# Local URLs will be printed:
-# API URL: http://127.0.0.1:54321
-# Studio:  http://127.0.0.1:54323
-# Anon key: eyJ...
+```typescript
+import type { Database } from './database.types'
+const supabase = createClient<Database>(url, key)
 ```
 
 ## Output
-- `@supabase/supabase-js` installed in node_modules
-- Supabase CLI available globally
-- `.env.local` with project URL and keys
-- `lib/supabase.ts` client singleton (anon key)
-- `lib/supabase-admin.ts` admin client (service role key)
-- `lib/database.types.ts` generated TypeScript types
-- Verified connectivity to your Supabase project
+
+Completing all three steps produces:
+
+- `@supabase/supabase-js` or `supabase` Python package installed
+- Supabase CLI available via `npx supabase`
+- `.env.local` containing `SUPABASE_URL`, `SUPABASE_KEY`, and `SUPABASE_SERVICE_ROLE_KEY`
+- Client singleton module (`lib/supabase.ts` or `lib/supabase_client.py`)
+- Server-side admin client (`lib/supabase-admin.ts`, TypeScript only)
+- Verified connectivity to the Supabase project
 
 ## Error Handling
 
-| Error | Cause | Solution |
-|-------|-------|----------|
-| `FetchError: request failed` | Wrong SUPABASE_URL | Verify URL in Dashboard > Settings > API |
-| `Invalid API key` | Wrong or expired key | Copy fresh key from Dashboard > Settings > API |
-| `PGRST301: JWSError` | Malformed JWT in key | Ensure no trailing whitespace in env var |
-| `supabase: command not found` | CLI not installed | Run `npm install -g supabase` |
+| Error | Cause | Fix |
+|-------|-------|-----|
+| `FetchError: request failed` | Wrong `SUPABASE_URL` | Verify URL at Dashboard > Settings > API |
+| `Invalid API key` | Wrong or expired key | Copy fresh anon key from Dashboard > Settings > API |
+| `PGRST301: JWSError` | Malformed JWT in key | Remove trailing whitespace/newlines from env var |
 | `Cannot find module '@supabase/supabase-js'` | SDK not installed | Run `npm install @supabase/supabase-js` |
-| `Error: supabase start` fails | Docker not running | Start Docker Desktop, then retry |
+| `ModuleNotFoundError: No module named 'supabase'` | Python SDK not installed | Run `pip install supabase` |
+| `supabase: command not found` | CLI not installed | Run `npm install -D supabase`, then use `npx supabase` |
+| `Error: supabase start` fails | Docker not running | Start Docker Desktop, then retry `npx supabase start` |
+| `TypeError: SupabaseClient is not a constructor` | Wrong import pattern | Use `createClient()` — not `new SupabaseClient()` |
 
-## Security Notes
+## Examples
 
-- The **anon key** is safe to expose in client-side code. It respects Row Level Security policies.
-- The **service role key** bypasses RLS entirely. Use only on the server. Never bundle into client code.
-- Always add `.env*` files to `.gitignore` before your first commit.
+Full TypeScript and Python examples with auth sign-up, sign-in, session management, SSR patterns, and type-safe queries: [examples](references/examples.md)
 
 ## Resources
-- [Supabase JS Reference](https://supabase.com/docs/reference/javascript/initializing)
-- [Supabase CLI Reference](https://supabase.com/docs/reference/cli/introduction)
-- [Generating TypeScript Types](https://supabase.com/docs/guides/api/rest/generating-types)
-- [Supabase Dashboard](https://supabase.com/dashboard)
+
+- [Supabase JS Client Reference](https://supabase.com/docs/reference/javascript/initializing) — `createClient` options, auth, database, storage, realtime
+- [Supabase Python Client Reference](https://supabase.com/docs/reference/python/initializing) — Python SDK setup and usage
+- [Supabase CLI Reference](https://supabase.com/docs/reference/cli/introduction) — local dev, migrations, type generation
+- [Supabase Auth Guide](https://supabase.com/docs/guides/auth) — email/password, OAuth, magic links, RLS
+- [Generating TypeScript Types](https://supabase.com/docs/guides/api/rest/generating-types) — type-safe database queries
+- [Supabase Dashboard](https://supabase.com/dashboard) — project settings, API keys, database editor
 
 ## Next Steps
-After successful setup, proceed to `supabase-hello-world` for your first database query.
+
+After successful setup, continue with:
+- **supabase-hello-world** — run your first database query
+- **supabase-rls-policies** — secure your tables with Row Level Security
+- **supabase-email-auth** — set up email/password authentication flows
