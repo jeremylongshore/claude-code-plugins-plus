@@ -1,17 +1,19 @@
 # Implementation Guide
 
-1. Create a centralized error handler module for consistent error capture
-2. Implement scoped context for transactions and operations
-3. Add structured breadcrumbs for debugging context
-4. Configure error boundaries in frameworks (React, Vue, etc.)
-5. Use custom fingerprinting for better issue grouping
-6. Implement async error handling with proper scope propagation
-7. Add performance tracing for critical paths
-8. Configure sampling rates based on traffic volume
+## Pattern Checklist
 
-### Pattern 1: Centralized Error Handler
+1. Create a centralized error handler module wrapping `Sentry.withScope()` / `sentry_sdk.new_scope()`
+2. Implement structured breadcrumb helpers by category (auth, db, http, business)
+3. Configure `beforeSend` to drop non-actionable errors and scrub PII
+4. Configure `beforeBreadcrumb` to redact sensitive data from breadcrumb payloads
+5. Set custom fingerprints for error classes where stack-trace grouping is insufficient
+6. Implement framework error boundaries (Express middleware, React `withErrorBoundary`)
+7. Add performance spans for critical code paths using `Sentry.startSpan()`
+8. Mock Sentry in tests to verify context is attached correctly
+
+## Pattern 1: Centralized Error Handler (TypeScript)
+
 ```typescript
-// lib/sentry.ts
 import * as Sentry from '@sentry/node';
 
 export function captureError(
@@ -35,76 +37,119 @@ export function captureWarning(
 }
 ```
 
-### Pattern 2: Async Error Wrapper
-```typescript
-export function withSentry<T>(
-  fn: () => Promise<T>,
-  context?: Record<string, unknown>
-): Promise<T> {
-  return fn().catch((error) => {
-    Sentry.captureException(error, { extra: context });
-    throw error;
-  });
-}
+## Pattern 2: Scoped Context (TypeScript)
 
-// Usage
-await withSentry(
-  () => fetchUserData(userId),
-  { userId, operation: 'fetchUser' }
-);
+```typescript
+Sentry.withScope((scope) => {
+  scope.setTag('module', 'payments');
+  scope.setLevel('error');
+  scope.setContext('order', { id: orderId, total: amount });
+  scope.setUser({ id: userId });
+  scope.setFingerprint(['payment-failure', gatewayName]);
+  Sentry.captureException(error);
+});
 ```
 
-### Pattern 3: Express Error Middleware
+## Pattern 3: beforeSend Filter (TypeScript)
+
+```typescript
+Sentry.init({
+  dsn: process.env.SENTRY_DSN,
+  beforeSend(event, hint) {
+    const error = hint?.originalException;
+    if (error instanceof Error) {
+      if (error.message.includes('ResizeObserver loop')) return null;
+      if (error.message.includes('Network request failed')) return null;
+    }
+    if (event.user) {
+      delete event.user.ip_address;
+      delete event.user.email;
+    }
+    return event;
+  },
+});
+```
+
+## Pattern 4: Structured Breadcrumbs (TypeScript)
+
+```typescript
+Sentry.addBreadcrumb({
+  category: 'payment',
+  message: `Processing payment of $${amount}`,
+  level: 'info',
+  data: { userId, amount, gateway: 'stripe' },
+});
+
+try {
+  await processPayment(userId, amount);
+} catch (error) {
+  Sentry.captureException(error);
+  // Breadcrumbs above will appear in the event timeline
+}
+```
+
+## Pattern 5: Performance Spans (TypeScript)
+
+```typescript
+async function processOrder(orderId: string) {
+  return Sentry.startSpan(
+    { name: 'processOrder', op: 'task', attributes: { orderId } },
+    async (span) => {
+      const order = await Sentry.startSpan(
+        { name: 'db.getOrder', op: 'db.query' },
+        () => db.orders.findById(orderId),
+      );
+      await Sentry.startSpan(
+        { name: 'payment.charge', op: 'http.client' },
+        () => chargePayment(order),
+      );
+      span.setStatus({ code: 1, message: 'ok' });
+      return order;
+    },
+  );
+}
+```
+
+## Pattern 6: Python Decorator for Spans
+
+```python
+import sentry_sdk
+from functools import wraps
+
+def sentry_traced(op="function"):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            with sentry_sdk.start_span(op=op, name=func.__name__):
+                return func(*args, **kwargs)
+        return wrapper
+    return decorator
+
+@sentry_traced(op="db.query")
+def get_user(user_id: str):
+    return db.users.find_one({"_id": user_id})
+```
+
+## Pattern 7: Express Error Middleware (Sentry v8)
+
 ```typescript
 import * as Sentry from '@sentry/node';
 import express from 'express';
 
 const app = express();
+Sentry.setupExpressErrorHandler(app);
 
-// Request handler creates span
-app.use(Sentry.Handlers.requestHandler());
-
-// Routes
-app.get('/api/data', async (req, res) => {
-  // Your route logic
-});
-
-// Error handler must be before any other error middleware
-app.use(Sentry.Handlers.errorHandler());
-
-// Custom error handler
-app.use((err, req, res, next) => {
+app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  Sentry.withScope((scope) => {
+    scope.setContext('request', {
+      method: req.method,
+      url: req.originalUrl,
+      params: req.params,
+    });
+    Sentry.captureException(err);
+  });
   res.status(500).json({ error: 'Internal server error' });
 });
-```
-
-### Pattern 4: Scoped Context
-```typescript
-Sentry.withScope((scope) => {
-  scope.setTag('operation', 'payment');
-  scope.setUser({ id: userId });
-  scope.setExtra('amount', amount);
-
-  Sentry.captureException(error);
-});
-```
-
-### Pattern 5: Breadcrumbs
-```typescript
-// Add breadcrumb before operation
-Sentry.addBreadcrumb({
-  category: 'payment',
-  message: `Processing payment of $${amount}`,
-  level: 'info',
-  data: { userId, amount },
-});
-
-// If error occurs, breadcrumbs provide context
-try {
-  await processPayment(userId, amount);
-} catch (error) {
-  Sentry.captureException(error);
-}
 ```
 
 ---
