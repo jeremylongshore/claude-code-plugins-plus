@@ -1,245 +1,212 @@
 ---
 name: sentry-migration-deep-dive
 description: |
-  Migrate to Sentry from other error tracking tools.
-  Use when migrating from Rollbar, Bugsnag, Raygun,
-  or other error tracking solutions.
-  Trigger with phrases like "migrate to sentry", "sentry migration",
-  "switch from rollbar to sentry", "replace bugsnag with sentry".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(node:*), Grep
+  Migrate to Sentry from other error tracking tools like Rollbar, Bugsnag, or New Relic.
+  Use when replacing an existing error tracker with Sentry, running tools in parallel
+  during a transition, or mapping API calls between providers.
+  Trigger with phrases like "migrate to sentry", "switch from rollbar to sentry",
+  "replace bugsnag with sentry", "sentry migration plan".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(node:*), Grep, Glob
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, sentry, migration, rollbar, bugsnag]
-
+tags: [saas, sentry, migration, rollbar, bugsnag, new-relic, error-tracking]
 ---
+
 # Sentry Migration Deep Dive
 
+## Overview
+
+Replace an existing error tracking tool (Rollbar, Bugsnag, New Relic, Raygun, Airbrake) with Sentry using a phased migration that runs both tools in parallel before cutover. This skill covers concept mapping between providers, SDK swap patterns, alert rule migration, team training, and rollback strategy.
+
 ## Current State
-!`npm list 2>/dev/null | grep -iE "sentry|rollbar|bugsnag|raygun|airbrake|honeybadger" || echo 'No error tracking packages found'`
+
+!`npm list 2>/dev/null | command grep -iE "sentry|rollbar|bugsnag|raygun|airbrake|honeybadger|newrelic" || echo 'No error tracking packages found'`
 
 ## Prerequisites
-- Current error tracking tool access and API credentials
-- Sentry project created with DSN
-- Parallel run timeline established (2-4 weeks recommended)
-- Feature mapping document prepared
+
+- Admin access to the current error tracking tool (API keys, alert rule access)
+- Sentry project created with DSN available in environment variables
+- Source maps or debug symbols configured for stack trace resolution
+- Parallel run timeline agreed with team (2-4 weeks recommended)
+- Inventory of current alert rules, integrations, and custom filters
 
 ## Instructions
 
-### 1. Feature Mapping: Old Tool to Sentry
+### Step 1: Map Concepts Between Providers
 
-| Feature | Rollbar | Bugsnag | Sentry Equivalent |
-|---------|---------|---------|-------------------|
-| Error capture | `Rollbar.error()` | `Bugsnag.notify()` | `Sentry.captureException()` |
-| Message | `Rollbar.info()` | `Bugsnag.notify(msg)` | `Sentry.captureMessage()` |
-| User context | `Rollbar.configure({person})` | `Bugsnag.setUser()` | `Sentry.setUser()` |
-| Tags/metadata | `Rollbar.configure({custom})` | `bugsnag.addMetadata()` | `Sentry.setTag()` / `setContext()` |
-| Breadcrumbs | `Rollbar.log()` | `Bugsnag.leaveBreadcrumb()` | `Sentry.addBreadcrumb()` |
-| Release | `Rollbar.configure({code_version})` | `Bugsnag.start({appVersion})` | `Sentry.init({release})` |
-| Environment | `Rollbar.configure({environment})` | `Bugsnag.start({releaseStage})` | `Sentry.init({environment})` |
-| Filtering | `checkIgnore` callback | `onError` callback | `beforeSend` callback |
-| Performance | N/A | `@bugsnag/plugin-*` | Built-in `tracesSampleRate` |
+Build a translation table mapping the current tool's terminology and API surface to Sentry equivalents. Scan the codebase for all calls to the existing SDK.
 
-### 2. Phase 1 — Parallel Installation
+| Concept | Rollbar | Bugsnag | New Relic | Sentry |
+|---------|---------|---------|-----------|--------|
+| Capture error | `rollbar.error(err)` | `Bugsnag.notify(err)` | `newrelic.noticeError(err)` | `Sentry.captureException(err)` |
+| Log message | `rollbar.info(msg)` | `Bugsnag.notify(msg)` | `newrelic.recordCustomEvent()` | `Sentry.captureMessage(msg)` |
+| User context | `rollbar.configure({ person: {...} })` | `Bugsnag.setUser(id, email)` | `newrelic.setUserID(id)` | `Sentry.setUser({ id, email })` |
+| Tags/metadata | `rollbar.configure({ custom: {...} })` | `bugsnag.addMetadata(tab, data)` | `newrelic.addCustomAttributes()` | `Sentry.setTag()` / `Sentry.setContext()` |
+| Breadcrumbs | `rollbar.log(level, msg)` | `Bugsnag.leaveBreadcrumb(msg)` | N/A | `Sentry.addBreadcrumb({ message })` |
+| Release tracking | `code_version` config | `appVersion` config | `NEW_RELIC_LABELS` | `Sentry.init({ release: 'v1.2.3' })` |
+| Environment | `environment` config | `releaseStage` config | `NEW_RELIC_APP_NAME` suffix | `Sentry.init({ environment: 'prod' })` |
+| Error filter | `checkIgnore` callback | `onError` callback | `ignore_errors` config | `beforeSend` hook |
+| Performance | N/A | `@bugsnag/plugin-*` | Built-in APM | Built-in `tracesSampleRate` |
 
-Install Sentry alongside existing tool:
+Use Grep to find all references: `grep -rn "rollbar\|Bugsnag\|newrelic\|noticeError" --include="*.ts" --include="*.js" src/`
+
+### Step 2: Install Sentry in Parallel
+
+Install the Sentry SDK alongside the existing tool. Route errors to both destinations during the transition period to validate parity before removing the old tool.
 
 ```typescript
-// instrument.mjs — Sentry initialization
+// instrument.ts -- load BEFORE any other import
 import * as Sentry from '@sentry/node';
 
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
   environment: process.env.NODE_ENV,
-  release: process.env.APP_VERSION,
-  tracesSampleRate: 0.1,
+  release: process.env.npm_package_version,  // auto-read from package.json
+  tracesSampleRate: 0.1,                     // start low, tune after baseline
   sendDefaultPii: false,
 });
 ```
 
 ```typescript
-// error-handler.ts — dual reporting during migration
+// dual-reporter.ts -- send to BOTH tools during parallel run
 import * as Sentry from '@sentry/node';
-import Rollbar from 'rollbar'; // or bugsnag, etc.
 
+// Keep existing tool import (e.g., Rollbar, Bugsnag)
+import Rollbar from 'rollbar';
 const rollbar = new Rollbar({ accessToken: process.env.ROLLBAR_TOKEN });
 
 export function captureError(error: Error, context?: Record<string, unknown>) {
-  // Report to BOTH during parallel run
+  // Sentry (new)
   Sentry.withScope((scope) => {
-    if (context) scope.setContext('app', context);
+    if (context) scope.setContext('migration', context);
     Sentry.captureException(error);
   });
 
-  // Keep old tool running
+  // Old tool (keep running until parity verified)
   rollbar.error(error, context);
 }
-```
 
-### 3. Phase 2 — Migrate API Calls
-
-**From Rollbar:**
-```typescript
-// BEFORE: Rollbar
-import Rollbar from 'rollbar';
-const rollbar = new Rollbar({
-  accessToken: process.env.ROLLBAR_TOKEN,
-  environment: process.env.NODE_ENV,
-  codeVersion: process.env.APP_VERSION,
-});
-rollbar.error('Payment failed', { orderId: '123' });
-rollbar.configure({ person: { id: user.id, email: user.email } });
-
-// AFTER: Sentry
-import * as Sentry from '@sentry/node';
-Sentry.captureException(new Error('Payment failed'));
-Sentry.setContext('order', { orderId: '123' });
-Sentry.setUser({ id: user.id });
-```
-
-**From Bugsnag:**
-```typescript
-// BEFORE: Bugsnag
-import Bugsnag from '@bugsnag/node';
-Bugsnag.start({
-  apiKey: process.env.BUGSNAG_KEY,
-  releaseStage: process.env.NODE_ENV,
-  appVersion: process.env.APP_VERSION,
-});
-Bugsnag.notify(error, (event) => {
-  event.addMetadata('order', { id: orderId });
-  event.setUser(user.id, user.email, user.name);
-});
-Bugsnag.leaveBreadcrumb('User clicked checkout');
-
-// AFTER: Sentry
-import * as Sentry from '@sentry/node';
-Sentry.withScope((scope) => {
-  scope.setContext('order', { id: orderId });
-  scope.setUser({ id: user.id });
-  Sentry.captureException(error);
-});
-Sentry.addBreadcrumb({ category: 'ui', message: 'User clicked checkout' });
-```
-
-### 4. Phase 3 — Migrate Alert Rules
-
-Map existing alert rules to Sentry:
-
-```
-Old tool alerts:
-  "New error in production" -> Slack #errors
-  "Error rate > 100/min" -> PagerDuty
-
-Sentry alert rules:
-  Issue Alert: "A new issue is created"
-    Filter: environment:production
-    Action: Send Slack notification to #errors
-
-  Metric Alert: "Error count > 100 in 1 minute"
-    Filter: environment:production
-    Action: Send PagerDuty notification
-    Resolve: When < 10 for 5 minutes
-```
-
-### 5. Phase 4 — Validate Parity
-
-Compare error capture between tools during parallel run:
-
-```bash
-# Compare error counts between old tool and Sentry
-# Old tool API (Rollbar example):
-curl -H "X-Rollbar-Access-Token: $ROLLBAR_TOKEN" \
-  "https://api.rollbar.com/api/1/reports/top_recent_items"
-
-# Sentry API:
-curl -H "Authorization: Bearer $SENTRY_AUTH_TOKEN" \
-  "https://sentry.io/api/0/projects/$SENTRY_ORG/$SENTRY_PROJECT/stats/"
-```
-
-**Parity checklist:**
-- [ ] Error count within 10% between tools
-- [ ] Stack traces resolve correctly (source maps)
-- [ ] User context appears in Sentry events
-- [ ] Breadcrumbs appear in event detail
-- [ ] Alert rules fire correctly
-- [ ] Release tracking shows deploy markers
-- [ ] Performance data appears (if using tracing)
-
-### 6. Phase 5 — Remove Old Tool
-
-```bash
-# Remove old SDK
-npm uninstall rollbar          # or @bugsnag/node, raygun4js, etc.
-npm uninstall @bugsnag/node
-npm uninstall @bugsnag/plugin-express
-
-# Remove old configuration
-rm rollbar.js                   # or bugsnag.js
-# Remove old env vars from .env, CI secrets
-
-# Search for remaining references
-grep -r "rollbar\|bugsnag\|raygun\|airbrake" \
-  --include="*.ts" --include="*.js" --include="*.env*" \
-  --exclude-dir=node_modules src/
-```
-
-### 7. Post-Migration Verification
-
-```typescript
-// Full verification after removing old tool
-import * as Sentry from '@sentry/node';
-
-async function verifyMigration() {
-  // Error capture
-  const errorId = Sentry.captureException(new Error('Migration verification'));
-  console.log('Error captured:', errorId ? 'PASS' : 'FAIL');
-
-  // Message capture
-  Sentry.captureMessage('Migration complete', 'info');
-
-  // Performance span
-  await Sentry.startSpan({ name: 'migration.verify', op: 'test' }, async () => {
-    await new Promise(r => setTimeout(r, 100));
-  });
-
-  // Flush
-  const flushed = await Sentry.flush(5000);
-  console.log('All events sent:', flushed ? 'PASS' : 'FAIL');
+export function setUserContext(user: { id: string; email?: string }) {
+  Sentry.setUser(user);
+  rollbar.configure({ payload: { person: { id: user.id, email: user.email } } });
 }
-
-verifyMigration();
 ```
 
-## Migration Timeline
+### Step 3: Migrate Alert Rules, Validate Parity, and Cut Over
 
-```
-Week 1:   Install Sentry alongside old tool, configure SDK
-Week 2:   Migrate all captureException/notify calls to dual-report
-Week 3:   Verify parity, migrate alert rules
-Week 4:   Remove old tool, verify Sentry-only operation
-Week 5:   Cancel old tool subscription, close migration
-```
+1. **Export alert rules** from the old tool. Map each alert to a Sentry equivalent:
+   - "New error in production" becomes a Sentry Issue Alert with filter `environment:production` and action "Send Slack notification".
+   - "Error rate > 100/min" becomes a Sentry Metric Alert with threshold 100 events per minute and PagerDuty action.
+   - Rate-based alerts use Sentry Metric Alerts; occurrence-based alerts use Sentry Issue Alerts.
+
+2. **Validate parity** during the parallel run window:
+   ```bash
+   # Compare error counts -- Sentry API
+   curl -s -H "Authorization: Bearer $SENTRY_AUTH_TOKEN" \
+     "https://sentry.io/api/0/projects/$SENTRY_ORG/$SENTRY_PROJECT/stats/" | jq '.[] | .total'
+
+   # Compare with old tool API (Rollbar example)
+   curl -s -H "X-Rollbar-Access-Token: $ROLLBAR_TOKEN" \
+     "https://api.rollbar.com/api/1/reports/top_recent_items" | jq '.result | length'
+   ```
+   - Error count should be within 10% between tools.
+   - Stack traces must resolve correctly (verify source maps uploaded to Sentry).
+   - Breadcrumbs, user context, and tags must appear in Sentry event detail.
+
+3. **Remove the old SDK** after parity is confirmed:
+   ```bash
+   npm uninstall rollbar @bugsnag/node @bugsnag/plugin-express newrelic || echo "Some packages not found (expected if only one tool was installed)"
+   ```
+   Search for leftover references and remove them:
+   ```bash
+   grep -rn "rollbar\|bugsnag\|newrelic\|raygun\|airbrake" \
+     --include="*.ts" --include="*.js" --include="*.env*" \
+     --exclude-dir=node_modules . || echo "No remaining references found"
+   ```
+
+4. **Schedule team training**: walk through the Sentry dashboard (Issues, Performance, Releases views), show how to assign issues, and demonstrate the alert configuration UI.
+
+5. **Rollback strategy**: keep the old tool's npm package in `devDependencies` and its configuration file in a `migration-backup/` directory for 30 days after cutover. If Sentry surfaces fewer errors than expected, re-enable dual reporting and investigate.
 
 ## Output
-- Sentry SDK installed and configured as primary error tracker
-- Feature mapping document translating old API to Sentry API
-- Alert rules migrated and verified
-- Parallel run validated error capture parity
-- Old SDK removed and references cleaned up
+
+- Concept mapping table translating old API calls to Sentry equivalents
+- Dual-reporting wrapper sending errors to both tools during parallel run
+- Sentry SDK initialized with environment, release, and sampling configuration
+- Alert rules migrated from old tool to Sentry Issue and Metric Alerts
+- Parity validation confirming error count, stack traces, and context match
+- Old SDK removed and all references cleaned from codebase
 
 ## Error Handling
 
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Error count mismatch | Different sampling rates | Align `sampleRate` with old tool's settings during comparison |
-| Missing stack traces | Source maps not uploaded to Sentry | Set up `sentry-cli sourcemaps upload` in CI |
-| Old tool references remain | Incomplete code cleanup | Run grep for old tool names across entire codebase |
-| Alert rules not matching | Different alert logic | Re-test alert conditions with synthetic errors |
+| Error count mismatch between tools | Different sampling rates or filter rules | Set both tools to 100% sampling during parallel run; disable `beforeSend` filters temporarily |
+| Missing stack traces in Sentry | Source maps not uploaded | Run `sentry-cli sourcemaps upload --release=$(npm pkg get version)` in CI |
+| Old tool references remain after removal | Incomplete codebase search | Run grep across all file types including `.env`, CI configs, and infrastructure-as-code |
+| Sentry alerts not firing | Alert conditions misconfigured | Test with a synthetic error: `Sentry.captureException(new Error('alert-test'))` and verify delivery |
+| New Relic APM data missing after switch | Sentry replaces error tracking only, not full APM | Keep New Relic for APM if needed; Sentry Performance covers traces but not infrastructure metrics |
+| Team unfamiliar with Sentry UI | No training provided | Schedule 30-minute walkthrough covering Issues, Performance, and Releases views |
+
+## Examples
+
+**Migrate Express app from Rollbar to Sentry:**
+```typescript
+// BEFORE: rollbar error handler middleware
+import Rollbar from 'rollbar';
+const rollbar = new Rollbar({ accessToken: process.env.ROLLBAR_TOKEN });
+app.use(rollbar.errorHandler());
+
+// AFTER: Sentry error handler middleware
+import * as Sentry from '@sentry/node';
+Sentry.init({ dsn: process.env.SENTRY_DSN });
+Sentry.setupExpressErrorHandler(app);
+```
+
+**Migrate React error boundary from Bugsnag to Sentry:**
+```typescript
+// BEFORE: Bugsnag React initialization + error boundary
+import Bugsnag from '@bugsnag/js';
+import BugsnagPluginReact from '@bugsnag/plugin-react';
+Bugsnag.start({ plugins: [new BugsnagPluginReact()] });
+const ErrorBoundary = Bugsnag.getPlugin('react')!.createErrorBoundary(React);
+// Usage: wrap root component with ErrorBoundary
+
+// AFTER: Sentry React initialization + error boundary
+import * as Sentry from '@sentry/react';
+Sentry.init({ dsn: process.env.SENTRY_DSN });
+// Usage: wrap root component with Sentry.ErrorBoundary (accepts fallback prop)
+// See @sentry/react docs for ErrorBoundary component API
+```
+
+**Post-migration verification script:**
+```typescript
+import * as Sentry from '@sentry/node';
+
+async function verifyMigration() {
+  const eventId = Sentry.captureException(new Error('Migration verification test'));
+  console.log('Error captured:', eventId ? 'PASS' : 'FAIL');
+
+  Sentry.captureMessage('Migration complete', 'info');
+
+  const flushed = await Sentry.flush(5000);
+  console.log('Events delivered:', flushed ? 'PASS' : 'FAIL');
+}
+
+verifyMigration();
+```
 
 ## Resources
-- [SDK Documentation](https://docs.sentry.io/platforms/)
-- [Migration Guide](https://docs.sentry.io/product/accounts/migration/)
-- [Sentry vs Rollbar](https://sentry.io/vs/rollbar/)
-- [Sentry vs Bugsnag](https://sentry.io/vs/bugsnag/)
+
+- [Sentry SDK Documentation](https://docs.sentry.io/platforms/)
+- [Sentry Migration Guide](https://docs.sentry.io/product/accounts/migration/)
+- [Sentry vs Rollbar comparison](https://sentry.io/vs/rollbar/)
+- [Sentry vs Bugsnag comparison](https://sentry.io/vs/bugsnag/)
+- [Source Maps Upload CLI](https://docs.sentry.io/platforms/javascript/sourcemaps/)
+- [Sentry Alert Configuration](https://docs.sentry.io/product/alerts/)
+
+## Next Steps
+
+After migration, proceed to `sentry-performance-tracing` to configure distributed tracing, or `sentry-prod-checklist` to verify production readiness.
