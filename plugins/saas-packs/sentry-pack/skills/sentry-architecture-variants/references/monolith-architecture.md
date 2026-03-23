@@ -1,49 +1,82 @@
-# Monolith Architecture
+# Monolith Architecture — Sentry Deep Dive
 
-## Monolith Architecture
+## Project Layout
 
-### Single Project Setup
 ```
 Organization: mycompany
 └── Project: monolith-app
     └── Single DSN for entire application
 ```
 
-### Configuration
+One project, one DSN. Use tags to separate modules and route alerts to the right team.
+
+## Configuration
+
 ```typescript
+// instrument.mjs — load via: node --import ./instrument.mjs app.js
 import * as Sentry from '@sentry/node';
 
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
   environment: process.env.NODE_ENV,
-  release: process.env.GIT_SHA,
+  release: process.env.APP_VERSION,
+  tracesSampleRate: 0.1,
 
-  // Tag by module for filtering
   initialScope: {
-    tags: {
-      app_type: 'monolith',
-    },
+    tags: { app: 'monolith' },
   },
 });
+```
 
-// Tag errors by module
-function tagByModule(moduleName: string) {
-  return (error: Error) => {
-    Sentry.withScope((scope) => {
-      scope.setTag('module', moduleName);
-      Sentry.captureException(error);
-    });
-  };
+## Module Tagging Pattern
+
+```typescript
+// Tag errors by module for per-team filtering
+function captureModuleError(module: string, error: Error) {
+  Sentry.withScope((scope) => {
+    scope.setTag('module', module);
+    scope.setTag('team', getTeamForModule(module));
+    Sentry.captureException(error);
+  });
+}
+
+// Module-based breadcrumbs
+function addModuleBreadcrumb(module: string, message: string, data?: object) {
+  Sentry.addBreadcrumb({
+    category: module,
+    message,
+    data,
+    level: 'info',
+  });
 }
 
 // Usage
-const captureAuthError = tagByModule('auth');
-const capturePaymentError = tagByModule('payments');
+addModuleBreadcrumb('auth', 'Login attempt', { method: 'oauth' });
+captureModuleError('auth', new Error('Token expired'));
+captureModuleError('billing', new Error('Payment gateway timeout'));
 ```
 
-### Module-Based Filtering
-```typescript
-// Filter issues by module in dashboard
-// Query: tags.module:auth
-// Query: tags.module:payments
+## Dashboard Ownership Rules
+
 ```
+# In Sentry project settings → Issue Owners:
+tags.module:auth         → #platform-team
+tags.module:billing      → #payments-team
+tags.module:inventory    → #supply-chain-team
+tags.module:notifications → #engagement-team
+
+# Filter issues by module:
+# Issues → Search: tags.module:auth
+# Performance → Search: tags.module:billing
+```
+
+## When to Graduate from Monolith Pattern
+
+Move to project-per-service when:
+- Module count exceeds 50 (tag cardinality limit)
+- Teams need separate DSNs for access control
+- Deploy cadence differs per module (independent releases)
+- Performance budget isolation needed per team
+
+---
+*[Tons of Skills](https://tonsofskills.com) by [Intent Solutions](https://intentsolutions.io) | [jeremylongshore.com](https://jeremylongshore.com)*
