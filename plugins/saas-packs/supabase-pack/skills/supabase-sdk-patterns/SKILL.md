@@ -1,219 +1,388 @@
 ---
 name: supabase-sdk-patterns
 description: |
-  Apply production-ready Supabase SDK patterns for TypeScript projects.
-  Use when implementing type-safe Supabase queries, building a service layer,
-  or establishing team coding standards for @supabase/supabase-js usage.
-  Trigger with phrases like "supabase SDK patterns", "supabase best practices",
-  "supabase typescript", "idiomatic supabase", "supabase service layer".
+  Apply production-ready Supabase SDK patterns for TypeScript and Python projects.
+  Use when implementing queries, auth, realtime, storage, or RPC calls
+  with @supabase/supabase-js or supabase-py.
+  Trigger with phrases like "supabase SDK patterns", "supabase query",
+  "supabase typescript", "supabase python", "supabase client setup",
+  "supabase realtime", "supabase auth", "supabase storage".
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, supabase, typescript, patterns]
-
+compatible-with: claude-code, cursor
+tags: [saas, supabase, typescript, python, sdk, patterns]
 ---
+
 # Supabase SDK Patterns
 
 ## Overview
-Production-ready patterns for `@supabase/supabase-js` v2: typed client singletons, service layer abstraction, error handling, retry logic, and response validation with Zod.
+
+Production patterns for `@supabase/supabase-js` v2 and `supabase-py`. Every Supabase query returns `{ data, error }` — never assume success. This skill covers client initialization, CRUD with filters, auth, realtime subscriptions, storage, RPC, and the Python equivalent for each pattern.
 
 ## Prerequisites
-- `@supabase/supabase-js` v2 installed
-- TypeScript project with generated database types
-- Familiarity with async/await
+
+- Supabase project with URL and anon key (or service role key for server-side)
+- `@supabase/supabase-js` v2 installed (TypeScript) or `supabase` pip package (Python)
+- TypeScript projects: generated database types via `supabase gen types typescript`
 
 ## Instructions
 
-### Pattern 1: Typed Client Singleton
+### Step 1: Initialize a Typed Singleton Client
+
+Create one client instance and reuse it. Never call `createClient` per-request.
 
 ```typescript
 // lib/supabase.ts
-import { createClient, SupabaseClient } from '@supabase/supabase-js'
+import { createClient } from '@supabase/supabase-js'
 import type { Database } from './database.types'
 
-let client: SupabaseClient<Database> | null = null
+let supabase: ReturnType<typeof createClient<Database>>
 
-export function getSupabase(): SupabaseClient<Database> {
-  if (!client) {
-    client = createClient<Database>(
+export function getSupabase() {
+  if (!supabase) {
+    supabase = createClient<Database>(
       process.env.SUPABASE_URL!,
       process.env.SUPABASE_ANON_KEY!,
       {
-        auth: {
-          autoRefreshToken: true,
-          persistSession: true,
-        },
-        db: {
-          schema: 'public',
-        },
-        global: {
-          headers: { 'x-app-name': 'my-app' },
-        },
+        auth: { autoRefreshToken: true, persistSession: true },
+        db: { schema: 'public' },
+        global: { headers: { 'x-app-name': 'my-app' } },
       }
     )
   }
-  return client
+  return supabase
 }
 ```
 
-### Pattern 2: Service Layer Abstraction
+**Python equivalent:**
 
-```typescript
-// services/todo-service.ts
-import { getSupabase } from '../lib/supabase'
-import type { Database } from '../lib/database.types'
+```python
+from supabase import create_client, Client
 
-type Todo = Database['public']['Tables']['todos']['Row']
-type TodoInsert = Database['public']['Tables']['todos']['Insert']
-type TodoUpdate = Database['public']['Tables']['todos']['Update']
+_client: Client | None = None
 
-export const TodoService = {
-  async list(userId: string, limit = 50): Promise<Todo[]> {
-    const { data, error } = await getSupabase()
-      .from('todos')
-      .select('id, title, is_complete, inserted_at')
-      .eq('user_id', userId)
-      .order('inserted_at', { ascending: false })
-      .limit(limit)
-
-    if (error) throw new SupabaseServiceError('list', error)
-    return data
-  },
-
-  async create(todo: TodoInsert): Promise<Todo> {
-    const { data, error } = await getSupabase()
-      .from('todos')
-      .insert(todo)
-      .select()
-      .single()
-
-    if (error) throw new SupabaseServiceError('create', error)
-    return data
-  },
-
-  async update(id: number, changes: TodoUpdate): Promise<Todo> {
-    const { data, error } = await getSupabase()
-      .from('todos')
-      .update(changes)
-      .eq('id', id)
-      .select()
-      .single()
-
-    if (error) throw new SupabaseServiceError('update', error)
-    return data
-  },
-
-  async delete(id: number): Promise<void> {
-    const { error } = await getSupabase()
-      .from('todos')
-      .delete()
-      .eq('id', id)
-
-    if (error) throw new SupabaseServiceError('delete', error)
-  },
-}
+def get_supabase() -> Client:
+    global _client
+    if _client is None:
+        _client = create_client(
+            os.environ["SUPABASE_URL"],
+            os.environ["SUPABASE_ANON_KEY"],
+        )
+    return _client
 ```
 
-### Pattern 3: Custom Error Class
+### Step 2: Query, Filter, and Mutate Data
+
+**All queries return `{ data, error }`.** Always destructure and check error before using data.
+
+**Select with filters and chaining:**
 
 ```typescript
-// lib/errors.ts
-import { PostgrestError } from '@supabase/supabase-js'
+const { data, error } = await getSupabase()
+  .from('users')
+  .select('id, name, email')
+  .eq('active', true)       // WHERE active = true
+  .gt('age', 18)            // AND age > 18
+  .ilike('name', '%john%')  // AND name ILIKE '%john%'
+  .in('role', ['admin', 'editor'])  // AND role IN (...)
+  .order('name', { ascending: true })
+  .limit(10)
 
-export class SupabaseServiceError extends Error {
-  code: string
-  details: string
-  hint: string
-
-  constructor(operation: string, pgError: PostgrestError) {
-    super(`Supabase ${operation} failed: ${pgError.message}`)
-    this.name = 'SupabaseServiceError'
-    this.code = pgError.code
-    this.details = pgError.details
-    this.hint = pgError.hint
-  }
-
-  get isNotFound(): boolean {
-    return this.code === 'PGRST116'
-  }
-
-  get isConflict(): boolean {
-    return this.code === '23505'
-  }
-
-  get isRLSViolation(): boolean {
-    return this.code === '42501'
-  }
-}
+if (error) throw error
+// data is typed as Pick<User, 'id' | 'name' | 'email'>[]
 ```
 
-### Pattern 4: Retry with Exponential Backoff
+**Insert with select (return the inserted row):**
 
 ```typescript
-// lib/retry.ts
-export async function withRetry<T>(
-  fn: () => Promise<T>,
-  { maxRetries = 3, baseDelay = 200 } = {}
-): Promise<T> {
-  for (let attempt = 0; attempt <= maxRetries; attempt++) {
-    try {
-      return await fn()
-    } catch (error: any) {
-      const isRetryable =
-        error.code === 'PGRST000' ||  // connection error
-        error.message?.includes('timeout') ||
-        error.message?.includes('fetch failed')
+const { data: newUser, error } = await getSupabase()
+  .from('users')
+  .insert({ name: 'Alice', email: 'alice@example.com', active: true })
+  .select()       // Without .select(), data is null
+  .single()       // Unwrap from array to single object
 
-      if (!isRetryable || attempt === maxRetries) throw error
-
-      const delay = baseDelay * Math.pow(2, attempt) + Math.random() * 100
-      await new Promise((r) => setTimeout(r, delay))
-    }
-  }
-  throw new Error('Unreachable')
-}
-
-// Usage
-const todos = await withRetry(() => TodoService.list(userId))
+if (error) throw error
+// newUser is the full row with server-generated id, created_at, etc.
 ```
 
-### Pattern 5: Response Validation with Zod
+**Upsert (insert or update on conflict):**
 
 ```typescript
-import { z } from 'zod'
+const { data, error } = await getSupabase()
+  .from('users')
+  .upsert(
+    { email: 'alice@example.com', name: 'Alice Updated' },
+    { onConflict: 'email' }   // Match on unique column
+  )
+  .select()
+  .single()
+```
 
-const TodoSchema = z.object({
-  id: z.number(),
-  title: z.string().min(1),
-  is_complete: z.boolean(),
-  inserted_at: z.string().datetime(),
+**Update and delete:**
+
+```typescript
+// Update
+const { data, error } = await getSupabase()
+  .from('users')
+  .update({ active: false })
+  .eq('id', userId)
+  .select()
+  .single()
+
+// Delete
+const { error } = await getSupabase()
+  .from('users')
+  .delete()
+  .eq('id', userId)
+```
+
+**RPC — call a Postgres function:**
+
+```typescript
+const { data, error } = await getSupabase()
+  .rpc('my_function', { arg1: 'value', arg2: 42 })
+
+if (error) throw error
+// data is the function's return value
+```
+
+**Complete filter reference:**
+
+| Filter | SQL Equivalent | Example |
+|--------|---------------|---------|
+| `.eq(col, val)` | `= val` | `.eq('status', 'active')` |
+| `.neq(col, val)` | `!= val` | `.neq('role', 'guest')` |
+| `.gt(col, val)` | `> val` | `.gt('age', 18)` |
+| `.gte(col, val)` | `>= val` | `.gte('score', 90)` |
+| `.lt(col, val)` | `< val` | `.lt('price', 100)` |
+| `.lte(col, val)` | `<= val` | `.lte('quantity', 0)` |
+| `.like(col, pat)` | `LIKE pat` | `.like('name', '%son')` |
+| `.ilike(col, pat)` | `ILIKE pat` | `.ilike('email', '%@gmail%')` |
+| `.is(col, val)` | `IS val` | `.is('deleted_at', null)` |
+| `.in(col, arr)` | `IN (...)` | `.in('id', [1, 2, 3])` |
+| `.contains(col, val)` | `@> val` | `.contains('tags', ['urgent'])` |
+| `.range(from, to)` | `OFFSET/LIMIT` | `.range(0, 9)` (first 10 rows) |
+
+**Python equivalent:**
+
+```python
+# Select with filters
+result = get_supabase() \
+    .table('users') \
+    .select('id, name, email') \
+    .eq('active', True) \
+    .gt('age', 18) \
+    .order('name') \
+    .limit(10) \
+    .execute()
+
+if result.data is None:
+    raise Exception(f"Query failed")
+
+# Insert
+result = get_supabase().table('users').insert({
+    "name": "Alice", "email": "alice@example.com"
+}).execute()
+
+# Upsert
+result = get_supabase().table('users').upsert({
+    "email": "alice@example.com", "name": "Alice Updated"
+}).execute()
+
+# RPC
+result = get_supabase().rpc('my_function', {"arg1": "value"}).execute()
+```
+
+### Step 3: Auth, Realtime, and Storage
+
+**Auth — sign up, sign in, get session:**
+
+```typescript
+// Sign up
+const { data, error } = await getSupabase().auth.signUp({
+  email: 'user@example.com',
+  password: 'securepassword',
 })
 
-const TodoListSchema = z.array(TodoSchema)
+// Sign in with password
+const { data, error } = await getSupabase().auth.signInWithPassword({
+  email: 'user@example.com',
+  password: 'securepassword',
+})
+// data.session contains access_token, refresh_token
+// data.user contains user metadata
 
-export async function getValidatedTodos(userId: string) {
-  const { data, error } = await getSupabase()
-    .from('todos')
-    .select('id, title, is_complete, inserted_at')
-    .eq('user_id', userId)
+// Get current session
+const { data: { session } } = await getSupabase().auth.getSession()
+if (!session) {
+  // User is not authenticated
+}
 
-  if (error) throw new SupabaseServiceError('list', error)
+// Sign out
+await getSupabase().auth.signOut()
 
-  const parsed = TodoListSchema.safeParse(data)
-  if (!parsed.success) {
-    console.error('Schema mismatch:', parsed.error.issues)
-    throw new Error('Response validation failed')
-  }
-  return parsed.data
+// Listen for auth changes
+getSupabase().auth.onAuthStateChange((event, session) => {
+  // event: 'SIGNED_IN' | 'SIGNED_OUT' | 'TOKEN_REFRESHED' | ...
+  console.log('Auth event:', event, session?.user?.email)
+})
+```
+
+**Realtime — subscribe to database changes:**
+
+```typescript
+const channel = getSupabase()
+  .channel('room-messages')
+  .on(
+    'postgres_changes',
+    {
+      event: '*',           // 'INSERT' | 'UPDATE' | 'DELETE' | '*'
+      schema: 'public',
+      table: 'messages',
+      filter: 'room_id=eq.42',  // Optional row-level filter
+    },
+    (payload) => {
+      console.log('Change:', payload.eventType, payload.new)
+      // payload.new = the new row (INSERT/UPDATE)
+      // payload.old = the old row (UPDATE/DELETE)
+    }
+  )
+  .subscribe((status) => {
+    // status: 'SUBSCRIBED' | 'CLOSED' | 'CHANNEL_ERROR'
+    console.log('Subscription status:', status)
+  })
+
+// Clean up when done
+await getSupabase().removeChannel(channel)
+```
+
+**Storage — upload, download, get public URL:**
+
+```typescript
+// Upload a file
+const { data, error } = await getSupabase().storage
+  .from('avatars')          // bucket name
+  .upload('users/avatar.png', file, {
+    cacheControl: '3600',
+    upsert: true,           // overwrite if exists
+    contentType: 'image/png',
+  })
+
+// Download a file
+const { data, error } = await getSupabase().storage
+  .from('avatars')
+  .download('users/avatar.png')
+// data is a Blob
+
+// Get public URL (no auth required if bucket is public)
+const { data: { publicUrl } } = getSupabase().storage
+  .from('avatars')
+  .getPublicUrl('users/avatar.png')
+
+// Get signed URL (time-limited access for private buckets)
+const { data, error } = await getSupabase().storage
+  .from('documents')
+  .createSignedUrl('reports/q4.pdf', 3600)  // expires in 1 hour
+// data.signedUrl
+```
+
+## Output
+
+After applying these patterns you will have:
+
+- Type-safe singleton client with `Database` generics
+- CRUD operations using the full filter chain (eq, gt, in, ilike, etc.)
+- Insert-with-select and upsert patterns that return the affected row
+- Auth flows for sign-up, sign-in, session management, and state listeners
+- Realtime subscriptions with row-level filtering and cleanup
+- Storage upload/download with signed URLs for private buckets
+- Python equivalents for all query patterns
+
+## Error Handling
+
+Every Supabase call returns `{ data, error }`. Never skip the error check.
+
+```typescript
+const { data, error } = await getSupabase().from('users').select('*')
+
+if (error) {
+  // error is a PostgrestError with these fields:
+  //   error.message  — human-readable description
+  //   error.code     — Postgres error code (e.g., '23505')
+  //   error.details  — additional context
+  //   error.hint     — suggested fix from Postgres
+  console.error(`Query failed [${error.code}]: ${error.message}`)
+  throw error
+}
+
+// Only safe to use data after error check
+```
+
+| Error Code | Meaning | What to Do |
+|------------|---------|------------|
+| `PGRST116` | No rows found (`.single()`) | Return null or 404, don't throw |
+| `23505` | Unique constraint violation | Use `.upsert()` or show conflict error |
+| `42501` | RLS policy violation | Check auth state and RLS policies |
+| `PGRST000` | Connection error | Retry with exponential backoff |
+| `42P01` | Table does not exist | Verify table name and run migrations |
+| `23503` | Foreign key violation | Ensure referenced row exists first |
+| `42703` | Column does not exist | Check column name, regenerate types |
+
+## Examples
+
+**Service layer pattern (recommended for production):**
+
+```typescript
+// services/user-service.ts
+import type { Database } from '../lib/database.types'
+
+type User = Database['public']['Tables']['users']['Row']
+type UserInsert = Database['public']['Tables']['users']['Insert']
+
+export const UserService = {
+  async getById(id: string): Promise<User | null> {
+    const { data, error } = await getSupabase()
+      .from('users')
+      .select('*')
+      .eq('id', id)
+      .single()
+
+    if (error?.code === 'PGRST116') return null  // Not found
+    if (error) throw error
+    return data
+  },
+
+  async search(query: string, limit = 20): Promise<User[]> {
+    const { data, error } = await getSupabase()
+      .from('users')
+      .select('id, name, email, avatar_url')
+      .or(`name.ilike.%${query}%,email.ilike.%${query}%`)
+      .order('name')
+      .limit(limit)
+
+    if (error) throw error
+    return data
+  },
+
+  async createOrUpdate(user: UserInsert): Promise<User> {
+    const { data, error } = await getSupabase()
+      .from('users')
+      .upsert(user, { onConflict: 'email' })
+      .select()
+      .single()
+
+    if (error) throw error
+    return data
+  },
 }
 ```
 
-### Pattern 6: Pagination Helper
+**Pagination helper:**
 
 ```typescript
-export async function paginate<T>(
+async function paginate<T>(
   table: string,
   select: string,
   { page = 1, pageSize = 20, orderBy = 'id' } = {}
@@ -227,8 +396,7 @@ export async function paginate<T>(
     .order(orderBy)
     .range(from, to)
 
-  if (error) throw new SupabaseServiceError('paginate', error)
-
+  if (error) throw error
   return {
     data: data as T[],
     page,
@@ -237,30 +405,20 @@ export async function paginate<T>(
     totalPages: Math.ceil((count ?? 0) / pageSize),
   }
 }
+
+// Usage
+const result = await paginate<User>('users', 'id, name, email', { page: 2 })
 ```
 
-## Output
-- Type-safe client singleton with `Database` generics
-- Service layer abstracting Supabase calls behind domain methods
-- Custom error class mapping PostgrestError codes
-- Retry wrapper for transient failures
-- Zod validation for runtime response safety
-- Pagination helper for list endpoints
-
-## Error Handling
-
-| Error Code | Meaning | Pattern Response |
-|------------|---------|-----------------|
-| `PGRST116` | No rows found | Return `null` or throw NotFound |
-| `23505` | Unique constraint violation | Return conflict or use `.upsert()` |
-| `42501` | RLS policy violation | Check auth state, verify policy |
-| `PGRST000` | Connection error | Retry with backoff |
-| `42P01` | Table does not exist | Check schema and types |
-
 ## Resources
-- [Supabase JS API Reference](https://supabase.com/docs/reference/javascript/initializing)
-- [TypeScript Support](https://supabase.com/docs/reference/javascript/typescript-support)
-- [Generating Types](https://supabase.com/docs/guides/api/rest/generating-types)
+
+- [Supabase JS Client Reference](https://supabase.com/docs/reference/javascript/initializing)
+- [TypeScript Support & Type Generation](https://supabase.com/docs/reference/javascript/typescript-support)
+- [Supabase Auth Reference](https://supabase.com/docs/reference/javascript/auth-signup)
+- [Realtime Guide](https://supabase.com/docs/guides/realtime)
+- [Storage Guide](https://supabase.com/docs/guides/storage)
+- [Python Client Reference](https://supabase.com/docs/reference/python/initializing)
 
 ## Next Steps
-For database schema design, see `supabase-schema-from-requirements`.
+
+For database schema design, see `supabase-schema-from-requirements`. For auth deep-dive with RLS policies, see `supabase-install-auth`. For realtime architecture patterns, see `supabase-auth-storage-realtime-core`.
