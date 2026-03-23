@@ -1,41 +1,47 @@
 # Integration Pitfalls
 
-## Integration Pitfalls
+## Pitfall 5: Release Version Mismatch Between SDK and Source Maps
 
-### Pitfall 14: Missing Request Handler
+Sentry matches error stack frames to source maps using the `release` field. If SDK and CLI use different release strings, source maps never apply and you get minified traces.
+
 ```typescript
-// ❌ BAD: Error handler without request handler
-app.use(Sentry.Handlers.errorHandler());
-// Missing request context!
+// WRONG — version mismatch
+// SDK:  Sentry.init({ release: "1.2.3" })
+// CLI:  sentry-cli releases new "v1.2.3"   (note the "v" prefix)
 
-// ✅ GOOD: Both handlers in correct order
-app.use(Sentry.Handlers.requestHandler());
-// ... routes ...
-app.use(Sentry.Handlers.errorHandler());
+// RIGHT — single source of truth
+const SENTRY_RELEASE = `myapp@${process.env.GIT_SHA}`;
+Sentry.init({ release: SENTRY_RELEASE });
 ```
 
-### Pitfall 15: Blocking Event Sending
-```typescript
-// ❌ BAD: Awaiting Sentry in request path
-app.post('/api/data', async (req, res) => {
-  try {
-    const result = await processData(req.body);
-    res.json(result);
-  } catch (error) {
-    await Sentry.captureException(error); // Blocks response!
-    await Sentry.flush(5000); // Even more blocking!
-    res.status(500).json({ error: 'Failed' });
-  }
-});
+```bash
+# CI — same variable for SDK and CLI
+export SENTRY_RELEASE="myapp@$(git rev-parse --short HEAD)"
+npx sentry-cli releases new "$SENTRY_RELEASE"
+npx sentry-cli sourcemaps upload --release="$SENTRY_RELEASE" --url-prefix="~/static/js" ./dist/
+npx sentry-cli releases finalize "$SENTRY_RELEASE"
+```
 
-// ✅ GOOD: Non-blocking capture
-app.post('/api/data', async (req, res) => {
-  try {
-    const result = await processData(req.body);
-    res.json(result);
-  } catch (error) {
-    Sentry.captureException(error); // Fire and forget
-    res.status(500).json({ error: 'Failed' });
-  }
+## Pitfall 9: Ignoring `429 Too Many Requests`
+
+When quota is exceeded, Sentry returns 429 and the SDK silently drops events. Without monitoring, you lose data during peak traffic.
+
+```typescript
+// Prevention: enable spike protection
+// Sentry Dashboard > Settings > Spike Protection > Enable
+
+// Client-side: circuit breaker pattern
+let sentryDisabled = false;
+let disabledUntil = 0;
+
+Sentry.init({
+  beforeSend(event) {
+    if (sentryDisabled && Date.now() < disabledUntil) return null;
+    sentryDisabled = false;
+    return event;
+  },
 });
 ```
+
+---
+*[Tons of Skills](https://tonsofskills.com) by [Intent Solutions](https://intentsolutions.io) | [jeremylongshore.com](https://jeremylongshore.com)*

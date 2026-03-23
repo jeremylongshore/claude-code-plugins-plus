@@ -1,43 +1,52 @@
-# Sdk Initialization Pitfalls
+# SDK Initialization Pitfalls
 
-## SDK Initialization Pitfalls
+## Pitfall 3: Not Calling `flush()` in Serverless or CLI
 
-### Pitfall 1: Late Initialization
+Sentry queues events in memory and sends asynchronously. In serverless functions and CLI scripts, the process exits before the queue drains. Events are captured but never sent.
+
 ```typescript
-// ❌ BAD: Errors before init() are lost
-app.use(errorHandler);
-Sentry.init({ dsn: process.env.SENTRY_DSN });
-
-// ✅ GOOD: Initialize first
-Sentry.init({ dsn: process.env.SENTRY_DSN });
-app.use(errorHandler);
-```
-
-### Pitfall 2: Multiple Initializations
-```typescript
-// ❌ BAD: Multiple init() calls cause issues
-// file1.ts
-Sentry.init({ dsn: 'dsn1' });
-
-// file2.ts
-Sentry.init({ dsn: 'dsn2' }); // Overwrites first!
-
-// ✅ GOOD: Single initialization point
-// sentry.ts
-export function initSentry() {
-  if (!Sentry.getCurrentHub().getClient()) {
-    Sentry.init({ dsn: process.env.SENTRY_DSN });
+// WRONG — Lambda exits before events send
+export const handler = async (event) => {
+  try {
+    return await processEvent(event);
+  } catch (error) {
+    Sentry.captureException(error);
+    throw error;  // Events still in queue, never sent
   }
-}
+};
+
+// RIGHT — flush before returning
+export const handler = async (event) => {
+  try {
+    return await processEvent(event);
+  } catch (error) {
+    Sentry.captureException(error);
+    await Sentry.flush(2000);
+    throw error;
+  }
+};
+
+// BEST — use framework wrapper
+import * as Sentry from '@sentry/aws-serverless';
+export const handler = Sentry.wrapHandler(async (event) => {
+  return await processEvent(event);
+});
 ```
 
-### Pitfall 3: Wrong SDK for Framework
+## Pitfall 8: Importing `@sentry/node` in Browser Bundle
+
+`@sentry/node` depends on Node.js built-ins (`http`, `fs`, `path`). Importing it in browser code causes build failures, 100KB+ polyfill bloat, or runtime crashes.
+
 ```typescript
-// ❌ BAD: Generic SDK for framework
-import * as Sentry from '@sentry/node'; // In Next.js app
+// WRONG — Node SDK in React
+import * as Sentry from '@sentry/node';
 
-// ✅ GOOD: Framework-specific SDK
-import * as Sentry from '@sentry/nextjs'; // Next.js
-import * as Sentry from '@sentry/react'; // React
-import * as Sentry from '@sentry/vue'; // Vue
+// RIGHT — platform-specific SDK
+import * as Sentry from '@sentry/react';    // React
+import * as Sentry from '@sentry/vue';      // Vue
+import * as Sentry from '@sentry/nextjs';   // Next.js (handles both)
+import * as Sentry from '@sentry/node';     // Server-only code
 ```
+
+---
+*[Tons of Skills](https://tonsofskills.com) by [Intent Solutions](https://intentsolutions.io) | [jeremylongshore.com](https://jeremylongshore.com)*

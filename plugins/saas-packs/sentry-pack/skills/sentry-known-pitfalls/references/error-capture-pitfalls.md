@@ -1,47 +1,57 @@
 # Error Capture Pitfalls
 
-## Error Capture Pitfalls
+## Pitfall 4: `beforeSend` Accidentally Returning `null`
 
-### Pitfall 4: Swallowing Errors
+`beforeSend` must return `event` to send or `null` to drop. Missing return statements cause JavaScript to return `undefined`, which Sentry treats as "drop."
+
 ```typescript
-// ❌ BAD: Error captured but swallowed
-try {
-  await riskyOperation();
-} catch (error) {
-  Sentry.captureException(error);
-  // Error swallowed - app continues incorrectly
-}
-
-// ✅ GOOD: Capture and handle appropriately
-try {
-  await riskyOperation();
-} catch (error) {
-  Sentry.captureException(error);
-  throw error; // Or handle properly
-}
-```
-
-### Pitfall 5: Capturing Non-Errors
-```typescript
-// ❌ BAD: Capturing strings instead of errors
-Sentry.captureException('Something went wrong'); // No stack trace!
-
-// ✅ GOOD: Capture actual Error objects
-Sentry.captureException(new Error('Something went wrong'));
-
-// Or use captureMessage for non-errors
-Sentry.captureMessage('Something happened', 'info');
-```
-
-### Pitfall 6: Double Capture
-```typescript
-// ❌ BAD: Capturing same error multiple times
-app.use((err, req, res, next) => {
-  Sentry.captureException(err);
-  next(err);
+// WRONG — non-error events silently vanish
+Sentry.init({
+  beforeSend(event) {
+    if (event.level === 'error') {
+      return event;
+    }
+    // No return — warnings, info, fatal all dropped
+  },
 });
-app.use(Sentry.Handlers.errorHandler()); // Captures again!
 
-// ✅ GOOD: Single capture point
-app.use(Sentry.Handlers.errorHandler()); // Only this
+// RIGHT — always return event as final statement
+Sentry.init({
+  beforeSend(event, hint) {
+    const error = hint?.originalException;
+    if (error instanceof Error && error.message.match(/^NetworkError/)) {
+      return null;  // Explicit drop
+    }
+    return event;  // Always the last line
+  },
+});
 ```
+
+## Pitfall 6: Capturing Errors Without Re-Throwing
+
+Catching errors, sending to Sentry, but not re-throwing causes cascading `undefined` failures downstream.
+
+```typescript
+// WRONG — error swallowed, returns undefined
+async function getUser(id: string) {
+  try {
+    return await fetch(`/api/users/${id}`).then(r => r.json());
+  } catch (error) {
+    Sentry.captureException(error);
+    // Returns undefined — callers break silently
+  }
+}
+
+// RIGHT — capture and re-throw
+async function getUser(id: string) {
+  try {
+    return await fetch(`/api/users/${id}`).then(r => r.json());
+  } catch (error) {
+    Sentry.captureException(error);
+    throw error;  // Let caller handle it
+  }
+}
+```
+
+---
+*[Tons of Skills](https://tonsofskills.com) by [Intent Solutions](https://intentsolutions.io) | [jeremylongshore.com](https://jeremylongshore.com)*

@@ -1,50 +1,71 @@
 # Configuration Pitfalls
 
-## Configuration Pitfalls
+## Pitfall 1: Hardcoded DSN in Source Code
 
-### Pitfall 7: Hardcoded DSN
+The DSN identifies your Sentry project. Hardcoding it in source means it ships in client bundles, gets committed to version control, and cannot be rotated without a deploy.
+
 ```typescript
-// ❌ BAD: DSN in code
+// WRONG — DSN hardcoded
 Sentry.init({
-  dsn: 'https://abc123@sentry.io/123', // Exposed!
+  dsn: 'https://abc123@o123456.ingest.us.sentry.io/7890123',
 });
 
-// ✅ GOOD: Environment variable
+// RIGHT — environment variable
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
 });
+
+// RIGHT — build-time injection for browser apps (Vite)
+// vite.config.ts
+export default defineConfig({
+  define: { __SENTRY_DSN__: JSON.stringify(process.env.SENTRY_DSN) },
+});
+// app.ts
+Sentry.init({ dsn: __SENTRY_DSN__ });
 ```
 
-### Pitfall 8: 100% Sampling in Production
-```typescript
-// ❌ BAD: Full sampling = huge bills
-Sentry.init({
-  dsn: process.env.SENTRY_DSN,
-  tracesSampleRate: 1.0, // 100% of all requests!
-});
-
-// ✅ GOOD: Production-appropriate rates
-Sentry.init({
-  dsn: process.env.SENTRY_DSN,
-  tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,
-});
+CI gate:
+```bash
+if grep -rq "ingest\.sentry\.io" --include="*.ts" --include="*.js" src/; then
+  echo "ERROR: Hardcoded DSN detected" && exit 1
+fi
 ```
 
-### Pitfall 9: Ignoring beforeSend Return
+## Pitfall 2: Setting `sampleRate: 1.0` in Production
+
+100% sampling sends every trace to Sentry. At 500K requests/day, that is ~$371/month in overage charges.
+
 ```typescript
-// ❌ BAD: Not returning event
+// WRONG — 100% of everything
 Sentry.init({
-  beforeSend(event) {
-    console.log('Event:', event);
-    // Forgot to return! Event is dropped.
+  tracesSampleRate: 1.0,
+});
+
+// RIGHT — smart sampling
+Sentry.init({
+  tracesSampler: ({ name, parentSampled }) => {
+    if (typeof parentSampled === 'boolean') return parentSampled;
+    if (name?.match(/\/(health|ping|ready)/)) return 0;
+    if (name?.includes('/checkout')) return 0.25;
+    return 0.01;
   },
 });
+```
 
-// ✅ GOOD: Always return event (or null to drop)
+## Pitfall 7: Not Using the `environment` Tag
+
+Without `environment`, dev errors pollute production dashboards and alert rules fire on local noise.
+
+```typescript
+// WRONG — no environment
+Sentry.init({ dsn: process.env.SENTRY_DSN });
+
+// RIGHT — explicit environment
 Sentry.init({
-  beforeSend(event) {
-    console.log('Event:', event);
-    return event; // Don't forget!
-  },
+  dsn: process.env.SENTRY_DSN,
+  environment: process.env.NODE_ENV || 'development',
 });
 ```
+
+---
+*[Tons of Skills](https://tonsofskills.com) by [Intent Solutions](https://intentsolutions.io) | [jeremylongshore.com](https://jeremylongshore.com)*

@@ -1,34 +1,52 @@
 # Monitoring Pitfalls
 
-## Monitoring Pitfalls
+## Pitfall 10: Not Setting Up Alerts
 
-### Pitfall 16: Alert Fatigue
+Sentry collects errors but does not notify anyone by default. Without alert rules, critical production bugs go unnoticed for hours or days.
+
+**Three-tier alert structure:**
+
 ```yaml
-# ❌ BAD: Alert on every error
-alert_rules:
-  - condition: any_error
-    action: email_team  # Hundreds of emails!
+# Tier 1 — Immediate (PagerDuty)
+# Trigger: New fatal/error issue in production
+# Action: PagerDuty page
 
-# ✅ GOOD: Threshold-based alerts
-alert_rules:
-  - condition: error_rate > 5%
-    action: slack_warning
-  - condition: error_rate > 20%
-    action: pagerduty_critical
+# Tier 2 — Urgent (Slack)
+# Trigger: Error rate > 100 events in 5 minutes
+# Action: Post to #sentry-alerts
+
+# Tier 3 — Awareness (Email)
+# Trigger: Issue unresolved > 7 days
+# Action: Weekly digest email
 ```
 
-### Pitfall 17: Ignoring Release Health
+**API-based alert creation:**
+
+```bash
+curl -X POST "https://sentry.io/api/0/projects/$SENTRY_ORG/$SENTRY_PROJECT/rules/" \
+  -H "Authorization: Bearer $SENTRY_AUTH_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Production Error Spike",
+    "conditions": [{
+      "id": "sentry.rules.conditions.event_frequency.EventFrequencyCondition",
+      "value": 100, "interval": "5m"
+    }],
+    "actions": [{
+      "id": "sentry.integrations.slack.notify_action.SlackNotifyServiceAction",
+      "channel": "#sentry-alerts"
+    }],
+    "environment": "production"
+  }'
+```
+
+**Verify alerts work:**
+
 ```typescript
-// ❌ BAD: No release tracking
-Sentry.init({
-  dsn: process.env.SENTRY_DSN,
-  // No release specified
-});
-
-// ✅ GOOD: Track releases
-Sentry.init({
-  dsn: process.env.SENTRY_DSN,
-  release: `myapp@${process.env.GIT_SHA}`,
-  autoSessionTracking: true,
-});
+Sentry.captureException(new Error('[TEST] Alert verification'));
+await Sentry.flush(5000);
+// Check Slack/PagerDuty within 5 minutes, then resolve in Sentry UI
 ```
+
+---
+*[Tons of Skills](https://tonsofskills.com) by [Intent Solutions](https://intentsolutions.io) | [jeremylongshore.com](https://jeremylongshore.com)*
