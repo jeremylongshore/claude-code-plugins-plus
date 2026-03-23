@@ -1,58 +1,94 @@
 ---
 name: supabase-local-dev-loop
 description: |
-  Configure Supabase local development with the CLI, Docker, hot reload, and testing.
-  Use when setting up a local development environment, running supabase start,
-  writing database seeds, or establishing a fast iteration cycle.
-  Trigger with phrases like "supabase dev setup", "supabase local",
-  "supabase start", "supabase local development", "supabase docker".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(supabase:*), Bash(docker:*), Grep
+  Configure Supabase local development with the CLI, Docker, and migration workflow.
+  Use when initializing a Supabase project locally, starting the local stack,
+  writing migrations, seeding data, or iterating on schema changes.
+  Trigger with phrases like "supabase local dev", "supabase start",
+  "supabase init", "supabase db reset", "supabase local setup".
+allowed-tools: Read, Write, Edit, Bash(npx:*), Bash(supabase:*), Bash(docker:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, supabase, local-development, testing]
-
+compatible-with: claude-code
+tags: [saas, supabase, local-development, docker, postgres]
 ---
+
 # Supabase Local Dev Loop
 
 ## Overview
-Set up a full local Supabase stack using the CLI and Docker. This gives you Postgres, Auth, Storage, Realtime, and Edge Functions running locally with the same APIs as production, enabling offline development and fast iteration.
+
+Run the full Supabase stack locally — Postgres, Auth, Storage, Realtime, Edge Functions, and Studio — using Docker and the Supabase CLI. Local development mirrors production APIs exactly, enabling offline work, fast iteration, and repeatable migration workflows. Schema changes flow through `supabase db diff` to generate migrations, and `supabase db reset` replays them cleanly.
 
 ## Prerequisites
-- Docker Desktop running (required for `supabase start`)
-- Supabase CLI installed (`npm install -g supabase`)
-- Node.js 18+ with npm/pnpm
+
+- Docker Desktop installed and running (required for all local services)
+- Node.js 18+ (for `npx supabase` commands)
+- No global install needed — all commands use `npx supabase`
 
 ## Instructions
 
-### Step 1: Initialize and Start
+### Step 1: Initialize Project and Start Local Stack
 
 ```bash
-# Initialize Supabase in your project
-supabase init
-
-# Start the local stack (pulls Docker images on first run)
-supabase start
-
-# Output includes local credentials:
-# API URL:    http://127.0.0.1:54321
-# GraphQL:    http://127.0.0.1:54321/graphql/v1
-# Studio:     http://127.0.0.1:54323
-# Inbucket:   http://127.0.0.1:54324  (email testing)
-# anon key:   eyJ...
-# service_role key: eyJ...
+# Initialize Supabase in your project root
+npx supabase init
 ```
 
-### Step 2: Create Migrations
+This creates a `supabase/` directory:
+
+```
+supabase/
+├── config.toml          # Local stack configuration (ports, auth settings)
+├── migrations/          # SQL migration files (version-controlled)
+└── seed.sql             # Seed data (runs after migrations on db reset)
+```
+
+Start the local stack (first run pulls Docker images — takes a few minutes):
 
 ```bash
-# Create a new migration
-supabase migration new create_profiles
-
-# Edit the generated file
-# supabase/migrations/<timestamp>_create_profiles.sql
+npx supabase start
 ```
+
+The CLI prints all local endpoints and keys:
+
+```
+API URL:          http://localhost:54321
+GraphQL URL:      http://localhost:54321/graphql/v1
+S3 Storage URL:   http://localhost:54321/storage/v1/s3
+DB URL:           postgresql://postgres:postgres@localhost:54322/postgres
+Studio URL:       http://localhost:54323
+Inbucket URL:     http://localhost:54324
+anon key:         eyJhbGciOiJI...
+service_role key: eyJhbGciOiJI...
+```
+
+Create `.env.local` from these values (git-ignored):
+
+```bash
+# .env.local
+SUPABASE_URL=http://localhost:54321
+SUPABASE_ANON_KEY=<anon-key-from-supabase-start>
+SUPABASE_SERVICE_ROLE_KEY=<service-role-key-from-supabase-start>
+DATABASE_URL=postgresql://postgres:postgres@localhost:54322/postgres
+```
+
+Verify the stack is running:
+
+```bash
+npx supabase status
+```
+
+### Step 2: Create Migrations and Seed Data
+
+Create a migration file with a descriptive name:
+
+```bash
+npx supabase migration new create_profiles
+# Creates: supabase/migrations/<timestamp>_create_profiles.sql
+```
+
+Write the migration SQL:
 
 ```sql
 -- supabase/migrations/<timestamp>_create_profiles.sql
@@ -60,9 +96,11 @@ create table public.profiles (
   id uuid references auth.users(id) primary key,
   username text unique not null,
   avatar_url text,
+  created_at timestamptz default now(),
   updated_at timestamptz default now()
 );
 
+-- Always enable RLS on public tables
 alter table public.profiles enable row level security;
 
 create policy "Public profiles are viewable by everyone"
@@ -73,7 +111,7 @@ create policy "Users can update own profile"
   on public.profiles for update
   using (auth.uid() = id);
 
--- Auto-create profile on user signup via trigger
+-- Auto-create profile on signup via trigger
 create or replace function public.handle_new_user()
 returns trigger as $$
 begin
@@ -88,132 +126,180 @@ create trigger on_auth_user_created
   for each row execute procedure public.handle_new_user();
 ```
 
-```bash
-# Apply all migrations and re-seed
-supabase db reset
-```
-
-### Step 3: Seed Data
+Add seed data for local development:
 
 ```sql
--- supabase/seed.sql (runs after migrations on db reset)
+-- supabase/seed.sql (runs automatically after migrations on db reset)
 insert into auth.users (id, email, raw_user_meta_data)
 values
-  ('d0e1f2a3-b4c5-6789-0abc-def123456789', 'test@example.com',
-   '{"username": "testuser"}');
-
-insert into public.profiles (id, username, avatar_url)
-values
-  ('d0e1f2a3-b4c5-6789-0abc-def123456789', 'testuser',
-   'https://example.com/avatar.png');
+  ('a1b2c3d4-e5f6-7890-abcd-ef1234567890', 'alice@example.com',
+   '{"username": "alice"}'),
+  ('b2c3d4e5-f6a7-8901-bcde-f12345678901', 'bob@example.com',
+   '{"username": "bob"}');
 ```
 
-### Step 4: Local Environment Config
+Apply migrations and seed data in one command:
 
 ```bash
-# .env.local (for local development)
-SUPABASE_URL=http://127.0.0.1:54321
-SUPABASE_ANON_KEY=<anon-key-from-supabase-start>
-SUPABASE_SERVICE_ROLE_KEY=<service-role-key-from-supabase-start>
-DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:54322/postgres
+npx supabase db reset
+# Drops the database, replays all migrations, runs seed.sql
 ```
 
-### Step 5: Diff and Generate Migrations
+### Step 3: Iterate with Diff-Based Migrations
+
+The core iteration loop: make changes in Studio, diff them into migration files, then verify with a clean reset.
+
+Open Studio at `http://localhost:54323` and make schema changes interactively (add columns, create tables, modify RLS policies). Then capture those changes as a migration:
 
 ```bash
-# Make changes in Studio (http://127.0.0.1:54323), then:
-supabase db diff --use-migra -f add_columns_to_profiles
+# Generate a migration from the diff between migrations and current DB state
+npx supabase db diff -f add_bio_to_profiles
 
-# This generates a migration file from the diff between
-# your local database state and your migration files
-
-# Review and apply
-supabase db reset
+# Review the generated file
+cat supabase/migrations/*_add_bio_to_profiles.sql
 ```
 
-### Step 6: Test with Vitest
+The generated migration captures exactly what changed:
+
+```sql
+-- Auto-generated by supabase db diff
+alter table public.profiles add column bio text;
+```
+
+Verify the full migration chain replays cleanly:
+
+```bash
+npx supabase db reset
+# Success = all migrations + seed apply without errors
+```
+
+Push verified migrations to a remote Supabase project:
+
+```bash
+# Link to remote project first (one-time)
+npx supabase link --project-ref <your-project-ref>
+
+# Push migrations to remote
+npx supabase db push
+```
+
+Daily workflow summary:
+
+```bash
+# Start of day
+npx supabase start
+
+# After schema changes in Studio
+npx supabase db diff -f descriptive_name
+npx supabase db reset          # Verify clean replay
+
+# Before committing
+npx supabase db reset          # Final verification
+npm test                       # Run tests against local instance
+
+# End of day
+npx supabase stop
+```
+
+## Output
+
+- Local Supabase stack running all services via Docker (Postgres, Auth, Storage, Realtime, Studio)
+- Version-controlled migration files in `supabase/migrations/`
+- Seed data for repeatable local state
+- Diff-based migration workflow for safe schema iteration
+- `.env.local` with local connection credentials
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `Cannot connect to Docker daemon` | Docker not running | Start Docker Desktop, then retry `npx supabase start` |
+| `Port 54321 already in use` | Previous instance still running | Run `npx supabase stop` then `npx supabase start` |
+| `supabase db reset` fails | Syntax error in migration SQL | Check the failing migration file, fix SQL, re-run reset |
+| `Permission denied` on start | Docker socket permissions | Add user to `docker` group: `sudo usermod -aG docker $USER` |
+| `supabase db diff` empty | No schema changes detected | Verify changes were made in the local DB, not just Studio UI cache |
+| `relation "auth.users" does not exist` | Running migration outside Supabase | Auth schema only exists in the Supabase-managed Postgres instance |
+
+## Examples
+
+### Connect from Application Code
 
 ```typescript
-// tests/supabase.test.ts
+import { createClient } from '@supabase/supabase-js'
+
+const supabase = createClient(
+  process.env.SUPABASE_URL!,       // http://localhost:54321 locally
+  process.env.SUPABASE_ANON_KEY!   // Local anon key from supabase start
+)
+
+// Fetch profiles — works identically in local and production
+const { data, error } = await supabase
+  .from('profiles')
+  .select('username, avatar_url')
+  .limit(10)
+```
+
+### Test Against Local Instance with Vitest
+
+```typescript
 import { createClient } from '@supabase/supabase-js'
 import { describe, it, expect, beforeAll } from 'vitest'
 
 const supabase = createClient(
-  'http://127.0.0.1:54321',
-  'eyJ...'  // local anon key from supabase start
+  'http://localhost:54321',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'  // Local anon key
 )
 
 describe('profiles', () => {
-  it('should fetch public profiles', async () => {
+  beforeAll(async () => {
+    // Seed data is already loaded via supabase db reset
+  })
+
+  it('fetches public profiles', async () => {
     const { data, error } = await supabase
       .from('profiles')
       .select('username')
       .limit(1)
 
     expect(error).toBeNull()
-    expect(data).toBeDefined()
+    expect(data).toHaveLength(1)
+    expect(data![0].username).toBeDefined()
+  })
+
+  it('enforces RLS on update', async () => {
+    // Anon users cannot update profiles (no auth.uid())
+    const { error } = await supabase
+      .from('profiles')
+      .update({ username: 'hacker' })
+      .eq('username', 'alice')
+
+    expect(error).not.toBeNull()
   })
 })
 ```
 
-### Step 7: Edge Function Development
+### Edge Function Local Development
 
 ```bash
-# Create a new Edge Function
-supabase functions new hello-world
-
-# Serve locally with hot reload
-supabase functions serve hello-world --env-file .env.local
+# Create and serve an Edge Function with hot reload
+npx supabase functions new hello-world
+npx supabase functions serve --env-file .env.local
 
 # Test it
-curl -i --location --request POST \
-  'http://127.0.0.1:54321/functions/v1/hello-world' \
-  --header 'Authorization: Bearer <anon-key>' \
-  --header 'Content-Type: application/json' \
-  --data '{"name":"World"}'
+curl -X POST http://localhost:54321/functions/v1/hello-world \
+  -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "World"}'
 ```
-
-### Step 8: Daily Workflow
-
-```bash
-# Start of day
-supabase start            # Start local stack
-npm run dev               # Start your app
-
-# After schema changes
-supabase db diff -f my_change  # Generate migration from diff
-supabase db reset              # Reset and replay all migrations
-
-# Before committing
-supabase db reset              # Verify clean replay
-npm test                       # Run tests against local Supabase
-
-# Stop local stack
-supabase stop
-```
-
-## Output
-- Local Supabase stack running via Docker
-- Migration workflow with `supabase db diff` and `supabase db reset`
-- Seed data for consistent test state
-- Edge Function hot-reload development
-- Test suite running against local instance
-
-## Error Handling
-
-| Error | Cause | Solution |
-|-------|-------|----------|
-| `Cannot connect to Docker daemon` | Docker not running | Start Docker Desktop |
-| `Port 54321 already in use` | Previous instance running | Run `supabase stop` then `supabase start` |
-| `supabase db reset` fails | Bad migration SQL | Check migration files for syntax errors |
-| `Permission denied on supabase start` | Docker permissions | Add user to docker group or run with sudo |
-| Edge Function 500 | Missing env vars | Pass `--env-file .env.local` to `functions serve` |
 
 ## Resources
-- [Local Development Guide](https://supabase.com/docs/guides/local-development/overview)
-- [Supabase CLI Getting Started](https://supabase.com/docs/guides/local-development/cli/getting-started)
+
+- [Local Development Overview](https://supabase.com/docs/guides/local-development/overview)
+- [Supabase CLI Reference](https://supabase.com/docs/reference/cli/introduction)
 - [Database Migrations](https://supabase.com/docs/guides/deployment/database-migrations)
 - [Edge Functions Quickstart](https://supabase.com/docs/guides/functions/quickstart)
+- [Row Level Security](https://supabase.com/docs/guides/database/postgres/row-level-security)
 
 ## Next Steps
-Proceed to `supabase-sdk-patterns` for production-ready client patterns.
+
+Proceed to `supabase-sdk-patterns` for production-ready client initialization, typed queries, and real-time subscriptions.
