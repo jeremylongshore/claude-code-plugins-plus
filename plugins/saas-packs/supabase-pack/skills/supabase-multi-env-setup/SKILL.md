@@ -13,8 +13,8 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 tags: [saas, supabase, deployment, environments, multi-env, devops]
-
 ---
+
 # Supabase Multi-Environment Setup
 
 ## Overview
@@ -424,7 +424,7 @@ async function adminResetHandler(req: Request) {
 
   requireNonProduction('admin-reset');
 
-  // Safe to proceed — we are in local or staging
+  // Safe to proceed — we're in local or staging
   const { error } = await supabase.rpc('reset_test_data');
   if (error) throw error;
 
