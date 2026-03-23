@@ -1,12 +1,12 @@
 ---
 name: notion-load-scale
 description: |
-  Implement Notion load testing, throughput optimization, and scaling strategies.
-  Use when testing integration performance at scale, optimizing for Notion's
-  rate limits, or planning capacity for high-volume Notion operations.
-  Trigger with phrases like "notion load test", "notion scale",
-  "notion performance test", "notion capacity", "notion benchmark".
-allowed-tools: Read, Write, Edit, Bash(k6:*), Bash(node:*)
+  High-volume Notion operations: parallel requests within 3 req/sec,
+  worker queues, database pagination at scale, incremental sync for
+  large workspaces, and memory management for bulk operations.
+  Trigger with phrases like "notion scale", "notion bulk operations",
+  "notion high volume", "notion worker queue", "notion incremental sync".
+allowed-tools: Read, Write, Edit, Bash(node:*), Bash(npx:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,276 +17,422 @@ compatible-with: claude-code
 # Notion Load & Scale
 
 ## Overview
-Load testing and scaling strategies for Notion integrations, working within the 3 requests/second rate limit. Includes throughput benchmarks, k6 load scripts, and scaling patterns.
+
+Patterns for high-volume Notion API usage within the 3 requests/second rate limit. Covers parallel request orchestration with `p-queue`, worker queue architecture for background processing, full database pagination at scale (100K+ records), incremental sync using `last_edited_time` filters to avoid re-fetching unchanged data, and memory management for bulk operations using streaming and chunked processing.
 
 ## Prerequisites
-- `@notionhq/client` installed
-- k6 load testing tool (optional)
-- Test database in Notion (dedicated for load tests)
+
+- `@notionhq/client` v2.x installed (`npm install @notionhq/client`)
+- `p-queue` for rate-limited concurrency (`npm install p-queue`)
+- Python: `notion-client` installed (`pip install notion-client`)
+- `NOTION_TOKEN` set (each token gets its own 3 req/s limit)
+- Test database in Notion (dedicated for load testing)
 
 ## Instructions
 
-### Step 1: Understand Notion's Throughput Limits
-```
-Rate limit: 3 requests/second average (per integration token)
-Burst: Some bursts allowed above average
-Page size: Max 100 results per query
-Block append: Max 100 blocks per request
-No bulk create: Pages must be created one at a time
+### Step 1: Parallel Requests Within Rate Limits
 
-Theoretical maximums per hour:
-  - Reads (query/retrieve): ~10,800 (3/s × 3,600s)
-  - Pages queried: ~1,080,000 (10,800 × 100 per page)
-  - Pages created: ~10,800 (one at a time, 3/s)
-  - Blocks appended: ~1,080,000 (10,800 × 100 per batch)
-```
+Notion enforces 3 requests/second per integration token. Use `p-queue` to maximize throughput without hitting 429 errors.
 
-### Step 2: Throughput Benchmark
 ```typescript
 import { Client } from '@notionhq/client';
+import PQueue from 'p-queue';
 
 const notion = new Client({ auth: process.env.NOTION_TOKEN });
 
-async function benchmarkThroughput(dbId: string, durationMs = 30_000) {
-  const results = {
-    queries: 0,
-    pagesRead: 0,
-    errors: 0,
-    rateLimits: 0,
-    startTime: Date.now(),
-    latencies: [] as number[],
-  };
+// Rate-limited queue: 3 requests per second, single concurrency
+// Use intervalCap + interval instead of concurrency alone
+const apiQueue = new PQueue({
+  concurrency: 1,
+  interval: 340,      // ~3 per second with safety margin
+  intervalCap: 1,
+});
 
-  const endTime = Date.now() + durationMs;
+// Metrics tracking
+let totalRequests = 0;
+let rateLimitHits = 0;
+const startTime = Date.now();
 
-  while (Date.now() < endTime) {
-    const start = performance.now();
+function logThroughput() {
+  const elapsed = (Date.now() - startTime) / 1000;
+  console.log(`Throughput: ${(totalRequests / elapsed).toFixed(1)} req/s | Total: ${totalRequests} | 429s: ${rateLimitHits}`);
+}
+
+// Wrapper that tracks metrics and handles 429 automatically
+async function rateLimitedCall<T>(label: string, fn: () => Promise<T>): Promise<T> {
+  return apiQueue.add(async () => {
+    totalRequests++;
     try {
-      const response = await notion.databases.query({
-        database_id: dbId,
-        page_size: 100,
-      });
-      results.queries++;
-      results.pagesRead += response.results.length;
-      results.latencies.push(performance.now() - start);
+      return await fn();
     } catch (error: any) {
-      results.errors++;
       if (error.code === 'rate_limited') {
-        results.rateLimits++;
-        // Wait for rate limit to clear
+        rateLimitHits++;
         const retryAfter = parseInt(error.headers?.['retry-after'] ?? '1');
+        console.warn(`[${label}] Rate limited, waiting ${retryAfter}s`);
         await new Promise(r => setTimeout(r, retryAfter * 1000));
+        return fn(); // Single retry
+      }
+      throw error;
+    }
+  }) as Promise<T>;
+}
+
+// Example: query 5 databases in parallel (queued at 3/s)
+const dbIds = ['db1', 'db2', 'db3', 'db4', 'db5'];
+const results = await Promise.all(
+  dbIds.map(id =>
+    rateLimitedCall(`query-${id}`, () =>
+      notion.databases.query({ database_id: id, page_size: 100 })
+    )
+  )
+);
+logThroughput();
+```
+
+```python
+from notion_client import Client
+import time
+import threading
+
+notion = Client(auth=os.environ["NOTION_TOKEN"])
+
+class RateLimiter:
+    """Simple token bucket rate limiter for 3 req/s."""
+    def __init__(self, rate: float = 3.0):
+        self.rate = rate
+        self.tokens = rate
+        self.last_time = time.monotonic()
+        self.lock = threading.Lock()
+
+    def acquire(self):
+        with self.lock:
+            now = time.monotonic()
+            elapsed = now - self.last_time
+            self.tokens = min(self.rate, self.tokens + elapsed * self.rate)
+            self.last_time = now
+
+            if self.tokens < 1:
+                sleep_time = (1 - self.tokens) / self.rate
+                time.sleep(sleep_time)
+                self.tokens = 0
+            else:
+                self.tokens -= 1
+
+limiter = RateLimiter(rate=2.8)  # Slightly under 3/s for safety
+
+def rate_limited_query(database_id: str, **kwargs):
+    limiter.acquire()
+    return notion.databases.query(database_id=database_id, **kwargs)
+```
+
+### Step 2: Worker Queue Architecture for Background Processing
+
+For sustained high-volume operations, decouple API calls from user requests using a job queue.
+
+```typescript
+import { Client, isNotionClientError } from '@notionhq/client';
+import PQueue from 'p-queue';
+
+interface NotionJob {
+  id: string;
+  type: 'create' | 'update' | 'query' | 'append';
+  payload: any;
+  priority: number; // 0 = highest
+  retries: number;
+  maxRetries: number;
+  createdAt: Date;
+}
+
+class NotionWorkerQueue {
+  private notion: Client;
+  private queue: PQueue;
+  private deadLetter: NotionJob[] = [];
+  private processed = 0;
+  private failed = 0;
+
+  constructor(token: string) {
+    this.notion = new Client({ auth: token });
+    this.queue = new PQueue({
+      concurrency: 1,
+      interval: 340,
+      intervalCap: 1,
+    });
+  }
+
+  async enqueue(job: Omit<NotionJob, 'id' | 'retries' | 'createdAt'>): Promise<string> {
+    const fullJob: NotionJob = {
+      ...job,
+      id: crypto.randomUUID(),
+      retries: 0,
+      createdAt: new Date(),
+    };
+
+    this.queue.add(() => this.processJob(fullJob), { priority: job.priority });
+    return fullJob.id;
+  }
+
+  private async processJob(job: NotionJob): Promise<void> {
+    try {
+      switch (job.type) {
+        case 'create':
+          await this.notion.pages.create(job.payload);
+          break;
+        case 'update':
+          await this.notion.pages.update(job.payload);
+          break;
+        case 'query':
+          await this.notion.databases.query(job.payload);
+          break;
+        case 'append':
+          await this.notion.blocks.children.append(job.payload);
+          break;
+      }
+      this.processed++;
+    } catch (error) {
+      job.retries++;
+      if (isNotionClientError(error) && error.code === 'rate_limited') {
+        const delay = Math.pow(2, job.retries) * 1000;
+        await new Promise(r => setTimeout(r, delay));
+        if (job.retries < job.maxRetries) {
+          this.queue.add(() => this.processJob(job), { priority: job.priority });
+          return;
+        }
+      }
+      if (job.retries >= job.maxRetries) {
+        this.deadLetter.push(job);
+        this.failed++;
+      } else {
+        this.queue.add(() => this.processJob(job), { priority: job.priority });
       }
     }
   }
 
-  const durationSec = (Date.now() - results.startTime) / 1000;
-  const sorted = results.latencies.sort((a, b) => a - b);
-
-  console.log('=== Notion Throughput Benchmark ===');
-  console.log(`Duration: ${durationSec.toFixed(1)}s`);
-  console.log(`Queries: ${results.queries} (${(results.queries / durationSec).toFixed(1)}/s)`);
-  console.log(`Pages read: ${results.pagesRead}`);
-  console.log(`Errors: ${results.errors} (${results.rateLimits} rate limits)`);
-  console.log(`Latency P50: ${Math.round(sorted[Math.floor(sorted.length * 0.5)])}ms`);
-  console.log(`Latency P95: ${Math.round(sorted[Math.floor(sorted.length * 0.95)])}ms`);
-  console.log(`Latency P99: ${Math.round(sorted[Math.floor(sorted.length * 0.99)])}ms`);
-
-  return results;
+  getStats() {
+    return {
+      pending: this.queue.size,
+      processed: this.processed,
+      failed: this.failed,
+      deadLetter: this.deadLetter.length,
+    };
+  }
 }
-```
 
-### Step 3: k6 Load Test Script
-```javascript
-// notion-load-test.js
-import http from 'k6/http';
-import { check, sleep } from 'k6';
-import { Rate, Trend } from 'k6/metrics';
+// Usage: bulk create 500 pages in background
+const worker = new NotionWorkerQueue(process.env.NOTION_TOKEN!);
+const DB_ID = process.env.NOTION_DB_ID!;
 
-const errorRate = new Rate('notion_errors');
-const queryLatency = new Trend('notion_query_latency');
-
-export const options = {
-  scenarios: {
-    steady_rate: {
-      executor: 'constant-arrival-rate',
-      rate: 3,              // 3 requests per second (Notion limit)
-      timeUnit: '1s',
-      duration: '2m',
-      preAllocatedVUs: 5,
-      maxVUs: 10,
-    },
-  },
-  thresholds: {
-    notion_errors: ['rate<0.05'],          // < 5% error rate
-    notion_query_latency: ['p(95)<2000'],  // P95 < 2s
-  },
-};
-
-const DB_ID = __ENV.NOTION_TEST_DB_ID;
-const TOKEN = __ENV.NOTION_TOKEN;
-
-export default function () {
-  const res = http.post(
-    `https://api.notion.com/v1/databases/${DB_ID}/query`,
-    JSON.stringify({ page_size: 10 }),
-    {
-      headers: {
-        'Authorization': `Bearer ${TOKEN}`,
-        'Notion-Version': '2022-06-28',
-        'Content-Type': 'application/json',
+for (let i = 0; i < 500; i++) {
+  await worker.enqueue({
+    type: 'create',
+    priority: 1,
+    maxRetries: 3,
+    payload: {
+      parent: { database_id: DB_ID },
+      properties: {
+        Name: { title: [{ text: { content: `Item ${i + 1}` } }] },
       },
-      timeout: '30s',
-    }
-  );
-
-  const success = check(res, {
-    'status is 200': (r) => r.status === 200,
-    'has results': (r) => JSON.parse(r.body).results !== undefined,
+    },
   });
+}
+// 500 pages at ~3/s = ~170 seconds
+```
 
-  errorRate.add(!success);
-  queryLatency.add(res.timings.duration);
+### Step 3: Full Pagination at Scale with Incremental Sync and Memory Management
 
-  if (res.status === 429) {
-    const retryAfter = parseInt(res.headers['Retry-After'] || '1');
-    sleep(retryAfter);
+For databases with 100K+ records, use streaming pagination and incremental sync to avoid re-fetching unchanged data.
+
+```typescript
+// Stream results instead of loading all into memory
+async function* paginateDatabase(
+  databaseId: string,
+  filter?: any,
+  sorts?: any[]
+): AsyncGenerator<any[], void, unknown> {
+  let cursor: string | undefined;
+  let pageNum = 0;
+
+  do {
+    const response = await rateLimitedCall(`page-${pageNum}`, () =>
+      notion.databases.query({
+        database_id: databaseId,
+        filter,
+        sorts,
+        page_size: 100,
+        start_cursor: cursor,
+      })
+    );
+
+    yield response.results;
+    pageNum++;
+
+    cursor = response.has_more ? (response.next_cursor ?? undefined) : undefined;
+  } while (cursor);
+}
+
+// Process in chunks without loading everything into memory
+async function processLargeDatabase(databaseId: string) {
+  let totalProcessed = 0;
+
+  for await (const batch of paginateDatabase(databaseId)) {
+    for (const page of batch) {
+      // Process each record immediately
+      totalProcessed++;
+    }
+
+    if (totalProcessed % 1000 === 0) {
+      console.log(`Processed ${totalProcessed} records...`);
+      logThroughput();
+    }
   }
-}
-```
 
-```bash
-# Run k6 test
-k6 run \
-  --env NOTION_TOKEN=${NOTION_TOKEN} \
-  --env NOTION_TEST_DB_ID=${NOTION_TEST_DB_ID} \
-  notion-load-test.js
-```
-
-### Step 4: Scaling Patterns
-
-**Pattern A: Multiple Integration Tokens**
-```typescript
-// Each integration token gets its own 3 req/s limit
-// Use separate integrations for independent workloads
-
-const readers = [
-  new Client({ auth: process.env.NOTION_TOKEN_READ_1 }),
-  new Client({ auth: process.env.NOTION_TOKEN_READ_2 }),
-];
-
-// Round-robin across clients
-let clientIndex = 0;
-function getNextClient(): Client {
-  const client = readers[clientIndex % readers.length];
-  clientIndex++;
-  return client;
+  console.log(`Done: ${totalProcessed} total records processed`);
 }
 
-// 6 req/s total with 2 tokens
-```
+// Incremental sync: only fetch records modified since last sync
+async function incrementalSync(
+  databaseId: string,
+  lastSyncISO: string // e.g., "2026-03-20T00:00:00.000Z"
+): Promise<{ records: any[]; newSyncTimestamp: string }> {
+  const syncStart = new Date().toISOString();
+  const records: any[] = [];
 
-**Pattern B: Read-Through Cache**
-```typescript
-import { LRUCache } from 'lru-cache';
-
-const pageCache = new LRUCache<string, any>({ max: 1000, ttl: 300_000 }); // 5 min TTL
-
-async function getPage(pageId: string): Promise<any> {
-  const cached = pageCache.get(pageId);
-  if (cached) return cached; // Zero API cost for cache hits
-
-  const page = await notion.pages.retrieve({ page_id: pageId });
-  pageCache.set(pageId, page);
-  return page;
-}
-
-// For high-read workloads, cache hit rates of 80%+ reduce effective
-// API usage from 3 req/s to < 1 req/s of actual API calls
-```
-
-**Pattern C: Queue-Based Write Batching**
-```typescript
-import PQueue from 'p-queue';
-
-const writeQueue = new PQueue({
-  concurrency: 1,         // Serialize writes
-  interval: 350,          // ~3/second
-  intervalCap: 1,
-});
-
-// Enqueue writes — they execute at controlled rate
-async function schedulePageCreate(dbId: string, properties: any) {
-  return writeQueue.add(() =>
-    notion.pages.create({ parent: { database_id: dbId }, properties })
-  );
-}
-
-// Monitor queue depth
-setInterval(() => {
-  if (writeQueue.size > 100) {
-    console.warn(`Write queue depth: ${writeQueue.size} — consider increasing rate`);
+  for await (const batch of paginateDatabase(databaseId, {
+    timestamp: 'last_edited_time',
+    last_edited_time: { on_or_after: lastSyncISO },
+  }, [
+    { timestamp: 'last_edited_time', direction: 'ascending' },
+  ])) {
+    records.push(...batch);
   }
-}, 5000);
-```
 
-### Step 5: Capacity Planning
-```typescript
-function planCapacity(requirements: {
-  readsPerMinute: number;
-  writesPerMinute: number;
-  cacheHitRate: number; // 0-1
-}) {
-  const effectiveReads = requirements.readsPerMinute * (1 - requirements.cacheHitRate);
-  const totalReqPerMinute = effectiveReads + requirements.writesPerMinute;
-  const reqPerSecond = totalReqPerMinute / 60;
-  const tokensNeeded = Math.ceil(reqPerSecond / 3);
-
-  console.log('Capacity Plan:');
-  console.log(`  Raw reads/min: ${requirements.readsPerMinute}`);
-  console.log(`  Cache hit rate: ${(requirements.cacheHitRate * 100).toFixed(0)}%`);
-  console.log(`  Effective reads/min: ${Math.round(effectiveReads)}`);
-  console.log(`  Writes/min: ${requirements.writesPerMinute}`);
-  console.log(`  Total req/s: ${reqPerSecond.toFixed(1)}`);
-  console.log(`  Integration tokens needed: ${tokensNeeded}`);
-  console.log(`  Headroom: ${((tokensNeeded * 3 - reqPerSecond) / (tokensNeeded * 3) * 100).toFixed(0)}%`);
+  console.log(`Incremental sync: ${records.length} records changed since ${lastSyncISO}`);
+  return { records, newSyncTimestamp: syncStart };
 }
 
-// Example
-planCapacity({ readsPerMinute: 500, writesPerMinute: 50, cacheHitRate: 0.8 });
+// Persist sync state between runs
+import fs from 'fs';
+const SYNC_STATE_FILE = '.notion-sync-state.json';
+
+async function runIncrementalSync(databaseId: string) {
+  let lastSync = '1970-01-01T00:00:00.000Z';
+  try {
+    const state = JSON.parse(fs.readFileSync(SYNC_STATE_FILE, 'utf8'));
+    lastSync = state.lastSyncTimestamp;
+  } catch { /* First run */ }
+
+  const { records, newSyncTimestamp } = await incrementalSync(databaseId, lastSync);
+
+  for (const record of records) {
+    // Upsert to your local DB, update cache, etc.
+  }
+
+  fs.writeFileSync(SYNC_STATE_FILE, JSON.stringify({
+    lastSyncTimestamp: newSyncTimestamp,
+    recordsProcessed: records.length,
+  }));
+}
+```
+
+```python
+def paginate_database(database_id: str, filter_obj=None):
+    """Generator that yields batches without loading all into memory."""
+    cursor = None
+    while True:
+        limiter.acquire()
+        kwargs = {"database_id": database_id, "page_size": 100}
+        if filter_obj:
+            kwargs["filter"] = filter_obj
+        if cursor:
+            kwargs["start_cursor"] = cursor
+
+        response = notion.databases.query(**kwargs)
+        yield response["results"]
+
+        if not response.get("has_more"):
+            break
+        cursor = response.get("next_cursor")
+
+def incremental_sync(database_id: str, since_iso: str):
+    """Fetch only records modified since the given timestamp."""
+    filter_obj = {
+        "timestamp": "last_edited_time",
+        "last_edited_time": {"on_or_after": since_iso},
+    }
+    records = []
+    for batch in paginate_database(database_id, filter_obj):
+        records.extend(batch)
+    return records
+
+# Multi-token scaling: each integration token gets its own 3 req/s
+def create_scaled_clients(tokens: list[str]):
+    """Create multiple clients for parallel processing across rate limits."""
+    return [Client(auth=token) for token in tokens]
+    # 2 tokens = 6 req/s, 3 tokens = 9 req/s
 ```
 
 ## Output
-- Throughput benchmark results with latency percentiles
-- k6 load test for sustained rate testing
-- Scaling patterns for exceeding single-token limits
-- Capacity planning tool
+
+- Rate-limited parallel requests maximizing 3 req/s throughput
+- Worker queue with priority, retries, and dead letter handling
+- Streaming pagination for 100K+ record databases
+- Incremental sync reducing API calls by 90%+ on subsequent runs
+- Memory-efficient processing via async generators
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Sustained 429s | Exceeding 3 req/s | Add PQueue throttling |
-| k6 all errors | Wrong token or DB ID | Verify env vars |
-| Latency spikes | Notion server load | Expected variance, use P95 not max |
-| Queue growing | Write rate > 3/s | Add more integration tokens |
+| Sustained 429 errors | Exceeding 3 req/s | Reduce `intervalCap` or increase `interval` |
+| Memory growing during bulk read | Loading all results into array | Use async generator streaming |
+| Stale incremental sync | Clock skew between systems | Use server-returned timestamps |
+| Queue growing unbounded | Write rate exceeds 3/s sustained | Add more integration tokens (each gets own limit) |
+| Timeout on large queries | Notion API response time | Reduce `page_size`, add retry logic |
+| Duplicate records in sync | Concurrent modifications | Deduplicate by page ID after collection |
 
 ## Examples
 
-### Quick Benchmark
+### Capacity Calculator
+
+```typescript
+function calculateCapacity(config: {
+  readsPerMinute: number;
+  writesPerMinute: number;
+  cacheHitRate: number;
+  integrationTokens: number;
+}) {
+  const effectiveReads = config.readsPerMinute * (1 - config.cacheHitRate);
+  const totalPerMinute = effectiveReads + config.writesPerMinute;
+  const reqPerSecond = totalPerMinute / 60;
+  const capacity = config.integrationTokens * 3;
+
+  console.log('=== Capacity Plan ===');
+  console.log(`Effective req/s: ${reqPerSecond.toFixed(1)} / ${capacity} capacity`);
+  console.log(`Headroom: ${((1 - reqPerSecond / capacity) * 100).toFixed(0)}%`);
+  console.log(reqPerSecond > capacity ? 'OVER CAPACITY' : 'Within limits');
+}
+```
+
+### Quick Throughput Benchmark
+
 ```bash
-# Time 10 sequential API calls
+# Time 10 sequential API calls to measure baseline latency
 time for i in $(seq 1 10); do
-  curl -s -o /dev/null -w "%{time_total}s\n" \
+  curl -s -o /dev/null -w "%{time_total}\n" \
     https://api.notion.com/v1/users/me \
     -H "Authorization: Bearer ${NOTION_TOKEN}" \
     -H "Notion-Version: 2022-06-28"
+  sleep 0.34
 done
 ```
 
 ## Resources
+
 - [Notion Request Limits](https://developers.notion.com/reference/request-limits)
-- [k6 Documentation](https://k6.io/docs/)
-- [p-queue](https://github.com/sindresorhus/p-queue)
+- [Notion Pagination](https://developers.notion.com/reference/pagination)
+- [p-queue - Promise Queue with Concurrency Control](https://github.com/sindresorhus/p-queue)
+- [Notion Database Query Filter](https://developers.notion.com/reference/post-database-query-filter)
 
 ## Next Steps
+
 For reliability patterns, see `notion-reliability-patterns`.
+For architecture decisions at scale, see `notion-architecture-variants`.
