@@ -1,199 +1,143 @@
 ---
 name: notion-rate-limits
 description: |
-  Handle Notion API rate limits with backoff, queuing, and throttling.
-  Use when hitting 429 errors, implementing retry logic,
-  or optimizing API request throughput for Notion.
-  Trigger with phrases like "notion rate limit", "notion throttling",
-  "notion 429", "notion retry", "notion backoff", "notion too many requests".
-allowed-tools: Read, Write, Edit
+  Manage Notion API rate limits with exponential backoff, queue-based throttling,
+  and batch optimization. Use when hitting 429 errors, implementing retry logic,
+  or optimizing API request throughput for Notion integrations.
+  Trigger with "notion rate limit", "notion 429", "notion retry", "notion backoff",
+  "notion throttling", "notion too many requests", "notion queue".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Glob, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notion]
+tags: [saas, productivity, notion, rate-limiting, api, resilience]
 compatible-with: claude-code
 ---
 
 # Notion Rate Limits
 
 ## Overview
-The Notion API enforces a rate limit averaging 3 requests per second per integration. Handle 429 responses gracefully with the `Retry-After` header, exponential backoff, and request queuing.
+
+The Notion API enforces **3 requests per second per integration token** across all endpoints and tiers. Exceeding this returns HTTP 429 with a `Retry-After` header. Detect with `isNotionClientError()` + `APIErrorCode.RateLimited`, implement exponential backoff with jitter, and use queue-based throttling for high-throughput workloads.
 
 ## Prerequisites
-- `@notionhq/client` installed (has built-in retry)
-- Understanding of async/await patterns
+
+- `@notionhq/client` v2.x (TypeScript) or `notion-client` (Python)
+- Integration token in `NOTION_TOKEN` from [notion.so/my-integrations](https://www.notion.so/my-integrations)
+- For queue patterns: `p-queue` v8+ (`npm install p-queue`)
 
 ## Instructions
 
-### Step 1: Understand Notion's Rate Limits
+### Step 1 — Detect Rate Limits and Apply Exponential Backoff
+
 | Aspect | Value |
 |--------|-------|
-| Rate limit | Average 3 requests/second per integration |
-| Burst | Some bursts above average are allowed |
-| Response on limit | HTTP 429 with `Retry-After` header (seconds) |
-| Applies per | Integration token (not per user or workspace) |
-| Payload size limit | 1000 block children per request |
-| Page size limit | 100 results per paginated request |
+| Rate limit | 3 req/s per integration token (all tiers) |
+| Throttle response | HTTP 429 + `Retry-After` header (seconds) |
+| Scope | Per token, not per user or workspace |
+| Max block children | 1,000 per `blocks.children.append` |
+| Max page size | 100 results per paginated request |
 
-There are no tiered rate limits. All integrations get the same limit regardless of plan.
-
-### Step 2: Built-in SDK Retry
-The `@notionhq/client` SDK retries 429 errors automatically:
+The SDK retries 429 automatically (2 retries, 3 total attempts). For heavier workloads, use custom backoff that honors `Retry-After` and adds jitter to prevent thundering herd:
 
 ```typescript
-import { Client } from '@notionhq/client';
+import { Client, isNotionClientError, APIErrorCode } from '@notionhq/client';
 
-const notion = new Client({
-  auth: process.env.NOTION_TOKEN,
-  // Built-in retry defaults:
-  // maxRetries: 2 (total 3 attempts)
-  // initialRetryDelayMs: 1000
-  // maxRetryDelayMs: 60000
-});
-
-// For heavier workloads, increase retries:
-const notionHeavy = new Client({
-  auth: process.env.NOTION_TOKEN,
-  // @ts-ignore — retry config is supported but not in all type defs
-  retry: {
-    maxRetries: 5,
-    initialRetryDelayMs: 500,
-    maxRetryDelayMs: 60_000,
-  },
-});
-```
-
-### Step 3: Custom Backoff for Batch Operations
-```typescript
-import { isNotionClientError, APIErrorCode } from '@notionhq/client';
+const notion = new Client({ auth: process.env.NOTION_TOKEN });
 
 async function withBackoff<T>(
   fn: () => Promise<T>,
-  opts = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 32000 }
+  maxRetries = 5, baseMs = 1000, maxMs = 32_000
 ): Promise<T> {
-  for (let attempt = 0; attempt <= opts.maxRetries; attempt++) {
-    try {
-      return await fn();
-    } catch (error) {
-      if (attempt === opts.maxRetries) throw error;
-
-      // Only retry rate limits and server errors
-      if (isNotionClientError(error)) {
-        if (error.code === APIErrorCode.RateLimited) {
-          const retryAfter = parseInt(error.headers?.['retry-after'] ?? '1');
-          console.log(`Rate limited. Waiting ${retryAfter}s (attempt ${attempt + 1})`);
-          await new Promise(r => setTimeout(r, retryAfter * 1000));
-          continue;
-        }
-        // Don't retry client errors (400, 401, 404, etc.)
-        if (error.status && error.status < 500 && error.status !== 429) {
-          throw error;
-        }
+  for (let i = 0; i <= maxRetries; i++) {
+    try { return await fn(); }
+    catch (err) {
+      if (i === maxRetries) throw err;
+      if (isNotionClientError(err) && err.code === APIErrorCode.RateLimited) {
+        const wait = parseInt((err as any).headers?.['retry-after'] ?? '1', 10);
+        await new Promise(r => setTimeout(r, wait * 1000));
+        continue;
       }
-
-      // Exponential backoff with jitter for server errors
-      const delay = Math.min(
-        opts.baseDelayMs * Math.pow(2, attempt) + Math.random() * 500,
-        opts.maxDelayMs
-      );
-      console.log(`Server error. Retrying in ${Math.round(delay)}ms...`);
+      if (isNotionClientError(err) && err.status && err.status < 500) throw err;
+      const delay = Math.min(baseMs * 2 ** i + Math.random() * 500, maxMs);
       await new Promise(r => setTimeout(r, delay));
     }
   }
-  throw new Error('Unreachable');
+  throw new Error('Exhausted retries');
 }
 ```
 
-### Step 4: Queue-Based Throttling
+### Step 2 — Throttle with Queue-Based Request Management
+
+Enforce the 3 req/s limit at the application level instead of relying on 429 responses:
+
 ```typescript
 import PQueue from 'p-queue';
 
-// Enforce 3 req/s with concurrency control
-const notionQueue = new PQueue({
-  concurrency: 3,          // max parallel requests
-  interval: 1000,          // per 1 second
-  intervalCap: 3,          // max 3 per interval
+const queue = new PQueue({
+  concurrency: 3, interval: 1000, intervalCap: 3,
   carryoverConcurrencyCount: true,
 });
 
-async function throttledNotionCall<T>(fn: () => Promise<T>): Promise<T> {
-  return notionQueue.add(fn, { throwOnTimeout: true });
+async function throttled<T>(fn: () => Promise<T>): Promise<T> {
+  return queue.add(fn, { throwOnTimeout: true }) as Promise<T>;
 }
 
-// Usage — all calls are automatically throttled
+// Fetch 50 pages — automatically throttled to 3/s
 const pages = await Promise.all(
-  pageIds.map(id =>
-    throttledNotionCall(() => notion.pages.retrieve({ page_id: id }))
-  )
+  pageIds.map(id => throttled(() => notion.pages.retrieve({ page_id: id })))
 );
 ```
 
-### Step 5: Batch Processing Pattern
+### Step 3 — Optimize Batch Operations to Minimize API Calls
+
+Set `page_size: 100` on every paginated query. Batch block appends into chunks of 100 instead of one-per-block. See [batch patterns](references/batch-patterns.md) for full implementations with progress tracking.
+
 ```typescript
-async function processBatch<T, R>(
-  items: T[],
-  processor: (item: T) => Promise<R>,
-  batchSize = 3,
-  delayMs = 350 // ~3/second
-): Promise<R[]> {
-  const results: R[] = [];
-
-  for (let i = 0; i < items.length; i += batchSize) {
-    const batch = items.slice(i, i + batchSize);
-    const batchResults = await Promise.all(batch.map(processor));
-    results.push(...batchResults);
-
-    // Delay between batches (skip after last batch)
-    if (i + batchSize < items.length) {
-      await new Promise(r => setTimeout(r, delayMs));
-    }
-  }
-
+// Paginate with max page size
+async function queryAll(dbId: string, filter?: any) {
+  const results = [];
+  let cursor: string | undefined;
+  do {
+    const resp = await throttled(() => notion.databases.query({
+      database_id: dbId, page_size: 100, start_cursor: cursor, filter,
+    }));
+    results.push(...resp.results);
+    cursor = resp.has_more ? resp.next_cursor ?? undefined : undefined;
+  } while (cursor);
   return results;
 }
-
-// Usage: update 100 pages without hitting rate limits
-const updates = await processBatch(
-  pageIds,
-  (id) => notion.pages.update({
-    page_id: id,
-    properties: { Status: { select: { name: 'Processed' } } },
-  }),
-  3,    // 3 concurrent
-  400   // 400ms between batches
-);
 ```
 
 ## Output
-- Rate limit errors handled with automatic retry
-- Request throughput optimized within API limits
-- Batch operations processed without 429 errors
+
+- 429 errors retried automatically using `Retry-After` headers with jitter
+- Queue-based throttling keeps requests at 3/s proactively
+- Batch operations reduce total API calls via chunking and max `page_size`
 
 ## Error Handling
+
 | Scenario | Strategy |
 |----------|----------|
-| Single 429 | Honor `Retry-After` header |
+| Single 429 | Honor `Retry-After`, retry once |
 | Repeated 429s | Exponential backoff + reduce concurrency |
-| Bulk operations (50+ items) | Queue with `p-queue` at 3/s |
-| Burst then steady | SDK built-in retry sufficient |
+| Bulk ops (50+ items) | Queue with `p-queue` at 3 req/s |
+| Server error (5xx) | Backoff + retry up to 5 attempts |
+| Client error (4xx) | Do not retry — fix the request |
 
 ## Examples
 
-### Monitor Queue Health
-```typescript
-notionQueue.on('active', () => {
-  console.log(`Queue: ${notionQueue.size} pending, ${notionQueue.pending} active`);
-});
-
-notionQueue.on('idle', () => {
-  console.log('Queue: all requests complete');
-});
-```
+See [full TypeScript and Python examples](references/examples.md) for database sync, bulk export, and rate limit monitoring patterns.
 
 ## Resources
-- [Notion Rate Limits](https://developers.notion.com/reference/request-limits)
-- [p-queue Documentation](https://github.com/sindresorhus/p-queue)
-- [@notionhq/client Retry Config](https://github.com/makenotion/notion-sdk-js)
+
+- [Notion Request Limits](https://developers.notion.com/reference/request-limits) — Official rate limit docs
+- [Notion Status Codes](https://developers.notion.com/reference/status-codes) — 429 and error responses
+- [@notionhq/client](https://www.npmjs.com/package/@notionhq/client) — SDK with built-in retry
+- [p-queue](https://www.npmjs.com/package/p-queue) — Promise queue with rate limiting
 
 ## Next Steps
-For security configuration, see `notion-security-basics`.
+
+- See `notion-common-errors` for 401/403/404 troubleshooting alongside rate limits
+- See `notion-sdk-patterns` for query patterns that work with these strategies
+- See `notion-search-retrieve` for optimizing search to reduce API call volume
