@@ -152,5 +152,58 @@ app.use((err: Error, req: express.Request, res: express.Response, next: express.
 });
 ```
 
+## Pattern 8: Django Middleware (Python)
+
+```python
+import sentry_sdk
+
+class SentryUserMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        if hasattr(request, "user") and request.user.is_authenticated:
+            sentry_sdk.set_user({
+                "id": str(request.user.id),
+                "email": request.user.email,
+                "username": request.user.username,
+            })
+        response = self.get_response(request)
+        return response
+```
+
+## Pattern 9: Testing Sentry Integration (Vitest)
+
+```typescript
+import * as Sentry from '@sentry/node';
+
+vi.mock('@sentry/node', () => ({
+  captureException: vi.fn(),
+  captureMessage: vi.fn(),
+  withScope: vi.fn((cb) =>
+    cb({
+      setTag: vi.fn(),
+      setContext: vi.fn(),
+      setUser: vi.fn(),
+      setLevel: vi.fn(),
+      setFingerprint: vi.fn(),
+    }),
+  ),
+  addBreadcrumb: vi.fn(),
+  setUser: vi.fn(),
+  setTag: vi.fn(),
+  startSpan: vi.fn((opts, cb) => cb({ setStatus: vi.fn() })),
+}));
+
+it('captures payment errors with correct context', async () => {
+  await processPayment({ amount: -1 });
+  expect(Sentry.captureException).toHaveBeenCalledWith(
+    expect.objectContaining({
+      message: expect.stringContaining('Invalid amount'),
+    }),
+  );
+});
+```
+
 ---
 *[Tons of Skills](https://tonsofskills.com) by [Intent Solutions](https://intentsolutions.io) | [jeremylongshore.com](https://jeremylongshore.com)*
