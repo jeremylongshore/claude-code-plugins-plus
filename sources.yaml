@@ -697,6 +697,39 @@ sources:
       - "**/.gitkeep"
 
   # ============================================================
+  # AuraKit (smorky85)
+  # https://github.com/smorky850612/Aurakit
+  # ============================================================
+
+  - name: aurakit
+    description: All-in-one Claude Code skill - 33 modes, 6-layer security, 23 hooks, 8 languages, 75 pct token savings
+    repo: smorky850612/Aurakit
+    source_path: .
+    target_path: plugins/community/aurakit
+    author:
+      name: smorky85
+      github: smorky850612
+    license: MIT
+    category: community
+    verified: true
+    include:
+      - ".claude-plugin/**"
+      - "skills/**"
+      - "hooks/**"
+      - "agents/**"
+      - "rules/**"
+      - "templates/**"
+      - "bin/**"
+      - "package.json"
+      - "install.sh"
+      - "README.md"
+      - "LICENSE"
+    exclude:
+      - "node_modules/**"
+      - ".git/**"
+      - "*.log"
+
+  # ============================================================
   # Add more external sources below
   # ============================================================
 

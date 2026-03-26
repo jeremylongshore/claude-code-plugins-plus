@@ -1,0 +1,22 @@
+{
+  "name": "aurakit",
+  "version": "6.2.0",
+  "description": "All-in-one Claude Code skill with 33 modes, 6-layer security, 23 hooks, 8-language support, and 75% token savings. One /aura command to build, fix, review, and deploy.",
+  "author": {
+    "name": "smorky85",
+    "url": "https://github.com/smorky850612"
+  },
+  "repository": "https://github.com/smorky850612/Aurakit",
+  "homepage": "https://github.com/smorky850612/Aurakit#readme",
+  "license": "MIT",
+  "keywords": [
+    "claude-code",
+    "agent-skill",
+    "fullstack",
+    "security",
+    "owasp",
+    "hooks",
+    "cross-platform",
+    "agentic-coding"
+  ]
+}
