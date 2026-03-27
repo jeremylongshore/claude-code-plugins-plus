@@ -7990,7 +7990,10 @@
       "description": "Closed-loop bug triage: X complaints → clusters → repo evidence → owner routing → Slack review → filed issues",
       "version": "0.3.0",
       "category": "devops",
-      "author": "Jeremy Longshore",
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
       "keywords": [
         "bug-triage",
         "x-twitter",
