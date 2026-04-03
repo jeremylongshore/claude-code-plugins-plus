@@ -8004,25 +8004,6 @@
       "repository": "https://github.com/jeremylongshore/x-bug-triage-plugin",
       "homepage": "https://tonsofskills.com",
       "license": "MIT"
-    },
-    {
-      "name": "framecraft",
-      "source": "./plugins/community/framecraft",
-      "description": "Generate polished demo videos from a single prompt. Orchestrates Playwright, FFmpeg, and Edge TTS MCP servers to produce 1920x1080 videos with voiceover, transitions, and CSS animations.",
-      "version": "1.0.0",
-      "category": "community",
-      "keywords": [
-        "demo-video",
-        "video-generation",
-        "playwright",
-        "ffmpeg",
-        "edge-tts",
-        "mcp"
-      ],
-      "author": {
-        "name": "vaddisrinivas",
-        "url": "https://github.com/vaddisrinivas"
-      }
     }
   ]
 }

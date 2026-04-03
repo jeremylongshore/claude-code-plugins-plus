@@ -11,13 +11,8 @@ Generate polished demo videos from a single prompt. Orchestrates Playwright, FFm
 ## Installation
 
 ```bash
-claude plugin install framecraft
-```
-
-Or:
-
-```bash
-npx skills add vaddisrinivas/framecraft
+claude plugin marketplace add jeremylongshore/claude-code-plugins-plus-skills
+claude plugin install framecraft@claude-code-plugins-plus
 ```
 
 ## Requirements
