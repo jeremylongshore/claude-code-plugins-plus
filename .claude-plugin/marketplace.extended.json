@@ -8174,7 +8174,7 @@
     {
       "name": "b12-claude-plugin",
       "source": "./plugins/community/b12-claude-plugin",
-      "description": "B12 Website Generator \u2014 an official plugin by B12.io. Ships a single auto-activating skill (website-generator) that collects a business name and description, then generates a production-ready B12 website signup link instantly.",
+      "description": "B12 Website Generator — an official plugin by B12.io. Ships a single auto-activating skill (website-generator) that collects a business name and description, then generates a production-ready B12 website signup link instantly.",
       "version": "1.0.0",
       "category": "community",
       "keywords": [
@@ -11011,7 +11011,7 @@
     {
       "name": "pr-to-spec",
       "source": "./plugins/mcp/pr-to-spec",
-      "description": "The flight envelope for agentic coding \u2014 convert PRs and local diffs into structured, agent-consumable specs with intent drift detection",
+      "description": "The flight envelope for agentic coding — convert PRs and local diffs into structured, agent-consumable specs with intent drift detection",
       "version": "0.8.0",
       "category": "code-quality",
       "repository": "https://github.com/jeremylongshore/pr-to-prompt",
@@ -11034,7 +11034,7 @@
     {
       "name": "slack-channel",
       "source": "./plugins/mcp/slack-channel",
-      "description": "Two-way Slack channel for Claude Code \u2014 chat from Slack DMs and channels via Socket Mode",
+      "description": "Two-way Slack channel for Claude Code — chat from Slack DMs and channels via Socket Mode",
       "version": "0.1.0",
       "category": "productivity",
       "keywords": [
@@ -11063,7 +11063,7 @@
     {
       "name": "x-bug-triage-plugin",
       "source": "./plugins/mcp/x-bug-triage",
-      "description": "Closed-loop bug triage: X complaints \u2192 clusters \u2192 repo evidence \u2192 owner routing \u2192 Slack review \u2192 filed issues",
+      "description": "Closed-loop bug triage: X complaints → clusters → repo evidence → owner routing → Slack review → filed issues",
       "version": "0.3.0",
       "category": "devops",
       "author": {
@@ -11090,35 +11090,27 @@
       }
     },
     {
-      "name": "general-legal-assistant",
-      "source": "./plugins/business-tools/general-legal-assistant",
-      "description": "AI-powered contract review, risk analysis, document generation, and compliance auditing with 12 skills and 5 parallel agents",
+      "name": "framecraft",
+      "source": "./plugins/community/framecraft",
+      "description": "Generate polished demo videos from a single prompt. Orchestrates Playwright, FFmpeg, and Edge TTS MCP servers to produce 1920x1080 videos with voiceover, transitions, and CSS animations.",
       "version": "1.0.0",
-      "category": "business-tools",
-      "author": {
-        "name": "Intent Solutions",
-        "email": "jeremy@intentsolutions.io"
-      },
+      "category": "community",
       "keywords": [
-        "legal",
-        "contracts",
-        "nda",
-        "compliance",
-        "gdpr",
-        "ccpa",
-        "risk-analysis",
-        "terms-of-service",
-        "privacy-policy"
+        "demo-video",
+        "video-generation",
+        "playwright",
+        "ffmpeg",
+        "edge-tts",
+        "mcp"
       ],
-      "repository": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills",
-      "homepage": "https://tonsofskills.com",
-      "license": "MIT",
-      "featured": false,
-      "pricing": "free",
+      "author": {
+        "name": "vaddisrinivas",
+        "url": "https://github.com/vaddisrinivas"
+      },
       "components": {
-        "skills": 12,
-        "agents": 5
-      }
+        "skills": 1
+      },
+      "featured": false
     }
   ]
 }

@@ -8006,29 +8006,23 @@
       "license": "MIT"
     },
     {
-      "name": "general-legal-assistant",
-      "source": "./plugins/business-tools/general-legal-assistant",
-      "description": "AI-powered contract review, risk analysis, document generation, and compliance auditing with 12 skills and 5 parallel agents",
+      "name": "framecraft",
+      "source": "./plugins/community/framecraft",
+      "description": "Generate polished demo videos from a single prompt. Orchestrates Playwright, FFmpeg, and Edge TTS MCP servers to produce 1920x1080 videos with voiceover, transitions, and CSS animations.",
       "version": "1.0.0",
-      "category": "business-tools",
-      "author": {
-        "name": "Intent Solutions",
-        "email": "jeremy@intentsolutions.io"
-      },
+      "category": "community",
       "keywords": [
-        "legal",
-        "contracts",
-        "nda",
-        "compliance",
-        "gdpr",
-        "ccpa",
-        "risk-analysis",
-        "terms-of-service",
-        "privacy-policy"
+        "demo-video",
+        "video-generation",
+        "playwright",
+        "ffmpeg",
+        "edge-tts",
+        "mcp"
       ],
-      "repository": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills",
-      "homepage": "https://tonsofskills.com",
-      "license": "MIT"
+      "author": {
+        "name": "vaddisrinivas",
+        "url": "https://github.com/vaddisrinivas"
+      }
     }
   ]
 }
