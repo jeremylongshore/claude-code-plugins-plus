@@ -35,6 +35,8 @@ This skill requests scoped Bash access to:
 
 These permissions are required because framecraft orchestrates external command-line tools (Playwright, FFmpeg, Edge TTS) that must be invoked via shell. The scopes ensure Bash calls are restricted to these three tools only.
 
+**Contact:** vaddisrinivas170497@gmail.com
+
 ## Links
 
 - [Source Repository](https://github.com/vaddisrinivas/framecraft)
