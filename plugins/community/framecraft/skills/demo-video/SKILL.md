@@ -7,7 +7,7 @@ description: |
   "demo walkthrough", or "feature showcase video".
 allowed-tools: Read, Write, Edit, Bash, Glob
 version: 1.0.0
-author: vaddisrinivas <https://github.com/vaddisrinivas>
+author: Srinivas Vaddisrinivas <vaddisrinivas@gmail.com>
 license: MIT
 compatible-with: claude-code
 tags: [video, demo, playwright, ffmpeg, edge-tts, mcp]

@@ -11,14 +11,29 @@ Generate polished demo videos from a single prompt. Orchestrates Playwright, FFm
 ## Installation
 
 ```bash
-claude plugin marketplace add jeremylongshore/claude-code-plugins-plus-skills
-claude plugin install framecraft@claude-code-plugins-plus
+claude plugin marketplace add jeremylongshore/claude-code-plugins
+ccpi install framecraft
+```
+
+Or via npm skills registry:
+```bash
+npx skills add vaddisrinivas/framecraft
 ```
 
 ## Requirements
 
 - Python 3.11+, FFmpeg, Playwright chromium
-- Internet connection for Edge TTS
+- Internet connection for Edge TTS voice synthesis (neural voices, free, no API key)
+- Edge TTS requires network connectivity for voice generation — no offline fallback
+
+## Permissions
+
+This skill requests scoped Bash access to:
+- `Bash(uv:*)` — Run Python environment via uv package manager
+- `Bash(ffmpeg:*)` — Run FFmpeg for video compositing and audio mixing
+- `Bash(python:*)` — Execute Python scripts for pipeline orchestration
+
+These permissions are required because framecraft orchestrates external command-line tools (Playwright, FFmpeg, Edge TTS) that must be invoked via shell. The scopes ensure Bash calls are restricted to these three tools only.
 
 ## Links
 
