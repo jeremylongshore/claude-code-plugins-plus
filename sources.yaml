@@ -704,7 +704,7 @@ sources:
   # multi-machine conflict detection
   # ============================================================
 
-  - name: claudebase
+  - name: Claudebase
     description: Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles
     repo: rohithzr/claudebase
     source_path: .
@@ -713,7 +713,7 @@ sources:
       name: Rohit Hazra
       github: rohithzr
     license: MIT
-    category: productivity
+    category: Productivity / Config Management
     verified: true
     include:
       - ".claude-plugin/**"
