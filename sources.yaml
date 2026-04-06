@@ -697,6 +697,41 @@ sources:
       - "**/.gitkeep"
 
   # ============================================================
+  # Claudebase (Rohit Hazra / rohithzr)
+  # https://github.com/rohithzr/claudebase
+  # Back up, restore, and sync Claude Code config to a private
+  # GitHub repo with named profiles, secret scanning, and
+  # multi-machine conflict detection
+  # ============================================================
+
+  - name: claudebase
+    description: Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles
+    repo: rohithzr/claudebase
+    source_path: .
+    target_path: plugins/productivity/claudebase
+    author:
+      name: Rohit Hazra
+      github: rohithzr
+    license: MIT
+    category: productivity
+    verified: true
+    include:
+      - ".claude-plugin/**"
+      - "skills/**"
+      - "scripts/**"
+      - "hooks/**"
+      - ".sync-manifest.json"
+      - "README.md"
+      - "LICENSE"
+    exclude:
+      - "node_modules/**"
+      - ".git/**"
+      - ".agents/**"
+      - ".claude/**"
+      - "tests/**"
+      - "*.log"
+
+  # ============================================================
   # Add more external sources below
   # ============================================================
 
