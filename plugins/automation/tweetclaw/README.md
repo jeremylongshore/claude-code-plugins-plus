@@ -7,6 +7,12 @@ Powered by the [Xquik REST API](https://docs.xquik.com) with 121 endpoints acros
 ## Installation
 
 ```bash
+/plugin install tweetclaw@claude-code-plugins-plus
+```
+
+### Alternative installs
+
+```bash
 # Via OpenClaw
 openclaw plugins install @xquik/tweetclaw
 
@@ -32,7 +38,7 @@ export XQUIK_API_KEY="xq_YOUR_KEY_HERE"
 
 - **121 REST API endpoints** across 12 categories
 - **23 bulk extraction tools** (followers, replies, quotes, mentions, communities, lists, spaces)
-- **2 MCP tools** (`explore` and `tweetclaw`) for AI agent integration
+- **2 MCP tools** via hosted server at `xquik.com/mcp` ([setup guide](https://docs.xquik.com/mcp/overview))
 - **2 slash commands** (`/xstatus` for account info, `/xtrends` for trending topics)
 - **Account monitoring** with webhook and Telegram delivery
 - **Giveaway draws** with configurable filters

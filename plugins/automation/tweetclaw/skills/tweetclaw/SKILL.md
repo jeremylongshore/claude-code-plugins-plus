@@ -2,7 +2,7 @@
 name: tweetclaw
 description: |
   X/Twitter automation plugin. Post tweets, reply, like, retweet, follow, unfollow, send DMs, search tweets, look up users, extract bulk data, monitor accounts, run giveaway draws, and compose algorithm-optimized tweets via Xquik REST API. Use when the user asks about Twitter, X, tweets, followers, social media automation, tweet analytics, or giveaway management. Trigger with "post tweet", "search tweets", "extract followers", "run giveaway", "monitor account", "compose tweet", "trending topics".
-allowed-tools: "Read, Write, Edit, Bash(curl:*), Bash(npm:*), Bash(npx:*), WebFetch"
+allowed-tools: "Read, Bash, WebFetch"
 version: "1.5.3"
 author: "Burak Bayir <burak@xquik.com>"
 license: "MIT"
@@ -16,7 +16,7 @@ tags: [twitter, x, automation, social-media, giveaway, monitoring, scraping, mcp
 
 TweetClaw provides full X/Twitter automation via the Xquik REST API. It covers 121 endpoints across 12 categories: tweet operations, user lookups, search, bulk extractions (23 tools), giveaway draws, account monitoring, webhook delivery, AI composition, style analysis, drafts, write actions, and account management.
 
-Two MCP tools are available: `explore` (search the API catalog, free) and `tweetclaw` (execute any endpoint).
+Two MCP tools are available via the hosted server at `xquik.com/mcp` (not bundled with this plugin). See the MCP setup section in Resources for configuration instructions.
 
 ## Prerequisites
 
