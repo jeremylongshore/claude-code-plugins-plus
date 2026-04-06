@@ -8029,6 +8029,32 @@
       "repository": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills",
       "homepage": "https://tonsofskills.com",
       "license": "MIT"
+    },
+    {
+      "name": "tweetclaw",
+      "source": "./plugins/automation/tweetclaw",
+      "description": "X/Twitter automation - post, reply, like, retweet, follow, DM, search, extract data, monitor accounts, run giveaways. 121 endpoints via Xquik REST API. Use when automating Twitter/X operations or extracting social media data. Trigger with \"post tweet\", \"search tweets\", \"extract followers\", \"run giveaway\".",
+      "version": "1.5.3",
+      "category": "automation",
+      "keywords": [
+        "twitter",
+        "x",
+        "automation",
+        "social-media",
+        "tweets",
+        "monitoring",
+        "giveaway",
+        "scraping",
+        "mcp"
+      ],
+      "author": {
+        "name": "Burak Bayir",
+        "email": "burak@xquik.com",
+        "url": "https://xquik.com"
+      },
+      "repository": "https://github.com/Xquik-dev/tweetclaw",
+      "homepage": "https://xquik.com",
+      "license": "MIT"
     }
   ]
 }
