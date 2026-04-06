@@ -4,7 +4,7 @@ description: List and manage existing Shipwright projects
 category: ai-agency
 ---
 
-# /shipwright:projects
+# /shipwright-projects
 
 List and manage projects previously built with Shipwright.
 

@@ -11,10 +11,10 @@ pip install product-agent
 ```
 
 2. Use the skills:
-- `/shipwright:build` — Build a new app from a plain-English description
-- `/shipwright:enhance` — Add features to an existing Shipwright project
-- `/shipwright:stacks` — List supported tech stacks
-- `/shipwright:projects` — List and manage existing Shipwright projects
+- `/shipwright-build` — Build a new app from a plain-English description
+- `/shipwright-enhance` — Add features to an existing Shipwright project
+- `/shipwright-stacks` — List supported tech stacks
+- `/shipwright-projects` — List and manage existing Shipwright projects
 
 ## Supported Stacks
 

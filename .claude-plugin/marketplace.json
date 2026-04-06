@@ -8029,6 +8029,31 @@
       "repository": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills",
       "homepage": "https://tonsofskills.com",
       "license": "MIT"
+    },
+    {
+      "name": "shipwright",
+      "source": "./plugins/ai-agency/shipwright",
+      "description": "Describe your app in plain English — Shipwright builds, tests, and deploys it autonomously via a 9-phase pipeline.",
+      "version": "1.0.0",
+      "category": "ai-agency",
+      "author": {
+        "name": "Nate Nelson",
+        "url": "https://github.com/Wynelson94"
+      },
+      "keywords": [
+        "app-builder",
+        "code-generator",
+        "autonomous-agent",
+        "pipeline",
+        "nextjs",
+        "supabase",
+        "sveltekit",
+        "astro",
+        "ai-agency"
+      ],
+      "repository": "https://github.com/Wynelson94/shipwright",
+      "homepage": "https://github.com/Wynelson94/shipwright",
+      "license": "MIT"
     }
   ]
 }

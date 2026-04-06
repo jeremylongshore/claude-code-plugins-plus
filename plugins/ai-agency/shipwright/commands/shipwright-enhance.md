@@ -4,7 +4,7 @@ description: Add features to an existing Shipwright project
 category: ai-agency
 ---
 
-# /shipwright:enhance
+# /shipwright-enhance
 
 Add new features or pages to an existing Shipwright-built project.
 

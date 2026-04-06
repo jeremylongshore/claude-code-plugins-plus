@@ -4,7 +4,7 @@ description: List supported Shipwright tech stacks
 category: ai-agency
 ---
 
-# /shipwright:stacks
+# /shipwright-stacks
 
 List all tech stacks supported by Shipwright and their recommended use cases.
 

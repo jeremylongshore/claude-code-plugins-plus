@@ -4,7 +4,7 @@ description: Build a new app from a plain-English description
 category: ai-agency
 ---
 
-# /shipwright:build
+# /shipwright-build
 
 Build a complete application from a natural-language description using the Shipwright 9-phase pipeline.
 
