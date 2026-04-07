@@ -2307,6 +2307,27 @@
       ]
     },
     {
+      "name": "freshie-inventory-manager",
+      "source": "./plugins/database/freshie-inventory-manager",
+      "description": "Interactive command center for the freshie ecosystem inventory database — conversational wizard with subagents for discovery scans, compliance grading, batch remediation, querying, reporting, and email PDF delivery across 50 tables of plugin/skill/pack metadata",
+      "version": "1.0.0",
+      "category": "database",
+      "keywords": [
+        "database",
+        "inventory",
+        "freshie",
+        "compliance",
+        "sqlite",
+        "ecosystem",
+        "audit",
+        "subagents"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      }
+    },
+    {
       "name": "fullstack-starter-pack",
       "source": "./plugins/packages/fullstack-starter-pack",
       "description": "Complete fullstack development toolkit: React, Express/FastAPI, PostgreSQL scaffolding with AI agents",
@@ -4350,6 +4371,28 @@
         "name": "Jeremy Longshore",
         "email": "[email protected]"
       }
+    },
+    {
+      "name": "tonone",
+      "source": "./plugins/ai-agency/tonone",
+      "description": "23-agent AI team for software teams: 15 engineering specialists (Apex, Forge, Relay, Spine, Flux, Warden, Vigil, Prism, Cortex, Touch, Volt, Atlas, Lens, Proof, Pave) + 8 product agents (Helm, Echo, Lumen, Draft, Form, Crest, Pitch, Surge) with a formal Helm→Apex handoff interface and 125 skills.",
+      "version": "0.6.5",
+      "category": "ai-agency",
+      "keywords": [
+        "ai-team",
+        "multi-agent",
+        "orchestration",
+        "engineering",
+        "product",
+        "agents",
+        "ai-agency"
+      ],
+      "author": {
+        "name": "thisisfatih",
+        "url": "https://github.com/thisisfatih"
+      },
+      "repository": "https://github.com/tonone-ai/tonone",
+      "license": "MIT"
     },
     {
       "name": "unit-test-generator",
@@ -8003,56 +8046,6 @@
       ],
       "repository": "https://github.com/jeremylongshore/x-bug-triage-plugin",
       "homepage": "https://tonsofskills.com",
-      "license": "MIT"
-    },
-    {
-      "name": "general-legal-assistant",
-      "source": "./plugins/business-tools/general-legal-assistant",
-      "description": "AI-powered contract review, risk analysis, document generation, and compliance auditing with 12 skills and 5 parallel agents",
-      "version": "1.0.0",
-      "category": "business-tools",
-      "author": {
-        "name": "Intent Solutions",
-        "email": "jeremy@intentsolutions.io"
-      },
-      "keywords": [
-        "legal",
-        "contracts",
-        "nda",
-        "compliance",
-        "gdpr",
-        "ccpa",
-        "risk-analysis",
-        "terms-of-service",
-        "privacy-policy"
-      ],
-      "repository": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills",
-      "homepage": "https://tonsofskills.com",
-      "license": "MIT"
-    },
-    {
-      "name": "shipwright",
-      "source": "./plugins/ai-agency/shipwright",
-      "description": "Describe your app in plain English — Shipwright builds, tests, and deploys it autonomously via a 9-phase pipeline.",
-      "version": "1.0.0",
-      "category": "ai-agency",
-      "author": {
-        "name": "Nate Nelson",
-        "url": "https://github.com/Wynelson94"
-      },
-      "keywords": [
-        "app-builder",
-        "code-generator",
-        "autonomous-agent",
-        "pipeline",
-        "nextjs",
-        "supabase",
-        "sveltekit",
-        "astro",
-        "ai-agency"
-      ],
-      "repository": "https://github.com/Wynelson94/shipwright",
-      "homepage": "https://github.com/Wynelson94/shipwright",
       "license": "MIT"
     }
   ]
