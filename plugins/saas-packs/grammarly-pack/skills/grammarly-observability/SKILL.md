@@ -16,61 +16,92 @@ compatible-with: claude-code
 
 # Grammarly Observability
 
-## Instructions
+## Overview
 
-### Step 1: API Call Metrics
+Grammarly API integrations process user text through scoring, AI rewriting, and plagiarism endpoints where latency and accuracy directly affect user experience. Monitor text check response times, suggestion quality signals, API error rates, and token consumption to stay within rate limits. Catching degradation early prevents users from seeing stale suggestions or silent failures in real-time editing flows.
+
+## Key Metrics
+
+| Metric | Type | Target | Alert Threshold |
+|--------|------|--------|-----------------|
+| Text check latency p95 | Histogram | < 300ms | > 800ms |
+| API error rate | Gauge | < 1% | > 5% |
+| Suggestion acceptance rate | Gauge | > 40% | < 20% (quality signal) |
+| Token usage (daily) | Counter | < 80% quota | > 90% quota |
+| Plagiarism check latency | Histogram | < 2s | > 5s |
+| AI rewrite throughput | Counter | Stable | Drop > 30% |
+
+## Instrumentation
 
 ```typescript
-class GrammarlyMetrics {
-  private calls = { score: 0, ai: 0, plagiarism: 0 };
-  private errors = 0;
-  private latencies: number[] = [];
-
-  recordCall(api: 'score' | 'ai' | 'plagiarism', latencyMs: number) {
-    this.calls[api]++;
-    this.latencies.push(latencyMs);
-  }
-
-  recordError() { this.errors++; }
-
-  report() {
-    const sorted = [...this.latencies].sort((a, b) => a - b);
-    return {
-      totalCalls: Object.values(this.calls).reduce((a, b) => a + b, 0),
-      callsByAPI: this.calls,
-      errors: this.errors,
-      p50: sorted[Math.floor(sorted.length * 0.5)] || 0,
-      p95: sorted[Math.floor(sorted.length * 0.95)] || 0,
-    };
+async function trackGrammarlyCall(api: 'score' | 'ai' | 'plagiarism', textLen: number, fn: () => Promise<any>) {
+  const start = Date.now();
+  try {
+    const result = await fn();
+    metrics.histogram('grammarly.api.latency', Date.now() - start, { api });
+    metrics.increment('grammarly.api.calls', { api });
+    metrics.gauge('grammarly.text.length', textLen, { api });
+    return result;
+  } catch (err) {
+    metrics.increment('grammarly.api.errors', { api, status: err.status });
+    throw err;
   }
 }
 ```
 
-### Step 2: Structured Logging
+## Health Check Dashboard
 
 ```typescript
-function logGrammarlyCall(api: string, duration: number, status: number, textLength: number) {
+async function grammarlyHealth(): Promise<Record<string, string>> {
+  const latencyP95 = await metrics.query('grammarly.api.latency', 'p95', '5m');
+  const errorRate = await metrics.query('grammarly.api.error_rate', 'avg', '5m');
+  const quotaUsed = await grammarlyAdmin.getQuotaUsage();
+  return {
+    api_latency: latencyP95 < 300 ? 'healthy' : 'slow',
+    error_rate: errorRate < 0.01 ? 'healthy' : 'degraded',
+    quota: quotaUsed < 0.8 ? 'healthy' : 'at_risk',
+  };
+}
+```
+
+## Alerting Rules
+
+```typescript
+const alerts = [
+  { metric: 'grammarly.api.latency_p95', condition: '> 800ms', window: '10m', severity: 'warning' },
+  { metric: 'grammarly.api.error_rate', condition: '> 0.05', window: '5m', severity: 'critical' },
+  { metric: 'grammarly.quota.daily_pct', condition: '> 0.90', window: '1h', severity: 'warning' },
+  { metric: 'grammarly.ai.throughput', condition: 'drop > 30%', window: '15m', severity: 'critical' },
+];
+```
+
+## Structured Logging
+
+```typescript
+function logGrammarlyEvent(api: string, data: Record<string, any>) {
   console.log(JSON.stringify({
-    service: 'grammarly',
-    api,
-    duration_ms: duration,
-    status,
-    text_length: textLength,
+    service: 'grammarly', api,
+    duration_ms: data.latency, status: data.status,
+    text_length: data.textLen, suggestion_count: data.suggestions,
+    // Never log user text content — only metadata
     timestamp: new Date().toISOString(),
   }));
 }
 ```
 
-### Step 3: Alerting
+## Error Handling
 
-```typescript
-// Alert on error rate > 10%
-const errorRate = metrics.errors / (metrics.totalCalls || 1);
-if (errorRate > 0.1) {
-  console.error(`ALERT: Grammarly error rate ${(errorRate * 100).toFixed(1)}%`);
-}
-```
+| Signal | Meaning | Action |
+|--------|---------|--------|
+| 429 rate limit | Token quota exhausted | Back off, check daily usage, request limit increase |
+| Latency spike on /score | Grammarly service degradation | Check status page, enable local cache fallback |
+| Suggestion count drops to 0 | API schema change or auth failure | Verify API key, check response format |
+| Plagiarism timeout > 5s | Large document or service overload | Chunk text, retry with exponential backoff |
 
 ## Resources
 
-- [Grammarly API](https://developer.grammarly.com/)
+- [Grammarly Developer Portal](https://developer.grammarly.com/)
+
+## Next Steps
+
+See `grammarly-incident-runbook`.

@@ -8,6 +8,7 @@ on:
       - 'functions/**'
       - 'firestore.rules'
       - 'firebase.json'
+      - 'pnpm-lock.yaml'
       - '.github/workflows/deploy-firebase.yml'
   workflow_dispatch:
 

@@ -15,91 +15,90 @@ compatible-with: claude-code
 # Fly.io Security Basics
 
 ## Overview
+Fly.io deploys applications to edge locations worldwide using Firecracker microVMs. Security concerns center on deploy token scoping (org-wide vs per-app), secrets management (encrypted at rest, injected as env vars), private networking via WireGuard mesh (6PN), and TLS certificate management. A leaked deploy token can push arbitrary code to production machines across all regions.
 
-Security practices for Fly.io: encrypted secrets management, private networking (6PN), TLS certificate management, deploy token scoping, and WireGuard VPN access.
-
-## Instructions
-
-### Step 1: Secrets Management
-
-```bash
-# Set secrets — encrypted at rest, injected as env vars
-fly secrets set API_KEY="sk_live_..." DB_PASSWORD="..." -a my-app
-
-# List (values hidden)
-fly secrets list -a my-app
-
-# Unset
-fly secrets unset OLD_API_KEY -a my-app
-
-# Import from .env file
-fly secrets import < .env.production
+## API Key Management
+```typescript
+function validateFlyToken(): void {
+  const token = process.env.FLY_API_TOKEN;
+  if (!token) {
+    throw new Error("Missing FLY_API_TOKEN — use `fly tokens create deploy -a <app>`");
+  }
+  // Never log tokens; log only token type for debugging
+  const isDeployToken = token.startsWith("FlyV1");
+  console.log("Fly.io token loaded, type:", isDeployToken ? "deploy" : "personal");
+}
 ```
 
-**Key rules:**
-- Secrets are encrypted at rest and in transit
-- Available as environment variables inside machines
-- Setting/unsetting triggers a rolling restart
-- Never put secrets in `fly.toml` `[env]` (those are plaintext)
+## Webhook Signature Verification
+```typescript
+import crypto from "crypto";
+import { Request, Response, NextFunction } from "express";
 
-### Step 2: Deploy Token Scoping
-
-```bash
-# Per-app deploy token (minimal scope for CI/CD)
-fly tokens create deploy -a my-app
-# Use in CI: FLY_API_TOKEN=$DEPLOY_TOKEN fly deploy
-
-# Org token (broader scope — avoid if possible)
-fly tokens create org
-
-# Read-only token (monitoring only)
-fly tokens create readonly -a my-app
+function verifyFlyWebhook(req: Request, res: Response, next: NextFunction): void {
+  const signature = req.headers["x-fly-signature"] as string;
+  const secret = process.env.FLY_WEBHOOK_SECRET!;
+  const expected = crypto.createHmac("sha256", secret).update(req.body).digest("hex");
+  if (!signature || !crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected))) {
+    res.status(401).send("Invalid signature");
+    return;
+  }
+  next();
+}
 ```
 
-### Step 3: Custom Domain TLS
+## Input Validation
+```typescript
+import { z } from "zod";
 
-```bash
-# Add custom domain
-fly certs add api.example.com -a my-app
+const FlyDeploySchema = z.object({
+  app_name: z.string().regex(/^[a-z0-9-]+$/).max(63),
+  region: z.enum(["iad", "ord", "lax", "sjc", "ams", "lhr", "nrt", "syd", "gru"]),
+  image: z.string().regex(/^registry\..+\/.+:.+$/),
+  vm_size: z.enum(["shared-cpu-1x", "shared-cpu-2x", "performance-1x", "performance-2x"]).optional(),
+  min_machines: z.number().int().min(0).max(20).optional(),
+});
 
-# Check certificate status
-fly certs show api.example.com -a my-app
-
-# Fly manages Let's Encrypt certificates automatically
-# Force HTTPS in fly.toml:
+function validateDeployConfig(data: unknown) {
+  return FlyDeploySchema.parse(data);
+}
 ```
 
-```toml
-[http_service]
-  force_https = true
+## Data Protection
+```typescript
+const FLY_SENSITIVE_FIELDS = ["fly_api_token", "deploy_token", "db_password", "wireguard_private_key", "tls_private_key"];
+
+function redactFlyLog(record: Record<string, unknown>): Record<string, unknown> {
+  const redacted = { ...record };
+  for (const field of FLY_SENSITIVE_FIELDS) {
+    if (field in redacted) redacted[field] = "[REDACTED]";
+  }
+  return redacted;
+}
 ```
 
-### Step 4: Private Networking
+## Security Checklist
+- [ ] All sensitive values in `fly secrets`, never in `[env]` section of fly.toml
+- [ ] Deploy tokens scoped per-app, not org-wide
+- [ ] `force_https = true` set in fly.toml `[http_service]`
+- [ ] Internal services use `.internal` DNS with no public ports
+- [ ] WireGuard keys rotated and unused tunnels removed
+- [ ] Secrets rotated on schedule (triggers rolling restart)
+- [ ] CI/CD uses deploy-scoped tokens, not personal tokens
+- [ ] Container images scanned before deployment
 
-```bash
-# Apps in same org communicate via .internal DNS (encrypted WireGuard mesh)
-# No public internet exposure needed for internal services
-
-# Access internal services from local machine via WireGuard
-fly wireguard create
-# Then connect: my-app.internal:3000
-```
-
-### Security Checklist
-
-- [ ] All sensitive values in `fly secrets`, not `[env]`
-- [ ] Deploy tokens scoped per-app (not org-wide)
-- [ ] `force_https = true` in fly.toml
-- [ ] Internal services use `.internal` DNS, no public ports
-- [ ] WireGuard for secure local access
-- [ ] Secrets rotated on schedule
+## Error Handling
+| Vulnerability | Risk | Mitigation |
+|---|---|---|
+| Leaked deploy token | Arbitrary code deployed to production | Per-app scoped tokens + rotation |
+| Secrets in fly.toml `[env]` | Plaintext credentials in version control | Use `fly secrets set` exclusively |
+| Open internal ports | Services exposed to public internet | `.internal` DNS + NetworkPolicy |
+| Org-wide token in CI | All apps in org compromised via CI breach | Deploy-scoped tokens per pipeline |
+| Expired TLS certificates | MITM attacks on custom domains | Automated Let's Encrypt renewal |
 
 ## Resources
-
 - [Fly Secrets](https://fly.io/docs/reference/secrets/)
-- [Private Networking](https://fly.io/docs/networking/private-networking/)
-- [TLS Certificates](https://fly.io/docs/networking/custom-domain/)
+- [OWASP API Security Top 10](https://owasp.org/www-project-api-security/)
 
 ## Next Steps
-
-For production readiness, see `flyio-prod-checklist`.
+See `flyio-prod-checklist`.

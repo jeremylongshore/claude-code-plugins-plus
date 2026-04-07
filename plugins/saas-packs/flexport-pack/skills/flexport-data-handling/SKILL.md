@@ -16,103 +16,108 @@ compatible-with: claude-code
 
 ## Overview
 
-Handle Flexport supply chain data with proper PII redaction, data retention policies, and GDPR/CCPA compliance. Shipping data contains sensitive business information (supplier names, addresses, pricing, trade routes) that requires careful handling.
+Flexport logistics data encompasses shipment records, bills of lading, customs declarations, commercial invoices, tracking events, and trade compliance documents. This data crosses international borders and regulatory jurisdictions, requiring strict handling for PII (shipper/consignee contacts), controlled export data (HS codes, ITAR items), and financial records (invoices, duty payments). All integrations must enforce GDPR/CCPA compliance, customs data retention mandates, and C-TPAT supply chain security standards.
 
-## Instructions
+## Data Classification
 
-### Step 1: Identify Sensitive Fields
+| Data Type | Sensitivity | Retention | Encryption |
+|-----------|-------------|-----------|------------|
+| Shipment records | Medium | 1 year post-delivery | AES-256 at rest |
+| Customs declarations | High (trade compliance) | 5 years (CBP requirement) | AES-256 + TLS |
+| Commercial invoices | High (financial) | 7 years (tax/audit) | AES-256 at rest |
+| Contact PII (shipper/consignee) | High | Until deletion request | Field-level encryption |
+| Tracking events | Low | 90 days | TLS in transit |
 
-| Field Category | Examples | PII Level |
-|---------------|----------|-----------|
-| Contact info | Shipper/consignee names, emails, phones | High |
-| Addresses | Origin/destination street addresses | High |
-| Financial | Invoice amounts, unit costs, freight charges | Medium |
-| Trade | HS codes, country of origin, incoterms | Low |
-| Tracking | Shipment IDs, container numbers, BOL numbers | Low |
-
-### Step 2: PII Redaction for Logging
+## Data Import
 
 ```typescript
-const REDACT_FIELDS = new Set([
-  'email', 'phone', 'contact_name', 'street_address',
-  'tax_id', 'bank_account', 'credit_card',
-]);
-
-function redactPII(obj: any, depth = 0): any {
-  if (depth > 10 || !obj || typeof obj !== 'object') return obj;
-  const result: any = Array.isArray(obj) ? [] : {};
-  for (const [key, value] of Object.entries(obj)) {
-    if (REDACT_FIELDS.has(key)) {
-      result[key] = '***REDACTED***';
-    } else if (typeof value === 'object') {
-      result[key] = redactPII(value, depth + 1);
-    } else {
-      result[key] = value;
-    }
-  }
-  return result;
+interface FlexportShipment {
+  id: string; ref: string; status: string;
+  shipper: { name: string; email: string; address: string };
+  consignee: { name: string; email: string; address: string };
+  hsCode: string; incoterm: string; cargoReadyDate: string;
 }
 
-// Usage in logging
-logger.info({ shipment: redactPII(shipmentData) }, 'Shipment processed');
-```
-
-### Step 3: Data Retention Policy
-
-```typescript
-// Automated cleanup based on retention policy
-const RETENTION = {
-  shipments: 365,        // 1 year after delivery
-  purchase_orders: 730,  // 2 years (tax/audit requirements)
-  invoices: 2555,        // 7 years (financial regulations)
-  webhookLogs: 90,       // 90 days
-  apiLogs: 30,           // 30 days
-};
-
-async function enforceRetention() {
-  for (const [table, days] of Object.entries(RETENTION)) {
-    const cutoff = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
-    const deleted = await db.$executeRaw`
-      DELETE FROM ${table} WHERE created_at < ${cutoff} AND status = 'delivered'
-    `;
-    logger.info({ table, deleted, cutoffDate: cutoff }, 'Retention cleanup');
-  }
-}
-```
-
-### Step 4: GDPR Right to Erasure
-
-```typescript
-async function handleDeletionRequest(contactEmail: string) {
-  // Find all shipments associated with this contact
-  const shipments = await db.shipments.findMany({
-    where: { OR: [{ shipperEmail: contactEmail }, { consigneeEmail: contactEmail }] },
-  });
-
-  for (const shipment of shipments) {
-    // Redact PII but keep shipment record for business continuity
-    await db.shipments.update({
-      where: { id: shipment.id },
-      data: {
-        shipperName: '[REDACTED]',
-        shipperEmail: '[REDACTED]',
-        consigneeName: '[REDACTED]',
-        consigneeEmail: '[REDACTED]',
-        streetAddress: '[REDACTED]',
-        redactedAt: new Date(),
-      },
+async function importShipments(cursor?: string): Promise<FlexportShipment[]> {
+  const allShipments: FlexportShipment[] = [];
+  let nextCursor = cursor;
+  do {
+    const res = await fetch(`https://api.flexport.com/v2/shipments?page[after]=${nextCursor || ''}`, {
+      headers: { Authorization: `Bearer ${process.env.FLEXPORT_API_TOKEN}` },
     });
-  }
-
-  logger.info({ email: '[REDACTED]', count: shipments.length }, 'GDPR deletion processed');
+    const data = await res.json();
+    for (const s of data.data) {
+      if (!s.id || !s.attributes.ref) throw new Error(`Invalid shipment: missing required fields`);
+      allShipments.push(s.attributes);
+    }
+    nextCursor = data.links?.next ? new URL(data.links.next).searchParams.get('page[after]') : null;
+  } while (nextCursor);
+  return allShipments;
 }
 ```
+
+## Data Export
+
+```typescript
+async function exportShipmentsCSV(shipments: FlexportShipment[], dest: string) {
+  const REDACT_FIELDS = ['email', 'phone', 'street_address', 'tax_id'];
+  const sanitized = shipments.map(s => {
+    const copy = JSON.parse(JSON.stringify(s));
+    for (const field of REDACT_FIELDS) {
+      if (copy.shipper?.[field]) copy.shipper[field] = '[REDACTED]';
+      if (copy.consignee?.[field]) copy.consignee[field] = '[REDACTED]';
+    }
+    return copy;
+  });
+  // Validate no restricted HS codes in export payload
+  const restricted = sanitized.filter(s => s.hsCode?.startsWith('9A'));
+  if (restricted.length > 0) throw new Error(`Export blocked: ${restricted.length} ITAR-restricted items`);
+  const csv = [Object.keys(sanitized[0]).join(','), ...sanitized.map(r => Object.values(r).join(','))].join('\n');
+  await writeFile(dest, csv, 'utf-8');
+}
+```
+
+## Data Validation
+
+```typescript
+function validateShipment(s: FlexportShipment): string[] {
+  const errors: string[] = [];
+  if (!s.id) errors.push('Missing shipment ID');
+  if (!s.ref || s.ref.length > 50) errors.push('Invalid shipment reference');
+  if (!s.hsCode || !/^\d{4,10}$/.test(s.hsCode)) errors.push(`Invalid HS code: ${s.hsCode}`);
+  if (!['EXW','FOB','CIF','DDP','DAP'].includes(s.incoterm)) errors.push(`Unknown incoterm: ${s.incoterm}`);
+  if (!s.shipper?.name || !s.consignee?.name) errors.push('Missing shipper or consignee name');
+  if (s.cargoReadyDate && isNaN(Date.parse(s.cargoReadyDate))) errors.push('Invalid cargo ready date');
+  return errors;
+}
+```
+
+## Compliance
+
+- [ ] PII fields (shipper/consignee contacts) encrypted at field level, redacted in logs
+- [ ] Customs declarations retained 5 years per CBP/EU customs code requirements
+- [ ] Commercial invoices retained 7 years for tax audit compliance
+- [ ] GDPR right-to-erasure: redact PII but preserve shipment skeleton for business continuity
+- [ ] CCPA opt-out signals honored for California-origin shipments
+- [ ] ITAR/EAR restricted HS codes flagged and blocked from unauthorized export
+- [ ] C-TPAT supply chain security: validate trading partner identities before data sharing
+- [ ] Audit trail for all data access, export, and deletion operations
+
+## Error Handling
+
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| API 429 rate limit | Too many shipment fetches | Implement exponential backoff with jitter |
+| Invalid HS code rejected | Incorrect tariff classification | Validate against WCO HS nomenclature before submission |
+| GDPR deletion timeout | Large contact footprint across shipments | Batch updates in transactions of 100 records |
+| Customs data missing | Incomplete booking submission | Require mandatory fields at import validation step |
+| Export blocked by ITAR flag | Restricted HS code in payload | Route to trade compliance officer for manual review |
 
 ## Resources
 
 - [Flexport API Reference](https://apidocs.flexport.com/)
-- [GDPR Right to Erasure](https://gdpr.eu/right-to-be-forgotten/)
+- [CBP Data Retention Requirements](https://www.cbp.gov/trade)
 
 ## Next Steps
 
-For access control, see `flexport-enterprise-rbac`.
+See `flexport-security-basics`.

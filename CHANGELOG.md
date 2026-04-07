@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.24.0] - 2026-04-06
+
+### Added
+- **SaaS pack skill upgrades** - Upgraded 232 D/F-grade skills to 70+ compliance (C+ or better). Expanded from ~30 lines to 90-150 lines each with Overview, Instructions, Error Handling tables, and product-specific TypeScript examples. Affected packs: appfolio, apple-notes, coreweave, fathom, glean, linktree, lucidchart, mindtickle, openevidence, together.
+- **Legal & Compliance collection** - Added to homepage and /collections page with curated legal toolkit plugins.
+- **General Legal Assistant plugin** - 12-skill, 5-agent legal toolkit (plugin #417) with contract analysis, compliance checking, and document drafting capabilities.
+- **Agent Creator skill** - Added agent-creator skill and agent template to skill-creator plugin.
+- **Work Diary blog** - Added Apr 3-5 posts to tonsofskills.com/blog.
+
+### Changed
+- **Legal plugin rename** - Renamed legal-assistant → general-legal-assistant for clarity.
+- **Freshie inventory cleanup** - Removed 530 stale DB rows (500 legacy skills/, 30 ghost paths). Accurate skill count now 2,834.
+
+### Fixed
+- **CI deploy trigger** - Added pnpm-lock.yaml to deploy-firebase workflow trigger paths.
+- **Lockfile sync** - Added x-bug-triage to pnpm-lock.yaml, unblocking Firebase deploys.
+- **Homepage sponsor** - Restored scrolling marquee for sponsor section under byline.
+
+### Metrics
+- Commits since v4.23.0: 11 (5 features, 4 fixes, 1 refactor, 1 chore)
+- Skills upgraded: 232 (D/F → C+)
+- SaaS packs improved: 10
+- Lines added: +21,464 / -5,440
+
+---
+
 ## [4.23.0] - 2026-04-04
 
 ### Added

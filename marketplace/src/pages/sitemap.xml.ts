@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { readFileSync } from 'fs';
+import { readFileSync, readdirSync } from 'fs';
 import { join } from 'path';
 
 // Generate sitemap.xml from marketplace catalog
@@ -14,6 +14,24 @@ export const GET: APIRoute = async () => {
   const skillsCatalogPath = join(process.cwd(), 'src/data/skills-catalog.json');
   const skillsCatalog = JSON.parse(readFileSync(skillsCatalogPath, 'utf-8'));
 
+  // Discover docs pages from content directory
+  const docsDir = join(process.cwd(), 'src/content/docs');
+  const docsSections = ['getting-started', 'concepts', 'guides', 'reference', 'ecosystem'];
+  const docsPages: { url: string; priority: string; changefreq: string }[] = [
+    { url: '/docs', priority: '0.9', changefreq: 'weekly' },
+  ];
+  for (const section of docsSections) {
+    try {
+      const files = readdirSync(join(docsDir, section));
+      for (const file of files) {
+        if (file.endsWith('.md')) {
+          const slug = file.replace(/\.md$/, '');
+          docsPages.push({ url: `/docs/${section}/${slug}`, priority: '0.7', changefreq: 'weekly' });
+        }
+      }
+    } catch { /* section dir may not exist yet */ }
+  }
+
   // Static pages
   const staticPages = [
     { url: '/', priority: '1.0', changefreq: 'daily' },
@@ -22,7 +40,6 @@ export const GET: APIRoute = async () => {
     { url: '/cowork', priority: '0.8', changefreq: 'weekly' },
     { url: '/collections', priority: '0.8', changefreq: 'weekly' },
     { url: '/compare', priority: '0.8', changefreq: 'weekly' },
-    { url: '/getting-started', priority: '0.9', changefreq: 'weekly' },
     { url: '/tools', priority: '0.9', changefreq: 'weekly' },
     { url: '/sponsor', priority: '0.7', changefreq: 'weekly' },
     { url: '/privacy', priority: '0.5', changefreq: 'monthly' },
@@ -39,6 +56,11 @@ export const GET: APIRoute = async () => {
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${staticPages.map(page => `  <url>
+    <loc>${siteUrl}${page.url}</loc>
+    <changefreq>${page.changefreq}</changefreq>
+    <priority>${page.priority}</priority>
+  </url>`).join('\n')}
+${docsPages.map(page => `  <url>
     <loc>${siteUrl}${page.url}</loc>
     <changefreq>${page.changefreq}</changefreq>
     <priority>${page.priority}</priority>

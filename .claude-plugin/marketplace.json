@@ -8047,6 +8047,75 @@
       "repository": "https://github.com/jeremylongshore/x-bug-triage-plugin",
       "homepage": "https://tonsofskills.com",
       "license": "MIT"
+    },
+    {
+      "name": "framecraft",
+      "source": "./plugins/community/framecraft",
+      "description": "Generate polished demo videos from a single prompt. Orchestrates Playwright, FFmpeg, and Edge TTS MCP servers to produce 1920x1080 videos with voiceover, transitions, and CSS animations.",
+      "version": "1.0.0",
+      "category": "community",
+      "keywords": [
+        "demo-video",
+        "video-generation",
+        "playwright",
+        "ffmpeg",
+        "edge-tts",
+        "mcp"
+      ],
+      "author": {
+        "name": "vaddisrinivas",
+        "url": "https://github.com/vaddisrinivas"
+      }
+    },
+    {
+      "name": "tweetclaw",
+      "source": "./plugins/automation/tweetclaw",
+      "description": "X/Twitter automation - post, reply, like, retweet, follow, DM, search, extract data, monitor accounts, run giveaways. 121 endpoints via Xquik REST API.",
+      "version": "1.5.3",
+      "category": "automation",
+      "keywords": [
+        "twitter",
+        "x",
+        "automation",
+        "social-media",
+        "tweets",
+        "monitoring",
+        "giveaway",
+        "scraping"
+      ],
+      "author": {
+        "name": "Burak Bayir",
+        "email": "burak@xquik.com",
+        "url": "https://xquik.com"
+      },
+      "repository": "https://github.com/Xquik-dev/tweetclaw",
+      "homepage": "https://xquik.com",
+      "license": "MIT"
+    },
+    {
+      "name": "shipwright",
+      "source": "./plugins/ai-agency/shipwright",
+      "description": "Describe your app in plain English — Shipwright builds, tests, and deploys it autonomously via a 9-phase pipeline.",
+      "version": "1.0.0",
+      "category": "ai-agency",
+      "author": {
+        "name": "Nate Nelson",
+        "url": "https://github.com/Wynelson94"
+      },
+      "keywords": [
+        "app-builder",
+        "code-generator",
+        "autonomous-agent",
+        "pipeline",
+        "nextjs",
+        "supabase",
+        "sveltekit",
+        "astro",
+        "ai-agency"
+      ],
+      "repository": "https://github.com/Wynelson94/shipwright",
+      "homepage": "https://github.com/Wynelson94/shipwright",
+      "license": "MIT"
     }
   ]
 }

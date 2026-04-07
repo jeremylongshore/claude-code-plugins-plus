@@ -16,50 +16,99 @@ compatible-with: claude-code
 
 # CoreWeave Webhooks & Events
 
-## Kubernetes Event Monitoring
+## Overview
+CoreWeave emits Kubernetes-native events and custom status callbacks for GPU workload lifecycle management. Monitor instance readiness, job completion, volume attachment, and node health to build automated scaling, alerting, and recovery pipelines for GPU-accelerated inference and training workloads.
 
-```bash
-# Watch GPU pod events
-kubectl get events --watch --field-selector=reason=Scheduled,reason=Pulled,reason=Failed
-
-# Monitor GPU utilization via exec
-kubectl exec -it deployment/inference -- nvidia-smi --query-gpu=utilization.gpu,memory.used --format=csv -l 5
+## Webhook Registration
+```typescript
+const response = await fetch("https://api.coreweave.com/v1/webhooks", {
+  method: "POST",
+  headers: {
+    "Authorization": `Bearer ${process.env.COREWEAVE_API_KEY}`,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    url: "https://yourapp.com/webhooks/coreweave",
+    events: ["instance.ready", "job.completed", "volume.attached", "node.unhealthy"],
+    secret: process.env.COREWEAVE_WEBHOOK_SECRET,
+  }),
+});
 ```
 
-## Prometheus GPU Metrics
+## Signature Verification
+```typescript
+import crypto from "crypto";
+import { Request, Response, NextFunction } from "express";
 
-```yaml
-# DCGM exporter for GPU metrics (pre-installed on CKS)
-# Key metrics:
-# DCGM_FI_DEV_GPU_UTIL - GPU utilization %
-# DCGM_FI_DEV_FB_USED - GPU memory used
-# DCGM_FI_DEV_POWER_USAGE - Power draw
+function verifyCoreWeaveSignature(req: Request, res: Response, next: NextFunction) {
+  const signature = req.headers["x-coreweave-signature"] as string;
+  const timestamp = req.headers["x-coreweave-timestamp"] as string;
+  const payload = `${timestamp}.${req.body.toString()}`;
+  const expected = crypto.createHmac("sha256", process.env.COREWEAVE_WEBHOOK_SECRET!)
+    .update(payload).digest("hex");
+  if (!crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected))) {
+    return res.status(401).json({ error: "Invalid signature" });
+  }
+  next();
+}
 ```
 
-## Slack Alert Integration
+## Event Handler
+```typescript
+import express from "express";
+const app = express();
 
-```python
-import subprocess, json, requests
+app.post("/webhooks/coreweave", express.raw({ type: "application/json" }), verifyCoreWeaveSignature, (req, res) => {
+  const event = JSON.parse(req.body.toString());
+  res.status(200).json({ received: true });
 
-def check_inference_health(deployment: str, slack_url: str):
-    result = subprocess.run(
-        ["kubectl", "get", "deployment", deployment, "-o", "json"],
-        capture_output=True, text=True,
-    )
-    deploy = json.loads(result.stdout)
-    ready = deploy["status"].get("readyReplicas", 0)
-    desired = deploy["spec"]["replicas"]
-
-    if ready < desired:
-        requests.post(slack_url, json={
-            "text": f"CoreWeave: {deployment} has {ready}/{desired} replicas ready"
-        })
+  switch (event.type) {
+    case "instance.ready":
+      registerEndpoint(event.data.instance_id, event.data.gpu_type); break;
+    case "job.completed":
+      collectArtifacts(event.data.job_id, event.data.output_path); break;
+    case "volume.attached":
+      mountStorage(event.data.volume_id, event.data.node_name); break;
+    case "node.unhealthy":
+      drainAndReschedule(event.data.node_id, event.data.reason); break;
+  }
+});
 ```
+
+## Event Types
+| Event | Payload Fields | Use Case |
+|-------|---------------|----------|
+| `instance.ready` | `instance_id`, `gpu_type`, `ip_address` | Register inference endpoint |
+| `job.completed` | `job_id`, `output_path`, `duration_seconds` | Collect training artifacts |
+| `volume.attached` | `volume_id`, `node_name`, `mount_path` | Confirm storage availability |
+| `node.unhealthy` | `node_id`, `reason`, `gpu_count` | Drain node and reschedule pods |
+| `instance.terminated` | `instance_id`, `exit_code`, `gpu_type` | Clean up resources and alert |
+
+## Retry & Idempotency
+```typescript
+const processed = new Set<string>();
+
+async function handleIdempotent(event: { id: string; type: string; data: any }) {
+  if (processed.has(event.id)) return;
+  await routeEvent(event);
+  processed.add(event.id);
+  if (processed.size > 10_000) {
+    const entries = Array.from(processed);
+    entries.slice(0, entries.length - 10_000).forEach((id) => processed.delete(id));
+  }
+}
+```
+
+## Error Handling
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| Signature mismatch | Clock skew between clusters | Validate timestamp within 5-minute window |
+| Duplicate `instance.ready` | Rescheduled pod on same node | Track instance IDs for deduplication |
+| Stale `node.unhealthy` | Transient GPU memory error | Wait for consecutive events before draining |
+| Missing `output_path` | Job failed before writing | Check `exit_code` before collecting artifacts |
 
 ## Resources
-
-- [CoreWeave Observability](https://www.coreweave.com/observability)
+- [CoreWeave Kubernetes Docs](https://docs.coreweave.com/coreweave-kubernetes/)
 
 ## Next Steps
-
-For performance optimization, see `coreweave-performance-tuning`.
+See `coreweave-security-basics`.

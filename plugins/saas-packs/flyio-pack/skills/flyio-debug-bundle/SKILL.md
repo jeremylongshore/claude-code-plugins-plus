@@ -16,61 +16,92 @@ compatible-with: claude-code
 
 ## Overview
 
-Collect diagnostic information for Fly.io support tickets. Captures app status, machine state, recent logs, volume health, and network connectivity.
+Collect machine state, app health, volume status, deploy history, network connectivity, and platform diagnostics into a single archive for Fly.io support tickets. This bundle captures everything needed to troubleshoot stuck deployments, machine boot failures, volume corruption, and edge networking problems.
 
-## Instructions
+## Debug Collection Script
 
 ```bash
 #!/bin/bash
-# fly-debug.sh — Usage: bash fly-debug.sh my-app
 set -euo pipefail
 APP="${1:?Usage: fly-debug.sh <app-name>}"
-BUNDLE="fly-debug-${APP}-$(date +%Y%m%d-%H%M%S)"
+BUNDLE="debug-flyio-${APP}-$(date +%Y%m%d-%H%M%S)"
 mkdir -p "$BUNDLE"
 
+# Environment check
 echo "=== Fly.io Debug Bundle: $APP ===" | tee "$BUNDLE/summary.txt"
 echo "Generated: $(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$BUNDLE/summary.txt"
-echo "flyctl: $(fly version)" >> "$BUNDLE/summary.txt"
+echo "FLY_API_TOKEN: ${FLY_API_TOKEN:+[SET]}" >> "$BUNDLE/summary.txt"
+echo "flyctl: $(fly version 2>/dev/null || echo 'not found')" >> "$BUNDLE/summary.txt"
 
-# App status
+# API connectivity
+HTTP=$(curl -s -o /dev/null -w "%{http_code}" \
+  -H "Authorization: Bearer ${FLY_API_TOKEN}" \
+  https://api.machines.dev/v1/apps 2>/dev/null || echo "000")
+echo "Machines API: HTTP $HTTP" >> "$BUNDLE/summary.txt"
+
+# App status and machine state
 fly status -a "$APP" > "$BUNDLE/status.txt" 2>&1 || true
-
-# Machine details
 fly machine list -a "$APP" --json > "$BUNDLE/machines.json" 2>&1 || true
 
-# Recent logs (last 100 lines)
-fly logs -a "$APP" --no-tail 2>&1 | tail -100 > "$BUNDLE/logs.txt" || true
+# Recent logs (last 200 lines)
+fly logs -a "$APP" --no-tail 2>&1 | tail -200 > "$BUNDLE/logs.txt" || true
 
-# Volumes
+# Volumes, releases, and doctor
 fly volumes list -a "$APP" > "$BUNDLE/volumes.txt" 2>&1 || true
-
-# Releases / deploy history
 fly releases -a "$APP" > "$BUNDLE/releases.txt" 2>&1 || true
-
-# fly doctor
 fly doctor > "$BUNDLE/doctor.txt" 2>&1 || true
 
-# Network check
-echo -n "App reachable: " >> "$BUNDLE/summary.txt"
-curl -s -o /dev/null -w "%{http_code}" "https://${APP}.fly.dev/" >> "$BUNDLE/summary.txt" 2>/dev/null
-echo "" >> "$BUNDLE/summary.txt"
-
-# Platform status
-echo -n "Platform: " >> "$BUNDLE/summary.txt"
+# Network and platform status
+curl -s -o /dev/null -w "App endpoint: HTTP %{http_code}\n" \
+  "https://${APP}.fly.dev/" >> "$BUNDLE/summary.txt" 2>/dev/null || echo "App: unreachable" >> "$BUNDLE/summary.txt"
 curl -s https://status.flyio.net/api/v2/status.json 2>/dev/null | \
-  jq -r '.status.description' >> "$BUNDLE/summary.txt" || echo "unreachable" >> "$BUNDLE/summary.txt"
+  jq -r '"Platform: " + .status.description' >> "$BUNDLE/summary.txt" || true
 
-# Package
-tar -czf "$BUNDLE.tar.gz" "$BUNDLE"
-rm -rf "$BUNDLE"
-echo "Bundle created: $BUNDLE.tar.gz"
+tar -czf "$BUNDLE.tar.gz" "$BUNDLE" && rm -rf "$BUNDLE"
+echo "Bundle: $BUNDLE.tar.gz"
+```
+
+## Analyzing the Bundle
+
+```bash
+tar -xzf debug-flyio-*.tar.gz
+cat debug-flyio-*/summary.txt                 # Quick health overview
+jq '.[] | {id, state, region}' debug-flyio-*/machines.json  # Machine states
+grep -i "error\|fail\|crash" debug-flyio-*/logs.txt         # Error patterns
+cat debug-flyio-*/doctor.txt                  # Fly.io self-diagnosis
+```
+
+## Common Issues
+
+| Symptom | Check in Bundle | Fix |
+|---------|----------------|-----|
+| Machine stuck in `created` state | `machines.json` shows state != `started` | `fly machine start <id>` or destroy and redeploy |
+| Deploy hangs indefinitely | `releases.txt` shows failed release | Check `logs.txt` for health check timeout; increase `[http_service.concurrency]` |
+| Volume not mounting | `volumes.txt` shows volume in wrong region | Create volume in same region as machine; only one machine can mount a volume |
+| App returns 502 | `summary.txt` shows app unreachable | Check `logs.txt` for process crash; verify internal port matches `fly.toml` |
+| DNS not resolving | `doctor.txt` shows DNS warnings | Run `fly ips list`; ensure A/AAAA records exist; check custom domain CNAME |
+
+## Automated Health Check
+
+```typescript
+async function checkFlyio(): Promise<void> {
+  const token = process.env.FLY_API_TOKEN;
+  if (!token) { console.error("[FAIL] FLY_API_TOKEN not set"); return; }
+
+  const res = await fetch("https://api.machines.dev/v1/apps", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  console.log(`[${res.ok ? "OK" : "FAIL"}] Machines API: HTTP ${res.status}`);
+
+  if (res.ok) console.log("[INFO] Machines API accessible");
+}
+checkFlyio();
 ```
 
 ## Resources
 
 - [Fly.io Status](https://status.flyio.net/)
-- [Fly.io Community](https://community.fly.io/)
 
 ## Next Steps
 
-For rate limit issues, see `flyio-rate-limits`.
+See `flyio-common-errors`.

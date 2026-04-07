@@ -14,89 +14,86 @@ compatible-with: claude-code
 
 # Fly.io Production Checklist
 
-## Pre-Deployment
+## Overview
 
-### Infrastructure
-- [ ] `min_machines_running = 1` (avoid cold starts)
-- [ ] Machines in 2+ regions for redundancy
-- [ ] VM sized appropriately (`fly scale show`)
-- [ ] Volumes backed up (if using persistent storage)
-- [ ] Postgres has standby replica
+Fly.io runs applications on edge infrastructure across 30+ regions with Machines, Volumes, and managed Postgres. A production deployment requires multi-region redundancy, proper secret management, health checks, and rollback procedures. Misconfigured auto-scaling means cold starts; missing volume backups mean data loss. This checklist ensures your Fly.io app is production-hardened.
 
-### Configuration
-- [ ] All secrets set via `fly secrets` (not `[env]`)
-- [ ] `force_https = true`
-- [ ] Health check configured with appropriate grace period
-- [ ] Custom domain with TLS certificate active
-- [ ] Concurrency limits tuned for your app
+## Authentication & Secrets
 
-### Code Quality
-- [ ] Dockerfile builds successfully locally
-- [ ] App responds on health check endpoint
-- [ ] Graceful shutdown handles SIGTERM
-- [ ] No hardcoded secrets in codebase
+- [ ] `FLY_API_TOKEN` stored in CI secrets (never in fly.toml or source)
+- [ ] All app secrets set via `fly secrets` (not `[env]` block)
+- [ ] Deploy tokens scoped per app (not org-wide personal tokens)
+- [ ] Key rotation scheduled (quarterly, or after team changes)
+- [ ] No hardcoded secrets in Dockerfile or codebase
 
-## Production fly.toml
+## API Integration
 
-```toml
-app = "my-app"
-primary_region = "iad"
+- [ ] Production base URL: app deployed to `https://<app>.fly.dev`
+- [ ] `force_https = true` in fly.toml http_service
+- [ ] Custom domain with TLS certificate active and auto-renewing
+- [ ] `min_machines_running = 1` to avoid cold starts
+- [ ] Machines deployed in 2+ regions for redundancy
+- [ ] Concurrency limits tuned (`soft_limit`/`hard_limit` per workload)
+- [ ] Volumes backed up if using persistent storage
 
-[http_service]
-  internal_port = 3000
-  force_https = true
-  auto_stop_machines = "stop"
-  auto_start_machines = true
-  min_machines_running = 1
+## Error Handling & Resilience
 
-[http_service.concurrency]
-  type = "requests"
-  hard_limit = 250
-  soft_limit = 200
+- [ ] Health check endpoint configured with appropriate grace period
+- [ ] Graceful shutdown handles SIGTERM within 10s window
+- [ ] Auto-stop/auto-start configured for cost optimization
+- [ ] Postgres standby replica provisioned for database apps
+- [ ] Rollback procedure tested: `fly releases rollback <N>`
+- [ ] Dockerfile builds and runs identically local vs deployed
 
-[http_service.checks]
-  grace_period = "15s"
-  interval = "10s"
-  timeout = "3s"
-  path = "/health"
+## Monitoring & Alerting
 
-[[vm]]
-  cpu_kind = "shared"
-  cpus = 2
-  memory = "1gb"
+- [ ] `fly logs` streaming configured for centralized logging
+- [ ] Machine health monitored via `fly machine status`
+- [ ] Platform status checked: `https://status.flyio.net`
+- [ ] Alert on health check failures across any region
+- [ ] VM resource utilization tracked (`fly scale show`)
+
+## Validation Script
+
+```typescript
+async function checkFlyioReadiness(): Promise<void> {
+  const checks: { name: string; pass: boolean; detail: string }[] = [];
+  // Fly.io API connectivity
+  try {
+    const res = await fetch('https://api.machines.dev/v1/apps', {
+      headers: { Authorization: `Bearer ${process.env.FLY_API_TOKEN}` },
+    });
+    checks.push({ name: 'Fly API', pass: res.ok, detail: res.ok ? 'Connected' : `HTTP ${res.status}` });
+  } catch (e: any) { checks.push({ name: 'Fly API', pass: false, detail: e.message }); }
+  // Token present
+  checks.push({ name: 'API Token Set', pass: !!process.env.FLY_API_TOKEN, detail: process.env.FLY_API_TOKEN ? 'Present' : 'MISSING' });
+  // Platform status
+  try {
+    const res = await fetch('https://status.flyio.net/api/v2/status.json');
+    const data = await res.json();
+    const status = data?.status?.indicator || 'unknown';
+    checks.push({ name: 'Platform Status', pass: status === 'none', detail: status === 'none' ? 'Operational' : status });
+  } catch (e: any) { checks.push({ name: 'Platform Status', pass: false, detail: e.message }); }
+  for (const c of checks) console.log(`[${c.pass ? 'PASS' : 'FAIL'}] ${c.name}: ${c.detail}`);
+}
+checkFlyioReadiness();
 ```
 
-## Rollback Procedure
+## Error Handling
 
-```bash
-# List recent releases
-fly releases -a my-app
-
-# Rollback to previous release
-fly deploy --image registry.fly.io/my-app:previous-version
-
-# Or rollback to specific release
-fly releases rollback 5 -a my-app
-```
-
-## Monitoring
-
-```bash
-# Live logs
-fly logs -a my-app
-
-# Machine metrics
-fly machine status <machine-id> -a my-app
-
-# Platform status
-curl -s https://status.flyio.net/api/v2/status.json | jq '.status.description'
-```
+| Check | Risk if Skipped | Priority |
+|-------|----------------|----------|
+| Multi-region deployment | Single region outage = full downtime | P1 |
+| Volume backups | Data loss on machine replacement | P1 |
+| Health check config | Dead machines receive traffic | P2 |
+| SIGTERM handling | Dropped requests during deploys | P2 |
+| Rollback procedure | Stuck on broken release | P3 |
 
 ## Resources
 
 - [Fly.io Production Checklist](https://fly.io/docs/getting-started/essentials/)
-- [Auto Stop/Start](https://fly.io/docs/launch/autostop-autostart/)
+- [Fly.io Status](https://status.flyio.net)
 
 ## Next Steps
 
-For version upgrades, see `flyio-upgrade-migration`.
+See `flyio-security-basics` for network policies and secret management.

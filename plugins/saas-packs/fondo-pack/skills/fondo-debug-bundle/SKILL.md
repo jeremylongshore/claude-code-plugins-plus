@@ -16,48 +16,94 @@ compatible-with: claude-code
 
 ## Overview
 
-Collect information needed when contacting Fondo support about sync issues, reconciliation discrepancies, or tax filing problems.
+Collect Fondo API connectivity status, filing compliance state, integration health, and accounting sync diagnostics into a single archive for Fondo support tickets. This bundle helps troubleshoot bank connection failures, reconciliation discrepancies, R&D credit calculation issues, and tax filing errors.
 
-## Diagnostic Checklist
+## Debug Collection Script
 
-### Integration Status (Dashboard > Integrations)
-- [ ] Bank connection status (Connected/Expired/Error)
-- [ ] Payroll provider connection status
-- [ ] Last successful sync date for each integration
-- [ ] Any warning/error messages displayed
+```bash
+#!/bin/bash
+set -euo pipefail
+BUNDLE="debug-fondo-$(date +%Y%m%d-%H%M%S)"
+mkdir -p "$BUNDLE"
 
-### Transaction Reconciliation
-- [ ] Date range of missing/wrong transactions
-- [ ] Bank statement balance vs Fondo balance for affected month
-- [ ] Screenshot of discrepancy (redact account numbers)
-- [ ] List of specific transaction IDs affected
+# Environment check
+echo "=== Fondo Debug Bundle ===" | tee "$BUNDLE/summary.txt"
+echo "Generated: $(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$BUNDLE/summary.txt"
+echo "FONDO_API_KEY: ${FONDO_API_KEY:+[SET]}" >> "$BUNDLE/summary.txt"
 
-### R&D Credit Issues
-- [ ] Employee list with R&D classification
-- [ ] Qualifying activity descriptions
-- [ ] Total R&D payroll amount from payroll provider
-- [ ] Fondo's calculated R&D amount
+# API connectivity
+HTTP=$(curl -s -o /dev/null -w "%{http_code}" \
+  -H "Authorization: Bearer ${FONDO_API_KEY}" \
+  https://api.fondo.com/v1/compliance/status 2>/dev/null || echo "000")
+echo "API Status: HTTP $HTTP" >> "$BUNDLE/summary.txt"
 
-### Tax Filing Issues
-- [ ] Filing year and form type (1120, 6765, etc.)
-- [ ] EIN and state of incorporation
-- [ ] Extension status (filed or not)
-- [ ] Deadline date
+# Compliance and filing status
+curl -s -H "Authorization: Bearer ${FONDO_API_KEY}" \
+  "https://api.fondo.com/v1/compliance/status" \
+  > "$BUNDLE/compliance-status.json" 2>&1 || true
 
-## When Contacting Support
+# Integration health (bank, payroll connections)
+curl -s -H "Authorization: Bearer ${FONDO_API_KEY}" \
+  "https://api.fondo.com/v1/integrations" \
+  > "$BUNDLE/integrations.json" 2>&1 || true
 
-Include in your message:
-1. Company name and Fondo account email
-2. Specific issue description with dates
-3. What you expected vs what happened
-4. Screenshots (with sensitive data redacted)
-5. Urgency level (routine / tax deadline / filing error)
+# Recent filings and rate limits
+curl -s -H "Authorization: Bearer ${FONDO_API_KEY}" \
+  "https://api.fondo.com/v1/filings?limit=5" > "$BUNDLE/recent-filings.json" 2>&1 || true
+curl -s -D "$BUNDLE/rate-headers.txt" -o /dev/null \
+  -H "Authorization: Bearer ${FONDO_API_KEY}" \
+  https://api.fondo.com/v1/compliance/status 2>/dev/null || true
+
+tar -czf "$BUNDLE.tar.gz" "$BUNDLE" && rm -rf "$BUNDLE"
+echo "Bundle: $BUNDLE.tar.gz"
+```
+
+## Analyzing the Bundle
+
+```bash
+tar -xzf debug-fondo-*.tar.gz
+cat debug-fondo-*/summary.txt                      # Auth + connectivity
+jq '.integrations[] | {name, status}' debug-fondo-*/integrations.json  # Bank/payroll health
+jq '.[] | {type, status, due_date}' debug-fondo-*/recent-filings.json  # Filing deadlines
+grep -i "ratelimit\|retry" debug-fondo-*/rate-headers.txt
+```
+
+## Common Issues
+
+| Symptom | Check in Bundle | Fix |
+|---------|----------------|-----|
+| API returns 401 | `summary.txt` shows HTTP 401 | Regenerate API key in Fondo dashboard > Settings > API |
+| Bank connection expired | `integrations.json` shows disconnected status | Re-authenticate bank via Fondo dashboard > Integrations |
+| Filing shows overdue | `recent-filings.json` has past due_date | Contact Fondo support immediately; file extension if deadline approaching |
+| R&D credit mismatch | `compliance-status.json` shows calculation warnings | Verify employee R&D classifications; reconcile payroll provider totals |
+| Transaction sync gap | `integrations.json` shows stale last_sync date | Disconnect and reconnect the bank integration; check for institution outages |
+
+## Automated Health Check
+
+```typescript
+async function checkFondo(): Promise<void> {
+  const key = process.env.FONDO_API_KEY;
+  if (!key) { console.error("[FAIL] FONDO_API_KEY not set"); return; }
+
+  const res = await fetch("https://api.fondo.com/v1/compliance/status", {
+    headers: { Authorization: `Bearer ${key}` },
+  });
+  console.log(`[${res.ok ? "OK" : "FAIL"}] API: HTTP ${res.status}`);
+
+  if (res.ok) {
+    const data = await res.json();
+    console.log(`[INFO] Compliance status: ${data.status ?? "unknown"}`);
+  }
+  const remaining = res.headers.get("x-ratelimit-remaining");
+  if (remaining) console.log(`[INFO] Rate limit remaining: ${remaining}`);
+}
+checkFondo();
+```
 
 ## Resources
 
-- [Fondo Support](https://fondo.com)
-- Dashboard > Messages > New Message
+- [Fondo Status](https://status.fondo.com)
 
 ## Next Steps
 
-For common issue patterns, see `fondo-common-errors`.
+See `fondo-common-errors`.

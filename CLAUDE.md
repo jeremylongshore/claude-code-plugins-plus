@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-Tons of Skills — Claude Code plugins marketplace (416 plugins, 2,574 skills). Live at https://tonsofskills.com
+Tons of Skills — Claude Code plugins marketplace (418 plugins, 2,834 skills). Live at https://tonsofskills.com
 
 **Monorepo structure:** pnpm workspaces (v9.15.9+)
 - `plugins/[category]/*` - AI instruction plugins (Markdown, ~98% of plugins)
@@ -108,10 +108,31 @@ ccpi CLI fetches and caches locally
 Post-build validation scripts (also run in CI):
 - `validate-routes.mjs` - Plugin page routes exist
 - `validate-playbook-routes.mjs` - Production playbook routes
-- `validate-internal-links.mjs` - No broken internal links in dist (seeds: index, playbooks, explore, skills, cowork)
+- `validate-internal-links.mjs` - No broken internal links in dist (seeds: index, playbooks, explore, skills, cowork, docs)
 - `validate-links.mjs` - Skill-to-plugin link integrity
 - `validate-cowork-downloads.mjs` - Cowork zip build output (manifest, checksums, download links)
 - `validate-cowork-security.mjs` - Zip content security scanner (no secrets, no node_modules)
+
+## Documentation Section (/docs)
+
+Public, SEO-optimized documentation at tonsofskills.com/docs. Uses Astro content collections (not GitHub wiki — wikis are blocked by Google's robots.txt).
+
+**Structure:** 5 sections, 24 pages + hub:
+- `getting-started/` (4 pages) — installation, first-plugin, first-skill, cli-reference
+- `concepts/` (5 pages) — plugins, skills, agents, commands-and-hooks, mcp-servers
+- `guides/` (6 pages) — write-a-skill, build-a-plugin, create-an-agent, saas-skill-packs, mcp-server-plugin, publish-to-marketplace
+- `reference/` (5 pages) — skill-frontmatter, plugin-json-schema, plugin-categories, allowed-tools, cli-commands
+- `ecosystem/` (4 pages) — marketplace-overview, official-anthropic-docs, community-resources, faq
+
+**Key files:**
+- `marketplace/src/content/docs/{section}/{slug}.md` — Content (Astro content collection)
+- `marketplace/src/content/config.ts` — `docsCollection` schema
+- `marketplace/src/pages/docs/[...slug].astro` — Dynamic route
+- `marketplace/src/pages/docs/index.astro` — Hub page
+- `marketplace/src/components/DocsTemplate.astro` — Template (sidebar, breadcrumbs, JSON-LD TechArticle, prev/next, related docs, official Anthropic links)
+- `marketplace/src/components/DocsSidebar.astro` — Section nav (build-time, no JS)
+
+**Frontmatter schema:** title, description, section (enum), order, keywords, officialLinks (array of {title, url}), relatedDocs (array of slugs like `concepts/skills`).
 
 ## Performance Budgets
 

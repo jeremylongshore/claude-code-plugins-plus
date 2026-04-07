@@ -14,27 +14,56 @@ compatible-with: claude-code
 # Apple Notes Data Handling
 
 ## Overview
-Apple Notes stores content as HTML internally. Understanding the data format is essential for import/export operations.
+
+Apple Notes stores note content as a restricted subset of HTML internally. The `body()` property in JXA returns this HTML, which includes `<div>`, `<h1>`-`<h3>`, `<b>`, `<i>`, `<ul>`, `<li>`, and Apple-specific classes for checklists and tables. Attachments (images, PDFs, sketches, scans) are embedded as `<img>` or object references but cannot be directly extracted via JXA — they require the `attachments()` property. Understanding these data formats is essential for building reliable import, export, and backup pipelines.
 
 ## Note Body HTML Format
+
 ```html
-<!-- Apple Notes uses a subset of HTML -->
+<!-- Apple Notes uses a subset of HTML wrapped in <div> blocks -->
 <div><h1>Title</h1></div>
 <div><br></div>
 <div>Paragraph text here.</div>
-<div><br></div>
 <div><b>Bold text</b> and <i>italic text</i></div>
 <div><br></div>
 <div><ul><li>List item 1</li><li>List item 2</li></ul></div>
 
-<!-- Checklists use a custom attribute -->
+<!-- Checklists use Apple's custom class -->
 <div><ul class="com-apple-note-checklist">
   <li class="done">Completed item</li>
   <li>Incomplete item</li>
 </ul></div>
+
+<!-- Tables (macOS Ventura+) use standard HTML tables -->
+<div><table><tr><td>Cell 1</td><td>Cell 2</td></tr></table></div>
+
+<!-- Tags (macOS Sonoma+) are stored as hashtags in body text -->
+<div>#project #important</div>
+```
+
+## Export All Notes to JSON
+
+```bash
+#!/bin/bash
+# Full export with metadata — useful for backups and migration
+osascript -l JavaScript -e '
+  const Notes = Application("Notes");
+  const results = Notes.defaultAccount.notes().map(n => ({
+    id: n.id(),
+    title: n.name(),
+    body: n.body(),
+    plaintext: n.plaintext(),
+    folder: n.container().name(),
+    created: n.creationDate().toISOString(),
+    modified: n.modificationDate().toISOString(),
+    attachmentCount: n.attachments().length,
+  }));
+  JSON.stringify(results, null, 2);
+' > "$HOME/notes-export-$(date +%Y%m%d).json"
 ```
 
 ## HTML to Markdown Converter
+
 ```typescript
 // src/data/html-to-markdown.ts
 function notesHtmlToMarkdown(html: string): string {
@@ -47,39 +76,49 @@ function notesHtmlToMarkdown(html: string): string {
     .replace(/<i>(.*?)<\/i>/g, "*$1*")
     .replace(/<em>(.*?)<\/em>/g, "*$1*")
     .replace(/<li class="done">(.*?)<\/li>/g, "- [x] $1")
-    .replace(/<li>(.*?)<\/li>/g, "- $1")
+    .replace(/<li>(.*?)<\/li>/g, "- [ ] $1")
     .replace(/<br\s*\/?>/g, "\n")
     .replace(/<div>/g, "").replace(/<\/div>/g, "\n")
     .replace(/<[^>]*>/g, "")
     .replace(/\n{3,}/g, "\n\n")
     .trim();
 }
-
-function markdownToNotesHtml(md: string): string {
-  return md
-    .replace(/^# (.+)$/gm, "<h1>$1</h1>")
-    .replace(/^## (.+)$/gm, "<h2>$1</h2>")
-    .replace(/\*\*(.+?)\*\*/g, "<b>$1</b>")
-    .replace(/\*(.+?)\*/g, "<i>$1</i>")
-    .replace(/^- \[x\] (.+)$/gm, "<li class=\"done\">$1</li>")
-    .replace(/^- (.+)$/gm, "<li>$1</li>")
-    .replace(/\n/g, "<br>");
-}
 ```
 
 ## Attachment Handling
+
 ```bash
-# List notes with attachments
-osascript -l JavaScript -e "
-  const Notes = Application(\"Notes\");
+# List all notes with attachments and their counts
+osascript -l JavaScript -e '
+  const Notes = Application("Notes");
   Notes.defaultAccount.notes()
     .filter(n => n.attachments().length > 0)
-    .map(n => \`\${n.name()}: \${n.attachments().length} attachments\`)
-    .join(\"\\n\");
-"
+    .map(n => n.name() + ": " + n.attachments().length + " attachments (" +
+      n.attachments().map(a => a.name()).join(", ") + ")")
+    .join("\n");
+'
+
+# Note: JXA cannot directly save attachment binary data.
+# For full attachment export, use Shortcuts:
+# shortcuts run "Export Note Attachments" --input-type text --input "Note Title"
 ```
+
+## Error Handling
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| `body()` returns empty string | Note contains only attachments (no text) | Check `attachments().length`; use `plaintext()` as fallback |
+| HTML contains unexpected tags | Note created on iOS with unsupported formatting | Strip unknown tags; keep only known Apple Notes subset |
+| `plaintext()` truncated | Very large note body | Export via `body()` HTML instead; convert after |
+| Checklist state lost in export | Custom class not preserved in conversion | Map `class="done"` to `[x]` before stripping HTML |
+| Attachment names are generic | Auto-generated names like `Image.png` | Use note title + index for meaningful filenames |
 
 ## Resources
 
 - [Mac Automation Scripting Guide](https://developer.apple.com/library/archive/documentation/LanguagesUtilities/Conceptual/MacAutomationScriptingGuide/)
-- [JXA Examples](https://jxa-examples.akjems.com/)
+- [JXA Cookbook](https://github.com/JXA-Cookbook/JXA-Cookbook)
+- [Apple Notes File Format (reverse-engineered)](https://ciofecaforensics.com/2020/08/05/apple-notes-format/)
+
+## Next Steps
+
+For migrating between note platforms, see `apple-notes-migration-deep-dive`. For backup automation, see `apple-notes-deploy-integration`.
