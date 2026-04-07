@@ -16,43 +16,86 @@ compatible-with: claude-code
 
 # CoreWeave Observability
 
-## GPU Metrics (DCGM Exporter)
+## Overview
 
-CKS clusters come with DCGM exporter pre-installed. Key metrics:
+CoreWeave runs GPU-intensive workloads on Kubernetes where hardware failures, memory exhaustion, and underutilization directly impact cost and reliability. Observability must cover DCGM GPU metrics, Kubernetes pod health, inference latency, and job completion rates. Proactive monitoring prevents wasted spend on idle GPUs and catches OOM conditions before they cascade.
 
-| Metric | Description |
-|--------|-------------|
-| `DCGM_FI_DEV_GPU_UTIL` | GPU core utilization % |
-| `DCGM_FI_DEV_FB_USED` | GPU memory used (MB) |
-| `DCGM_FI_DEV_FB_FREE` | GPU memory free (MB) |
-| `DCGM_FI_DEV_POWER_USAGE` | Power consumption (W) |
-| `DCGM_FI_DEV_GPU_TEMP` | GPU temperature (C) |
+## Key Metrics
 
-## Prometheus Alert Rules
+| Metric | Type | Target | Alert Threshold |
+|--------|------|--------|-----------------|
+| GPU utilization | Gauge | > 60% | < 20% for 30m |
+| GPU memory usage | Gauge | < 85% | > 95% for 5m |
+| Inference latency p99 | Histogram | < 200ms | > 500ms |
+| Job completion rate | Counter | > 99% | < 95% per hour |
+| Pod restart count | Counter | 0 | > 3 in 15m |
+| Node GPU temperature | Gauge | < 80C | > 85C for 10m |
 
-```yaml
-groups:
-  - name: coreweave-gpu
-    rules:
-      - alert: GPUUtilizationLow
-        expr: avg(DCGM_FI_DEV_GPU_UTIL) < 20
-        for: 30m
-        labels: { severity: warning }
-        annotations:
-          summary: "GPU utilization below 20% for 30min -- consider scaling down"
+## Instrumentation
 
-      - alert: GPUMemoryHigh
-        expr: DCGM_FI_DEV_FB_USED / (DCGM_FI_DEV_FB_USED + DCGM_FI_DEV_FB_FREE) > 0.95
-        for: 5m
-        labels: { severity: critical }
-        annotations:
-          summary: "GPU memory >95% -- risk of OOM"
-
-      - alert: InferencePodDown
-        expr: kube_deployment_status_replicas_available{deployment=~".*inference.*"} == 0
-        for: 2m
-        labels: { severity: critical }
+```typescript
+async function trackInference(model: string, fn: () => Promise<any>) {
+  const start = Date.now();
+  try {
+    const result = await fn();
+    metrics.record('coreweave.inference.latency', Date.now() - start, { model, status: 'ok' });
+    metrics.increment('coreweave.inference.completed', { model });
+    return result;
+  } catch (err) {
+    metrics.increment('coreweave.inference.errors', { model, error: err.code });
+    throw err;
+  }
+}
 ```
+
+## Health Check Dashboard
+
+```typescript
+async function coreweaveHealth(): Promise<Record<string, string>> {
+  const gpu = await queryPrometheus('avg(DCGM_FI_DEV_GPU_UTIL)');
+  const mem = await queryPrometheus('avg(DCGM_FI_DEV_FB_USED/(DCGM_FI_DEV_FB_USED+DCGM_FI_DEV_FB_FREE))');
+  const pods = await queryPrometheus('kube_deployment_status_replicas_available{namespace="inference"}');
+  return {
+    gpu_utilization: gpu > 20 ? 'healthy' : 'underutilized',
+    gpu_memory: mem < 0.9 ? 'healthy' : 'critical',
+    inference_pods: pods > 0 ? 'healthy' : 'down',
+  };
+}
+```
+
+## Alerting Rules
+
+```typescript
+const alerts = [
+  { metric: 'DCGM_FI_DEV_GPU_UTIL', condition: 'avg < 20', window: '30m', severity: 'warning' },
+  { metric: 'gpu_memory_pct', condition: '> 0.95', window: '5m', severity: 'critical' },
+  { metric: 'inference_latency_p99', condition: '> 500ms', window: '10m', severity: 'warning' },
+  { metric: 'pod_restart_count', condition: '> 3', window: '15m', severity: 'critical' },
+];
+```
+
+## Structured Logging
+
+```typescript
+function logGpuEvent(event: string, node: string, data: Record<string, any>) {
+  console.log(JSON.stringify({
+    service: 'coreweave', event, node,
+    gpu_model: data.gpu_model, utilization: data.util,
+    memory_pct: data.memPct, temperature: data.temp,
+    timestamp: new Date().toISOString(),
+  }));
+}
+```
+
+## Error Handling
+
+| Signal | Meaning | Action |
+|--------|---------|--------|
+| GPU util < 20% sustained | Idle GPUs burning cost | Scale down or reassign workload |
+| GPU memory > 95% | OOM imminent | Reduce batch size or add nodes |
+| Pod CrashLoopBackOff | Driver or config failure | Check DCGM logs, restart node |
+| Inference latency spike | Contention or throttling | Review GPU temp and queue depth |
+| Node NotReady | Hardware or network issue | Cordon node, migrate pods |
 
 ## Resources
 

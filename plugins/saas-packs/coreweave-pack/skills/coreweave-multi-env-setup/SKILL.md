@@ -14,33 +14,90 @@ tags: [saas, gpu-cloud, kubernetes, inference, coreweave]
 compatible-with: claude-code
 ---
 
-# CoreWeave Multi-Env Setup
+# CoreWeave Multi-Environment Setup
 
-## Environment Strategy
+## Overview
 
-| Environment | GPU Type | Scale-to-Zero | Replicas |
-|-------------|----------|---------------|----------|
-| Dev | L40 | Yes | 0-1 |
-| Staging | A100 40GB | Yes | 0-2 |
-| Production | A100 80GB | No | 2-10 |
+CoreWeave GPU cloud requires strict environment separation to control infrastructure costs and prevent resource contention. Each environment maps to an isolated Kubernetes namespace with its own GPU quota, scaling policy, and access controls. Development uses cheaper GPU tiers for iteration speed, staging mirrors production GPU types for accurate benchmarking, and production runs full-scale with no scale-to-zero to guarantee inference latency SLAs.
 
-## Kustomize Overlays
+## Environment Configuration
 
-```yaml
-# k8s/overlays/dev/gpu-patch.yaml
-- op: replace
-  path: /spec/template/spec/affinity/nodeAffinity/requiredDuringSchedulingIgnoredDuringExecution/nodeSelectorTerms/0/matchExpressions/0/values
-  value: ["L40"]
-
-# k8s/overlays/prod/gpu-patch.yaml
-  value: ["A100_PCIE_80GB"]
+```typescript
+const coreweaveConfig = (env: string) => ({
+  development: {
+    namespace: "app-dev", apiEndpoint: process.env.CW_API_ENDPOINT_DEV!,
+    token: process.env.CW_TOKEN_DEV!, gpuType: "L40", scaleToZero: true, replicas: [0, 1],
+  },
+  staging: {
+    namespace: "app-staging", apiEndpoint: process.env.CW_API_ENDPOINT_STG!,
+    token: process.env.CW_TOKEN_STG!, gpuType: "A100_PCIE_40GB", scaleToZero: true, replicas: [0, 2],
+  },
+  production: {
+    namespace: "app-prod", apiEndpoint: process.env.CW_API_ENDPOINT_PROD!,
+    token: process.env.CW_TOKEN_PROD!, gpuType: "A100_PCIE_80GB", scaleToZero: false, replicas: [2, 10],
+  },
+}[env]);
 ```
+
+## Environment Files
 
 ```bash
-# Deploy per environment
-kubectl apply -k k8s/overlays/dev/
-kubectl apply -k k8s/overlays/prod/
+# Per-env files: .env.development, .env.staging, .env.production
+CW_API_ENDPOINT_{DEV|STG|PROD}=https://k8s.{ord1|ord1|las1}.coreweave.com
+CW_TOKEN_{DEV|STG|PROD}=<service-account-token>
+CW_NAMESPACE={app-dev|app-staging|app-prod}
+CW_GPU_TYPE={L40|A100_PCIE_40GB|A100_PCIE_80GB}
 ```
+
+## Environment Validation
+
+```typescript
+function validateCoreWeaveEnv(env: string): void {
+  const required = ["CW_API_ENDPOINT", "CW_TOKEN", "CW_NAMESPACE", "CW_GPU_TYPE"];
+  const suffix = { development: "_DEV", staging: "_STG", production: "_PROD" }[env];
+  const missing = required
+    .map((k) => (k.includes("NAMESPACE") ? k : `${k}${suffix}`))
+    .filter((k) => !process.env[k]);
+  if (missing.length) throw new Error(`Missing env vars for ${env}: ${missing.join(", ")}`);
+}
+```
+
+## Promotion Workflow
+
+```bash
+# 1. Validate model in dev namespace
+kubectl -n app-dev get inferenceservice my-model -o jsonpath='{.status.conditions}'
+
+# 2. Apply staging overlay with production GPU type
+kustomize build k8s/overlays/staging | kubectl apply -f -
+
+# 3. Run inference benchmarks against staging endpoint
+curl -X POST https://staging.myapp.coreweave.cloud/v1/predict -d @test-payload.json
+
+# 4. Promote to production (blue-green via namespace switch)
+kustomize build k8s/overlays/prod | kubectl apply -f -
+kubectl -n app-prod rollout status deployment/my-model
+```
+
+## Environment Matrix
+
+| Setting | Dev | Staging | Prod |
+|---------|-----|---------|------|
+| GPU Type | L40 | A100 40GB | A100 80GB |
+| Scale-to-Zero | Yes | Yes | No |
+| Replicas | 0-1 | 0-2 | 2-10 |
+| Namespace | app-dev | app-staging | app-prod |
+| Region | ord1 | ord1 | las1 |
+| Spot Instances | Yes | No | No |
+
+## Error Handling
+
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| GPU quota exceeded | Namespace limit reached | Request quota increase via CW support portal |
+| Pod stuck Pending | GPU type unavailable in region | Check `kubectl describe node` for capacity; switch region |
+| Scale-to-zero not waking | HPA misconfigured | Verify `minReplicas: 0` and KEDA scaler settings |
+| Namespace access denied | RBAC not applied to overlay | Apply `RoleBinding` in kustomize overlay |
 
 ## Resources
 
@@ -48,4 +105,4 @@ kubectl apply -k k8s/overlays/prod/
 
 ## Next Steps
 
-For observability, see `coreweave-observability`.
+See `coreweave-deploy-integration`.

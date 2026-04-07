@@ -11,54 +11,100 @@ tags: [saas, openevidence, healthcare]
 compatible-with: claude-code
 ---
 
-# OpenEvidence — DeepConsult Research Synthesis
+# OpenEvidence — Evidence Review & Citations
 
 ## Overview
-Secondary workflow complementing the primary workflow.
+
+Search medical evidence, manage citations, and generate formatted evidence reports
+through OpenEvidence. Use this workflow to find clinical studies for a specific
+question, build citation collections for literature reviews, or produce structured
+evidence summaries with graded recommendations. This is the secondary workflow —
+for DeepConsult research synthesis, see `openevidence-core-workflow-a`.
 
 ## Instructions
 
-### Step 1: Submit DeepConsult
+### Step 1: Search the Evidence Database
+
 ```typescript
-// DeepConsult: comprehensive research synthesis (async, takes minutes)
-const consult = await client.deepConsult.create({
-  question: 'What is the current evidence for GLP-1 agonists in heart failure with preserved ejection fraction?',
-  depth: 'comprehensive',  // brief | standard | comprehensive
-  include_meta_analyses: true,
-  year_range: { min: 2020 }
+const results = await client.evidence.search({
+  query: 'SGLT2 inhibitors cardiovascular outcomes type 2 diabetes',
+  filters: {
+    study_type: ['rct', 'meta_analysis', 'systematic_review'],
+    year_range: { min: 2020, max: 2026 },
+    evidence_level: ['1a', '1b', '2a'],
+  },
+  limit: 25,
+  sort: 'relevance',
 });
-console.log(`Consult ID: ${consult.id} | Status: ${consult.status}`);
-```
-
-### Step 2: Poll for Completion
-```typescript
-let result;
-while (true) {
-  result = await client.deepConsult.get(consult.id);
-  if (result.status === 'completed') break;
-  console.log(`Status: ${result.status} (${result.progress}%)`);
-  await new Promise(r => setTimeout(r, 10_000));
-}
-```
-
-### Step 3: Review Results
-```typescript
-console.log('Summary:', result.summary);
-console.log('Key Findings:', result.key_findings.length);
-result.key_findings.forEach(f =>
-  console.log(`  - ${f.finding} [${f.evidence_level}] (${f.citations.length} refs)`)
+console.log(`Found ${results.total} studies`);
+results.items.forEach(s =>
+  console.log(`  [${s.evidence_level}] ${s.title} (${s.journal}, ${s.year}) — ${s.citations} citations`)
 );
-console.log('Total references:', result.references.length);
 ```
 
-### HIPAA Notice
-- OpenEvidence is HIPAA-compliant and SOC 2 Type II certified
-- Never include patient identifiers in API queries
-- Use de-identified clinical scenarios only
-- Ensure BAA is in place before handling PHI
+### Step 2: Build a Citation Collection
+
+```typescript
+const collection = await client.citations.create({
+  name: 'SGLT2i CV Outcomes Review — April 2026',
+  study_ids: results.items.slice(0, 15).map(s => s.id),
+  tags: ['cardiology', 'diabetes', 'sglt2i'],
+});
+console.log(`Collection ${collection.id}: ${collection.study_count} studies`);
+await client.citations.addByDoi(collection.id, { doi: '10.1056/NEJMoa2034577' });
+```
+
+### Step 3: Grade Evidence and Extract Key Findings
+
+```typescript
+const graded = await client.evidence.grade(collection.id, {
+  framework: 'GRADE',  // GRADE | Oxford | USPSTF
+  outcome: 'major_adverse_cardiovascular_events',
+});
+graded.findings.forEach(f =>
+  console.log(`${f.outcome}: ${f.grade} (${f.certainty}) — ${f.summary}`)
+);
+console.log(`Overall recommendation: ${graded.recommendation}`);
+```
+
+### Step 4: Generate a Formatted Evidence Report
+
+```typescript
+const report = await client.reports.generate({
+  collection_id: collection.id,
+  format: 'structured',
+  sections: ['clinical_question', 'search_strategy', 'evidence_table', 'grade_summary', 'references'],
+  citation_style: 'AMA',
+});
+console.log(`Report generated: ${report.page_count} pages`);
+console.log(`Download: ${report.download_url}`);
+```
+
+## HIPAA Notice
+
+- HIPAA-compliant and SOC 2 Type II certified — never include patient identifiers
+- Use de-identified clinical scenarios only; ensure BAA is in place before handling PHI
+
+## Error Handling
+
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| `401 Unauthorized` | Invalid API key or expired session | Regenerate key in OpenEvidence dashboard |
+| `404 Study not found` | DOI not indexed or incorrect ID | Search by title or check DOI format |
+| `422 Invalid filter` | Unsupported evidence_level or study_type | Use allowed values from `client.schema.filters()` |
+| `429 Rate limited` | Exceeded 60 queries/minute | Add backoff; batch searches where possible |
+| `503 Grading unavailable` | GRADE engine under maintenance | Retry after 5 minutes or use Oxford framework |
+
+## Output
+
+A successful workflow returns ranked evidence results with evidence levels, a curated
+citation collection, GRADE assessments with certainty ratings, and a downloadable
+structured report in AMA citation format.
 
 ## Resources
-- [OpenEvidence Docs](https://www.openevidence.com)
+
+- [OpenEvidence Platform](https://www.openevidence.com)
 
 ## Next Steps
-See `openevidence-common-errors`.
+
+See `openevidence-sdk-patterns` for authentication and HIPAA-compliant configuration.
