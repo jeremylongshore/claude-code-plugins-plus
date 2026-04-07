@@ -1,13 +1,12 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /email-signups/{docId} {
-      allow create: if true;
-      allow read, update, delete: if false;
-    }
-    match /nominations/{docId} {
-      allow create: if true;
-      allow read, update, delete: if false;
+    // Block ALL direct client access.
+    // All writes go through Cloud Functions (server-side, validated).
+    // The Admin SDK used by Cloud Functions bypasses these rules entirely,
+    // so the functions will still work.
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }
