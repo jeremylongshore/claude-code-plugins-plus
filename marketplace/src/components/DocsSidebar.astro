@@ -1,0 +1,135 @@
+---
+import { getCollection } from 'astro:content';
+
+interface Props {
+  currentSlug: string;
+}
+
+const { currentSlug } = Astro.props;
+
+const allDocs = await getCollection('docs');
+
+const sections = [
+  { key: 'getting-started', label: 'Getting Started' },
+  { key: 'concepts', label: 'Concepts' },
+  { key: 'guides', label: 'Guides' },
+  { key: 'reference', label: 'Reference' },
+  { key: 'ecosystem', label: 'Ecosystem' },
+];
+
+const grouped = sections.map(section => ({
+  ...section,
+  docs: allDocs
+    .filter(d => d.data.section === section.key)
+    .sort((a, b) => a.data.order - b.data.order),
+}));
+---
+
+<aside class="docs-sidebar" id="docs-sidebar">
+  <div class="sidebar-sticky">
+    <a href="/docs" class="sidebar-home">Documentation</a>
+    <nav class="sidebar-nav">
+      {grouped.map(section => (
+        <div class="sidebar-section">
+          <h3 class="sidebar-section-title">{section.label}</h3>
+          <ul class="sidebar-list">
+            {section.docs.map(doc => (
+              <li>
+                <a
+                  href={`/docs/${doc.slug}`}
+                  class:list={['sidebar-link', { active: doc.slug === currentSlug }]}
+                >
+                  {doc.data.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </nav>
+  </div>
+</aside>
+
+<style>
+  .docs-sidebar {
+    position: relative;
+    width: 260px;
+    flex-shrink: 0;
+  }
+
+  .sidebar-sticky {
+    position: sticky;
+    top: 5rem;
+    max-height: calc(100vh - 6rem);
+    overflow-y: auto;
+    padding-bottom: 2rem;
+  }
+
+  .sidebar-home {
+    display: block;
+    font-family: 'Instrument Sans', system-ui, sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--primary);
+    text-decoration: none;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sidebar-home:hover {
+    opacity: 0.85;
+  }
+
+  .sidebar-section {
+    margin-bottom: 1.25rem;
+  }
+
+  .sidebar-section-title {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-3);
+    margin-bottom: 0.5rem;
+    padding-left: 0.75rem;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .sidebar-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .sidebar-link {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-2);
+    text-decoration: none;
+    padding: 0.35rem 0.75rem;
+    border-left: 2px solid transparent;
+    border-radius: 0 4px 4px 0;
+    transition: all 0.15s ease;
+    line-height: 1.4;
+  }
+
+  .sidebar-link:hover {
+    color: var(--text);
+    background: var(--surface-2);
+    border-left-color: var(--border-bright);
+  }
+
+  .sidebar-link.active {
+    color: var(--primary);
+    background: var(--surface-2);
+    border-left-color: var(--primary);
+    font-weight: 600;
+  }
+
+  @media (max-width: 1024px) {
+    .docs-sidebar {
+      display: none;
+    }
+  }
+</style>

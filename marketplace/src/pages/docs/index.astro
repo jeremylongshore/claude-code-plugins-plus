@@ -1,0 +1,295 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const allDocs = await getCollection('docs');
+
+const sections = [
+  { key: 'getting-started', label: 'Getting Started', icon: '01', description: 'Install Claude Code plugins and create your first skill in minutes.' },
+  { key: 'concepts', label: 'Concepts', icon: '02', description: 'Understand plugins, skills, agents, commands, hooks, and MCP servers.' },
+  { key: 'guides', label: 'Guides', icon: '03', description: 'Step-by-step tutorials for building and publishing plugins.' },
+  { key: 'reference', label: 'Reference', icon: '04', description: 'Complete schema references for SKILL.md, plugin.json, and the ccpi CLI.' },
+  { key: 'ecosystem', label: 'Ecosystem', icon: '05', description: 'Marketplace overview, Anthropic docs, community resources, and FAQ.' },
+];
+
+const grouped = sections.map(section => ({
+  ...section,
+  docs: allDocs
+    .filter(d => d.data.section === section.key)
+    .sort((a, b) => a.data.order - b.data.order),
+}));
+
+const totalDocs = allDocs.length;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Claude Code Plugins Documentation',
+  description: 'Complete documentation for Claude Code plugins, agent skills, and the Tons of Skills marketplace.',
+  url: 'https://tonsofskills.com/docs',
+  publisher: { '@type': 'Organization', name: 'Tons of Skills', url: 'https://tonsofskills.com' },
+};
+---
+
+<BaseLayout
+  title="Documentation | Tons of Skills"
+  description="Complete documentation for Claude Code plugins, agent skills, SKILL.md frontmatter, and the Tons of Skills marketplace. Getting started guides, concept explainers, build tutorials, and API references."
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </Fragment>
+
+  <div class="docs-hub">
+    <!-- Hero -->
+    <section class="hub-hero">
+      <div class="hub-container">
+        <span class="hub-badge">Documentation</span>
+        <h1 class="hub-title">
+          Learn Claude Code Plugins
+        </h1>
+        <p class="hub-subtitle">
+          {totalDocs} guides covering everything from installation to publishing your own plugins.
+          Concepts, tutorials, references, and links to official Anthropic documentation.
+        </p>
+        <div class="hub-actions">
+          <a href="/docs/getting-started/installation" class="hub-cta-primary">Get Started</a>
+          <a href="#concepts" class="hub-cta-secondary">Explore Concepts</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sections -->
+    <section class="hub-sections">
+      <div class="hub-container">
+        {grouped.map(section => (
+          <div class="hub-section" id={section.key}>
+            <div class="section-header">
+              <span class="section-number">{section.icon}</span>
+              <div>
+                <h2 class="section-title">{section.label}</h2>
+                <p class="section-description">{section.description}</p>
+              </div>
+            </div>
+            <div class="section-grid">
+              {section.docs.map(doc => (
+                <a href={`/docs/${doc.slug}`} class="doc-card">
+                  <h3 class="doc-card-title">{doc.data.title}</h3>
+                  <p class="doc-card-desc">{doc.data.description}</p>
+                </a>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Explore CTA -->
+    <section class="hub-footer-cta">
+      <div class="hub-container">
+        <p>Ready to explore? <a href="/explore">Browse 418 plugins</a> or <a href="/skills">search 2,834 skills</a>.</p>
+      </div>
+    </section>
+  </div>
+
+  <style>
+    .docs-hub {
+      padding-top: 4.5rem;
+      min-height: 100vh;
+    }
+
+    .hub-container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* Hero */
+    .hub-hero {
+      padding: 4rem 0 3rem;
+      text-align: center;
+    }
+
+    .hub-badge {
+      display: inline-block;
+      background: var(--surface-3);
+      color: var(--primary);
+      padding: 0.35rem 0.85rem;
+      border-radius: 5px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 1.25rem;
+      font-family: 'DM Mono', monospace;
+    }
+
+    .hub-title {
+      font-size: clamp(2rem, 5vw, 3.25rem);
+      font-weight: 850;
+      color: var(--text);
+      line-height: 1.1;
+      margin-bottom: 1rem;
+      letter-spacing: -0.02em;
+    }
+
+    .hub-subtitle {
+      font-size: 1.1rem;
+      color: var(--text-2);
+      line-height: 1.65;
+      max-width: 640px;
+      margin: 0 auto 2rem;
+    }
+
+    .hub-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .hub-cta-primary {
+      background: var(--primary);
+      color: var(--surface);
+      padding: 0.65rem 1.5rem;
+      border-radius: 6px;
+      font-weight: 650;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: opacity 0.15s, transform 0.15s;
+    }
+
+    .hub-cta-primary:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .hub-cta-secondary {
+      color: var(--text-2);
+      padding: 0.65rem 1.5rem;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-decoration: none;
+      border: 1px solid var(--border);
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    .hub-cta-secondary:hover {
+      border-color: var(--primary);
+      color: var(--text);
+    }
+
+    /* Sections */
+    .hub-sections {
+      padding: 2rem 0 4rem;
+    }
+
+    .hub-section {
+      margin-bottom: 3rem;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .section-number {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      background: var(--surface-3);
+      color: var(--primary);
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      font-family: 'DM Mono', monospace;
+    }
+
+    .section-title {
+      font-size: 1.4rem;
+      font-weight: 750;
+      color: var(--text);
+      margin-bottom: 0.25rem;
+    }
+
+    .section-description {
+      font-size: 0.9rem;
+      color: var(--text-3);
+      line-height: 1.5;
+    }
+
+    .section-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .doc-card {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      padding: 1rem 1.15rem;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      text-decoration: none;
+      transition: border-color 0.15s, transform 0.15s;
+    }
+
+    .doc-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-1px);
+    }
+
+    .doc-card-title {
+      font-size: 0.95rem;
+      font-weight: 650;
+      color: var(--text);
+      line-height: 1.3;
+    }
+
+    .doc-card-desc {
+      font-size: 0.8rem;
+      color: var(--text-3);
+      line-height: 1.5;
+    }
+
+    /* Footer CTA */
+    .hub-footer-cta {
+      padding: 2rem 0 4rem;
+      text-align: center;
+    }
+
+    .hub-footer-cta p {
+      font-size: 1rem;
+      color: var(--text-2);
+    }
+
+    .hub-footer-cta a {
+      color: var(--primary);
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    @media (max-width: 640px) {
+      .hub-hero {
+        padding: 3rem 0 2rem;
+      }
+
+      .section-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section-header {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+    }
+  </style>
+</BaseLayout>

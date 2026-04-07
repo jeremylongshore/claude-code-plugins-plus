@@ -1,0 +1,526 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import DocsSidebar from './DocsSidebar.astro';
+import { getCollection } from 'astro:content';
+
+interface Props {
+  entry: any;
+}
+
+const { entry } = Astro.props;
+const { title, description, section, officialLinks, relatedDocs, keywords } = entry.data;
+
+const sectionLabels: Record<string, string> = {
+  'getting-started': 'Getting Started',
+  'concepts': 'Concepts',
+  'guides': 'Guides',
+  'reference': 'Reference',
+  'ecosystem': 'Ecosystem',
+};
+
+const sectionLabel = sectionLabels[section] || section;
+
+// Build prev/next navigation
+const allDocs = await getCollection('docs');
+const sectionDocs = allDocs
+  .filter(d => d.data.section === section)
+  .sort((a, b) => a.data.order - b.data.order);
+
+const currentIndex = sectionDocs.findIndex(d => d.slug === entry.slug);
+const prevDoc = currentIndex > 0 ? sectionDocs[currentIndex - 1] : null;
+const nextDoc = currentIndex < sectionDocs.length - 1 ? sectionDocs[currentIndex + 1] : null;
+
+// Resolve related docs
+const allDocsMap = new Map(allDocs.map(d => [d.slug, d]));
+const resolvedRelated = (relatedDocs || [])
+  .map((slug: string) => allDocsMap.get(slug))
+  .filter(Boolean);
+
+// JSON-LD
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: title,
+  description,
+  author: { '@type': 'Organization', name: 'Intent Solutions', url: 'https://intentsolutions.io' },
+  publisher: { '@type': 'Organization', name: 'Tons of Skills', url: 'https://tonsofskills.com' },
+  url: `https://tonsofskills.com/docs/${entry.slug}`,
+  keywords: keywords?.join(', ') || '',
+  mainEntityOfPage: { '@type': 'WebPage', '@id': `https://tonsofskills.com/docs/${entry.slug}` },
+};
+---
+
+<BaseLayout title={`${title} | Docs`} description={description}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </Fragment>
+
+  <div class="docs-page">
+    <div class="docs-container">
+      <DocsSidebar currentSlug={entry.slug} />
+
+      <div class="docs-main">
+        <!-- Breadcrumbs -->
+        <nav class="docs-breadcrumbs" aria-label="Breadcrumb">
+          <a href="/">Home</a>
+          <span class="sep">/</span>
+          <a href="/docs">Docs</a>
+          <span class="sep">/</span>
+          <a href={`/docs#${section}`}>{sectionLabel}</a>
+          <span class="sep">/</span>
+          <span class="current">{title}</span>
+        </nav>
+
+        <!-- Header -->
+        <header class="docs-header">
+          <span class="section-badge">{sectionLabel}</span>
+          <h1 class="docs-title">{title}</h1>
+          <p class="docs-description">{description}</p>
+        </header>
+
+        <!-- Content -->
+        <article class="docs-content" id="docs-content">
+          <slot />
+        </article>
+
+        <!-- Official Links Callout -->
+        {officialLinks && officialLinks.length > 0 && (
+          <aside class="official-links">
+            <h3 class="official-links-title">Official Anthropic Documentation</h3>
+            <ul class="official-links-list">
+              {officialLinks.map((link: { title: string; url: string }) => (
+                <li>
+                  <a href={link.url} target="_blank" rel="noopener noreferrer">
+                    {link.title}
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-left:4px;vertical-align:middle;"><path d="M3.5 1.5H10.5V8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M10.5 1.5L1.5 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </aside>
+        )}
+
+        <!-- Related Docs -->
+        {resolvedRelated.length > 0 && (
+          <aside class="related-docs">
+            <h3 class="related-title">Related Documentation</h3>
+            <div class="related-grid">
+              {resolvedRelated.map((doc: any) => (
+                <a href={`/docs/${doc.slug}`} class="related-card">
+                  <span class="related-section">{sectionLabels[doc.data.section]}</span>
+                  <span class="related-name">{doc.data.title}</span>
+                </a>
+              ))}
+            </div>
+          </aside>
+        )}
+
+        <!-- Prev/Next Navigation -->
+        <nav class="docs-nav-footer">
+          {prevDoc && (
+            <a href={`/docs/${prevDoc.slug}`} class="nav-link nav-prev">
+              <span class="nav-label">Previous</span>
+              <span class="nav-title">{prevDoc.data.title}</span>
+            </a>
+          )}
+          {nextDoc && (
+            <a href={`/docs/${nextDoc.slug}`} class="nav-link nav-next">
+              <span class="nav-label">Next</span>
+              <span class="nav-title">{nextDoc.data.title}</span>
+            </a>
+          )}
+        </nav>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .docs-page {
+      padding-top: 5rem;
+      min-height: 100vh;
+    }
+
+    .docs-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+      display: flex;
+      gap: 3rem;
+      align-items: flex-start;
+    }
+
+    .docs-main {
+      flex: 1;
+      min-width: 0;
+      max-width: 800px;
+    }
+
+    /* Breadcrumbs */
+    .docs-breadcrumbs {
+      position: static;
+      background: transparent;
+      border: none;
+      padding: 0;
+      backdrop-filter: none;
+      box-shadow: none;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.8rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      font-family: 'DM Mono', monospace;
+    }
+
+    .docs-breadcrumbs a {
+      color: var(--text-3);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    .docs-breadcrumbs a:hover {
+      color: var(--primary);
+    }
+
+    .docs-breadcrumbs .sep {
+      color: var(--text-3);
+      opacity: 0.5;
+    }
+
+    .docs-breadcrumbs .current {
+      color: var(--text);
+    }
+
+    /* Header */
+    .docs-header {
+      margin-bottom: 2.5rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-badge {
+      display: inline-block;
+      background: var(--surface-3);
+      color: var(--primary);
+      padding: 0.3rem 0.7rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 1rem;
+      font-family: 'DM Mono', monospace;
+    }
+
+    .docs-title {
+      font-size: clamp(1.75rem, 4vw, 2.5rem);
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.15;
+      margin-bottom: 0.75rem;
+    }
+
+    .docs-description {
+      font-size: 1.1rem;
+      color: var(--text-2);
+      line-height: 1.6;
+    }
+
+    /* Article content typography */
+    .docs-content :global(h2) {
+      font-size: 1.6rem;
+      font-weight: 750;
+      color: var(--text);
+      margin-top: 2.5rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--border);
+      scroll-margin-top: 6rem;
+    }
+
+    .docs-content :global(h3) {
+      font-size: 1.25rem;
+      font-weight: 650;
+      color: var(--text);
+      margin-top: 2rem;
+      margin-bottom: 0.75rem;
+      scroll-margin-top: 6rem;
+    }
+
+    .docs-content :global(h4) {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-top: 1.5rem;
+      margin-bottom: 0.5rem;
+      scroll-margin-top: 6rem;
+    }
+
+    .docs-content :global(p) {
+      margin-bottom: 1.15rem;
+      line-height: 1.75;
+      color: var(--text-2);
+    }
+
+    .docs-content :global(ul),
+    .docs-content :global(ol) {
+      margin-bottom: 1.15rem;
+      padding-left: 1.5rem;
+    }
+
+    .docs-content :global(li) {
+      margin-bottom: 0.4rem;
+      line-height: 1.7;
+      color: var(--text-2);
+    }
+
+    .docs-content :global(a) {
+      color: var(--primary);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .docs-content :global(a:hover) {
+      opacity: 0.8;
+    }
+
+    .docs-content :global(pre) {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      overflow-x: auto;
+      margin: 1.25rem 0;
+      font-size: 0.85rem;
+      line-height: 1.65;
+    }
+
+    .docs-content :global(code) {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.875em;
+    }
+
+    .docs-content :global(:not(pre) > code) {
+      background: var(--surface-2);
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      color: var(--primary);
+    }
+
+    .docs-content :global(blockquote) {
+      border-left: 3px solid var(--primary);
+      background: var(--surface-2);
+      padding: 1rem 1.25rem;
+      margin: 1.25rem 0;
+      border-radius: 0 6px 6px 0;
+    }
+
+    .docs-content :global(blockquote p) {
+      margin-bottom: 0;
+      color: var(--text-2);
+      font-style: italic;
+    }
+
+    .docs-content :global(table) {
+      width: 100%;
+      margin: 1.25rem 0;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    .docs-content :global(th) {
+      background: var(--surface-2);
+      color: var(--text);
+      font-weight: 600;
+      text-align: left;
+      padding: 0.65rem 0.85rem;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .docs-content :global(td) {
+      padding: 0.65rem 0.85rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-2);
+    }
+
+    .docs-content :global(hr) {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 2.5rem 0;
+    }
+
+    .docs-content :global(strong) {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* Official Links */
+    .official-links {
+      margin-top: 2.5rem;
+      padding: 1.5rem;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      border-left: 3px solid var(--primary);
+    }
+
+    .official-links-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 0.75rem;
+    }
+
+    .official-links-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .official-links-list a {
+      color: var(--primary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: opacity 0.15s;
+    }
+
+    .official-links-list a:hover {
+      opacity: 0.75;
+    }
+
+    /* Related Docs */
+    .related-docs {
+      margin-top: 2.5rem;
+    }
+
+    .related-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 1rem;
+    }
+
+    .related-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .related-card {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      padding: 0.85rem 1rem;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      text-decoration: none;
+      transition: border-color 0.15s, transform 0.15s;
+    }
+
+    .related-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-1px);
+    }
+
+    .related-section {
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-3);
+      font-family: 'DM Mono', monospace;
+    }
+
+    .related-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* Prev/Next */
+    .docs-nav-footer {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      position: static;
+      background: transparent;
+      backdrop-filter: none;
+      box-shadow: none;
+      width: auto;
+      z-index: auto;
+    }
+
+    .nav-link {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      padding: 1rem 1.25rem;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      text-decoration: none;
+      transition: border-color 0.15s, transform 0.15s;
+    }
+
+    .nav-link:hover {
+      border-color: var(--primary);
+      transform: translateY(-1px);
+    }
+
+    .nav-prev { text-align: left; }
+    .nav-next { text-align: right; margin-left: auto; }
+
+    .nav-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-3);
+      font-family: 'DM Mono', monospace;
+    }
+
+    .nav-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .docs-container {
+        padding: 1.5rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .docs-page {
+        padding-top: 4rem;
+      }
+
+      .docs-container {
+        padding: 1rem;
+      }
+
+      .docs-nav-footer {
+        grid-template-columns: 1fr;
+      }
+
+      .nav-next {
+        margin-left: 0;
+        text-align: left;
+      }
+    }
+  </style>
+
+  <script>
+    // Generate inline ToC from h2/h3 headings for mobile
+    // (Desktop uses the sidebar)
+  </script>
+</BaseLayout>
