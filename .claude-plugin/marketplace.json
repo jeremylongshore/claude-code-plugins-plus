@@ -4352,6 +4352,28 @@
       }
     },
     {
+      "name": "tonone",
+      "source": "./plugins/ai-agency/tonone",
+      "description": "23-agent AI team for software teams: 15 engineering specialists (Apex, Forge, Relay, Spine, Flux, Warden, Vigil, Prism, Cortex, Touch, Volt, Atlas, Lens, Proof, Pave) + 8 product agents (Helm, Echo, Lumen, Draft, Form, Crest, Pitch, Surge) with a formal Helm→Apex handoff interface and 125 skills.",
+      "version": "0.6.5",
+      "category": "ai-agency",
+      "keywords": [
+        "ai-team",
+        "multi-agent",
+        "orchestration",
+        "engineering",
+        "product",
+        "agents",
+        "ai-agency"
+      ],
+      "author": {
+        "name": "thisisfatih",
+        "url": "https://github.com/thisisfatih"
+      },
+      "repository": "https://github.com/tonone-ai/tonone",
+      "license": "MIT"
+    },
+    {
       "name": "unit-test-generator",
       "source": "./plugins/testing/unit-test-generator",
       "description": "Automatically generate comprehensive unit tests from source code with multiple testing framework support",
