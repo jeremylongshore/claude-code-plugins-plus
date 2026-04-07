@@ -713,8 +713,8 @@ sources:
       name: Rohit Hazra
       github: rohithzr
     license: MIT
-    category: Productivity / Config Management
-    verified: true
+    category: productivity
+    verified: false
     include:
       - ".claude-plugin/**"
       - "skills/**"

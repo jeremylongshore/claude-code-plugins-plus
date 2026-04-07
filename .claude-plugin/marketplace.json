@@ -8029,6 +8029,28 @@
       "repository": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills",
       "homepage": "https://tonsofskills.com",
       "license": "MIT"
+    },
+    {
+      "name": "claudebase",
+      "source": "external",
+      "description": "Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles, secret scanning, and multi-machine conflict detection.",
+      "version": "1.0.0",
+      "category": "productivity",
+      "author": {
+        "name": "Rohit Hazra",
+        "email": ""
+      },
+      "keywords": [
+        "backup",
+        "sync",
+        "config",
+        "profiles",
+        "dotfiles",
+        "multi-machine"
+      ],
+      "repository": "https://github.com/rohithzr/claudebase",
+      "homepage": "https://github.com/rohithzr/claudebase",
+      "license": "MIT"
     }
   ]
 }
