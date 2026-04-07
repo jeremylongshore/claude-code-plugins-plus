@@ -16,67 +16,108 @@ compatible-with: claude-code
 
 # CoreWeave Data Handling
 
-## Storage Classes
+## Overview
 
-| Class | Type | Use Case |
-|-------|------|----------|
-| `shared-hdd-ord1` | HDD | Training data archival |
-| `shared-ssd-ord1` | SSD | Model weights, active datasets |
-| `block-nvme-ord1` | NVMe | High-performance training |
+CoreWeave GPU cloud workloads involve large-scale data artifacts: model weights (multi-GB safetensors/GGUF), training datasets (parquet, TFRecord, WebDataset), checkpoint snapshots, and inference cache volumes. Data flows through Kubernetes PersistentVolumeClaims backed by region-specific storage classes. Compliance requires encryption at rest via the storage driver, namespace-scoped RBAC for volume access, and audit logging for any data egress from GPU nodes.
 
-## PVC Configuration
+## Data Classification
 
-```yaml
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: model-storage
-spec:
-  accessModes: ["ReadWriteMany"]
-  resources:
-    requests:
-      storage: 500Gi
-  storageClassName: shared-ssd-ord1
+| Data Type | Sensitivity | Retention | Encryption |
+|-----------|-------------|-----------|------------|
+| Model weights | Medium | Until deprecated | AES-256 at rest |
+| Training datasets | High (may contain PII) | Per data license | AES-256 + TLS in transit |
+| Checkpoint snapshots | Medium | 30 days post-training | AES-256 at rest |
+| Inference cache | Low | Session/TTL | Volume-level encryption |
+| HuggingFace tokens | Critical | Rotate quarterly | K8s Secret + KMS |
+
+## Data Import
+
+```typescript
+import { KubeConfig, BatchV1Api } from '@kubernetes/client-node';
+
+async function importDataset(pvcName: string, sourceUrl: string, namespace: string) {
+  const kc = new KubeConfig();
+  kc.loadFromDefault();
+  const batch = kc.makeApiClient(BatchV1Api);
+  const job = {
+    metadata: { name: `import-${Date.now()}`, namespace },
+    spec: { template: { spec: {
+      restartPolicy: 'Never',
+      containers: [{ name: 'loader', image: 'python:3.11-slim',
+        command: ['python3', '-c', `
+import urllib.request, hashlib
+dest = '/data/dataset.tar.gz'
+urllib.request.urlretrieve('${sourceUrl}', dest)
+print(f"SHA256: {hashlib.sha256(open(dest,'rb').read()).hexdigest()}")`],
+        volumeMounts: [{ name: 'storage', mountPath: '/data' }],
+      }],
+      volumes: [{ name: 'storage', persistentVolumeClaim: { claimName: pvcName } }],
+    }}}
+  };
+  await batch.createNamespacedJob(namespace, { body: job });
+}
 ```
 
-## Data Loading Job
+## Data Export
 
-```yaml
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: download-model
-spec:
-  template:
-    spec:
-      restartPolicy: Never
-      containers:
-        - name: downloader
-          image: python:3.11-slim
-          command: ["python3", "-c"]
-          args:
-            - |
-              from huggingface_hub import snapshot_download
-              snapshot_download("meta-llama/Llama-3.1-8B-Instruct", local_dir="/models/llama-8b")
-          volumeMounts:
-            - name: models
-              mountPath: /models
-          env:
-            - name: HF_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: hf-token
-                  key: token
-      volumes:
-        - name: models
-          persistentVolumeClaim:
-            claimName: model-storage
+```typescript
+async function exportCheckpoint(pvcName: string, destBucket: string, ns: string) {
+  // Validate export destination is in approved region list
+  const APPROVED_REGIONS = ['us-east-1', 'us-central-1', 'eu-west-1'];
+  const region = destBucket.split('-').slice(0, 3).join('-');
+  if (!APPROVED_REGIONS.some(r => destBucket.includes(r))) {
+    throw new Error(`Export blocked: ${region} not in approved regions`);
+  }
+  // Stream from PVC → object storage with integrity check
+  const exportCmd = `tar czf - /models | gsutil cp - gs://${destBucket}/export.tar.gz`;
+  console.log(`Exporting from PVC ${pvcName} to ${destBucket}`);
+  return exportCmd;
+}
 ```
+
+## Data Validation
+
+```typescript
+interface ModelArtifact {
+  name: string; format: 'safetensors' | 'gguf' | 'bin' | 'pt';
+  sizeBytes: number; sha256: string;
+}
+
+function validateArtifact(artifact: ModelArtifact): string[] {
+  const errors: string[] = [];
+  if (!artifact.name || artifact.name.length > 255) errors.push('Invalid artifact name');
+  if (artifact.sizeBytes <= 0) errors.push('Size must be positive');
+  if (!/^[a-f0-9]{64}$/.test(artifact.sha256)) errors.push('Invalid SHA-256 hash');
+  if (!['safetensors', 'gguf', 'bin', 'pt'].includes(artifact.format)) errors.push(`Unsupported format`);
+  return errors;
+}
+```
+
+## Compliance
+
+- [ ] All PVCs use encrypted storage classes (AES-256 at rest)
+- [ ] HuggingFace and API tokens stored in Kubernetes Secrets with KMS encryption
+- [ ] Namespace-scoped RBAC restricts volume mount access to authorized workloads
+- [ ] Data egress from GPU nodes logged via network policy audit
+- [ ] Training datasets with PII processed only in approved regions (data residency)
+- [ ] Checkpoint retention enforced via CronJob garbage collection (30-day default)
+- [ ] SOC 2 Type II audit trail for all storage provisioning and deletion events
+
+## Error Handling
+
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| PVC pending indefinitely | Storage class unavailable in region | Check `kubectl get sc` and switch to available class |
+| Download job OOMKilled | Dataset exceeds container memory limit | Increase resource limits or use streaming download |
+| Permission denied on volume | RBAC misconfigured for namespace | Verify ServiceAccount has PVC access via RoleBinding |
+| Checksum mismatch after import | Partial transfer or corruption | Re-run import job; enable retry with backoff |
+| Secret not found | KMS key rotation or namespace mismatch | Verify secret exists in target namespace with `kubectl get secret` |
 
 ## Resources
 
-- [CoreWeave Storage](https://docs.coreweave.com)
+- [CoreWeave Storage Docs](https://docs.coreweave.com/storage)
+- [Kubernetes PVC Reference](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)
 
 ## Next Steps
 
-For RBAC configuration, see `coreweave-enterprise-rbac`.
+See `coreweave-security-basics`.

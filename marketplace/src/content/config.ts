@@ -80,9 +80,23 @@ const blogPostsCollection = defineCollection({
   })
 });
 
+const docsCollection = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    section: z.enum(['getting-started', 'concepts', 'guides', 'reference', 'ecosystem']),
+    order: z.number(),
+    keywords: z.array(z.string()).optional().default([]),
+    officialLinks: z.array(z.object({ title: z.string(), url: z.string() })).optional().default([]),
+    relatedDocs: z.array(z.string()).optional().default([]),
+  })
+});
+
 export const collections = {
   'plugins': pluginsCollection,
   'playbooks': playbooksCollection,
   'blog': blogCollection,
-  'blog-posts': blogPostsCollection
+  'blog-posts': blogPostsCollection,
+  'docs': docsCollection
 };

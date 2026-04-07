@@ -3075,6 +3075,31 @@
       }
     },
     {
+      "name": "freshie-inventory-manager",
+      "source": "./plugins/database/freshie-inventory-manager",
+      "description": "Interactive command center for the freshie ecosystem inventory database — conversational wizard with subagents for discovery scans, compliance grading, batch remediation, querying, reporting, and email PDF delivery across 50 tables of plugin/skill/pack metadata",
+      "version": "1.0.0",
+      "category": "database",
+      "keywords": [
+        "database",
+        "inventory",
+        "freshie",
+        "compliance",
+        "sqlite",
+        "ecosystem",
+        "audit",
+        "subagents"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "components": {
+        "skills": 1,
+        "agents": 3
+      }
+    },
+    {
       "name": "fullstack-starter-pack",
       "source": "./plugins/packages/fullstack-starter-pack",
       "description": "Complete fullstack development toolkit: React, Express/FastAPI, PostgreSQL scaffolding with AI agents",
@@ -5767,6 +5792,32 @@
       }
     },
     {
+      "name": "tonone",
+      "source": "./plugins/ai-agency/tonone",
+      "description": "23-agent AI team for software teams: 15 engineering specialists (Apex, Forge, Relay, Spine, Flux, Warden, Vigil, Prism, Cortex, Touch, Volt, Atlas, Lens, Proof, Pave) + 8 product agents (Helm, Echo, Lumen, Draft, Form, Crest, Pitch, Surge) with a formal Helm→Apex handoff interface and 125 skills.",
+      "version": "0.6.5",
+      "category": "ai-agency",
+      "keywords": [
+        "ai-team",
+        "multi-agent",
+        "orchestration",
+        "engineering",
+        "product",
+        "agents",
+        "ai-agency"
+      ],
+      "author": {
+        "name": "thisisfatih",
+        "url": "https://github.com/thisisfatih"
+      },
+      "repository": "https://github.com/tonone-ai/tonone",
+      "license": "MIT",
+      "components": {
+        "agents": 23,
+        "skills": 125
+      }
+    },
+    {
       "name": "unit-test-generator",
       "source": "./plugins/testing/unit-test-generator",
       "description": "Automatically generate comprehensive unit tests from source code with multiple testing framework support",
@@ -8174,7 +8225,7 @@
     {
       "name": "b12-claude-plugin",
       "source": "./plugins/community/b12-claude-plugin",
-      "description": "B12 Website Generator \u2014 an official plugin by B12.io. Ships a single auto-activating skill (website-generator) that collects a business name and description, then generates a production-ready B12 website signup link instantly.",
+      "description": "B12 Website Generator — an official plugin by B12.io. Ships a single auto-activating skill (website-generator) that collects a business name and description, then generates a production-ready B12 website signup link instantly.",
       "version": "1.0.0",
       "category": "community",
       "keywords": [
@@ -11011,7 +11062,7 @@
     {
       "name": "pr-to-spec",
       "source": "./plugins/mcp/pr-to-spec",
-      "description": "The flight envelope for agentic coding \u2014 convert PRs and local diffs into structured, agent-consumable specs with intent drift detection",
+      "description": "The flight envelope for agentic coding — convert PRs and local diffs into structured, agent-consumable specs with intent drift detection",
       "version": "0.8.0",
       "category": "code-quality",
       "repository": "https://github.com/jeremylongshore/pr-to-prompt",
@@ -11034,7 +11085,7 @@
     {
       "name": "slack-channel",
       "source": "./plugins/mcp/slack-channel",
-      "description": "Two-way Slack channel for Claude Code \u2014 chat from Slack DMs and channels via Socket Mode",
+      "description": "Two-way Slack channel for Claude Code — chat from Slack DMs and channels via Socket Mode",
       "version": "0.1.0",
       "category": "productivity",
       "keywords": [
@@ -11063,7 +11114,7 @@
     {
       "name": "x-bug-triage-plugin",
       "source": "./plugins/mcp/x-bug-triage",
-      "description": "Closed-loop bug triage: X complaints \u2192 clusters \u2192 repo evidence \u2192 owner routing \u2192 Slack review \u2192 filed issues",
+      "description": "Closed-loop bug triage: X complaints → clusters → repo evidence → owner routing → Slack review → filed issues",
       "version": "0.3.0",
       "category": "devops",
       "author": {
@@ -11090,34 +11141,87 @@
       }
     },
     {
-      "name": "general-legal-assistant",
-      "source": "./plugins/business-tools/general-legal-assistant",
-      "description": "AI-powered contract review, risk analysis, document generation, and compliance auditing with 12 skills and 5 parallel agents",
+      "name": "framecraft",
+      "source": "./plugins/community/framecraft",
+      "description": "Generate polished demo videos from a single prompt. Orchestrates Playwright, FFmpeg, and Edge TTS MCP servers to produce 1920x1080 videos with voiceover, transitions, and CSS animations.",
       "version": "1.0.0",
-      "category": "business-tools",
+      "category": "community",
+      "keywords": [
+        "demo-video",
+        "video-generation",
+        "playwright",
+        "ffmpeg",
+        "edge-tts",
+        "mcp"
+      ],
       "author": {
-        "name": "Intent Solutions",
-        "email": "jeremy@intentsolutions.io"
+        "name": "vaddisrinivas",
+        "url": "https://github.com/vaddisrinivas"
+      },
+      "components": {
+        "skills": 1
+      },
+      "featured": false
+    },
+    {
+      "name": "tweetclaw",
+      "source": "./plugins/automation/tweetclaw",
+      "description": "X/Twitter automation - post, reply, like, retweet, follow, DM, search, extract data, monitor accounts, run giveaways. 121 endpoints via Xquik REST API.",
+      "version": "1.5.3",
+      "category": "automation",
+      "keywords": [
+        "twitter",
+        "x",
+        "automation",
+        "social-media",
+        "tweets",
+        "monitoring",
+        "giveaway",
+        "scraping"
+      ],
+      "author": {
+        "name": "Burak Bayir",
+        "email": "burak@xquik.com",
+        "url": "https://xquik.com"
+      },
+      "repository": "https://github.com/Xquik-dev/tweetclaw",
+      "homepage": "https://xquik.com",
+      "license": "MIT",
+      "pricing": "paid",
+      "components": {
+        "skills": 1,
+        "commands": 2
+      }
+    },
+    {
+      "name": "shipwright",
+      "source": "./plugins/ai-agency/shipwright",
+      "description": "Describe your app in plain English — Shipwright builds, tests, and deploys it autonomously via a 9-phase pipeline.",
+      "version": "1.0.0",
+      "category": "ai-agency",
+      "author": {
+        "name": "Nate Nelson",
+        "url": "https://github.com/Wynelson94"
       },
       "keywords": [
-        "legal",
-        "contracts",
-        "nda",
-        "compliance",
-        "gdpr",
-        "ccpa",
-        "risk-analysis",
-        "terms-of-service",
-        "privacy-policy"
+        "app-builder",
+        "code-generator",
+        "autonomous-agent",
+        "pipeline",
+        "nextjs",
+        "supabase",
+        "sveltekit",
+        "astro",
+        "ai-agency"
       ],
-      "repository": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills",
-      "homepage": "https://tonsofskills.com",
+      "repository": "https://github.com/Wynelson94/shipwright",
+      "homepage": "https://github.com/Wynelson94/shipwright",
       "license": "MIT",
       "featured": false,
       "pricing": "free",
       "components": {
-        "skills": 12,
-        "agents": 5
+        "skills": 1,
+        "commands": 4
       }
     },
     {

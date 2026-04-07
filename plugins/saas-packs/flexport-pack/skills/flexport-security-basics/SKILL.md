@@ -15,102 +15,90 @@ compatible-with: claude-code
 # Flexport Security Basics
 
 ## Overview
+Flexport manages global freight logistics containing shipping manifests, customs declarations, commercial invoices, and supply chain partner data. A breach exposes trade routes, commodity values, importer/exporter identities, and customs brokerage details. Secure API credentials, webhook endpoints, and any pipeline that processes shipment tracking or purchase order data.
 
-Security practices for Flexport API integrations: key management, webhook signature validation with `X-Hub-Signature`, and least-privilege access patterns for supply chain data.
-
-## Instructions
-
-### Step 1: Webhook Signature Verification
-
-Flexport signs webhook payloads with HMAC-SHA256 using your webhook secret. The signature is in the `X-Hub-Signature` header.
-
+## API Key Management
 ```typescript
-import crypto from 'crypto';
-
-function verifyFlexportWebhook(
-  payload: string | Buffer,
-  signature: string,
-  secret: string
-): boolean {
-  const expected = 'sha256=' + crypto
-    .createHmac('sha256', secret)
-    .update(payload)
-    .digest('hex');
-
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expected)
-  );
-}
-
-// Express middleware
-app.post('/webhooks/flexport', express.raw({ type: '*/*' }), (req, res) => {
-  const sig = req.headers['x-hub-signature'] as string;
-  if (!verifyFlexportWebhook(req.body, sig, process.env.FLEXPORT_WEBHOOK_SECRET!)) {
-    return res.status(401).send('Invalid signature');
+function createFlexportClient(): { apiKey: string; baseUrl: string } {
+  const apiKey = process.env.FLEXPORT_API_KEY;
+  if (!apiKey) {
+    throw new Error("Missing FLEXPORT_API_KEY — store in secrets manager, never in .env in production");
   }
-  const event = JSON.parse(req.body.toString());
-  // Process event...
-  res.status(200).send('OK');
+  // Never log the key; log only a hash suffix for debugging
+  console.log("Flexport client initialized (key suffix:", apiKey.slice(-4), ")");
+  return { apiKey, baseUrl: "https://api.flexport.com/v2" };
+}
+```
+
+## Webhook Signature Verification
+```typescript
+import crypto from "crypto";
+import { Request, Response, NextFunction } from "express";
+
+function verifyFlexportWebhook(req: Request, res: Response, next: NextFunction): void {
+  const signature = req.headers["x-hub-signature"] as string;
+  const secret = process.env.FLEXPORT_WEBHOOK_SECRET!;
+  const expected = "sha256=" + crypto.createHmac("sha256", secret).update(req.body).digest("hex");
+  if (!signature || !crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected))) {
+    res.status(401).send("Invalid signature");
+    return;
+  }
+  next();
+}
+```
+
+## Input Validation
+```typescript
+import { z } from "zod";
+
+const ShipmentQuerySchema = z.object({
+  shipment_id: z.string().regex(/^FLEX-\d+$/),
+  container_number: z.string().regex(/^[A-Z]{4}\d{7}$/).optional(),
+  origin_port: z.string().length(5).optional(),
+  destination_port: z.string().length(5).optional(),
+  hs_code: z.string().regex(/^\d{6,10}$/).optional(),
 });
+
+function validateShipmentQuery(data: unknown) {
+  return ShipmentQuerySchema.parse(data);
+}
 ```
 
-### Step 2: API Key Management
+## Data Protection
+```typescript
+const FLEXPORT_SENSITIVE_FIELDS = ["customs_value", "commercial_invoice", "importer_tax_id", "broker_credentials", "hs_code"];
 
-```bash
-# Environment separation (NEVER share keys across environments)
-# .env.development
-FLEXPORT_API_KEY=your_dev_key
-FLEXPORT_WEBHOOK_SECRET=your_dev_webhook_secret
-
-# .env.production
-FLEXPORT_API_KEY=your_prod_key
-FLEXPORT_WEBHOOK_SECRET=your_prod_webhook_secret
-
-# .gitignore — mandatory entries
-.env
-.env.*
-!.env.example
+function redactFlexportLog(record: Record<string, unknown>): Record<string, unknown> {
+  const redacted = { ...record };
+  for (const field of FLEXPORT_SENSITIVE_FIELDS) {
+    if (field in redacted) redacted[field] = "[REDACTED]";
+  }
+  return redacted;
+}
 ```
 
-### Step 3: Key Rotation Procedure
-
-```bash
-# 1. Generate new key in Flexport Portal > Settings > Developer
-# 2. Deploy new key to production (dual-key period)
-# 3. Verify new key works
-curl -s -o /dev/null -w "%{http_code}" \
-  -H "Authorization: Bearer $NEW_FLEXPORT_API_KEY" \
-  -H "Flexport-Version: 2" \
-  https://api.flexport.com/shipments?per=1
-# 4. Revoke old key in Portal
-# 5. Remove old key from all environments
-```
-
-### Step 4: Least Privilege Access
-
-| Role | API Scope | Use Case |
-|------|-----------|----------|
-| Read-only | `GET /shipments`, `GET /products` | Dashboards, reporting |
-| Booking manager | `POST /bookings`, `PATCH /purchase_orders` | Operations team |
-| Full access | All endpoints | Admin, CI/CD pipelines |
-
-### Security Checklist
-
-- [ ] API keys stored in environment variables or secret manager
-- [ ] `.env` files in `.gitignore`
-- [ ] Webhook signatures verified on every request
-- [ ] Different keys for dev/staging/prod
-- [ ] Key rotation scheduled quarterly
+## Security Checklist
+- [ ] API keys stored in secrets manager, `.env` files in `.gitignore`
+- [ ] Webhook signatures verified on every inbound request
+- [ ] Different keys for dev/staging/prod environments
+- [ ] Key rotation scheduled quarterly with dual-key transition
 - [ ] Git history scanned for leaked keys
 - [ ] HTTPS enforced for all API calls
-- [ ] Request/response logging redacts auth headers
+- [ ] Request/response logging redacts auth headers and customs values
+- [ ] Least-privilege access: read-only tokens for dashboards, run tokens for operations
+
+## Error Handling
+| Vulnerability | Risk | Mitigation |
+|---|---|---|
+| Leaked API key | Full shipment and customs data exposure | Secrets manager + quarterly rotation |
+| Unverified webhooks | Spoofed shipment status updates | HMAC-SHA256 signature verification |
+| Customs data in logs | Trade compliance violation | Field-level redaction pipeline |
+| Overly broad API scope | Access to unrelated shipment data | Role-scoped tokens per team |
+| Unencrypted commercial invoices | Financial data breach | TLS 1.2+ in transit, AES at rest |
 
 ## Resources
-
 - [Flexport Webhooks](https://apidocs.flexport.com/v2/tag/Webhook-Endpoints/)
-- [Flexport Developer Portal](https://developers.flexport.com/)
+- [OWASP API Security Top 10](https://owasp.org/www-project-api-security/)
 
 ## Next Steps
-
-For production deployment, see `flexport-prod-checklist`.
+See `flexport-prod-checklist`.

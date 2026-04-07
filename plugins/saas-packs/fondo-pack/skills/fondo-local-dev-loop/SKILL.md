@@ -15,83 +15,81 @@ compatible-with: claude-code
 # Fondo Local Dev Loop
 
 ## Overview
+Local development workflow for Fondo startup tax and bookkeeping integration. Provides a fast feedback loop using CSV exports and mock financial data so you can build dashboards, R&D credit calculators, and burn-rate tools without waiting on live Fondo reports. Toggle between mock mode for rapid iteration and real export parsing for production validation.
 
-Work with Fondo financial data locally. Fondo exports data as CSV and generates QuickBooks-compatible reports. Use exports for building internal dashboards, financial modeling, or integrating with your own tools.
-
-## Instructions
-
-### Step 1: Export Financial Data from Fondo
-
+## Environment Setup
+```bash
+cp .env.example .env
+# Set your credentials:
+# FONDO_API_KEY=fondo_xxxxxxxxxxxx
+# FONDO_EXPORT_DIR=./exports
+# MOCK_MODE=true
+npm install express csv-parse dotenv tsx typescript @types/node
+npm install -D vitest supertest
+mkdir -p exports
 ```
-Dashboard > Reports > Export
-  → Select report type: General Ledger, P&L, Balance Sheet
-  → Select date range
-  → Export as CSV or PDF
-```
 
-### Step 2: Parse Fondo CSV Exports
-
+## Dev Server
 ```typescript
-// src/fondo/parse-transactions.ts
-import { parse } from 'csv-parse/sync';
-import { readFileSync } from 'fs';
-
-interface FondoTransaction {
-  date: string;
-  description: string;
-  amount: number;
-  category: string;
-  account: string;
-  isRnD: boolean;
+// src/dev/server.ts
+import express from "express";
+const app = express();
+app.use(express.json());
+const MOCK = process.env.MOCK_MODE === "true";
+if (MOCK) {
+  const { mountMockRoutes } = require("./mocks");
+  mountMockRoutes(app);
+} else {
+  const { mountExportRoutes } = require("./export-parser");
+  mountExportRoutes(app, process.env.FONDO_EXPORT_DIR!);
 }
+app.listen(3002, () => console.log(`Fondo dev server on :3002 [mock=${MOCK}]`));
+```
 
-function parseFondoExport(csvPath: string): FondoTransaction[] {
-  const content = readFileSync(csvPath, 'utf-8');
-  const records = parse(content, { columns: true, skip_empty_lines: true });
-
-  return records.map((row: any) => ({
-    date: row['Date'],
-    description: row['Description'],
-    amount: parseFloat(row['Amount'].replace(/[,$]/g, '')),
-    category: row['Category'],
-    account: row['Account'],
-    isRnD: row['R&D Qualified'] === 'Yes',
+## Mock Mode
+```typescript
+// src/dev/mocks.ts — realistic startup financial data
+export function mountMockRoutes(app: any) {
+  app.get("/api/transactions", (_req: any, res: any) => res.json([
+    { date: "2025-03-01", description: "AWS Infrastructure", amount: -4200, category: "Cloud Hosting", account: "Operating", isRnD: true },
+    { date: "2025-03-05", description: "Engineer Salary", amount: -12500, category: "Payroll", account: "Operating", isRnD: true },
+    { date: "2025-03-10", description: "Stripe Revenue", amount: 8750, category: "Revenue", account: "Income", isRnD: false },
+  ]));
+  app.get("/api/reports/pnl", (_req: any, res: any) => res.json({
+    period: "2025-Q1", revenue: 26250, expenses: 50100, netIncome: -23850,
+  }));
+  app.get("/api/reports/rnd-summary", (_req: any, res: any) => res.json({
+    totalQualified: 38500, categories: ["Cloud Hosting", "Payroll", "Software Tools"],
   }));
 }
-
-// Usage
-const transactions = parseFondoExport('exports/general-ledger-2025-q1.csv');
-const totalRnD = transactions
-  .filter(t => t.isRnD)
-  .reduce((sum, t) => sum + Math.abs(t.amount), 0);
-console.log(`Total R&D spend: $${totalRnD.toLocaleString()}`);
 ```
 
-### Step 3: Build Burn Rate Dashboard
-
-```typescript
-// Calculate monthly burn from Fondo data
-function calculateBurnRate(transactions: FondoTransaction[]): Map<string, number> {
-  const monthly = new Map<string, number>();
-  for (const t of transactions) {
-    const month = t.date.substring(0, 7);  // YYYY-MM
-    const current = monthly.get(month) || 0;
-    monthly.set(month, current + t.amount);
-  }
-  return monthly;
-}
-
-const burn = calculateBurnRate(transactions);
-burn.forEach((amount, month) => {
-  console.log(`${month}: $${Math.abs(amount).toLocaleString()}`);
-});
+## Testing Workflow
+```bash
+npm run dev:mock &                    # Start mock server in background
+npm run test                          # Unit tests with vitest
+npm run test -- --watch               # Watch mode for rapid iteration
+MOCK_MODE=false npm run test:integration  # Test against real Fondo CSV exports
 ```
+
+## Debug Tips
+- Place sample CSVs in `exports/` to test parsing without Fondo dashboard access
+- Validate CSV column headers match Fondo's export format (Date, Description, Amount, Category, Account, R&D Qualified)
+- Use `--verbose` flag with the parser to log skipped rows and type coercion warnings
+- Check for locale-specific number formats (`$1,234.56` vs `1234.56`) in Amount column
+
+## Error Handling
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| `CSV parse error` | Malformed export file | Re-export from Fondo with UTF-8 encoding |
+| `NaN in amount` | Currency symbols in Amount column | Strip `$` and `,` before `parseFloat` |
+| `Missing R&D column` | Older export format | Use Fondo's updated report template |
+| `ENOENT exports/` | Export directory missing | Run `mkdir -p exports` |
+| `Empty dataset` | Date range has no transactions | Widen the date range in Fondo dashboard |
 
 ## Resources
-
 - [Fondo Dashboard](https://app.fondo.com)
-- [csv-parse](https://csv.js.org/parse/)
+- [csv-parse docs](https://csv.js.org/parse/)
 
 ## Next Steps
-
-See `fondo-sdk-patterns` for data integration patterns.
+See `fondo-debug-bundle`.

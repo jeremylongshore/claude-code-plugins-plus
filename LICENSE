@@ -1,58 +1,21 @@
-INTENT SOLUTIONS PROPRIETARY LICENSE
-Copyright (c) 2026 Intent Solutions LLC / Jeremy Longshore
-All Rights Reserved.
+MIT License
 
-NOTICE: This software and associated documentation files (the "Software")
-are proprietary and confidential. The Software is made available for
-viewing purposes only.
+Copyright (c) 2025 Jeremy Longshore
 
-RESTRICTIONS:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-1. NO COMMERCIAL USE: You may NOT use this Software, in whole or in part,
-   for any commercial purpose without express written permission from
-   Intent Solutions LLC.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-2. NO MODIFICATION: You may NOT modify, adapt, translate, or create
-   derivative works based on this Software.
-
-3. NO DISTRIBUTION: You may NOT distribute, sublicense, lease, rent,
-   or lend this Software to any third party.
-
-4. NO COPYING: You may NOT copy or reproduce this Software except for
-   personal, non-commercial reference purposes.
-
-5. NO REVERSE ENGINEERING: You may NOT reverse engineer, decompile,
-   or disassemble this Software.
-
-PERMITTED USE:
-
-- Viewing the source code for educational or reference purposes only
-- Personal, non-commercial experimentation on your local machine
-- Contributing improvements via pull request (contributions become
-  property of Intent Solutions LLC)
-
-COMMERCIAL LICENSING:
-
-For commercial use, enterprise licensing, or partnership inquiries:
-  Email: jeremy@intentsolutions.io
-  Web: https://intentsolutions.io
-
-ENFORCEMENT:
-
-Unauthorized use of this Software may result in legal action including
-but not limited to claims for:
-- Copyright infringement
-- Breach of contract
-- Unjust enrichment
-- Treble damages under applicable law
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-OR IMPLIED. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
-FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY ARISING FROM THE USE OF THE
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
-This license is effective as of the date of publication and supersedes
-any prior agreements or understandings.
-
-Intent Solutions LLC
-jeremy@intentsolutions.io

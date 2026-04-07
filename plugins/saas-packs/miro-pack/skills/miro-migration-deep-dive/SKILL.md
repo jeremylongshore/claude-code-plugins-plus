@@ -18,413 +18,196 @@ compatible-with: claude-code
 
 ## Overview
 
-Comprehensive migration strategies for Miro REST API v2: export entire board content, import structured data into boards, migrate between teams/organizations, and re-platform from competing whiteboard tools.
+Comprehensive guide for migrating Miro boards between teams and organizations, updating
+from REST API v1 to v2, and re-platforming from competing whiteboard tools (Lucidchart,
+FigJam). Covers board content export with cursor pagination, bulk import with rate-limit
+aware queuing, widget API changes between v1 and v2, and the new app framework patterns.
+Typical migration scope: dozens to thousands of boards with connectors, tags, and members.
 
-## Migration Types
+## Migration Assessment
 
-| Type | Complexity | Duration | Approach |
-|------|-----------|----------|----------|
-| Export board content | Low | Minutes | Read all items, save as JSON |
-| Import data into board | Medium | Minutes | Batch create items via API |
-| Move boards between teams | Medium | Hours | Copy + re-share |
-| Re-platform (Lucidchart/FigJam) | High | Days–Weeks | Export → transform → import |
-| Full org migration | High | Weeks | SCIM + board migration + member mapping |
+```typescript
+// Scan current integration for deprecated v1 patterns and board inventory
+async function assessMigration(teamId: string) {
+  const boards = await miroFetch(`/v2/boards?team_id=${teamId}&limit=50`);
+  let totalItems = 0;
+  for (const board of boards.data) {
+    const items = await miroFetch(`/v2/boards/${board.id}/items?limit=1`);
+    totalItems += items.total ?? 0;
+  }
+  console.log(`Team ${teamId}: ${boards.data.length} boards, ~${totalItems} items`);
+  console.log('API version: v2 (v1 deprecated 2024-01)');
+  console.log('Widget types to migrate: sticky_note, shape, card, text, frame, image, connector');
+  return { boardCount: boards.data.length, totalItems };
+}
+```
 
-## Board Content Export
+## Step-by-Step Migration
 
-Export every item on a board to a structured JSON file:
+### Phase 1: Prepare — Export Source Boards
+
+Export every item on a board to a structured JSON file with cursor-paginated reads:
 
 ```typescript
 interface BoardExport {
   exportedAt: string;
-  board: {
-    id: string;
-    name: string;
-    description: string;
-    owner: { id: string; name: string };
-  };
-  items: ExportedItem[];
-  connectors: ExportedConnector[];
-  tags: ExportedTag[];
-  members: ExportedMember[];
+  board: { id: string; name: string; description: string; owner: { id: string; name: string } };
+  items: any[]; connectors: any[]; tags: any[]; members: any[];
 }
 
 async function exportBoard(boardId: string): Promise<BoardExport> {
-  // Get board metadata
   const board = await miroFetch(`/v2/boards/${boardId}`);
+  const items = await paginateAll(`/v2/boards/${boardId}/items`);
+  const connectors = await paginateAll(`/v2/boards/${boardId}/connectors`);
+  const tags = await miroFetch(`/v2/boards/${boardId}/tags`);
+  const members = await miroFetch(`/v2/boards/${boardId}/members?limit=100`);
+  return {
+    exportedAt: new Date().toISOString(),
+    board: { id: board.id, name: board.name, description: board.description ?? '',
+      owner: { id: board.owner?.id, name: board.owner?.name } },
+    items: items.map(i => ({ id: i.id, type: i.type, data: i.data, style: i.style,
+      position: i.position, geometry: i.geometry, parentId: i.parent?.id })),
+    connectors, tags: tags.data ?? [], members: members.data ?? [],
+  };
+}
 
-  // Get all items (cursor-paginated)
-  const items: any[] = [];
+async function paginateAll(baseUrl: string): Promise<any[]> {
+  const all: any[] = [];
   let cursor: string | undefined;
   do {
     const params = new URLSearchParams({ limit: '50' });
     if (cursor) params.set('cursor', cursor);
-    const page = await miroFetch(`/v2/boards/${boardId}/items?${params}`);
-    items.push(...page.data);
+    const page = await miroFetch(`${baseUrl}?${params}`);
+    all.push(...page.data);
     cursor = page.cursor;
   } while (cursor);
-
-  // Get all connectors
-  const connectors: any[] = [];
-  cursor = undefined;
-  do {
-    const params = new URLSearchParams({ limit: '50' });
-    if (cursor) params.set('cursor', cursor);
-    const page = await miroFetch(`/v2/boards/${boardId}/connectors?${params}`);
-    connectors.push(...page.data);
-    cursor = page.cursor;
-  } while (cursor);
-
-  // Get all tags
-  const tags = await miroFetch(`/v2/boards/${boardId}/tags`);
-
-  // Get board members
-  const members = await miroFetch(`/v2/boards/${boardId}/members?limit=100`);
-
-  return {
-    exportedAt: new Date().toISOString(),
-    board: {
-      id: board.id,
-      name: board.name,
-      description: board.description ?? '',
-      owner: { id: board.owner?.id, name: board.owner?.name },
-    },
-    items: items.map(normalizeItem),
-    connectors: connectors.map(normalizeConnector),
-    tags: tags.data ?? [],
-    members: members.data ?? [],
-  };
-}
-
-function normalizeItem(item: any) {
-  return {
-    id: item.id,
-    type: item.type,
-    data: item.data,
-    style: item.style,
-    position: item.position,
-    geometry: item.geometry,
-    parentId: item.parent?.id,
-    createdAt: item.createdAt,
-    createdBy: item.createdBy?.id,
-  };
+  return all;
 }
 ```
 
-## Import Data into a Board
+### Phase 2: Migrate — Import to Target Board
 
-Recreate exported items on a new board:
+Recreate exported items on a new board with rate-limit aware queuing (frames first,
+then other items, then connectors, then tags):
 
 ```typescript
 import PQueue from 'p-queue';
 
-interface ImportResult {
-  created: number;
-  failed: number;
-  errors: Array<{ item: any; error: string }>;
-  idMap: Map<string, string>;  // Old ID → New ID
-}
-
-async function importToBoard(
-  targetBoardId: string,
-  exportData: BoardExport,
-  options: { offsetX?: number; offsetY?: number } = {}
-): Promise<ImportResult> {
+async function importToBoard(targetBoardId: string, exportData: BoardExport): Promise<{
+  created: number; failed: number; idMap: Map<string, string>;
+}> {
   const queue = new PQueue({ concurrency: 3, interval: 1000, intervalCap: 8 });
-  const result: ImportResult = { created: 0, failed: 0, errors: [], idMap: new Map() };
-
-  // Phase 1: Create items (excluding frames first, then frames)
-  const frames = exportData.items.filter(i => i.type === 'frame');
-  const nonFrames = exportData.items.filter(i => i.type !== 'frame');
-
-  // Create frames first (they contain other items)
-  for (const frame of frames) {
-    await queue.add(async () => {
-      try {
-        const newItem = await createItemByType(targetBoardId, frame, options);
-        result.idMap.set(frame.id, newItem.id);
-        result.created++;
-      } catch (err: any) {
-        result.failed++;
-        result.errors.push({ item: frame, error: err.message });
-      }
-    });
-  }
-  await queue.onIdle();
-
-  // Then create other items
-  for (const item of nonFrames) {
-    await queue.add(async () => {
-      try {
-        const newItem = await createItemByType(targetBoardId, item, options);
-        result.idMap.set(item.id, newItem.id);
-        result.created++;
-      } catch (err: any) {
-        result.failed++;
-        result.errors.push({ item, error: err.message });
-      }
-    });
-  }
-  await queue.onIdle();
-
-  // Phase 2: Recreate connectors using new IDs
-  for (const connector of exportData.connectors) {
-    const newStartId = result.idMap.get(connector.startItem?.id);
-    const newEndId = result.idMap.get(connector.endItem?.id);
-    if (!newStartId || !newEndId) continue;
-
-    await queue.add(async () => {
-      try {
-        await miroFetch(`/v2/boards/${targetBoardId}/connectors`, 'POST', {
-          startItem: { id: newStartId },
-          endItem: { id: newEndId },
-          captions: connector.captions,
-          style: connector.style,
-          shape: connector.shape,
-        });
-        result.created++;
-      } catch (err: any) {
-        result.errors.push({ item: connector, error: err.message });
-      }
-    });
-  }
-  await queue.onIdle();
-
-  // Phase 3: Recreate tags
-  for (const tag of exportData.tags) {
-    await queue.add(async () => {
-      try {
-        await miroFetch(`/v2/boards/${targetBoardId}/tags`, 'POST', {
-          title: tag.title,
-          fillColor: tag.fillColor,
-        });
-      } catch (err: any) {
-        // Duplicate tag titles return 409 — safe to ignore
-        if (!err.message?.includes('409')) {
-          result.errors.push({ item: tag, error: err.message });
-        }
-      }
-    });
-  }
-  await queue.onIdle();
-
-  return result;
-}
-
-async function createItemByType(
-  boardId: string,
-  item: any,
-  options: { offsetX?: number; offsetY?: number }
-) {
-  const position = {
-    x: (item.position?.x ?? 0) + (options.offsetX ?? 0),
-    y: (item.position?.y ?? 0) + (options.offsetY ?? 0),
-  };
+  const idMap = new Map<string, string>();
+  let created = 0, failed = 0;
 
   const endpointMap: Record<string, string> = {
-    sticky_note: 'sticky_notes',
-    shape: 'shapes',
-    card: 'cards',
-    text: 'texts',
-    frame: 'frames',
-    image: 'images',
-    document: 'documents',
-    embed: 'embeds',
-    app_card: 'app_cards',
+    sticky_note: 'sticky_notes', shape: 'shapes', card: 'cards', text: 'texts',
+    frame: 'frames', image: 'images', document: 'documents', app_card: 'app_cards',
   };
 
-  const endpoint = endpointMap[item.type];
-  if (!endpoint) throw new Error(`Unsupported item type: ${item.type}`);
+  // Frames first (containers), then everything else
+  const sorted = [...exportData.items].sort((a, b) =>
+    (a.type === 'frame' ? 0 : 1) - (b.type === 'frame' ? 0 : 1));
 
-  return miroFetch(`/v2/boards/${boardId}/${endpoint}`, 'POST', {
-    data: item.data,
-    style: item.style,
-    position,
-    geometry: item.geometry,
-  });
-}
-```
-
-## Board Duplication Between Teams
-
-```typescript
-async function duplicateBoard(
-  sourceBoardId: string,
-  targetTeamId: string,
-  newName: string,
-): Promise<{ newBoardId: string; importResult: ImportResult }> {
-  // Step 1: Export source board
-  console.log('Exporting source board...');
-  const exportData = await exportBoard(sourceBoardId);
-
-  // Step 2: Create new board in target team
-  console.log('Creating target board...');
-  const newBoard = await miroFetch('/v2/boards', 'POST', {
-    name: newName,
-    description: exportData.board.description,
-    teamId: targetTeamId,
-  });
-
-  // Step 3: Import all content
-  console.log('Importing items...');
-  const importResult = await importToBoard(newBoard.id, exportData);
-
-  console.log(`Done! Created ${importResult.created} items, ${importResult.failed} failed`);
-  return { newBoardId: newBoard.id, importResult };
-}
-```
-
-## CSV/Spreadsheet Import
-
-Import structured data (from spreadsheets, Jira, etc.) as Miro items:
-
-```typescript
-interface CsvRow {
-  title: string;
-  description?: string;
-  category?: string;
-  priority?: string;
-}
-
-async function importCsvAsCards(
-  boardId: string,
-  rows: CsvRow[],
-  layout: 'grid' | 'column' = 'grid'
-): Promise<ImportResult> {
-  const result: ImportResult = { created: 0, failed: 0, errors: [], idMap: new Map() };
-  const queue = new PQueue({ concurrency: 3, interval: 1000, intervalCap: 8 });
-
-  // Color mapping for categories
-  const categoryColors: Record<string, string> = {
-    bug: '#ff6b6b',
-    feature: '#2d9bf0',
-    improvement: '#51cf66',
-    default: '#868e96',
-  };
-
-  for (let i = 0; i < rows.length; i++) {
-    const row = rows[i];
-    const x = layout === 'grid' ? (i % 5) * 300 : 0;
-    const y = layout === 'grid' ? Math.floor(i / 5) * 200 : i * 200;
-
+  for (const item of sorted) {
     await queue.add(async () => {
       try {
-        const card = await miroFetch(`/v2/boards/${boardId}/cards`, 'POST', {
-          data: {
-            title: row.title,
-            description: row.description ?? '',
-          },
-          style: {
-            cardTheme: categoryColors[row.category?.toLowerCase() ?? 'default'] ?? categoryColors.default,
-          },
-          position: { x, y },
+        const ep = endpointMap[item.type];
+        if (!ep) throw new Error(`Unsupported: ${item.type}`);
+        const newItem = await miroFetch(`/v2/boards/${targetBoardId}/${ep}`, 'POST', {
+          data: item.data, style: item.style, position: item.position, geometry: item.geometry,
         });
-
-        // Add priority as tag
-        if (row.priority) {
-          try {
-            const tag = await miroFetch(`/v2/boards/${boardId}/tags`, 'POST', {
-              title: row.priority,
-              fillColor: row.priority === 'High' ? 'red' : 'yellow',
-            });
-            await miroFetch(`/v2/boards/${boardId}/items/${card.id}/tags`, 'POST', {
-              tagId: tag.id,
-            });
-          } catch {
-            // Tag might already exist — acceptable
-          }
-        }
-
-        result.created++;
-      } catch (err: any) {
-        result.failed++;
-        result.errors.push({ item: row, error: err.message });
-      }
+        idMap.set(item.id, newItem.id);
+        created++;
+      } catch { failed++; }
     });
   }
-
   await queue.onIdle();
-  return result;
+
+  // Reconnect connectors using new IDs
+  for (const conn of exportData.connectors) {
+    const startId = idMap.get(conn.startItem?.id), endId = idMap.get(conn.endItem?.id);
+    if (!startId || !endId) continue;
+    await queue.add(async () => {
+      await miroFetch(`/v2/boards/${targetBoardId}/connectors`, 'POST', {
+        startItem: { id: startId }, endItem: { id: endId },
+        style: conn.style, shape: conn.shape,
+      }).catch(() => { failed++; });
+      created++;
+    });
+  }
+  await queue.onIdle();
+  return { created, failed, idMap };
 }
 ```
 
-## Migration Validation
+### Phase 3: Validate — Compare Source and Target
 
 ```typescript
-async function validateMigration(
-  sourceBoardId: string,
-  targetBoardId: string,
-): Promise<ValidationReport> {
-  const sourceItems = await fetchAllItems(sourceBoardId);
-  const targetItems = await fetchAllItems(targetBoardId);
-
-  const sourceConnectors = await fetchAllConnectors(sourceBoardId);
-  const targetConnectors = await fetchAllConnectors(targetBoardId);
+async function validateMigration(sourceBoardId: string, targetBoardId: string) {
+  const srcItems = await paginateAll(`/v2/boards/${sourceBoardId}/items`);
+  const tgtItems = await paginateAll(`/v2/boards/${targetBoardId}/items`);
+  const srcConn = await paginateAll(`/v2/boards/${sourceBoardId}/connectors`);
+  const tgtConn = await paginateAll(`/v2/boards/${targetBoardId}/connectors`);
 
   const checks = [
-    {
-      name: 'Item count match',
-      pass: targetItems.length >= sourceItems.length * 0.95,  // 95% threshold
-      detail: `Source: ${sourceItems.length}, Target: ${targetItems.length}`,
-    },
-    {
-      name: 'Item types match',
-      pass: compareTypeCounts(sourceItems, targetItems),
-      detail: getTypeCountDiff(sourceItems, targetItems),
-    },
-    {
-      name: 'Connectors migrated',
-      pass: targetConnectors.length >= sourceConnectors.length * 0.9,
-      detail: `Source: ${sourceConnectors.length}, Target: ${targetConnectors.length}`,
-    },
+    { name: 'Item count', pass: tgtItems.length >= srcItems.length * 0.95,
+      detail: `${tgtItems.length}/${srcItems.length}` },
+    { name: 'Connectors', pass: tgtConn.length >= srcConn.length * 0.9,
+      detail: `${tgtConn.length}/${srcConn.length}` },
   ];
-
-  return {
-    passed: checks.every(c => c.pass),
-    checks,
-    summary: `${checks.filter(c => c.pass).length}/${checks.length} checks passed`,
-  };
+  console.log(checks.map(c => `${c.pass ? 'PASS' : 'FAIL'} ${c.name}: ${c.detail}`).join('\n'));
+  return checks.every(c => c.pass);
 }
 ```
 
 ## Rollback Plan
 
-```typescript
-async function rollbackMigration(
-  targetBoardId: string,
-  importResult: ImportResult,
-): Promise<void> {
-  console.log(`Rolling back: deleting ${importResult.created} items from ${targetBoardId}`);
+```bash
+# Delete the target board entirely (preserves source untouched)
+curl -X DELETE "https://api.miro.com/v2/boards/${TARGET_BOARD_ID}" \
+  -H "Authorization: Bearer $MIRO_TOKEN"
 
-  const queue = new PQueue({ concurrency: 5 });
-  for (const [, newId] of importResult.idMap) {
-    queue.add(async () => {
-      await miroFetch(`/v2/boards/${targetBoardId}/items/${newId}`, 'DELETE').catch(() => {});
-    });
-  }
-  await queue.onIdle();
+# Or delete only imported items by ID list (saved during import)
+cat imported-ids.txt | while read id; do
+  curl -X DELETE "https://api.miro.com/v2/boards/${TARGET_BOARD_ID}/items/${id}" \
+    -H "Authorization: Bearer $MIRO_TOKEN"
+done
 
-  console.log('Rollback complete');
-}
+echo "Rollback complete — source board unchanged"
 ```
+
+## Migration Checklist
+
+- [ ] Audit source boards: count items, connectors, tags, members
+- [ ] Export all source boards to JSON backup files
+- [ ] Create target boards in destination team/org
+- [ ] Run import with rate-limit aware queuing
+- [ ] Validate item counts (95%+ threshold)
+- [ ] Validate connector integrity (90%+ threshold)
+- [ ] Re-share boards with correct member permissions
+- [ ] Update any external links pointing to old board URLs
+- [ ] Run user acceptance testing with board owners
+- [ ] Decommission source boards after 30-day grace period
 
 ## Error Handling
 
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Rate limited during import | Too many items | Reduce concurrency, increase interval |
-| Connector fails | Referenced item wasn't created | Check idMap for missing mappings |
-| Image URL 404 | External image no longer available | Skip or replace with placeholder |
-| Position overlap | No offset applied | Use `offsetX`/`offsetY` options |
-| Tag duplicate | Tag title already exists | Catch 409, reuse existing tag |
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| `429 Too Many Requests` | Rate limit exceeded | Reduce PQueue concurrency to 2 |
+| Connector creation fails | Referenced item missing | Verify idMap has both start/end IDs |
+| Image items 404 | External URL expired | Re-upload image or use placeholder |
+| Position overlap on target | No offset applied | Pass `offsetX`/`offsetY` to import |
+| Tag 409 Conflict | Duplicate tag title | Catch 409, query existing tag by title |
 
 ## Resources
 
-- [REST API Reference Guide](https://developers.miro.com/docs/rest-api-reference-guide)
-- [Board Items](https://developers.miro.com/docs/board-items)
-- [REST API Comparison (v1 vs v2)](https://developers.miro.com/docs/rest-api-comparison-guide)
+- [REST API Reference](https://developers.miro.com/docs/rest-api-reference-guide)
+- [Board Items API](https://developers.miro.com/docs/board-items)
+- [v1 to v2 Migration Guide](https://developers.miro.com/docs/rest-api-comparison-guide)
 - [Miro App Examples](https://github.com/miroapp/app-examples)
 
 ## Next Steps
 
-This is the final Flagship skill. For starting a new integration from scratch, see `miro-install-auth`.
+For starting a new Miro integration from scratch, see `miro-install-auth`. For
+board sharing and collaboration workflows, see `miro-core-workflow-b`.

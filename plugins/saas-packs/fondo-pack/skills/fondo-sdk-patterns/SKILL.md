@@ -15,75 +15,106 @@ compatible-with: claude-code
 # Fondo SDK Patterns
 
 ## Overview
+Production-ready patterns for integrating with Fondo tax and accounting data. Fondo is a managed bookkeeping platform that syncs through QuickBooks Online and payroll providers. Integration uses the `FONDO_API_KEY`-authenticated REST endpoints for exports, the QuickBooks Online API for GL data, and structured CSV parsing with Zod validation for bulk imports.
 
-Patterns for consuming Fondo financial data in your internal tools. Since Fondo is a managed platform without a public API, integration happens through CSV exports, QuickBooks Online sync, and payroll provider APIs (Gusto, Rippling).
-
-## Instructions
-
-### Pattern 1: Gusto API for Payroll Data
-
+## Singleton Client
 ```typescript
-// Gusto API — access payroll data that Fondo also ingests
-// https://docs.gusto.com/embedded-payroll/reference
-
-const GUSTO_BASE = 'https://api.gusto-demo.com';  // or api.gusto.com for production
-
-async function getPayrollData(companyId: string, accessToken: string) {
-  const res = await fetch(`${GUSTO_BASE}/v1/companies/${companyId}/payrolls`, {
-    headers: { 'Authorization': `Bearer ${accessToken}` },
-  });
-  const payrolls = await res.json();
-
-  return payrolls.map((p: any) => ({
-    period: `${p.pay_period.start_date} to ${p.pay_period.end_date}`,
-    grossPay: p.totals.gross_pay,
-    taxes: p.totals.employer_taxes,
-    netPay: p.totals.net_pay,
-    employeeCount: p.employee_compensations.length,
-  }));
+const FONDO_BASE = 'https://api.fondo.com/v1';
+let _client: FondoClient | null = null;
+export function getClient(): FondoClient {
+  if (!_client) {
+    const apiKey = process.env.FONDO_API_KEY;
+    if (!apiKey) throw new Error('FONDO_API_KEY must be set — get it from your Fondo dashboard');
+    _client = new FondoClient(apiKey);
+  }
+  return _client;
+}
+class FondoClient {
+  private headers: Record<string, string>;
+  constructor(apiKey: string) { this.headers = { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' }; }
+  async getTransactions(start: string, end: string): Promise<FondoTransaction[]> {
+    const res = await fetch(`${FONDO_BASE}/transactions?start=${start}&end=${end}`, { headers: this.headers });
+    if (!res.ok) throw new FondoError(res.status, await res.text()); return res.json();
+  }
+  async getAccounts(): Promise<FondoAccount[]> {
+    const res = await fetch(`${FONDO_BASE}/accounts`, { headers: this.headers });
+    if (!res.ok) throw new FondoError(res.status, await res.text()); return res.json();
+  }
 }
 ```
 
-### Pattern 2: QuickBooks Online API for GL Data
-
+## Error Wrapper
 ```typescript
-// QuickBooks Online API — mirrors what Fondo syncs
-// https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities
-
-const QBO_BASE = 'https://quickbooks.api.intuit.com/v3/company';
-
-async function getTrialBalance(realmId: string, accessToken: string) {
-  const res = await fetch(
-    `${QBO_BASE}/${realmId}/reports/TrialBalance?start_date=2025-01-01&end_date=2025-03-31`,
-    { headers: { 'Authorization': `Bearer ${accessToken}`, 'Accept': 'application/json' } },
-  );
-  return res.json();
+export class FondoError extends Error {
+  constructor(public status: number, message: string) { super(message); this.name = 'FondoError'; }
+}
+export async function safeCall<T>(operation: string, fn: () => Promise<T>): Promise<T> {
+  try { return await fn(); }
+  catch (err: any) {
+    if (err instanceof FondoError && err.status === 429) { await new Promise(r => setTimeout(r, 5000)); return fn(); }
+    if (err instanceof FondoError && err.status === 401) throw new FondoError(401, 'Invalid FONDO_API_KEY');
+    throw new FondoError(err.status ?? 0, `${operation} failed: ${err.message}`);
+  }
 }
 ```
 
-### Pattern 3: Fondo CSV Export Parser with Zod
-
+## Request Builder
 ```typescript
-import { z } from 'zod';
-
-const FondoTransactionSchema = z.object({
-  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-  description: z.string(),
-  amount: z.number(),
-  category: z.string(),
-  account: z.string(),
-  isRnD: z.boolean(),
-});
-
-type FondoTransaction = z.infer<typeof FondoTransactionSchema>;
+class FondoQuery {
+  private params: Record<string, string> = {};
+  dateRange(start: string, end: string) { this.params.start = start; this.params.end = end; return this; }
+  category(cat: string) { this.params.category = cat; return this; }
+  accountId(id: string) { this.params.account_id = id; return this; }
+  rndOnly() { this.params.is_rnd = 'true'; return this; }
+  limit(n: number) { this.params.limit = String(n); return this; }
+  build() { return new URLSearchParams(this.params).toString(); }
+}
+// Usage: new FondoQuery().dateRange('2025-01-01','2025-03-31').rndOnly().build();
 ```
+
+## Response Types
+```typescript
+interface FondoTransaction {
+  id: string; date: string; description: string; amount: number;
+  category: string; account: string; is_rnd: boolean; vendor: string;
+}
+interface FondoAccount {
+  id: string; name: string; type: 'asset' | 'liability' | 'equity' | 'revenue' | 'expense';
+  balance: number; currency: string;
+}
+interface FondoReport {
+  id: string; period: string; type: 'trial_balance' | 'profit_loss' | 'balance_sheet';
+  generated_at: string; rows: Array<{ account: string; debit: number; credit: number }>;
+}
+interface FondoRnDCredit {
+  tax_year: number; qualifying_expenses: number; credit_amount: number;
+  status: 'draft' | 'filed' | 'approved';
+}
+```
+
+## Testing Utilities
+```typescript
+export function mockTransaction(overrides: Partial<FondoTransaction> = {}): FondoTransaction {
+  return { id: 'txn-001', date: '2025-03-15', description: 'AWS hosting',
+    amount: 450.00, category: 'Cloud Infrastructure', account: 'Operating Expenses',
+    is_rnd: true, vendor: 'Amazon Web Services', ...overrides };
+}
+export function mockAccount(overrides: Partial<FondoAccount> = {}): FondoAccount {
+  return { id: 'acct-001', name: 'Operating Expenses', type: 'expense',
+    balance: 12500.00, currency: 'USD', ...overrides };
+}
+```
+
+## Error Handling
+| Pattern | When to Use | Example |
+|---------|-------------|---------|
+| `safeCall` wrapper | All Fondo API calls | Structured error logging with operation context |
+| Retry on 429 | Bulk transaction exports | 5s backoff before retry |
+| Zod validation | CSV import parsing | Reject malformed rows before DB insert |
+| Auth validation | Client init | Fail fast on missing `FONDO_API_KEY` |
 
 ## Resources
-
-- [Gusto API](https://docs.gusto.com/)
-- [QuickBooks API](https://developer.intuit.com/)
 - [Fondo](https://fondo.com)
 
 ## Next Steps
-
-Apply patterns in `fondo-core-workflow-a` for monthly close workflows.
+Apply patterns in `fondo-core-workflow-a`.

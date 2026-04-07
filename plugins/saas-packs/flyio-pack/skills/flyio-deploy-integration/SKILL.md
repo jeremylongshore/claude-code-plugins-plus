@@ -16,81 +16,128 @@ compatible-with: claude-code
 
 ## Overview
 
-Advanced deployment strategies for Fly.io beyond `fly deploy`. Covers blue-green with the Machines API, canary with traffic splitting, and multi-region coordinated rollouts.
+Deploy edge applications on Fly.io with Docker containers and the `fly.toml` configuration file. This skill covers building production images optimized for Fly's micro-VM architecture, configuring `fly.toml` for services, health checks, and multi-region placement, verifying API connectivity from edge locations, and executing rolling updates with automatic rollback. Fly.io deploys as Firecracker micro-VMs, so containers start in under a second and scale to zero when idle.
 
-## Instructions
+## Docker Configuration
 
-### Strategy 1: Blue-Green via Machines API
+```dockerfile
+FROM node:20-slim AS builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY tsconfig.json ./
+COPY src/ ./src/
+RUN npm run build
+
+FROM node:20-slim
+RUN addgroup --system app && adduser --system --ingroup app app
+WORKDIR /app
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY package*.json ./
+USER app
+EXPOSE 8080
+CMD ["node", "dist/index.js"]
+```
+
+## Fly.io Configuration
+
+```toml
+# fly.toml
+app = "my-integration"
+primary_region = "iad"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  LOG_LEVEL = "info"
+  PORT = "8080"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+
+[[http_service.checks]]
+  interval = "30s"
+  timeout = "5s"
+  grace_period = "10s"
+  method = "GET"
+  path = "/health"
+```
+
+## Environment Variables
+
+```bash
+export FLY_API_TOKEN="fo1_xxxxxxxxxxxx"
+fly secrets set FLYIO_APP_NAME="my-integration"
+fly secrets set LOG_LEVEL="info"
+```
+
+## Health Check Endpoint
 
 ```typescript
-async function blueGreenDeploy(appName: string, newImage: string) {
-  const client = new FlyClient(appName, process.env.FLY_API_TOKEN!);
-  const oldMachines = await client.listMachines();
+import express from 'express';
 
-  // 1. Create new machines (green) with updated image
-  const greenMachines = await Promise.all(
-    oldMachines.map(m => client.createMachine(
-      { ...m.config, image: newImage }, m.region
-    ))
-  );
+const app = express();
 
-  // 2. Wait for all green machines to be healthy
-  await Promise.all(greenMachines.map(m => client.waitForState(m.id, 'started')));
-
-  // 3. Verify health
-  for (const m of greenMachines) {
-    const healthy = await checkHealth(`https://${appName}.fly.dev/health`);
-    if (!healthy) {
-      // Rollback: destroy green, keep blue
-      await Promise.all(greenMachines.map(m => client.destroyMachine(m.id)));
-      throw new Error('Health check failed — rolled back');
-    }
+app.get('/health', async (req, res) => {
+  try {
+    const region = process.env.FLY_REGION || 'unknown';
+    const appName = process.env.FLY_APP_NAME || 'unknown';
+    res.json({ status: 'healthy', service: 'flyio-integration', region, app: appName, timestamp: new Date().toISOString() });
+  } catch (error) {
+    res.status(503).json({ status: 'unhealthy', error: (error as Error).message });
   }
-
-  // 4. Stop old machines (blue)
-  await Promise.all(oldMachines.map(m => client.stopMachine(m.id)));
-  console.log(`Deploy complete: ${greenMachines.length} new machines`);
-}
+});
 ```
 
-### Strategy 2: Canary with Gradual Rollout
+## Deployment Steps
+
+### Step 1: Build
 
 ```bash
-# Deploy new version to a single machine
-fly deploy -a my-app --strategy canary
-
-# Monitor for 10 minutes
-fly logs -a my-app --no-tail &
-sleep 600
-
-# If healthy, complete rollout
-fly deploy -a my-app --strategy rolling
-
-# If unhealthy, rollback
-fly releases rollback -a my-app
+fly launch --no-deploy
 ```
 
-### Strategy 3: Multi-Region Coordinated
+### Step 2: Run
 
 ```bash
-# Deploy region by region
-for region in iad lhr nrt; do
-  echo "Deploying to $region..."
-  fly deploy -a my-app --region $region
-
-  # Health check per region
-  curl -sf "https://my-app.fly.dev/health" \
-    -H "Fly-Force-Instance-Id: $(fly machine list -a my-app --json | jq -r ".[] | select(.region==\"$region\") | .id" | head -1)"
-
-  echo "Region $region healthy. Continuing..."
-done
+fly deploy --strategy rolling
 ```
+
+### Step 3: Verify
+
+```bash
+fly status
+curl -s https://my-integration.fly.dev/health | jq .
+```
+
+### Step 4: Rolling Update
+
+```bash
+fly deploy --strategy rolling --wait-timeout 300
+fly releases --image
+fly releases rollback   # if health check fails
+```
+
+## Error Handling
+
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| `Machine failed to start` | Missing env vars or port mismatch | Check `fly logs` and verify `internal_port` matches `EXPOSE` |
+| `Health check failing` | App not listening on correct port | Ensure app binds to `0.0.0.0:8080` not `127.0.0.1` |
+| `No machines in region` | Region not added to app | Run `fly scale count 1 --region iad` |
+| `401 Unauthorized` | Invalid `FLY_API_TOKEN` | Regenerate token with `fly tokens create deploy` |
+| Slow cold starts | Large image or heavy startup | Use multi-stage build, set `auto_stop_machines = false` for latency-critical apps |
 
 ## Resources
 
-- [Fly Deploy](https://fly.io/docs/launch/deploy/)
-- [Machines API](https://fly.io/docs/machines/api/)
+- [Fly.io Deploy Docs](https://fly.io/docs/launch/deploy/)
+- [fly.toml Reference](https://fly.io/docs/reference/configuration/)
 
 ## Next Steps
 
-For webhook and event handling, see `flyio-webhooks-events`.
+See `flyio-webhooks-events`.

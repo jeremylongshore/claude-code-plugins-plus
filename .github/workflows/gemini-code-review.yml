@@ -22,12 +22,20 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      # Write PR title/body to files to avoid env-var injection into Gemini shell
+      - name: Persist PR metadata safely
+        run: |
+          mkdir -p /tmp/pr-meta
+          printf '%s' "$PR_TITLE" > /tmp/pr-meta/title.txt
+          printf '%s' "$PR_BODY" > /tmp/pr-meta/body.txt
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+
       - name: 'Gemini PR Review'
         uses: 'google-github-actions/run-gemini-cli@v0'
         env:
           GITHUB_TOKEN: '${{ github.token }}'
-          ISSUE_TITLE: '${{ github.event.pull_request.title }}'
-          ISSUE_BODY: '${{ github.event.pull_request.body }}'
           PULL_REQUEST_NUMBER: '${{ github.event.pull_request.number }}'
           REPOSITORY: '${{ github.repository }}'
         with:

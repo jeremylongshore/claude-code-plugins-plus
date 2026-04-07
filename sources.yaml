@@ -732,6 +732,38 @@ sources:
       - "*.log"
 
   # ============================================================
+  # tonone (thisisfatih)
+  # https://github.com/tonone-ai/tonone
+  # 23-agent engineering + product team with 125 skills
+  # ============================================================
+
+  - name: tonone
+    description: 23-agent engineering + product team with 125 skills for Claude Code
+    repo: tonone-ai/tonone
+    source_path: .
+    target_path: plugins/ai-agency/tonone
+    author:
+      name: thisisfatih
+      github: thisisfatih
+    license: MIT
+    category: ai-agency
+    verified: false
+    include:
+      - ".claude-plugin/**"
+      - "agents/**"
+      - "skills/**"
+      - "README.md"
+      - "LICENSE"
+    exclude:
+      - "node_modules/**"
+      - ".git/**"
+      - "*.log"
+      - "team/**"
+      - "docs/**"
+      - "templates/**"
+      - ".github/**"
+
+  # ============================================================
   # Add more external sources below
   # ============================================================
 
