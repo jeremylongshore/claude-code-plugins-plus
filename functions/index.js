@@ -5,9 +5,43 @@ admin.initializeApp();
 
 const slackWebhookUrl = defineSecret("SLACK_OPERATION_HIRED_WEBHOOK_URL");
 
+// Simple in-memory rate limiter (resets on cold start, ~5 min window)
+const rateLimitMap = new Map();
+const RATE_LIMIT_WINDOW_MS = 60_000; // 1 minute
+const RATE_LIMIT_MAX = 5; // max requests per IP per window
+
+function checkRateLimit(request) {
+  const ip =
+    request.rawRequest?.headers?.["x-forwarded-for"]?.split(",")[0]?.trim() ||
+    request.rawRequest?.ip ||
+    "unknown";
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+
+  if (entry && now - entry.windowStart < RATE_LIMIT_WINDOW_MS) {
+    entry.count++;
+    if (entry.count > RATE_LIMIT_MAX) {
+      throw new HttpsError("resource-exhausted", "Too many requests. Try again later.");
+    }
+  } else {
+    rateLimitMap.set(ip, { windowStart: now, count: 1 });
+  }
+
+  // Prune stale entries every 100 calls to prevent memory leak
+  if (rateLimitMap.size > 1000) {
+    for (const [key, val] of rateLimitMap) {
+      if (now - val.windowStart > RATE_LIMIT_WINDOW_MS * 5) {
+        rateLimitMap.delete(key);
+      }
+    }
+  }
+}
+
 exports.subscribeEmail = onCall(
   { secrets: [slackWebhookUrl] },
   async (request) => {
+    checkRateLimit(request);
+
     const { email, source, website } = request.data;
 
     // Honeypot — bots fill hidden fields, humans don't
@@ -16,7 +50,8 @@ exports.subscribeEmail = onCall(
     }
 
     // Validate email
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    if (!email || typeof email !== "string" || email.length > 254 ||
+        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       throw new HttpsError("invalid-argument", "Valid email required");
     }
 
@@ -68,14 +103,23 @@ exports.subscribeEmail = onCall(
 exports.submitNomination = onCall(
   { secrets: [slackWebhookUrl] },
   async (request) => {
+    checkRateLimit(request);
+
     const { repoUrl, source, website } = request.data;
 
     // Honeypot
     if (website) return { status: "submitted" };
 
-    // Validate GitHub URL
-    if (!repoUrl || !/^https:\/\/github\.com\/[^/]+\/[^/\s]+/.test(repoUrl)) {
+    // Validate GitHub URL (strict: must be github.com, max length, no query params)
+    if (!repoUrl || typeof repoUrl !== "string" || repoUrl.length > 200 ||
+        !/^https:\/\/github\.com\/[a-zA-Z0-9._-]+\/[a-zA-Z0-9._-]+\/?$/.test(repoUrl)) {
       throw new HttpsError("invalid-argument", "Valid GitHub repo URL required");
+    }
+
+    // Validate source
+    const allowedSources = ["killer-skills"];
+    if (!source || !allowedSources.includes(source)) {
+      throw new HttpsError("invalid-argument", "Invalid source provided");
     }
 
     const cleanUrl = repoUrl.replace(/\/+$/, "").toLowerCase();
