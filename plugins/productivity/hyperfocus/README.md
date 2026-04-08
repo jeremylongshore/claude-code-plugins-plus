@@ -6,9 +6,11 @@ Restructures AI responses with evidence-based cognitive accessibility — chunki
 
 ## Install
 
-```bash
-claude plugin marketplace add nextor2k/hyperfocus
-claude plugin install hyperfocus@hyperfocus
+Inside Claude Code, run:
+
+```
+/plugin marketplace add nextor2k/hyperfocus
+/plugin install hyperfocus
 ```
 
 Or via npx skills:
