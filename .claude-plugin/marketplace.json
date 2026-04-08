@@ -2309,7 +2309,7 @@
     {
       "name": "freshie-inventory-manager",
       "source": "./plugins/database/freshie-inventory-manager",
-      "description": "Interactive command center for the freshie ecosystem inventory database — conversational wizard with subagents for discovery scans, compliance grading, batch remediation, querying, reporting, and email PDF delivery across 50 tables of plugin/skill/pack metadata",
+      "description": "Interactive command center for the freshie ecosystem inventory database \u2014 conversational wizard with subagents for discovery scans, compliance grading, batch remediation, querying, reporting, and email PDF delivery across 50 tables of plugin/skill/pack metadata",
       "version": "1.0.0",
       "category": "database",
       "keywords": [
@@ -4375,7 +4375,7 @@
     {
       "name": "tonone",
       "source": "./plugins/ai-agency/tonone",
-      "description": "23-agent AI team for software teams: 15 engineering specialists (Apex, Forge, Relay, Spine, Flux, Warden, Vigil, Prism, Cortex, Touch, Volt, Atlas, Lens, Proof, Pave) + 8 product agents (Helm, Echo, Lumen, Draft, Form, Crest, Pitch, Surge) with a formal Helm→Apex handoff interface and 125 skills.",
+      "description": "23-agent AI team for software teams: 15 engineering specialists (Apex, Forge, Relay, Spine, Flux, Warden, Vigil, Prism, Cortex, Touch, Volt, Atlas, Lens, Proof, Pave) + 8 product agents (Helm, Echo, Lumen, Draft, Form, Crest, Pitch, Surge) with a formal Helm\u2192Apex handoff interface and 125 skills.",
       "version": "0.6.5",
       "category": "ai-agency",
       "keywords": [
@@ -6124,7 +6124,7 @@
     {
       "name": "b12-claude-plugin",
       "source": "./plugins/community/b12-claude-plugin",
-      "description": "B12 Website Generator — an official plugin by B12.io. Ships a single auto-activating skill (website-generator) that collects a business name and description, then generates a production-ready B12 website signup link instantly.",
+      "description": "B12 Website Generator \u2014 an official plugin by B12.io. Ships a single auto-activating skill (website-generator) that collects a business name and description, then generates a production-ready B12 website signup link instantly.",
       "version": "1.0.0",
       "category": "community",
       "keywords": [
@@ -7988,7 +7988,7 @@
     {
       "name": "pr-to-spec",
       "source": "./plugins/mcp/pr-to-spec",
-      "description": "The flight envelope for agentic coding — convert PRs and local diffs into structured, agent-consumable specs with intent drift detection",
+      "description": "The flight envelope for agentic coding \u2014 convert PRs and local diffs into structured, agent-consumable specs with intent drift detection",
       "version": "0.8.0",
       "category": "code-quality",
       "repository": "https://github.com/jeremylongshore/pr-to-prompt",
@@ -8008,7 +8008,7 @@
     {
       "name": "slack-channel",
       "source": "./plugins/mcp/slack-channel",
-      "description": "Two-way Slack channel for Claude Code — chat from Slack DMs and channels via Socket Mode",
+      "description": "Two-way Slack channel for Claude Code \u2014 chat from Slack DMs and channels via Socket Mode",
       "version": "0.1.0",
       "category": "productivity",
       "keywords": [
@@ -8030,7 +8030,7 @@
     {
       "name": "x-bug-triage-plugin",
       "source": "./plugins/mcp/x-bug-triage",
-      "description": "Closed-loop bug triage: X complaints → clusters → repo evidence → owner routing → Slack review → filed issues",
+      "description": "Closed-loop bug triage: X complaints \u2192 clusters \u2192 repo evidence \u2192 owner routing \u2192 Slack review \u2192 filed issues",
       "version": "0.3.0",
       "category": "devops",
       "author": {
@@ -8095,7 +8095,7 @@
     {
       "name": "shipwright",
       "source": "./plugins/ai-agency/shipwright",
-      "description": "Describe your app in plain English — Shipwright builds, tests, and deploys it autonomously via a 9-phase pipeline.",
+      "description": "Describe your app in plain English \u2014 Shipwright builds, tests, and deploys it autonomously via a 9-phase pipeline.",
       "version": "1.0.0",
       "category": "ai-agency",
       "author": {
@@ -8115,28 +8115,6 @@
       ],
       "repository": "https://github.com/Wynelson94/shipwright",
       "homepage": "https://github.com/Wynelson94/shipwright",
-      "license": "MIT"
-    },
-    {
-      "name": "claudebase",
-      "source": "external",
-      "description": "Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles, secret scanning, and multi-machine conflict detection.",
-      "version": "1.0.0",
-      "category": "productivity",
-      "author": {
-        "name": "Rohit Hazra",
-        "email": ""
-      },
-      "keywords": [
-        "backup",
-        "sync",
-        "config",
-        "profiles",
-        "dotfiles",
-        "multi-machine"
-      ],
-      "repository": "https://github.com/rohithzr/claudebase",
-      "homepage": "https://github.com/rohithzr/claudebase",
       "license": "MIT"
     }
   ]
