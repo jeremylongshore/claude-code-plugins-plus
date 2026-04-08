@@ -1,0 +1,21 @@
+# BMAD Core Module
+# Universal framework - always installed
+
+name: core
+version: 6.2.2
+description: |
+  Core BMAD framework providing orchestration, help system,
+  and shared utilities used by all other modules.
+
+agents:
+  - bmad-orchestrator
+  - bmad-help
+
+tasks:
+  - help
+  - workflow-init
+  - workflow-status
+
+resources:
+  - bmad-personas
+  - workflow-map

@@ -1,0 +1,11 @@
+topic,command,description,phase
+getting-started,bmad-help,Overview of BMAD method and how to begin,all
+workflow-status,workflow-status,Check current project phase and progress,all
+init-project,workflow-init,Initialize BMAD in a new project,setup
+analysis,analyze,Run business analysis discovery,1-analysis
+create-prd,create-prd,Create a Product Requirements Document,2-planning
+architecture,create-architecture,Design system architecture,3-solutioning
+sprint-planning,plan-sprint,Break down work into implementable stories,4-implementation
+implement,implement,Start implementing a story or task,4-implementation
+code-review,code-review,Run code review workflow,4-implementation
+next-step,bmad-help,Ask what to do next based on current progress,all

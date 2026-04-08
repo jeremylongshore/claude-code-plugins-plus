@@ -1,0 +1,1 @@
+Start BMAD Phase 1: Business Analysis. Activate the Business Analyst agent persona from _bmad/bmm/agents/analyst.md. Follow the discovery workflow at _bmad/bmm/workflows/1-analysis/discovery.md. Guide the user through business discovery, stakeholder mapping, and requirements gathering. Save the analysis document to _bmad-output/analysis.md when complete.

@@ -1,0 +1,1 @@
+Start BMAD Phase 2: PRD Creation. Activate the Product Manager agent persona from _bmad/bmm/agents/pm.md. Follow the create-prd workflow at _bmad/bmm/workflows/2-planning/create-prd.md. First review the analysis at _bmad-output/analysis.md, then guide creation of a comprehensive Product Requirements Document. Save to _bmad-output/prd/prd.md when complete.
