@@ -1,0 +1,51 @@
+# BMad Method Module (BMM)
+# Breakthrough Method for Agile AI-Driven Development
+
+name: bmm
+version: 6.2.2
+description: |
+  The BMad Method module provides a complete agile AI-driven development
+  methodology with specialized agents for each phase of the software
+  development lifecycle.
+
+agents:
+  - analyst
+  - pm
+  - ux-designer
+  - architect
+  - sm
+  - dev
+  - qa
+
+workflows:
+  1-analysis:
+    - discovery
+    - requirements-gathering
+  2-planning:
+    - create-prd
+    - feature-prioritization
+  3-solutioning:
+    - create-architecture
+    - epic-breakdown
+  4-implementation:
+    - plan-sprint
+    - implement
+    - code-review
+
+phases:
+  - id: 1-analysis
+    name: Analysis
+    agent: analyst
+    description: Business discovery and requirements analysis
+  - id: 2-planning
+    name: Planning
+    agent: pm
+    description: Product requirements and feature planning
+  - id: 3-solutioning
+    name: Solutioning
+    agent: architect
+    description: Technical architecture and system design
+  - id: 4-implementation
+    name: Implementation
+    agents: [sm, dev, qa]
+    description: Sprint planning, coding, and quality assurance

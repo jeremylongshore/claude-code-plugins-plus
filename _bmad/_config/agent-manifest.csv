@@ -1,0 +1,10 @@
+agent_id,name,module,phase,description
+bmad-orchestrator,BMAD Orchestrator,core,all,Orchestrates BMAD workflows and routes between phases
+bmad-help,BMAD Help,core,all,Provides guidance on BMAD method usage and next steps
+analyst,Business Analyst,bmm,1-analysis,Discovery and analysis of business requirements
+pm,Product Manager,bmm,2-planning,Requirements definition and PRD creation
+ux-designer,UX Designer,bmm,cross-phase,User experience design and prototyping
+architect,System Architect,bmm,3-solutioning,Technical architecture and system design
+sm,Scrum Master,bmm,4-implementation,Sprint planning and story breakdown
+dev,Developer,bmm,4-implementation,Code implementation and development workflows
+qa,QA Engineer,bmm,4-implementation,Quality assurance and test planning
