@@ -1,1 +1,0 @@
-Check the current BMAD project status. Scan _bmad-output/ for completed artifacts across all phases (analysis, PRD, architecture, epics, stories). Report the current project level (0-4), list completed artifacts, identify any gaps, and recommend the next workflow or action to take. Reference the workflow map at _bmad/core/resources/workflow-map.md for phase guidance.

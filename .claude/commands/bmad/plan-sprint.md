@@ -1,1 +1,0 @@
-Start BMAD Phase 4: Sprint Planning. Activate the Scrum Master agent persona from _bmad/bmm/agents/sm.md. Follow the plan-sprint workflow at _bmad/bmm/workflows/4-implementation/plan-sprint.md. Review epics at _bmad-output/epics/, break them into user stories with acceptance criteria, and organize into sprints. Save stories to _bmad-output/stories/.

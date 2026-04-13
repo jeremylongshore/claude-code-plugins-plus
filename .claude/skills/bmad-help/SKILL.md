@@ -1,64 +1,73 @@
 ---
 name: bmad-help
-description: |
-  Provides guidance on using the BMAD method, explains available workflows and agents,
-  and helps determine next steps based on project state.
-  Use when asking "what should I do next", "bmad help", or "how does BMAD work".
-  Trigger with phrases like "bmad help", "bmad guide", "what's next", or "how do I use bmad".
-allowed-tools: Read, Glob, Grep
-version: 6.2.2
-author: BMad Code <bmadcode@bmad-method.org>
+description: 'Analyzes current state and user query to answer BMad questions or recommend the next skill(s) to use. Use when user asks for help, bmad help, what to do next, or what to start with in BMad.'
 ---
 
-# BMAD Help
+# BMad Help
 
-Guidance and navigation for the BMAD method.
+## Purpose
 
-## Overview
+Help the user understand where they are in their BMad workflow and what to do next. Answer BMad questions when asked.
 
-Helps users understand the BMAD method, discover available workflows and agents, and determine their next steps based on current project state.
+## Desired Outcomes
 
-## Prerequisites
+When this skill completes, the user should:
 
-- `_bmad/` directory present in project
+1. **Know where they are** — which module and phase they're in, what's already been completed
+2. **Know what to do next** — the next recommended and/or required step, with clear reasoning
+3. **Know how to invoke it** — skill name, menu code, action context, and any args that shortcut the conversation
+4. **Get offered a quick start** — when a single skill is the clear next step, offer to run it for the user right now rather than just listing it
+5. **Feel oriented, not overwhelmed** — surface only what's relevant to their current position; don't dump the entire catalog
 
-## Instructions
+## Data Sources
 
-1. Read `_bmad/_config/manifest.yaml` to identify installed modules
-2. Read `_bmad/_config/bmad-help.csv` for available topics
-3. Scan `_bmad-output/` to assess current project phase
-4. Provide contextual guidance based on project state
+- **Catalog**: `{project-root}/_bmad/_config/bmad-help.csv` — assembled manifest of all installed module skills
+- **Config**: `config.yaml` and `user-config.yaml` files in `{project-root}/_bmad/` and its subfolders — resolve `output-location` variables, provide `communication_language` and `project_knowledge`
+- **Artifacts**: Files matching `outputs` patterns at resolved `output-location` paths reveal which steps are possibly completed; their content may also provide grounding context for recommendations
+- **Project knowledge**: If `project_knowledge` resolves to an existing path, read it for grounding context. Never fabricate project-specific details.
 
-### BMAD Overview
+## CSV Interpretation
 
-BMAD uses 4 phases with specialized agents:
-1. **Analysis** (Analyst) - Understand the problem
-2. **Planning** (PM) - Define requirements
-3. **Solutioning** (Architect) - Design architecture
-4. **Implementation** (Dev/SM/QA) - Build and test
+The catalog uses this format:
 
-### Quick Start
+```
+module,skill,display-name,menu-code,description,action,args,phase,after,before,required,output-location,outputs
+```
 
-- New project? Say "Initialize BMAD"
-- Already started? Say "What should I do next?"
-- Need help with a phase? Say "Help with [phase name]"
+**Phases** determine the high-level flow:
+- `anytime` — available regardless of workflow state
+- Numbered phases (`1-analysis`, `2-planning`, etc.) flow in order; naming varies by module
 
-## Output
+**Dependencies** determine ordering within and across phases:
+- `after` — skills that should ideally complete before this one
+- `before` — skills that should run after this one
+- Format: `skill-name` for single-action skills, `skill-name:action` for multi-action skills
 
-- Current project state assessment
-- Available commands and agents
-- Contextual next-step recommendations
+**Required gates**:
+- `required=true` items must complete before the user can meaningfully proceed to later phases
+- A phase with no required items is entirely optional — recommend it but be clear about what's actually required next
 
-## Examples
+**Completion detection**:
+- Search resolved output paths for `outputs` patterns
+- Fuzzy-match found files to catalog rows
+- User may also state completion explicitly, or it may be evident from the current conversation
 
-**Example: Getting started**
-Request: "bmad help"
-Result: Shows overview of BMAD method, available commands, and recommended first step
+**Descriptions carry routing context** — some contain cycle info and alternate paths (e.g., "back to DS if fixes needed"). Read them as navigation hints, not just display text.
 
-**Example: Next steps**
-Request: "I just finished the architecture, what do I do next?"
-Result: Recommends sprint planning with the Scrum Master agent
+## Response Format
 
-## Resources
+For each recommended item, present:
+- `[menu-code]` **Display name** — e.g., "[CP] Create PRD"
+- Skill name in backticks — e.g., `bmad-create-prd`
+- For multi-action skills: action invocation context — e.g., "tech-writer lets create a mermaid diagram!"
+- Description if present in CSV; otherwise your existing knowledge of the skill suffices
+- Args if available
 
-- [BMAD Method Documentation](https://docs.bmad-method.org/)
+**Ordering**: Show optional items first, then the next required item. Make it clear which is which.
+
+## Constraints
+
+- Present all output in `{communication_language}`
+- Recommend running each skill in a **fresh context window**
+- Match the user's tone — conversational when they're casual, structured when they want specifics
+- If the active module is ambiguous, ask rather than guess
