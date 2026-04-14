@@ -73,7 +73,7 @@ See [Smart Collection Create](references/smart-collection-create.md) for the com
 | `userErrors: [{code: "BLANK", field: ["title"]}]` | Empty required field | Provide non-empty title |
 | `userErrors: [{code: "INVALID"}]` | Invalid metafield type | Check `type` matches Shopify's metafield types |
 | `Access denied` on `productCreate` | Missing `write_products` scope | Request scope in app config |
-| `Product not found` | Wrong GID format | Must be `gid://shopify/Product/{numeric_id}` |
+| `Product not found` | Wrong GID format | Must be `gid://shopify/Product/1234567890` (numeric ID) |
 
 ## Examples
 

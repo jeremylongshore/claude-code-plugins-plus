@@ -22,8 +22,10 @@ The 10 most common mistakes when building Shopify apps, with real API examples s
 
 ## Prerequisites
 
-- Shopify app codebase to review
-- Understanding of GraphQL Admin API patterns
+- Existing Shopify app codebase to review or audit
+- Familiarity with GraphQL Admin API query patterns and response shapes
+- Access scopes configured for the APIs your app uses
+- `@shopify/shopify-api` v9+ installed (for code examples)
 
 ## Instructions
 

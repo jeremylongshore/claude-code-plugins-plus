@@ -66,7 +66,7 @@ See [Customer Search Query](references/customer-search-query.md) for the complet
 | `Access denied for orders` | Missing `read_orders` scope | Add scope and re-auth |
 | `Fulfillment order not found` | Wrong fulfillment order ID | Query fulfillment orders first |
 | `Cannot fulfill: already fulfilled` | Order already shipped | Check `remainingQuantity > 0` |
-| `Customer not found` | Invalid customer GID | Verify GID format `gid://shopify/Customer/{id}` |
+| `Customer not found` | Invalid customer GID | Verify GID format `gid://shopify/Customer/1234567890` (numeric ID) |
 | `Order is not editable` | Order already archived | Only draft/open orders are editable |
 | `THROTTLED` | Rate limit exceeded | Implement backoff -- see `shopify-rate-limits` |
 
