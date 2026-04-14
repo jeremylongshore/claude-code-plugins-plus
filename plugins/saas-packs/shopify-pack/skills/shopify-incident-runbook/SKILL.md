@@ -3,6 +3,7 @@ name: shopify-incident-runbook
 description: |
   Execute Shopify incident response with triage using Shopify status page,
   API health checks, and rate limit diagnosis.
+  Use when a Shopify integration is down, returning errors, or behaving unexpectedly in production.
   Trigger with phrases like "shopify incident", "shopify outage",
   "shopify down", "shopify on-call", "shopify emergency", "shopify not responding".
 allowed-tools: Read, Grep, Bash(curl:*)
@@ -29,51 +30,9 @@ Rapid incident response for Shopify API outages, authentication failures, and ra
 
 ### Step 1: Quick Triage (First 5 Minutes)
 
-```bash
-#!/bin/bash
-echo "=== SHOPIFY INCIDENT TRIAGE ==="
-echo "Time: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+Run the triage script to check Shopify status, API connectivity, REST rate limits, and GraphQL throttle state in one pass.
 
-# 1. Is Shopify itself down?
-echo ""
-echo "--- Shopify Status ---"
-echo "Check: https://www.shopifystatus.com"
-echo "API Status: https://www.shopifystatus.com/api/v2/status.json"
-curl -sf "https://www.shopifystatus.com/api/v2/status.json" 2>/dev/null \
-  | python3 -c "import json,sys; d=json.load(sys.stdin); print(f'Overall: {d[\"status\"][\"description\"]}')" \
-  2>/dev/null || echo "Could not reach status page"
-
-# 2. Can we reach the Shopify API?
-echo ""
-echo "--- API Connectivity ---"
-echo -n "Admin API: "
-HTTP_CODE=$(curl -sf -o /dev/null -w "%{http_code}" \
-  -H "X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN" \
-  "https://$SHOPIFY_STORE/admin/api/2024-10/shop.json" 2>/dev/null)
-echo "$HTTP_CODE"
-
-# 3. Rate limit state
-echo ""
-echo "--- Rate Limit State ---"
-curl -sI -H "X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN" \
-  "https://$SHOPIFY_STORE/admin/api/2024-10/shop.json" 2>/dev/null \
-  | grep -i "x-shopify-shop-api-call-limit"
-
-# 4. GraphQL rate limit
-echo ""
-echo "--- GraphQL Throttle ---"
-curl -sf -H "X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"query": "{ shop { name } }"}' \
-  "https://$SHOPIFY_STORE/admin/api/2024-10/graphql.json" 2>/dev/null \
-  | python3 -c "
-import json,sys
-d=json.load(sys.stdin)
-t=d.get('extensions',{}).get('cost',{}).get('throttleStatus',{})
-print(f'Available: {t.get(\"currentlyAvailable\",\"?\")}/{t.get(\"maximumAvailable\",\"?\")}')
-print(f'Restore rate: {t.get(\"restoreRate\",\"?\")}/sec')
-" 2>/dev/null || echo "Could not query"
-```
+See [Triage Script](references/triage-script.md) for the complete diagnostic script.
 
 ### Step 2: Decision Tree
 
@@ -99,40 +58,9 @@ Is Shopifystatus.com showing an incident?
 
 ### Step 3: Immediate Actions by Error Type
 
-**401 — Token Expired/Revoked:**
-```bash
-# Verify the token is still valid
-curl -sf -H "X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN" \
-  "https://$SHOPIFY_STORE/admin/api/2024-10/shop.json" | jq '.shop.name'
+Diagnostic commands and remediation for 401 (token expired), 429 (rate limited), and 5xx (Shopify internal errors). Always capture `X-Request-Id` headers for Shopify support.
 
-# If 401: merchant may have uninstalled and reinstalled
-# → Trigger re-authentication flow
-# → Check APP_UNINSTALLED webhook logs
-```
-
-**429 — Rate Limited:**
-```bash
-# Check if you have a runaway loop
-# Look for rapid sequential API calls in your logs
-
-# Immediate mitigation: pause all non-critical API calls
-# Check GraphQL query costs — are any queries > 500 points?
-
-# For REST: check the bucket header
-curl -sI -H "X-Shopify-Access-Token: $TOKEN" \
-  "https://$STORE/admin/api/2024-10/shop.json" \
-  | grep "x-shopify-shop-api-call-limit"
-# If "40/40" — bucket is full, wait 20 seconds (40 / 2 per second)
-```
-
-**5xx — Shopify Internal Error:**
-```bash
-# Capture the X-Request-Id for support
-curl -sI -H "X-Shopify-Access-Token: $TOKEN" \
-  "https://$STORE/admin/api/2024-10/shop.json" \
-  | grep -i "x-request-id"
-# Include this ID when contacting Shopify Partner Support
-```
+See [Error Type Actions](references/error-type-actions.md) for complete commands per error type.
 
 ### Step 4: Communication Templates
 
@@ -179,7 +107,7 @@ All data is safe — no orders or products have been lost.
 
 ```bash
 curl -sf -H "X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN" \
-  "https://$SHOPIFY_STORE/admin/api/2024-10/shop.json" \
+  "https://$SHOPIFY_STORE/admin/api/${SHOPIFY_API_VERSION:-2025-04}/shop.json" \
   | jq '{name: .shop.name, plan: .shop.plan_name}' \
   && echo "SHOPIFY: HEALTHY" || echo "SHOPIFY: UNREACHABLE"
 ```
@@ -198,7 +126,3 @@ curl -sf -H "X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN" \
 - [Shopify Status Page](https://www.shopifystatus.com)
 - [Shopify Partner Support](https://help.shopify.com/en/partners)
 - [Shopify Community Forums](https://community.shopify.dev)
-
-## Next Steps
-
-For data handling and GDPR, see `shopify-data-handling`.

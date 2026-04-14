@@ -3,6 +3,7 @@ name: shopify-advanced-troubleshooting
 description: |
   Debug complex Shopify API issues using cost analysis, request tracing,
   webhook delivery inspection, and GraphQL introspection.
+  Use when encountering intermittent failures, throttling mysteries, or webhook delivery gaps.
   Trigger with phrases like "shopify hard bug", "shopify mystery error",
   "shopify deep debug", "difficult shopify issue", "shopify intermittent failure".
 allowed-tools: Read, Grep, Bash(curl:*), Bash(node:*)
@@ -29,201 +30,44 @@ Deep debugging for complex Shopify API issues: cost analysis with debug headers,
 
 ### Step 1: GraphQL Cost Analysis
 
-When queries THROTTLE unexpectedly, use the cost debug header:
-
-```bash
-# Get detailed per-field cost breakdown
-curl -X POST "https://$STORE/admin/api/2024-10/graphql.json" \
-  -H "X-Shopify-Access-Token: $TOKEN" \
-  -H "Content-Type: application/json" \
-  -H "Shopify-GraphQL-Cost-Debug: 1" \
-  -d '{
-    "query": "{ products(first: 50) { edges { node { id title variants(first: 20) { edges { node { id price metafields(first: 5) { edges { node { key value } } } } } } } } } }"
-  }' | jq '.extensions.cost'
-```
-
-Response shows why the cost is high:
-```json
-{
-  "requestedQueryCost": 1552,
-  "actualQueryCost": 234,
-  "throttleStatus": {
-    "maximumAvailable": 1000.0,
-    "currentlyAvailable": 766.0,
-    "restoreRate": 50.0
-  }
-}
-```
+When queries THROTTLE unexpectedly, use the cost debug header by adding `Shopify-GraphQL-Cost-Debug: 1` to your request. The response `extensions.cost` reveals why a query is expensive.
 
 **Key:** `requestedQueryCost` is `first` multiplied through nested connections. `50 products * 20 variants * (1 + 5 metafields)` = high cost even if actual data is small.
 
 ### Step 2: Trace a Specific Request
 
-Every Shopify response includes `X-Request-Id`. Capture it for support:
+Every Shopify response includes `X-Request-Id`. Capture it for support escalation:
 
 ```bash
-# Capture full response headers and body
-curl -v -X POST "https://$STORE/admin/api/2024-10/graphql.json" \
+curl -v -X POST "https://$STORE/admin/api/2025-04/graphql.json" \
   -H "X-Shopify-Access-Token: $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"query": "{ shop { name } }"}' 2>&1 | tee /tmp/shopify-debug.txt
 
-# Extract the request ID
 grep -i "x-request-id" /tmp/shopify-debug.txt
 ```
 
 ### Step 3: Webhook Delivery Inspection
 
-Inspect webhook delivery status in the Partner Dashboard, or query via API:
+Inspect webhook delivery status in the Partner Dashboard, or query subscription health via API.
 
-```typescript
-// Check webhook subscription health
-const WEBHOOK_STATUS = `{
-  webhookSubscriptions(first: 50) {
-    edges {
-      node {
-        id
-        topic
-        endpoint {
-          ... on WebhookHttpEndpoint {
-            callbackUrl
-          }
-        }
-        format
-        apiVersion
-        createdAt
-        updatedAt
-      }
-    }
-  }
-}`;
-
-// Common webhook delivery issues:
-// 1. Your endpoint returns non-200 — Shopify retries 19 times over 48 hours
-// 2. Response takes > 5 seconds — Shopify considers it failed
-// 3. Endpoint is HTTP (not HTTPS) — Shopify won't deliver
-// 4. SSL certificate invalid — delivery fails silently
-```
+See [Webhook Status Query](references/webhook-status-query.md) for the complete query and common delivery failure patterns.
 
 ### Step 4: GraphQL Introspection for API Version Differences
 
-```bash
-# Check if a specific field exists in your API version
-curl -X POST "https://$STORE/admin/api/2024-10/graphql.json" \
-  -H "X-Shopify-Access-Token: $TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "query": "{ __type(name: \"Product\") { fields { name type { name kind } } } }"
-  }' | jq '.data.__type.fields[] | {name, type: .type.name}'
-
-# Check available mutations
-curl -X POST "https://$STORE/admin/api/2024-10/graphql.json" \
-  -H "X-Shopify-Access-Token: $TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "query": "{ __schema { mutationType { fields { name description } } } }"
-  }' | jq '.data.__schema.mutationType.fields[] | select(.name | startswith("product"))'
-```
+Use introspection queries to check if specific fields or mutations exist in your API version. Query `__type` for field lists or `__schema` for available mutations filtered by prefix.
 
 ### Step 5: Systematic Isolation
 
-```bash
-#!/bin/bash
-# shopify-layer-test.sh — test each layer independently
-STORE="$SHOPIFY_STORE"
-TOKEN="$SHOPIFY_ACCESS_TOKEN"
-VERSION="2024-10"
+Run a layer-by-layer diagnostic that tests DNS, TCP, TLS, HTTP, GraphQL, and rate limit state independently.
 
-echo "=== Layer-by-Layer Diagnostic ==="
-
-# Layer 1: DNS
-echo -n "1. DNS: "
-dig +short "$STORE" >/dev/null 2>&1 && echo "OK" || echo "FAIL"
-
-# Layer 2: TCP connectivity
-echo -n "2. TCP: "
-timeout 5 bash -c "echo > /dev/tcp/${STORE}/443" 2>/dev/null && echo "OK" || echo "FAIL"
-
-# Layer 3: TLS handshake
-echo -n "3. TLS: "
-echo | openssl s_client -connect "$STORE:443" -servername "$STORE" 2>/dev/null | grep -q "Verify return code: 0" && echo "OK" || echo "FAIL"
-
-# Layer 4: HTTP response
-echo -n "4. HTTP: "
-HTTP=$(curl -sf -o /dev/null -w "%{http_code}" "https://$STORE/admin/api/$VERSION/shop.json" -H "X-Shopify-Access-Token: $TOKEN")
-[ "$HTTP" = "200" ] && echo "OK ($HTTP)" || echo "FAIL ($HTTP)"
-
-# Layer 5: GraphQL
-echo -n "5. GraphQL: "
-GQL=$(curl -sf "https://$STORE/admin/api/$VERSION/graphql.json" \
-  -H "X-Shopify-Access-Token: $TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"query": "{ shop { name } }"}' | jq -r '.data.shop.name')
-[ -n "$GQL" ] && echo "OK ($GQL)" || echo "FAIL"
-
-# Layer 6: Rate limit state
-echo -n "6. Rate limit: "
-curl -sf "https://$STORE/admin/api/$VERSION/graphql.json" \
-  -H "X-Shopify-Access-Token: $TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"query": "{ shop { name } }"}' \
-  | jq -r '.extensions.cost.throttleStatus | "\(.currentlyAvailable)/\(.maximumAvailable) available"'
-```
+See [Layer-by-Layer Diagnostic](references/layer-by-layer-diagnostic.md) for the complete shell script.
 
 ### Step 6: Debug Intermittent Failures
 
-```typescript
-// Capture timing and response details for pattern analysis
-interface DebugEntry {
-  timestamp: string;
-  operation: string;
-  requestId: string;
-  statusCode: number;
-  durationMs: number;
-  queryCost: number;
-  availablePoints: number;
-  error?: string;
-}
+Wrap Shopify calls in a debug logger that captures timing, cost, and error data for pattern analysis.
 
-const debugLog: DebugEntry[] = [];
-
-async function debugShopifyCall<T>(
-  operation: string,
-  fn: () => Promise<T>
-): Promise<T> {
-  const start = Date.now();
-  try {
-    const result = await fn();
-    debugLog.push({
-      timestamp: new Date().toISOString(),
-      operation,
-      requestId: "from-response-headers",
-      statusCode: 200,
-      durationMs: Date.now() - start,
-      queryCost: (result as any).extensions?.cost?.actualQueryCost || 0,
-      availablePoints: (result as any).extensions?.cost?.throttleStatus?.currentlyAvailable || 0,
-    });
-    return result;
-  } catch (error: any) {
-    debugLog.push({
-      timestamp: new Date().toISOString(),
-      operation,
-      requestId: error.response?.headers?.["x-request-id"] || "unknown",
-      statusCode: error.response?.code || 0,
-      durationMs: Date.now() - start,
-      queryCost: 0,
-      availablePoints: 0,
-      error: error.message,
-    });
-    throw error;
-  }
-}
-
-// After running, analyze the debug log for patterns:
-// - Do failures cluster at specific times?
-// - Does availablePoints drop to 0 before failures?
-// - Are specific operations consistently slow?
-```
+See [Debug Intermittent Failures](references/debug-intermittent-failures.md) for the complete TypeScript implementation.
 
 ## Output
 
@@ -245,23 +89,23 @@ async function debugShopifyCall<T>(
 
 ## Examples
 
-### Support Escalation with Evidence
+### Diagnosing Intermittent 502 Errors
 
-```bash
-# Collect everything for a support ticket
-echo "=== Shopify Support Evidence ===" > evidence.txt
-echo "Date: $(date -u)" >> evidence.txt
-echo "Store: $SHOPIFY_STORE" >> evidence.txt
-echo "API Version: 2024-10" >> evidence.txt
-echo "" >> evidence.txt
-echo "Error X-Request-Ids:" >> evidence.txt
-echo "  - abc123def456" >> evidence.txt
-echo "" >> evidence.txt
-echo "Query that fails:" >> evidence.txt
-echo '  { products(first: 50) { edges { node { id title } } } }' >> evidence.txt
-echo "" >> evidence.txt
-echo "Frequency: ~5% of requests between 2pm-4pm UTC" >> evidence.txt
-```
+A store experiences random 502 errors on product sync queries. Use the debug wrapper to capture timing and cost data across 100 requests, then analyze the pattern.
+
+See [Debug Intermittent Failures](references/debug-intermittent-failures.md) for the complete TypeScript implementation.
+
+### Isolating a Webhook Delivery Gap
+
+Orders are created but the fulfillment webhook never fires. Run the webhook status query to check subscription health and delivery success rates.
+
+See [Webhook Status Query](references/webhook-status-query.md) for the complete query and common delivery failure patterns.
+
+### Pinpointing a Network Layer Failure
+
+API calls fail sporadically from a specific server. Run the layer-by-layer diagnostic to test DNS, TCP, TLS, HTTP, and GraphQL independently.
+
+See [Layer-by-Layer Diagnostic](references/layer-by-layer-diagnostic.md) for the complete shell script.
 
 ## Resources
 
@@ -269,7 +113,3 @@ echo "Frequency: ~5% of requests between 2pm-4pm UTC" >> evidence.txt
 - [Webhook Troubleshooting](https://shopify.dev/docs/apps/build/webhooks/troubleshoot)
 - [Shopify Partner Support](https://help.shopify.com/en/partners)
 - [Shopify Community Forums](https://community.shopify.dev)
-
-## Next Steps
-
-For load testing, see `shopify-load-scale`.

@@ -30,53 +30,9 @@ Register webhooks via GraphQL, handle events with HMAC verification, and impleme
 
 ### Step 1: Register Webhooks via GraphQL
 
-```typescript
-// Register a webhook subscription
-const REGISTER_WEBHOOK = `
-  mutation webhookSubscriptionCreate($topic: WebhookSubscriptionTopic!, $webhookSubscription: WebhookSubscriptionInput!) {
-    webhookSubscriptionCreate(topic: $topic, webhookSubscription: $webhookSubscription) {
-      webhookSubscription {
-        id
-        topic
-        endpoint {
-          ... on WebhookHttpEndpoint {
-            callbackUrl
-          }
-        }
-        format
-      }
-      userErrors { field message }
-    }
-  }
-`;
+Use the `webhookSubscriptionCreate` mutation with `WebhookSubscriptionTopic` and `WebhookSubscriptionInput` to register subscriptions for all critical event topics (orders, products, customers, inventory, app lifecycle).
 
-// Common webhook topics
-const topics = [
-  "ORDERS_CREATE",
-  "ORDERS_UPDATED",
-  "ORDERS_PAID",
-  "ORDERS_FULFILLED",
-  "PRODUCTS_CREATE",
-  "PRODUCTS_UPDATE",
-  "PRODUCTS_DELETE",
-  "CUSTOMERS_CREATE",
-  "CUSTOMERS_UPDATE",
-  "APP_UNINSTALLED",
-  "INVENTORY_LEVELS_UPDATE",
-];
-
-for (const topic of topics) {
-  await client.request(REGISTER_WEBHOOK, {
-    variables: {
-      topic,
-      webhookSubscription: {
-        callbackUrl: "https://your-app.example.com/webhooks",
-        format: "JSON",
-      },
-    },
-  });
-}
-```
+See [Webhook Registration](references/webhook-registration.md) for the complete implementation.
 
 ### Step 2: Configure Mandatory GDPR Webhooks
 
@@ -85,7 +41,7 @@ for (const topic of topics) {
 ```toml
 # shopify.app.toml
 [webhooks]
-api_version = "2024-10"
+api_version = "2025-04"  # Update quarterly
 
   # MANDATORY: customers/data_request
   [[webhooks.subscriptions]]
@@ -105,137 +61,15 @@ api_version = "2024-10"
 
 ### Step 3: Implement GDPR Webhook Handlers
 
-```typescript
-// Mandatory GDPR handlers — your app will be REJECTED without these
+Three mandatory handlers: (1) customer data request -- collect and send all data for a customer, (2) customer redact -- delete customer personal data and specified orders, (3) shop redact -- delete ALL shop data 48 hours after uninstall.
 
-// 1. Customer Data Request — merchant forwards customer's data request
-app.post("/webhooks/gdpr/data-request", rawBodyParser, async (req, res) => {
-  if (!verifyShopifyWebhook(req.body, req.headers["x-shopify-hmac-sha256"]!, SECRET)) {
-    return res.status(401).send("Unauthorized");
-  }
-
-  const payload = JSON.parse(req.body.toString());
-  // payload shape:
-  // {
-  //   "shop_id": 12345,
-  //   "shop_domain": "store.myshopify.com",
-  //   "orders_requested": [123, 456],
-  //   "customer": { "id": 789, "email": "customer@example.com", "phone": "+1234567890" },
-  //   "data_request": { "id": 101112 }
-  // }
-
-  // Collect all data you have for this customer
-  const customerData = await collectCustomerData(payload.customer.id);
-  await sendDataToMerchant(payload.shop_domain, customerData);
-
-  res.status(200).send("OK");
-});
-
-// 2. Customer Redact — delete customer's personal data
-app.post("/webhooks/gdpr/customers-redact", rawBodyParser, async (req, res) => {
-  if (!verifyShopifyWebhook(req.body, req.headers["x-shopify-hmac-sha256"]!, SECRET)) {
-    return res.status(401).send("Unauthorized");
-  }
-
-  const payload = JSON.parse(req.body.toString());
-  // payload shape:
-  // {
-  //   "shop_id": 12345,
-  //   "shop_domain": "store.myshopify.com",
-  //   "customer": { "id": 789, "email": "customer@example.com", "phone": "+1234567890" },
-  //   "orders_to_redact": [123, 456]
-  // }
-
-  await deleteCustomerData(payload.customer.id);
-  await deleteOrderData(payload.orders_to_redact);
-
-  res.status(200).send("OK");
-});
-
-// 3. Shop Redact — 48 hours after app uninstall, delete ALL shop data
-app.post("/webhooks/gdpr/shop-redact", rawBodyParser, async (req, res) => {
-  if (!verifyShopifyWebhook(req.body, req.headers["x-shopify-hmac-sha256"]!, SECRET)) {
-    return res.status(401).send("Unauthorized");
-  }
-
-  const payload = JSON.parse(req.body.toString());
-  // { "shop_id": 12345, "shop_domain": "store.myshopify.com" }
-
-  await deleteAllShopData(payload.shop_id);
-
-  res.status(200).send("OK");
-});
-```
+See [GDPR Webhook Handlers](references/gdpr-webhook-handlers.md) for the complete implementation.
 
 ### Step 4: Event Handler Pattern
 
-```typescript
-import crypto from "crypto";
-import express from "express";
+A typed webhook dispatcher maps topics to handler functions. Verifies HMAC first, responds 200 immediately, then processes asynchronously. Unknown topics are logged but not rejected.
 
-type WebhookTopic =
-  | "orders/create"
-  | "orders/updated"
-  | "orders/paid"
-  | "products/create"
-  | "products/update"
-  | "products/delete"
-  | "app/uninstalled"
-  | "inventory_levels/update";
-
-const handlers: Record<WebhookTopic, (shop: string, payload: any) => Promise<void>> = {
-  "orders/create": async (shop, payload) => {
-    console.log(`New order ${payload.name} from ${shop}: $${payload.total_price}`);
-    // payload has: id, name, email, total_price, line_items[], shipping_address, etc.
-  },
-  "orders/paid": async (shop, payload) => {
-    console.log(`Order ${payload.name} paid: ${payload.financial_status}`);
-  },
-  "products/update": async (shop, payload) => {
-    console.log(`Product updated: ${payload.title} (${payload.id})`);
-    // Sync to your catalog
-  },
-  "products/delete": async (shop, payload) => {
-    console.log(`Product deleted: ${payload.id}`);
-    // Remove from your catalog
-  },
-  "app/uninstalled": async (shop, payload) => {
-    console.log(`App uninstalled from ${shop}`);
-    // Clean up session, disable features, prepare for shop/redact
-  },
-};
-
-app.post(
-  "/webhooks",
-  express.raw({ type: "application/json" }),
-  async (req, res) => {
-    const hmac = req.headers["x-shopify-hmac-sha256"] as string;
-    const topic = req.headers["x-shopify-topic"] as WebhookTopic;
-    const shop = req.headers["x-shopify-shop-domain"] as string;
-
-    if (!verifyShopifyWebhook(req.body, hmac, process.env.SHOPIFY_API_SECRET!)) {
-      return res.status(401).send("Invalid HMAC");
-    }
-
-    // Respond immediately — Shopify requires 200 within 5 seconds
-    res.status(200).send("OK");
-
-    // Process asynchronously
-    const payload = JSON.parse(req.body.toString());
-    const handler = handlers[topic];
-    if (handler) {
-      try {
-        await handler(shop, payload);
-      } catch (err) {
-        console.error(`Webhook handler failed for ${topic}:`, err);
-        // Shopify will retry failed webhooks (no 200 response)
-      }
-    } else {
-      console.log(`No handler for topic: ${topic}`);
-    }
-  }
-);
-```
+See [Event Handler Pattern](references/event-handler-pattern.md) for the complete implementation.
 
 ### Step 5: List and Manage Existing Webhooks
 
@@ -309,7 +143,3 @@ curl -X POST http://localhost:3000/webhooks \
 - [Webhook Topics Reference](https://shopify.dev/docs/api/admin-graphql/latest/enums/WebhookSubscriptionTopic)
 - [GDPR Mandatory Webhooks](https://shopify.dev/docs/apps/build/compliance/privacy-law-compliance)
 - [Webhook Delivery](https://shopify.dev/docs/apps/build/webhooks)
-
-## Next Steps
-
-For performance optimization, see `shopify-performance-tuning`.

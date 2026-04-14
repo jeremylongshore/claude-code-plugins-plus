@@ -44,156 +44,27 @@ shopify app deploy
 
 ### Step 2: Vercel Deployment
 
-```bash
-# Set environment variables
-vercel env add SHOPIFY_API_KEY production
-vercel env add SHOPIFY_API_SECRET production
-vercel env add SHOPIFY_SCOPES production
-vercel env add SHOPIFY_APP_URL production
+Set environment variables, configure `vercel.json` for webhooks and function timeouts, and update `shopify.app.toml` with the Vercel URL.
 
-# Deploy
-vercel --prod
-```
-
-```json
-// vercel.json
-{
-  "framework": "remix",
-  "env": {
-    "SHOPIFY_API_KEY": "@shopify-api-key",
-    "SHOPIFY_API_SECRET": "@shopify-api-secret"
-  },
-  "headers": [
-    {
-      "source": "/webhooks(.*)",
-      "headers": [
-        { "key": "Access-Control-Allow-Origin", "value": "*" }
-      ]
-    }
-  ],
-  "functions": {
-    "app/**/*.ts": { "maxDuration": 25 }
-  }
-}
-```
-
-Update `shopify.app.toml` with your Vercel URL:
-
-```toml
-[auth]
-redirect_urls = [
-  "https://your-app.vercel.app/auth/callback"
-]
-
-application_url = "https://your-app.vercel.app"
-```
+See [Vercel Deployment](references/vercel-deployment.md) for the complete configuration.
 
 ### Step 3: Fly.io Deployment
 
-```toml
-# fly.toml
-app = "my-shopify-app"
-primary_region = "iad"
+Configure `fly.toml` with health checks and min-machines, set secrets via `fly secrets set`, and deploy.
 
-[env]
-  NODE_ENV = "production"
-  SHOPIFY_API_VERSION = "2024-10"
-
-[http_service]
-  internal_port = 3000
-  force_https = true
-  auto_stop_machines = "stop"
-  auto_start_machines = true
-  min_machines_running = 1
-
-[checks]
-  [checks.health]
-    port = 3000
-    type = "http"
-    interval = "15s"
-    timeout = "2s"
-    path = "/health"
-```
-
-```bash
-# Set secrets (never in fly.toml)
-fly secrets set \
-  SHOPIFY_API_KEY="your_key" \
-  SHOPIFY_API_SECRET="your_secret" \
-  SHOPIFY_ACCESS_TOKEN="shpat_xxx"
-
-# Deploy
-fly deploy
-
-# Check health
-fly status
-curl https://my-shopify-app.fly.dev/health
-```
+See [Fly.io Deployment](references/flyio-deployment.md) for the complete configuration.
 
 ### Step 4: Google Cloud Run Deployment
 
-```dockerfile
-# Dockerfile
-FROM node:20-slim AS builder
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci
-COPY . .
-RUN npm run build
+Use a multi-stage Dockerfile for minimal image size, deploy with `gcloud run deploy`, and configure secrets via Secret Manager.
 
-FROM node:20-slim
-WORKDIR /app
-COPY --from=builder /app/package*.json ./
-RUN npm ci --production
-COPY --from=builder /app/build ./build
-EXPOSE 3000
-CMD ["npm", "start"]
-```
-
-```bash
-# Build and deploy
-gcloud builds submit --tag gcr.io/$PROJECT_ID/shopify-app
-
-gcloud run deploy shopify-app \
-  --image gcr.io/$PROJECT_ID/shopify-app \
-  --region us-central1 \
-  --platform managed \
-  --allow-unauthenticated \
-  --port 3000 \
-  --set-secrets="SHOPIFY_API_KEY=shopify-api-key:latest,SHOPIFY_API_SECRET=shopify-api-secret:latest" \
-  --min-instances=1 \
-  --max-instances=10
-
-# Update app URL in Shopify
-# Use the Cloud Run service URL in shopify.app.toml
-```
+See [Cloud Run Deployment](references/cloud-run-deployment.md) for Dockerfile and deploy commands.
 
 ### Step 5: Post-Deploy Verification
 
-```bash
-#!/bin/bash
-APP_URL="https://your-app.example.com"
+Run health checks, verify webhook endpoints return 401 (no HMAC), test OAuth start, and sync app config.
 
-echo "=== Post-Deploy Verification ==="
-
-# Health check
-echo -n "Health: "
-curl -sf "$APP_URL/health" | jq '.status'
-
-# Webhook endpoint reachable
-echo -n "Webhook endpoint: "
-curl -sf -o /dev/null -w "%{http_code}" -X POST "$APP_URL/webhooks"
-echo " (expected 401 — no HMAC)"
-
-# OAuth start
-echo -n "OAuth: "
-curl -sf -o /dev/null -w "%{http_code}" "$APP_URL/auth?shop=test.myshopify.com"
-echo ""
-
-# Run shopify app config sync
-echo "Syncing app config..."
-shopify app deploy --force
-```
+See [Post-Deploy Verification](references/post-deploy-verification.md) for the complete verification script.
 
 ## Output
 
@@ -228,7 +99,7 @@ SHOPIFY_APP_URL=           # Your deployed app URL
 SHOPIFY_ACCESS_TOKEN=      # shpat_xxx
 
 # Optional:
-SHOPIFY_API_VERSION=       # Default: latest stable
+SHOPIFY_API_VERSION=       # Default: latest stable. Update quarterly — see shopify.dev/docs/api/usage/versioning
 SESSION_SECRET=            # For cookie signing
 DATABASE_URL=              # Session storage
 ```
@@ -239,7 +110,3 @@ DATABASE_URL=              # Session storage
 - [Vercel Remix Deployment](https://vercel.com/guides/deploying-remix-with-vercel)
 - [Fly.io Node.js](https://fly.io/docs/languages-and-frameworks/node/)
 - [Cloud Run Quickstart](https://cloud.google.com/run/docs/quickstarts)
-
-## Next Steps
-
-For webhook handling, see `shopify-webhooks-events`.

@@ -19,7 +19,7 @@ compatible-with: claude-code
 
 ## Overview
 
-Production-ready patterns for the `@shopify/shopify-api` library: singleton clients, typed GraphQL operations, session management, cursor-based pagination, and error handling wrappers.
+Production-ready patterns for the `@shopify/shopify-api` library: singleton clients, typed GraphQL operations, session management, cursor-based pagination, codegen-typed operations, bulk operations, and webhook registry patterns.
 
 ## Prerequisites
 
@@ -31,246 +31,175 @@ Production-ready patterns for the `@shopify/shopify-api` library: singleton clie
 
 ### Step 1: Typed GraphQL Client Wrapper
 
-```typescript
-// src/shopify/client.ts
-import "@shopify/shopify-api/adapters/node";
-import { shopifyApi, Session, GraphqlClient } from "@shopify/shopify-api";
+Initialize a singleton `shopifyApi` instance with `LATEST_API_VERSION`, cache sessions per shop, and expose a typed `shopifyQuery<T>()` helper that wraps `client.request()`.
 
-const shopify = shopifyApi({
-  apiKey: process.env.SHOPIFY_API_KEY!,
-  apiSecretKey: process.env.SHOPIFY_API_SECRET!,
-  hostName: process.env.SHOPIFY_HOST_NAME!,
-  apiVersion: "2024-10",
-  isCustomStoreApp: !!process.env.SHOPIFY_ACCESS_TOKEN,
-  adminApiAccessToken: process.env.SHOPIFY_ACCESS_TOKEN,
-});
-
-// Singleton session cache per shop
-const sessionCache = new Map<string, Session>();
-
-export function getSession(shop: string): Session {
-  if (!sessionCache.has(shop)) {
-    const session = shopify.session.customAppSession(shop);
-    sessionCache.set(shop, session);
-  }
-  return sessionCache.get(shop)!;
-}
-
-export function getGraphqlClient(shop: string): GraphqlClient {
-  return new shopify.clients.Graphql({
-    session: getSession(shop),
-  });
-}
-
-// Typed query helper
-export async function shopifyQuery<T = any>(
-  shop: string,
-  query: string,
-  variables?: Record<string, unknown>
-): Promise<T> {
-  const client = getGraphqlClient(shop);
-  const response = await client.request(query, { variables });
-  return response.data as T;
-}
-```
+See [Typed GraphQL Client](references/typed-graphql-client.md) for the complete implementation.
 
 ### Step 2: Error Handling with Shopify Error Types
 
-```typescript
-// src/shopify/errors.ts
-import { HttpResponseError, GraphqlQueryError } from "@shopify/shopify-api";
+Custom `ShopifyServiceError` class that distinguishes retryable errors (429, 5xx) from permanent ones. Includes `handleShopifyError()` for error translation and `safeShopifyCall()` that returns `{data, error}` tuples instead of throwing.
 
-export class ShopifyServiceError extends Error {
-  constructor(
-    message: string,
-    public readonly statusCode: number,
-    public readonly retryable: boolean,
-    public readonly shopifyRequestId?: string,
-    public readonly originalError?: Error
-  ) {
-    super(message);
-    this.name = "ShopifyServiceError";
-  }
-}
-
-export function handleShopifyError(error: unknown): never {
-  if (error instanceof HttpResponseError) {
-    const retryable = [429, 500, 502, 503, 504].includes(error.response.code);
-    throw new ShopifyServiceError(
-      `Shopify API ${error.response.code}: ${error.message}`,
-      error.response.code,
-      retryable,
-      error.response.headers?.["x-request-id"] as string,
-      error
-    );
-  }
-
-  if (error instanceof GraphqlQueryError) {
-    // GraphQL errors in the response body
-    const msg = error.body?.errors
-      ?.map((e: any) => e.message)
-      .join("; ") || error.message;
-    throw new ShopifyServiceError(msg, 200, false, undefined, error);
-  }
-
-  throw error;
-}
-
-// Safe wrapper
-export async function safeShopifyCall<T>(
-  operation: () => Promise<T>
-): Promise<{ data: T | null; error: ShopifyServiceError | null }> {
-  try {
-    const data = await operation();
-    return { data, error: null };
-  } catch (err) {
-    try {
-      handleShopifyError(err);
-    } catch (shopifyErr) {
-      return { data: null, error: shopifyErr as ShopifyServiceError };
-    }
-    return { data: null, error: err as ShopifyServiceError };
-  }
-}
-```
+See [Error Handling](references/error-handling.md) for the complete implementation.
 
 ### Step 3: Cursor-Based Pagination
 
-```typescript
-// src/shopify/pagination.ts
-// Shopify uses Relay-style cursor pagination for all list queries
+Async generator `paginateShopify<T>()` for Relay-style cursor pagination. Yields batches of nodes, automatically following `pageInfo.endCursor` until `hasNextPage` is false. Memory-efficient for large datasets.
 
-interface PageInfo {
-  hasNextPage: boolean;
-  endCursor: string | null;
-}
-
-interface PaginatedResult<T> {
-  edges: Array<{ node: T; cursor: string }>;
-  pageInfo: PageInfo;
-}
-
-export async function* paginateShopify<T>(
-  shop: string,
-  query: string,
-  connectionPath: string, // e.g. "products" or "orders"
-  variables: Record<string, unknown> = {},
-  pageSize: number = 50
-): AsyncGenerator<T[], void, undefined> {
-  let cursor: string | null = null;
-  let hasNextPage = true;
-
-  while (hasNextPage) {
-    const response = await shopifyQuery(shop, query, {
-      ...variables,
-      first: pageSize,
-      after: cursor,
-    });
-
-    // Navigate to the connection in the response
-    const connection = connectionPath
-      .split(".")
-      .reduce((obj: any, key) => obj[key], response) as PaginatedResult<T>;
-
-    yield connection.edges.map((e) => e.node);
-
-    hasNextPage = connection.pageInfo.hasNextPage;
-    cursor = connection.pageInfo.endCursor;
-  }
-}
-
-// Usage example:
-// for await (const batch of paginateShopify<Product>(
-//   "store.myshopify.com",
-//   PRODUCTS_QUERY,
-//   "products",
-//   { query: "status:active" }
-// )) {
-//   await processProducts(batch);
-// }
-```
+See [Cursor Pagination](references/cursor-pagination.md) for the complete implementation.
 
 ### Step 4: Multi-Tenant Client Factory
 
+`ShopifyClientFactory` class for apps installed on multiple stores. Creates isolated `GraphqlClient` instances per merchant with session caching. Includes `removeClient()` for eviction on app uninstall.
+
+See [Multi-Tenant Factory](references/multi-tenant-factory.md) for the complete implementation.
+
+### Step 5: Codegen-Typed Operations
+
+Use `@shopify/api-codegen-preset` to generate TypeScript types from your GraphQL operations. This eliminates manual type definitions and catches schema changes at build time.
+
 ```typescript
-// src/shopify/factory.ts
-// For apps installed on multiple stores
+// codegen.ts — project root config
+import { shopifyApiProject, ApiType } from "@shopify/api-codegen-preset";
 
-import { Session, GraphqlClient } from "@shopify/shopify-api";
-
-interface TenantConfig {
-  shop: string;
-  accessToken: string;
-}
-
-class ShopifyClientFactory {
-  private clients = new Map<string, GraphqlClient>();
-
-  getClient(config: TenantConfig): GraphqlClient {
-    if (!this.clients.has(config.shop)) {
-      const session = new Session({
-        id: config.shop,
-        shop: config.shop,
-        state: "",
-        isOnline: false,
-        accessToken: config.accessToken,
-      });
-
-      this.clients.set(
-        config.shop,
-        new shopify.clients.Graphql({ session })
-      );
-    }
-    return this.clients.get(config.shop)!;
-  }
-
-  // Evict when merchant uninstalls
-  removeClient(shop: string): void {
-    this.clients.delete(shop);
-  }
-}
-
-export const clientFactory = new ShopifyClientFactory();
+export default {
+  schema: "https://shopify.dev/admin-graphql-direct-proxy",
+  documents: ["src/**/*.{ts,tsx}"],
+  projects: {
+    default: shopifyApiProject({
+      apiType: ApiType.Admin,
+      apiVersion: "2025-04", // Update quarterly
+      outputDir: "./src/types",
+    }),
+  },
+};
 ```
 
-### Step 5: Response Validation with Zod
+```typescript
+// src/operations/products.ts — typed query with codegen output
+import type { ProductsQuery } from "../types/admin.generated";
+
+const PRODUCTS_QUERY = `#graphql
+  query Products($first: Int!, $after: String) {
+    products(first: $first, after: $after) {
+      edges {
+        node { id title status totalInventory }
+      }
+      pageInfo { hasNextPage endCursor }
+    }
+  }
+` as const;
+
+// Return type is fully inferred from codegen
+export async function getProducts(shop: string): Promise<ProductsQuery> {
+  return shopifyQuery<ProductsQuery>(shop, PRODUCTS_QUERY, { first: 50 });
+}
+```
+
+Run `npx graphql-codegen` after changing any GraphQL operation or upgrading API versions.
+
+### Step 6: Bulk Operation Helpers
+
+For datasets too large for pagination (100k+ records), use Shopify's Bulk Operations API. It runs a query server-side and produces a JSONL file you download when ready.
 
 ```typescript
-// src/shopify/validators.ts
-import { z } from "zod";
+// src/shopify/bulk.ts
+const BULK_QUERY = `
+  mutation bulkOperationRunQuery($query: String!) {
+    bulkOperationRunQuery(query: $query) {
+      bulkOperation { id status }
+      userErrors { field message }
+    }
+  }
+`;
 
-// Validate Shopify product response shape
-const ShopifyMoneySchema = z.object({
-  amount: z.string(),
-  currencyCode: z.string(),
-});
+const POLL_QUERY = `{
+  currentBulkOperation {
+    id status errorCode objectCount url
+  }
+}`;
 
-const ShopifyProductSchema = z.object({
-  id: z.string().startsWith("gid://shopify/Product/"),
-  title: z.string(),
-  handle: z.string(),
-  status: z.enum(["ACTIVE", "ARCHIVED", "DRAFT"]),
-  totalInventory: z.number(),
-  variants: z.object({
-    edges: z.array(z.object({
-      node: z.object({
-        id: z.string(),
-        title: z.string(),
-        price: z.string(),
-        sku: z.string().nullable(),
-      }),
-    })),
-  }),
-});
+export async function runBulkOperation(
+  shop: string,
+  query: string
+): Promise<string> {
+  // Start the bulk operation
+  const { bulkOperationRunQuery } = await shopifyQuery(shop, BULK_QUERY, { query });
+  if (bulkOperationRunQuery.userErrors?.length) {
+    throw new Error(bulkOperationRunQuery.userErrors[0].message);
+  }
 
-export type ShopifyProduct = z.infer<typeof ShopifyProductSchema>;
+  // Poll until complete (typically 1-10 minutes for large datasets)
+  let result;
+  do {
+    await new Promise((r) => setTimeout(r, 5000)); // 5s interval
+    result = (await shopifyQuery(shop, POLL_QUERY)).currentBulkOperation;
+  } while (result.status === "RUNNING" || result.status === "CREATED");
 
-// Validated fetch
-export async function fetchProducts(shop: string): Promise<ShopifyProduct[]> {
-  const data = await shopifyQuery(shop, PRODUCTS_QUERY);
-  return data.products.edges.map(
-    (e: any) => ShopifyProductSchema.parse(e.node)
-  );
+  if (result.status !== "COMPLETED") {
+    throw new Error(`Bulk operation failed: ${result.errorCode}`);
+  }
+
+  return result.url; // JSONL download URL
+}
+
+// Usage: export all products
+const url = await runBulkOperation(shop, `{
+  products { edges { node { id title status variants { edges { node { sku price } } } } } }
+}`);
+const response = await fetch(url);
+const jsonl = await response.text();
+const products = jsonl.trim().split("\n").map(JSON.parse);
+```
+
+### Step 7: Webhook Registry Patterns
+
+Programmatically register webhook subscriptions using `webhookSubscriptionCreate` with typed `WebhookSubscriptionInput`. Supports both HTTP and EventBridge/PubSub endpoints.
+
+```typescript
+// src/shopify/webhooks.ts
+const REGISTER_WEBHOOK = `
+  mutation webhookSubscriptionCreate(
+    $topic: WebhookSubscriptionTopic!,
+    $webhookSubscription: WebhookSubscriptionInput!
+  ) {
+    webhookSubscriptionCreate(topic: $topic, webhookSubscription: $webhookSubscription) {
+      webhookSubscription { id topic }
+      userErrors { field message }
+    }
+  }
+`;
+
+interface WebhookConfig {
+  topic: string;
+  callbackUrl: string;
+  format?: "JSON" | "XML";
+}
+
+export async function registerWebhooks(
+  shop: string,
+  webhooks: WebhookConfig[]
+): Promise<{ registered: string[]; errors: string[] }> {
+  const registered: string[] = [];
+  const errors: string[] = [];
+
+  for (const wh of webhooks) {
+    const result = await shopifyQuery(shop, REGISTER_WEBHOOK, {
+      topic: wh.topic,
+      webhookSubscription: {
+        callbackUrl: wh.callbackUrl,
+        format: wh.format ?? "JSON",
+      },
+    });
+
+    const userErrors = result.webhookSubscriptionCreate.userErrors;
+    if (userErrors?.length) {
+      errors.push(`${wh.topic}: ${userErrors[0].message}`);
+    } else {
+      registered.push(wh.topic);
+    }
+  }
+
+  return { registered, errors };
 }
 ```
 
@@ -280,7 +209,9 @@ export async function fetchProducts(shop: string): Promise<ShopifyProduct[]> {
 - Structured error handling that distinguishes retryable from permanent errors
 - Cursor-based pagination generator for large datasets
 - Multi-tenant client factory for apps serving multiple stores
-- Zod validation for API response shape verification
+- Codegen-typed operations eliminating manual type definitions
+- Bulk operation helpers for large dataset exports
+- Webhook registry patterns for programmatic subscription management
 
 ## Error Handling
 
@@ -289,42 +220,32 @@ export async function fetchProducts(shop: string): Promise<ShopifyProduct[]> {
 | `safeShopifyCall` | All API calls | Returns `{data, error}` instead of throwing |
 | `handleShopifyError` | Error translation | Maps HTTP/GraphQL errors to typed errors |
 | Cursor pagination | Large datasets | Memory-efficient streaming with backpressure |
-| Zod validation | Response parsing | Catches breaking API changes immediately |
+| Bulk operations | 100k+ records | Server-side execution, no client memory pressure |
 | Client factory | Multi-tenant apps | Isolated sessions per merchant |
 
 ## Examples
 
-### Retry with Exponential Backoff
+### Setting Up a Type-Safe GraphQL Client
 
-```typescript
-export async function withRetry<T>(
-  operation: () => Promise<T>,
-  maxRetries = 3,
-  baseDelayMs = 1000
-): Promise<T> {
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      return await operation();
-    } catch (err) {
-      if (err instanceof ShopifyServiceError && err.retryable && attempt < maxRetries) {
-        const delay = baseDelayMs * Math.pow(2, attempt - 1) + Math.random() * 500;
-        console.warn(`Shopify retry ${attempt}/${maxRetries} in ${delay.toFixed(0)}ms`);
-        await new Promise((r) => setTimeout(r, delay));
-        continue;
-      }
-      throw err;
-    }
-  }
-  throw new Error("Unreachable");
-}
-```
+Initialize a singleton Shopify client with session caching and a typed `shopifyQuery<T>()` helper for all API calls.
+
+See [Typed GraphQL Client](references/typed-graphql-client.md) for the complete implementation.
+
+### Handling Retryable vs Permanent Errors
+
+Distinguish 429/5xx retryable errors from permanent validation failures using a structured error class and safe call wrapper.
+
+See [Error Handling](references/error-handling.md) for the complete error handling implementation.
+
+### Building a Multi-Tenant App
+
+Create isolated GraphQL clients per merchant with session caching and eviction on app uninstall using a client factory.
+
+See [Multi-Tenant Factory](references/multi-tenant-factory.md) for the complete implementation.
 
 ## Resources
 
 - [@shopify/shopify-api Reference](https://github.com/Shopify/shopify-api-js)
 - [GraphQL Pagination (Relay Spec)](https://shopify.dev/docs/api/usage/pagination-graphql)
-- [Zod Documentation](https://zod.dev/)
-
-## Next Steps
-
-Apply patterns in `shopify-core-workflow-a` for real-world product management.
+- [@shopify/api-codegen-preset](https://github.com/Shopify/shopify-api-js/tree/main/packages/api-codegen-preset)
+- [Bulk Operations](https://shopify.dev/docs/api/usage/bulk-operations/queries)

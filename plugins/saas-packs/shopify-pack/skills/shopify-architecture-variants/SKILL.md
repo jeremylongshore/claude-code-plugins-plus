@@ -3,6 +3,7 @@ name: shopify-architecture-variants
 description: |
   Choose between Shopify app architectures: embedded Remix app, headless storefront with
   Hydrogen, standalone integration, or theme app extension.
+  Use when starting a new Shopify project and deciding which architecture pattern to follow.
   Trigger with phrases like "shopify architecture decision", "shopify embedded vs headless",
   "shopify Hydrogen", "shopify app types", "which shopify architecture".
 allowed-tools: Read, Grep
@@ -29,183 +30,27 @@ Four validated architecture patterns for building on Shopify. Choose based on yo
 
 ### Variant A: Embedded Admin App (Remix)
 
-**Best for:** Admin panel apps, merchant tools, dashboards, order management
+Admin panel apps, merchant tools, dashboards. Uses `@shopify/shopify-app-remix` with OAuth and Polaris UI inside the Shopify admin.
 
-**When to use:** You need to add functionality to the Shopify admin for merchants.
-
-```
-my-shopify-app/
-├── app/
-│   ├── routes/
-│   │   ├── app._index.tsx         # Dashboard (inside Shopify admin)
-│   │   ├── app.products.tsx       # Feature pages
-│   │   ├── auth.$.tsx             # OAuth handler
-│   │   └── webhooks.tsx           # Webhook receiver
-│   ├── shopify.server.ts          # @shopify/shopify-app-remix
-│   └── root.tsx
-├── extensions/                     # Optional extensions
-├── prisma/schema.prisma           # Session + app data
-├── shopify.app.toml
-└── package.json
-```
-
-**Key packages:** `@shopify/shopify-app-remix`, `@shopify/polaris`, `@shopify/app-bridge-react`
-
-**API used:** Admin GraphQL API (server-side via `authenticate.admin()`)
-
-**Auth:** OAuth with session token exchange (handled by the Remix adapter)
-
-```typescript
-// Authenticated loader — runs server-side inside Shopify admin
-export async function loader({ request }: LoaderFunctionArgs) {
-  const { admin } = await authenticate.admin(request);
-  const response = await admin.graphql(`{ shop { name plan { displayName } } }`);
-  return json(await response.json());
-}
-```
-
----
+See [Embedded Remix App](references/embedded-remix-app.md) for the project structure and authenticated loader pattern.
 
 ### Variant B: Headless Storefront (Hydrogen)
 
-**Best for:** Custom storefronts, unique shopping experiences, PWAs
+Custom storefronts and unique shopping experiences. Uses the Storefront GraphQL API, hosted on Shopify Oxygen or any edge platform.
 
-**When to use:** You're building a custom frontend that replaces the Shopify Online Store.
-
-```
-my-hydrogen-store/
-├── app/
-│   ├── routes/
-│   │   ├── ($locale)._index.tsx           # Homepage
-│   │   ├── ($locale).products.$handle.tsx # Product page
-│   │   ├── ($locale).collections._index.tsx
-│   │   ├── ($locale).cart.tsx             # Cart page
-│   │   └── ($locale).account.tsx          # Customer account
-│   ├── components/
-│   │   ├── ProductCard.tsx
-│   │   ├── Cart.tsx
-│   │   └── Header.tsx
-│   ├── lib/
-│   │   └── shopify.ts                     # Storefront API client
-│   └── root.tsx
-├── public/
-└── hydrogen.config.ts
-```
-
-**Key packages:** `@shopify/hydrogen`, `@shopify/hydrogen-react`, `@shopify/remix-oxygen`
-
-**API used:** Storefront GraphQL API (public, no admin tokens needed)
-
-**Hosting:** Shopify Oxygen (recommended) or any edge platform
-
-```typescript
-// Hydrogen product page — uses Storefront API
-export async function loader({ params, context }: LoaderFunctionArgs) {
-  const { storefront } = context;
-  const { product } = await storefront.query(PRODUCT_QUERY, {
-    variables: { handle: params.handle },
-  });
-  return json({ product });
-}
-```
-
----
+See [Hydrogen Storefront](references/hydrogen-storefront.md) for the project structure and Storefront API loader.
 
 ### Variant C: Backend Integration (Standalone)
 
-**Best for:** ERP sync, warehouse management, analytics, multi-channel integration
+ERP sync, warehouse management, analytics. Uses `@shopify/shopify-api` with a custom app access token -- no OAuth or merchant UI needed.
 
-**When to use:** You're connecting Shopify to other systems — no merchant-facing UI needed.
-
-```
-shopify-integration/
-├── src/
-│   ├── shopify/
-│   │   ├── client.ts              # @shopify/shopify-api client
-│   │   ├── webhooks.ts            # Webhook handlers
-│   │   └── sync.ts                # Data sync logic
-│   ├── services/
-│   │   ├── erp-sync.ts            # Sync orders to ERP
-│   │   ├── inventory-sync.ts      # Bi-directional inventory
-│   │   └── customer-export.ts     # Customer data pipeline
-│   ├── jobs/
-│   │   ├── daily-sync.ts          # Scheduled sync job
-│   │   └── webhook-processor.ts   # Queue-based webhook processing
-│   └── index.ts
-├── .env
-└── package.json
-```
-
-**Key packages:** `@shopify/shopify-api`, custom app token
-
-**API used:** Admin GraphQL API (custom app access token, no OAuth)
-
-**Auth:** Custom app access token (`shpat_xxx`) — no OAuth flow needed
-
-```typescript
-// Custom app — direct API access, no merchant UI
-const shopify = shopifyApi({
-  apiKey: process.env.SHOPIFY_API_KEY!,
-  apiSecretKey: process.env.SHOPIFY_API_SECRET!,
-  hostName: "localhost",
-  apiVersion: "2024-10",
-  isCustomStoreApp: true,
-  adminApiAccessToken: process.env.SHOPIFY_ACCESS_TOKEN!,
-});
-```
-
----
+See [Backend Integration](references/backend-integration.md) for the project structure and client setup.
 
 ### Variant D: Theme App Extension Only
 
-**Best for:** Storefront widgets, product reviews, badges, banners
+Storefront widgets, product reviews, badges. Runs entirely in the merchant's storefront using Liquid templates -- no server needed.
 
-**When to use:** You only need to add UI elements to the merchant's Online Store.
-
-```
-my-theme-extension/
-├── extensions/
-│   └── my-widget/
-│       ├── blocks/
-│       │   ├── product-badge.liquid
-│       │   ├── announcement-bar.liquid
-│       │   └── review-stars.liquid
-│       ├── assets/
-│       │   ├── widget.css
-│       │   └── widget.js
-│       ├── locales/
-│       │   └── en.default.json
-│       └── snippets/
-│           └── shared-styles.liquid
-├── shopify.app.toml
-└── package.json
-```
-
-**Key tech:** Liquid templates, JavaScript, CSS
-
-**API used:** None directly — uses Liquid objects (`product`, `cart`, `customer`)
-
-**No server needed:** Theme app extensions run entirely in the merchant's storefront.
-
-```liquid
-{% comment %} blocks/product-badge.liquid {% endcomment %}
-{% schema %}
-{
-  "name": "Sale Badge",
-  "target": "section",
-  "settings": [
-    { "type": "text", "id": "badge_text", "label": "Badge Text", "default": "SALE" },
-    { "type": "color", "id": "badge_color", "label": "Color", "default": "#FF0000" }
-  ]
-}
-{% endschema %}
-
-{% if product.compare_at_price > product.price %}
-  <span class="sale-badge" style="background: {{ block.settings.badge_color }}">
-    {{ block.settings.badge_text }}
-  </span>
-{% endif %}
-```
+See [Theme App Extension](references/theme-app-extension.md) for the project structure and Liquid block example.
 
 ---
 
@@ -264,7 +109,3 @@ shopify app generate extension --type theme
 - [Hydrogen Framework](https://shopify.dev/docs/storefronts/headless/hydrogen)
 - [Theme App Extensions](https://shopify.dev/docs/apps/build/online-store/theme-app-extensions)
 - [Custom Apps](https://shopify.dev/docs/apps/build/authentication-authorization/access-tokens/generate-app-access-tokens-admin)
-
-## Next Steps
-
-For common anti-patterns, see `shopify-known-pitfalls`.

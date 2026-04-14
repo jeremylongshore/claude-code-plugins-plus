@@ -3,6 +3,8 @@ name: shopify-policy-guardrails
 description: |
   Implement Shopify app policy enforcement with ESLint rules for API key detection,
   query cost budgets, and App Store compliance checks.
+  Use when hardening a Shopify app against secret leaks, enforcing query cost limits,
+  or preparing for App Store submission review.
   Trigger with phrases like "shopify policy", "shopify lint",
   "shopify guardrails", "shopify compliance", "shopify eslint", "shopify app review".
 allowed-tools: Read, Write, Edit, Bash(npx:*)
@@ -30,102 +32,19 @@ Automated policy enforcement for Shopify apps: secret detection, query cost budg
 
 ### Step 1: Secret Detection Rules
 
-```javascript
-// eslint-rules/no-shopify-secrets.js
-module.exports = {
-  meta: {
-    type: "problem",
-    docs: { description: "Detect hardcoded Shopify tokens and secrets" },
-    messages: {
-      adminToken: "Hardcoded Shopify Admin API token detected (shpat_*)",
-      apiSecret: "Potential Shopify API secret detected",
-      storefrontToken: "Hardcoded Storefront API token detected",
-    },
-  },
-  create(context) {
-    return {
-      Literal(node) {
-        if (typeof node.value !== "string") return;
-        const v = node.value;
+Custom ESLint rule that catches hardcoded Shopify tokens (`shpat_*`, `shpss_*`) and API secrets in string literals and template literals.
 
-        // Admin API access token: shpat_ + 32 hex chars
-        if (/^shpat_[a-f0-9]{32}$/i.test(v)) {
-          context.report({ node, messageId: "adminToken" });
-        }
-        // Storefront token: shpss_ pattern
-        if (/^shpss_[a-f0-9]{32}$/i.test(v)) {
-          context.report({ node, messageId: "storefrontToken" });
-        }
-        // Generic secret pattern (32+ hex that's clearly a token)
-        if (/^[a-f0-9]{32,}$/i.test(v) && v.length === 32) {
-          context.report({ node, messageId: "apiSecret" });
-        }
-      },
-      TemplateLiteral(node) {
-        for (const quasi of node.quasis) {
-          if (/shpat_[a-f0-9]/i.test(quasi.value.raw)) {
-            context.report({ node, messageId: "adminToken" });
-          }
-        }
-      },
-    };
-  },
-};
-```
+See [Secret Detection ESLint](references/secret-detection-eslint.md) for the complete rule implementation.
 
 ### Step 2: Query Cost Budget Enforcement
 
-```typescript
-// Enforce query cost budgets at build/test time
-interface QueryCostBudget {
-  maxFirstParam: number;        // Max items per page
-  maxNestedDepth: number;       // Max nested connection depth
-  maxEstimatedCost: number;     // Max estimated query cost
-}
+Static analysis of GraphQL queries enforcing budgets: max 100 items per `first:` param, max 3 levels of nesting, and max 500 estimated cost. Runs at build/test time.
 
-const BUDGET: QueryCostBudget = {
-  maxFirstParam: 100,           // Never request more than 100 items
-  maxNestedDepth: 3,            // No more than 3 levels of edges/node
-  maxEstimatedCost: 500,        // Stay well under 1,000 point limit
-};
-
-function validateQueryCost(query: string): string[] {
-  const violations: string[] = [];
-
-  // Check `first:` parameter values
-  const firstParams = query.matchAll(/first:\s*(\d+)/g);
-  for (const match of firstParams) {
-    if (parseInt(match[1]) > BUDGET.maxFirstParam) {
-      violations.push(
-        `first: ${match[1]} exceeds budget of ${BUDGET.maxFirstParam}`
-      );
-    }
-  }
-
-  // Check nesting depth (count "edges { node {" patterns)
-  const depth = (query.match(/edges\s*\{/g) || []).length;
-  if (depth > BUDGET.maxNestedDepth) {
-    violations.push(
-      `Nesting depth ${depth} exceeds budget of ${BUDGET.maxNestedDepth}`
-    );
-  }
-
-  // Estimate cost: multiply all `first` values along nested path
-  const firstValues = [...query.matchAll(/first:\s*(\d+)/g)].map((m) =>
-    parseInt(m[1])
-  );
-  const estimatedCost = firstValues.reduce((a, b) => a * b, 1);
-  if (estimatedCost > BUDGET.maxEstimatedCost) {
-    violations.push(
-      `Estimated cost ${estimatedCost} exceeds budget of ${BUDGET.maxEstimatedCost}`
-    );
-  }
-
-  return violations;
-}
-```
+See [Query Cost Budget](references/query-cost-budget.md) for the complete implementation.
 
 ### Step 3: Pre-Commit Hooks
+
+Git hooks that scan staged changes for Shopify tokens and block `.env` files from being committed.
 
 ```yaml
 # .pre-commit-config.yaml
@@ -155,133 +74,15 @@ repos:
 
 ### Step 4: App Store Compliance Checker
 
-```typescript
-// scripts/check-app-compliance.ts
-// Run before submitting to Shopify App Store
+Pre-submission script that validates all three GDPR webhooks, token hygiene, CSP headers, and API version stability.
 
-interface ComplianceCheck {
-  name: string;
-  required: boolean;
-  check: () => Promise<boolean>;
-}
-
-const checks: ComplianceCheck[] = [
-  {
-    name: "GDPR webhook: customers/data_request",
-    required: true,
-    check: async () => {
-      const toml = await readFile("shopify.app.toml", "utf-8");
-      return toml.includes("customers/data_request");
-    },
-  },
-  {
-    name: "GDPR webhook: customers/redact",
-    required: true,
-    check: async () => {
-      const toml = await readFile("shopify.app.toml", "utf-8");
-      return toml.includes("customers/redact");
-    },
-  },
-  {
-    name: "GDPR webhook: shop/redact",
-    required: true,
-    check: async () => {
-      const toml = await readFile("shopify.app.toml", "utf-8");
-      return toml.includes("shop/redact");
-    },
-  },
-  {
-    name: "No hardcoded tokens in source",
-    required: true,
-    check: async () => {
-      const { execSync } = require("child_process");
-      const result = execSync(
-        'grep -rE "shpat_[a-f0-9]{32}" app/ --include="*.ts" --include="*.tsx" || true'
-      ).toString();
-      return result.trim() === "";
-    },
-  },
-  {
-    name: "CSP frame-ancestors header set",
-    required: true,
-    check: async () => {
-      const files = await glob("app/**/*.ts");
-      const hasCSP = files.some((f) => {
-        const content = readFileSync(f, "utf-8");
-        return content.includes("frame-ancestors");
-      });
-      return hasCSP;
-    },
-  },
-  {
-    name: "API version is not unstable",
-    required: true,
-    check: async () => {
-      const toml = await readFile("shopify.app.toml", "utf-8");
-      return !toml.includes('api_version = "unstable"');
-    },
-  },
-];
-
-async function runComplianceChecks(): Promise<void> {
-  console.log("=== Shopify App Store Compliance Check ===\n");
-  let passed = 0;
-  let failed = 0;
-
-  for (const check of checks) {
-    const result = await check.check();
-    const status = result ? "PASS" : check.required ? "FAIL" : "WARN";
-    console.log(`${status}: ${check.name}`);
-    result ? passed++ : failed++;
-  }
-
-  console.log(`\n${passed} passed, ${failed} failed`);
-  if (failed > 0) process.exit(1);
-}
-```
+See [Compliance Checker](references/compliance-checker.md) for the complete implementation.
 
 ### Step 5: CI Policy Pipeline
 
-```yaml
-# .github/workflows/shopify-policy.yml
-name: Shopify Policy
+GitHub Actions workflow enforcing token scanning, GDPR webhook configuration, and API version stability on every push and PR.
 
-on: [push, pull_request]
-
-jobs:
-  policy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Scan for hardcoded Shopify tokens
-        run: |
-          if grep -rE "shpat_[a-f0-9]{32}|shpss_[a-f0-9]{32}" \
-            --include="*.ts" --include="*.tsx" --include="*.js" \
-            app/ src/ ; then
-            echo "::error::Hardcoded Shopify tokens found!"
-            exit 1
-          fi
-
-      - name: Check GDPR webhooks configured
-        run: |
-          for topic in "customers/data_request" "customers/redact" "shop/redact"; do
-            if ! grep -q "$topic" shopify.app.toml; then
-              echo "::error::Missing mandatory GDPR webhook: $topic"
-              exit 1
-            fi
-          done
-          echo "All GDPR webhooks configured"
-
-      - name: Validate API version
-        run: |
-          VERSION=$(grep 'api_version' shopify.app.toml | head -1 | grep -oP '\d{4}-\d{2}')
-          if [ "$VERSION" = "unstable" ]; then
-            echo "::error::Cannot use unstable API version"
-            exit 1
-          fi
-          echo "API version: $VERSION"
-```
+See [CI Policy Pipeline](references/ci-policy-pipeline.md) for the complete workflow.
 
 ## Output
 
@@ -318,7 +119,3 @@ grep -c "customers/data_request\|customers/redact\|shop/redact" shopify.app.toml
 - [Shopify App Store Requirements](https://shopify.dev/docs/apps/launch/app-requirements)
 - [ESLint Plugin Development](https://eslint.org/docs/latest/extend/plugins)
 - [git-secrets](https://github.com/awslabs/git-secrets)
-
-## Next Steps
-
-For architecture blueprints, see `shopify-architecture-variants`.

@@ -30,252 +30,27 @@ Secondary core workflow: manage orders, customers, and fulfillments. Query order
 
 ### Step 1: Query Orders
 
-```typescript
-const QUERY_ORDERS = `
-  query orders($first: Int!, $query: String, $after: String) {
-    orders(first: $first, query: $query, after: $after, sortKey: CREATED_AT, reverse: true) {
-      edges {
-        node {
-          id
-          name                    # "#1001"
-          createdAt
-          displayFinancialStatus  # PAID, PENDING, REFUNDED, etc.
-          displayFulfillmentStatus # FULFILLED, UNFULFILLED, PARTIALLY_FULFILLED
-          totalPriceSet {
-            shopMoney { amount currencyCode }
-          }
-          customer {
-            id
-            displayName
-            email
-          }
-          lineItems(first: 10) {
-            edges {
-              node {
-                title
-                quantity
-                variant {
-                  id
-                  sku
-                  price
-                }
-                originalTotalSet {
-                  shopMoney { amount currencyCode }
-                }
-              }
-            }
-          }
-          shippingAddress {
-            address1
-            city
-            province
-            country
-            zip
-          }
-        }
-        cursor
-      }
-      pageInfo { hasNextPage endCursor }
-    }
-  }
-`;
+Query orders with financial/fulfillment status filters, line items, customer data, and shipping addresses. Uses Shopify query syntax (`financial_status:paid`, `fulfillment_status:unfulfilled`, `name:#1001`, etc.).
 
-// Shopify order query syntax:
-// "financial_status:paid"
-// "fulfillment_status:unfulfilled"
-// "created_at:>2024-01-01"
-// "name:#1001"
-// "email:customer@example.com"
-// "tag:rush"
-const data = await client.request(QUERY_ORDERS, {
-  variables: {
-    first: 25,
-    query: "financial_status:paid AND fulfillment_status:unfulfilled",
-  },
-});
-```
+See [Query Orders](references/query-orders.md) for the complete query with pagination and query syntax examples.
 
 ### Step 2: Create a Draft Order
 
-```typescript
-const CREATE_DRAFT_ORDER = `
-  mutation draftOrderCreate($input: DraftOrderInput!) {
-    draftOrderCreate(input: $input) {
-      draftOrder {
-        id
-        name
-        totalPriceSet {
-          shopMoney { amount currencyCode }
-        }
-        invoiceUrl
-      }
-      userErrors {
-        field
-        message
-      }
-    }
-  }
-`;
+Create draft orders with variant line items, custom line items, discounts, shipping addresses, and customer assignment.
 
-await client.request(CREATE_DRAFT_ORDER, {
-  variables: {
-    input: {
-      lineItems: [
-        {
-          variantId: "gid://shopify/ProductVariant/12345",
-          quantity: 2,
-        },
-        {
-          title: "Custom Engraving", // Custom line item (no variant)
-          originalUnitPrice: "15.00",
-          quantity: 1,
-        },
-      ],
-      customerId: "gid://shopify/Customer/67890",
-      note: "Rush order — ship priority",
-      tags: ["wholesale", "rush"],
-      shippingAddress: {
-        address1: "123 Main St",
-        city: "Portland",
-        provinceCode: "OR",
-        countryCode: "US",
-        zip: "97201",
-      },
-      appliedDiscount: {
-        title: "Wholesale 10%",
-        value: 10.0,
-        valueType: "PERCENTAGE",
-      },
-    },
-  },
-});
-```
+See [Draft Order Create](references/draft-order-create.md) for the complete mutation and variables.
 
 ### Step 3: Process Fulfillment
 
-```typescript
-// Step 3a: Get fulfillment orders for an order
-const GET_FULFILLMENT_ORDERS = `
-  query fulfillmentOrders($orderId: ID!) {
-    order(id: $orderId) {
-      fulfillmentOrders(first: 10) {
-        edges {
-          node {
-            id
-            status  # OPEN, IN_PROGRESS, CLOSED, CANCELLED
-            assignedLocation {
-              name
-            }
-            lineItems(first: 20) {
-              edges {
-                node {
-                  id
-                  totalQuantity
-                  remainingQuantity
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-`;
+Two-step process: first query fulfillment orders for an order to get line item IDs, then create the fulfillment with tracking information and customer notification.
 
-// Step 3b: Create fulfillment with tracking
-const CREATE_FULFILLMENT = `
-  mutation fulfillmentCreate($fulfillment: FulfillmentInput!) {
-    fulfillmentCreate(fulfillment: $fulfillment) {
-      fulfillment {
-        id
-        status
-        trackingInfo {
-          number
-          url
-          company
-        }
-      }
-      userErrors { field message }
-    }
-  }
-`;
-
-await client.request(CREATE_FULFILLMENT, {
-  variables: {
-    fulfillment: {
-      lineItemsByFulfillmentOrder: [
-        {
-          fulfillmentOrderId: "gid://shopify/FulfillmentOrder/99999",
-          fulfillmentOrderLineItems: [
-            {
-              id: "gid://shopify/FulfillmentOrderLineItem/11111",
-              quantity: 2,
-            },
-          ],
-        },
-      ],
-      trackingInfo: {
-        number: "1Z999AA10123456784",
-        url: "https://www.ups.com/track?tracknum=1Z999AA10123456784",
-        company: "UPS",
-      },
-      notifyCustomer: true,
-    },
-  },
-});
-```
+See [Fulfillment Processing](references/fulfillment-processing.md) for both queries and the complete workflow.
 
 ### Step 4: Customer Management
 
-```typescript
-// Query customers
-const SEARCH_CUSTOMERS = `
-  query customers($query: String!, $first: Int!) {
-    customers(first: $first, query: $query) {
-      edges {
-        node {
-          id
-          displayName
-          email
-          phone
-          numberOfOrders
-          amountSpent { amount currencyCode }
-          tags
-          addresses(first: 3) {
-            address1
-            city
-            province
-            country
-          }
-          metafields(first: 5) {
-            edges {
-              node {
-                namespace
-                key
-                value
-                type
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-`;
+Search customers by email, order count, total spent, tags, and state. Returns addresses and metafields.
 
-// Customer query examples:
-// "email:john@example.com"
-// "orders_count:>5"
-// "total_spent:>100"
-// "tag:vip"
-// "state:enabled"
-const customers = await client.request(SEARCH_CUSTOMERS, {
-  variables: {
-    query: "orders_count:>5 AND total_spent:>100",
-    first: 20,
-  },
-});
-```
+See [Customer Search Query](references/customer-search-query.md) for the complete query and syntax examples.
 
 ## Output
 
@@ -293,7 +68,7 @@ const customers = await client.request(SEARCH_CUSTOMERS, {
 | `Cannot fulfill: already fulfilled` | Order already shipped | Check `remainingQuantity > 0` |
 | `Customer not found` | Invalid customer GID | Verify GID format `gid://shopify/Customer/{id}` |
 | `Order is not editable` | Order already archived | Only draft/open orders are editable |
-| `THROTTLED` | Rate limit exceeded | Implement backoff — see `shopify-rate-limits` |
+| `THROTTLED` | Rate limit exceeded | Implement backoff -- see `shopify-rate-limits` |
 
 ## Examples
 
@@ -320,36 +95,9 @@ const ORDER_ANALYTICS = `
 
 ### Refund an Order
 
-```typescript
-const REFUND_CREATE = `
-  mutation refundCreate($input: RefundInput!) {
-    refundCreate(input: $input) {
-      refund {
-        id
-        totalRefundedSet { shopMoney { amount currencyCode } }
-      }
-      userErrors { field message }
-    }
-  }
-`;
+Create a refund with line item restock and customer notification.
 
-await client.request(REFUND_CREATE, {
-  variables: {
-    input: {
-      orderId: "gid://shopify/Order/12345",
-      note: "Customer requested return",
-      notify: true,
-      refundLineItems: [
-        {
-          lineItemId: "gid://shopify/LineItem/67890",
-          quantity: 1,
-          restockType: "RETURN",
-        },
-      ],
-    },
-  },
-});
-```
+See [Refund Create](references/refund-create.md) for the complete mutation and variables.
 
 ## Resources
 
@@ -357,7 +105,3 @@ await client.request(REFUND_CREATE, {
 - [FulfillmentCreate Mutation](https://shopify.dev/docs/api/admin-graphql/latest/mutations/fulfillmentCreate)
 - [Customer Object](https://shopify.dev/docs/api/admin-graphql/latest/objects/Customer)
 - [Draft Orders](https://shopify.dev/docs/api/admin-graphql/latest/mutations/draftOrderCreate)
-
-## Next Steps
-
-For common errors, see `shopify-common-errors`.

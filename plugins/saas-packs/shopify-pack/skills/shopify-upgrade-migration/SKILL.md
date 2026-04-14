@@ -42,7 +42,7 @@ curl -s -H "X-Shopify-Access-Token: $TOKEN" \
   | jq '.supported_versions[] | {handle, display_name, supported, latest}'
 ```
 
-Shopify releases quarterly: `2024-01`, `2024-04`, `2024-07`, `2024-10`. Versions are supported for ~12 months after release.
+Shopify releases quarterly (e.g., `2025-01`, `2025-04`, `2025-07`, `2025-10`). Versions are supported for ~12 months after release.
 
 ### Step 2: Review Breaking Changes
 
@@ -58,55 +58,21 @@ Key breaking changes by version:
 
 ### Step 3: Migrate REST to GraphQL
 
-```typescript
-// BEFORE: REST Admin API
-const restClient = new shopify.clients.Rest({ session });
-const { body } = await restClient.get({
-  path: "products",
-  query: { limit: 50, status: "active" },
-});
-const products = body.products;
+Side-by-side comparison of REST vs GraphQL patterns, plus a mapping table for common endpoints (products, orders, customers, webhooks).
 
-// AFTER: GraphQL Admin API
-const graphqlClient = new shopify.clients.Graphql({ session });
-const response = await graphqlClient.request(`{
-  products(first: 50, query: "status:active") {
-    edges {
-      node {
-        id
-        title
-        status
-        variants(first: 10) {
-          edges { node { id price sku } }
-        }
-      }
-    }
-    pageInfo { hasNextPage endCursor }
-  }
-}`);
-const products = response.data.products.edges.map((e: any) => e.node);
-```
-
-Common REST-to-GraphQL mappings:
-
-| REST Endpoint | GraphQL Query/Mutation |
-|--------------|----------------------|
-| `GET /products.json` | `query { products(first: N) { edges { node { ... } } } }` |
-| `POST /products.json` | `mutation { productCreate(product: $input) { ... } }` |
-| `PUT /products/{id}.json` | `mutation { productUpdate(product: $input) { ... } }` |
-| `GET /orders.json` | `query { orders(first: N) { edges { node { ... } } } }` |
-| `GET /customers/{id}.json` | `query { customer(id: $id) { ... } }` |
-| `POST /webhooks.json` | `mutation { webhookSubscriptionCreate(...) { ... } }` |
+See [REST to GraphQL Migration](references/rest-to-graphql-migration.md) for the complete examples and mapping table.
 
 ### Step 4: Update API Version in Config
 
 ```typescript
-// src/shopify.ts — update the version
+// src/shopify.ts — use LATEST_API_VERSION instead of hardcoded dates
+import { LATEST_API_VERSION } from "@shopify/shopify-api";
+
 const shopify = shopifyApi({
   apiKey: process.env.SHOPIFY_API_KEY!,
   apiSecretKey: process.env.SHOPIFY_API_SECRET!,
   hostName: process.env.SHOPIFY_HOST_NAME!,
-  apiVersion: "2024-10", // <-- update this
+  apiVersion: LATEST_API_VERSION,
   // ...
 });
 ```
@@ -114,38 +80,14 @@ const shopify = shopifyApi({
 ```toml
 # shopify.app.toml
 [webhooks]
-api_version = "2024-10"  # Update here too
+api_version = "2025-04"  # Update quarterly
 ```
 
 ### Step 5: Handle the ProductInput Split (2024-10)
 
-```typescript
-// BEFORE (pre-2024-10): single ProductInput for create AND update
-const OLD_CREATE = `
-  mutation($input: ProductInput!) {
-    productCreate(input: $input) { ... }
-  }
-`;
+In API version 2024-10, Shopify split the single `ProductInput` type into `ProductCreateInput` and `ProductUpdateInput`. All product mutations need updating.
 
-// AFTER (2024-10+): separate types
-const NEW_CREATE = `
-  mutation($input: ProductCreateInput!) {
-    productCreate(product: $input) {
-      product { id title }
-      userErrors { field message }
-    }
-  }
-`;
-
-const NEW_UPDATE = `
-  mutation($input: ProductUpdateInput!) {
-    productUpdate(product: $input) {
-      product { id title }
-      userErrors { field message }
-    }
-  }
-`;
-```
+See [ProductInput Split](references/product-input-split.md) for before/after examples.
 
 ## Output
 
@@ -169,8 +111,8 @@ const NEW_UPDATE = `
 
 ```bash
 #!/bin/bash
-OLD_VERSION="2024-04"
-NEW_VERSION="2024-10"
+OLD_VERSION="2024-10"
+NEW_VERSION="2025-04"
 
 echo "Upgrading Shopify API from $OLD_VERSION to $NEW_VERSION"
 
@@ -201,10 +143,5 @@ function checkDeprecationHeaders(headers: Headers): void {
 ## Resources
 
 - [Shopify API Release Notes](https://shopify.dev/docs/api/release-notes)
-- [2024-10 Release Notes](https://shopify.dev/docs/api/release-notes/2024-10)
 - [Migrate REST to GraphQL](https://shopify.dev/docs/apps/build/graphql/migrate/learn-how)
 - [API Versioning Guide](https://shopify.dev/docs/api/usage/versioning)
-
-## Next Steps
-
-For CI integration during upgrades, see `shopify-ci-integration`.

@@ -57,7 +57,8 @@ SHOPIFY_HOST_NAME=your-app.example.com
 SHOPIFY_ACCESS_TOKEN=shpat_xxxxxxxxxxxxxxxxxxxxx
 
 # API version — use a stable quarterly release
-SHOPIFY_API_VERSION=2024-10
+# Update quarterly — see shopify.dev/docs/api/usage/versioning
+SHOPIFY_API_VERSION=2025-04
 ```
 
 ```bash
@@ -79,7 +80,7 @@ const shopify = shopifyApi({
   apiSecretKey: process.env.SHOPIFY_API_SECRET!,
   scopes: process.env.SHOPIFY_SCOPES!.split(","),
   hostName: process.env.SHOPIFY_HOST_NAME!,
-  apiVersion: LATEST_API_VERSION, // or "2024-10"
+  apiVersion: LATEST_API_VERSION,
   isEmbeddedApp: true,
 });
 
@@ -88,47 +89,9 @@ export default shopify;
 
 ### Step 4: Implement OAuth Flow (Public Apps)
 
-```typescript
-// routes/auth.ts — Express example
-import express from "express";
-import shopify from "../shopify";
+Express-based OAuth flow that redirects to Shopify and handles the callback token exchange.
 
-const router = express.Router();
-
-// Step 1: Begin OAuth — redirect merchant to Shopify
-router.get("/auth", async (req, res) => {
-  const shop = req.query.shop as string;
-  // Generates the authorization URL with HMAC validation
-  const authRoute = await shopify.auth.begin({
-    shop: shopify.utils.sanitizeShop(shop, true)!,
-    callbackPath: "/auth/callback",
-    isOnline: false, // offline = long-lived token
-    rawRequest: req,
-    rawResponse: res,
-  });
-});
-
-// Step 2: Handle callback — exchange code for access token
-router.get("/auth/callback", async (req, res) => {
-  const callback = await shopify.auth.callback({
-    rawRequest: req,
-    rawResponse: res,
-  });
-
-  // callback.session contains the access token
-  const session: Session = callback.session;
-  console.log("Access token:", session.accessToken);
-  console.log("Shop:", session.shop); // "store-name.myshopify.com"
-  console.log("Scopes:", session.scope); // "read_products,write_products,..."
-
-  // IMPORTANT: Persist session to your database
-  await saveSession(session);
-
-  res.redirect(`/?shop=${session.shop}&host=${req.query.host}`);
-});
-
-export default router;
-```
+See [OAuth Flow](references/oauth-flow.md) for the complete Express route implementation.
 
 ### Step 5: Token Exchange (Embedded Apps)
 
@@ -153,30 +116,9 @@ async function exchangeToken(
 
 ### Step 6: Custom App / Private App Auth
 
-For custom apps (installed on a single store), use a permanent access token:
+For custom apps installed on a single store, use a permanent access token with no OAuth needed.
 
-```typescript
-// Custom app — no OAuth needed, use Admin API access token directly
-import "@shopify/shopify-api/adapters/node";
-import { shopifyApi } from "@shopify/shopify-api";
-
-const shopify = shopifyApi({
-  apiKey: process.env.SHOPIFY_API_KEY!,
-  apiSecretKey: process.env.SHOPIFY_API_SECRET!,
-  hostName: process.env.SHOPIFY_HOST_NAME!,
-  apiVersion: "2024-10",
-  isCustomStoreApp: true,
-  adminApiAccessToken: process.env.SHOPIFY_ACCESS_TOKEN!, // shpat_xxx
-});
-
-// Create a session for the custom app
-const session = shopify.session.customAppSession(
-  "your-store.myshopify.com"
-);
-
-// Use GraphQL client directly
-const client = new shopify.clients.Graphql({ session });
-```
+See [Custom App Auth](references/custom-app-auth.md) for the complete setup.
 
 ### Step 7: Verify Auth is Working
 
@@ -239,31 +181,9 @@ async function verifyShopifyAuth(session: Session): Promise<void> {
 
 ### Storefront API Access
 
-```typescript
-// Storefront API uses a different token — generated in admin
-const storefrontClient = new shopify.clients.Storefront({
-  session,
-  apiVersion: "2024-10",
-});
+The Storefront API uses a separate token with its own higher rate limits.
 
-const products = await storefrontClient.request(`{
-  products(first: 10) {
-    edges {
-      node {
-        id
-        title
-        handle
-        priceRange {
-          minVariantPrice {
-            amount
-            currencyCode
-          }
-        }
-      }
-    }
-  }
-}`);
-```
+See [Storefront API Access](references/storefront-api-access.md) for the complete client setup.
 
 ## Resources
 
@@ -272,7 +192,3 @@ const products = await storefrontClient.request(`{
 - [@shopify/shopify-api on npm](https://www.npmjs.com/package/@shopify/shopify-api)
 - [Session Token Reference](https://shopify.dev/docs/apps/build/authentication-authorization/session-tokens)
 - [Token Exchange](https://github.com/Shopify/shopify-api-js/blob/main/packages/shopify-api/docs/reference/auth/tokenExchange.md)
-
-## Next Steps
-
-After successful auth, proceed to `shopify-hello-world` for your first API call.

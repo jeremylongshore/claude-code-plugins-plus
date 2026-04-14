@@ -63,37 +63,9 @@ my-shopify-app/
 
 ### Step 3: Configure shopify.app.toml
 
-```toml
-# shopify.app.toml — central app configuration
-name = "My App"
-client_id = "your_api_key_here"
+Central app configuration with scopes, auth redirects, and mandatory GDPR webhook subscriptions.
 
-[access_scopes]
-scopes = "read_products,write_products,read_orders"
-
-[auth]
-redirect_urls = [
-  "https://localhost/auth/callback",
-  "https://localhost/auth/shopify/callback",
-]
-
-[webhooks]
-api_version = "2024-10"
-
-  [webhooks.subscriptions]
-  # Mandatory GDPR webhooks
-  [[webhooks.subscriptions]]
-  topics = ["customers/data_request"]
-  uri = "/webhooks"
-
-  [[webhooks.subscriptions]]
-  topics = ["customers/redact"]
-  uri = "/webhooks"
-
-  [[webhooks.subscriptions]]
-  topics = ["shop/redact"]
-  uri = "/webhooks"
-```
+See [App TOML Config](references/app-toml-config.md) for the complete configuration file.
 
 ### Step 4: Start Dev Server with Tunnel
 
@@ -111,67 +83,20 @@ shopify app dev
 
 ### Step 5: Set Up Testing
 
-```typescript
-// tests/shopify-client.test.ts
-import { describe, it, expect, vi, beforeEach } from "vitest";
+Vitest setup with mocked Shopify API client and recommended package.json scripts for the dev workflow.
 
-// Mock the Shopify API client
-vi.mock("@shopify/shopify-api", () => ({
-  shopifyApi: vi.fn(() => ({
-    clients: {
-      Graphql: vi.fn().mockImplementation(() => ({
-        request: vi.fn().mockResolvedValue({
-          data: {
-            products: {
-              edges: [
-                { node: { id: "gid://shopify/Product/1", title: "Test Product" } },
-              ],
-            },
-          },
-        }),
-      })),
-    },
-    session: {
-      customAppSession: vi.fn(() => ({ shop: "test.myshopify.com" })),
-    },
-  })),
-}));
-
-describe("Shopify Integration", () => {
-  it("should fetch products", async () => {
-    // Test your product-fetching logic here
-  });
-
-  it("should handle GraphQL errors", async () => {
-    // Test error handling
-  });
-});
-```
-
-```json
-{
-  "scripts": {
-    "dev": "shopify app dev",
-    "build": "remix vite:build",
-    "test": "vitest",
-    "test:watch": "vitest --watch",
-    "lint": "eslint app/",
-    "shopify": "shopify",
-    "deploy": "shopify app deploy"
-  }
-}
-```
+See [Vitest Shopify Mock](references/vitest-shopify-mock.md) for the complete test setup.
 
 ### Step 6: GraphQL Explorer for Development
 
 ```bash
 # Open the Shopify GraphiQL explorer for your store
-# Navigate to: https://your-store.myshopify.com/admin/api/2024-10/graphql.json
+# Navigate to: https://your-store.myshopify.com/admin/api/2025-04/graphql.json
 # Use the Shopify Admin GraphiQL app (install from admin)
 
 # Or use curl to test queries directly:
 curl -X POST \
-  "https://your-store.myshopify.com/admin/api/2024-10/graphql.json" \
+  "https://your-store.myshopify.com/admin/api/${SHOPIFY_API_VERSION:-2025-04}/graphql.json" \
   -H "Content-Type: application/json" \
   -H "X-Shopify-Access-Token: shpat_xxx" \
   -d '{"query": "{ shop { name } }"}'
@@ -243,7 +168,3 @@ async function seedStore(client: any) {
 - [Shopify App Remix Template](https://github.com/Shopify/shopify-app-template-remix)
 - [Vitest Documentation](https://vitest.dev/)
 - [Shopify GraphiQL Explorer](https://shopify.dev/docs/apps/build/graphql)
-
-## Next Steps
-
-See `shopify-sdk-patterns` for production-ready code patterns.

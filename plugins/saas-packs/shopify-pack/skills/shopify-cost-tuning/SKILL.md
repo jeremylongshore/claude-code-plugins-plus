@@ -3,6 +3,7 @@ name: shopify-cost-tuning
 description: |
   Optimize Shopify app costs through plan selection, API usage monitoring,
   and Shopify Plus upgrade analysis.
+  Use when analyzing API spend, choosing between Shopify plans, or reducing billable API calls.
   Trigger with phrases like "shopify cost", "shopify billing",
   "shopify pricing", "shopify Plus worth it", "shopify API usage", "reduce shopify costs".
 allowed-tools: Read, Grep
@@ -42,148 +43,21 @@ API rate limits are determined by the **merchant's** plan, not your app:
 
 ### Step 2: App Billing API
 
-If your app charges merchants, use the GraphQL App Billing API:
+If your app charges merchants, use the GraphQL `appSubscriptionCreate` mutation to create recurring charges. Set `test: true` in development to avoid real billing.
 
-```typescript
-// Create a recurring charge
-const CREATE_SUBSCRIPTION = `
-  mutation appSubscriptionCreate(
-    $name: String!,
-    $lineItems: [AppSubscriptionLineItemInput!]!,
-    $returnUrl: URL!,
-    $test: Boolean
-  ) {
-    appSubscriptionCreate(
-      name: $name,
-      lineItems: $lineItems,
-      returnUrl: $returnUrl,
-      test: $test
-    ) {
-      appSubscription {
-        id
-        status
-      }
-      confirmationUrl
-      userErrors { field message }
-    }
-  }
-`;
-
-const response = await client.request(CREATE_SUBSCRIPTION, {
-  variables: {
-    name: "Pro Plan",
-    returnUrl: "https://your-app.com/billing/callback",
-    test: process.env.NODE_ENV !== "production", // test charges in dev
-    lineItems: [
-      {
-        plan: {
-          appRecurringPricingDetails: {
-            price: { amount: 9.99, currencyCode: "USD" },
-            interval: "EVERY_30_DAYS",
-          },
-        },
-      },
-    ],
-  },
-});
-
-// Redirect merchant to confirmationUrl to approve the charge
-```
+See [App Billing API](references/app-billing-api.md) for the complete mutation and variable setup.
 
 ### Step 3: Monitor API Usage
 
-```typescript
-class ShopifyUsageTracker {
-  private graphqlCosts: number[] = [];
-  private restCalls: number = 0;
-  private startOfPeriod: Date = new Date();
+Track GraphQL query costs and REST call counts over time to identify optimization opportunities. Log `extensions.cost.actualQueryCost` from every GraphQL response.
 
-  trackGraphqlCost(extensions: any): void {
-    if (extensions?.cost?.actualQueryCost) {
-      this.graphqlCosts.push(extensions.cost.actualQueryCost);
-    }
-  }
-
-  trackRestCall(): void {
-    this.restCalls++;
-  }
-
-  getReport(): UsageReport {
-    const totalGraphqlCost = this.graphqlCosts.reduce((a, b) => a + b, 0);
-    const avgCost = totalGraphqlCost / (this.graphqlCosts.length || 1);
-
-    return {
-      period: {
-        start: this.startOfPeriod,
-        end: new Date(),
-      },
-      graphql: {
-        totalQueries: this.graphqlCosts.length,
-        totalCost: totalGraphqlCost,
-        averageCost: Math.round(avgCost),
-        maxSingleCost: Math.max(...this.graphqlCosts, 0),
-      },
-      rest: {
-        totalCalls: this.restCalls,
-      },
-      recommendation: avgCost > 500
-        ? "High average query cost — optimize field selection"
-        : avgCost > 100
-        ? "Moderate cost — consider bulk operations for large queries"
-        : "Efficient usage",
-    };
-  }
-}
-```
+See [Usage Tracker Class](references/usage-tracker-class.md) for a complete tracking implementation with reporting.
 
 ### Step 4: Cost Reduction Strategies
 
-**Strategy 1: Replace REST with GraphQL** (get only what you need)
+Four key strategies: replace REST with GraphQL for targeted field selection, use bulk operations for exports, cache responses and invalidate via webhooks, and use Storefront API for public data.
 
-```typescript
-// REST returns ALL fields — 5KB+ per product
-// GET /admin/api/2024-10/products/123.json
-// Returns: title, body_html, vendor, product_type, handle, template_suffix,
-//          published_scope, tags, admin_graphql_api_id, variants[], images[],
-//          options[], ... (everything)
-
-// GraphQL returns ONLY requested fields — 200 bytes
-const response = await client.request(`{
-  product(id: "gid://shopify/Product/123") {
-    title
-    status
-    totalInventory
-  }
-}`);
-```
-
-**Strategy 2: Use Bulk Operations for exports**
-
-```typescript
-// Instead of 200 paginated queries (200 * ~100 cost = 20,000 points):
-// Use 1 bulk operation (minimal cost, runs in background)
-await client.request(`
-  mutation { bulkOperationRunQuery(query: """
-    { products { edges { node { id title } } } }
-  """) { bulkOperation { id status } userErrors { message } } }
-`);
-```
-
-**Strategy 3: Cache and invalidate via webhooks**
-
-```typescript
-// Instead of re-querying products every request:
-// Cache products, invalidate only when products/update webhook fires
-// Saves: hundreds of queries per hour for read-heavy apps
-```
-
-**Strategy 4: Use Storefront API for public data**
-
-```typescript
-// Storefront API has separate rate limits
-// Use it for: product listings, collections, search
-// Keep Admin API for: order management, customer data, fulfillments
-```
+See [Cost Reduction Strategies](references/cost-reduction-strategies.md) for code examples of each approach.
 
 ## Output
 
@@ -223,7 +97,3 @@ if (cost) {
 - [App Billing API](https://shopify.dev/docs/apps/build/billing)
 - [Shopify Pricing](https://www.shopify.com/pricing)
 - [Shopify Plus Rate Limits](https://shopify.dev/changelog/increased-admin-api-rate-limits-for-shopify-plus)
-
-## Next Steps
-
-For architecture patterns, see `shopify-reference-architecture`.

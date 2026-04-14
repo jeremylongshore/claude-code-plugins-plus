@@ -3,6 +3,8 @@ name: shopify-prod-checklist
 description: |
   Execute Shopify app production deployment checklist covering App Store requirements,
   mandatory webhooks, API versioning, and rollback procedures.
+  Use when preparing a Shopify app for production launch, submitting to the App Store,
+  or auditing an existing deployment for compliance gaps.
   Trigger with phrases like "shopify production", "deploy shopify",
   "shopify go-live", "shopify launch checklist", "shopify app store submit".
 allowed-tools: Read, Bash(curl:*), Grep
@@ -29,7 +31,7 @@ Complete pre-launch checklist for deploying Shopify apps to production and submi
 
 ### Step 1: API and Authentication
 
-- [ ] Using a stable API version (e.g., `2024-10`), not `unstable`
+- [ ] Using a recent stable API version (e.g., 2025-04), not `unstable`
 - [ ] Access token stored in secure environment variables (never in code)
 - [ ] API secret stored securely for webhook HMAC verification
 - [ ] OAuth flow tested with a fresh install on a clean dev store
@@ -91,35 +93,9 @@ curl -s -H "X-Shopify-Access-Token: $TOKEN" \
 
 ### Step 8: Health Check Endpoint
 
-```typescript
-app.get("/health", async (req, res) => {
-  const checks: Record<string, any> = {};
+Express endpoint that tests Shopify API connectivity and database availability, returning structured status with latency metrics.
 
-  // Test Shopify connectivity
-  try {
-    const start = Date.now();
-    await client.request("{ shop { name } }");
-    checks.shopify = { status: "ok", latencyMs: Date.now() - start };
-  } catch (err) {
-    checks.shopify = { status: "error", message: (err as Error).message };
-  }
-
-  // Test database
-  try {
-    await db.query("SELECT 1");
-    checks.database = { status: "ok" };
-  } catch (err) {
-    checks.database = { status: "error" };
-  }
-
-  const allHealthy = Object.values(checks).every((c: any) => c.status === "ok");
-  res.status(allHealthy ? 200 : 503).json({
-    status: allHealthy ? "healthy" : "degraded",
-    checks,
-    timestamp: new Date().toISOString(),
-  });
-});
-```
+See [Health Check Endpoint](references/health-check-endpoint.md) for the complete implementation.
 
 ## Output
 
@@ -142,36 +118,9 @@ app.get("/health", async (req, res) => {
 
 ### Pre-Deploy Smoke Test
 
-```bash
-#!/bin/bash
-echo "=== Shopify Pre-Deploy Smoke Test ==="
-STORE="$SHOPIFY_STORE"
-TOKEN="$SHOPIFY_ACCESS_TOKEN"
-PASS=0; FAIL=0
+Bash script that validates Shopify auth and API scopes before deploying to production.
 
-# Auth test
-if curl -sf -H "X-Shopify-Access-Token: $TOKEN" \
-  "https://$STORE/admin/api/2024-10/shop.json" > /dev/null; then
-  echo "PASS: Auth"; ((PASS++))
-else
-  echo "FAIL: Auth"; ((FAIL++))
-fi
-
-# Scopes test
-SCOPES=$(curl -sf -H "X-Shopify-Access-Token: $TOKEN" \
-  "https://$STORE/admin/oauth/access_scopes.json" | jq -r '.access_scopes[].handle')
-for required in read_products read_orders; do
-  if echo "$SCOPES" | grep -q "$required"; then
-    echo "PASS: Scope $required"; ((PASS++))
-  else
-    echo "FAIL: Missing scope $required"; ((FAIL++))
-  fi
-done
-
-echo "---"
-echo "Results: $PASS passed, $FAIL failed"
-[ $FAIL -eq 0 ] && echo "READY FOR DEPLOY" || echo "FIX FAILURES FIRST"
-```
+See [Pre-Deploy Smoke Test](references/pre-deploy-smoke-test.md) for the complete script.
 
 ## Resources
 
@@ -179,7 +128,3 @@ echo "Results: $PASS passed, $FAIL failed"
 - [GDPR Compliance Webhooks](https://shopify.dev/docs/apps/build/compliance/privacy-law-compliance)
 - [API Versioning](https://shopify.dev/docs/api/usage/versioning)
 - [Shopify Status Page](https://www.shopifystatus.com)
-
-## Next Steps
-
-For version upgrades, see `shopify-upgrade-migration`.

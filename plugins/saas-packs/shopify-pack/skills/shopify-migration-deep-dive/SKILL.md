@@ -3,6 +3,7 @@ name: shopify-migration-deep-dive
 description: |
   Migrate e-commerce data to Shopify using bulk operations, product imports,
   and the strangler fig pattern for gradual platform migration.
+  Use when replatforming to Shopify, importing product catalogs, or migrating customer and order data from another e-commerce system.
   Trigger with phrases like "migrate to shopify", "shopify data migration",
   "import products shopify", "shopify replatform", "move to shopify".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(curl:*)
@@ -42,221 +43,27 @@ Migrate product catalogs, customers, and orders to Shopify using the GraphQL Adm
 
 ### Step 2: Bulk Product Import with productSet
 
-`productSet` is idempotent — it creates or updates based on `handle`. Perfect for migrations.
+`productSet` is idempotent — it creates or updates based on `handle`, making it perfect for migrations. Handles variants, metafields, and all product attributes in a single mutation.
 
-```typescript
-const PRODUCT_SET = `
-  mutation productSet($input: ProductSetInput!) {
-    productSet(input: $input) {
-      product {
-        id
-        title
-        handle
-        variants(first: 50) {
-          edges {
-            node { id sku price inventoryQuantity }
-          }
-        }
-      }
-      userErrors { field message code }
-    }
-  }
-`;
-
-// Migrate products in batches
-async function migrateProducts(sourceProducts: SourceProduct[]): Promise<MigrationResult> {
-  const results: MigrationResult = { success: 0, errors: [] };
-
-  for (const product of sourceProducts) {
-    try {
-      const response = await client.request(PRODUCT_SET, {
-        variables: {
-          input: {
-            title: product.name,
-            handle: product.slug, // unique identifier for upsert
-            descriptionHtml: product.description,
-            vendor: product.brand,
-            productType: product.category,
-            tags: product.tags,
-            status: "DRAFT", // Keep as draft until verified
-            variants: product.variants.map((v) => ({
-              price: String(v.price),
-              sku: v.sku,
-              barcode: v.barcode,
-              optionValues: v.options.map((opt) => ({
-                optionName: opt.name,
-                name: opt.value,
-              })),
-            })),
-            metafields: product.metadata?.map((m) => ({
-              namespace: "migration",
-              key: m.key,
-              value: m.value,
-              type: "single_line_text_field",
-            })),
-          },
-        },
-      });
-
-      if (response.data.productSet.userErrors.length > 0) {
-        results.errors.push({
-          product: product.name,
-          errors: response.data.productSet.userErrors,
-        });
-      } else {
-        results.success++;
-      }
-    } catch (error) {
-      results.errors.push({ product: product.name, errors: [{ message: (error as Error).message }] });
-    }
-
-    // Respect rate limits — pause between batches
-    await new Promise((r) => setTimeout(r, 200));
-  }
-
-  return results;
-}
-```
+See [Product Set Migration](references/product-set-migration.md) for the complete migration function.
 
 ### Step 3: Bulk Operations for Large Imports
 
-For importing thousands of products, use Shopify's staged uploads + bulk mutation:
+For importing thousands of products, use Shopify's staged uploads combined with bulk mutation to avoid rate limit issues.
 
-```typescript
-// Step 1: Create a staged upload target
-const STAGED_UPLOAD = `
-  mutation stagedUploadsCreate($input: [StagedUploadInput!]!) {
-    stagedUploadsCreate(input: $input) {
-      stagedTargets {
-        url
-        resourceUrl
-        parameters { name value }
-      }
-      userErrors { field message }
-    }
-  }
-`;
+See [Bulk Operations Import](references/bulk-operations-import.md) for the staged upload and bulk mutation workflow.
 
-const uploadTarget = await client.request(STAGED_UPLOAD, {
-  variables: {
-    input: [{
-      resource: "BULK_MUTATION_VARIABLES",
-      filename: "products.jsonl",
-      mimeType: "text/jsonl",
-      httpMethod: "POST",
-    }],
-  },
-});
+### Step 4: Set Inventory Levels & URL Redirects
 
-// Step 2: Upload JSONL file to the staged target
-// Each line is the variables for one mutation call
-const jsonlContent = products.map((p) =>
-  JSON.stringify({ input: { title: p.name, handle: p.slug } })
-).join("\n");
+After products are created, set inventory quantities at each location and create URL redirects to preserve SEO from the old platform.
 
-// Upload to the staged target URL...
+See [Inventory and Redirects](references/inventory-and-redirects.md) for both mutation implementations.
 
-// Step 3: Run bulk mutation
-const BULK_MUTATION = `
-  mutation bulkOperationRunMutation($mutation: String!, $stagedUploadPath: String!) {
-    bulkOperationRunMutation(mutation: $mutation, stagedUploadPath: $stagedUploadPath) {
-      bulkOperation { id status }
-      userErrors { field message }
-    }
-  }
-`;
-```
+### Step 5: Post-Migration Validation
 
-### Step 4: Set Inventory Levels
+Automated validation that compares expected source counts against actual Shopify counts for products, customers, and other data types.
 
-```typescript
-// After products are created, set inventory quantities
-const SET_INVENTORY = `
-  mutation inventorySetQuantities($input: InventorySetQuantitiesInput!) {
-    inventorySetQuantities(input: $input) {
-      inventoryAdjustmentGroup {
-        reason
-        changes {
-          name
-          delta
-          quantityAfterChange
-        }
-      }
-      userErrors { field message }
-    }
-  }
-`;
-
-await client.request(SET_INVENTORY, {
-  variables: {
-    input: {
-      reason: "correction",
-      name: "available",
-      quantities: [
-        {
-          inventoryItemId: "gid://shopify/InventoryItem/12345",
-          locationId: "gid://shopify/Location/67890",
-          quantity: 100,
-        },
-      ],
-    },
-  },
-});
-```
-
-### Step 5: URL Redirects (SEO Preservation)
-
-```typescript
-// Preserve old URLs by creating redirects
-const CREATE_REDIRECT = `
-  mutation urlRedirectCreate($urlRedirect: UrlRedirectInput!) {
-    urlRedirectCreate(urlRedirect: $urlRedirect) {
-      urlRedirect { id path target }
-      userErrors { field message }
-    }
-  }
-`;
-
-// Map old URLs to new Shopify URLs
-for (const redirect of urlMappings) {
-  await client.request(CREATE_REDIRECT, {
-    variables: {
-      urlRedirect: {
-        path: redirect.oldPath,     // "/old-product-page"
-        target: redirect.newPath,   // "/products/new-handle"
-      },
-    },
-  });
-}
-```
-
-### Step 6: Post-Migration Validation
-
-```typescript
-async function validateMigration(expectedCounts: Record<string, number>): Promise<void> {
-  const checks = [
-    {
-      name: "Products",
-      query: "{ productsCount { count } }",
-      path: "productsCount.count",
-      expected: expectedCounts.products,
-    },
-    {
-      name: "Customers",
-      query: "{ customersCount { count } }",
-      path: "customersCount.count",
-      expected: expectedCounts.customers,
-    },
-  ];
-
-  for (const check of checks) {
-    const response = await client.request(check.query);
-    const actual = check.path.split(".").reduce((obj: any, k) => obj[k], response.data);
-    const status = actual >= check.expected ? "PASS" : "FAIL";
-    console.log(`${status}: ${check.name} — expected ${check.expected}, got ${actual}`);
-  }
-}
-```
+See [Post-Migration Validation](references/post-migration-validation.md) for the validation script.
 
 ## Output
 
@@ -284,7 +91,7 @@ echo "Shopify product count:"
 curl -sf -H "X-Shopify-Access-Token: $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"query": "{ productsCount { count } }"}' \
-  "https://$STORE/admin/api/2024-10/graphql.json" \
+  "https://$STORE/admin/api/${SHOPIFY_API_VERSION:-2025-04}/graphql.json" \
   | jq '.data.productsCount.count'
 ```
 
@@ -294,7 +101,3 @@ curl -sf -H "X-Shopify-Access-Token: $TOKEN" \
 - [Bulk Operations Mutations](https://shopify.dev/docs/api/usage/bulk-operations/imports)
 - [Inventory Management](https://shopify.dev/docs/apps/build/orders-fulfillment/inventory-management-apps)
 - [URL Redirects](https://shopify.dev/docs/api/admin-graphql/latest/mutations/urlRedirectCreate)
-
-## Next Steps
-
-For advanced troubleshooting, see `shopify-advanced-troubleshooting`.

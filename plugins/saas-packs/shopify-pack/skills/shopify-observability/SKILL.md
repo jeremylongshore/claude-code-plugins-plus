@@ -3,6 +3,8 @@ name: shopify-observability
 description: |
   Set up observability for Shopify app integrations with query cost tracking,
   rate limit monitoring, webhook delivery metrics, and structured logging.
+  Use when instrumenting a Shopify app for production monitoring, setting up
+  Prometheus metrics for API health, or configuring alerts for rate limit issues.
   Trigger with phrases like "shopify monitoring", "shopify metrics",
   "shopify observability", "monitor shopify API", "shopify alerts", "shopify dashboard".
 allowed-tools: Read, Write, Edit
@@ -29,118 +31,26 @@ Instrument your Shopify app to track GraphQL query cost, rate limit consumption,
 
 ### Step 1: Shopify-Specific Metrics
 
-```typescript
-import { Registry, Counter, Histogram, Gauge } from "prom-client";
+Define Prometheus counters, histograms, and gauges for query cost, rate limit headroom, REST bucket state, API duration, webhook processing, and error classification.
 
-const registry = new Registry();
-
-// GraphQL query cost tracking
-const queryCostHistogram = new Histogram({
-  name: "shopify_graphql_query_cost",
-  help: "Shopify GraphQL actual query cost",
-  labelNames: ["operation", "shop"],
-  buckets: [1, 10, 50, 100, 250, 500, 1000],
-  registers: [registry],
-});
-
-// Rate limit headroom
-const rateLimitGauge = new Gauge({
-  name: "shopify_rate_limit_available",
-  help: "Shopify rate limit points currently available",
-  labelNames: ["shop", "api_type"],
-  registers: [registry],
-});
-
-// REST bucket state
-const restBucketGauge = new Gauge({
-  name: "shopify_rest_bucket_used",
-  help: "REST API leaky bucket current fill level",
-  labelNames: ["shop"],
-  registers: [registry],
-});
-
-// API request duration
-const apiDuration = new Histogram({
-  name: "shopify_api_duration_seconds",
-  help: "Shopify API call duration",
-  labelNames: ["operation", "status", "api_type"],
-  buckets: [0.1, 0.25, 0.5, 1, 2, 5, 10],
-  registers: [registry],
-});
-
-// Webhook processing
-const webhookCounter = new Counter({
-  name: "shopify_webhooks_total",
-  help: "Shopify webhooks received",
-  labelNames: ["topic", "status"], // status: success, error, invalid_hmac
-  registers: [registry],
-});
-
-// API errors by type
-const apiErrors = new Counter({
-  name: "shopify_api_errors_total",
-  help: "Shopify API errors by type",
-  labelNames: ["error_type", "status_code"],
-  registers: [registry],
-});
-```
+See [Shopify Metrics Definitions](references/shopify-metrics-definitions.md) for the complete metric registrations.
 
 ### Step 2: Instrumented GraphQL Client
 
-```typescript
-async function instrumentedGraphqlQuery<T>(
-  shop: string,
-  operation: string,
-  query: string,
-  variables?: Record<string, unknown>
-): Promise<T> {
-  const timer = apiDuration.startTimer({ operation, api_type: "graphql" });
+Wrap the Shopify GraphQL client to automatically record query cost from `extensions.cost`, update rate limit gauges, and classify errors (throttled, auth, API error).
 
-  try {
-    const client = getGraphqlClient(shop);
-    const response = await client.request(query, { variables });
-
-    // Record cost metrics from Shopify's response
-    const cost = response.extensions?.cost;
-    if (cost) {
-      queryCostHistogram.observe(
-        { operation, shop },
-        cost.actualQueryCost || cost.requestedQueryCost
-      );
-      rateLimitGauge.set(
-        { shop, api_type: "graphql" },
-        cost.throttleStatus.currentlyAvailable
-      );
-    }
-
-    timer({ status: "success" });
-    return response.data as T;
-  } catch (error: any) {
-    const statusCode = error.response?.code || "unknown";
-    const errorType =
-      error.body?.errors?.[0]?.extensions?.code === "THROTTLED"
-        ? "throttled"
-        : statusCode === 401
-        ? "auth"
-        : "api_error";
-
-    apiErrors.inc({ error_type: errorType, status_code: String(statusCode) });
-    timer({ status: "error" });
-    throw error;
-  }
-}
-```
+See [Instrumented GraphQL Client](references/instrumented-graphql-client.md) for the complete implementation.
 
 ### Step 3: REST API Header Tracking
 
+Parse `X-Shopify-Shop-Api-Call-Limit` headers (e.g., `"32/40"`) from REST responses to track leaky bucket fill level. Warn when bucket exceeds 80% capacity.
+
 ```typescript
 function trackRestHeaders(shop: string, headers: Record<string, string>): void {
-  // Parse X-Shopify-Shop-Api-Call-Limit: "32/40"
   const callLimit = headers["x-shopify-shop-api-call-limit"];
   if (callLimit) {
     const [used, max] = callLimit.split("/").map(Number);
     restBucketGauge.set({ shop }, used);
-
     if (used > max * 0.8) {
       console.warn(`[shopify] REST bucket at ${used}/${max} for ${shop}`);
     }
@@ -150,109 +60,21 @@ function trackRestHeaders(shop: string, headers: Record<string, string>): void {
 
 ### Step 4: Webhook Observability
 
-```typescript
-app.post("/webhooks", express.raw({ type: "application/json" }), (req, res) => {
-  const topic = req.headers["x-shopify-topic"] as string;
-  const shop = req.headers["x-shopify-shop-domain"] as string;
+Track HMAC validation results, processing success/failure, and duration for all incoming webhooks.
 
-  // Track HMAC validation
-  if (!verifyHmac(req.body, req.headers["x-shopify-hmac-sha256"]!)) {
-    webhookCounter.inc({ topic, status: "invalid_hmac" });
-    return res.status(401).send();
-  }
-
-  res.status(200).send("OK");
-
-  // Track processing
-  const start = Date.now();
-  processWebhook(topic, shop, JSON.parse(req.body.toString()))
-    .then(() => {
-      webhookCounter.inc({ topic, status: "success" });
-      apiDuration.observe(
-        { operation: `webhook:${topic}`, status: "success", api_type: "webhook" },
-        (Date.now() - start) / 1000
-      );
-    })
-    .catch((err) => {
-      webhookCounter.inc({ topic, status: "error" });
-      console.error(`Webhook ${topic} failed:`, err.message);
-    });
-});
-```
+See [Webhook Observability](references/webhook-observability.md) for the complete Express middleware.
 
 ### Step 5: Structured Logging
 
-```typescript
-import pino from "pino";
+Pino-based logger with automatic PII redaction and Shopify-specific context fields (query cost, available points, operation name).
 
-const logger = pino({
-  name: "shopify-app",
-  level: process.env.LOG_LEVEL || "info",
-  serializers: {
-    // Redact sensitive fields automatically
-    shopifyRequest: (req: any) => ({
-      shop: req.shop,
-      operation: req.operation,
-      queryCost: req.cost?.actualQueryCost,
-      available: req.cost?.throttleStatus?.currentlyAvailable,
-      // Never log: accessToken, apiSecret, customer PII
-    }),
-  },
-});
-
-// Log every Shopify API call with structured context
-function logShopifyCall(operation: string, shop: string, cost: any, durationMs: number) {
-  logger.info({
-    msg: "shopify_api_call",
-    operation,
-    shop,
-    queryCost: cost?.actualQueryCost,
-    requestedCost: cost?.requestedQueryCost,
-    availablePoints: cost?.throttleStatus?.currentlyAvailable,
-    durationMs,
-  });
-}
-```
+See [Structured Logging](references/structured-logging.md) for the complete implementation.
 
 ### Step 6: Alert Rules
 
-```yaml
-# prometheus/shopify-alerts.yml
-groups:
-  - name: shopify
-    rules:
-      - alert: ShopifyRateLimitLow
-        expr: shopify_rate_limit_available < 100
-        for: 2m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Shopify rate limit below 100 points for {{ $labels.shop }}"
+Prometheus alert rules for low rate limits, high query cost (P95 > 500), webhook failures (> 10%), and API latency (P95 > 3s).
 
-      - alert: ShopifyHighQueryCost
-        expr: histogram_quantile(0.95, rate(shopify_graphql_query_cost_bucket[5m])) > 500
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "P95 Shopify query cost > 500 points"
-
-      - alert: ShopifyWebhookFailures
-        expr: rate(shopify_webhooks_total{status="error"}[5m]) > 0.1
-        for: 5m
-        labels:
-          severity: critical
-        annotations:
-          summary: "Shopify webhook processing failures > 10%"
-
-      - alert: ShopifyAPILatencyHigh
-        expr: histogram_quantile(0.95, rate(shopify_api_duration_seconds_bucket[5m])) > 3
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Shopify API P95 latency > 3 seconds"
-```
+See [Alert Rules](references/alert-rules.md) for the complete Prometheus configuration.
 
 ## Output
 
@@ -287,7 +109,3 @@ app.get("/metrics", async (req, res) => {
 - [Shopify Rate Limit Headers](https://shopify.dev/docs/api/usage/rate-limits)
 - [Prometheus Best Practices](https://prometheus.io/docs/practices/naming/)
 - [OpenTelemetry Node.js](https://opentelemetry.io/docs/instrumentation/js/)
-
-## Next Steps
-
-For incident response, see `shopify-incident-runbook`.

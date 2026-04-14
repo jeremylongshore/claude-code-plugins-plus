@@ -3,6 +3,7 @@ name: shopify-data-handling
 description: |
   Handle Shopify customer PII, implement GDPR/CCPA compliance, and manage data retention
   with Shopify's mandatory privacy webhooks.
+  Use when building apps that store customer data, preparing for App Store review, or implementing deletion workflows.
   Trigger with phrases like "shopify data", "shopify PII", "shopify GDPR",
   "shopify customer data", "shopify privacy", "shopify CCPA", "shopify data request".
 allowed-tools: Read, Write, Edit
@@ -41,177 +42,21 @@ When a merchant grants your app access, you may receive:
 
 ### Step 2: Implement Mandatory Privacy Webhooks
 
-Shopify **requires** three GDPR webhooks for App Store apps. Your app will be **rejected** without them.
+Shopify **requires** three GDPR webhooks for App Store apps. Your app will be **rejected** without them: `customers/data_request` (customer wants their data), `customers/redact` (delete a customer's PII), and `shop/redact` (delete all shop data 48h after uninstall).
 
-```typescript
-// 1. customers/data_request — Customer requests their data
-// Shopify sends this when a customer asks the merchant for their data
-async function handleCustomerDataRequest(payload: {
-  shop_domain: string;
-  customer: { id: number; email: string; phone: string };
-  orders_requested: number[];
-  data_request: { id: number };
-}): Promise<void> {
-  // Collect all data you store about this customer
-  const customerData = await db.customerRecords.findMany({
-    where: {
-      shopDomain: payload.shop_domain,
-      shopifyCustomerId: String(payload.customer.id),
-    },
-  });
+See [GDPR Privacy Webhooks](references/gdpr-privacy-webhooks.md) for the complete implementation of all three handlers.
 
-  const orderData = await db.orderRecords.findMany({
-    where: {
-      shopDomain: payload.shop_domain,
-      shopifyOrderId: { in: payload.orders_requested.map(String) },
-    },
-  });
+### Step 3: Data Minimization and PII Detection
 
-  // You have 30 days to respond
-  // Email the data to the merchant (or make it available via your app)
-  await sendDataExport({
-    requestId: payload.data_request.id,
-    shop: payload.shop_domain,
-    customer: customerData,
-    orders: orderData,
-  });
-}
+Only fetch the fields you actually use in GraphQL queries. Add PII redaction middleware to prevent customer data from leaking into logs — detect emails, phone numbers, and credit card patterns.
 
-// 2. customers/redact — Delete specific customer's data
-async function handleCustomerRedact(payload: {
-  shop_domain: string;
-  customer: { id: number; email: string; phone: string };
-  orders_to_redact: number[];
-}): Promise<void> {
-  // Delete ALL personal data for this customer
-  await db.customerRecords.deleteMany({
-    where: {
-      shopDomain: payload.shop_domain,
-      shopifyCustomerId: String(payload.customer.id),
-    },
-  });
+See [Data Minimization and PII Detection](references/data-minimization-and-pii-detection.md) for query examples and redaction middleware.
 
-  // Anonymize order records (keep for accounting, remove PII)
-  for (const orderId of payload.orders_to_redact) {
-    await db.orderRecords.update({
-      where: { shopifyOrderId: String(orderId) },
-      data: {
-        customerEmail: null,
-        customerName: null,
-        shippingAddress: null,
-        // Keep: orderId, total, line items, timestamps
-      },
-    });
-  }
+### Step 4: Data Retention Policy
 
-  // Log the deletion (keep audit record)
-  await db.auditLog.create({
-    data: {
-      action: "CUSTOMER_DATA_REDACTED",
-      shop: payload.shop_domain,
-      customerId: String(payload.customer.id),
-      timestamp: new Date(),
-    },
-  });
-}
+Automate cleanup with a daily cron job: delete API logs after 30 days, webhook logs after 90 days, and keep audit logs for 7 years (regulatory requirement).
 
-// 3. shop/redact — Delete ALL data for a shop (48h after uninstall)
-async function handleShopRedact(payload: {
-  shop_id: number;
-  shop_domain: string;
-}): Promise<void> {
-  // Delete EVERYTHING related to this shop
-  await db.customerRecords.deleteMany({
-    where: { shopDomain: payload.shop_domain },
-  });
-  await db.orderRecords.deleteMany({
-    where: { shopDomain: payload.shop_domain },
-  });
-  await db.sessions.deleteMany({
-    where: { shop: payload.shop_domain },
-  });
-  await db.appSettings.deleteMany({
-    where: { shopDomain: payload.shop_domain },
-  });
-
-  console.log(`All data deleted for ${payload.shop_domain}`);
-}
-```
-
-### Step 3: Data Minimization in API Queries
-
-```typescript
-// BAD: Fetching all customer fields when you only need the name
-const ALL_FIELDS = `{
-  customer(id: $id) {
-    id firstName lastName email phone
-    addresses { address1 city province country zip phone }
-    orders(first: 100) {
-      edges { node { id name totalPrice shippingAddress { ... } } }
-    }
-    metafields(first: 20) { edges { node { key value } } }
-  }
-}`;
-
-// GOOD: Only fetch what you actually use
-const MINIMAL_FIELDS = `{
-  customer(id: $id) {
-    id
-    displayName
-    numberOfOrders
-    amountSpent { amount currencyCode }
-  }
-}`;
-```
-
-### Step 4: PII Detection in Logs
-
-```typescript
-// Prevent customer PII from leaking into logs
-const PII_PATTERNS = [
-  { name: "email", pattern: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g },
-  { name: "phone", pattern: /\+?\d{10,15}/g },
-  { name: "credit_card", pattern: /\b\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}\b/g },
-];
-
-function redactPII(text: string): string {
-  let result = text;
-  for (const { name, pattern } of PII_PATTERNS) {
-    result = result.replace(pattern, `[REDACTED:${name}]`);
-  }
-  return result;
-}
-
-// Use in logging middleware
-function safeLog(message: string, data: any): void {
-  const safeData = JSON.parse(redactPII(JSON.stringify(data)));
-  console.log(message, safeData);
-}
-```
-
-### Step 5: Data Retention Policy
-
-```typescript
-// Automatic cleanup — run daily via cron
-async function enforceRetentionPolicy(): Promise<void> {
-  const now = new Date();
-
-  // Delete API request logs older than 30 days
-  await db.apiLogs.deleteMany({
-    where: { createdAt: { lt: new Date(now.getTime() - 30 * 86400000) } },
-  });
-
-  // Delete webhook event logs older than 90 days
-  await db.webhookLogs.deleteMany({
-    where: { createdAt: { lt: new Date(now.getTime() - 90 * 86400000) } },
-  });
-
-  // Keep audit logs for 7 years (regulatory requirement)
-  // Never auto-delete audit records
-
-  console.log("Retention policy enforced");
-}
-```
+See [Data Retention Policy](references/data-retention-policy.md) for the complete implementation.
 
 ## Output
 
@@ -252,7 +97,3 @@ curl -X POST http://localhost:3000/webhooks/gdpr/data-request \
 - [Shopify Privacy Law Compliance](https://shopify.dev/docs/apps/build/compliance/privacy-law-compliance)
 - [GDPR Webhook Requirements](https://shopify.dev/changelog/apps-now-need-to-use-gdpr-webhooks)
 - [Data Protection Best Practices](https://shopify.dev/docs/apps/build/compliance)
-
-## Next Steps
-
-For enterprise access control, see `shopify-enterprise-rbac`.

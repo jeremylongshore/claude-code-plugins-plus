@@ -1,7 +1,7 @@
 {
   "name": "@intentsolutionsio/shopify-pack",
-  "version": "1.0.0",
-  "description": "Claude Code skill pack for Shopify - 30 skills covering e-commerce development, storefront APIs, and app integration",
+  "version": "2.0.0",
+  "description": "Claude Code skill pack for Shopify - 38 skills covering e-commerce development, storefront APIs, and app integration",
   "main": "README.md",
   "type": "module",
   "files": [

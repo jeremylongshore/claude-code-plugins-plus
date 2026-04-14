@@ -53,82 +53,15 @@ SHOPIFY_ACCESS_TOKEN=shpat_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 ### Step 2: Webhook HMAC Verification
 
-Shopify signs every webhook with your app's API secret using HMAC-SHA256. The signature is in the `X-Shopify-Hmac-Sha256` header.
+Shopify signs every webhook with your app's API secret using HMAC-SHA256. The signature is in the `X-Shopify-Hmac-Sha256` header. Use `crypto.timingSafeEqual` for comparison to prevent timing attacks. The middleware must use raw body parser (not JSON parser).
 
-```typescript
-import crypto from "crypto";
-import express from "express";
-
-function verifyShopifyWebhook(
-  rawBody: Buffer,
-  hmacHeader: string,
-  secret: string
-): boolean {
-  const computed = crypto
-    .createHmac("sha256", secret)
-    .update(rawBody)
-    .digest("base64");
-
-  // Timing-safe comparison prevents timing attacks
-  return crypto.timingSafeEqual(
-    Buffer.from(computed),
-    Buffer.from(hmacHeader)
-  );
-}
-
-// Express middleware — MUST use raw body parser
-app.post(
-  "/webhooks",
-  express.raw({ type: "application/json" }),
-  (req, res) => {
-    const hmac = req.headers["x-shopify-hmac-sha256"] as string;
-    const topic = req.headers["x-shopify-topic"] as string;
-    const shop = req.headers["x-shopify-shop-domain"] as string;
-
-    if (!verifyShopifyWebhook(req.body, hmac, process.env.SHOPIFY_API_SECRET!)) {
-      console.warn(`Invalid webhook HMAC from ${shop}, topic: ${topic}`);
-      return res.status(401).send("HMAC validation failed");
-    }
-
-    const payload = JSON.parse(req.body.toString());
-    console.log(`Verified webhook: ${topic} from ${shop}`);
-
-    // Process asynchronously — respond 200 within 5 seconds
-    processWebhookAsync(topic, shop, payload);
-    res.status(200).send("OK");
-  }
-);
-```
+See [Webhook HMAC Verification](references/webhook-hmac-verification.md) for the complete implementation.
 
 ### Step 3: OAuth Request Verification
 
-Verify that incoming requests from Shopify are authentic by checking the HMAC query parameter:
+Verify that incoming OAuth requests from Shopify are authentic by checking the HMAC query parameter. The library handles this automatically, but the manual approach sorts params alphabetically, creates a query string, and compares HMAC hex digests.
 
-```typescript
-import { shopifyApi } from "@shopify/shopify-api";
-
-// The library handles this automatically, but here's the manual approach:
-function verifyShopifyRequest(query: Record<string, string>, secret: string): boolean {
-  const { hmac, ...params } = query;
-  if (!hmac) return false;
-
-  // Sort parameters and create query string
-  const message = Object.keys(params)
-    .sort()
-    .map((key) => `${key}=${params[key]}`)
-    .join("&");
-
-  const computed = crypto
-    .createHmac("sha256", secret)
-    .update(message)
-    .digest("hex");
-
-  return crypto.timingSafeEqual(
-    Buffer.from(computed),
-    Buffer.from(hmac)
-  );
-}
-```
+See [OAuth Request Verification](references/oauth-request-verification.md) for the complete implementation.
 
 ### Step 4: Minimal Access Scopes
 
@@ -219,7 +152,3 @@ git secrets --install
 - [Shopify API Authentication](https://shopify.dev/docs/api/usage/authentication)
 - [Access Scopes Reference](https://shopify.dev/docs/api/usage/access-scopes)
 - [Embedded App Security](https://shopify.dev/docs/apps/build/authentication-authorization)
-
-## Next Steps
-
-For production deployment, see `shopify-prod-checklist`.

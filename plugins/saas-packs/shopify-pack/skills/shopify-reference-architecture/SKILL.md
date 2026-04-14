@@ -3,6 +3,8 @@ name: shopify-reference-architecture
 description: |
   Implement Shopify app reference architecture with Remix, Prisma session storage,
   and the official app template patterns.
+  Use when setting up a new Shopify app, structuring a Remix-based project,
+  or configuring Prisma session storage for production.
   Trigger with phrases like "shopify architecture", "shopify app structure",
   "shopify project layout", "shopify Remix template", "shopify app design".
 allowed-tools: Read, Grep
@@ -45,9 +47,6 @@ my-shopify-app/
 │   └── root.tsx
 ├── extensions/
 │   ├── theme-app-extension/        # Theme blocks for Online Store
-│   │   ├── blocks/
-│   │   │   └── product-rating.liquid
-│   │   └── locales/
 │   ├── checkout-ui/                # Checkout UI extension
 │   └── product-discount/           # Shopify Function
 ├── prisma/
@@ -61,190 +60,27 @@ my-shopify-app/
 
 ### Step 2: Core App Configuration
 
-```typescript
-// app/shopify.server.ts — the heart of the app
-import "@shopify/shopify-app-remix/adapters/node";
-import { AppDistribution, shopifyApp } from "@shopify/shopify-app-remix/server";
-import { PrismaSessionStorage } from "@shopify/shopify-app-session-storage-prisma";
-import prisma from "./db.server";
+The `shopify.server.ts` singleton configures the API client, session storage, webhooks, and auth hooks. It uses `LATEST_API_VERSION` from `@shopify/shopify-api` and exports all auth/session helpers.
 
-const shopify = shopifyApp({
-  apiKey: process.env.SHOPIFY_API_KEY!,
-  apiSecretKey: process.env.SHOPIFY_API_SECRET!,
-  appUrl: process.env.SHOPIFY_APP_URL!,
-  scopes: process.env.SHOPIFY_SCOPES?.split(","),
-  apiVersion: "2024-10",
-  distribution: AppDistribution.AppStore, // or SingleMerchant
-  sessionStorage: new PrismaSessionStorage(prisma),
-  webhooks: {
-    APP_UNINSTALLED: {
-      deliveryMethod: "http",
-      callbackUrl: "/webhooks",
-    },
-    PRODUCTS_UPDATE: {
-      deliveryMethod: "http",
-      callbackUrl: "/webhooks",
-    },
-  },
-  hooks: {
-    afterAuth: async ({ session }) => {
-      // Register webhooks after successful auth
-      shopify.registerWebhooks({ session });
-    },
-  },
-  future: {
-    unstable_newEmbeddedAuthStrategy: true,
-  },
-});
-
-export default shopify;
-export const apiVersion = "2024-10";
-export const addDocumentResponseHeaders = shopify.addDocumentResponseHeaders;
-export const authenticate = shopify.authenticate;
-export const unauthenticated = shopify.unauthenticated;
-export const login = shopify.login;
-export const registerWebhooks = shopify.registerWebhooks;
-export const sessionStorage = shopify.sessionStorage;
-```
+See [Core App Configuration](references/core-app-configuration.md) for the complete implementation.
 
 ### Step 3: Session Storage with Prisma
 
-```prisma
-// prisma/schema.prisma
-datasource db {
-  provider = "sqlite"  // or "postgresql" for production
-  url      = env("DATABASE_URL")
-}
+The Prisma schema defines the required `Session` model (matching Shopify's session fields) plus your app's custom models. Use SQLite for dev and PostgreSQL for production.
 
-model Session {
-  id            String    @id
-  shop          String
-  state         String
-  isOnline      Boolean   @default(false)
-  scope         String?
-  expires       DateTime?
-  accessToken   String
-  userId        BigInt?
-  firstName     String?
-  lastName      String?
-  email         String?
-  accountOwner  Boolean   @default(false)
-  locale        String?
-  collaborator  Boolean?  @default(false)
-  emailVerified Boolean?  @default(false)
-}
-
-// Your app's custom models
-model ProductSync {
-  id          String   @id @default(cuid())
-  shop        String
-  productId   String
-  lastSynced  DateTime @default(now())
-  status      String   @default("pending")
-  @@unique([shop, productId])
-}
-```
+See [Prisma Session Storage](references/prisma-session-storage.md) for the complete schema.
 
 ### Step 4: Route Pattern — Authenticated Admin Page
 
-```typescript
-// app/routes/app.products.tsx
-import { json } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
-import { authenticate } from "../shopify.server";
-import { Page, Layout, Card, DataTable } from "@shopify/polaris";
+Each app route calls `authenticate.admin(request)` to get a pre-authenticated GraphQL client, then renders with Polaris components. Data flows through Remix loaders.
 
-export async function loader({ request }: LoaderFunctionArgs) {
-  const { admin } = await authenticate.admin(request);
-
-  // admin.graphql is a pre-authenticated GraphQL client
-  const response = await admin.graphql(`{
-    products(first: 25, sortKey: UPDATED_AT, reverse: true) {
-      edges {
-        node {
-          id
-          title
-          status
-          totalInventory
-          priceRangeV2 {
-            minVariantPrice { amount currencyCode }
-          }
-        }
-      }
-    }
-  }`);
-
-  const data = await response.json();
-  return json({ products: data.data.products.edges.map((e: any) => e.node) });
-}
-
-export default function Products() {
-  const { products } = useLoaderData<typeof loader>();
-
-  return (
-    <Page title="Products">
-      <Layout>
-        <Layout.Section>
-          <Card>
-            <DataTable
-              columnContentTypes={["text", "text", "numeric", "text"]}
-              headings={["Title", "Status", "Inventory", "Price"]}
-              rows={products.map((p: any) => [
-                p.title,
-                p.status,
-                p.totalInventory,
-                `$${p.priceRangeV2.minVariantPrice.amount}`,
-              ])}
-            />
-          </Card>
-        </Layout.Section>
-      </Layout>
-    </Page>
-  );
-}
-```
+See [Authenticated Admin Route](references/authenticated-admin-route.md) for the complete implementation.
 
 ### Step 5: Theme App Extension
 
-```liquid
-{% comment %} extensions/theme-app-extension/blocks/product-rating.liquid {% endcomment %}
+Theme app extensions add customizable blocks to the Online Store. Each block defines a Liquid template with a `{% schema %}` JSON block for merchant-facing settings.
 
-{% schema %}
-{
-  "name": "Product Rating",
-  "target": "section",
-  "settings": [
-    {
-      "type": "range",
-      "id": "max_stars",
-      "label": "Maximum Stars",
-      "min": 1,
-      "max": 5,
-      "default": 5
-    },
-    {
-      "type": "color",
-      "id": "star_color",
-      "label": "Star Color",
-      "default": "#FFD700"
-    }
-  ]
-}
-{% endschema %}
-
-<div class="product-rating" style="--star-color: {{ block.settings.star_color }}">
-  {% assign rating = product.metafields.custom.rating.value | default: 0 %}
-  {% for i in (1..block.settings.max_stars) %}
-    <span class="star {% if i <= rating %}filled{% endif %}">&#9733;</span>
-  {% endfor %}
-  <span class="rating-text">{{ rating }}/{{ block.settings.max_stars }}</span>
-</div>
-
-<style>
-  .product-rating .star { color: #ccc; font-size: 1.2em; }
-  .product-rating .star.filled { color: var(--star-color); }
-</style>
-```
+See [Theme App Extension](references/theme-app-extension.md) for the complete implementation.
 
 ## Output
 
@@ -284,7 +120,3 @@ shopify app dev
 - [Prisma Session Storage](https://www.npmjs.com/package/@shopify/shopify-app-session-storage-prisma)
 - [Polaris Components](https://polaris.shopify.com/components)
 - [Theme App Extensions](https://shopify.dev/docs/apps/build/online-store/theme-app-extensions)
-
-## Next Steps
-
-For multi-environment setup, see `shopify-multi-env-setup`.

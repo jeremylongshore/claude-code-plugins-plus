@@ -48,83 +48,9 @@ SHOPIFY_API_SECRET=your_api_secret
 
 ### Step 3: Write the Hello World Script
 
-```typescript
-// hello-shopify.ts
-import "@shopify/shopify-api/adapters/node";
-import { shopifyApi } from "@shopify/shopify-api";
-import "dotenv/config";
+Initialize the Shopify API client with `LATEST_API_VERSION` (imported from `@shopify/shopify-api`), create a custom app session, then query shop info and products via GraphQL.
 
-const shopify = shopifyApi({
-  apiKey: process.env.SHOPIFY_API_KEY!,
-  apiSecretKey: process.env.SHOPIFY_API_SECRET!,
-  hostName: "localhost",
-  apiVersion: "2024-10",
-  isCustomStoreApp: true,
-  adminApiAccessToken: process.env.SHOPIFY_ACCESS_TOKEN!,
-});
-
-async function main() {
-  const session = shopify.session.customAppSession(
-    process.env.SHOPIFY_STORE!
-  );
-
-  const client = new shopify.clients.Graphql({ session });
-
-  // Query shop info
-  const shopInfo = await client.request(`{
-    shop {
-      name
-      currencyCode
-      primaryDomain { url }
-    }
-  }`);
-  console.log("Store:", shopInfo.data.shop.name);
-  console.log("Currency:", shopInfo.data.shop.currencyCode);
-
-  // Query first 5 products
-  const products = await client.request(`{
-    products(first: 5) {
-      edges {
-        node {
-          id
-          title
-          status
-          totalInventory
-          variants(first: 3) {
-            edges {
-              node {
-                title
-                price
-                sku
-                inventoryQuantity
-              }
-            }
-          }
-        }
-      }
-    }
-  }`);
-
-  console.log("\nProducts:");
-  for (const edge of products.data.products.edges) {
-    const p = edge.node;
-    console.log(`  - ${p.title} (${p.status}, ${p.totalInventory} in stock)`);
-    for (const v of p.variants.edges) {
-      console.log(`      Variant: ${v.node.title} — $${v.node.price} (SKU: ${v.node.sku})`);
-    }
-  }
-
-  console.log("\nSuccess! Your Shopify connection is working.");
-}
-
-main().catch((err) => {
-  console.error("Failed:", err.message);
-  if (err.response) {
-    console.error("Response:", JSON.stringify(err.response.body, null, 2));
-  }
-  process.exit(1);
-});
-```
+See [Hello World Script](references/hello-world-script.md) for the complete implementation.
 
 ### Step 4: Run It
 
@@ -166,55 +92,9 @@ Success! Your Shopify connection is working.
 
 ## Examples
 
-### Create a Product via GraphQL Mutation
+### Create a Product and Query via REST
 
-```typescript
-const response = await client.request(`
-  mutation productCreate($input: ProductCreateInput!) {
-    productCreate(product: $input) {
-      product {
-        id
-        title
-        handle
-      }
-      userErrors {
-        field
-        message
-      }
-    }
-  }
-`, {
-  variables: {
-    input: {
-      title: "Hello World Product",
-      descriptionHtml: "<p>Created via Shopify API</p>",
-      vendor: "My App",
-      productType: "Test",
-      tags: ["api-created", "hello-world"],
-    },
-  },
-});
-
-if (response.data.productCreate.userErrors.length > 0) {
-  console.error("Errors:", response.data.productCreate.userErrors);
-} else {
-  console.log("Created:", response.data.productCreate.product.title);
-}
-```
-
-### REST Admin API (Legacy but Still Supported)
-
-```typescript
-const restClient = new shopify.clients.Rest({ session });
-
-// GET /admin/api/2024-10/products.json
-const { body } = await restClient.get({
-  path: "products",
-  query: { limit: 5, status: "active" },
-});
-
-console.log("Products:", body.products.map((p: any) => p.title));
-```
+See [GraphQL Mutation and REST Examples](references/graphql-mutation-and-rest-examples.md) for a `productCreate` mutation and legacy REST API usage.
 
 ## Resources
 
@@ -222,7 +102,3 @@ console.log("Products:", body.products.map((p: any) => p.title));
 - [Getting Started with GraphQL](https://shopify.dev/docs/apps/build/graphql/basics/queries)
 - [REST Admin API Reference](https://shopify.dev/docs/api/admin-rest)
 - [Shopify API Versioning](https://shopify.dev/docs/api/usage/versioning)
-
-## Next Steps
-
-Proceed to `shopify-local-dev-loop` for development workflow setup.

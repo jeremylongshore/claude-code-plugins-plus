@@ -37,104 +37,33 @@ Check whether the error is an HTTP status code error or a GraphQL `userErrors` r
 
 ### 401 Unauthorized
 
-**Actual Shopify Response:**
-```json
-{
-  "errors": "[API] Invalid API key or access token (unrecognized login or wrong password)"
-}
-```
+**Response:** `"[API] Invalid API key or access token (unrecognized login or wrong password)"`
 
-**Causes:**
-- Access token expired (merchant uninstalled and reinstalled)
-- Wrong `X-Shopify-Access-Token` header
-- Using a Storefront API token for Admin API or vice versa
+**Causes:** Access token expired (merchant uninstalled/reinstalled), wrong header, or using Storefront token for Admin API.
 
-**Fix:**
-```bash
-# Verify token format:
-# Admin API token: shpat_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx (32 hex chars)
-# Storefront API token: different format, starts with shpat_ too
-curl -s -o /dev/null -w "%{http_code}" \
-  -H "X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN" \
-  "https://your-store.myshopify.com/admin/api/2024-10/shop.json"
-# Should return 200
-```
+**Fix:** Verify token format (`shpat_` + 32 hex chars) and test with a simple `shop.json` GET request.
 
 ---
 
 ### 403 Forbidden
 
-**Actual Shopify Response:**
-```json
-{
-  "errors": "This action requires merchant approval for read_orders scope."
-}
-```
+**Response:** `"This action requires merchant approval for read_orders scope."`
 
-**Cause:** Your app's access token lacks the required scope.
-
-**Fix:** Add the needed scope to your app config and re-trigger OAuth:
-```toml
-# shopify.app.toml
-[access_scopes]
-scopes = "read_products,write_products,read_orders,write_orders"
-```
+**Fix:** Add the needed scope to `shopify.app.toml` under `[access_scopes]` and re-trigger OAuth.
 
 ---
 
 ### 404 Not Found
 
-**Actual Shopify Response:**
-```json
-{
-  "errors": "Not Found"
-}
-```
+**Causes:** Wrong API version in URL, resource was deleted, or store domain is incorrect.
 
-**Causes:**
-- Wrong API version in URL
-- Resource was deleted
-- Store domain is incorrect
-
-**Fix:**
-```bash
-# Verify the API version exists
-curl -s "https://your-store.myshopify.com/admin/api/2024-10/shop.json" \
-  -H "X-Shopify-Access-Token: $TOKEN"
-
-# Check available API versions
-curl -s "https://your-store.myshopify.com/admin/api/versions.json" \
-  -H "X-Shopify-Access-Token: $TOKEN"
-```
+**Fix:** Verify the API version exists by checking `/admin/api/versions.json`.
 
 ---
 
 ### 422 Unprocessable Entity
 
-**Actual Shopify Responses:**
-```json
-{
-  "errors": {
-    "title": ["can't be blank"],
-    "handle": ["has already been taken"]
-  }
-}
-```
-
-```json
-{
-  "errors": {
-    "base": ["Product cannot be saved: Title is too long (maximum is 255 characters)"]
-  }
-}
-```
-
-**Common 422 triggers:**
-- Missing required fields (title, etc.)
-- Duplicate handle/slug
-- Invalid metafield type
-- Price format issues (must be string like "29.99")
-- Invalid country/province codes
+**Common triggers:** Missing required fields, duplicate handle/slug, invalid metafield type, price format issues (must be string like `"29.99"`), invalid country/province codes.
 
 **Fix:** Check the `errors` object or `userErrors` array for specific field-level messages.
 
@@ -142,37 +71,7 @@ curl -s "https://your-store.myshopify.com/admin/api/versions.json" \
 
 ### 429 Too Many Requests (Rate Limited)
 
-**REST API Response:**
-```
-HTTP/1.1 429 Too Many Requests
-Retry-After: 2.0
-```
-
-**GraphQL Response (in body, returns 200):**
-```json
-{
-  "errors": [
-    {
-      "message": "Throttled",
-      "extensions": {
-        "code": "THROTTLED",
-        "documentation": "https://shopify.dev/api/usage/rate-limits"
-      }
-    }
-  ],
-  "extensions": {
-    "cost": {
-      "requestedQueryCost": 752,
-      "actualQueryCost": null,
-      "throttleStatus": {
-        "maximumAvailable": 2000,
-        "currentlyAvailable": 0,
-        "restoreRate": 100
-      }
-    }
-  }
-}
-```
+REST returns `429` with `Retry-After` header. GraphQL returns `200` with `THROTTLED` error code in the body and zero `currentlyAvailable` points.
 
 **Fix:** See `shopify-rate-limits` skill for complete backoff implementation.
 
@@ -180,32 +79,11 @@ Retry-After: 2.0
 
 ### GraphQL userErrors (200 with Errors)
 
-**Critical: Shopify returns HTTP 200 even when mutations fail.**
+**Critical: Shopify returns HTTP 200 even when mutations fail.** Always check `userErrors` after every mutation:
 
-```json
-{
-  "data": {
-    "productCreate": {
-      "product": null,
-      "userErrors": [
-        {
-          "field": ["title"],
-          "message": "Title can't be blank",
-          "code": "BLANK"
-        }
-      ]
-    }
-  }
-}
-```
-
-**Always check `userErrors` after every mutation:**
 ```typescript
-const response = await client.request(mutation, { variables });
 const result = response.data.productCreate;
-
 if (result.userErrors.length > 0) {
-  // These are validation errors, NOT HTTP errors
   for (const err of result.userErrors) {
     console.error(`Field ${err.field?.join(".")}: ${err.message} (${err.code})`);
   }
@@ -217,21 +95,7 @@ if (result.userErrors.length > 0) {
 
 ### 5xx Server Errors
 
-**Shopify internal errors — not your fault, but you must handle them.**
-
-```json
-{
-  "errors": "Internal Server Error"
-}
-```
-
-**Fix:** Retry with exponential backoff. Include the `X-Request-Id` header value when reporting to Shopify support.
-
-```typescript
-// The X-Request-Id header is in every Shopify response
-const requestId = error.response?.headers?.["x-request-id"];
-console.error(`Shopify 500 error. Request ID: ${requestId}`);
-```
+Shopify internal errors -- not your fault. Retry with exponential backoff and capture the `X-Request-Id` header for support tickets.
 
 ## Output
 
@@ -255,45 +119,12 @@ console.error(`Shopify 500 error. Request ID: ${requestId}`);
 
 ### Quick Diagnostic Script
 
-```bash
-#!/bin/bash
-STORE="your-store.myshopify.com"
-TOKEN="$SHOPIFY_ACCESS_TOKEN"
-VERSION="2024-10"
+Run auth, scope, and API version checks in one pass.
 
-echo "=== Shopify Diagnostic ==="
-
-# 1. Test auth
-echo -n "Auth: "
-curl -s -o /dev/null -w "%{http_code}" \
-  -H "X-Shopify-Access-Token: $TOKEN" \
-  "https://$STORE/admin/api/$VERSION/shop.json"
-echo ""
-
-# 2. Check scopes
-echo "Scopes:"
-curl -s -H "X-Shopify-Access-Token: $TOKEN" \
-  "https://$STORE/admin/oauth/access_scopes.json" | python3 -m json.tool
-
-# 3. Check API versions
-echo "API Versions:"
-curl -s -H "X-Shopify-Access-Token: $TOKEN" \
-  "https://$STORE/admin/api/versions.json" | python3 -c "
-import json, sys
-versions = json.load(sys.stdin)['supported_versions']
-for v in versions[:5]:
-    print(f'  {v[\"handle\"]} {\"(latest)\" if v.get(\"latest\") else \"\"}')"
-
-# 4. Shopify status
-echo "Shopify Status: https://www.shopifystatus.com"
-```
+See [Diagnostic Script](references/diagnostic-script.md) for the complete shell script.
 
 ## Resources
 
 - [Shopify API Response Codes](https://shopify.dev/docs/api/usage/response-codes)
 - [GraphQL Error Handling](https://shopify.dev/docs/apps/build/graphql/basics/queries#error-handling)
 - [Shopify Status Page](https://www.shopifystatus.com)
-
-## Next Steps
-
-For comprehensive debugging, see `shopify-debug-bundle`.

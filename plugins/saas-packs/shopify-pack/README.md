@@ -1,6 +1,6 @@
 # Shopify Skill Pack
 
-> 30 production-grade Claude Code skills for building Shopify apps, integrations, and headless storefronts
+> 38 production-grade Claude Code skills for building Shopify apps, integrations, and headless storefronts
 
 ## What Is Shopify?
 
@@ -82,6 +82,19 @@ This skill pack provides real, working guidance for every stage of Shopify devel
 | `shopify-architecture-variants` | Embedded app vs Hydrogen vs backend integration vs theme extension |
 | `shopify-known-pitfalls` | Top 10 Shopify API anti-patterns with real wrong/right code examples |
 
+### v2.0 Skills (N31-N38)
+
+| Skill | Description |
+|-------|-------------|
+| `shopify-metafields-metaobjects` | Custom data modeling with `metafieldDefinitionCreate`, `metafieldsSet`, and `metaobjectCreate` |
+| `shopify-functions` | WASM-sandboxed checkout logic for discounts, payments, and delivery customization |
+| `shopify-storefront-headless` | Headless commerce with Storefront API, Cart API, and Hydrogen framework |
+| `shopify-checkout-extensions` | Checkout UI Extensions replacing checkout.liquid (deprecated Aug 2025) |
+| `shopify-theme-performance` | Core Web Vitals optimization, LCP fixes, Liquid profiling, `image_url` filter |
+| `shopify-graphql-cost-optimizer` | Query cost prediction, reduction strategies, and bulk operation decisions |
+| `shopify-b2b-wholesale` | B2B companies, catalogs, price lists, and wholesale checkout (Shopify Plus) |
+| `shopify-ai-toolkit-wrapper` | MCP integration for GraphQL validation, Liquid linting, and doc search |
+
 ## Quick Start
 
 ### 1. Install the Pack
@@ -116,13 +129,13 @@ npm install @shopify/shopify-api dotenv
 
 ```typescript
 import "@shopify/shopify-api/adapters/node";
-import { shopifyApi } from "@shopify/shopify-api";
+import { shopifyApi, LATEST_API_VERSION } from "@shopify/shopify-api";
 
 const shopify = shopifyApi({
   apiKey: process.env.SHOPIFY_API_KEY!,
   apiSecretKey: process.env.SHOPIFY_API_SECRET!,
   hostName: "localhost",
-  apiVersion: "2024-10",
+  apiVersion: LATEST_API_VERSION,
   isCustomStoreApp: true,
   adminApiAccessToken: process.env.SHOPIFY_ACCESS_TOKEN!,
 });
