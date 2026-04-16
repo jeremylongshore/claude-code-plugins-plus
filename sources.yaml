@@ -793,6 +793,41 @@ sources:
       - "docs/**"
 
   # ============================================================
+  # Reef (Eunji Jung / eunji-jessi-jung)
+  # https://github.com/eunji-jessi-jung/reef
+  # Structured knowledge wiki generator for codebases —
+  # 12 skills, 1 agent, Obsidian-native, local-first
+  # ============================================================
+
+  - name: reef
+    description: Structured knowledge wiki generator for codebases with progressive depth and guided Q&A
+    repo: eunji-jessi-jung/reef
+    source_path: .
+    target_path: plugins/productivity/reef
+    author:
+      name: Eunji Jung
+      github: eunji-jessi-jung
+      email: eunji.jessi.jung@gmail.com
+    license: Apache-2.0
+    category: productivity
+    verified: false
+    include:
+      - ".claude-plugin/**"
+      - "skills/**"
+      - "agents/**"
+      - "references/**"
+      - "scripts/**"
+      - "docs/**"
+      - "README.md"
+      - "LICENSE"
+      - "requirements.txt"
+    exclude:
+      - "node_modules/**"
+      - ".git/**"
+      - "*.log"
+      - "project/**"
+
+  # ============================================================
   # Add more external sources below
   # ============================================================
 
