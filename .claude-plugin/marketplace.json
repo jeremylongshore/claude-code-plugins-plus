@@ -8191,6 +8191,30 @@
       "repository": "https://github.com/vdk888/local-tts"
     },
     {
+      "name": "xarc-memory",
+      "source": "./plugins/ai-ml/xarc-memory",
+      "description": "Persistent memory for Claude Code sessions. Auto-indexes every conversation via a SessionEnd hook, exposes hybrid search (semantic + keyword + reranking) as an MCP tool, and ships 4 slash commands. Fully local — fastembed ONNX embeddings + LanceDB, no cloud.",
+      "version": "1.0.0",
+      "category": "ai-ml",
+      "keywords": [
+        "memory",
+        "persistent-memory",
+        "semantic-search",
+        "hybrid-search",
+        "lancedb",
+        "fastembed",
+        "mcp",
+        "session-indexing",
+        "local",
+        "privacy"
+      ],
+      "author": {
+        "name": "X-Arc AI",
+        "url": "https://github.com/X-Arc-ai"
+      },
+      "repository": "https://github.com/X-Arc-ai/memory"
+    },
+    {
       "name": "boycott-filter",
       "source": "./plugins/community/boycott-filter",
       "description": "Personal boycott list managed conversationally by your AI agent. Chrome extension warns you on pages from brands you've decided to avoid.",
