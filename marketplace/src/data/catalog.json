@@ -1,20 +1,20 @@
 {
   "meta": {
     "version": "1.0.0",
-    "generated": "2026-04-16T00:36:50.446Z",
+    "generated": "2026-04-20T16:51:48.940Z",
     "source": "marketplace.extended.json",
     "generator": "scripts/sync-catalog.mjs"
   },
   "stats": {
-    "totalPlugins": 425,
-    "totalSkills": 2948,
-    "totalCommands": 81,
-    "pluginsWithSkills": 398,
+    "totalPlugins": 423,
+    "totalSkills": 2817,
+    "totalCommands": 80,
+    "pluginsWithSkills": 396,
     "byCategory": {
-      "productivity": 43,
+      "productivity": 42,
       "security": 29,
       "testing": 25,
-      "ai-ml": 76,
+      "ai-ml": 75,
       "performance": 25,
       "devops": 40,
       "api-development": 25,
@@ -24,14 +24,14 @@
       "packages": 1,
       "database": 31,
       "design": 8,
-      "ai-agency": 8,
+      "ai-agency": 7,
       "business-tools": 52,
       "fullstack": 1,
       "example": 3,
       "finance": 1,
       "code-quality": 4,
       "automation": 3,
-      "community": 7,
+      "community": 8,
       "development": 1,
       "data-engineering": 2,
       "enterprise": 2,
@@ -39,12 +39,12 @@
       "saas-packs": 1
     },
     "byStatus": {
-      "active": 406,
+      "active": 404,
       "maintained": 19
     },
     "featured": 7,
-    "new": 404,
-    "generatedAt": "2026-04-16T00:36:50.446Z"
+    "new": 402,
+    "generatedAt": "2026-04-20T16:51:48.940Z"
   },
   "plugins": [
     {
@@ -8607,48 +8607,6 @@
       "type": "instruction-plugin"
     },
     {
-      "slug": "jeremy-google-adk",
-      "name": "jeremy-google-adk",
-      "displayName": "jeremy google adk",
-      "description": "Google Agent Development Kit (ADK) SDK starter kit for building Claude-powered AI agents with React patterns, multi-agent orchestration, and tool integration",
-      "version": "1.0.0",
-      "category": "ai-ml",
-      "keywords": [
-        "google",
-        "adk",
-        "agent-development-kit",
-        "sdk",
-        "ai-agents",
-        "claude",
-        "react-pattern",
-        "multi-agent",
-        "orchestration",
-        "tools",
-        "framework",
-        "scaffolding",
-        "starter-kit"
-      ],
-      "hasSkills": true,
-      "skillCount": 1,
-      "commandCount": 1,
-      "installCommand": "/plugin install jeremy-google-adk",
-      "sourcePath": "./plugins/jeremy-google-adk",
-      "lastUpdatedEpoch": 1766959279,
-      "lastUpdatedDate": "2025-12-28T22:01:19.237Z",
-      "status": "active",
-      "badges": [
-        "new"
-      ],
-      "isFeatured": false,
-      "isNew": true,
-      "author": {
-        "name": "Jeremy Longshore",
-        "email": "jeremy@claudecodeplugins.io",
-        "url": "https://github.com/jeremylongshore"
-      },
-      "type": "instruction-plugin"
-    },
-    {
       "slug": "jeremy-plugin-tool",
       "name": "jeremy-plugin-tool",
       "displayName": "jeremy plugin tool",
@@ -8682,48 +8640,6 @@
       "author": {
         "name": "Claude Code Plugins",
         "email": "[email protected]"
-      },
-      "type": "instruction-plugin"
-    },
-    {
-      "slug": "jeremy-vertex-ai",
-      "name": "jeremy-vertex-ai",
-      "displayName": "jeremy vertex ai",
-      "description": "Comprehensive Vertex AI integration plugin for building generative AI agents with Gemini, Vertex AI Studio, and production deployment on Google Cloud",
-      "version": "1.0.0",
-      "category": "ai-ml",
-      "keywords": [
-        "vertex-ai",
-        "google-cloud",
-        "gemini",
-        "generative-ai",
-        "agent-builder",
-        "ai-studio",
-        "mlops",
-        "llm",
-        "embedding",
-        "rag",
-        "vector-search",
-        "cloud-run",
-        "gcp"
-      ],
-      "hasSkills": true,
-      "skillCount": 1,
-      "commandCount": 0,
-      "installCommand": "/plugin install jeremy-vertex-ai",
-      "sourcePath": "./plugins/jeremy-vertex-ai",
-      "lastUpdatedEpoch": 1766959279,
-      "lastUpdatedDate": "2025-12-28T22:01:19.237Z",
-      "status": "active",
-      "badges": [
-        "new"
-      ],
-      "isFeatured": false,
-      "isNew": true,
-      "author": {
-        "name": "Jeremy Longshore",
-        "email": "jeremy@claudecodeplugins.io",
-        "url": "https://github.com/jeremylongshore"
       },
       "type": "instruction-plugin"
     },
@@ -14157,40 +14073,6 @@
       "type": "instruction-plugin"
     },
     {
-      "slug": "claudebase",
-      "name": "claudebase",
-      "displayName": "claudebase",
-      "description": "Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles, secret scanning, and multi-machine conflict detection.",
-      "version": "1.0.0",
-      "category": "productivity",
-      "keywords": [
-        "backup",
-        "sync",
-        "config",
-        "profiles",
-        "dotfiles",
-        "multi-machine"
-      ],
-      "hasSkills": true,
-      "skillCount": 6,
-      "commandCount": 0,
-      "installCommand": "/plugin install claudebase",
-      "sourcePath": "./plugins/productivity/claudebase",
-      "lastUpdatedEpoch": 1775666203,
-      "lastUpdatedDate": "2026-04-08T16:36:43.549Z",
-      "status": "active",
-      "badges": [
-        "new"
-      ],
-      "isFeatured": false,
-      "isNew": true,
-      "author": {
-        "name": "Rohit Hazra",
-        "email": ""
-      },
-      "type": "instruction-plugin"
-    },
-    {
       "slug": "framecraft",
       "name": "framecraft",
       "displayName": "framecraft",
@@ -14333,41 +14215,6 @@
       "type": "instruction-plugin"
     },
     {
-      "slug": "tonone",
-      "name": "tonone",
-      "displayName": "tonone",
-      "description": "23-agent AI team for software teams: 15 engineering specialists (Apex, Forge, Relay, Spine, Flux, Warden, Vigil, Prism, Cortex, Touch, Volt, Atlas, Lens, Proof, Pave) + 8 product agents (Helm, Echo, Lumen, Draft, Form, Crest, Pitch, Surge) with a formal Helm→Apex handoff interface and 125 skills.",
-      "version": "0.6.5",
-      "category": "ai-agency",
-      "keywords": [
-        "ai-team",
-        "multi-agent",
-        "orchestration",
-        "engineering",
-        "product",
-        "agents",
-        "ai-agency"
-      ],
-      "hasSkills": true,
-      "skillCount": 125,
-      "commandCount": 0,
-      "installCommand": "/plugin install tonone",
-      "sourcePath": "./plugins/ai-agency/tonone",
-      "lastUpdatedEpoch": 1775666203,
-      "lastUpdatedDate": "2026-04-08T16:36:43.549Z",
-      "status": "active",
-      "badges": [
-        "new"
-      ],
-      "isFeatured": false,
-      "isNew": true,
-      "author": {
-        "name": "thisisfatih",
-        "url": "https://github.com/thisisfatih"
-      },
-      "type": "instruction-plugin"
-    },
-    {
       "slug": "tweetclaw",
       "name": "tweetclaw",
       "displayName": "tweetclaw",
@@ -14475,6 +14322,80 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "boycott-filter",
+      "name": "boycott-filter",
+      "displayName": "boycott filter",
+      "description": "Personal boycott list managed conversationally by your AI agent. Chrome extension warns you on pages from brands you've decided to avoid.",
+      "version": "1.0.0",
+      "category": "community",
+      "keywords": [
+        "boycott",
+        "consumer",
+        "shopping",
+        "brands",
+        "chrome-extension",
+        "conversational",
+        "privacy",
+        "ethical-consumption"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 0,
+      "installCommand": "/plugin install boycott-filter",
+      "sourcePath": "./plugins/community/boycott-filter",
+      "lastUpdatedEpoch": 1776703564,
+      "lastUpdatedDate": "2026-04-20T16:46:04.571Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Bubble Invest",
+        "email": "contact@bubbleinvest.com"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "local-tts",
+      "name": "local-tts",
+      "displayName": "local tts",
+      "description": "Offline text-to-speech via VoxCPM2 — 30 languages, voice design, voice cloning. Runs locally on Apple Silicon.",
+      "version": "1.0.0",
+      "category": "ai-ml",
+      "keywords": [
+        "tts",
+        "text-to-speech",
+        "voice",
+        "voice-cloning",
+        "voice-design",
+        "offline",
+        "voxcpm",
+        "apple-silicon",
+        "audio",
+        "narration"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 0,
+      "installCommand": "/plugin install local-tts",
+      "sourcePath": "./plugins/ai-ml/local-tts",
+      "lastUpdatedEpoch": 1776703564,
+      "lastUpdatedDate": "2026-04-20T16:46:04.571Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Bubble Invest",
+        "email": "contact@bubbleinvest.com"
       },
       "type": "instruction-plugin"
     }

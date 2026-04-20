@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "mattyp-changelog": {
+      "command": "python3",
+      "args": ["scripts/changelog_mcp.py"]
+    }
+  }
+}

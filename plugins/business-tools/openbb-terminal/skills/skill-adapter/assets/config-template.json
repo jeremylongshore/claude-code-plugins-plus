@@ -1,0 +1,32 @@
+{
+  "skill": {
+    "name": "skill-name",
+    "version": "1.0.0",
+    "enabled": true,
+    "settings": {
+      "verbose": false,
+      "autoActivate": true,
+      "toolRestrictions": true
+    }
+  },
+  "triggers": {
+    "keywords": [
+      "example-trigger-1",
+      "example-trigger-2"
+    ],
+    "patterns": []
+  },
+  "tools": {
+    "allowed": [
+      "Read",
+      "Grep",
+      "Bash"
+    ],
+    "restricted": []
+  },
+  "metadata": {
+    "author": "Plugin Author",
+    "category": "general",
+    "tags": []
+  }
+}

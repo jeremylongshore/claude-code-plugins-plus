@@ -48,6 +48,15 @@ const PLUGIN_PACKS: Record<string, string[]> = {
   ],
 };
 
+// Category aliases: when users pass --category X, redirect to Y if X was merged.
+// Keeps old command invocations working after scaffold consolidation (PR 1).
+const CATEGORY_ALIASES: Record<string, string> = {
+  'analytics': 'business-tools',
+  'code-quality': 'testing',
+  'finance': 'business-tools',
+  'automation': 'devops',
+};
+
 /**
  * Install a plugin or plugins from the marketplace (guided flow)
  */
@@ -227,7 +236,17 @@ async function installPack(packName: string, paths: ClaudePaths, options: Instal
  * Install plugins by category
  */
 async function installByCategory(category: string, paths: ClaudePaths, options: InstallOptions): Promise<void> {
-  console.log(chalk.bold(`\nInstalling Category: ${category}\n`));
+  const requested = category.toLowerCase();
+  const aliased = CATEGORY_ALIASES[requested];
+  const effective = aliased ?? requested;
+
+  if (aliased) {
+    console.log(chalk.yellow(
+      `Note: category "${requested}" was merged into "${aliased}" — redirecting.\n`
+    ));
+  }
+
+  console.log(chalk.bold(`\nInstalling Category: ${effective}\n`));
 
   const spinner = ora('Fetching catalog...').start();
 
@@ -239,11 +258,11 @@ async function installByCategory(category: string, paths: ClaudePaths, options: 
     }
 
     const plugins = (catalog.plugins || []).filter(
-      (p: PluginMetadata) => p.category?.toLowerCase() === category.toLowerCase()
+      (p: PluginMetadata) => p.category?.toLowerCase() === effective
     );
 
     if (plugins.length === 0) {
-      spinner.fail(`No plugins found in category: ${category}`);
+      spinner.fail(`No plugins found in category: ${effective}`);
 
       // Show available categories
       const categories = new Set<string>();
@@ -262,7 +281,7 @@ async function installByCategory(category: string, paths: ClaudePaths, options: 
       process.exit(1);
     }
 
-    spinner.succeed(`Found ${plugins.length} plugins in ${category}`);
+    spinner.succeed(`Found ${plugins.length} plugins in ${effective}`);
 
     const scope = options.global ? '--global' : '--project';
 

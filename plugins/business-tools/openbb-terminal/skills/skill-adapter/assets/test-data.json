@@ -1,0 +1,27 @@
+{
+  "testCases": [
+    {
+      "name": "Basic activation test",
+      "input": "trigger phrase example",
+      "expected": {
+        "activated": true,
+        "toolsUsed": ["Read", "Grep"],
+        "success": true
+      }
+    },
+    {
+      "name": "Complex workflow test",
+      "input": "multi-step trigger example",
+      "expected": {
+        "activated": true,
+        "steps": 3,
+        "toolsUsed": ["Read", "Write", "Bash"],
+        "success": true
+      }
+    }
+  ],
+  "fixtures": {
+    "sampleInput": "example data",
+    "expectedOutput": "processed result"
+  }
+}

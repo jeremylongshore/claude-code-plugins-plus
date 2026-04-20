@@ -1,0 +1,36 @@
+{
+  "sources": [
+    {
+      "type": "github",
+      "config": {
+        "repo": "myorg/myrepo",
+        "token_env": "GITHUB_TOKEN",
+        "labels_filter": ["bug", "enhancement"],
+        "exclude_labels": ["wontfix", "duplicate"]
+      }
+    },
+    {
+      "type": "slack",
+      "config": {
+        "channel": "changelog",
+        "token_env": "SLACK_TOKEN",
+        "include_threads": false
+      }
+    },
+    {
+      "type": "git",
+      "config": {
+        "branch": "main",
+        "conventional_commits": true
+      }
+    }
+  ],
+  "template": "changelogs/weekly-template.md",
+  "output_path": "CHANGELOG.md",
+  "quality_threshold": 80,
+  "pr_config": {
+    "base_branch": "main",
+    "labels": ["documentation", "changelog"],
+    "auto_merge": false
+  }
+}

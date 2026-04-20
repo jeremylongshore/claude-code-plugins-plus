@@ -1,0 +1,25 @@
+{
+  "name": "code-cleanup",
+  "version": "1.0.0",
+  "description": "Comprehensive codebase cleanup across 11 quality dimensions with confidence scoring and build verification gates",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "homepage": "https://tonsofskills.com/plugins/code-quality/code-cleanup",
+  "license": "MIT",
+  "keywords": [
+    "code-quality",
+    "cleanup",
+    "refactoring",
+    "dead-code",
+    "deduplication",
+    "type-safety",
+    "security",
+    "performance",
+    "async",
+    "tech-debt",
+    "code-review"
+  ]
+}

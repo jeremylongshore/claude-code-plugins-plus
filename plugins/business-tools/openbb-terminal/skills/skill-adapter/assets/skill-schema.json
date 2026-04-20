@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Claude Skill Configuration",
+  "type": "object",
+  "required": ["name", "description"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$",
+      "maxLength": 64,
+      "description": "Skill identifier (lowercase, hyphens only)"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1024,
+      "description": "What the skill does and when to use it"
+    },
+    "allowed-tools": {
+      "type": "string",
+      "description": "Comma-separated list of allowed tools"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Semantic version (x.y.z)"
+    }
+  }
+}

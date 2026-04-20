@@ -1,0 +1,7 @@
+mcp>=0.9.0
+aiohttp>=3.9.0
+jsonschema>=4.20.0
+PyYAML>=6.0.1
+GitPython>=3.1.40
+gql>=3.5.0
+python-dotenv>=1.0.0

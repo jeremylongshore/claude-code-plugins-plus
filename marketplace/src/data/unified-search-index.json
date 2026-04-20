@@ -1,13 +1,13 @@
 {
   "meta": {
     "version": "1.0.0",
-    "generated": "2026-04-16T00:36:50.782Z",
+    "generated": "2026-04-20T16:51:49.249Z",
     "generator": "scripts/generate-unified-search.mjs"
   },
   "stats": {
-    "totalPlugins": 425,
+    "totalPlugins": 423,
     "totalSkills": 2804,
-    "totalItems": 3229,
+    "totalItems": 3227,
     "categories": [
       "ai-agency",
       "ai-ml",
@@ -29,8 +29,6 @@
       "examples",
       "finance",
       "fullstack",
-      "jeremy-google-adk",
-      "jeremy-vertex-ai",
       "mcp",
       "packages",
       "performance",
@@ -127,6 +125,7 @@
       "Bash(echo:*)",
       "Bash(ffmpeg:*)",
       "Bash(ffprobe:*)",
+      "Bash(file:*)",
       "Bash(find:*)",
       "Bash(flake8:*)",
       "Bash(fly:*)",
@@ -321,7 +320,6 @@
       "affordances",
       "agency",
       "agent",
-      "agent-builder",
       "agent-development",
       "agent-development-kit",
       "agent-engine",
@@ -359,8 +357,6 @@
       "ai-safety",
       "ai-sdk",
       "ai-search",
-      "ai-studio",
-      "ai-team",
       "ai-travel",
       "ai-tutor",
       "ai-video",
@@ -394,6 +390,7 @@
       "apple",
       "apple notes",
       "apple-notes",
+      "apple-silicon",
       "april-dunford",
       "apy",
       "arbitrage",
@@ -457,12 +454,14 @@
       "bottleneck",
       "box",
       "box-cli",
+      "boycott",
       "brand-guidelines",
       "brand-identity",
       "brand-script",
       "brand-strategy",
       "brand-website",
       "branding",
+      "brands",
       "bridge",
       "bright data",
       "brightdata",
@@ -500,6 +499,7 @@
       "chris-voss",
       "christensen",
       "chromatic",
+      "chrome-extension",
       "ci-cd",
       "cialdini",
       "cicd",
@@ -564,6 +564,7 @@
       "conflict-resolution",
       "connection-pool",
       "consistency",
+      "consumer",
       "consumer-driven",
       "contabo",
       "contacts",
@@ -583,6 +584,7 @@
       "conventional-commits",
       "conversation",
       "conversation-intelligence",
+      "conversational",
       "conversational-ai",
       "conversion",
       "convoys",
@@ -675,7 +677,6 @@
       "documents",
       "don-norman",
       "donald-miller",
-      "dotfiles",
       "download",
       "dr",
       "drift",
@@ -694,7 +695,6 @@
       "email",
       "email-automation",
       "embeddable-ui",
-      "embedding",
       "embeddings",
       "emotion",
       "encryption",
@@ -714,6 +714,7 @@
       "espresso",
       "ethereum",
       "etherscan",
+      "ethical-consumption",
       "ethics",
       "etl",
       "evaluation",
@@ -784,7 +785,6 @@
       "forex",
       "formatting",
       "framer",
-      "framework",
       "free-ai",
       "freshie",
       "frontend-cloud",
@@ -801,7 +801,6 @@
       "gas",
       "gastown",
       "gatsby",
-      "gcp",
       "gcr",
       "geepers",
       "gemini",
@@ -1057,13 +1056,13 @@
       "motivation",
       "movers",
       "multi-agent",
-      "multi-machine",
       "multi-model",
       "multichain",
       "multimodal",
       "mutation-testing",
       "mvp",
       "n8n",
+      "narration",
       "narrative",
       "navan",
       "negotiation",
@@ -1096,6 +1095,7 @@
       "obsidian",
       "ocr",
       "offers",
+      "offline",
       "oidc",
       "ollama",
       "on-chain",
@@ -1200,7 +1200,6 @@
       "private-equity",
       "procedure",
       "procore",
-      "product",
       "product-analytics",
       "product-design",
       "product-management",
@@ -1211,7 +1210,6 @@
       "production-ready",
       "production-validation",
       "productivity",
-      "profiles",
       "profiling",
       "profit",
       "project-management",
@@ -1252,7 +1250,6 @@
       "rate-limiting",
       "react",
       "react-agents",
-      "react-pattern",
       "readability",
       "real-time",
       "realtime",
@@ -1311,7 +1308,6 @@
       "salesloft",
       "sanity-check",
       "sast",
-      "scaffolding",
       "scaling",
       "scam-detection",
       "scanner",
@@ -1358,6 +1354,7 @@
       "sharding",
       "sharing",
       "shopify",
+      "shopping",
       "signals",
       "signature",
       "signifiers",
@@ -1403,7 +1400,6 @@
       "stackblitz",
       "staking",
       "standards",
-      "starter-kit",
       "starter-kits",
       "statement of work",
       "static-site",
@@ -1437,7 +1433,6 @@
       "swift",
       "swiftdata",
       "swiftui",
-      "sync",
       "synthetic-monitoring",
       "tags",
       "tailwind",
@@ -1471,6 +1466,7 @@
       "testing",
       "text",
       "text-to-image",
+      "text-to-speech",
       "text-to-video",
       "tfidf",
       "throttling",
@@ -1485,7 +1481,6 @@
       "together ai",
       "token-launch",
       "tokenization",
-      "tools",
       "tracing",
       "tracking",
       "traction",
@@ -1506,6 +1501,7 @@
       "triggers",
       "trip-planning",
       "trivy",
+      "tts",
       "tuning",
       "tutorial",
       "tweets",
@@ -1543,7 +1539,6 @@
       "vastai",
       "vault",
       "vector-database",
-      "vector-search",
       "veeva",
       "vercel",
       "version-control",
@@ -1565,7 +1560,10 @@
       "vitest",
       "voice",
       "voice-ai",
+      "voice-cloning",
+      "voice-design",
       "volume",
+      "voxcpm",
       "vpc-sc",
       "vps",
       "vscode-fork",
@@ -1623,9 +1621,9 @@
     "totalHooks": 15,
     "pluginsWithAgents": 43,
     "pluginsWithHooks": 12,
-    "officialPlugins": 374,
+    "officialPlugins": 372,
     "communityPlugins": 51,
-    "communityContributors": 24
+    "communityContributors": 23
   },
   "items": [
     {
@@ -9848,44 +9846,6 @@
     },
     {
       "type": "plugin",
-      "id": "jeremy-google-adk",
-      "slug": "jeremy-google-adk",
-      "name": "jeremy-google-adk",
-      "displayName": "jeremy google adk",
-      "description": "Google Agent Development Kit (ADK) SDK starter kit for building Claude-powered AI agents with React patterns, multi-agent orchestration, and tool integration",
-      "category": "ai-ml",
-      "keywords": [
-        "google",
-        "adk",
-        "agent-development-kit",
-        "sdk",
-        "ai-agents",
-        "claude",
-        "react-pattern",
-        "multi-agent",
-        "orchestration",
-        "tools",
-        "framework",
-        "scaffolding",
-        "starter-kit"
-      ],
-      "author": {
-        "name": "Jeremy Longshore",
-        "email": "jeremy@claudecodeplugins.io",
-        "url": "https://github.com/jeremylongshore"
-      },
-      "authorType": "official",
-      "version": "1.0.0",
-      "isFeatured": false,
-      "isNew": true,
-      "badges": [
-        "new"
-      ],
-      "skillCount": 1,
-      "searchText": "jeremy google adk google agent development kit (adk) sdk starter kit for building claude-powered ai agents with react patterns, multi-agent orchestration, and tool integration ai-ml google adk agent-development-kit sdk ai-agents claude react-pattern multi-agent orchestration tools framework scaffolding starter-kit"
-    },
-    {
-      "type": "plugin",
       "id": "jeremy-plugin-tool",
       "slug": "jeremy-plugin-tool",
       "name": "jeremy-plugin-tool",
@@ -9919,44 +9879,6 @@
       "verificationGrade": "A",
       "verificationBadge": "gold",
       "searchText": "jeremy plugin tool production-grade plugin creator with nixtla-validated quality standards. 4 agent skills automate creating, validating, auditing, and versioning plugins in the claude-code-plugins marketplace example skills agent-skills plugin-management marketplace validation audit versioning meta-plugin repository-tools"
-    },
-    {
-      "type": "plugin",
-      "id": "jeremy-vertex-ai",
-      "slug": "jeremy-vertex-ai",
-      "name": "jeremy-vertex-ai",
-      "displayName": "jeremy vertex ai",
-      "description": "Comprehensive Vertex AI integration plugin for building generative AI agents with Gemini, Vertex AI Studio, and production deployment on Google Cloud",
-      "category": "ai-ml",
-      "keywords": [
-        "vertex-ai",
-        "google-cloud",
-        "gemini",
-        "generative-ai",
-        "agent-builder",
-        "ai-studio",
-        "mlops",
-        "llm",
-        "embedding",
-        "rag",
-        "vector-search",
-        "cloud-run",
-        "gcp"
-      ],
-      "author": {
-        "name": "Jeremy Longshore",
-        "email": "jeremy@claudecodeplugins.io",
-        "url": "https://github.com/jeremylongshore"
-      },
-      "authorType": "official",
-      "version": "1.0.0",
-      "isFeatured": false,
-      "isNew": true,
-      "badges": [
-        "new"
-      ],
-      "skillCount": 1,
-      "searchText": "jeremy vertex ai comprehensive vertex ai integration plugin for building generative ai agents with gemini, vertex ai studio, and production deployment on google cloud ai-ml vertex-ai google-cloud gemini generative-ai agent-builder ai-studio mlops llm embedding rag vector-search cloud-run gcp"
     },
     {
       "type": "plugin",
@@ -15191,36 +15113,6 @@
     },
     {
       "type": "plugin",
-      "id": "claudebase",
-      "slug": "claudebase",
-      "name": "claudebase",
-      "displayName": "claudebase",
-      "description": "Back up, restore, and sync your Claude Code config to a private GitHub repo with named profiles, secret scanning, and multi-machine conflict detection.",
-      "category": "productivity",
-      "keywords": [
-        "backup",
-        "sync",
-        "config",
-        "profiles",
-        "dotfiles",
-        "multi-machine"
-      ],
-      "author": {
-        "name": "Rohit Hazra",
-        "email": ""
-      },
-      "authorType": "community",
-      "version": "1.0.0",
-      "isFeatured": false,
-      "isNew": true,
-      "badges": [
-        "new"
-      ],
-      "skillCount": 6,
-      "searchText": "claudebase back up, restore, and sync your claude code config to a private github repo with named profiles, secret scanning, and multi-machine conflict detection. productivity backup sync config profiles dotfiles multi-machine"
-    },
-    {
-      "type": "plugin",
       "id": "framecraft",
       "slug": "framecraft",
       "name": "framecraft",
@@ -15347,37 +15239,6 @@
     },
     {
       "type": "plugin",
-      "id": "tonone",
-      "slug": "tonone",
-      "name": "tonone",
-      "displayName": "tonone",
-      "description": "23-agent AI team for software teams: 15 engineering specialists (Apex, Forge, Relay, Spine, Flux, Warden, Vigil, Prism, Cortex, Touch, Volt, Atlas, Lens, Proof, Pave) + 8 product agents (Helm, Echo, Lumen, Draft, Form, Crest, Pitch, Surge) with a formal Helm→Apex handoff interface and 125 skills.",
-      "category": "ai-agency",
-      "keywords": [
-        "ai-team",
-        "multi-agent",
-        "orchestration",
-        "engineering",
-        "product",
-        "agents",
-        "ai-agency"
-      ],
-      "author": {
-        "name": "thisisfatih",
-        "url": "https://github.com/thisisfatih"
-      },
-      "authorType": "community",
-      "version": "0.6.5",
-      "isFeatured": false,
-      "isNew": true,
-      "badges": [
-        "new"
-      ],
-      "skillCount": 125,
-      "searchText": "tonone 23-agent ai team for software teams: 15 engineering specialists (apex, forge, relay, spine, flux, warden, vigil, prism, cortex, touch, volt, atlas, lens, proof, pave) + 8 product agents (helm, echo, lumen, draft, form, crest, pitch, surge) with a formal helm→apex handoff interface and 125 skills. ai-agency ai-team multi-agent orchestration engineering product agents ai-agency"
-    },
-    {
-      "type": "plugin",
       "id": "tweetclaw",
       "slug": "tweetclaw",
       "name": "tweetclaw",
@@ -15474,6 +15335,72 @@
       ],
       "skillCount": 1,
       "searchText": "code cleanup comprehensive codebase cleanup across 11 quality dimensions — dead code, duplication, weak types, circular deps, defensive cruft, legacy code, ai slop, type consolidation, security, performance, and async patterns. confidence scoring and build verification gates. code-quality code-quality cleanup refactoring dead-code deduplication type-safety security performance async tech-debt code-review"
+    },
+    {
+      "type": "plugin",
+      "id": "boycott-filter",
+      "slug": "boycott-filter",
+      "name": "boycott-filter",
+      "displayName": "boycott filter",
+      "description": "Personal boycott list managed conversationally by your AI agent. Chrome extension warns you on pages from brands you've decided to avoid.",
+      "category": "community",
+      "keywords": [
+        "boycott",
+        "consumer",
+        "shopping",
+        "brands",
+        "chrome-extension",
+        "conversational",
+        "privacy",
+        "ethical-consumption"
+      ],
+      "author": {
+        "name": "Bubble Invest",
+        "email": "contact@bubbleinvest.com"
+      },
+      "authorType": "community",
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
+      "searchText": "boycott filter personal boycott list managed conversationally by your ai agent. chrome extension warns you on pages from brands you've decided to avoid. community boycott consumer shopping brands chrome-extension conversational privacy ethical-consumption"
+    },
+    {
+      "type": "plugin",
+      "id": "local-tts",
+      "slug": "local-tts",
+      "name": "local-tts",
+      "displayName": "local tts",
+      "description": "Offline text-to-speech via VoxCPM2 — 30 languages, voice design, voice cloning. Runs locally on Apple Silicon.",
+      "category": "ai-ml",
+      "keywords": [
+        "tts",
+        "text-to-speech",
+        "voice",
+        "voice-cloning",
+        "voice-design",
+        "offline",
+        "voxcpm",
+        "apple-silicon",
+        "audio",
+        "narration"
+      ],
+      "author": {
+        "name": "Bubble Invest",
+        "email": "contact@bubbleinvest.com"
+      },
+      "authorType": "community",
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
+      "searchText": "local tts offline text-to-speech via voxcpm2 — 30 languages, voice design, voice cloning. runs locally on apple silicon. ai-ml tts text-to-speech voice voice-cloning voice-design offline voxcpm apple-silicon audio narration"
     },
     {
       "type": "skill",
@@ -17513,32 +17440,6 @@
         "category": "ai-ml"
       },
       "searchText": "adapting-transfer-learning-models build this skill automates the adaptation of pre-trained machine learning models using transfer learning techniques. it is triggered when the user requests assistance with fine-tuning a model, adapting a pre-trained model to a new dataset, or performing... use when appropriate context detected. trigger with relevant phrases based on skill purpose. ai-ml read write edit grep glob bash(cmd:*) claude-code codex openclaw"
-    },
-    {
-      "type": "skill",
-      "id": "adk-agent-builder",
-      "slug": "adk-agent-builder",
-      "name": "adk-agent-builder",
-      "description": "Build production-ready AI agents using Google's Agent Development Kit with AI assistant integration, React patterns, multi-agent orchestration, and comprehensive tool libraries. Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.",
-      "category": "jeremy-google-adk",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Grep",
-        "Bash(cmd:*)"
-      ],
-      "compatibleWith": [
-        "claude-code",
-        "codex",
-        "openclaw"
-      ],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "jeremy-google-adk",
-        "category": "jeremy-google-adk"
-      },
-      "searchText": "adk-agent-builder build production-ready ai agents using google's agent development kit with ai assistant integration, react patterns, multi-agent orchestration, and comprehensive tool libraries. use when appropriate context detected. trigger with relevant phrases based on skill purpose. jeremy-google-adk read write edit grep bash(cmd:*) claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -24596,6 +24497,26 @@
     },
     {
       "type": "skill",
+      "id": "boycott-filter",
+      "slug": "boycott-filter",
+      "name": "boycott-filter",
+      "description": "Personal boycott list — users can conversationally tell the agent which brands they want to avoid, and why. A local sync server exposes the list at http://127.0.0.1:7847, and a bundled Chrome extension warns the user when they land on pages from boycotted brands. Use when the user says things like \"I'm done with X\", \"boycott Y\", \"never buying from Z again\", \"remove X from my boycott list\", or asks to see their list. Trigger phrases: \"boycott\", \"never buying from\", \"sick of\", \"add to boycott\", \"show my boycott list\", \"remove from boycott\".",
+      "category": "community",
+      "allowedTools": [
+        "Bash(curl:*)"
+      ],
+      "compatibleWith": [
+        "claude-code"
+      ],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "boycott-filter",
+        "category": "community"
+      },
+      "searchText": "boycott-filter personal boycott list — users can conversationally tell the agent which brands they want to avoid, and why. a local sync server exposes the list at http://127.0.0.1:7847, and a bundled chrome extension warns the user when they land on pages from boycotted brands. use when the user says things like \"i'm done with x\", \"boycott y\", \"never buying from z again\", \"remove x from my boycott list\", or asks to see their list. trigger phrases: \"boycott\", \"never buying from\", \"sick of\", \"add to boycott\", \"show my boycott list\", \"remove from boycott\". community bash(curl:*) claude-code"
+    },
+    {
+      "type": "skill",
       "id": "brand-strategy",
       "slug": "brand-strategy",
       "name": "brand-strategy",
@@ -26564,7 +26485,7 @@
       "slug": "changelog-orchestrator",
       "name": "changelog-orchestrator",
       "description": "Draft changelog PRs by collecting GitHub/Slack/Git changes, formatting with templates, running quality gates, and preparing a branch/PR. Use when generating weekly/monthly release notes or when the user asks to create a changelog from recent merges. Trigger with \"changelog weekly\", \"generate release notes\", \"draft changelog\", \"create changelog PR\".",
-      "category": "automation",
+      "category": "devops",
       "allowedTools": [
         "\"Read",
         "Write",
@@ -26584,9 +26505,9 @@
       "version": "\"0.1.0\"",
       "parentPlugin": {
         "name": "mattyp-changelog",
-        "category": "automation"
+        "category": "devops"
       },
-      "searchText": "changelog-orchestrator draft changelog prs by collecting github/slack/git changes, formatting with templates, running quality gates, and preparing a branch/pr. use when generating weekly/monthly release notes or when the user asks to create a changelog from recent merges. trigger with \"changelog weekly\", \"generate release notes\", \"draft changelog\", \"create changelog pr\". automation \"read write edit grep glob bash(git:*) bash(gh:*) bash(python:*) bash(date:*)\" claude-code codex openclaw"
+      "searchText": "changelog-orchestrator draft changelog prs by collecting github/slack/git changes, formatting with templates, running quality gates, and preparing a branch/pr. use when generating weekly/monthly release notes or when the user asks to create a changelog from recent merges. trigger with \"changelog weekly\", \"generate release notes\", \"draft changelog\", \"create changelog pr\". devops \"read write edit grep glob bash(git:*) bash(gh:*) bash(python:*) bash(date:*)\" claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -27919,7 +27840,7 @@
       "slug": "cleanup-code",
       "name": "cleanup-code",
       "description": "Comprehensive codebase cleanup across 11 quality dimensions: dead code, duplication, weak types, circular deps, defensive cruft, legacy code, AI slop, type consolidation, security, performance, and async patterns. Analyzes code with confidence scoring and verifies changes with build/test gates. Use when codebase has accumulated tech debt, after major feature work, before releases, or when code quality metrics are declining. Trigger with \"/cleanup-code-code\", \"clean up the codebase\", \"remove dead code\", \"fix code quality\".",
-      "category": "code-quality",
+      "category": "testing",
       "allowedTools": [
         "Read",
         "Write",
@@ -27944,9 +27865,9 @@
       "version": "1.0.0",
       "parentPlugin": {
         "name": "code-cleanup",
-        "category": "code-quality"
+        "category": "testing"
       },
-      "searchText": "cleanup-code comprehensive codebase cleanup across 11 quality dimensions: dead code, duplication, weak types, circular deps, defensive cruft, legacy code, ai slop, type consolidation, security, performance, and async patterns. analyzes code with confidence scoring and verifies changes with build/test gates. use when codebase has accumulated tech debt, after major feature work, before releases, or when code quality metrics are declining. trigger with \"/cleanup-code-code\", \"clean up the codebase\", \"remove dead code\", \"fix code quality\". code-quality read write edit glob grep bash(git:*) bash(npm:*) bash(npx:*) bash(pnpm:*) bash(python3:*) bash(tsc:*) bash(wc:*) bash(ls:*) askuserquestion claude-code codex openclaw"
+      "searchText": "cleanup-code comprehensive codebase cleanup across 11 quality dimensions: dead code, duplication, weak types, circular deps, defensive cruft, legacy code, ai slop, type consolidation, security, performance, and async patterns. analyzes code with confidence scoring and verifies changes with build/test gates. use when codebase has accumulated tech debt, after major feature work, before releases, or when code quality metrics are declining. trigger with \"/cleanup-code-code\", \"clean up the codebase\", \"remove dead code\", \"fix code quality\". testing read write edit glob grep bash(git:*) bash(npm:*) bash(npx:*) bash(pnpm:*) bash(python3:*) bash(tsc:*) bash(wc:*) bash(ls:*) askuserquestion claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -29336,7 +29257,7 @@
       "id": "clickup-hello-world",
       "slug": "clickup-hello-world",
       "name": "clickup-hello-world",
-      "description": "Make your first ClickUp API v2 calls: list workspaces, spaces, and create a task. Use when starting a new ClickUp integration, testing your setup, or learning the ClickUp hierarchy (Workspace > Space > Folder > List > Task). Trigger: \"clickup hello world\", \"clickup first call\", \"clickup quick start\", \"test clickup API\", \"create clickup task\".",
+      "description": "Make your first ClickUp API v2 calls: list workspaces, spaces, and create a task. Use when starting a new ClickUp integration, testing your setup, or learning the ClickUp hierarchy (Workspace, Space, Folder, List, Task). Trigger: \"clickup hello world\", \"clickup first call\", \"clickup quick start\", \"test clickup API\", \"create clickup task\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -29352,7 +29273,7 @@
         "name": "clickup-pack",
         "category": "saas-packs"
       },
-      "searchText": "clickup-hello-world make your first clickup api v2 calls: list workspaces, spaces, and create a task. use when starting a new clickup integration, testing your setup, or learning the clickup hierarchy (workspace > space > folder > list > task). trigger: \"clickup hello world\", \"clickup first call\", \"clickup quick start\", \"test clickup api\", \"create clickup task\". saas-packs read write edit bash(curl:*) claude-code"
+      "searchText": "clickup-hello-world make your first clickup api v2 calls: list workspaces, spaces, and create a task. use when starting a new clickup integration, testing your setup, or learning the clickup hierarchy (workspace, space, folder, list, task). trigger: \"clickup hello world\", \"clickup first call\", \"clickup quick start\", \"test clickup api\", \"create clickup task\". saas-packs read write edit bash(curl:*) claude-code"
     },
     {
       "type": "skill",
@@ -33786,7 +33707,7 @@
       "id": "deepgram-upgrade-migration",
       "slug": "deepgram-upgrade-migration",
       "name": "deepgram-upgrade-migration",
-      "description": "Plan and execute Deepgram SDK upgrades and model migrations. Use when upgrading SDK versions (v3->v4->v5), migrating models (Nova-2 to Nova-3), or planning API version transitions. Trigger: \"upgrade deepgram\", \"deepgram migration\", \"update deepgram SDK\", \"deepgram version upgrade\", \"nova-3 migration\".",
+      "description": "Plan and execute Deepgram SDK upgrades and model migrations. Use when upgrading SDK versions (v3 to v4 to v5), migrating models (Nova-2 to Nova-3), or planning API version transitions. Trigger: \"upgrade deepgram\", \"deepgram migration\", \"update deepgram SDK\", \"deepgram version upgrade\", \"nova-3 migration\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -33806,7 +33727,7 @@
         "name": "deepgram-pack",
         "category": "saas-packs"
       },
-      "searchText": "deepgram-upgrade-migration plan and execute deepgram sdk upgrades and model migrations. use when upgrading sdk versions (v3->v4->v5), migrating models (nova-2 to nova-3), or planning api version transitions. trigger: \"upgrade deepgram\", \"deepgram migration\", \"update deepgram sdk\", \"deepgram version upgrade\", \"nova-3 migration\". saas-packs read write edit grep bash(npm:*) bash(pip:*) claude-code codex openclaw"
+      "searchText": "deepgram-upgrade-migration plan and execute deepgram sdk upgrades and model migrations. use when upgrading sdk versions (v3 to v4 to v5), migrating models (nova-2 to nova-3), or planning api version transitions. trigger: \"upgrade deepgram\", \"deepgram migration\", \"update deepgram sdk\", \"deepgram version upgrade\", \"nova-3 migration\". saas-packs read write edit grep bash(npm:*) bash(pip:*) claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -34210,7 +34131,7 @@
       "slug": "doctor",
       "name": "doctor",
       "description": "Diagnose Promptbook setup — check config, hooks, API key, and session tracking health. Use when Promptbook seems broken or the user wants to verify their setup. Trigger with \"/doctor\" or \"check promptbook health\".",
-      "category": "analytics",
+      "category": "business-tools",
       "allowedTools": [
         "Bash(node:*)",
         "Bash(curl:*)",
@@ -34225,9 +34146,9 @@
       "version": "1.4.0",
       "parentPlugin": {
         "name": "promptbook",
-        "category": "analytics"
+        "category": "business-tools"
       },
-      "searchText": "doctor diagnose promptbook setup — check config, hooks, api key, and session tracking health. use when promptbook seems broken or the user wants to verify their setup. trigger with \"/doctor\" or \"check promptbook health\". analytics bash(node:*) bash(curl:*) bash(ls:*) bash(stat:*) bash(cat:*) read claude-code"
+      "searchText": "doctor diagnose promptbook setup — check config, hooks, api key, and session tracking health. use when promptbook seems broken or the user wants to verify their setup. trigger with \"/doctor\" or \"check promptbook health\". business-tools bash(node:*) bash(curl:*) bash(ls:*) bash(stat:*) bash(cat:*) read claude-code"
     },
     {
       "type": "skill",
@@ -43664,7 +43585,7 @@
       "id": "glean-reference-architecture",
       "slug": "glean-reference-architecture",
       "name": "glean-reference-architecture",
-      "description": "Enterprise architecture: Source Systems -> Connectors (Cloud Run/Lambda, event-driven or scheduled) -> Glean Indexing API -> Glean Search Index -> Client API (Search + Chat) -> Your Apps (Slack bot, portal, internal tools). Trigger: \"glean reference architecture\", \"reference-architecture\".",
+      "description": "Enterprise architecture: Source Systems to Connectors (Cloud Run/Lambda, event-driven or scheduled) to Glean Indexing API to Glean Search Index to Client API (Search + Chat) to Your Apps (Slack bot, portal, internal tools). Trigger: \"glean reference architecture\", \"reference-architecture\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -43682,7 +43603,7 @@
         "name": "glean-pack",
         "category": "saas-packs"
       },
-      "searchText": "glean-reference-architecture enterprise architecture: source systems -> connectors (cloud run/lambda, event-driven or scheduled) -> glean indexing api -> glean search index -> client api (search + chat) -> your apps (slack bot, portal, internal tools). trigger: \"glean reference architecture\", \"reference-architecture\". saas-packs read write edit bash(npm:*) bash(curl:*) grep claude-code"
+      "searchText": "glean-reference-architecture enterprise architecture: source systems to connectors (cloud run/lambda, event-driven or scheduled) to glean indexing api to glean search index to client api (search + chat) to your apps (slack bot, portal, internal tools). trigger: \"glean reference architecture\", \"reference-architecture\". saas-packs read write edit bash(npm:*) bash(curl:*) grep claude-code"
     },
     {
       "type": "skill",
@@ -54621,6 +54542,29 @@
         "category": "api-development"
       },
       "searchText": "load-testing-apis execute comprehensive load and stress testing to validate api performance and scalability. use when validating api performance under load. trigger with phrases like \"load test the api\", \"stress test api\", or \"benchmark api performance\". api-development read write edit grep glob bash(api:load-*) claude-code codex openclaw"
+    },
+    {
+      "type": "skill",
+      "id": "local-tts",
+      "slug": "local-tts",
+      "name": "local-tts",
+      "description": "Generate speech locally from text using VoxCPM2 (2B params, Apache-2.0). 30 languages, voice design (describe a voice), voice cloning (from 3-10s reference). Runs 100% offline on Apple Silicon via Metal (MPS). Zero API calls, zero cost. Use when user asks to \"say\" or \"speak\" something, wants a voiceover, wants to clone a voice, or wants to generate audio from text. Trigger phrases: \"say this\", \"read out loud\", \"clone my voice\", \"generate voiceover\", \"text to speech\", \"TTS\".",
+      "category": "ai-ml",
+      "allowedTools": [
+        "Read",
+        "Bash(python3:*)",
+        "Bash(file:*)",
+        "Bash(ls:*)"
+      ],
+      "compatibleWith": [
+        "claude-code"
+      ],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "local-tts",
+        "category": "ai-ml"
+      },
+      "searchText": "local-tts generate speech locally from text using voxcpm2 (2b params, apache-2.0). 30 languages, voice design (describe a voice), voice cloning (from 3-10s reference). runs 100% offline on apple silicon via metal (mps). zero api calls, zero cost. use when user asks to \"say\" or \"speak\" something, wants a voiceover, wants to clone a voice, or wants to generate audio from text. trigger phrases: \"say this\", \"read out loud\", \"clone my voice\", \"generate voiceover\", \"text to speech\", \"tts\". ai-ml read bash(python3:*) bash(file:*) bash(ls:*) claude-code"
     },
     {
       "type": "skill",
@@ -74389,7 +74333,7 @@
       "slug": "setup",
       "name": "setup",
       "description": "Set up Promptbook — connect your account to start tracking builds. Use when the user wants to enable session analytics on promptbook.gg. Trigger with \"/setup\" or \"set up promptbook\".",
-      "category": "analytics",
+      "category": "business-tools",
       "allowedTools": [
         "Bash(curl:*)",
         "Bash(open:*)",
@@ -74409,9 +74353,9 @@
       "version": "1.4.0",
       "parentPlugin": {
         "name": "promptbook",
-        "category": "analytics"
+        "category": "business-tools"
       },
-      "searchText": "setup set up promptbook — connect your account to start tracking builds. use when the user wants to enable session analytics on promptbook.gg. trigger with \"/setup\" or \"set up promptbook\". analytics bash(curl:*) bash(open:*) bash(xdg-open:*) bash(mkdir:*) bash(cat:*) bash(chmod:*) bash(node:*) bash(nohup:*) bash(find:*) bash(wc:*) read claude-code"
+      "searchText": "setup set up promptbook — connect your account to start tracking builds. use when the user wants to enable session analytics on promptbook.gg. trigger with \"/setup\" or \"set up promptbook\". business-tools bash(curl:*) bash(open:*) bash(xdg-open:*) bash(mkdir:*) bash(cat:*) bash(chmod:*) bash(node:*) bash(nohup:*) bash(find:*) bash(wc:*) read claude-code"
     },
     {
       "type": "skill",
@@ -77534,7 +77478,7 @@
       "id": "supabase-enterprise-rbac",
       "slug": "supabase-enterprise-rbac",
       "name": "supabase-enterprise-rbac",
-      "description": "Implement custom role-based access control via JWT claims in Supabase: app_metadata.role, RLS policies with auth.jwt() ->> 'role', organization-scoped access, and API key scoping. Use when implementing role-based permissions, configuring organization-level access, building admin/member/viewer hierarchies, or scoping API keys per role. Trigger: \"supabase RBAC\", \"supabase roles\", \"supabase permissions\", \"supabase JWT claims\", \"supabase organization access\", \"supabase custom roles\", \"supabase app_metadata\".",
+      "description": "Implement custom role-based access control via JWT claims in Supabase: app_metadata.role, RLS policies with auth.jwt() role extraction, organization-scoped access, and API key scoping. Use when implementing role-based permissions, configuring organization-level access, building admin/member/viewer hierarchies, or scoping API keys per role. Trigger: \"supabase RBAC\", \"supabase roles\", \"supabase permissions\", \"supabase JWT claims\", \"supabase organization access\", \"supabase custom roles\", \"supabase app_metadata\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -77556,7 +77500,7 @@
         "name": "supabase-pack",
         "category": "saas-packs"
       },
-      "searchText": "supabase-enterprise-rbac implement custom role-based access control via jwt claims in supabase: app_metadata.role, rls policies with auth.jwt() ->> 'role', organization-scoped access, and api key scoping. use when implementing role-based permissions, configuring organization-level access, building admin/member/viewer hierarchies, or scoping api keys per role. trigger: \"supabase rbac\", \"supabase roles\", \"supabase permissions\", \"supabase jwt claims\", \"supabase organization access\", \"supabase custom roles\", \"supabase app_metadata\". saas-packs read write edit bash(npx supabase:*) bash(supabase:*) bash(psql:*) grep glob claude-code codex openclaw"
+      "searchText": "supabase-enterprise-rbac implement custom role-based access control via jwt claims in supabase: app_metadata.role, rls policies with auth.jwt() role extraction, organization-scoped access, and api key scoping. use when implementing role-based permissions, configuring organization-level access, building admin/member/viewer hierarchies, or scoping api keys per role. trigger: \"supabase rbac\", \"supabase roles\", \"supabase permissions\", \"supabase jwt claims\", \"supabase organization access\", \"supabase custom roles\", \"supabase app_metadata\". saas-packs read write edit bash(npx supabase:*) bash(supabase:*) bash(psql:*) grep glob claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -79549,7 +79493,7 @@
       "slug": "tweetclaw",
       "name": "tweetclaw",
       "description": "X/Twitter automation plugin. Post tweets, reply, like, retweet, follow, unfollow, send DMs, search tweets, look up users, extract bulk data, monitor accounts, run giveaway draws, and compose algorithm-optimized tweets via Xquik REST API. Use when the user asks about Twitter, X, tweets, followers, social media automation, tweet analytics, or giveaway management. Trigger with \"post tweet\", \"search tweets\", \"extract followers\", \"run giveaway\", \"monitor account\", \"compose tweet\", \"trending topics\".",
-      "category": "automation",
+      "category": "devops",
       "allowedTools": [
         "\"Read",
         "Bash(curl:*)",
@@ -79563,9 +79507,9 @@
       "version": "\"1.5.3\"",
       "parentPlugin": {
         "name": "tweetclaw",
-        "category": "automation"
+        "category": "devops"
       },
-      "searchText": "tweetclaw x/twitter automation plugin. post tweets, reply, like, retweet, follow, unfollow, send dms, search tweets, look up users, extract bulk data, monitor accounts, run giveaway draws, and compose algorithm-optimized tweets via xquik rest api. use when the user asks about twitter, x, tweets, followers, social media automation, tweet analytics, or giveaway management. trigger with \"post tweet\", \"search tweets\", \"extract followers\", \"run giveaway\", \"monitor account\", \"compose tweet\", \"trending topics\". automation \"read bash(curl:*) webfetch\" claude-code codex openclaw"
+      "searchText": "tweetclaw x/twitter automation plugin. post tweets, reply, like, retweet, follow, unfollow, send dms, search tweets, look up users, extract bulk data, monitor accounts, run giveaway draws, and compose algorithm-optimized tweets via xquik rest api. use when the user asks about twitter, x, tweets, followers, social media automation, tweet analytics, or giveaway management. trigger with \"post tweet\", \"search tweets\", \"extract followers\", \"run giveaway\", \"monitor account\", \"compose tweet\", \"trending topics\". devops \"read bash(curl:*) webfetch\" claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -82557,32 +82501,6 @@
         "category": "api-development"
       },
       "searchText": "versioning-apis implement api versioning with backward compatibility, deprecation notices, and migration paths. use when managing api versions and backward compatibility. trigger with phrases like \"version the api\", \"manage api versions\", or \"handle api versioning\". api-development read write edit grep glob bash(api:version-*) claude-code codex openclaw"
-    },
-    {
-      "type": "skill",
-      "id": "vertex-agent-builder",
-      "slug": "vertex-agent-builder",
-      "name": "vertex-agent-builder",
-      "description": "Build and deploy production-ready generative AI agents using Vertex AI, Gemini models, and Google Cloud infrastructure with RAG, function calling, and multi-modal capabilities. Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.",
-      "category": "jeremy-vertex-ai",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Grep",
-        "Bash(cmd:*)"
-      ],
-      "compatibleWith": [
-        "claude-code",
-        "codex",
-        "openclaw"
-      ],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "jeremy-vertex-ai",
-        "category": "jeremy-vertex-ai"
-      },
-      "searchText": "vertex-agent-builder build and deploy production-ready generative ai agents using vertex ai, gemini models, and google cloud infrastructure with rag, function calling, and multi-modal capabilities. use when appropriate context detected. trigger with relevant phrases based on skill purpose. jeremy-vertex-ai read write edit grep bash(cmd:*) claude-code codex openclaw"
     },
     {
       "type": "skill",

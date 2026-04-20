@@ -10,9 +10,9 @@
     "version": "1.6.0",
     "homepage": "https://github.com/jeremylongshore/claude-code-plugins",
     "pluginRoot": "./plugins",
-    "totalPlugins": 424,
+    "totalPlugins": 423,
     "skillsEnabled": 268,
-    "lastUpdated": "2026-03-07"
+    "lastUpdated": "2026-04-20"
   },
   "plugins": [
     {
@@ -211,7 +211,7 @@
       "source": "./plugins/mcp/ai-experiment-logger",
       "description": "Track and analyze AI experiments with a web dashboard and MCP tools",
       "version": "1.0.0",
-      "category": "ai-ml",
+      "category": "mcp",
       "keywords": [
         "ai",
         "experiments",
@@ -227,7 +227,7 @@
       "source": "./plugins/packages/ai-ml-engineering-pack",
       "description": "Professional AI/ML Engineering toolkit: Prompt engineering, LLM integration, RAG systems, AI safety with 12 expert plugins",
       "version": "1.0.0",
-      "category": "ai-ml",
+      "category": "packages",
       "keywords": [
         "ai",
         "ml",
@@ -1141,7 +1141,7 @@
       "source": "./plugins/mcp/conversational-api-debugger",
       "description": "Debug REST API failures using OpenAPI specs and HTTP logs (HAR) - root cause analysis with cURL generation",
       "version": "1.0.0",
-      "category": "debugging",
+      "category": "mcp",
       "keywords": [
         "mcp",
         "api",
@@ -1893,7 +1893,7 @@
       "source": "./plugins/mcp/design-to-code",
       "description": "Convert Figma designs and screenshots to React/Svelte/Vue components with built-in accessibility",
       "version": "1.0.0",
-      "category": "design",
+      "category": "mcp",
       "keywords": [
         "mcp",
         "design",
@@ -1914,7 +1914,7 @@
       "source": "./plugins/packages/devops-automation-pack",
       "description": "Complete DevOps automation suite with 25 plugins covering Git workflows, CI/CD pipelines, Docker optimization, Kubernetes management, Terraform IaC, and deployment strategies",
       "version": "1.0.0",
-      "category": "devops",
+      "category": "packages",
       "keywords": [
         "devops",
         "ci-cd",
@@ -2025,7 +2025,7 @@
       "source": "./plugins/mcp/domain-memory-agent",
       "description": "Knowledge base with TF-IDF semantic search and extractive summarization - no ML dependencies required",
       "version": "1.0.0",
-      "category": "productivity",
+      "category": "mcp",
       "keywords": [
         "mcp",
         "knowledge-base",
@@ -2045,7 +2045,7 @@
       "source": "./plugins/mcp/lumera-agent-memory",
       "description": "Durable agent memory with Cascade object storage, client-side encryption, and local full-text search index. Persists agent context across sessions.",
       "version": "1.0.0",
-      "category": "productivity",
+      "category": "mcp",
       "keywords": [
         "mcp",
         "memory",
@@ -2230,7 +2230,7 @@
       "source": "./plugins/community/fairdb-ops-manager",
       "description": "Database operations management for FairDB PostgreSQL clusters",
       "version": "1.0.0",
-      "category": "database",
+      "category": "community",
       "keywords": [
         "database",
         "postgresql",
@@ -2299,7 +2299,7 @@
       "source": "./plugins/examples/formatter",
       "description": "Code formatting plugin using hooks to auto-format on save",
       "version": "1.0.0",
-      "category": "productivity",
+      "category": "examples",
       "keywords": [
         "formatting",
         "hooks",
@@ -2332,7 +2332,7 @@
       "source": "./plugins/packages/fullstack-starter-pack",
       "description": "Complete fullstack development toolkit: React, Express/FastAPI, PostgreSQL scaffolding with AI agents",
       "version": "1.0.0",
-      "category": "fullstack",
+      "category": "packages",
       "keywords": [
         "fullstack",
         "react",
@@ -2463,7 +2463,7 @@
       "source": "./plugins/examples/hello-world",
       "description": "Simple example plugin demonstrating basic slash commands",
       "version": "1.0.0",
-      "category": "example",
+      "category": "examples",
       "keywords": [
         "example",
         "tutorial",
@@ -3186,10 +3186,10 @@
     },
     {
       "name": "openbb-terminal",
-      "source": "./plugins/finance/openbb-terminal",
+      "source": "./plugins/business-tools/openbb-terminal",
       "description": "Open-source investment research terminal integration - comprehensive equity analysis, crypto tracking, macro indicators, portfolio optimization, and AI-powered financial insights using OpenBB Platform",
       "version": "1.0.0",
-      "category": "finance",
+      "category": "business-tools",
       "keywords": [
         "finance",
         "investment",
@@ -3396,7 +3396,7 @@
       "source": "./plugins/examples/pi-pathfinder",
       "description": "PI Pathfinder - Finds the path through 229 plugins. Automatically picks the best plugin for your task, extracts its skills, and applies them. You don't pick plugins, PI does. Part of our initiative to update all plugins with appropriate skill sets.",
       "version": "1.0.0",
-      "category": "example",
+      "category": "examples",
       "keywords": [
         "agent-skills",
         "pi",
@@ -3417,10 +3417,10 @@
     },
     {
       "name": "code-cleanup",
-      "source": "./plugins/code-quality/code-cleanup",
+      "source": "./plugins/testing/code-cleanup",
       "description": "Comprehensive codebase cleanup across 11 quality dimensions — dead code, duplication, weak types, circular deps, defensive cruft, legacy code, AI slop, type consolidation, security, performance, and async patterns. Confidence scoring and build verification gates.",
       "version": "1.0.0",
-      "category": "code-quality",
+      "category": "testing",
       "keywords": [
         "code-quality",
         "cleanup",
@@ -3444,7 +3444,7 @@
       "source": "./plugins/mcp/project-health-auditor",
       "description": "Multi-dimensional code health analysis with complexity, churn, and test coverage - identifies technical debt hot spots",
       "version": "1.0.0",
-      "category": "code-quality",
+      "category": "mcp",
       "keywords": [
         "mcp",
         "code-quality",
@@ -3461,10 +3461,10 @@
     },
     {
       "name": "promptbook",
-      "source": "./plugins/analytics/promptbook",
+      "source": "./plugins/business-tools/promptbook",
       "description": "Opt-in session analytics for Claude Code. After setup consent, tracks prompts, tokens, build time, and lines changed per session. Publishes shareable build cards on promptbook.gg. Strict consent gating — no data transmitted without explicit opt-in. Background submission after session end.",
       "version": "1.4.0",
-      "category": "analytics",
+      "category": "business-tools",
       "keywords": [
         "analytics",
         "telemetry",
@@ -3736,7 +3736,7 @@
       "source": "./plugins/examples/security-agent",
       "description": "Security review subagent for code analysis",
       "version": "1.0.0",
-      "category": "security",
+      "category": "examples",
       "keywords": [
         "security",
         "agent",
@@ -3812,7 +3812,7 @@
       "source": "./plugins/packages/security-pro-pack",
       "description": "Professional security tools for Claude Code: vulnerability scanning, compliance, cryptography audit, container & API security",
       "version": "1.0.0",
-      "category": "security",
+      "category": "packages",
       "keywords": [
         "security",
         "vulnerability-scanning",
@@ -3905,7 +3905,7 @@
       "source": "./plugins/examples/jeremy-plugin-tool",
       "description": "Production-grade plugin creator with nixtla-validated quality standards. 4 Agent Skills automate creating, validating, auditing, and versioning plugins in the claude-code-plugins marketplace",
       "version": "2.0.0",
-      "category": "example",
+      "category": "examples",
       "keywords": [
         "skills",
         "agent-skills",
@@ -4102,7 +4102,7 @@
       "source": "./plugins/community/jeremy-firestore",
       "description": "Firestore database specialist for schema design, queries, and real-time sync",
       "version": "2.0.0",
-      "category": "database",
+      "category": "community",
       "keywords": [
         "firebase",
         "firestore",
@@ -4575,7 +4575,7 @@
       "source": "./plugins/mcp/workflow-orchestrator",
       "description": "DAG-based workflow automation with parallel task execution and dependency management",
       "version": "1.0.0",
-      "category": "automation",
+      "category": "mcp",
       "keywords": [
         "mcp",
         "workflow",
@@ -4872,7 +4872,7 @@
       "source": "./plugins/community/claude-never-forgets",
       "description": "Persistent memory plugin for Claude Code - remembers preferences, decisions, and corrections across sessions and context limits",
       "version": "0.1.0",
-      "category": "productivity",
+      "category": "community",
       "keywords": [
         "memory",
         "context",
@@ -4891,7 +4891,7 @@
       "source": "./plugins/community/geepers-agents",
       "description": "Multi-agent orchestration system with 51 specialized agents for development workflows, code quality, deployment, research, games, and more. Includes orchestrators for checkpoint, deploy, quality, fullstack, research, games, corpus, web, and python workflows.",
       "version": "1.0.0",
-      "category": "ai-ml",
+      "category": "community",
       "keywords": [
         "orchestration",
         "multi-agent",
@@ -4918,7 +4918,7 @@
       "source": "./plugins/community/sprint",
       "description": "Autonomous multi-agent development framework with spec-driven sprints. Write specs, run /sprint, and let coordinated agents (backend, frontend, QA, UI testing) handle implementation through self-iterating convergent loops.",
       "version": "1.0.0",
-      "category": "development",
+      "category": "community",
       "keywords": [
         "autonomous",
         "agentic",
@@ -5051,65 +5051,11 @@
       }
     },
     {
-      "name": "jeremy-google-adk",
-      "source": "./plugins/jeremy-google-adk",
-      "description": "Google Agent Development Kit (ADK) SDK starter kit for building Claude-powered AI agents with React patterns, multi-agent orchestration, and tool integration",
-      "version": "2.0.0",
-      "category": "ai-ml",
-      "keywords": [
-        "google",
-        "adk",
-        "agent-development-kit",
-        "sdk",
-        "ai-agents",
-        "claude",
-        "react-pattern",
-        "multi-agent",
-        "orchestration",
-        "tools",
-        "framework",
-        "scaffolding",
-        "starter-kit"
-      ],
-      "author": {
-        "name": "Jeremy Longshore",
-        "email": "jeremy@tonsofskills.com",
-        "url": "https://github.com/jeremylongshore"
-      }
-    },
-    {
-      "name": "jeremy-vertex-ai",
-      "source": "./plugins/jeremy-vertex-ai",
-      "description": "Comprehensive Vertex AI integration plugin for building generative AI agents with Gemini, Vertex AI Studio, and production deployment on Google Cloud",
-      "version": "2.0.0",
-      "category": "ai-ml",
-      "keywords": [
-        "vertex-ai",
-        "google-cloud",
-        "gemini",
-        "generative-ai",
-        "agent-builder",
-        "ai-studio",
-        "mlops",
-        "llm",
-        "embedding",
-        "rag",
-        "vector-search",
-        "cloud-run",
-        "gcp"
-      ],
-      "author": {
-        "name": "Jeremy Longshore",
-        "email": "jeremy@tonsofskills.com",
-        "url": "https://github.com/jeremylongshore"
-      }
-    },
-    {
       "name": "mattyp-changelog",
-      "source": "./plugins/automation/mattyp-changelog",
+      "source": "./plugins/devops/mattyp-changelog",
       "description": "Automates changelog generation from git history with config validation and quality scoring. Use when publishing weekly updates, release notes, or PR summaries. Trigger with /changelog-weekly, /changelog-custom, or /changelog-validate.",
       "version": "0.1.0",
-      "category": "automation",
+      "category": "devops",
       "keywords": [
         "changelog",
         "release-notes",
@@ -5129,7 +5075,7 @@
       "source": "./plugins/saas-packs/supabase-pack",
       "description": "Complete Supabase integration skill pack with 30 skills covering authentication, database, storage, realtime, edge functions, and production operations. Flagship+ tier vendor pack.",
       "version": "1.0.0",
-      "category": "database",
+      "category": "saas-packs",
       "keywords": [
         "supabase",
         "postgres",
@@ -5155,7 +5101,7 @@
       "source": "./plugins/saas-packs/vercel-pack",
       "description": "Complete Vercel integration skill pack with 30 skills covering deployments, edge functions, preview environments, performance optimization, and production operations. Flagship+ tier vendor pack.",
       "version": "1.0.0",
-      "category": "devops",
+      "category": "saas-packs",
       "keywords": [
         "vercel",
         "deployment",
@@ -5179,7 +5125,7 @@
       "source": "./plugins/saas-packs/clay-pack",
       "description": "Complete Clay integration skill pack with 30 skills covering data enrichment, waterfall workflows, AI agents, and GTM automation. Flagship+ tier vendor pack.",
       "version": "1.0.0",
-      "category": "business-tools",
+      "category": "saas-packs",
       "keywords": [
         "clay",
         "data-enrichment",
@@ -5200,7 +5146,7 @@
       "source": "./plugins/saas-packs/cursor-pack",
       "description": "Complete Cursor integration skill pack with 30 skills covering AI code editing, composer workflows, codebase indexing, and productivity features. Flagship+ tier vendor pack.",
       "version": "1.0.0",
-      "category": "productivity",
+      "category": "saas-packs",
       "keywords": [
         "cursor",
         "ai-editor",
@@ -5221,7 +5167,7 @@
       "source": "./plugins/saas-packs/exa-pack",
       "description": "Complete Exa integration skill pack with 30 skills covering neural search, semantic retrieval, web search API, and AI-powered discovery. Flagship+ tier vendor pack.",
       "version": "1.0.0",
-      "category": "ai-ml",
+      "category": "saas-packs",
       "keywords": [
         "exa",
         "neural-search",
@@ -5242,7 +5188,7 @@
       "source": "./plugins/saas-packs/firecrawl-pack",
       "description": "Complete Firecrawl integration skill pack with 30 skills covering web scraping, crawling, markdown conversion, and LLM-ready data extraction. Flagship+ tier vendor pack.",
       "version": "1.0.0",
-      "category": "data-engineering",
+      "category": "saas-packs",
       "keywords": [
         "firecrawl",
         "web-scraping",
@@ -5263,7 +5209,7 @@
       "source": "./plugins/saas-packs/klingai-pack",
       "description": "Complete Kling AI integration skill pack with 30 skills covering AI video generation, text-to-video, image-to-video, and creative workflows. Flagship+ tier vendor pack.",
       "version": "1.0.0",
-      "category": "ai-ml",
+      "category": "saas-packs",
       "keywords": [
         "klingai",
         "kling",
@@ -5284,7 +5230,7 @@
       "source": "./plugins/saas-packs/openrouter-pack",
       "description": "Complete OpenRouter integration skill pack with 30 skills covering LLM routing, model selection, cost optimization, and multi-provider orchestration. Flagship+ tier vendor pack.",
       "version": "1.0.0",
-      "category": "ai-ml",
+      "category": "saas-packs",
       "keywords": [
         "openrouter",
         "llm-routing",
@@ -5304,7 +5250,7 @@
       "source": "./plugins/saas-packs/perplexity-pack",
       "description": "Complete Perplexity integration skill pack with 30 skills covering AI search, real-time answers, citations, and research workflows. Flagship+ tier vendor pack.",
       "version": "1.0.0",
-      "category": "ai-ml",
+      "category": "saas-packs",
       "keywords": [
         "perplexity",
         "ai-search",
@@ -5325,7 +5271,7 @@
       "source": "./plugins/saas-packs/replit-pack",
       "description": "Complete Replit integration skill pack with 30 skills covering cloud IDE, deployments, AI assistance, and collaborative coding. Flagship+ tier vendor pack.",
       "version": "1.0.0",
-      "category": "productivity",
+      "category": "saas-packs",
       "keywords": [
         "replit",
         "cloud-ide",
@@ -5346,7 +5292,7 @@
       "source": "./plugins/saas-packs/retellai-pack",
       "description": "Complete Retell AI integration skill pack with 30 skills covering AI voice agents, phone automation, conversational AI, and call center solutions. Flagship+ tier vendor pack.",
       "version": "1.0.0",
-      "category": "ai-ml",
+      "category": "saas-packs",
       "keywords": [
         "retellai",
         "retell",
@@ -5367,7 +5313,7 @@
       "source": "./plugins/saas-packs/sentry-pack",
       "description": "Complete Sentry integration skill pack with 30 skills covering error monitoring, performance tracking, session replay, and observability. Flagship+ tier vendor pack.",
       "version": "1.0.0",
-      "category": "devops",
+      "category": "saas-packs",
       "keywords": [
         "sentry",
         "error-monitoring",
@@ -5388,7 +5334,7 @@
       "source": "./plugins/saas-packs/windsurf-pack",
       "description": "Complete Windsurf integration skill pack with 30 skills covering AI code editing, Cascade workflows, codebase understanding, and developer productivity. Flagship+ tier vendor pack.",
       "version": "1.0.0",
-      "category": "productivity",
+      "category": "saas-packs",
       "keywords": [
         "windsurf",
         "ai-editor",
@@ -5409,7 +5355,7 @@
       "source": "./plugins/saas-packs/coderabbit-pack",
       "description": "Complete CodeRabbit integration skill pack with 24 skills covering AI code review, PR automation, and code quality analysis. Flagship tier vendor pack.",
       "version": "1.0.0",
-      "category": "code-quality",
+      "category": "saas-packs",
       "keywords": [
         "coderabbit",
         "code-review",
@@ -5429,7 +5375,7 @@
       "source": "./plugins/saas-packs/fireflies-pack",
       "description": "Complete Fireflies integration skill pack with 24 skills covering meeting transcription, AI summaries, and conversation intelligence. Flagship tier vendor pack.",
       "version": "1.0.0",
-      "category": "productivity",
+      "category": "saas-packs",
       "keywords": [
         "fireflies",
         "meeting-transcription",
@@ -5448,7 +5394,7 @@
       "source": "./plugins/saas-packs/groq-pack",
       "description": "Complete Groq integration skill pack with 24 skills covering LPU inference, ultra-fast AI, and Groq Cloud deployment. Flagship tier vendor pack.",
       "version": "1.0.0",
-      "category": "ai-ml",
+      "category": "saas-packs",
       "keywords": [
         "groq",
         "lpu",
@@ -5469,7 +5415,7 @@
       "source": "./plugins/saas-packs/ideogram-pack",
       "description": "Complete Ideogram integration skill pack with 24 skills covering AI image generation, text rendering, and creative design workflows. Flagship tier vendor pack.",
       "version": "1.0.0",
-      "category": "ai-ml",
+      "category": "saas-packs",
       "keywords": [
         "ideogram",
         "image-generation",
@@ -5490,7 +5436,7 @@
       "source": "./plugins/saas-packs/instantly-pack",
       "description": "Complete Instantly integration skill pack with 24 skills covering cold email, outreach automation, and lead generation. Flagship tier vendor pack.",
       "version": "1.0.0",
-      "category": "business-tools",
+      "category": "saas-packs",
       "keywords": [
         "instantly",
         "cold-email",
@@ -5510,7 +5456,7 @@
       "source": "./plugins/saas-packs/posthog-pack",
       "description": "Complete PostHog integration skill pack with 24 skills covering product analytics, feature flags, session replay, and experimentation. Flagship tier vendor pack.",
       "version": "1.0.0",
-      "category": "analytics",
+      "category": "saas-packs",
       "keywords": [
         "posthog",
         "product-analytics",
@@ -5530,7 +5476,7 @@
       "source": "./plugins/saas-packs/vastai-pack",
       "description": "Complete Vast.ai integration skill pack with 24 skills covering GPU marketplace, cloud compute, and ML infrastructure. Flagship tier vendor pack.",
       "version": "1.0.0",
-      "category": "ai-ml",
+      "category": "saas-packs",
       "keywords": [
         "vastai",
         "vast-ai",
@@ -5551,7 +5497,7 @@
       "source": "./plugins/saas-packs/apollo-pack",
       "description": "Complete Apollo integration skill pack with 24 skills covering sales engagement, prospecting, sequencing, analytics, and outbound automation. Flagship tier vendor pack.",
       "version": "1.0.0",
-      "category": "business-tools",
+      "category": "saas-packs",
       "keywords": [
         "apollo",
         "sales",
@@ -5573,7 +5519,7 @@
       "source": "./plugins/saas-packs/deepgram-pack",
       "description": "Complete Deepgram integration skill pack with 24 skills covering speech-to-text, real-time transcription, voice intelligence, and audio processing. Flagship tier vendor pack.",
       "version": "1.0.0",
-      "category": "ai-ml",
+      "category": "saas-packs",
       "keywords": [
         "deepgram",
         "speech-to-text",
@@ -5595,7 +5541,7 @@
       "source": "./plugins/saas-packs/juicebox-pack",
       "description": "Complete Juicebox integration skill pack with 24 skills covering people data, enrichment, contact search, and AI-powered discovery. Flagship tier vendor pack.",
       "version": "1.0.0",
-      "category": "business-tools",
+      "category": "saas-packs",
       "keywords": [
         "juicebox",
         "people-data",
@@ -5616,7 +5562,7 @@
       "source": "./plugins/saas-packs/customerio-pack",
       "description": "Complete Customer.io integration skill pack with 24 skills covering marketing automation, email campaigns, SMS, push notifications, and customer journeys. Flagship tier vendor pack.",
       "version": "1.0.0",
-      "category": "business-tools",
+      "category": "saas-packs",
       "keywords": [
         "customerio",
         "customer-io",
@@ -5638,7 +5584,7 @@
       "source": "./plugins/saas-packs/langchain-pack",
       "description": "Complete LangChain integration skill pack with 24 skills covering chains, agents, RAG pipelines, memory, and LLM application development. Flagship tier vendor pack.",
       "version": "1.0.0",
-      "category": "ai-ml",
+      "category": "saas-packs",
       "keywords": [
         "langchain",
         "llm",
@@ -5660,7 +5606,7 @@
       "source": "./plugins/saas-packs/lindy-pack",
       "description": "Complete Lindy integration skill pack with 24 skills covering AI assistants, task automation, workflows, and intelligent automation. Flagship tier vendor pack.",
       "version": "1.0.0",
-      "category": "ai-ml",
+      "category": "saas-packs",
       "keywords": [
         "lindy",
         "ai-assistant",
@@ -5680,7 +5626,7 @@
       "source": "./plugins/saas-packs/granola-pack",
       "description": "Complete Granola integration skill pack with 24 skills covering AI meeting notes, transcription, summaries, and meeting intelligence. Flagship tier vendor pack.",
       "version": "1.0.0",
-      "category": "productivity",
+      "category": "saas-packs",
       "keywords": [
         "granola",
         "meeting-notes",
@@ -5701,7 +5647,7 @@
       "source": "./plugins/saas-packs/gamma-pack",
       "description": "Complete Gamma integration skill pack with 24 skills covering AI presentations, document generation, templates, and visual content creation. Flagship tier vendor pack.",
       "version": "1.0.0",
-      "category": "productivity",
+      "category": "saas-packs",
       "keywords": [
         "gamma",
         "presentations",
@@ -5722,7 +5668,7 @@
       "source": "./plugins/saas-packs/clerk-pack",
       "description": "Complete Clerk integration skill pack with 24 skills covering authentication, user management, embeddable UIs, and identity platform. Flagship tier vendor pack.",
       "version": "1.0.0",
-      "category": "security",
+      "category": "saas-packs",
       "keywords": [
         "clerk",
         "authentication",
@@ -5744,7 +5690,7 @@
       "source": "./plugins/saas-packs/linear-pack",
       "description": "Complete Linear integration skill pack with 24 skills covering issue tracking, project management, workflows, and team collaboration. Flagship tier vendor pack.",
       "version": "1.0.0",
-      "category": "productivity",
+      "category": "saas-packs",
       "keywords": [
         "linear",
         "issues",
@@ -5765,7 +5711,7 @@
       "source": "./plugins/saas-packs/databricks-pack",
       "description": "Complete Databricks integration skill pack with 24 skills covering Delta Lake, MLflow, notebooks, clusters, and data engineering workflows. Flagship tier vendor pack.",
       "version": "1.0.0",
-      "category": "data-engineering",
+      "category": "saas-packs",
       "keywords": [
         "databricks",
         "delta-lake",
@@ -5787,7 +5733,7 @@
       "source": "./plugins/saas-packs/mistral-pack",
       "description": "Complete Mistral AI integration skill pack with 24 skills covering model inference, embeddings, fine-tuning, and production deployments. Flagship tier vendor pack.",
       "version": "1.0.0",
-      "category": "ai-ml",
+      "category": "saas-packs",
       "keywords": [
         "mistral",
         "llm",
@@ -5808,7 +5754,7 @@
       "source": "./plugins/saas-packs/langfuse-pack",
       "description": "Complete Langfuse integration skill pack with 24 skills covering LLM observability, tracing, prompt management, and evaluation. Flagship tier vendor pack.",
       "version": "1.0.0",
-      "category": "ai-ml",
+      "category": "saas-packs",
       "keywords": [
         "langfuse",
         "observability",
@@ -5829,7 +5775,7 @@
       "source": "./plugins/saas-packs/obsidian-pack",
       "description": "Complete Obsidian integration skill pack with 24 skills covering vault management, plugins, sync, templates, and knowledge management. Flagship tier vendor pack.",
       "version": "1.0.0",
-      "category": "productivity",
+      "category": "saas-packs",
       "keywords": [
         "obsidian",
         "notes",
@@ -5850,7 +5796,7 @@
       "source": "./plugins/saas-packs/documenso-pack",
       "description": "Complete Documenso integration skill pack with 24 skills covering document signing, templates, workflows, and e-signature automation. Flagship tier vendor pack.",
       "version": "1.0.0",
-      "category": "business-tools",
+      "category": "saas-packs",
       "keywords": [
         "documenso",
         "document-signing",
@@ -5871,7 +5817,7 @@
       "source": "./plugins/saas-packs/evernote-pack",
       "description": "Complete Evernote integration skill pack with 24 skills covering note management, notebooks, tags, search, and productivity workflows. Flagship tier vendor pack.",
       "version": "1.0.0",
-      "category": "productivity",
+      "category": "saas-packs",
       "keywords": [
         "evernote",
         "notes",
@@ -5892,7 +5838,7 @@
       "source": "./plugins/saas-packs/guidewire-pack",
       "description": "Complete Guidewire integration skill pack with 24 skills covering InsuranceSuite, PolicyCenter, ClaimCenter, and insurance platform development. Flagship tier vendor pack.",
       "version": "1.0.0",
-      "category": "enterprise",
+      "category": "saas-packs",
       "keywords": [
         "guidewire",
         "insurance",
@@ -5913,7 +5859,7 @@
       "source": "./plugins/saas-packs/lokalise-pack",
       "description": "Complete Lokalise integration skill pack with 24 skills covering translation management, localization workflows, and i18n automation. Flagship tier vendor pack.",
       "version": "1.0.0",
-      "category": "devops",
+      "category": "saas-packs",
       "keywords": [
         "lokalise",
         "translation",
@@ -5934,7 +5880,7 @@
       "source": "./plugins/saas-packs/maintainx-pack",
       "description": "Complete MaintainX integration skill pack with 24 skills covering work orders, preventive maintenance, asset management, and CMMS workflows. Flagship tier vendor pack.",
       "version": "1.0.0",
-      "category": "enterprise",
+      "category": "saas-packs",
       "keywords": [
         "maintainx",
         "cmms",
@@ -5955,7 +5901,7 @@
       "source": "./plugins/saas-packs/openevidence-pack",
       "description": "Complete OpenEvidence integration skill pack with 24 skills covering medical AI, clinical decision support, evidence-based queries, and healthcare workflows. Flagship tier vendor pack.",
       "version": "1.0.0",
-      "category": "ai-ml",
+      "category": "saas-packs",
       "keywords": [
         "openevidence",
         "medical-ai",
@@ -5976,7 +5922,7 @@
       "source": "./plugins/saas-packs/speak-pack",
       "description": "Complete Speak integration skill pack with 24 skills covering AI language learning, speech recognition, conversation practice, and education technology. Flagship tier vendor pack.",
       "version": "1.0.0",
-      "category": "ai-ml",
+      "category": "saas-packs",
       "keywords": [
         "speak",
         "language-learning",
@@ -5997,7 +5943,7 @@
       "source": "./plugins/saas-packs/twinmind-pack",
       "description": "Complete TwinMind integration skill pack with 24 skills covering AI meeting assistant, transcription, summaries, and productivity automation. Flagship tier vendor pack.",
       "version": "1.0.0",
-      "category": "productivity",
+      "category": "saas-packs",
       "keywords": [
         "twinmind",
         "meetings",
@@ -6791,7 +6737,7 @@
       "source": "./plugins/saas-packs/abridge-pack",
       "description": "Claude Code skill pack for Abridge (18 skills)",
       "version": "1.0.0",
-      "category": "ai-ml",
+      "category": "saas-packs",
       "keywords": [
         "abridge",
         "saas",
@@ -6809,7 +6755,7 @@
       "source": "./plugins/saas-packs/adobe-pack",
       "description": "Claude Code skill pack for Adobe (30 skills)",
       "version": "1.0.0",
-      "category": "ai-ml",
+      "category": "saas-packs",
       "keywords": [
         "adobe",
         "saas",
@@ -6827,7 +6773,7 @@
       "source": "./plugins/saas-packs/alchemy-pack",
       "description": "Claude Code skill pack for Alchemy (18 skills)",
       "version": "1.0.0",
-      "category": "ai-ml",
+      "category": "saas-packs",
       "keywords": [
         "alchemy",
         "saas",
@@ -6845,7 +6791,7 @@
       "source": "./plugins/saas-packs/algolia-pack",
       "description": "Claude Code skill pack for Algolia (24 skills)",
       "version": "1.0.0",
-      "category": "business-tools",
+      "category": "saas-packs",
       "keywords": [
         "algolia",
         "saas",
@@ -6863,7 +6809,7 @@
       "source": "./plugins/saas-packs/anima-pack",
       "description": "Claude Code skill pack for Anima (18 skills)",
       "version": "1.0.0",
-      "category": "ai-ml",
+      "category": "saas-packs",
       "keywords": [
         "anima",
         "saas",
@@ -6881,7 +6827,7 @@
       "source": "./plugins/saas-packs/anthropic-pack",
       "description": "Claude Code skill pack for Anthropic (30 skills)",
       "version": "1.0.0",
-      "category": "ai-ml",
+      "category": "saas-packs",
       "keywords": [
         "anthropic",
         "saas",
@@ -6899,7 +6845,7 @@
       "source": "./plugins/saas-packs/apify-pack",
       "description": "Claude Code skill pack for Apify (18 skills)",
       "version": "1.0.0",
-      "category": "ai-ml",
+      "category": "saas-packs",
       "keywords": [
         "apify",
         "saas",
@@ -6917,7 +6863,7 @@
       "source": "./plugins/saas-packs/appfolio-pack",
       "description": "Claude Code skill pack for AppFolio (18 skills)",
       "version": "1.0.0",
-      "category": "productivity",
+      "category": "saas-packs",
       "keywords": [
         "appfolio",
         "saas",
@@ -6935,7 +6881,7 @@
       "source": "./plugins/saas-packs/apple-notes-pack",
       "description": "Claude Code skill pack for Apple Notes (24 skills)",
       "version": "1.0.0",
-      "category": "productivity",
+      "category": "saas-packs",
       "keywords": [
         "apple-notes",
         "apple notes",
@@ -6954,7 +6900,7 @@
       "source": "./plugins/saas-packs/assemblyai-pack",
       "description": "Claude Code skill pack for AssemblyAI (18 skills)",
       "version": "1.0.0",
-      "category": "ai-ml",
+      "category": "saas-packs",
       "keywords": [
         "assemblyai",
         "saas",
@@ -6972,7 +6918,7 @@
       "source": "./plugins/saas-packs/attio-pack",
       "description": "Claude Code skill pack for Attio (18 skills)",
       "version": "1.0.0",
-      "category": "business-tools",
+      "category": "saas-packs",
       "keywords": [
         "attio",
         "saas",
@@ -6990,7 +6936,7 @@
       "source": "./plugins/saas-packs/bamboohr-pack",
       "description": "Claude Code skill pack for BambooHR (18 skills)",
       "version": "1.0.0",
-      "category": "business-tools",
+      "category": "saas-packs",
       "keywords": [
         "bamboohr",
         "saas",
@@ -7008,7 +6954,7 @@
       "source": "./plugins/saas-packs/brightdata-pack",
       "description": "Claude Code skill pack for Bright Data (18 skills)",
       "version": "1.0.0",
-      "category": "ai-ml",
+      "category": "saas-packs",
       "keywords": [
         "brightdata",
         "bright data",
@@ -7027,7 +6973,7 @@
       "source": "./plugins/saas-packs/canva-pack",
       "description": "Claude Code skill pack for Canva (30 skills)",
       "version": "1.0.0",
-      "category": "ai-ml",
+      "category": "saas-packs",
       "keywords": [
         "canva",
         "saas",
@@ -7045,7 +6991,7 @@
       "source": "./plugins/saas-packs/castai-pack",
       "description": "Claude Code skill pack for Cast AI (18 skills)",
       "version": "1.0.0",
-      "category": "ai-ml",
+      "category": "saas-packs",
       "keywords": [
         "castai",
         "cast ai",
@@ -7064,7 +7010,7 @@
       "source": "./plugins/saas-packs/clari-pack",
       "description": "Claude Code skill pack for Clari (18 skills)",
       "version": "1.0.0",
-      "category": "business-tools",
+      "category": "saas-packs",
       "keywords": [
         "clari",
         "saas",
@@ -7082,7 +7028,7 @@
       "source": "./plugins/saas-packs/clickhouse-pack",
       "description": "Claude Code skill pack for ClickHouse (24 skills)",
       "version": "1.0.0",
-      "category": "database",
+      "category": "saas-packs",
       "keywords": [
         "clickhouse",
         "saas",
@@ -7100,7 +7046,7 @@
       "source": "./plugins/saas-packs/clickup-pack",
       "description": "Claude Code skill pack for ClickUp (24 skills)",
       "version": "1.0.0",
-      "category": "business-tools",
+      "category": "saas-packs",
       "keywords": [
         "clickup",
         "saas",
@@ -7118,7 +7064,7 @@
       "source": "./plugins/saas-packs/cohere-pack",
       "description": "Claude Code skill pack for Cohere (24 skills)",
       "version": "1.0.0",
-      "category": "ai-ml",
+      "category": "saas-packs",
       "keywords": [
         "cohere",
         "saas",
@@ -7136,7 +7082,7 @@
       "source": "./plugins/saas-packs/coreweave-pack",
       "description": "Claude Code skill pack for CoreWeave (24 skills)",
       "version": "1.0.0",
-      "category": "ai-ml",
+      "category": "saas-packs",
       "keywords": [
         "coreweave",
         "saas",
@@ -7154,7 +7100,7 @@
       "source": "./plugins/saas-packs/elevenlabs-pack",
       "description": "Claude Code skill pack for ElevenLabs (18 skills)",
       "version": "1.0.0",
-      "category": "ai-ml",
+      "category": "saas-packs",
       "keywords": [
         "elevenlabs",
         "saas",
@@ -7172,7 +7118,7 @@
       "source": "./plugins/saas-packs/fathom-pack",
       "description": "Claude Code skill pack for Fathom (18 skills)",
       "version": "1.0.0",
-      "category": "productivity",
+      "category": "saas-packs",
       "keywords": [
         "fathom",
         "saas",
@@ -7190,7 +7136,7 @@
       "source": "./plugins/saas-packs/figma-pack",
       "description": "Claude Code skill pack for Figma (30 skills)",
       "version": "1.0.0",
-      "category": "productivity",
+      "category": "saas-packs",
       "keywords": [
         "figma",
         "saas",
@@ -7208,7 +7154,7 @@
       "source": "./plugins/saas-packs/finta-pack",
       "description": "Claude Code skill pack for Finta (18 skills)",
       "version": "1.0.0",
-      "category": "productivity",
+      "category": "saas-packs",
       "keywords": [
         "finta",
         "saas",
@@ -7226,7 +7172,7 @@
       "source": "./plugins/saas-packs/flexport-pack",
       "description": "Claude Code skill pack for Flexport (24 skills)",
       "version": "1.0.0",
-      "category": "business-tools",
+      "category": "saas-packs",
       "keywords": [
         "flexport",
         "saas",
@@ -7244,7 +7190,7 @@
       "source": "./plugins/saas-packs/flyio-pack",
       "description": "Claude Code skill pack for Fly.io (18 skills)",
       "version": "1.0.0",
-      "category": "devops",
+      "category": "saas-packs",
       "keywords": [
         "flyio",
         "fly.io",
@@ -7263,7 +7209,7 @@
       "source": "./plugins/saas-packs/fondo-pack",
       "description": "Claude Code skill pack for Fondo (18 skills)",
       "version": "1.0.0",
-      "category": "business-tools",
+      "category": "saas-packs",
       "keywords": [
         "fondo",
         "saas",
@@ -7281,7 +7227,7 @@
       "source": "./plugins/saas-packs/framer-pack",
       "description": "Claude Code skill pack for Framer (18 skills)",
       "version": "1.0.0",
-      "category": "ai-ml",
+      "category": "saas-packs",
       "keywords": [
         "framer",
         "saas",
@@ -7299,7 +7245,7 @@
       "source": "./plugins/saas-packs/glean-pack",
       "description": "Claude Code skill pack for Glean (24 skills)",
       "version": "1.0.0",
-      "category": "ai-ml",
+      "category": "saas-packs",
       "keywords": [
         "glean",
         "saas",
@@ -7317,7 +7263,7 @@
       "source": "./plugins/saas-packs/grammarly-pack",
       "description": "Claude Code skill pack for Grammarly (24 skills)",
       "version": "1.0.0",
-      "category": "ai-ml",
+      "category": "saas-packs",
       "keywords": [
         "grammarly",
         "saas",
@@ -7335,7 +7281,7 @@
       "source": "./plugins/saas-packs/hex-pack",
       "description": "Claude Code skill pack for Hex (18 skills)",
       "version": "1.0.0",
-      "category": "productivity",
+      "category": "saas-packs",
       "keywords": [
         "hex",
         "saas",
@@ -7353,7 +7299,7 @@
       "source": "./plugins/saas-packs/hootsuite-pack",
       "description": "Claude Code skill pack for Hootsuite (18 skills)",
       "version": "1.0.0",
-      "category": "business-tools",
+      "category": "saas-packs",
       "keywords": [
         "hootsuite",
         "saas",
@@ -7371,7 +7317,7 @@
       "source": "./plugins/saas-packs/hubspot-pack",
       "description": "Claude Code skill pack for HubSpot (30 skills)",
       "version": "1.0.0",
-      "category": "business-tools",
+      "category": "saas-packs",
       "keywords": [
         "hubspot",
         "saas",
@@ -7389,7 +7335,7 @@
       "source": "./plugins/saas-packs/intercom-pack",
       "description": "Claude Code skill pack for Intercom (24 skills)",
       "version": "1.0.0",
-      "category": "business-tools",
+      "category": "saas-packs",
       "keywords": [
         "intercom",
         "saas",
@@ -7407,7 +7353,7 @@
       "source": "./plugins/saas-packs/klaviyo-pack",
       "description": "Claude Code skill pack for Klaviyo (24 skills)",
       "version": "1.0.0",
-      "category": "business-tools",
+      "category": "saas-packs",
       "keywords": [
         "klaviyo",
         "saas",
@@ -7425,7 +7371,7 @@
       "source": "./plugins/saas-packs/linktree-pack",
       "description": "Claude Code skill pack for Linktree (18 skills)",
       "version": "1.0.0",
-      "category": "business-tools",
+      "category": "saas-packs",
       "keywords": [
         "linktree",
         "saas",
@@ -7443,7 +7389,7 @@
       "source": "./plugins/saas-packs/lucidchart-pack",
       "description": "Claude Code skill pack for Lucidchart (18 skills)",
       "version": "1.0.0",
-      "category": "business-tools",
+      "category": "saas-packs",
       "keywords": [
         "lucidchart",
         "saas",
@@ -7461,7 +7407,7 @@
       "source": "./plugins/saas-packs/mindtickle-pack",
       "description": "Claude Code skill pack for Mindtickle (18 skills)",
       "version": "1.0.0",
-      "category": "business-tools",
+      "category": "saas-packs",
       "keywords": [
         "mindtickle",
         "saas",
@@ -7479,7 +7425,7 @@
       "source": "./plugins/saas-packs/miro-pack",
       "description": "Claude Code skill pack for Miro (24 skills)",
       "version": "1.0.0",
-      "category": "business-tools",
+      "category": "saas-packs",
       "keywords": [
         "miro",
         "saas",
@@ -7497,7 +7443,7 @@
       "source": "./plugins/saas-packs/navan-pack",
       "description": "Claude Code skill pack for Navan (24 skills)",
       "version": "1.0.0",
-      "category": "business-tools",
+      "category": "saas-packs",
       "keywords": [
         "navan",
         "saas",
@@ -7515,7 +7461,7 @@
       "source": "./plugins/saas-packs/notion-pack",
       "description": "Claude Code skill pack for Notion (30 skills)",
       "version": "1.0.0",
-      "category": "productivity",
+      "category": "saas-packs",
       "keywords": [
         "notion",
         "saas",
@@ -7533,7 +7479,7 @@
       "source": "./plugins/saas-packs/onenote-pack",
       "description": "Claude Code skill pack for OneNote (18 skills)",
       "version": "1.0.0",
-      "category": "productivity",
+      "category": "saas-packs",
       "keywords": [
         "onenote",
         "saas",
@@ -7551,7 +7497,7 @@
       "source": "./plugins/saas-packs/oraclecloud-pack",
       "description": "Claude Code skill pack for Oracle Cloud (24 skills)",
       "version": "1.0.0",
-      "category": "devops",
+      "category": "saas-packs",
       "keywords": [
         "oraclecloud",
         "oracle cloud",
@@ -7570,7 +7516,7 @@
       "source": "./plugins/saas-packs/palantir-pack",
       "description": "Claude Code skill pack for Palantir (24 skills)",
       "version": "1.0.0",
-      "category": "productivity",
+      "category": "saas-packs",
       "keywords": [
         "palantir",
         "saas",
@@ -7588,7 +7534,7 @@
       "source": "./plugins/saas-packs/persona-pack",
       "description": "Claude Code skill pack for Persona (18 skills)",
       "version": "1.0.0",
-      "category": "business-tools",
+      "category": "saas-packs",
       "keywords": [
         "persona",
         "saas",
@@ -7606,7 +7552,7 @@
       "source": "./plugins/saas-packs/podium-pack",
       "description": "Claude Code skill pack for Podium (18 skills)",
       "version": "1.0.0",
-      "category": "business-tools",
+      "category": "saas-packs",
       "keywords": [
         "podium",
         "saas",
@@ -7624,7 +7570,7 @@
       "source": "./plugins/saas-packs/procore-pack",
       "description": "Claude Code skill pack for Procore (24 skills)",
       "version": "1.0.0",
-      "category": "business-tools",
+      "category": "saas-packs",
       "keywords": [
         "procore",
         "saas",
@@ -7642,7 +7588,7 @@
       "source": "./plugins/saas-packs/quicknode-pack",
       "description": "Claude Code skill pack for QuickNode (18 skills)",
       "version": "1.0.0",
-      "category": "ai-ml",
+      "category": "saas-packs",
       "keywords": [
         "quicknode",
         "saas",
@@ -7660,7 +7606,7 @@
       "source": "./plugins/saas-packs/ramp-pack",
       "description": "Claude Code skill pack for Ramp (24 skills)",
       "version": "1.0.0",
-      "category": "business-tools",
+      "category": "saas-packs",
       "keywords": [
         "ramp",
         "saas",
@@ -7678,7 +7624,7 @@
       "source": "./plugins/saas-packs/remofirst-pack",
       "description": "Claude Code skill pack for RemoFirst (12 skills)",
       "version": "1.0.0",
-      "category": "business-tools",
+      "category": "saas-packs",
       "keywords": [
         "remofirst",
         "saas",
@@ -7696,7 +7642,7 @@
       "source": "./plugins/saas-packs/runway-pack",
       "description": "Claude Code skill pack for Runway (18 skills)",
       "version": "1.0.0",
-      "category": "ai-ml",
+      "category": "saas-packs",
       "keywords": [
         "runway",
         "saas",
@@ -7714,7 +7660,7 @@
       "source": "./plugins/saas-packs/salesforce-pack",
       "description": "Claude Code skill pack for Salesforce (30 skills)",
       "version": "1.0.0",
-      "category": "business-tools",
+      "category": "saas-packs",
       "keywords": [
         "salesforce",
         "saas",
@@ -7732,7 +7678,7 @@
       "source": "./plugins/saas-packs/salesloft-pack",
       "description": "Claude Code skill pack for Salesloft (18 skills)",
       "version": "1.0.0",
-      "category": "business-tools",
+      "category": "saas-packs",
       "keywords": [
         "salesloft",
         "saas",
@@ -7750,7 +7696,7 @@
       "source": "./plugins/saas-packs/serpapi-pack",
       "description": "Claude Code skill pack for SerpApi (18 skills)",
       "version": "1.0.0",
-      "category": "ai-ml",
+      "category": "saas-packs",
       "keywords": [
         "serpapi",
         "saas",
@@ -7768,7 +7714,7 @@
       "source": "./plugins/saas-packs/shopify-pack",
       "description": "Claude Code skill pack for Shopify (30 skills)",
       "version": "1.0.0",
-      "category": "business-tools",
+      "category": "saas-packs",
       "keywords": [
         "shopify",
         "saas",
@@ -7786,7 +7732,7 @@
       "source": "./plugins/saas-packs/snowflake-pack",
       "description": "Claude Code skill pack for Snowflake (30 skills)",
       "version": "1.0.0",
-      "category": "database",
+      "category": "saas-packs",
       "keywords": [
         "snowflake",
         "saas",
@@ -7804,7 +7750,7 @@
       "source": "./plugins/saas-packs/stackblitz-pack",
       "description": "Claude Code skill pack for StackBlitz (18 skills)",
       "version": "1.0.0",
-      "category": "ai-ml",
+      "category": "saas-packs",
       "keywords": [
         "stackblitz",
         "saas",
@@ -7822,7 +7768,7 @@
       "source": "./plugins/saas-packs/techsmith-pack",
       "description": "Claude Code skill pack for TechSmith (18 skills)",
       "version": "1.0.0",
-      "category": "ai-ml",
+      "category": "saas-packs",
       "keywords": [
         "techsmith",
         "saas",
@@ -7840,7 +7786,7 @@
       "source": "./plugins/saas-packs/together-pack",
       "description": "Claude Code skill pack for Together AI (18 skills)",
       "version": "1.0.0",
-      "category": "ai-ml",
+      "category": "saas-packs",
       "keywords": [
         "together",
         "together ai",
@@ -7859,7 +7805,7 @@
       "source": "./plugins/saas-packs/veeva-pack",
       "description": "Claude Code skill pack for Veeva (24 skills)",
       "version": "1.0.0",
-      "category": "business-tools",
+      "category": "saas-packs",
       "keywords": [
         "veeva",
         "saas",
@@ -7877,7 +7823,7 @@
       "source": "./plugins/saas-packs/webflow-pack",
       "description": "Claude Code skill pack for Webflow (24 skills)",
       "version": "1.0.0",
-      "category": "business-tools",
+      "category": "saas-packs",
       "keywords": [
         "webflow",
         "saas",
@@ -7895,7 +7841,7 @@
       "source": "./plugins/saas-packs/wispr-pack",
       "description": "Claude Code skill pack for Wispr (18 skills)",
       "version": "1.0.0",
-      "category": "ai-ml",
+      "category": "saas-packs",
       "keywords": [
         "wispr",
         "saas",
@@ -7913,7 +7859,7 @@
       "source": "./plugins/saas-packs/workhuman-pack",
       "description": "Claude Code skill pack for Workhuman (18 skills)",
       "version": "1.0.0",
-      "category": "business-tools",
+      "category": "saas-packs",
       "keywords": [
         "workhuman",
         "saas",
@@ -8015,7 +7961,7 @@
       "source": "./plugins/mcp/pr-to-spec",
       "description": "The flight envelope for agentic coding — convert PRs and local diffs into structured, agent-consumable specs with intent drift detection",
       "version": "0.8.0",
-      "category": "code-quality",
+      "category": "mcp",
       "repository": "https://github.com/jeremylongshore/pr-to-prompt",
       "author": {
         "name": "Jeremy Longshore",
@@ -8035,7 +7981,7 @@
       "source": "./plugins/mcp/slack-channel",
       "description": "Two-way Slack channel for Claude Code — chat from Slack DMs and channels via Socket Mode",
       "version": "0.1.0",
-      "category": "productivity",
+      "category": "mcp",
       "keywords": [
         "slack",
         "channel",
@@ -8057,7 +8003,7 @@
       "source": "./plugins/mcp/x-bug-triage",
       "description": "Closed-loop bug triage: X complaints → clusters → repo evidence → owner routing → Slack review → filed issues",
       "version": "0.3.0",
-      "category": "devops",
+      "category": "mcp",
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io"
@@ -8094,10 +8040,10 @@
     },
     {
       "name": "tweetclaw",
-      "source": "./plugins/automation/tweetclaw",
+      "source": "./plugins/devops/tweetclaw",
       "description": "X/Twitter automation - post, reply, like, retweet, follow, DM, search, extract data, monitor accounts, run giveaways. 121 endpoints via Xquik REST API.",
       "version": "1.5.3",
-      "category": "automation",
+      "category": "devops",
       "keywords": [
         "twitter",
         "x",

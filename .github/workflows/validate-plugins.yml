@@ -26,6 +26,9 @@ jobs:
             exit 1
           fi
 
+      - name: Validate catalog invariants (FS path = category)
+        run: python3 scripts/validate-catalog-invariants.py
+
       - name: Validate JSON files
         run: |
           echo "Validating JSON files..."

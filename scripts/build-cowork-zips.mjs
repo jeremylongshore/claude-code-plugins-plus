@@ -35,35 +35,37 @@ const SKIP_FILES = new Set(['.DS_Store', 'Thumbs.db', '.env', '.env.local']);
 // Patterns for sensitive files that should never be included in downloads
 const SKIP_PATTERNS = [/^id_rsa/, /credentials/i, /secrets?\./i, /token\./i, /\.key$/, /\.pem$/];
 
-// Human-friendly category names
+// Human-friendly category names. Unknown slugs auto-title via labelFor().
 const CATEGORY_LABELS = {
   'ai-ml': 'AI & Machine Learning',
   'ai-agency': 'AI Agents & Agency',
   'api-development': 'API Development',
-  'automation': 'Automation',
   'business-tools': 'Business Tools',
-  'code-quality': 'Code Quality',
   'community': 'Community',
   'crypto': 'Crypto & Web3',
   'database': 'Database',
-  'data-engineering': 'Data Engineering',
   'design': 'Design',
   'devops': 'DevOps & Infrastructure',
-  'enterprise': 'Enterprise',
   'examples': 'Examples & Templates',
-  'finance': 'Finance',
-  'fullstack': 'Full-Stack Development',
-  'jeremy-genkit': 'Google Genkit',
-  'jeremy-google-adk': 'Google ADK',
-  'jeremy-vertex-ai': 'Vertex AI',
+  'mcp': 'MCP Servers',
   'packages': 'Packages',
   'performance': 'Performance',
   'productivity': 'Productivity',
-  'saas-packs': 'SaaS Integrations',
+  'saas-packs': 'SaaS Skill Packs',
   'security': 'Security',
   'skill-enhancers': 'Skill Enhancers',
   'testing': 'Testing',
 };
+
+// Fallback: auto-title from slug when CATEGORY_LABELS has no entry.
+// "data-engineering" → "Data Engineering"
+function labelFor(slug) {
+  if (CATEGORY_LABELS[slug]) return CATEGORY_LABELS[slug];
+  return slug
+    .split(/[-_]/)
+    .map((w) => (w ? w[0].toUpperCase() + w.slice(1) : ''))
+    .join(' ');
+}
 
 function sha256File(filePath) {
   const data = readFileSync(filePath);
@@ -337,7 +339,7 @@ async function main() {
 
       manifest.bundles.push({
         category,
-        label: CATEGORY_LABELS[category] || category,
+        label: labelFor(category),
         fileName: bundleName,
         path: `/downloads/bundles/${bundleName}`,
         size,

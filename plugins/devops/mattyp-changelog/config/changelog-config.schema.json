@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Changelog Automation Config",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["sources", "template", "output_path", "quality_threshold", "pr_config"],
+  "properties": {
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["type", "config"],
+        "properties": {
+          "type": { "type": "string", "enum": ["github", "slack", "git"] },
+          "config": { "type": "object" }
+        }
+      }
+    },
+    "template": { "type": "string", "minLength": 1 },
+    "output_path": { "type": "string", "minLength": 1 },
+    "quality_threshold": { "type": "number", "minimum": 0, "maximum": 100, "default": 80 },
+    "pr_config": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["base_branch", "labels", "auto_merge"],
+      "properties": {
+        "base_branch": { "type": "string", "minLength": 1, "default": "main" },
+        "labels": { "type": "array", "items": { "type": "string" }, "default": ["documentation", "changelog"] },
+        "auto_merge": { "type": "boolean", "default": false }
+      }
+    }
+  }
+}
