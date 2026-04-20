@@ -260,24 +260,6 @@
       "featured": false
     },
     {
-      "id": "finance",
-      "name": "Finance",
-      "description": "Financial modeling, trading strategies, and quantitative analysis",
-      "icon": "dollar-sign",
-      "color": "#15803D",
-      "category": "finance",
-      "featured": false
-    },
-    {
-      "id": "automation",
-      "name": "Automation",
-      "description": "Workflow automation, task scheduling, and process orchestration",
-      "icon": "settings",
-      "color": "#525252",
-      "category": "automation",
-      "featured": false
-    },
-    {
       "id": "examples",
       "name": "Examples & Templates",
       "description": "Starter templates, examples, and reference implementations",
@@ -298,6 +280,7 @@
   ],
   "meta": {
     "version": "1.0.0",
-    "lastUpdated": "2026-02-19"
+    "lastUpdated": "2026-02-19",
+    "totalPacks": 28
   }
 }
