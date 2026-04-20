@@ -7,6 +7,8 @@ on:
       - 'plugins/**'
       - '.claude-plugin/**'
       - 'marketplace/**'
+      - 'README.md'
+      - 'scripts/generate-readme-toc.mjs'
       - '.github/workflows/validate-plugins.yml'
   push:
     branches: [ main ]
@@ -28,6 +30,9 @@ jobs:
 
       - name: Validate catalog invariants (FS path = category)
         run: python3 scripts/validate-catalog-invariants.py
+
+      - name: Verify README TOC is in sync with catalog
+        run: node scripts/generate-readme-toc.mjs --check
 
       - name: Validate JSON files
         run: |

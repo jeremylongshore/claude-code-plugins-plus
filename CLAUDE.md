@@ -79,6 +79,13 @@ Run `pnpm run sync-marketplace` after editing `.extended.json`. CI fails if out 
 | `marketplace/src/data/skills-catalog.json` | `discover-skills.mjs` (build step 1) |
 | `marketplace/src/data/unified-search-index.json` | `generate-unified-search.mjs` (build step 3) |
 | `marketplace/src/data/cowork-manifest.json` | `build-cowork-zips.mjs` (build step 4) |
+| `README.md` TOC block (between `AUTO-TOC:START`/`AUTO-TOC:END` sentinels) | `node scripts/generate-readme-toc.mjs` (CI-enforced via `--check`) |
+
+After editing the catalog (`marketplace.extended.json`), run both syncs:
+```bash
+pnpm run sync-marketplace
+node scripts/generate-readme-toc.mjs
+```
 
 ## Data Flow
 
