@@ -97,7 +97,9 @@ jobs:
           # Emit as JSON string (jq -c ensures single line)
           echo "packages_json=$(jq -c . /tmp/packages.json)" >> $GITHUB_OUTPUT
           echo "Found $COUNT publishable @intentsolutionsio/* packages"
-          jq -r '.[] | "  \(.name)@\(.version)  (\(.dir))"' /tmp/packages.json | head -20
+          # Use jq slice instead of `| head -20` — SIGPIPE under `set -o pipefail`
+          # was aborting the whole step even though the listing succeeded.
+          jq -r '.[:20] | .[] | "  \(.name)@\(.version)  (\(.dir))"' /tmp/packages.json
           if [ "$COUNT" -gt 20 ]; then
             echo "  ... and $((COUNT - 20)) more"
           fi
