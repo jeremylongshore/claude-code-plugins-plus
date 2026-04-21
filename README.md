@@ -114,7 +114,7 @@ Jump to any of the 18 categories below. Plugin counts are catalog totals — aut
 | 📦 | [Packages](#packages) | 5 |
 | ⚡ | [Performance](#performance) | 25 |
 | ✅ | [Productivity](#productivity) | 18 |
-| 🎁 | [SaaS Skill Packs](#saas-skill-packs) | 106 |
+| 🎁 | [SaaS Skill Packs](#saas-skill-packs) | 105 |
 | 🔐 | [Security](#security) | 26 |
 | ✨ | [Skill Enhancers](#skill-enhancers) | 8 |
 | 🧪 | [Testing](#testing) | 26 |
@@ -504,7 +504,7 @@ Jump to any of the 18 categories below. Plugin counts are catalog totals — aut
 
 ### SaaS Skill Packs
 
-🎁 **106 plugins** · category slug: `saas-packs`
+🎁 **105 plugins** · category slug: `saas-packs`
 
 | Plugin | Description |
 |--------|-------------|
@@ -610,7 +610,6 @@ Jump to any of the 18 categories below. Plugin counts are catalog totals — aut
 | `veeva-pack` | Claude Code skill pack for Veeva (24 skills) |
 | `vercel-pack` | Complete Vercel integration skill pack with 30 skills covering deployments, edge functions, preview environments, performance… |
 | `webflow-pack` | Claude Code skill pack for Webflow (24 skills) |
-| `windsurf` | Windsurf AI IDE skill pack with 30 skills covering code flows, AI workflows, workspace management, and productivity features. |
 | `windsurf-pack` | Complete Windsurf integration skill pack with 30 skills covering AI code editing, Cascade workflows, codebase understanding, and developer… |
 | `wispr-pack` | Claude Code skill pack for Wispr (18 skills) |
 | `workhuman-pack` | Claude Code skill pack for Workhuman (18 skills) |
