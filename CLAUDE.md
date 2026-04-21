@@ -91,7 +91,7 @@ Run `pnpm run sync-marketplace` after editing `.extended.json`. CI fails if out 
 | `.github/workflows/publish-all-packages.yml` | Manual dispatch with `confirm="publish all"` | One-shot mass publish of every `@intentsolutionsio/*` package; idempotent |
 | `.github/workflows/publish-changed-packages.yml` | Push to main touching `plugins/**` | Publishes each changed `@intentsolutionsio/*` package whose declared version isn't on npm yet |
 | `.github/workflows/update-npm-stats.yml` | Daily cron (00:15 UTC) | Refreshes `marketplace/src/data/npm-stats.json` + README NPM-STATS block |
-| `.github/workflows/slack-daily-downloads.yml` | Daily cron (18:00 UTC = 1pm Central) | Posts totals + top-5 to Slack via `SLACK_WEBHOOK_URL` secret |
+| `.github/workflows/slack-daily-downloads.yml` | Daily cron (18:00 UTC = 1pm Central) | Posts totals + top-5 to #operation-hired (pings `<@U099CBRE7CL>`) via `SLACK_OPERATION_HIRED_WEBHOOK_URL` secret — per `/slack` skill conventions |
 
 Versioning is manual: bump a plugin's `package.json` `version` when you want a new release. The incremental publish workflow mirrors the declared version; it never auto-bumps.
 
