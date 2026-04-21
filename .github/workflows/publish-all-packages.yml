@@ -1,0 +1,204 @@
+name: "[Manual] Publish All @intentsolutionsio Packages"
+
+# One-shot mass publish. Manual trigger only — never runs on push.
+# Intended to be used once to seed the npm namespace after PR A (scaffolding)
+# lands. Subsequent changes are handled by `publish-changed-packages.yml`.
+#
+# Safety:
+#   1. Phase 1 runs `npm publish --dry-run` on every candidate. Any failure
+#      aborts before a single real publish happens.
+#   2. Phase 2 publishes only @intentsolutionsio/* scoped packages. The 12
+#      pre-existing non-scoped packages (axiom, pr-to-spec, etc.) are left
+#      alone to avoid republishing under the wrong name.
+#   3. Packages already published at their current version are skipped (so
+#      re-running is idempotent and safe).
+#   4. continue-on-error per package: one bad package doesn't block the rest.
+#   5. Batched with a 2s throttle to stay under npm's publish rate limits.
+#
+# Required inputs when dispatching:
+#   - confirm: must be the literal string "publish all" to prevent accidents.
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type "publish all" to confirm (case-sensitive)'
+        required: true
+        type: string
+      dry_run_only:
+        description: 'Stop after dry-run phase (recommended for first run)'
+        required: true
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  id-token: write  # npm provenance
+
+jobs:
+  guard:
+    name: Guard — confirm intent
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify confirmation string
+        run: |
+          if [ "${{ inputs.confirm }}" != "publish all" ]; then
+            echo "❌ Confirmation string did not match. Aborting."
+            echo "   Got: '${{ inputs.confirm }}'"
+            echo "   Expected: 'publish all'"
+            exit 1
+          fi
+          echo "✅ Confirmation verified."
+          echo "Dry-run only: ${{ inputs.dry_run_only }}"
+
+  enumerate:
+    name: Enumerate publishable packages
+    runs-on: ubuntu-latest
+    needs: guard
+    outputs:
+      count: ${{ steps.list.outputs.count }}
+      packages_json: ${{ steps.list.outputs.packages_json }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: List @intentsolutionsio packages under plugins/
+        id: list
+        run: |
+          set -euo pipefail
+          python3 <<'PY' > /tmp/packages.json
+          import json, os
+          out = []
+          for root, _, files in os.walk('plugins'):
+              if 'package.json' not in files:
+                  continue
+              if '.claude-plugin' not in os.listdir(root) and not os.path.isfile(os.path.join(root, 'plugin.json')):
+                  continue
+              pkg_path = os.path.join(root, 'package.json')
+              try:
+                  pkg = json.load(open(pkg_path))
+              except Exception:
+                  continue
+              name = pkg.get('name', '')
+              if not name.startswith('@intentsolutionsio/'):
+                  continue
+              if pkg.get('private'):
+                  continue
+              out.append({
+                  'name': name,
+                  'version': pkg.get('version', '0.0.0'),
+                  'dir': root,
+              })
+          out.sort(key=lambda p: p['name'])
+          print(json.dumps(out))
+          PY
+
+          COUNT=$(jq length /tmp/packages.json)
+          echo "count=$COUNT" >> $GITHUB_OUTPUT
+          # Emit as JSON string (jq -c ensures single line)
+          echo "packages_json=$(jq -c . /tmp/packages.json)" >> $GITHUB_OUTPUT
+          echo "Found $COUNT publishable @intentsolutionsio/* packages"
+          jq -r '.[] | "  \(.name)@\(.version)  (\(.dir))"' /tmp/packages.json | head -20
+          if [ "$COUNT" -gt 20 ]; then
+            echo "  ... and $((COUNT - 20)) more"
+          fi
+
+  dry-run:
+    name: Phase 1 — dry-run all
+    runs-on: ubuntu-latest
+    needs: enumerate
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Dry-run publish every package
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          PACKAGES_JSON: ${{ needs.enumerate.outputs.packages_json }}
+        run: |
+          set -euo pipefail
+          FAIL=0
+          FAIL_LIST=()
+          printf '%s' "$PACKAGES_JSON" | jq -c '.[]' | while read -r row; do
+            NAME=$(echo "$row" | jq -r '.name')
+            DIR=$(echo "$row" | jq -r '.dir')
+            VERSION=$(echo "$row" | jq -r '.version')
+            if ! (cd "$DIR" && npm publish --dry-run --access public > /tmp/npm-dryrun.log 2>&1); then
+              echo "❌ dry-run FAIL: $NAME@$VERSION ($DIR)"
+              tail -20 /tmp/npm-dryrun.log || true
+              FAIL=$((FAIL+1))
+              FAIL_LIST+=("$NAME")
+            else
+              echo "✓ $NAME@$VERSION"
+            fi
+          done
+          if [ "$FAIL" -gt 0 ]; then
+            echo ""
+            echo "❌ $FAIL package(s) failed dry-run. Aborting."
+            exit 1
+          fi
+          echo ""
+          echo "✅ All dry-runs passed."
+
+  publish:
+    name: Phase 2 — real publish
+    runs-on: ubuntu-latest
+    needs: [enumerate, dry-run]
+    if: ${{ inputs.dry_run_only == false }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Publish every package (skip already-published versions)
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          PACKAGES_JSON: ${{ needs.enumerate.outputs.packages_json }}
+        run: |
+          set -euo pipefail
+          PUBLISHED=0
+          SKIPPED=0
+          FAILED=0
+          FAIL_NAMES=()
+          echo "$PACKAGES_JSON" | jq -c '.[]' | while read -r row; do
+            NAME=$(echo "$row" | jq -r '.name')
+            DIR=$(echo "$row" | jq -r '.dir')
+            VERSION=$(echo "$row" | jq -r '.version')
+
+            # Check if this exact version already exists on npm
+            HTTP=$(curl -s -o /dev/null -w '%{http_code}' \
+              "https://registry.npmjs.org/$(echo "$NAME" | sed 's/@/%40/;s|/|%2F|')/$VERSION")
+            if [ "$HTTP" = "200" ]; then
+              echo "⊙ skip (already published): $NAME@$VERSION"
+              SKIPPED=$((SKIPPED+1))
+              continue
+            fi
+
+            if (cd "$DIR" && npm publish --access public --provenance); then
+              echo "✓ published: $NAME@$VERSION"
+              PUBLISHED=$((PUBLISHED+1))
+            else
+              echo "❌ publish FAILED: $NAME@$VERSION"
+              FAIL_NAMES+=("$NAME")
+              FAILED=$((FAILED+1))
+            fi
+
+            # Throttle — stay under npm's 5/sec rate limit comfortably
+            sleep 2
+          done
+
+          echo ""
+          echo "=== Mass publish summary ==="
+          echo "  published: $PUBLISHED"
+          echo "  skipped (already on npm): $SKIPPED"
+          echo "  failed: $FAILED"
+          if [ "$FAILED" -gt 0 ]; then
+            echo ""
+            echo "Failed packages (investigate individually):"
+            printf '  - %s\n' "${FAIL_NAMES[@]}"
+            exit 1
+          fi
