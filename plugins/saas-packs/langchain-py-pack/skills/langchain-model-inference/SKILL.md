@@ -82,13 +82,20 @@ networks.
 from langchain_core.messages import AIMessage
 
 def extract_text(msg: AIMessage) -> str:
-    """Safe on both provider shapes. Works for streaming deltas too."""
+    """Safe on both provider shapes. Works for streaming deltas too.
+
+    Handles both dict blocks (provider-native) and typed block objects
+    (LangChain 1.0 wrappers) — which Gemini, OpenAI tools, and future
+    SDK versions may return.
+    """
     if isinstance(msg.content, str):
         return msg.content
     parts = []
     for block in msg.content:
-        if isinstance(block, dict) and block.get("type") == "text":
-            parts.append(block["text"])
+        # Block may be a dict (provider-native) or a typed object (1.0 wrapper)
+        block_type = block.get("type") if isinstance(block, dict) else getattr(block, "type", None)
+        if block_type == "text":
+            parts.append(block["text"] if isinstance(block, dict) else block.text)
     return "".join(parts)
 ```
 
@@ -102,20 +109,26 @@ reference and streaming-delta shape.
 ```python
 from langchain_core.language_models import BaseChatModel
 
+# Version-safe defaults applied to every model the factory builds.
+# Callers can override via **kwargs.
+_SAFE_DEFAULTS = {"timeout": 30, "max_retries": 2}
+
 def chat_model(provider: str, **kwargs) -> BaseChatModel:
+    defaults = {**_SAFE_DEFAULTS, **kwargs}  # caller's kwargs win
     if provider == "anthropic":
-        return ChatAnthropic(model="claude-sonnet-4-6", **kwargs)
+        return ChatAnthropic(model="claude-sonnet-4-6", **defaults)
     if provider == "openai":
-        return ChatOpenAI(model="gpt-4o", **kwargs)
+        return ChatOpenAI(model="gpt-4o", **defaults)
     if provider == "gemini":
         from langchain_google_genai import ChatGoogleGenerativeAI
-        return ChatGoogleGenerativeAI(model="gemini-2.5-pro", **kwargs)
+        return ChatGoogleGenerativeAI(model="gemini-2.5-pro", **defaults)
     raise ValueError(f"Unknown provider: {provider!r}")
 ```
 
-A factory centralizes the version-safe defaults from Step 1 and the structured-output
-method pick from Step 5. Chains depend on the `BaseChatModel` protocol, not the
-concrete class.
+A factory centralizes the version-safe defaults from Step 1 (`timeout=30`,
+`max_retries=2`) and the structured-output method pick from Step 5. Chains depend
+on the `BaseChatModel` protocol, not the concrete class. Callers override with
+`chat_model("openai", timeout=60)` when they need it.
 
 ### Step 4 — Count tokens correctly during streaming
 
