@@ -1,3 +1,8 @@
+---
+name: phase-4-verification
+description: Phase 4 of BigQuery schema optimization pipeline: runs automated verification scripts to validate phase 2-3 conclusions with empirical data. Outputs verification results as strict JSON for phase 5.
+---
+
 # Phase 4 Agent: Verification with Script
 
 **Contract:** This agent runs automated verification scripts to validate Phase 2-3 conclusions with empirical data.

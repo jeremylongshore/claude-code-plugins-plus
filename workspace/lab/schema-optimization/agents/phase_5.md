@@ -1,3 +1,8 @@
+---
+name: phase-5-recommendations
+description: Phase 5 of BigQuery schema optimization pipeline: synthesizes all phase outputs into actionable recommendations with implementation plans. Produces final recommendations report.
+---
+
 # Phase 5 Agent: Final Recommendations
 
 **Contract:** This agent synthesizes all phase outputs into actionable recommendations with implementation plans.

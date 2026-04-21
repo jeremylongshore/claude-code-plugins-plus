@@ -1,3 +1,8 @@
+---
+name: phase-2-field-utilization
+description: Phase 2 of BigQuery schema optimization pipeline: analyzes field usage patterns to identify unused or low-utilization fields. Reads phase 1 output and produces utilization report as strict JSON for phase 3.
+---
+
 # Phase 2 Agent: Field Utilization Analysis
 
 **Contract:** This agent analyzes field usage patterns to identify unused or low-utilization fields.

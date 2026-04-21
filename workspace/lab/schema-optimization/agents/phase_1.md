@@ -1,3 +1,8 @@
+---
+name: phase-1-schema-analysis
+description: Phase 1 of BigQuery schema optimization pipeline: reads schema exports and produces initial analysis report with table counts, field types, naming patterns, and flagged issues. Outputs strict JSON for phase 2.
+---
+
 # Phase 1 Agent: Initial Schema Analysis
 
 **Contract:** This agent reads BigQuery schema exports and produces a comprehensive initial analysis.

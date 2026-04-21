@@ -1,3 +1,8 @@
+---
+name: phase-3-impact-assessment
+description: Phase 3 of BigQuery schema optimization pipeline: evaluates the impact of proposed schema changes on systems, queries, and costs. Reads phase 1-2 outputs and produces impact assessment as strict JSON for phase 4.
+---
+
 # Phase 3 Agent: Impact Assessment
 
 **Contract:** This agent evaluates the impact of proposed schema changes on systems, queries, and costs.
