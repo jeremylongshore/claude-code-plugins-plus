@@ -1,0 +1,41 @@
+{
+  "name": "@intentsolutionsio/snapshot-test-manager",
+  "version": "1.0.0",
+  "description": "Manage and update snapshot tests with intelligent diff analysis and selective updates",
+  "keywords": [
+    "testing",
+    "snapshot",
+    "jest",
+    "vitest",
+    "diff-analysis",
+    "test-management",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/testing/snapshot-test-manager"
+  },
+  "homepage": "https://tonsofskills.com/plugins/snapshot-test-manager",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugin Hub",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install snapshot-test-manager\\\\n  or /plugin install snapshot-test-manager@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

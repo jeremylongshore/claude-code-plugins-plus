@@ -1,0 +1,40 @@
+{
+  "name": "@intentsolutionsio/service-mesh-configurator",
+  "version": "1.0.0",
+  "description": "Configure service mesh (Istio, Linkerd) for microservices",
+  "keywords": [
+    "service-mesh",
+    "istio",
+    "linkerd",
+    "microservices",
+    "devops",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/devops/service-mesh-configurator"
+  },
+  "homepage": "https://tonsofskills.com/plugins/service-mesh-configurator",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install service-mesh-configurator\\\\n  or /plugin install service-mesh-configurator@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

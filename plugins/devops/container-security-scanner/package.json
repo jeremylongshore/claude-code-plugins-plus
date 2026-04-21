@@ -1,0 +1,41 @@
+{
+  "name": "@intentsolutionsio/container-security-scanner",
+  "version": "1.0.0",
+  "description": "Scan containers for vulnerabilities using Trivy, Snyk, and other security tools",
+  "keywords": [
+    "security",
+    "containers",
+    "scanning",
+    "vulnerabilities",
+    "trivy",
+    "devops",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/devops/container-security-scanner"
+  },
+  "homepage": "https://tonsofskills.com/plugins/container-security-scanner",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install container-security-scanner\\\\n  or /plugin install container-security-scanner@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

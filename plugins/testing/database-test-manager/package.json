@@ -1,0 +1,42 @@
+{
+  "name": "@intentsolutionsio/database-test-manager",
+  "version": "1.0.0",
+  "description": "Database testing utilities with test data setup, transaction rollback, and schema validation",
+  "keywords": [
+    "testing",
+    "database",
+    "sql",
+    "test-data",
+    "fixtures",
+    "migrations",
+    "transactions",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/testing/database-test-manager"
+  },
+  "homepage": "https://tonsofskills.com/plugins/database-test-manager",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugin Hub",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install database-test-manager\\\\n  or /plugin install database-test-manager@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

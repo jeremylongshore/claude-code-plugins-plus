@@ -1,0 +1,44 @@
+{
+  "name": "@intentsolutionsio/jeremy-genkit-pro",
+  "version": "2.1.0",
+  "description": "Firebase Genkit expert for production-ready AI workflows with RAG and tool calling",
+  "keywords": [
+    "firebase",
+    "genkit",
+    "ai-flows",
+    "rag",
+    "monitoring",
+    "gemini",
+    "vertex-ai",
+    "vector-search",
+    "production-ai",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/ai-ml/jeremy-genkit-pro"
+  },
+  "homepage": "https://tonsofskills.com/plugins/jeremy-genkit-pro",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands",
+    "agents"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install jeremy-genkit-pro\\\\n  or /plugin install jeremy-genkit-pro@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

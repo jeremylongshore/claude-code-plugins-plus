@@ -1,0 +1,40 @@
+{
+  "name": "@intentsolutionsio/prettier-markdown-hook",
+  "version": "1.1.0",
+  "description": "Automatically formats markdown files with prettier on Stop hook, with configurable organization and path exclusions",
+  "keywords": [
+    "prettier",
+    "markdown",
+    "formatting",
+    "automation",
+    "hook",
+    "stop-hook",
+    "productivity",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/productivity/prettier-markdown-hook"
+  },
+  "homepage": "https://tonsofskills.com/plugins/prettier-markdown-hook",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Terry Li"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "hooks",
+    "scripts"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install prettier-markdown-hook\\\\n  or /plugin install prettier-markdown-hook@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

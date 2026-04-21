@@ -1,0 +1,39 @@
+{
+  "name": "@intentsolutionsio/neural-network-builder",
+  "version": "1.0.0",
+  "description": "Build and configure neural network architectures",
+  "keywords": [
+    "neural-networks",
+    "deep-learning",
+    "architecture",
+    "pytorch",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/ai-ml/neural-network-builder"
+  },
+  "homepage": "https://tonsofskills.com/plugins/neural-network-builder",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install neural-network-builder\\\\n  or /plugin install neural-network-builder@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

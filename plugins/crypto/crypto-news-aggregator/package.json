@@ -1,0 +1,40 @@
+{
+  "name": "@intentsolutionsio/crypto-news-aggregator",
+  "version": "1.0.0",
+  "description": "Aggregate and analyze crypto news from multiple sources with sentiment analysis",
+  "keywords": [
+    "news",
+    "aggregator",
+    "sentiment",
+    "crypto",
+    "media",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/crypto/crypto-news-aggregator"
+  },
+  "homepage": "https://tonsofskills.com/plugins/crypto-news-aggregator",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Intent Solutions IO",
+    "email": "jeremy@intentsolutions.ai",
+    "url": "https://intentsolutions.ai"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install crypto-news-aggregator\\\\n  or /plugin install crypto-news-aggregator@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

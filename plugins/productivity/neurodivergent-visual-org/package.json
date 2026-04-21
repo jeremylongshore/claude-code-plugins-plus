@@ -1,0 +1,46 @@
+{
+  "name": "@intentsolutionsio/neurodivergent-visual-org",
+  "version": "3.1.1",
+  "description": "Create ADHD-friendly visual organizational tools (Mermaid diagrams) optimized for neurodivergent thinking patterns with accessibility modes",
+  "keywords": [
+    "neurodivergent",
+    "adhd",
+    "autism",
+    "executive-dysfunction",
+    "visual-organization",
+    "task-breakdown",
+    "decision-trees",
+    "accessibility",
+    "cognitive-modes",
+    "mode-toggle",
+    "neurotypical",
+    "inclusive-design",
+    "mermaid-diagrams",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/productivity/neurodivergent-visual-org"
+  },
+  "homepage": "https://tonsofskills.com/plugins/neurodivergent-visual-org",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Jack Reis",
+    "email": "hello@jack.digital"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install neurodivergent-visual-org\\\\n  or /plugin install neurodivergent-visual-org@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

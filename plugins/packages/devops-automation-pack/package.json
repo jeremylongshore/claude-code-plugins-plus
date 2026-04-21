@@ -1,0 +1,47 @@
+{
+  "name": "@intentsolutionsio/devops-automation-pack",
+  "version": "1.0.0",
+  "description": "25 professional DevOps plugins for CI/CD, deployment, Docker, Kubernetes, and infrastructure automation. Save 20+ hours of manual work.",
+  "keywords": [
+    "devops",
+    "ci-cd",
+    "docker",
+    "kubernetes",
+    "terraform",
+    "deployment",
+    "infrastructure",
+    "automation",
+    "git",
+    "cicd",
+    "package",
+    "collection",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/packages/devops-automation-pack"
+  },
+  "homepage": "https://tonsofskills.com/plugins/devops-automation-pack",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]",
+    "url": "https://github.com/jeremylongshore"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install devops-automation-pack\\\\n  or /plugin install devops-automation-pack@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

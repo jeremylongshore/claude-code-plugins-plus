@@ -1,0 +1,41 @@
+{
+  "name": "@intentsolutionsio/options-flow-analyzer",
+  "version": "1.0.0",
+  "description": "Track institutional options flow, unusual activity, and smart money movements",
+  "keywords": [
+    "options",
+    "flow",
+    "institutional",
+    "trading",
+    "derivatives",
+    "smart money",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/crypto/options-flow-analyzer"
+  },
+  "homepage": "https://tonsofskills.com/plugins/options-flow-analyzer",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Intent Solutions IO",
+    "email": "jeremy@intentsolutions.ai",
+    "url": "https://intentsolutions.ai"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install options-flow-analyzer\\\\n  or /plugin install options-flow-analyzer@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "name": "@intentsolutionsio/mempool-analyzer",
+  "version": "1.0.0",
+  "description": "Advanced mempool analysis for MEV opportunities, pending transaction monitoring, and gas price optimization",
+  "keywords": [
+    "crypto",
+    "mempool",
+    "mev",
+    "ethereum",
+    "blockchain",
+    "gas",
+    "pending-transactions",
+    "arbitrage",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/crypto/mempool-analyzer"
+  },
+  "homepage": "https://tonsofskills.com/plugins/mempool-analyzer",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Intent Solutions IO",
+    "email": "jeremy@intentsolutions.ai",
+    "url": "https://intentsolutions.ai"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "agents"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install mempool-analyzer\\\\n  or /plugin install mempool-analyzer@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "name": "@intentsolutionsio/calendar-to-workflow",
+  "version": "0.1.0",
+  "description": "Enhances calendar Skills by automating meeting prep, standup notes, and workflow triggers",
+  "keywords": [
+    "calendar",
+    "automation",
+    "meetings",
+    "productivity",
+    "skill-enhancer",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/skill-enhancers/calendar-to-workflow"
+  },
+  "homepage": "https://tonsofskills.com/plugins/calendar-to-workflow",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugins Team",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install calendar-to-workflow\\\\n  or /plugin install calendar-to-workflow@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

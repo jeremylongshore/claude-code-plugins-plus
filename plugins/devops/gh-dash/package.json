@@ -1,0 +1,40 @@
+{
+  "name": "@intentsolutionsio/gh-dash",
+  "version": "1.0.0",
+  "description": "GitHub PR dashboard for Claude Code. View PR status, CI/CD progress, bot comments, and merge PRs directly from your terminal.",
+  "keywords": [
+    "github",
+    "pull-request",
+    "ci-cd",
+    "dashboard",
+    "devops",
+    "merge",
+    "code-review",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/devops/gh-dash"
+  },
+  "homepage": "https://tonsofskills.com/plugins/gh-dash",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Jake Kozloski",
+    "email": "jakozloski@gmail.com"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install gh-dash\\\\n  or /plugin install gh-dash@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

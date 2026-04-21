@@ -1,0 +1,40 @@
+{
+  "name": "@intentsolutionsio/gas-fee-optimizer",
+  "version": "1.0.0",
+  "description": "Optimize transaction gas fees with timing and routing recommendations",
+  "keywords": [
+    "gas",
+    "fees",
+    "ethereum",
+    "optimization",
+    "transaction",
+    "l2",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/crypto/gas-fee-optimizer"
+  },
+  "homepage": "https://tonsofskills.com/plugins/gas-fee-optimizer",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install gas-fee-optimizer\\\\n  or /plugin install gas-fee-optimizer@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

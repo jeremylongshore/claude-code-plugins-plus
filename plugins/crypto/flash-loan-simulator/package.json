@@ -1,0 +1,43 @@
+{
+  "name": "@intentsolutionsio/flash-loan-simulator",
+  "version": "1.0.0",
+  "description": "Simulate and analyze flash loan strategies including arbitrage, liquidations, and collateral swaps",
+  "keywords": [
+    "crypto",
+    "flash-loans",
+    "defi",
+    "aave",
+    "arbitrage",
+    "liquidation",
+    "ethereum",
+    "simulation",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/crypto/flash-loan-simulator"
+  },
+  "homepage": "https://tonsofskills.com/plugins/flash-loan-simulator",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Intent Solutions IO",
+    "email": "jeremy@intentsolutions.ai",
+    "url": "https://intentsolutions.ai"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "agents"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install flash-loan-simulator\\\\n  or /plugin install flash-loan-simulator@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

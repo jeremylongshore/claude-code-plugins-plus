@@ -1,0 +1,44 @@
+{
+  "name": "@intentsolutionsio/jeremy-adk-orchestrator",
+  "version": "2.1.0",
+  "description": "Production ADK orchestrator for A2A protocol and multi-agent coordination on Vertex AI",
+  "keywords": [
+    "vertex-ai",
+    "adk",
+    "agent-development-kit",
+    "a2a-protocol",
+    "multi-agent",
+    "code-execution",
+    "memory-bank",
+    "google-cloud",
+    "agent-engine",
+    "orchestration",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/ai-ml/jeremy-adk-orchestrator"
+  },
+  "homepage": "https://tonsofskills.com/plugins/jeremy-adk-orchestrator",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "agents"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install jeremy-adk-orchestrator\\\\n  or /plugin install jeremy-adk-orchestrator@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

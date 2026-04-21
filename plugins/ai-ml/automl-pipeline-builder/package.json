@@ -1,0 +1,39 @@
+{
+  "name": "@intentsolutionsio/automl-pipeline-builder",
+  "version": "1.0.0",
+  "description": "Build AutoML pipelines",
+  "keywords": [
+    "automl",
+    "automated",
+    "pipeline",
+    "h2o",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/ai-ml/automl-pipeline-builder"
+  },
+  "homepage": "https://tonsofskills.com/plugins/automl-pipeline-builder",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install automl-pipeline-builder\\\\n  or /plugin install automl-pipeline-builder@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

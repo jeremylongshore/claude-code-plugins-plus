@@ -1,0 +1,39 @@
+{
+  "name": "@intentsolutionsio/dataset-splitter",
+  "version": "1.0.0",
+  "description": "Split datasets for training, validation, and testing",
+  "keywords": [
+    "split",
+    "train-test",
+    "validation",
+    "stratify",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/ai-ml/dataset-splitter"
+  },
+  "homepage": "https://tonsofskills.com/plugins/dataset-splitter",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install dataset-splitter\\\\n  or /plugin install dataset-splitter@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

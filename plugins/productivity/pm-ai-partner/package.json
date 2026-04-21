@@ -1,0 +1,43 @@
+{
+  "name": "@intentsolutionsio/pm-ai-partner",
+  "version": "1.1.0",
+  "description": "12 PM-specific agent skills, 6 workflow commands, 3 automation hooks for Product Managers",
+  "keywords": [
+    "product-manager",
+    "pm",
+    "claude-code",
+    "skills",
+    "commands",
+    "hooks",
+    "mcp",
+    "productivity",
+    "ai-partner",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/productivity/pm-ai-partner"
+  },
+  "homepage": "https://tonsofskills.com/plugins/pm-ai-partner",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Ahmed Khaled",
+    "email": "ahmd.khaled.a.mohamed@gmail.com"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands",
+    "hooks"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install pm-ai-partner\\\\n  or /plugin install pm-ai-partner@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

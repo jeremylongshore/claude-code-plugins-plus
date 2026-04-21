@@ -1,0 +1,39 @@
+{
+  "name": "@intentsolutionsio/hyperparameter-tuner",
+  "version": "1.0.0",
+  "description": "Optimize hyperparameters using grid/random/bayesian search",
+  "keywords": [
+    "hyperparameters",
+    "optimization",
+    "tuning",
+    "search",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/ai-ml/hyperparameter-tuner"
+  },
+  "homepage": "https://tonsofskills.com/plugins/hyperparameter-tuner",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install hyperparameter-tuner\\\\n  or /plugin install hyperparameter-tuner@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

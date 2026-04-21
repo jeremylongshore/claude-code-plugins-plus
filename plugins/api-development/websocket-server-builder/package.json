@@ -1,0 +1,38 @@
+{
+  "name": "@intentsolutionsio/websocket-server-builder",
+  "version": "1.0.0",
+  "description": "Build WebSocket servers for real-time bidirectional communication",
+  "keywords": [
+    "websocket",
+    "real-time",
+    "socket.io",
+    "ws",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/api-development/websocket-server-builder"
+  },
+  "homepage": "https://tonsofskills.com/plugins/websocket-server-builder",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install websocket-server-builder\\\\n  or /plugin install websocket-server-builder@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

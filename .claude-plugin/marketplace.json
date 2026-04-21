@@ -10,7 +10,7 @@
     "version": "1.6.0",
     "homepage": "https://github.com/jeremylongshore/claude-code-plugins",
     "pluginRoot": "./plugins",
-    "totalPlugins": 423,
+    "totalPlugins": 422,
     "skillsEnabled": 268,
     "lastUpdated": "2026-04-20"
   },
@@ -6713,24 +6713,6 @@
       },
       "license": "MIT",
       "repository": "https://github.com/wondelai/skills"
-    },
-    {
-      "name": "windsurf",
-      "source": "./plugins/saas-packs/skill-databases/windsurf",
-      "description": "Windsurf AI IDE skill pack with 30 skills covering code flows, AI workflows, workspace management, and productivity features.",
-      "version": "1.0.0",
-      "category": "saas-packs",
-      "keywords": [
-        "windsurf",
-        "ai-ide",
-        "code-editor",
-        "cascade",
-        "ai-coding"
-      ],
-      "author": {
-        "name": "Jeremy Longshore",
-        "email": "jeremy@intentsolutions.io"
-      }
     },
     {
       "name": "abridge-pack",

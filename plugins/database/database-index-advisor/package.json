@@ -1,0 +1,39 @@
+{
+  "name": "@intentsolutionsio/database-index-advisor",
+  "version": "1.0.0",
+  "description": "Analyze query patterns and recommend optimal database indexes with impact analysis",
+  "keywords": [
+    "database",
+    "indexes",
+    "optimization",
+    "performance",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/database/database-index-advisor"
+  },
+  "homepage": "https://tonsofskills.com/plugins/database-index-advisor",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install database-index-advisor\\\\n  or /plugin install database-index-advisor@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

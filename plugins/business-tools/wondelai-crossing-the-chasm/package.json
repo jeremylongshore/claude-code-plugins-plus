@@ -1,0 +1,35 @@
+{
+  "name": "@intentsolutionsio/wondelai-crossing-the-chasm",
+  "version": "1.0.0",
+  "description": "Technology adoption and go-to-market strategy for mainstream markets",
+  "keywords": [
+    "business-tools",
+    "wondelai",
+    "skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/business-tools/wondelai-crossing-the-chasm"
+  },
+  "homepage": "https://tonsofskills.com/plugins/wondelai-crossing-the-chasm",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Wondel.ai"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install wondelai-crossing-the-chasm\\\\n  or /plugin install wondelai-crossing-the-chasm@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

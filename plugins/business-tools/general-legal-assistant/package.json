@@ -1,0 +1,43 @@
+{
+  "name": "@intentsolutionsio/general-legal-assistant",
+  "version": "1.0.0",
+  "description": "AI-powered contract review, risk analysis, document generation, and compliance auditing with 12 skills and 5 parallel agents",
+  "keywords": [
+    "legal",
+    "contracts",
+    "nda",
+    "compliance",
+    "gdpr",
+    "ccpa",
+    "risk-analysis",
+    "terms-of-service",
+    "privacy-policy",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/business-tools/general-legal-assistant"
+  },
+  "homepage": "https://tonsofskills.com/plugins/general-legal-assistant",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Intent Solutions",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "agents"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install general-legal-assistant\\\\n  or /plugin install general-legal-assistant@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

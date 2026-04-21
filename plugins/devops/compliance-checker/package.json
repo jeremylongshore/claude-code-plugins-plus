@@ -1,0 +1,41 @@
+{
+  "name": "@intentsolutionsio/compliance-checker",
+  "version": "1.0.0",
+  "description": "Check infrastructure compliance (SOC2, HIPAA, PCI-DSS)",
+  "keywords": [
+    "compliance",
+    "security",
+    "audit",
+    "soc2",
+    "hipaa",
+    "devops",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/devops/compliance-checker"
+  },
+  "homepage": "https://tonsofskills.com/plugins/compliance-checker",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install compliance-checker\\\\n  or /plugin install compliance-checker@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

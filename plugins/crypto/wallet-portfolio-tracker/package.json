@@ -1,0 +1,41 @@
+{
+  "name": "@intentsolutionsio/wallet-portfolio-tracker",
+  "version": "1.0.0",
+  "description": "Track crypto wallets across multiple chains with portfolio analytics and transaction history",
+  "keywords": [
+    "wallet",
+    "portfolio",
+    "tracking",
+    "blockchain",
+    "defi",
+    "crypto",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/crypto/wallet-portfolio-tracker"
+  },
+  "homepage": "https://tonsofskills.com/plugins/wallet-portfolio-tracker",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Intent Solutions IO",
+    "email": "jeremy@intentsolutions.ai",
+    "url": "https://intentsolutions.ai"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install wallet-portfolio-tracker\\\\n  or /plugin install wallet-portfolio-tracker@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

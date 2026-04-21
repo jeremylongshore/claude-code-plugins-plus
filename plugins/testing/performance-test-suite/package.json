@@ -1,0 +1,40 @@
+{
+  "name": "@intentsolutionsio/performance-test-suite",
+  "version": "1.0.0",
+  "description": "Load testing and performance benchmarking with metrics analysis and bottleneck identification",
+  "keywords": [
+    "testing",
+    "performance",
+    "load-testing",
+    "benchmarking",
+    "stress-testing",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/testing/performance-test-suite"
+  },
+  "homepage": "https://tonsofskills.com/plugins/performance-test-suite",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "agents"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install performance-test-suite\\\\n  or /plugin install performance-test-suite@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "name": "@intentsolutionsio/dex-aggregator-router",
+  "version": "1.0.0",
+  "description": "Find optimal DEX routes for token swaps across multiple exchanges",
+  "keywords": [
+    "dex",
+    "swap",
+    "trading",
+    "defi",
+    "aggregator",
+    "routing",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/crypto/dex-aggregator-router"
+  },
+  "homepage": "https://tonsofskills.com/plugins/dex-aggregator-router",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install dex-aggregator-router\\\\n  or /plugin install dex-aggregator-router@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

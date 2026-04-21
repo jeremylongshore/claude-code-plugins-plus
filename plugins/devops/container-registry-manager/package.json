@@ -1,0 +1,41 @@
+{
+  "name": "@intentsolutionsio/container-registry-manager",
+  "version": "1.0.0",
+  "description": "Manage container registries (ECR, GCR, Harbor)",
+  "keywords": [
+    "registry",
+    "containers",
+    "docker",
+    "ecr",
+    "gcr",
+    "devops",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/devops/container-registry-manager"
+  },
+  "homepage": "https://tonsofskills.com/plugins/container-registry-manager",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install container-registry-manager\\\\n  or /plugin install container-registry-manager@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

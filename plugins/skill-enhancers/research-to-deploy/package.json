@@ -1,0 +1,38 @@
+{
+  "name": "@intentsolutionsio/research-to-deploy",
+  "version": "0.1.0",
+  "description": "Enhances web_search Skill by researching best practices and deploying infrastructure automatically",
+  "keywords": [
+    "deployment",
+    "infrastructure",
+    "automation",
+    "devops",
+    "skill-enhancer",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/skill-enhancers/research-to-deploy"
+  },
+  "homepage": "https://tonsofskills.com/plugins/research-to-deploy",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugins Team",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install research-to-deploy\\\\n  or /plugin install research-to-deploy@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

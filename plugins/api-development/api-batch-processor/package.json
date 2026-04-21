@@ -1,0 +1,38 @@
+{
+  "name": "@intentsolutionsio/api-batch-processor",
+  "version": "1.0.0",
+  "description": "Implement batch API operations with bulk processing and job queues",
+  "keywords": [
+    "batch",
+    "bulk",
+    "queue",
+    "job-processing",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/api-development/api-batch-processor"
+  },
+  "homepage": "https://tonsofskills.com/plugins/api-batch-processor",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install api-batch-processor\\\\n  or /plugin install api-batch-processor@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

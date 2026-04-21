@@ -1,0 +1,39 @@
+{
+  "name": "@intentsolutionsio/distributed-tracing-setup",
+  "version": "1.0.0",
+  "description": "Set up distributed tracing for microservices",
+  "keywords": [
+    "tracing",
+    "observability",
+    "microservices",
+    "opentelemetry",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/performance/distributed-tracing-setup"
+  },
+  "homepage": "https://tonsofskills.com/plugins/distributed-tracing-setup",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install distributed-tracing-setup\\\\n  or /plugin install distributed-tracing-setup@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

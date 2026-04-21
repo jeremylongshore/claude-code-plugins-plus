@@ -1,0 +1,42 @@
+{
+  "name": "@intentsolutionsio/crypto-portfolio-tracker",
+  "version": "1.0.0",
+  "description": "Professional crypto portfolio tracking with real-time prices, PnL analysis, and risk metrics",
+  "keywords": [
+    "crypto",
+    "portfolio",
+    "trading",
+    "investment",
+    "bitcoin",
+    "ethereum",
+    "defi",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/crypto/crypto-portfolio-tracker"
+  },
+  "homepage": "https://tonsofskills.com/plugins/crypto-portfolio-tracker",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Intent Solutions IO",
+    "email": "jeremy@intentsolutions.ai",
+    "url": "https://intentsolutions.ai"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install crypto-portfolio-tracker\\\\n  or /plugin install crypto-portfolio-tracker@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

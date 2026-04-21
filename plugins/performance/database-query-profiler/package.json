@@ -1,0 +1,39 @@
+{
+  "name": "@intentsolutionsio/database-query-profiler",
+  "version": "1.0.0",
+  "description": "Profile and optimize database queries for performance",
+  "keywords": [
+    "database",
+    "query",
+    "profiling",
+    "optimization",
+    "sql",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/performance/database-query-profiler"
+  },
+  "homepage": "https://tonsofskills.com/plugins/database-query-profiler",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install database-query-profiler\\\\n  or /plugin install database-query-profiler@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

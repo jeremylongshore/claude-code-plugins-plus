@@ -1,0 +1,51 @@
+{
+  "name": "@intentsolutionsio/security-pro-pack",
+  "version": "1.0.0",
+  "description": "Professional security tools for Claude Code: vulnerability scanning, compliance, cryptography audit, container & API security",
+  "keywords": [
+    "security",
+    "vulnerability-scanning",
+    "compliance",
+    "hipaa",
+    "pci-dss",
+    "gdpr",
+    "soc2",
+    "cryptography",
+    "crypto-audit",
+    "owasp",
+    "penetration-testing",
+    "container-security",
+    "docker-security",
+    "api-security",
+    "threat-modeling",
+    "stride",
+    "devsecops",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/packages/security-pro-pack"
+  },
+  "homepage": "https://tonsofskills.com/plugins/security-pro-pack",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]",
+    "url": "https://github.com/jeremylongshore"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install security-pro-pack\\\\n  or /plugin install security-pro-pack@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

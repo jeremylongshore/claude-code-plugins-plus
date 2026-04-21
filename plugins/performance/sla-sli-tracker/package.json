@@ -1,0 +1,40 @@
+{
+  "name": "@intentsolutionsio/sla-sli-tracker",
+  "version": "1.0.0",
+  "description": "Track SLAs, SLIs, and SLOs for service reliability",
+  "keywords": [
+    "sla",
+    "sli",
+    "slo",
+    "sre",
+    "reliability",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/performance/sla-sli-tracker"
+  },
+  "homepage": "https://tonsofskills.com/plugins/sla-sli-tracker",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install sla-sli-tracker\\\\n  or /plugin install sla-sli-tracker@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

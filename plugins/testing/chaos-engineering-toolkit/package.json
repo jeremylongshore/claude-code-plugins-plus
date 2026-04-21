@@ -1,0 +1,41 @@
+{
+  "name": "@intentsolutionsio/chaos-engineering-toolkit",
+  "version": "1.0.0",
+  "description": "Chaos testing for resilience with failure injection, latency simulation, and system resilience validation",
+  "keywords": [
+    "testing",
+    "chaos-engineering",
+    "resilience",
+    "failure-injection",
+    "fault-tolerance",
+    "reliability",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/testing/chaos-engineering-toolkit"
+  },
+  "homepage": "https://tonsofskills.com/plugins/chaos-engineering-toolkit",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugin Hub",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "agents"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install chaos-engineering-toolkit\\\\n  or /plugin install chaos-engineering-toolkit@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

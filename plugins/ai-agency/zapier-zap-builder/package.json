@@ -1,0 +1,40 @@
+{
+  "name": "@intentsolutionsio/zapier-zap-builder",
+  "version": "1.0.0",
+  "description": "Create multi-step Zapier Zaps with filters, paths, and formatters",
+  "keywords": [
+    "zapier",
+    "zap",
+    "automation",
+    "integration",
+    "workflow",
+    "ai-agency",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/ai-agency/zapier-zap-builder"
+  },
+  "homepage": "https://tonsofskills.com/plugins/zapier-zap-builder",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugin Hub",
+    "url": "https://github.com/jeremylongshore/claude-code-plugins"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install zapier-zap-builder\\\\n  or /plugin install zapier-zap-builder@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

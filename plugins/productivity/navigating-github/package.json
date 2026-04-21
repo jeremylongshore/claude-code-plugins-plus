@@ -1,0 +1,45 @@
+{
+  "name": "@intentsolutionsio/navigating-github",
+  "version": "1.0.0",
+  "description": "Adaptive GitHub companion for all skill levels. AI-driven assessment that meets you where you are — from first commit to team workflows.",
+  "keywords": [
+    "github",
+    "git",
+    "beginner",
+    "intermediate",
+    "advanced",
+    "vibe-coding",
+    "version-control",
+    "collaboration",
+    "learning",
+    "onboarding",
+    "adaptive",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/productivity/navigating-github"
+  },
+  "homepage": "https://tonsofskills.com/plugins/navigating-github",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install navigating-github\\\\n  or /plugin install navigating-github@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

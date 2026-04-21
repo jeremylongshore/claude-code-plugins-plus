@@ -1,0 +1,49 @@
+{
+  "name": "@intentsolutionsio/creator-studio-pack",
+  "version": "1.0.0",
+  "description": "Complete plugin suite for builder-filmmakers: Build products AND create viral videos explaining them. 20 plugins covering documentation, video production, content strategy, and workflow optimization.",
+  "keywords": [
+    "video",
+    "content creation",
+    "youtube",
+    "filmmaking",
+    "creator",
+    "documentation",
+    "screencast",
+    "tutorial",
+    "video editing",
+    "content strategy",
+    "distribution",
+    "thumbnails",
+    "subtitles",
+    "repurposing",
+    "batch recording",
+    "analytics",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/packages/creator-studio-pack"
+  },
+  "homepage": "https://tonsofskills.com/plugins/creator-studio-pack",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremylongshore@gmail.com"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install creator-studio-pack\\\\n  or /plugin install creator-studio-pack@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

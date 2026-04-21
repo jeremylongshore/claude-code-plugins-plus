@@ -1,0 +1,35 @@
+{
+  "name": "@intentsolutionsio/wondelai-cro-methodology",
+  "version": "1.0.0",
+  "description": "Customer-centric conversion rate optimization methodology",
+  "keywords": [
+    "business-tools",
+    "wondelai",
+    "skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/business-tools/wondelai-cro-methodology"
+  },
+  "homepage": "https://tonsofskills.com/plugins/wondelai-cro-methodology",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Wondel.ai"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install wondelai-cro-methodology\\\\n  or /plugin install wondelai-cro-methodology@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

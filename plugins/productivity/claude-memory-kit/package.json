@@ -1,0 +1,37 @@
+{
+  "name": "@intentsolutionsio/claude-memory-kit",
+  "version": "1.0.0",
+  "description": "5 Claude Code skills for context management. Save, load, update, share, and audit session memory across resets.",
+  "keywords": [
+    "memory",
+    "context",
+    "skills",
+    "session",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/productivity/claude-memory-kit"
+  },
+  "homepage": "https://tonsofskills.com/plugins/claude-memory-kit",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "builtbyzac"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install claude-memory-kit\\\\n  or /plugin install claude-memory-kit@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

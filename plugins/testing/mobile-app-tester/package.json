@@ -1,0 +1,43 @@
+{
+  "name": "@intentsolutionsio/mobile-app-tester",
+  "version": "1.0.0",
+  "description": "Mobile app test automation with Appium, Detox, XCUITest - test iOS and Android apps",
+  "keywords": [
+    "testing",
+    "mobile",
+    "appium",
+    "detox",
+    "xcuitest",
+    "espresso",
+    "ios",
+    "android",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/testing/mobile-app-tester"
+  },
+  "homepage": "https://tonsofskills.com/plugins/mobile-app-tester",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugin Hub",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install mobile-app-tester\\\\n  or /plugin install mobile-app-tester@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

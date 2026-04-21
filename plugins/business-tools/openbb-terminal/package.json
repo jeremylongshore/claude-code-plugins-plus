@@ -1,0 +1,51 @@
+{
+  "name": "@intentsolutionsio/openbb-terminal",
+  "version": "1.0.0",
+  "description": "Open-source investment research terminal integration - equity analysis, crypto tracking, macro indicators, portfolio optimization, and AI-powered financial insights using OpenBB Platform",
+  "keywords": [
+    "finance",
+    "investment",
+    "openbb",
+    "stocks",
+    "crypto",
+    "portfolio",
+    "trading",
+    "financial-analysis",
+    "market-data",
+    "equity-research",
+    "options",
+    "forex",
+    "macroeconomics",
+    "quant",
+    "ai-finance",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/business-tools/openbb-terminal"
+  },
+  "homepage": "https://tonsofskills.com/plugins/openbb-terminal",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@claudecodeplugins.io",
+    "url": "https://github.com/jeremylongshore"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands",
+    "agents"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install openbb-terminal\\\\n  or /plugin install openbb-terminal@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

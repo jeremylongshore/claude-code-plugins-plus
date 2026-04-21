@@ -1,0 +1,38 @@
+{
+  "name": "@intentsolutionsio/api-authentication-builder",
+  "version": "1.0.0",
+  "description": "Build authentication systems with JWT, OAuth2, and API keys",
+  "keywords": [
+    "authentication",
+    "jwt",
+    "oauth",
+    "security",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/api-development/api-authentication-builder"
+  },
+  "homepage": "https://tonsofskills.com/plugins/api-authentication-builder",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install api-authentication-builder\\\\n  or /plugin install api-authentication-builder@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "name": "@intentsolutionsio/browser-compatibility-tester",
+  "version": "2.0.0",
+  "description": "Cross-browser testing with Playwright, BrowserStack, Sauce Labs, LambdaTest, and Kobiton - test across Chrome, Firefox, Safari, Edge on real devices",
+  "keywords": [
+    "testing",
+    "cross-browser",
+    "browserstack",
+    "sauce-labs",
+    "lambdatest",
+    "kobiton",
+    "selenium",
+    "playwright",
+    "compatibility",
+    "mobile-testing",
+    "real-device",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/testing/browser-compatibility-tester"
+  },
+  "homepage": "https://tonsofskills.com/plugins/browser-compatibility-tester",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugin Hub",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install browser-compatibility-tester\\\\n  or /plugin install browser-compatibility-tester@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

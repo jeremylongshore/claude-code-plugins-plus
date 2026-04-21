@@ -1,0 +1,35 @@
+{
+  "name": "@intentsolutionsio/wondelai-design-sprint",
+  "version": "1.0.0",
+  "description": "Google Ventures Design Sprint methodology for rapid prototyping",
+  "keywords": [
+    "productivity",
+    "wondelai",
+    "skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/productivity/wondelai-design-sprint"
+  },
+  "homepage": "https://tonsofskills.com/plugins/wondelai-design-sprint",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Wondel.ai"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install wondelai-design-sprint\\\\n  or /plugin install wondelai-design-sprint@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

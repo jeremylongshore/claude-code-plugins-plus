@@ -1,0 +1,41 @@
+{
+  "name": "@intentsolutionsio/market-sentiment-analyzer",
+  "version": "1.0.0",
+  "description": "Analyze market sentiment from social media, news, and on-chain data",
+  "keywords": [
+    "sentiment",
+    "analysis",
+    "social",
+    "news",
+    "market",
+    "crypto",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/crypto/market-sentiment-analyzer"
+  },
+  "homepage": "https://tonsofskills.com/plugins/market-sentiment-analyzer",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Intent Solutions IO",
+    "email": "jeremy@intentsolutions.ai",
+    "url": "https://intentsolutions.ai"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install market-sentiment-analyzer\\\\n  or /plugin install market-sentiment-analyzer@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

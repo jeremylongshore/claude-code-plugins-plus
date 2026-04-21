@@ -1,0 +1,41 @@
+{
+  "name": "@intentsolutionsio/gitops-workflow-builder",
+  "version": "1.0.0",
+  "description": "Build GitOps workflows with ArgoCD and Flux",
+  "keywords": [
+    "gitops",
+    "argocd",
+    "flux",
+    "cd",
+    "kubernetes",
+    "devops",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/devops/gitops-workflow-builder"
+  },
+  "homepage": "https://tonsofskills.com/plugins/gitops-workflow-builder",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install gitops-workflow-builder\\\\n  or /plugin install gitops-workflow-builder@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

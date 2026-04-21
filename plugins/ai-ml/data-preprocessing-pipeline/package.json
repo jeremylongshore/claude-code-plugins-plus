@@ -1,0 +1,39 @@
+{
+  "name": "@intentsolutionsio/data-preprocessing-pipeline",
+  "version": "1.0.0",
+  "description": "Automated data preprocessing and cleaning pipelines",
+  "keywords": [
+    "preprocessing",
+    "cleaning",
+    "etl",
+    "pipeline",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/ai-ml/data-preprocessing-pipeline"
+  },
+  "homepage": "https://tonsofskills.com/plugins/data-preprocessing-pipeline",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install data-preprocessing-pipeline\\\\n  or /plugin install data-preprocessing-pipeline@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

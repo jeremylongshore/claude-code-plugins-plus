@@ -1,0 +1,35 @@
+{
+  "name": "@intentsolutionsio/wondelai-lean-startup",
+  "version": "1.0.0",
+  "description": "Lean Startup methodology for validated learning and MVPs",
+  "keywords": [
+    "productivity",
+    "wondelai",
+    "skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/productivity/wondelai-lean-startup"
+  },
+  "homepage": "https://tonsofskills.com/plugins/wondelai-lean-startup",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Wondel.ai"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install wondelai-lean-startup\\\\n  or /plugin install wondelai-lean-startup@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

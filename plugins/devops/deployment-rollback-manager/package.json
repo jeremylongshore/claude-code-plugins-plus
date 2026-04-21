@@ -1,0 +1,40 @@
+{
+  "name": "@intentsolutionsio/deployment-rollback-manager",
+  "version": "1.0.0",
+  "description": "Manage and execute deployment rollbacks with safety checks",
+  "keywords": [
+    "rollback",
+    "deployment",
+    "kubernetes",
+    "recovery",
+    "devops",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/devops/deployment-rollback-manager"
+  },
+  "homepage": "https://tonsofskills.com/plugins/deployment-rollback-manager",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install deployment-rollback-manager\\\\n  or /plugin install deployment-rollback-manager@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

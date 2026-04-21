@@ -1,0 +1,40 @@
+{
+  "name": "@intentsolutionsio/discovery-questionnaire",
+  "version": "1.0.0",
+  "description": "Generate custom discovery questionnaires for AI agency prospects",
+  "keywords": [
+    "discovery",
+    "questionnaire",
+    "client",
+    "sales",
+    "agency",
+    "ai-agency",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/ai-agency/discovery-questionnaire"
+  },
+  "homepage": "https://tonsofskills.com/plugins/discovery-questionnaire",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugin Hub",
+    "url": "https://github.com/jeremylongshore/claude-code-plugins"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install discovery-questionnaire\\\\n  or /plugin install discovery-questionnaire@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "name": "@intentsolutionsio/load-balancer-tester",
+  "version": "1.0.0",
+  "description": "Test load balancing strategies with traffic distribution validation and failover testing",
+  "keywords": [
+    "testing",
+    "load-balancer",
+    "traffic-distribution",
+    "failover",
+    "high-availability",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/testing/load-balancer-tester"
+  },
+  "homepage": "https://tonsofskills.com/plugins/load-balancer-tester",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugin Hub",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install load-balancer-tester\\\\n  or /plugin install load-balancer-tester@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

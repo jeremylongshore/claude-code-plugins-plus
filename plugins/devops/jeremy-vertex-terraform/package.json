@@ -1,0 +1,41 @@
+{
+  "name": "@intentsolutionsio/jeremy-vertex-terraform",
+  "version": "2.0.0",
+  "description": "Terraform configurations for Vertex AI platform and Agent Engine",
+  "keywords": [
+    "terraform",
+    "vertex-ai",
+    "gemini",
+    "model-garden",
+    "infrastructure",
+    "iac",
+    "ml-ops",
+    "ai-infrastructure",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/devops/jeremy-vertex-terraform"
+  },
+  "homepage": "https://tonsofskills.com/plugins/jeremy-vertex-terraform",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install jeremy-vertex-terraform\\\\n  or /plugin install jeremy-vertex-terraform@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

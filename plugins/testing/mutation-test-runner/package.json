@@ -1,0 +1,40 @@
+{
+  "name": "@intentsolutionsio/mutation-test-runner",
+  "version": "1.0.0",
+  "description": "Mutation testing to validate test quality by introducing code changes and verifying tests catch them",
+  "keywords": [
+    "testing",
+    "mutation-testing",
+    "test-quality",
+    "stryker",
+    "pitest",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/testing/mutation-test-runner"
+  },
+  "homepage": "https://tonsofskills.com/plugins/mutation-test-runner",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "agents"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install mutation-test-runner\\\\n  or /plugin install mutation-test-runner@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

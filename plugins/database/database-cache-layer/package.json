@@ -1,0 +1,38 @@
+{
+  "name": "@intentsolutionsio/database-cache-layer",
+  "version": "1.0.0",
+  "description": "Database plugin for database-cache-layer",
+  "keywords": [
+    "database",
+    "backend",
+    "cache",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/database/database-cache-layer"
+  },
+  "homepage": "https://tonsofskills.com/plugins/database-cache-layer",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install database-cache-layer\\\\n  or /plugin install database-cache-layer@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "name": "@intentsolutionsio/fairdb-operations-kit",
+  "version": "1.0.0",
+  "description": "Complete operations kit for FairDB PostgreSQL as a Service - VPS setup, PostgreSQL management, customer provisioning, monitoring, and backup automation",
+  "keywords": [
+    "fairdb",
+    "postgresql",
+    "database",
+    "saas",
+    "operations",
+    "devops",
+    "backup",
+    "monitoring",
+    "vps",
+    "contabo",
+    "wasabi",
+    "pgbackrest",
+    "automation",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/devops/fairdb-operations-kit"
+  },
+  "homepage": "https://tonsofskills.com/plugins/fairdb-operations-kit",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands",
+    "agents"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install fairdb-operations-kit\\\\n  or /plugin install fairdb-operations-kit@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

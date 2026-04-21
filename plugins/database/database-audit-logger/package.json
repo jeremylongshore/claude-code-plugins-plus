@@ -1,0 +1,38 @@
+{
+  "name": "@intentsolutionsio/database-audit-logger",
+  "version": "1.0.0",
+  "description": "Database plugin for database-audit-logger",
+  "keywords": [
+    "database",
+    "backend",
+    "audit",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/database/database-audit-logger"
+  },
+  "homepage": "https://tonsofskills.com/plugins/database-audit-logger",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install database-audit-logger\\\\n  or /plugin install database-audit-logger@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

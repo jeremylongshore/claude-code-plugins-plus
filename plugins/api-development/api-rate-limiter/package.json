@@ -1,0 +1,38 @@
+{
+  "name": "@intentsolutionsio/api-rate-limiter",
+  "version": "1.0.0",
+  "description": "Implement rate limiting with token bucket, sliding window, and Redis",
+  "keywords": [
+    "rate-limiting",
+    "throttling",
+    "api",
+    "redis",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/api-development/api-rate-limiter"
+  },
+  "homepage": "https://tonsofskills.com/plugins/api-rate-limiter",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install api-rate-limiter\\\\n  or /plugin install api-rate-limiter@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

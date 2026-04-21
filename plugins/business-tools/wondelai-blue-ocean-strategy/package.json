@@ -1,0 +1,35 @@
+{
+  "name": "@intentsolutionsio/wondelai-blue-ocean-strategy",
+  "version": "1.0.0",
+  "description": "Blue Ocean Strategy framework for creating uncontested market space",
+  "keywords": [
+    "business-tools",
+    "wondelai",
+    "skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/business-tools/wondelai-blue-ocean-strategy"
+  },
+  "homepage": "https://tonsofskills.com/plugins/wondelai-blue-ocean-strategy",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Wondel.ai"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install wondelai-blue-ocean-strategy\\\\n  or /plugin install wondelai-blue-ocean-strategy@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

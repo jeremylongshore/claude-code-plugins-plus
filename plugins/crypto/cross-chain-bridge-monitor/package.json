@@ -1,0 +1,43 @@
+{
+  "name": "@intentsolutionsio/cross-chain-bridge-monitor",
+  "version": "1.0.0",
+  "description": "Monitor cross-chain bridge activity, track transfers, analyze security, and detect bridge exploits",
+  "keywords": [
+    "crypto",
+    "cross-chain",
+    "bridge",
+    "security",
+    "monitoring",
+    "layer2",
+    "multichain",
+    "defi",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/crypto/cross-chain-bridge-monitor"
+  },
+  "homepage": "https://tonsofskills.com/plugins/cross-chain-bridge-monitor",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Intent Solutions IO",
+    "email": "jeremy@intentsolutions.ai",
+    "url": "https://intentsolutions.ai"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "agents"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install cross-chain-bridge-monitor\\\\n  or /plugin install cross-chain-bridge-monitor@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

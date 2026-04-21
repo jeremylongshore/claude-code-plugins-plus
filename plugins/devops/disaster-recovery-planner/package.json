@@ -1,0 +1,39 @@
+{
+  "name": "@intentsolutionsio/disaster-recovery-planner",
+  "version": "1.0.0",
+  "description": "Plan and implement disaster recovery procedures",
+  "keywords": [
+    "disaster-recovery",
+    "dr",
+    "business-continuity",
+    "devops",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/devops/disaster-recovery-planner"
+  },
+  "homepage": "https://tonsofskills.com/plugins/disaster-recovery-planner",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install disaster-recovery-planner\\\\n  or /plugin install disaster-recovery-planner@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

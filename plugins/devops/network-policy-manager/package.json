@@ -1,0 +1,40 @@
+{
+  "name": "@intentsolutionsio/network-policy-manager",
+  "version": "1.0.0",
+  "description": "Manage Kubernetes network policies and firewall rules",
+  "keywords": [
+    "network-policy",
+    "security",
+    "kubernetes",
+    "firewall",
+    "devops",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/devops/network-policy-manager"
+  },
+  "homepage": "https://tonsofskills.com/plugins/network-policy-manager",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install network-policy-manager\\\\n  or /plugin install network-policy-manager@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

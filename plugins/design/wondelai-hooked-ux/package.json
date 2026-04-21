@@ -1,0 +1,35 @@
+{
+  "name": "@intentsolutionsio/wondelai-hooked-ux",
+  "version": "1.0.0",
+  "description": "Hook Model framework for building habit-forming products",
+  "keywords": [
+    "design",
+    "wondelai",
+    "skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/design/wondelai-hooked-ux"
+  },
+  "homepage": "https://tonsofskills.com/plugins/wondelai-hooked-ux",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Wondel.ai"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install wondelai-hooked-ux\\\\n  or /plugin install wondelai-hooked-ux@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

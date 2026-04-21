@@ -1,0 +1,35 @@
+{
+  "name": "@intentsolutionsio/wondelai-ios-hig-design",
+  "version": "1.0.0",
+  "description": "Native iOS app design following Apple Human Interface Guidelines",
+  "keywords": [
+    "design",
+    "wondelai",
+    "skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/design/wondelai-ios-hig-design"
+  },
+  "homepage": "https://tonsofskills.com/plugins/wondelai-ios-hig-design",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Wondel.ai"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install wondelai-ios-hig-design\\\\n  or /plugin install wondelai-ios-hig-design@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

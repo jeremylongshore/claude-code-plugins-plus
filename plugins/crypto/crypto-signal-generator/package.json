@@ -1,0 +1,39 @@
+{
+  "name": "@intentsolutionsio/crypto-signal-generator",
+  "version": "1.0.0",
+  "description": "Generate trading signals from technical indicators and market analysis",
+  "keywords": [
+    "trading",
+    "signals",
+    "technical-analysis",
+    "indicators",
+    "crypto",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/crypto/crypto-signal-generator"
+  },
+  "homepage": "https://tonsofskills.com/plugins/crypto-signal-generator",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install crypto-signal-generator\\\\n  or /plugin install crypto-signal-generator@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

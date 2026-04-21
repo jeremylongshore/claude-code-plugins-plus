@@ -1,0 +1,42 @@
+{
+  "name": "@intentsolutionsio/defi-yield-optimizer",
+  "version": "1.0.0",
+  "description": "Optimize DeFi yield farming strategies across protocols with APY tracking and risk assessment",
+  "keywords": [
+    "defi",
+    "yield",
+    "farming",
+    "liquidity",
+    "apy",
+    "optimization",
+    "crypto",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/crypto/defi-yield-optimizer"
+  },
+  "homepage": "https://tonsofskills.com/plugins/defi-yield-optimizer",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Intent Solutions IO",
+    "email": "jeremy@intentsolutions.ai",
+    "url": "https://intentsolutions.ai"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install defi-yield-optimizer\\\\n  or /plugin install defi-yield-optimizer@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

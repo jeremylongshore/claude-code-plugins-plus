@@ -1,0 +1,38 @@
+{
+  "name": "@intentsolutionsio/agent-context-manager",
+  "version": "1.0.0",
+  "description": "Automatically detects and loads AGENTS.md files to provide agent-specific instructions alongside CLAUDE.md. Enables specialized agent behaviors without manual intervention.",
+  "keywords": [
+    "agents",
+    "context",
+    "automation",
+    "workflow",
+    "productivity",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/productivity/agent-context-manager"
+  },
+  "homepage": "https://tonsofskills.com/plugins/agent-context-manager",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Jeremy Longshore"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install agent-context-manager\\\\n  or /plugin install agent-context-manager@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

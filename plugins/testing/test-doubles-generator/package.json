@@ -1,0 +1,43 @@
+{
+  "name": "@intentsolutionsio/test-doubles-generator",
+  "version": "1.0.0",
+  "description": "Generate mocks, stubs, spies, and fakes for unit testing with Jest, Sinon, and test frameworks",
+  "keywords": [
+    "testing",
+    "mocks",
+    "stubs",
+    "spies",
+    "fakes",
+    "test-doubles",
+    "jest",
+    "sinon",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/testing/test-doubles-generator"
+  },
+  "homepage": "https://tonsofskills.com/plugins/test-doubles-generator",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugin Hub",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install test-doubles-generator\\\\n  or /plugin install test-doubles-generator@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "name": "@intentsolutionsio/vibe-guide",
+  "version": "1.0.0",
+  "description": "Non-technical progress summaries for Claude Code work (hides diffs/log noise).",
+  "keywords": [
+    "ux",
+    "accessibility",
+    "explain",
+    "pairing",
+    "non-technical",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/productivity/vibe-guide"
+  },
+  "homepage": "https://tonsofskills.com/plugins/vibe-guide",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Intent Solutions"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "commands",
+    "agents",
+    "hooks"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install vibe-guide\\\\n  or /plugin install vibe-guide@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "name": "@intentsolutionsio/model-explainability-tool",
+  "version": "1.0.0",
+  "description": "Model interpretability and explainability",
+  "keywords": [
+    "explainability",
+    "shap",
+    "lime",
+    "interpretability",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/ai-ml/model-explainability-tool"
+  },
+  "homepage": "https://tonsofskills.com/plugins/model-explainability-tool",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install model-explainability-tool\\\\n  or /plugin install model-explainability-tool@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

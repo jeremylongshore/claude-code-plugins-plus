@@ -1,0 +1,44 @@
+{
+  "name": "@intentsolutionsio/jeremy-plugin-tool",
+  "version": "2.0.0",
+  "description": "Ultimate plugin management toolkit with 4 auto-invoked Skills for creating, validating, auditing, and versioning plugins in the claude-code-plugins marketplace",
+  "keywords": [
+    "skills",
+    "agent-skills",
+    "plugin-management",
+    "marketplace",
+    "validation",
+    "audit",
+    "versioning",
+    "meta-plugin",
+    "repository-tools",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/examples/jeremy-plugin-tool"
+  },
+  "homepage": "https://tonsofskills.com/plugins/jeremy-plugin-tool",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "plugins@claudecodeplugins.io",
+    "url": "https://claudecodeplugins.io"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install jeremy-plugin-tool\\\\n  or /plugin install jeremy-plugin-tool@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

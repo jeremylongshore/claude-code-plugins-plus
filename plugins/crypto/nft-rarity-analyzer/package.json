@@ -1,0 +1,40 @@
+{
+  "name": "@intentsolutionsio/nft-rarity-analyzer",
+  "version": "1.0.0",
+  "description": "Analyze NFT rarity scores and valuations across collections",
+  "keywords": [
+    "nft",
+    "rarity",
+    "valuation",
+    "traits",
+    "opensea",
+    "crypto",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/crypto/nft-rarity-analyzer"
+  },
+  "homepage": "https://tonsofskills.com/plugins/nft-rarity-analyzer",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install nft-rarity-analyzer\\\\n  or /plugin install nft-rarity-analyzer@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

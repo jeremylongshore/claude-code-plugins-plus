@@ -1,0 +1,40 @@
+{
+  "name": "@intentsolutionsio/framecraft",
+  "version": "1.0.0",
+  "description": "Generate polished demo videos from a single prompt. Orchestrates Playwright, FFmpeg, and Edge TTS MCP servers to produce 1920x1080 videos with voiceover, transitions, and CSS animations.",
+  "keywords": [
+    "demo-video",
+    "video-generation",
+    "playwright",
+    "ffmpeg",
+    "edge-tts",
+    "mcp",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/community/framecraft"
+  },
+  "homepage": "https://tonsofskills.com/plugins/framecraft",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Srinivas Vaddisrinivas",
+    "email": "vaddisrinivas170497@gmail.com"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install framecraft\\\\n  or /plugin install framecraft@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}
