@@ -26,11 +26,11 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
     "directory": "plugins/packages/security-pro-pack"
   },
   "homepage": "https://tonsofskills.com/plugins/security-pro-pack",
-  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
   "license": "MIT",
   "author": {
     "name": "Jeremy Longshore",

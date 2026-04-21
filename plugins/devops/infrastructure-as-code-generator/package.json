@@ -16,11 +16,11 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
     "directory": "plugins/devops/infrastructure-as-code-generator"
   },
   "homepage": "https://tonsofskills.com/plugins/infrastructure-as-code-generator",
-  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
   "license": "MIT",
   "author": {
     "name": "Claude Code Plugins",

@@ -20,7 +20,10 @@ import { dirname, join, relative, resolve } from 'node:path';
 
 const ROOT = resolve(dirname(new URL(import.meta.url).pathname), '..');
 const PLUGINS_DIR = join(ROOT, 'plugins');
-const REPO_URL = 'https://github.com/jeremylongshore/claude-code-plugins';
+// Must be the canonical repo slug (not the legacy `/claude-code-plugins`
+// redirect). npm provenance rejects the publish if this doesn't match the
+// actual repository GitHub Actions is running in.
+const REPO_URL = 'https://github.com/jeremylongshore/claude-code-plugins-plus-skills';
 const SCOPE = '@intentsolutionsio';
 
 // FS-only / personal-prefix dirs and known duplicates — skip entirely.

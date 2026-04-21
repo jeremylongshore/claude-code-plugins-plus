@@ -16,11 +16,11 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
     "directory": "plugins/crypto/market-movers-scanner"
   },
   "homepage": "https://tonsofskills.com/plugins/market-movers-scanner",
-  "bugs": "https://github.com/jeremylongshore/claude-code-plugins/issues",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
   "license": "MIT",
   "author": {
     "name": "Intent Solutions IO",
