@@ -12,6 +12,8 @@ Invariants:
 3. No plugin with a source under ./plugins/jeremy-*/ appears in the catalog.
    (personal-prefix directories are FS-only by policy.)
 4. marketplace.extended.json and marketplace.json report the same plugin count.
+5. Every plugin directory in the catalog has a sibling `package.json`. Lets
+   the npm tracking/publish workflow enumerate a complete set of packages.
 
 Exits non-zero on any violation. Used by CI and by `pnpm run sync-marketplace`.
 """
@@ -78,6 +80,14 @@ def main() -> int:
         if fs_cat.startswith("jeremy-"):
             errors.append(
                 f"{name}: personal-prefix category `{fs_cat}` is FS-only; remove from catalog"
+            )
+
+        # Invariant 5: plugin directory has a sibling package.json (npm tracking).
+        pkg_json = ROOT / fs_path / "package.json"
+        if not pkg_json.is_file():
+            errors.append(
+                f"{name}: missing package.json at `{fs_path}/package.json` "
+                "(run `node scripts/generate-plugin-package-jsons.mjs`)"
             )
 
     # Invariant 4: extended <-> synced count match

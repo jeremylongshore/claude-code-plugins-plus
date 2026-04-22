@@ -1,0 +1,42 @@
+{
+  "name": "@intentsolutionsio/visual-regression-tester",
+  "version": "1.0.0",
+  "description": "Visual diff testing with Percy, Chromatic, BackstopJS - catch unintended UI changes",
+  "keywords": [
+    "testing",
+    "visual-regression",
+    "ui-testing",
+    "percy",
+    "chromatic",
+    "backstop",
+    "screenshot-testing",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/testing/visual-regression-tester"
+  },
+  "homepage": "https://tonsofskills.com/plugins/visual-regression-tester",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugin Hub",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install visual-regression-tester\\\\n  or /plugin install visual-regression-tester@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

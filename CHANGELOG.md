@@ -5,6 +5,91 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Security
+- **Secret scanning hardened** - Replaced the previous regex-based secret scan
+  in `validate-plugins.yml` with a dedicated workflow (`secret-scan.yml`) that
+  runs `gitleaks` on every PR and push, plus a weekly `trufflehog` verified-
+  credentials scan with Slack alerting. `.gitleaks.toml` adds rules for
+  Anthropic, Groq, and Firebase/GCP credential shapes on top of the upstream
+  defaults.
+
+### Added
+- **External audit response (NLPM, xiaolai)** - Expanded validator and CI
+  coverage in response to the NLPM audit (issue #540).
+  - `scripts/validate-skills-schema.py` now scans `.claude/agents/` and
+    `workspace/**/agents/` in addition to `plugins/`, and flags
+    shell-substitution patterns (`$(...)`, backticks, unguarded `${VAR}`) in
+    YAML frontmatter values.
+  - `.github/workflows/validate-plugins.yml` PR trigger paths extended to
+    `scripts/**`, `.claude/**`, and `workspace/**` so changes on those
+    surfaces run the full validation suite.
+  - Credit to [xiaolai](https://github.com/xiaolai), author of
+    [NLPM](https://github.com/xiaolai/nlpm-for-claude), for the audit and
+    fix PRs (#535-#539).
+
+## [4.27.0] - 2026-04-21
+
+### Added
+- **LangChain Python Skill Pack v1.0** - Complete 33-skill pack for LangChain/LangGraph Python development:
+  - Core skills (8): model-inference, embeddings-search, sdk-patterns, reference-architecture, multi-env-setup, debug-bundle, deep-agents, langgraph-basics
+  - LangGraph advanced (10): agents, checkpointing, human-in-loop, streaming, subgraphs, middleware-patterns, content-blocks, otel-observability
+  - Production patterns (8): performance-tuning, cost-tuning, rate-limits, security-basics, enterprise-rbac
+  - DevOps (7): ci-integration, deploy-integration, observability, incident-runbook, local-dev-loop, webhooks-events, upgrade-migration
+  - Support skills: common-errors, core-workflow, data-handling, prompt-engineering, eval-harness
+  - Average enterprise score: 92.4/100 (A-grade)
+  - Reference architecture with pain-catalog documenting 25+ real-world failure modes
+
+### Fixed
+- **Gemini PR Review workflow** - Added `workflow_dispatch` trigger for manual review runs on any PR (#546+)
+- **npm Publish** - Fixed repository.url for npm provenance compliance (#545)
+- **npm Publish** - Fixed SIGPIPE abort in mass-publish enumerate step (#544)
+
+### Changed
+- **VERSION file sync** - Corrected VERSION file to match package.json (4.25.0 → 4.26.0)
+
+### Metrics
+- Commits since v4.26.0: 4 (1 feature, 3 fixes)
+- New skills added: 33 (langchain-py-pack)
+- Total skills: 2,882 (+33)
+- Enterprise score maintained: 92.4/100 average for new pack
+
+---
+
+## [4.26.0] - 2026-04-20
+
+### Added
+- **npm Download Tracking Infrastructure** - Daily stats aggregation (`fetch-npm-stats.mjs`), hero marquee showing top 8 packages with 30-day counts, Slack digest at 1pm Central via #operation-hired webhook (#543)
+- **npm Publish Workflows** - Mass publish (`publish-all-packages.yml` with confirmation gate) and incremental publish (`publish-changed-packages.yml` on push to main) for all @intentsolutionsio/* packages (#542)
+- **Plugin Package.json Scaffolding** - Generated package.json for 305+ catalog plugins under @intentsolutionsio scope, enabling npm download tracking (#541)
+- **README Awesome-List TOC** - Auto-generated table of contents with category counts, enforced by CI via `generate-readme-toc.mjs --check` (#531)
+- **agent37.com Partner Integration** - Added to hero partner marquee alongside Nixtla (#532, #533)
+- **Ultimate Code Cleanup Plugin** - 11-dimension, 11-agent comprehensive code analysis tool scoring 98/100 A+ enterprise grade
+- **Bubble Invest Plugins** - local-tts (voice synthesis), boycott-filter (ethical filtering) from community PR #520
+- **Killer Skill of the Week** - web-analytics skill with Umami MCP integration
+
+### Fixed
+- **Marquee Symmetry** - Restored translateX(-50%) pattern duplication so agent37 actually renders in seamless loop (#533)
+- **Catalog Validation** - Removed phantom entries (tonone, claudebase), normalized 33 plugin author fields to object format
+- **SKILL.md Compliance** - Split 13 files exceeding 500-line limit into references/, removed XML tags from frontmatter
+- **Cowork Downloads** - Replaced non-existent stripe-pack with clerk-pack
+- **CodeQL Finding** - Removed unused tableHeaderDone variable
+
+### Changed
+- **Micro-Category Consolidation** - Merged analytics→business-tools, code-quality→testing, finance→business-tools, automation→devops with CLI aliases for backwards compatibility (#530)
+- **FS=Catalog Invariant** - Enforced filesystem path matching catalog category via `validate-catalog-invariants.py`
+- **SaaS Pack Display** - Individual cards on /cowork page for better discoverability
+- **Comprehensive Codebase Cleanup** - 8-parallel-agent refactor addressing code quality across repository
+
+### Metrics
+- Commits since v4.25.0: 34 (10 features, 8 fixes, 3 chore)
+- Plugins with npm tracking: 305+ (newly scaffolded package.json files)
+- Categories consolidated: 4 (analytics, code-quality, finance, automation)
+- SaaS packs corrected: 106 → 105 (removed windsurf duplicate)
+
+---
+
 ## [4.25.0] - 2026-04-14
 
 ### Added

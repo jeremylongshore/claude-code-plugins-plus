@@ -1,10 +1,11 @@
 ---
 name: registry-manage
-description: $(echo "$description" | cut -d' ' -f1-5)
+description: Manage container registries (ECR, GCR, Harbor)
 ---
-# $(echo "$name" | sed 's/-/ /g' | sed 's/\b\(.\)/\u\1/g')
+# Container Registry Manager
 
-$(echo "$description")
+Manage container registries (ECR, GCR, Harbor)
+
 
 ## Key Features
 

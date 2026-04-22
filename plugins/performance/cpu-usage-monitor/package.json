@@ -1,0 +1,39 @@
+{
+  "name": "@intentsolutionsio/cpu-usage-monitor",
+  "version": "1.0.0",
+  "description": "Monitor and analyze CPU usage patterns in applications",
+  "keywords": [
+    "cpu",
+    "monitoring",
+    "performance",
+    "optimization",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/performance/cpu-usage-monitor"
+  },
+  "homepage": "https://tonsofskills.com/plugins/cpu-usage-monitor",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install cpu-usage-monitor\\\\n  or /plugin install cpu-usage-monitor@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

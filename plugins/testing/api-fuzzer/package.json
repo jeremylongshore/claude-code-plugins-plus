@@ -1,0 +1,41 @@
+{
+  "name": "@intentsolutionsio/api-fuzzer",
+  "version": "1.0.0",
+  "description": "Fuzz testing for APIs with malformed inputs, edge cases, and security vulnerability detection",
+  "keywords": [
+    "testing",
+    "fuzzing",
+    "api",
+    "security",
+    "edge-cases",
+    "input-validation",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/testing/api-fuzzer"
+  },
+  "homepage": "https://tonsofskills.com/plugins/api-fuzzer",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugin Hub",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install api-fuzzer\\\\n  or /plugin install api-fuzzer@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

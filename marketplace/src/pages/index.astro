@@ -14,6 +14,25 @@ const totalPlugins = searchIndex.stats.totalPlugins;
 const totalCategories = searchIndex.stats.categories.length;
 const totalAgents = searchIndex.stats.totalAgents || 0;
 const totalHooks = searchIndex.stats.totalHooks || 0;
+
+// npm download stats (refreshed daily by .github/workflows/update-npm-stats.yml)
+// Falls back to empty shape so the first build before the cron runs doesn't fail.
+let npmStats: {
+  publishedCount?: number;
+  totalDay?: number;
+  totalWeek?: number;
+  totalMonth?: number;
+  top?: Array<{ name: string; lastMonth: number }>;
+} = {};
+try {
+  npmStats = (await import('../data/npm-stats.json')).default as typeof npmStats;
+} catch {
+  npmStats = {};
+}
+const npmPublished = npmStats.publishedCount ?? 0;
+const npmMonth = npmStats.totalMonth ?? 0;
+const npmTop = (npmStats.top ?? []).slice(0, 8);
+const fmtNum = (n: number) => n.toLocaleString('en-US');
 ---
 
 <BaseLayout
@@ -138,6 +157,20 @@ const totalHooks = searchIndex.stats.totalHooks || 0;
         .hero-sponsor-link:hover {
             color: var(--primary);
             opacity: 1;
+        }
+        /* Stats marquee (second row, under partners) — runs slightly slower
+           so the longer text strings stay readable. */
+        .hero-stats-marquee {
+            margin-top: 0.35rem;
+            max-width: 520px;
+        }
+        .hero-stats-marquee .hero-sponsor-track {
+            animation-duration: 28s;
+        }
+        .hero-stats-link .hero-sponsor-text {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.01em;
         }
         .hero-sponsor-text {
             font-family: 'Source Sans 3', system-ui, sans-serif;
@@ -1167,6 +1200,40 @@ const totalHooks = searchIndex.stats.totalHooks || 0;
                     <a href="https://agent37.com" target="_blank" rel="noopener noreferrer" class="hero-sponsor-link"><span class="hero-sponsor-text">agent37.com</span></a>
                 </div>
             </div>
+
+            {npmPublished > 0 && (
+                <div class="hero-sponsor-marquee hero-stats-marquee">
+                    <span class="hero-sponsor-label">
+                        live npm downloads · {fmtNum(npmPublished)} packages · {fmtNum(npmMonth)} last 30d
+                    </span>
+                    <div class="hero-sponsor-track">
+                        {npmTop.map((p) => (
+                            <a
+                                href={`https://www.npmjs.com/package/${p.name}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="hero-sponsor-link hero-stats-link"
+                            >
+                                <span class="hero-sponsor-text">
+                                    {p.name.replace(/^@intentsolutionsio\//, '')} — {fmtNum(p.lastMonth)}
+                                </span>
+                            </a>
+                        ))}
+                        {npmTop.map((p) => (
+                            <a
+                                href={`https://www.npmjs.com/package/${p.name}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="hero-sponsor-link hero-stats-link"
+                            >
+                                <span class="hero-sponsor-text">
+                                    {p.name.replace(/^@intentsolutionsio\//, '')} — {fmtNum(p.lastMonth)}
+                                </span>
+                            </a>
+                        ))}
+                    </div>
+                </div>
+            )}
 
             <p class="hero-subtitle">
                 Agent skills for Claude Code. Search {totalSkills} skills across {totalPlugins} plugins.

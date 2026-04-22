@@ -1,0 +1,39 @@
+{
+  "name": "@intentsolutionsio/api-event-emitter",
+  "version": "1.0.0",
+  "description": "Implement event-driven APIs with message queues and event streaming",
+  "keywords": [
+    "events",
+    "messaging",
+    "kafka",
+    "rabbitmq",
+    "event-driven",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/api-development/api-event-emitter"
+  },
+  "homepage": "https://tonsofskills.com/plugins/api-event-emitter",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install api-event-emitter\\\\n  or /plugin install api-event-emitter@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

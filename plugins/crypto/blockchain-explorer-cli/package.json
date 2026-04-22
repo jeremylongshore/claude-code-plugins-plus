@@ -1,0 +1,40 @@
+{
+  "name": "@intentsolutionsio/blockchain-explorer-cli",
+  "version": "1.0.0",
+  "description": "Command-line blockchain explorer for transactions, addresses, and contracts",
+  "keywords": [
+    "blockchain",
+    "explorer",
+    "etherscan",
+    "transactions",
+    "addresses",
+    "contracts",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/crypto/blockchain-explorer-cli"
+  },
+  "homepage": "https://tonsofskills.com/plugins/blockchain-explorer-cli",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install blockchain-explorer-cli\\\\n  or /plugin install blockchain-explorer-cli@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

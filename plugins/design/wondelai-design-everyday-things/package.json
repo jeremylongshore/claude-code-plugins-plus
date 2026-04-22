@@ -1,0 +1,35 @@
+{
+  "name": "@intentsolutionsio/wondelai-design-everyday-things",
+  "version": "1.0.0",
+  "description": "Fundamental design principles for intuitive interfaces",
+  "keywords": [
+    "design",
+    "wondelai",
+    "skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/design/wondelai-design-everyday-things"
+  },
+  "homepage": "https://tonsofskills.com/plugins/wondelai-design-everyday-things",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Wondel.ai"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install wondelai-design-everyday-things\\\\n  or /plugin install wondelai-design-everyday-things@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

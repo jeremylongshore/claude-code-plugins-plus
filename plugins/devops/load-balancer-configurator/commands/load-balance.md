@@ -1,10 +1,11 @@
 ---
 name: load-balance
-description: $(echo "$description" | cut -d' ' -f1-5)
+description: Configure load balancers (ALB, NLB, Nginx, HAProxy)
 ---
-# $(echo "$name" | sed 's/-/ /g' | sed 's/\b\(.\)/\u\1/g')
+# Load Balancer Configurator
 
-$(echo "$description")
+Configure load balancers (ALB, NLB, Nginx, HAProxy)
+
 
 ## Key Features
 

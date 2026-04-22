@@ -1,10 +1,11 @@
 ---
 name: ansible-playbook
-description: $(echo "$description" | cut -d' ' -f1-5)
+description: Create Ansible playbooks for configuration management
 ---
-# $(echo "$name" | sed 's/-/ /g' | sed 's/\b\(.\)/\u\1/g')
+# Ansible Playbook Creator
 
-$(echo "$description")
+Create Ansible playbooks for configuration management
+
 
 ## Key Features
 

@@ -1,10 +1,11 @@
 ---
 name: dr-plan
-description: $(echo "$description" | cut -d' ' -f1-5)
+description: Plan and implement disaster recovery procedures
 ---
-# $(echo "$name" | sed 's/-/ /g' | sed 's/\b\(.\)/\u\1/g')
+# Disaster Recovery Planner
 
-$(echo "$description")
+Plan and implement disaster recovery procedures
+
 
 ## Key Features
 

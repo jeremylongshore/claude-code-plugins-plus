@@ -4,11 +4,33 @@
   "description": "Claude Code skill pack for Retell AI - 30 skills covering voice AI and conversational agents",
   "main": "README.md",
   "type": "module",
-  "files": ["README.md", ".claude-plugin/", "skills/"],
-  "keywords": ["claude-code", "claude-code-plugin", "retell-ai", "voice-ai", "phone-calls", "conversational", "ai-skills", "saas-pack"],
-  "author": {"name": "Jeremy Longshore", "email": "jeremy@intentsolutions.io"},
+  "files": [
+    "README.md",
+    ".claude-plugin/",
+    "skills/"
+  ],
+  "keywords": [
+    "claude-code",
+    "claude-code-plugin",
+    "retell-ai",
+    "voice-ai",
+    "phone-calls",
+    "conversational",
+    "ai-skills",
+    "saas-pack"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
   "license": "MIT",
-  "repository": {"type": "git", "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git", "directory": "plugins/saas-packs/retellai-pack"},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/saas-packs/retellai-pack"
+  },
   "homepage": "https://tonsofskills.com/learn/retellai/",
-  "publishConfig": {"access": "public"}
+  "publishConfig": {
+    "access": "public"
+  }
 }

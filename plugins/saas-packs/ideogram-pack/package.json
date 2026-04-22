@@ -4,11 +4,33 @@
   "description": "Claude Code skill pack for Ideogram - 24 skills covering AI image generation with text rendering",
   "main": "README.md",
   "type": "module",
-  "files": ["README.md", ".claude-plugin/", "skills/"],
-  "keywords": ["claude-code", "claude-code-plugin", "ideogram", "image-generation", "ai-art", "text-rendering", "ai-skills", "saas-pack"],
-  "author": {"name": "Jeremy Longshore", "email": "jeremy@intentsolutions.io"},
+  "files": [
+    "README.md",
+    ".claude-plugin/",
+    "skills/"
+  ],
+  "keywords": [
+    "claude-code",
+    "claude-code-plugin",
+    "ideogram",
+    "image-generation",
+    "ai-art",
+    "text-rendering",
+    "ai-skills",
+    "saas-pack"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
   "license": "MIT",
-  "repository": {"type": "git", "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git", "directory": "plugins/saas-packs/ideogram-pack"},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/saas-packs/ideogram-pack"
+  },
   "homepage": "https://tonsofskills.com/learn/ideogram/",
-  "publishConfig": {"access": "public"}
+  "publishConfig": {
+    "access": "public"
+  }
 }
