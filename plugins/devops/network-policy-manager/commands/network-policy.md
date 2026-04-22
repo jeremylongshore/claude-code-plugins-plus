@@ -1,10 +1,11 @@
 ---
 name: network-policy
-description: $(echo "$description" | cut -d' ' -f1-5)
+description: Manage Kubernetes network policies and firewall rules
 ---
-# $(echo "$name" | sed 's/-/ /g' | sed 's/\b\(.\)/\u\1/g')
+# Network Policy Manager
 
-$(echo "$description")
+Manage Kubernetes network policies and firewall rules
+
 
 ## Key Features
 

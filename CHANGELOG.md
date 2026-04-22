@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Security
+- **Secret scanning hardened** - Replaced the previous regex-based secret scan
+  in `validate-plugins.yml` with a dedicated workflow (`secret-scan.yml`) that
+  runs `gitleaks` on every PR and push, plus a weekly `trufflehog` verified-
+  credentials scan with Slack alerting. `.gitleaks.toml` adds rules for
+  Anthropic, Groq, and Firebase/GCP credential shapes on top of the upstream
+  defaults.
+
+### Added
+- **External audit response (NLPM, xiaolai)** - Expanded validator and CI
+  coverage in response to the NLPM audit (issue #540).
+  - `scripts/validate-skills-schema.py` now scans `.claude/agents/` and
+    `workspace/**/agents/` in addition to `plugins/`, and flags
+    shell-substitution patterns (`$(...)`, backticks, unguarded `${VAR}`) in
+    YAML frontmatter values.
+  - `.github/workflows/validate-plugins.yml` PR trigger paths extended to
+    `scripts/**`, `.claude/**`, and `workspace/**` so changes on those
+    surfaces run the full validation suite.
+  - Credit to [xiaolai](https://github.com/xiaolai), author of
+    [NLPM](https://github.com/xiaolai/nlpm-for-claude), for the audit and
+    fix PRs (#535-#539).
+
 ## [4.27.0] - 2026-04-21
 
 ### Added

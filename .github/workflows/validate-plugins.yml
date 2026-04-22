@@ -8,7 +8,9 @@ on:
       - '.claude-plugin/**'
       - 'marketplace/**'
       - 'README.md'
-      - 'scripts/generate-readme-toc.mjs'
+      - 'scripts/**'
+      - '.claude/**'
+      - 'workspace/**'
       - '.github/workflows/validate-plugins.yml'
   push:
     branches: [ main ]

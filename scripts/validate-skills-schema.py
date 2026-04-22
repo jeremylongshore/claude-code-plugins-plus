@@ -98,6 +98,17 @@ REQUIRED_SECTIONS = RECOMMENDED_SECTIONS
 
 # Regex patterns
 RE_FRONTMATTER = re.compile(r"^---\s*\n(.*?)\n---\s*\n(.*)$", re.DOTALL)
+# Shell-substitution / backtick injection in YAML scalar values.
+# NLPM audit (2026-04) caught `description: $(echo "$description" | cut ...)` in
+# plugins/devops/backup-strategy-implementor/commands/backup-strategy.md — these
+# never evaluate, break strict YAML parsers, and trip downstream security tooling.
+RE_YAML_SHELL_SUBST = re.compile(r"(?:\$\(|`)")
+# Allow-listed template/substitution variables that are legitimate in NL artifacts.
+YAML_VALUE_ALLOWED_VARS = {
+    "${CLAUDE_SKILL_DIR}", "${CLAUDE_PLUGIN_ROOT}", "${CLAUDE_PLUGIN_DATA}",
+    "${CLAUDE_SESSION_ID}", "$ARGUMENTS",
+    "$0", "$1", "$2", "$3", "$4", "$5", "$6", "$7", "$8", "$9",
+}
 RE_DESCRIPTION_USE_WHEN = re.compile(r"\bUse when\b", re.IGNORECASE)
 RE_DESCRIPTION_TRIGGER_WITH = re.compile(r"\bTrigger with\b", re.IGNORECASE)
 RE_SKILLDIR_SCRIPTS = re.compile(r"\$\{CLAUDE_SKILL_DIR\}/scripts/([\w\-./]+)")
@@ -914,6 +925,40 @@ VALID_CMD_CATEGORIES = [
 VALID_DIFFICULTIES = ['beginner', 'intermediate', 'advanced', 'expert']
 
 
+def check_yaml_shell_substitution(fm: Dict[str, Any]) -> List[str]:
+    """Flag shell substitutions ($(...), backticks, unguarded ${VAR}) in YAML string values.
+
+    Known-safe template vars (CLAUDE_SKILL_DIR, $ARGUMENTS, positional params)
+    are allow-listed. Anything else is treated as a likely unevaluated template
+    left in frontmatter by mistake — the class of bug NLPM surfaced in 2026-04.
+    """
+    issues: List[str] = []
+
+    def _walk(value: Any, path: str) -> None:
+        if isinstance(value, str):
+            if not (RE_YAML_SHELL_SUBST.search(value) or "${" in value):
+                return
+            # Remove allow-listed tokens before re-checking.
+            residue = value
+            for tok in YAML_VALUE_ALLOWED_VARS:
+                residue = residue.replace(tok, "")
+            if RE_YAML_SHELL_SUBST.search(residue) or "${" in residue:
+                issues.append(
+                    f"[security] YAML field '{path}' contains shell substitution "
+                    f"(e.g. $(...), backticks, or ${{VAR}}) that will not evaluate: "
+                    f"{value!r}"
+                )
+        elif isinstance(value, dict):
+            for k, v in value.items():
+                _walk(v, f"{path}.{k}" if path else str(k))
+        elif isinstance(value, list):
+            for i, v in enumerate(value):
+                _walk(v, f"{path}[{i}]")
+
+    _walk(fm, "")
+    return issues
+
+
 def find_command_files(root: Path) -> List[Path]:
     """Find all command markdown files in plugins/."""
     results = []
@@ -944,6 +989,9 @@ def validate_command(path: Path) -> Dict[str, Any]:
 
     errors: List[str] = []
     warnings: List[str] = []
+
+    # Surface unevaluated shell substitutions in YAML values.
+    errors.extend(check_yaml_shell_substitution(fm))
 
     # Required: name
     if 'name' not in fm:
@@ -994,13 +1042,38 @@ VALID_EFFORT_LEVELS = ['low', 'medium', 'high', 'max']
 
 
 def find_agent_files(root: Path) -> List[Path]:
-    """Find all agent markdown files in plugins/."""
-    results = []
-    plugins_dir = root / "plugins"
-    if plugins_dir.exists():
-        for agent_file in plugins_dir.rglob("agents/*.md"):
-            if agent_file.is_file():
-                results.append(agent_file)
+    """Find agent markdown files across all known agent surfaces.
+
+    Scans: plugins/**/agents/, .claude/agents/, and workspace/**/agents/.
+    Expansion rationale: external audit (NLPM, 2026-04) caught missing
+    frontmatter in .claude/agents/ and workspace/lab/ that this validator
+    previously ignored because it only scanned plugins/.
+    """
+    excluded_dirs = {".git", "node_modules", "__pycache__", ".venv", "dist", "build"}
+    results: List[Path] = []
+    seen: set = set()
+
+    def _add_agents_from(base: Path, pattern: str) -> None:
+        if not base.exists():
+            return
+        for agent_file in base.rglob(pattern):
+            if not agent_file.is_file():
+                continue
+            try:
+                rel_parts = agent_file.relative_to(root).parts
+            except ValueError:
+                rel_parts = agent_file.parts
+            if any(part in excluded_dirs for part in rel_parts):
+                continue
+            resolved = agent_file.resolve()
+            if resolved in seen:
+                continue
+            seen.add(resolved)
+            results.append(agent_file)
+
+    _add_agents_from(root / "plugins", "agents/*.md")
+    _add_agents_from(root / ".claude" / "agents", "*.md")
+    _add_agents_from(root / "workspace", "agents/*.md")
     return results
 
 
@@ -1068,6 +1141,9 @@ def validate_agent(path: Path) -> Dict[str, Any]:
 
     errors: List[str] = []
     warnings: List[str] = []
+
+    # Surface unevaluated shell substitutions in YAML values.
+    errors.extend(check_yaml_shell_substitution(fm))
 
     # Detect context (plugin vs standalone)
     _, context = detect_component(path)
@@ -2567,6 +2643,9 @@ def validate_skill(path: Path, tier: str = TIER_STANDARD) -> Dict[str, Any]:
     errors.extend(fm_errors)
     warnings.extend(fm_warnings)
     infos.extend(fm_infos)
+
+    # Surface unevaluated shell substitutions in YAML values.
+    errors.extend(check_yaml_shell_substitution(fm))
 
     # Validate body
     body_errors, body_warnings, body_infos = validate_body(path, body, tier, fm)

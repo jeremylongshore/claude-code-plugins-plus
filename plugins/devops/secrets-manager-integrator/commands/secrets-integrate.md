@@ -1,10 +1,11 @@
 ---
 name: secrets-integrate
-description: $(echo "$description" | cut -d' ' -f1-5)
+description: Integrate with secrets managers (Vault, AWS Secrets Manager, etc)
 ---
-# $(echo "$name" | sed 's/-/ /g' | sed 's/\b\(.\)/\u\1/g')
+# Secrets Manager Integrator
 
-$(echo "$description")
+Integrate with secrets managers (Vault, AWS Secrets Manager, etc)
+
 
 ## Key Features
 
