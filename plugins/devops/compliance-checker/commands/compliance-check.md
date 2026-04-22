@@ -1,10 +1,11 @@
 ---
 name: compliance-check
-description: $(echo "$description" | cut -d' ' -f1-5)
+description: Check infrastructure compliance (SOC2, HIPAA, PCI-DSS)
 ---
-# $(echo "$name" | sed 's/-/ /g' | sed 's/\b\(.\)/\u\1/g')
+# Compliance Checker
 
-$(echo "$description")
+Check infrastructure compliance (SOC2, HIPAA, PCI-DSS)
+
 
 ## Key Features
 

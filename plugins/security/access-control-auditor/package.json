@@ -1,0 +1,38 @@
+{
+  "name": "@intentsolutionsio/access-control-auditor",
+  "version": "1.0.0",
+  "description": "Audit access control implementations",
+  "keywords": [
+    "security",
+    "compliance",
+    "auditing",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/security/access-control-auditor"
+  },
+  "homepage": "https://tonsofskills.com/plugins/access-control-auditor",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install access-control-auditor\\\\n  or /plugin install access-control-auditor@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

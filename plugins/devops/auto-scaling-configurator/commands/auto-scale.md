@@ -1,10 +1,11 @@
 ---
 name: auto-scale
-description: $(echo "$description" | cut -d' ' -f1-5)
+description: Configure auto-scaling policies for applications and infrastructure
 ---
-# $(echo "$name" | sed 's/-/ /g' | sed 's/\b\(.\)/\u\1/g')
+# Auto Scaling Configurator
 
-$(echo "$description")
+Configure auto-scaling policies for applications and infrastructure
+
 
 ## Key Features
 

@@ -10,7 +10,7 @@
     "version": "1.6.0",
     "homepage": "https://github.com/jeremylongshore/claude-code-plugins",
     "pluginRoot": "./plugins",
-    "totalPlugins": 423,
+    "totalPlugins": 422,
     "skillsEnabled": 268,
     "lastUpdated": "2026-04-20"
   },
@@ -7461,7 +7461,7 @@
     {
       "name": "langchain-pack",
       "source": "./plugins/saas-packs/langchain-pack",
-      "description": "Complete LangChain integration skill pack with 24 skills covering chains, agents, RAG pipelines, memory, and LLM application development. Flagship tier vendor pack.",
+      "description": "Legacy LangChain integration skill pack with 24 skills covering chains, agents, RAG pipelines, memory, and LLM application development. Deprecated — use langchain-py-pack or langchain-ts-pack.",
       "version": "1.0.0",
       "category": "saas-packs",
       "keywords": [
@@ -7487,6 +7487,33 @@
         "grade": "C",
         "badge": "bronze",
         "lastValidated": "2026-03-10T00:00:00.000Z"
+      }
+    },
+    {
+      "name": "langchain-py-pack",
+      "source": "./plugins/saas-packs/langchain-py-pack",
+      "description": "LangChain 1.0 + LangGraph 1.0 skill pack for Python. Pain-first skills anchored to a 68-entry pain catalog covering content blocks, streaming token accounting, structured-output, vector stores, checkpointing, HITL, middleware, Deep Agents, and native OTEL. Expanding toward 34 skills across four epics.",
+      "version": "2.0.0",
+      "category": "saas-packs",
+      "keywords": [
+        "langchain",
+        "langgraph",
+        "python",
+        "llm",
+        "agents",
+        "rag",
+        "checkpointing",
+        "streaming",
+        "middleware",
+        "langsmith"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io",
+        "url": "https://github.com/jeremylongshore"
+      },
+      "components": {
+        "skills": 2
       }
     },
     {
@@ -9184,27 +9211,6 @@
         "grade": "F",
         "badge": null,
         "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
-      "name": "windsurf",
-      "source": "./plugins/saas-packs/skill-databases/windsurf",
-      "description": "Windsurf AI IDE skill pack with 30 skills covering code flows, AI workflows, workspace management, and productivity features.",
-      "version": "1.0.0",
-      "category": "saas-packs",
-      "keywords": [
-        "windsurf",
-        "ai-ide",
-        "code-editor",
-        "cascade",
-        "ai-coding"
-      ],
-      "author": {
-        "name": "Jeremy Longshore",
-        "email": "jeremy@intentsolutions.io"
-      },
-      "components": {
-        "skills": 30
       }
     },
     {

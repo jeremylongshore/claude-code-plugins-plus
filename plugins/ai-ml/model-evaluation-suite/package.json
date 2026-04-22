@@ -1,0 +1,39 @@
+{
+  "name": "@intentsolutionsio/model-evaluation-suite",
+  "version": "1.0.0",
+  "description": "Comprehensive model evaluation with multiple metrics",
+  "keywords": [
+    "evaluation",
+    "metrics",
+    "testing",
+    "validation",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/ai-ml/model-evaluation-suite"
+  },
+  "homepage": "https://tonsofskills.com/plugins/model-evaluation-suite",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install model-evaluation-suite\\\\n  or /plugin install model-evaluation-suite@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "name": "@intentsolutionsio/api-cache-manager",
+  "version": "1.0.0",
+  "description": "Implement caching strategies with Redis, CDN, and HTTP headers",
+  "keywords": [
+    "caching",
+    "redis",
+    "cdn",
+    "performance",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/api-development/api-cache-manager"
+  },
+  "homepage": "https://tonsofskills.com/plugins/api-cache-manager",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install api-cache-manager\\\\n  or /plugin install api-cache-manager@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

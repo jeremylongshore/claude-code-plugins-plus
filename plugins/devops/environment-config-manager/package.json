@@ -1,0 +1,40 @@
+{
+  "name": "@intentsolutionsio/environment-config-manager",
+  "version": "1.0.0",
+  "description": "Manage environment configurations and secrets across deployments",
+  "keywords": [
+    "config",
+    "environment",
+    "secrets",
+    "configuration",
+    "devops",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/devops/environment-config-manager"
+  },
+  "homepage": "https://tonsofskills.com/plugins/environment-config-manager",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install environment-config-manager\\\\n  or /plugin install environment-config-manager@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

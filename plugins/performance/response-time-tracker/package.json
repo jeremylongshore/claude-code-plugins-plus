@@ -1,0 +1,39 @@
+{
+  "name": "@intentsolutionsio/response-time-tracker",
+  "version": "1.0.0",
+  "description": "Track and optimize application response times",
+  "keywords": [
+    "response-time",
+    "latency",
+    "performance",
+    "monitoring",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/performance/response-time-tracker"
+  },
+  "homepage": "https://tonsofskills.com/plugins/response-time-tracker",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install response-time-tracker\\\\n  or /plugin install response-time-tracker@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

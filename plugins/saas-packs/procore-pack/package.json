@@ -26,7 +26,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
     "directory": "plugins/saas-packs/procore-pack"
   },
   "homepage": "https://tonsofskills.com/learn/procore/",

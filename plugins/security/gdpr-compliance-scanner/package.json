@@ -1,0 +1,38 @@
+{
+  "name": "@intentsolutionsio/gdpr-compliance-scanner",
+  "version": "1.0.0",
+  "description": "Scan for GDPR compliance issues",
+  "keywords": [
+    "security",
+    "compliance",
+    "auditing",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/security/gdpr-compliance-scanner"
+  },
+  "homepage": "https://tonsofskills.com/plugins/gdpr-compliance-scanner",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install gdpr-compliance-scanner\\\\n  or /plugin install gdpr-compliance-scanner@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

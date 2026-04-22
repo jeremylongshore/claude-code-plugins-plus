@@ -1,0 +1,38 @@
+{
+  "name": "@intentsolutionsio/security-incident-responder",
+  "version": "1.0.0",
+  "description": "Assist with security incident response",
+  "keywords": [
+    "security",
+    "compliance",
+    "auditing",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/security/security-incident-responder"
+  },
+  "homepage": "https://tonsofskills.com/plugins/security-incident-responder",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install security-incident-responder\\\\n  or /plugin install security-incident-responder@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

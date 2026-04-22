@@ -1,10 +1,11 @@
 ---
 name: cost-optimize
-description: $(echo "$description" | cut -d' ' -f1-5)
+description: Optimize cloud costs and generate cost reports
 ---
-# $(echo "$name" | sed 's/-/ /g' | sed 's/\b\(.\)/\u\1/g')
+# Cloud Cost Optimizer
 
-$(echo "$description")
+Optimize cloud costs and generate cost reports
+
 
 ## Key Features
 
