@@ -1,0 +1,41 @@
+{
+  "name": "@intentsolutionsio/test-report-generator",
+  "version": "1.0.0",
+  "description": "Generate comprehensive test reports with coverage, trends, and stakeholder-friendly formats",
+  "keywords": [
+    "testing",
+    "reporting",
+    "coverage",
+    "metrics",
+    "dashboard",
+    "ci-cd",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/testing/test-report-generator"
+  },
+  "homepage": "https://tonsofskills.com/plugins/test-report-generator",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugin Hub",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install test-report-generator\\\\n  or /plugin install test-report-generator@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

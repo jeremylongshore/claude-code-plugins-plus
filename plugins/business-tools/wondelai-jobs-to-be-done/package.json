@@ -1,0 +1,35 @@
+{
+  "name": "@intentsolutionsio/wondelai-jobs-to-be-done",
+  "version": "1.0.0",
+  "description": "Strategic product innovation framework using JTBD theory",
+  "keywords": [
+    "business-tools",
+    "wondelai",
+    "skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/business-tools/wondelai-jobs-to-be-done"
+  },
+  "homepage": "https://tonsofskills.com/plugins/wondelai-jobs-to-be-done",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Wondel.ai"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install wondelai-jobs-to-be-done\\\\n  or /plugin install wondelai-jobs-to-be-done@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

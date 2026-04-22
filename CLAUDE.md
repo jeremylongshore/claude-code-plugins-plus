@@ -80,6 +80,20 @@ Run `pnpm run sync-marketplace` after editing `.extended.json`. CI fails if out 
 | `marketplace/src/data/unified-search-index.json` | `generate-unified-search.mjs` (build step 3) |
 | `marketplace/src/data/cowork-manifest.json` | `build-cowork-zips.mjs` (build step 4) |
 | `README.md` TOC block (between `AUTO-TOC:START`/`AUTO-TOC:END` sentinels) | `node scripts/generate-readme-toc.mjs` (CI-enforced via `--check`) |
+| `marketplace/src/data/npm-stats.json` + `README.md` NPM-STATS block | `node scripts/fetch-npm-stats.mjs` (daily cron via `update-npm-stats.yml`) |
+| Per-plugin `plugins/**/package.json` (for npm tracking) | `node scripts/generate-plugin-package-jsons.mjs` (idempotent; touches only plugins without one) |
+
+## npm Publish Pipeline
+
+| Workflow | Trigger | What it does |
+|----------|---------|--------------|
+| `.github/workflows/cli-publish.yml` | Tag push `cli-v*.*.*` | Publishes `@intentsolutionsio/ccpi` only |
+| `.github/workflows/publish-all-packages.yml` | Manual dispatch with `confirm="publish all"` | One-shot mass publish of every `@intentsolutionsio/*` package; idempotent |
+| `.github/workflows/publish-changed-packages.yml` | Push to main touching `plugins/**` | Publishes each changed `@intentsolutionsio/*` package whose declared version isn't on npm yet |
+| `.github/workflows/update-npm-stats.yml` | Daily cron (00:15 UTC) | Refreshes `marketplace/src/data/npm-stats.json` + README NPM-STATS block |
+| `.github/workflows/slack-daily-downloads.yml` | Daily cron (18:00 UTC = 1pm Central) | Posts totals + top-5 to #operation-hired (pings `<@U099CBRE7CL>`) via `SLACK_OPERATION_HIRED_WEBHOOK_URL` secret — per `/slack` skill conventions |
+
+Versioning is manual: bump a plugin's `package.json` `version` when you want a new release. The incremental publish workflow mirrors the declared version; it never auto-bumps.
 
 After editing the catalog (`marketplace.extended.json`), run both syncs:
 ```bash

@@ -1,0 +1,43 @@
+{
+  "name": "@intentsolutionsio/token-launch-tracker",
+  "version": "1.0.0",
+  "description": "Track new token launches, detect rugpulls, and analyze contract security for early-stage crypto projects",
+  "keywords": [
+    "crypto",
+    "token-launch",
+    "rugpull",
+    "security",
+    "scam-detection",
+    "contract-analysis",
+    "defi",
+    "new-tokens",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/crypto/token-launch-tracker"
+  },
+  "homepage": "https://tonsofskills.com/plugins/token-launch-tracker",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Intent Solutions IO",
+    "email": "jeremy@intentsolutions.ai",
+    "url": "https://intentsolutions.ai"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "agents"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install token-launch-tracker\\\\n  or /plugin install token-launch-tracker@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

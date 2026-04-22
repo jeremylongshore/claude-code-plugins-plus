@@ -1,0 +1,43 @@
+{
+  "name": "@intentsolutionsio/severity1-marketplace",
+  "version": "1.0.0",
+  "description": "Severity level classification and prompt improvement for marketplace plugins. Assigns severity ratings (S1-Critical through S4-Low) and enhances plugin prompts for clarity, safety, and effectiveness.",
+  "keywords": [
+    "severity",
+    "classification",
+    "prompt-improvement",
+    "marketplace",
+    "security",
+    "quality",
+    "triage",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/security/severity1-marketplace"
+  },
+  "homepage": "https://tonsofskills.com/plugins/severity1-marketplace",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "severity1",
+    "email": "severity1@intentsolutions.io"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands",
+    "agents"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install severity1-marketplace\\\\n  or /plugin install severity1-marketplace@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

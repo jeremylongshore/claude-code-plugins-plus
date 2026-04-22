@@ -1,0 +1,39 @@
+{
+  "name": "@intentsolutionsio/brand-strategy-framework",
+  "version": "1.0.0",
+  "description": "A 7-part brand strategy framework for building comprehensive brand foundations - the same methodology top agencies use with Fortune 500 clients.",
+  "keywords": [
+    "brand-strategy",
+    "marketing",
+    "branding",
+    "positioning",
+    "messaging",
+    "brand-guidelines",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/business-tools/brand-strategy-framework"
+  },
+  "homepage": "https://tonsofskills.com/plugins/brand-strategy-framework",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Rowan Brooks",
+    "url": "https://github.com/rowanbrooks100"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install brand-strategy-framework\\\\n  or /plugin install brand-strategy-framework@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

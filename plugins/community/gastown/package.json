@@ -1,0 +1,43 @@
+{
+  "name": "@intentsolutionsio/gastown",
+  "version": "1.0.0",
+  "description": "Multi-agent orchestrator for Claude Code. Track work with convoys, sling to polecats. The Cognition Engine for AI-powered software factories.",
+  "keywords": [
+    "multi-agent",
+    "orchestration",
+    "automation",
+    "polecats",
+    "convoys",
+    "beads",
+    "work-tracking",
+    "ai-factory",
+    "gastown",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/community/gastown"
+  },
+  "homepage": "https://tonsofskills.com/plugins/gastown",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "Apache-2.0",
+  "author": {
+    "name": "Numman Ali",
+    "email": "numman.ali@gmail.com",
+    "url": "https://github.com/numman-ali"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install gastown\\\\n  or /plugin install gastown@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "name": "@intentsolutionsio/network-latency-analyzer",
+  "version": "1.0.0",
+  "description": "Analyze network latency and optimize request patterns",
+  "keywords": [
+    "network",
+    "latency",
+    "performance",
+    "api",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/performance/network-latency-analyzer"
+  },
+  "homepage": "https://tonsofskills.com/plugins/network-latency-analyzer",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install network-latency-analyzer\\\\n  or /plugin install network-latency-analyzer@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

@@ -1,10 +1,11 @@
 ---
 name: env-config
-description: $(echo "$description" | cut -d' ' -f1-5)
+description: Manage environment configurations and secrets across deployments
 ---
-# $(echo "$name" | sed 's/-/ /g' | sed 's/\b\(.\)/\u\1/g')
+# Environment Config Manager
 
-$(echo "$description")
+Manage environment configurations and secrets across deployments
+
 
 ## Key Features
 

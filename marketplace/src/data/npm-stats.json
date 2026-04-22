@@ -1,0 +1,166 @@
+{
+  "generatedAt": "2026-04-21T01:30:15.018Z",
+  "publishedCount": 26,
+  "candidateCount": 430,
+  "totalDay": 11,
+  "totalWeek": 117,
+  "totalMonth": 665,
+  "top": [
+    {
+      "name": "@intentsolutionsio/ccpi",
+      "lastDay": 8,
+      "lastWeek": 59,
+      "lastMonth": 274
+    },
+    {
+      "name": "@intentsolutionsio/langchain-pack",
+      "lastDay": 0,
+      "lastWeek": 9,
+      "lastMonth": 56
+    },
+    {
+      "name": "@intentsolutionsio/openrouter-pack",
+      "lastDay": 2,
+      "lastWeek": 9,
+      "lastMonth": 52
+    },
+    {
+      "name": "@intentsolutionsio/retellai-pack",
+      "lastDay": 0,
+      "lastWeek": 1,
+      "lastMonth": 33
+    },
+    {
+      "name": "@intentsolutionsio/windsurf-pack",
+      "lastDay": 0,
+      "lastWeek": 7,
+      "lastMonth": 33
+    },
+    {
+      "name": "@intentsolutionsio/firecrawl-pack",
+      "lastDay": 0,
+      "lastWeek": 2,
+      "lastMonth": 22
+    },
+    {
+      "name": "@intentsolutionsio/sentry-pack",
+      "lastDay": 0,
+      "lastWeek": 2,
+      "lastMonth": 20
+    },
+    {
+      "name": "@intentsolutionsio/supabase-pack",
+      "lastDay": 0,
+      "lastWeek": 4,
+      "lastMonth": 17
+    },
+    {
+      "name": "@intentsolutionsio/vercel-pack",
+      "lastDay": 0,
+      "lastWeek": 2,
+      "lastMonth": 13
+    },
+    {
+      "name": "@intentsolutionsio/customerio-pack",
+      "lastDay": 0,
+      "lastWeek": 1,
+      "lastMonth": 12
+    },
+    {
+      "name": "@intentsolutionsio/coderabbit-pack",
+      "lastDay": 0,
+      "lastWeek": 3,
+      "lastMonth": 11
+    },
+    {
+      "name": "@intentsolutionsio/replit-pack",
+      "lastDay": 0,
+      "lastWeek": 2,
+      "lastMonth": 11
+    },
+    {
+      "name": "@intentsolutionsio/cursor-pack",
+      "lastDay": 0,
+      "lastWeek": 1,
+      "lastMonth": 9
+    },
+    {
+      "name": "@intentsolutionsio/fireflies-pack",
+      "lastDay": 0,
+      "lastWeek": 2,
+      "lastMonth": 9
+    },
+    {
+      "name": "@intentsolutionsio/linear-pack",
+      "lastDay": 0,
+      "lastWeek": 1,
+      "lastMonth": 9
+    },
+    {
+      "name": "@intentsolutionsio/perplexity-pack",
+      "lastDay": 1,
+      "lastWeek": 2,
+      "lastMonth": 9
+    },
+    {
+      "name": "@intentsolutionsio/lindy-pack",
+      "lastDay": 0,
+      "lastWeek": 1,
+      "lastMonth": 9
+    },
+    {
+      "name": "@intentsolutionsio/apollo-pack",
+      "lastDay": 0,
+      "lastWeek": 1,
+      "lastMonth": 8
+    },
+    {
+      "name": "@intentsolutionsio/exa-pack",
+      "lastDay": 0,
+      "lastWeek": 2,
+      "lastMonth": 8
+    },
+    {
+      "name": "@intentsolutionsio/gamma-pack",
+      "lastDay": 0,
+      "lastWeek": 1,
+      "lastMonth": 8
+    },
+    {
+      "name": "claude-plugin-validator",
+      "lastDay": 0,
+      "lastWeek": 0,
+      "lastMonth": 8
+    },
+    {
+      "name": "@intentsolutionsio/clay-pack",
+      "lastDay": 0,
+      "lastWeek": 1,
+      "lastMonth": 7
+    },
+    {
+      "name": "@intentsolutionsio/clerk-pack",
+      "lastDay": 0,
+      "lastWeek": 1,
+      "lastMonth": 7
+    },
+    {
+      "name": "@intentsolutionsio/instantly-pack",
+      "lastDay": 0,
+      "lastWeek": 1,
+      "lastMonth": 7
+    },
+    {
+      "name": "@intentsolutionsio/juicebox-pack",
+      "lastDay": 0,
+      "lastWeek": 1,
+      "lastMonth": 7
+    },
+    {
+      "name": "@intentsolutionsio/deepgram-pack",
+      "lastDay": 0,
+      "lastWeek": 1,
+      "lastMonth": 6
+    }
+  ]
+}

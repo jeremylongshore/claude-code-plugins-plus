@@ -1,0 +1,40 @@
+{
+  "name": "@intentsolutionsio/staking-rewards-optimizer",
+  "version": "1.0.0",
+  "description": "Optimize staking rewards across multiple protocols and chains",
+  "keywords": [
+    "crypto",
+    "staking",
+    "defi",
+    "yield",
+    "optimization",
+    "rewards",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/crypto/staking-rewards-optimizer"
+  },
+  "homepage": "https://tonsofskills.com/plugins/staking-rewards-optimizer",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install staking-rewards-optimizer\\\\n  or /plugin install staking-rewards-optimizer@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}
