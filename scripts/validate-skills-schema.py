@@ -2860,12 +2860,57 @@ def validate_plugin(plugin_dir: Path, tier: str = TIER_STANDARD) -> Dict[str, An
 # === COMPLIANCE DATABASE ===
 
 def populate_compliance_db(db_path: str, skill_results: list, agent_results: list = None, validator_version: str = "5.0.0"):
-    """Write validation results to SQLite compliance tables."""
+    """Write validation results to SQLite compliance tables.
+
+    Writes are tagged with the latest discovery_runs.id so freshie queries
+    can filter by run. Paths are stored in repo-relative directory form to
+    match the shape used by `skills.path` / `plugins.path` — enabling direct
+    joins without path-normalization workarounds.
+    """
     import sqlite3
     from datetime import datetime, timezone
 
     conn = sqlite3.connect(db_path)
     c = conn.cursor()
+
+    # Resolve the current discovery run. Rows from older runs keep their
+    # original run_id; fresh writes stamp the latest run so consumers can
+    # filter WHERE run_id = (SELECT MAX(id) FROM discovery_runs).
+    current_run_id: Optional[int] = None
+    try:
+        row = c.execute("SELECT MAX(id) FROM discovery_runs").fetchone()
+        if row and row[0] is not None:
+            current_run_id = int(row[0])
+    except sqlite3.Error:
+        pass  # discovery_runs may not exist on a fresh DB
+
+    repo_root_for_paths = Path(__file__).resolve().parents[1]
+
+    def _normalize_skill_path(raw: str) -> str:
+        """Convert any skill path form to repo-relative dir (no /SKILL.md)."""
+        if not raw:
+            return raw
+        p = Path(raw)
+        if p.is_absolute():
+            try:
+                p = p.relative_to(repo_root_for_paths)
+            except ValueError:
+                pass  # outside repo root — keep as-is
+        if p.name == "SKILL.md":
+            p = p.parent
+        return str(p)
+
+    def _normalize_generic_path(raw: str) -> str:
+        """Convert any path form to repo-relative; preserves file suffix."""
+        if not raw:
+            return raw
+        p = Path(raw)
+        if p.is_absolute():
+            try:
+                p = p.relative_to(repo_root_for_paths)
+            except ValueError:
+                pass
+        return str(p)
 
     c.execute('''CREATE TABLE IF NOT EXISTS skill_compliance (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -2885,7 +2930,16 @@ def populate_compliance_db(db_path: str, skill_results: list, agent_results: lis
         warning_count INTEGER,
         validated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         source_modified_at TIMESTAMP,
-        validator_version TEXT
+        validator_version TEXT,
+        run_id INTEGER,
+        has_prd INTEGER DEFAULT 0,
+        has_ard INTEGER DEFAULT 0,
+        has_errors_md INTEGER DEFAULT 0,
+        has_examples_md INTEGER DEFAULT 0,
+        has_implementation_md INTEGER DEFAULT 0,
+        reference_file_count INTEGER DEFAULT 0,
+        has_config_dir INTEGER DEFAULT 0,
+        gold_standard_pct INTEGER DEFAULT 0
     )''')
 
     c.execute('''CREATE TABLE IF NOT EXISTS agent_compliance (
@@ -2900,7 +2954,8 @@ def populate_compliance_db(db_path: str, skill_results: list, agent_results: lis
         error_count INTEGER,
         warning_count INTEGER,
         validated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        validator_version TEXT
+        validator_version TEXT,
+        run_id INTEGER
     )''')
 
     c.execute('''CREATE TABLE IF NOT EXISTS plugin_compliance (
@@ -2919,23 +2974,49 @@ def populate_compliance_db(db_path: str, skill_results: list, agent_results: lis
         error_count INTEGER,
         warning_count INTEGER,
         validated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        validator_version TEXT
+        validator_version TEXT,
+        run_id INTEGER
     )''')
+
+    # Helpful index for run-scoped queries.
+    c.execute('CREATE INDEX IF NOT EXISTS idx_skill_compliance_run_id ON skill_compliance(run_id)')
+    c.execute('CREATE INDEX IF NOT EXISTS idx_agent_compliance_run_id ON agent_compliance(run_id)')
+    c.execute('CREATE INDEX IF NOT EXISTS idx_plugin_compliance_run_id ON plugin_compliance(run_id)')
+
+    # Purge legacy rows that pre-date run_id tagging. These rows have NULL
+    # run_id and absolute /SKILL.md paths, and cannot be joined against
+    # skills / plugins / agents without string gymnastics. They are safe to
+    # delete because the current populate will regenerate any still-valid
+    # rows using the new relative-path scheme.
+    if current_run_id is not None:
+        for tbl in ('skill_compliance', 'agent_compliance', 'plugin_compliance'):
+            c.execute(f'DELETE FROM {tbl} WHERE run_id IS NULL')
 
     now = datetime.now(timezone.utc).isoformat()
 
     for result in skill_results:
-        skill_path = result.get('path', '')
+        raw_skill_path = result.get('path', '')
+        # Read the file via the raw (possibly absolute) path before normalizing
+        # for storage — keeps file-system lookups working regardless of form.
+        skill_path = _normalize_skill_path(raw_skill_path)
         score = result.get('score', 0)
         grade = result.get('grade', 'F')
         errors = result.get('errors', 0)
         warnings = result.get('warnings', 0)
 
+        # Locate the SKILL.md on disk regardless of which form was passed in.
+        # skill_path is already normalized to a repo-relative directory
+        # (e.g. plugins/foo/skills/bar). The file itself is <dir>/SKILL.md.
+        skill_file = Path(raw_skill_path) if raw_skill_path else Path(skill_path) / 'SKILL.md'
+        if not skill_file.is_absolute():
+            skill_file = repo_root_for_paths / skill_file
+        if skill_file.is_dir():
+            skill_file = skill_file / 'SKILL.md'
+
         # Parse frontmatter and body from the file to count fields and detect stubs
         fm = {}
         body_for_stub = ''
         try:
-            skill_file = Path(skill_path)
             if skill_file.exists():
                 content = skill_file.read_text(encoding='utf-8')
                 fm_data, body_for_stub = parse_frontmatter(content)
@@ -2972,12 +3053,11 @@ def populate_compliance_db(db_path: str, skill_results: list, agent_results: lis
         is_stub_val = 1 if len(_db_stub_reasons) >= 2 else 0
 
         try:
-            skill_file = Path(skill_path)
             mtime = datetime.fromtimestamp(skill_file.stat().st_mtime, tz=timezone.utc).isoformat() if skill_file.exists() else None
         except Exception:
             mtime = None
 
-        skill_dir = Path(skill_path).parent if skill_path else Path('.')
+        skill_dir = skill_file.parent if skill_file else Path('.')
         has_refs = 1 if (skill_dir / 'references').exists() else 0
         has_examples_dir = 1 if (skill_dir / 'examples').exists() else 0
         has_scripts = 1 if (skill_dir / 'scripts').exists() else 0
@@ -3000,25 +3080,30 @@ def populate_compliance_db(db_path: str, skill_results: list, agent_results: lis
              has_references_dir, has_examples, has_scripts_dir, is_stub, stub_reasons,
              score, grade, error_count, warning_count, validated_at, source_modified_at, validator_version,
              has_prd, has_ard, has_errors_md, has_examples_md, has_implementation_md,
-             reference_file_count, has_config_dir, gold_standard_pct)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+             reference_file_count, has_config_dir, gold_standard_pct, run_id)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
             (skill_path, total_fields, anthropic_fields, enterprise_fields,
              json_module.dumps(missing), has_refs, has_examples_dir, has_scripts,
              is_stub_val, json_module.dumps(_db_stub_reasons),
              score, grade, errors, warnings, now, mtime, validator_version,
              has_prd, has_ard, has_errors_md, has_examples_md, has_impl_md,
-             ref_file_count, has_config, gold_pct))
+             ref_file_count, has_config, gold_pct, current_run_id))
 
     if agent_results:
         for result in agent_results:
-            agent_path = result.get('path', '')
+            raw_agent_path = result.get('path', '')
+            agent_path = _normalize_generic_path(raw_agent_path)
             errors = result.get('errors', 0)
             warnings = result.get('warnings', 0)
+
+            # Resolve an absolute file path for reading, independent of the stored form.
+            agent_file = Path(raw_agent_path) if raw_agent_path else Path(agent_path)
+            if not agent_file.is_absolute():
+                agent_file = repo_root_for_paths / agent_file
 
             # Parse agent frontmatter for field analysis
             agent_fm = {}
             try:
-                agent_file = Path(agent_path)
                 if agent_file.exists():
                     content = agent_file.read_text(encoding='utf-8')
                     agent_fm, _ = parse_frontmatter(content)
@@ -3039,7 +3124,7 @@ def populate_compliance_db(db_path: str, skill_results: list, agent_results: lis
             # Detect if plugin agent (has .claude-plugin/plugin.json ancestor)
             is_plugin = 0
             try:
-                for parent in Path(agent_path).parents:
+                for parent in agent_file.parents:
                     if (parent / '.claude-plugin' / 'plugin.json').exists():
                         is_plugin = 1
                         break
@@ -3049,31 +3134,39 @@ def populate_compliance_db(db_path: str, skill_results: list, agent_results: lis
             c.execute('''INSERT OR REPLACE INTO agent_compliance
                 (agent_path, total_fields, anthropic_fields, missing_fields,
                  has_invalid_fields, invalid_fields, is_plugin_agent,
-                 error_count, warning_count, validated_at, validator_version)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+                 error_count, warning_count, validated_at, validator_version, run_id)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
                 (agent_path, a_total, a_anthropic, json_module.dumps(a_missing),
                  a_has_invalid, json_module.dumps(a_invalid), is_plugin,
-                 errors, warnings, now, validator_version))
+                 errors, warnings, now, validator_version, current_run_id))
 
     # Populate plugin_compliance by rolling up skill scores per plugin
     if skill_results:
-        plugin_skills = {}  # plugin_path -> list of skill results
+        plugin_skills: Dict[str, list] = {}  # absolute plugin root dir -> list of skill results
         for result in skill_results:
-            skill_path = result.get('path', '')
-            # Walk up to find plugin root (directory with .claude-plugin/plugin.json)
+            raw_path = result.get('path', '')
+            # Walk up the real filesystem path to find the plugin root; stored
+            # paths are repo-relative so we resolve against repo_root_for_paths.
             try:
-                for parent in Path(skill_path).parents:
+                fs_path = Path(raw_path)
+                if not fs_path.is_absolute():
+                    fs_path = repo_root_for_paths / fs_path
+                if fs_path.name == 'SKILL.md':
+                    fs_path = fs_path.parent
+                for parent in fs_path.parents:
                     if (parent / '.claude-plugin' / 'plugin.json').exists():
-                        plugin_path = str(parent)
-                        if plugin_path not in plugin_skills:
-                            plugin_skills[plugin_path] = []
-                        plugin_skills[plugin_path].append(result)
+                        plugin_path_key = str(parent)
+                        if plugin_path_key not in plugin_skills:
+                            plugin_skills[plugin_path_key] = []
+                        plugin_skills[plugin_path_key].append(result)
                         break
             except Exception:
                 pass
 
-        for plugin_path, skills_list in plugin_skills.items():
-            p = Path(plugin_path)
+        for plugin_abs_path, skills_list in plugin_skills.items():
+            p = Path(plugin_abs_path)
+            # Store plugin_path in the same relative form used by the plugins table.
+            plugin_path = _normalize_generic_path(plugin_abs_path)
             # Validate plugin.json
             pj_valid = 0
             pj_fields = 0
@@ -3107,11 +3200,11 @@ def populate_compliance_db(db_path: str, skill_results: list, agent_results: lis
                 (plugin_path, plugin_json_valid, plugin_json_fields, skill_count,
                  skill_avg_score, agent_count, has_hooks_json, has_mcp_json,
                  has_license, has_changelog, overall_score,
-                 error_count, warning_count, validated_at, validator_version)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+                 error_count, warning_count, validated_at, validator_version, run_id)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
                 (plugin_path, pj_valid, pj_fields, s_count, s_avg, a_count,
                  has_hooks, has_mcp, has_license, has_changelog, s_avg,
-                 total_errors, total_warnings, now, validator_version))
+                 total_errors, total_warnings, now, validator_version, current_run_id))
 
     conn.commit()
     conn.close()
