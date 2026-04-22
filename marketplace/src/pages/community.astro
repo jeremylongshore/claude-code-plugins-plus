@@ -557,7 +557,7 @@ function getContributionSummary(plugins: any[]): string {
 
   {hallOfFame.length > 0 && (
     <div class="section-container" style="padding-bottom: 0;">
-      <h2 class="section-heading">Hall of Fame</h2>
+      <h2 id="hall-of-fame" class="section-heading">Hall of Fame</h2>
       <p style="text-align: center; color: var(--text-2); margin: -1rem auto 2rem; max-width: 550px; font-size: 0.95rem;">Past Killer Skill of the Week spotlights — the best work from the community.</p>
       <div class="hof-grid">
         {hallOfFame.map(item => {
