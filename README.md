@@ -58,6 +58,40 @@ ccpi update                     # Pull latest versions
 
 ---
 
+<!-- NPM-STATS:START — do not edit; daily cron updates this -->
+
+### 📦 Live npm Downloads
+
+Across **26 published packages** in the 
+[claude-code-plugins](https://www.npmjs.com/~jeremylongshore) namespace. Updated daily by GitHub Actions.
+
+| Window | Downloads |
+|--------|----------:|
+| Last 24 hours | 11 |
+| Last 7 days | 117 |
+| Last 30 days | 665 |
+
+**Top 10 by last 30 days:**
+
+| # | Package | Last 30d |
+|---|---------|---------:|
+| 1 | [`@intentsolutionsio/ccpi`](https://www.npmjs.com/package/@intentsolutionsio/ccpi) | 274 |
+| 2 | [`@intentsolutionsio/langchain-pack`](https://www.npmjs.com/package/@intentsolutionsio/langchain-pack) | 56 |
+| 3 | [`@intentsolutionsio/openrouter-pack`](https://www.npmjs.com/package/@intentsolutionsio/openrouter-pack) | 52 |
+| 4 | [`@intentsolutionsio/retellai-pack`](https://www.npmjs.com/package/@intentsolutionsio/retellai-pack) | 33 |
+| 5 | [`@intentsolutionsio/windsurf-pack`](https://www.npmjs.com/package/@intentsolutionsio/windsurf-pack) | 33 |
+| 6 | [`@intentsolutionsio/firecrawl-pack`](https://www.npmjs.com/package/@intentsolutionsio/firecrawl-pack) | 22 |
+| 7 | [`@intentsolutionsio/sentry-pack`](https://www.npmjs.com/package/@intentsolutionsio/sentry-pack) | 20 |
+| 8 | [`@intentsolutionsio/supabase-pack`](https://www.npmjs.com/package/@intentsolutionsio/supabase-pack) | 17 |
+| 9 | [`@intentsolutionsio/vercel-pack`](https://www.npmjs.com/package/@intentsolutionsio/vercel-pack) | 13 |
+| 10 | [`@intentsolutionsio/customerio-pack`](https://www.npmjs.com/package/@intentsolutionsio/customerio-pack) | 12 |
+
+<sub>Last refreshed 2026-04-21T01:30:15.018Z.</sub>
+
+<!-- NPM-STATS:END -->
+
+---
+
 <!-- AUTO-TOC:START — do not edit; run `node scripts/generate-readme-toc.mjs` -->
 
 ## Browse Plugins by Category
@@ -530,7 +564,8 @@ Jump to any of the 18 categories below. Plugin counts are catalog totals — aut
 | `juicebox-pack` | Complete Juicebox integration skill pack with 24 skills covering people data, enrichment, contact search, and AI-powered discovery.… |
 | `klaviyo-pack` | Claude Code skill pack for Klaviyo (24 skills) |
 | `klingai-pack` | Complete Kling AI integration skill pack with 30 skills covering AI video generation, text-to-video, image-to-video, and creative… |
-| `langchain-pack` | Complete LangChain integration skill pack with 24 skills covering chains, agents, RAG pipelines, memory, and LLM application development.… |
+| `langchain-pack` | Legacy LangChain integration skill pack with 24 skills covering chains, agents, RAG pipelines, memory, and LLM application development.… |
+| `langchain-py-pack` | LangChain 1.0 + LangGraph 1.0 skill pack for Python. Pain-first skills anchored to a 68-entry pain catalog covering content blocks,… |
 | `langfuse-pack` | Complete Langfuse integration skill pack with 24 skills covering LLM observability, tracing, prompt management, and evaluation. Flagship… |
 | `lindy-pack` | Complete Lindy integration skill pack with 24 skills covering AI assistants, task automation, workflows, and intelligent automation.… |
 | `linear-pack` | Complete Linear integration skill pack with 24 skills covering issue tracking, project management, workflows, and team collaboration.… |
@@ -576,7 +611,6 @@ Jump to any of the 18 categories below. Plugin counts are catalog totals — aut
 | `veeva-pack` | Claude Code skill pack for Veeva (24 skills) |
 | `vercel-pack` | Complete Vercel integration skill pack with 30 skills covering deployments, edge functions, preview environments, performance… |
 | `webflow-pack` | Claude Code skill pack for Webflow (24 skills) |
-| `windsurf` | Windsurf AI IDE skill pack with 30 skills covering code flows, AI workflows, workspace management, and productivity features. |
 | `windsurf-pack` | Complete Windsurf integration skill pack with 30 skills covering AI code editing, Cascade workflows, codebase understanding, and developer… |
 | `wispr-pack` | Claude Code skill pack for Wispr (18 skills) |
 | `workhuman-pack` | Claude Code skill pack for Workhuman (18 skills) |

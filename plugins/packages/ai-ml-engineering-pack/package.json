@@ -1,0 +1,50 @@
+{
+  "name": "@intentsolutionsio/ai-ml-engineering-pack",
+  "version": "1.0.0",
+  "description": "Professional AI/ML Engineering toolkit: Prompt engineering, LLM integration, RAG systems, AI safety with 12 expert plugins",
+  "keywords": [
+    "ai",
+    "ml",
+    "llm",
+    "prompt-engineering",
+    "rag",
+    "vector-database",
+    "ai-safety",
+    "openai",
+    "anthropic",
+    "claude",
+    "gpt",
+    "embeddings",
+    "semantic-search",
+    "prompt-injection",
+    "cost-optimization",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/packages/ai-ml-engineering-pack"
+  },
+  "homepage": "https://tonsofskills.com/plugins/ai-ml-engineering-pack",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]",
+    "url": "https://github.com/jeremylongshore"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install ai-ml-engineering-pack\\\\n  or /plugin install ai-ml-engineering-pack@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

@@ -1,10 +1,11 @@
 ---
 name: monitor-deploy
-description: $(echo "$description" | cut -d' ' -f1-5)
+description: Deploy monitoring stacks (Prometheus, Grafana, Datadog)
 ---
-# $(echo "$name" | sed 's/-/ /g' | sed 's/\b\(.\)/\u\1/g')
+# Monitoring Stack Deployer
 
-$(echo "$description")
+Deploy monitoring stacks (Prometheus, Grafana, Datadog)
+
 
 ## Key Features
 

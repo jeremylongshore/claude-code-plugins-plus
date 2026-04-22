@@ -1,0 +1,42 @@
+{
+  "name": "@intentsolutionsio/sugar",
+  "version": "2.0.0",
+  "description": "Sugar 🍰 - AI-powered autonomous development system for complex, multi-step development tasks",
+  "keywords": [
+    "autonomous",
+    "development",
+    "ai",
+    "task-management",
+    "automation",
+    "agents",
+    "enterprise",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/devops/sugar"
+  },
+  "homepage": "https://tonsofskills.com/plugins/sugar",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Steven Leggett",
+    "email": "contact@roboticforce.io"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    "skills",
+    "commands",
+    "agents",
+    "hooks"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install sugar\\\\n  or /plugin install sugar@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

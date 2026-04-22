@@ -1,0 +1,40 @@
+{
+  "name": "@intentsolutionsio/smoke-test-runner",
+  "version": "1.0.0",
+  "description": "Quick smoke test suites to verify critical functionality after deployments",
+  "keywords": [
+    "testing",
+    "smoke-tests",
+    "deployment",
+    "sanity-check",
+    "critical-path",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/testing/smoke-test-runner"
+  },
+  "homepage": "https://tonsofskills.com/plugins/smoke-test-runner",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugin Hub",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install smoke-test-runner\\\\n  or /plugin install smoke-test-runner@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

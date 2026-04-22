@@ -4,6 +4,12 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
     branches: [main]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number to review'
+        required: true
+        type: number
 
 permissions:
   contents: read
@@ -11,7 +17,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: 'gemini-review-${{ github.event.pull_request.number }}'
+  group: 'gemini-review-${{ github.event.pull_request.number || inputs.pr_number }}'
   cancel-in-progress: true
 
 jobs:
@@ -22,6 +28,29 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      # Resolve PR number from event or input
+      - name: Get PR number
+        id: pr
+        run: |
+          if [ -n "${{ github.event.pull_request.number }}" ]; then
+            echo "number=${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
+          else
+            echo "number=${{ inputs.pr_number }}" >> $GITHUB_OUTPUT
+          fi
+
+      # Fetch PR metadata for workflow_dispatch (not available in event context)
+      - name: Fetch PR metadata
+        id: pr_meta
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          PR_DATA=$(gh api repos/${{ github.repository }}/pulls/${{ steps.pr.outputs.number }})
+          echo "title=$(echo "$PR_DATA" | jq -r '.title')" >> $GITHUB_OUTPUT
+          echo "body<<EOF" >> $GITHUB_OUTPUT
+          echo "$PR_DATA" | jq -r '.body // ""' >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          echo "head_ref=$(echo "$PR_DATA" | jq -r '.head.ref')" >> $GITHUB_OUTPUT
+
       # Write PR title/body to files to avoid env-var injection into Gemini shell
       - name: Persist PR metadata safely
         run: |
@@ -29,14 +58,21 @@ jobs:
           printf '%s' "$PR_TITLE" > /tmp/pr-meta/title.txt
           printf '%s' "$PR_BODY" > /tmp/pr-meta/body.txt
         env:
-          PR_TITLE: ${{ github.event.pull_request.title }}
-          PR_BODY: ${{ github.event.pull_request.body }}
+          PR_TITLE: ${{ steps.pr_meta.outputs.title }}
+          PR_BODY: ${{ steps.pr_meta.outputs.body }}
+
+      # Checkout the PR branch for workflow_dispatch
+      - name: Checkout PR branch
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: |
+          git fetch origin ${{ steps.pr_meta.outputs.head_ref }}
+          git checkout ${{ steps.pr_meta.outputs.head_ref }}
 
       - name: 'Gemini PR Review'
         uses: 'google-github-actions/run-gemini-cli@v0'
         env:
           GITHUB_TOKEN: '${{ github.token }}'
-          PULL_REQUEST_NUMBER: '${{ github.event.pull_request.number }}'
+          PULL_REQUEST_NUMBER: '${{ steps.pr.outputs.number }}'
           REPOSITORY: '${{ github.repository }}'
         with:
           gcp_workload_identity_provider: '${{ vars.WIF_PROVIDER }}'

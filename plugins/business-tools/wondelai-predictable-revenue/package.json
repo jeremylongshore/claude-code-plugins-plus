@@ -1,0 +1,35 @@
+{
+  "name": "@intentsolutionsio/wondelai-predictable-revenue",
+  "version": "1.0.0",
+  "description": "Outbound sales methodology for scalable B2B pipeline",
+  "keywords": [
+    "business-tools",
+    "wondelai",
+    "skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/business-tools/wondelai-predictable-revenue"
+  },
+  "homepage": "https://tonsofskills.com/plugins/wondelai-predictable-revenue",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Wondel.ai"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install wondelai-predictable-revenue\\\\n  or /plugin install wondelai-predictable-revenue@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "name": "@intentsolutionsio/wondelai-drive-motivation",
+  "version": "1.0.0",
+  "description": "Intrinsic motivation science framework (Autonomy, Mastery, Purpose)",
+  "keywords": [
+    "business-tools",
+    "wondelai",
+    "skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/business-tools/wondelai-drive-motivation"
+  },
+  "homepage": "https://tonsofskills.com/plugins/wondelai-drive-motivation",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Wondel.ai"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install wondelai-drive-motivation\\\\n  or /plugin install wondelai-drive-motivation@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

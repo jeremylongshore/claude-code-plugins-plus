@@ -4,11 +4,34 @@
   "description": "Claude Code skill pack for Lokalise - 24 skills covering translation management system (TMS) for software localization",
   "main": "README.md",
   "type": "module",
-  "files": ["README.md", ".claude-plugin/", "skills/"],
-  "keywords": ["claude-code", "claude-code-plugin", "lokalise", "translation", "localization", "i18n", "tms", "ai-skills", "saas-pack"],
-  "author": {"name": "Jeremy Longshore", "email": "jeremy@intentsolutions.io"},
+  "files": [
+    "README.md",
+    ".claude-plugin/",
+    "skills/"
+  ],
+  "keywords": [
+    "claude-code",
+    "claude-code-plugin",
+    "lokalise",
+    "translation",
+    "localization",
+    "i18n",
+    "tms",
+    "ai-skills",
+    "saas-pack"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
   "license": "MIT",
-  "repository": {"type": "git", "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git", "directory": "plugins/saas-packs/lokalise-pack"},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/saas-packs/lokalise-pack"
+  },
   "homepage": "https://tonsofskills.com/learn/lokalise/",
-  "publishConfig": {"access": "public"}
+  "publishConfig": {
+    "access": "public"
+  }
 }

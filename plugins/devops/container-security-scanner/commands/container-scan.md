@@ -1,10 +1,11 @@
 ---
 name: container-scan
-description: $(echo "$description" | cut -d' ' -f1-5)
+description: Scan containers for vulnerabilities using Trivy, Snyk, and other security tools
 ---
-# $(echo "$name" | sed 's/-/ /g' | sed 's/\b\(.\)/\u\1/g')
+# Container Security Scanner
 
-$(echo "$description")
+Scan containers for vulnerabilities using Trivy, Snyk, and other security tools
+
 
 ## Key Features
 

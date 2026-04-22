@@ -1,0 +1,41 @@
+{
+  "name": "@intentsolutionsio/jeremy-adk-terraform",
+  "version": "2.0.0",
+  "description": "Terraform infrastructure as code for ADK and Vertex AI Agent Engine deployments",
+  "keywords": [
+    "terraform",
+    "adk",
+    "agent-engine",
+    "vertex-ai",
+    "infrastructure",
+    "iac",
+    "vpc-sc",
+    "security",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/devops/jeremy-adk-terraform"
+  },
+  "homepage": "https://tonsofskills.com/plugins/jeremy-adk-terraform",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install jeremy-adk-terraform\\\\n  or /plugin install jeremy-adk-terraform@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

@@ -1,10 +1,11 @@
 ---
 name: drift-detect
-description: $(echo "$description" | cut -d' ' -f1-5)
+description: Detect infrastructure drift from desired state
 ---
-# $(echo "$name" | sed 's/-/ /g' | sed 's/\b\(.\)/\u\1/g')
+# Infrastructure Drift Detector
 
-$(echo "$description")
+Detect infrastructure drift from desired state
+
 
 ## Key Features
 
