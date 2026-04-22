@@ -163,9 +163,11 @@ sudo -u postgres pgbackrest --stanza=fairdb --repo=1 info 2>&1 | tee -a $LOG_FIL
 echo "Full backup completed at $(date)" | tee -a $LOG_FILE
 
 # Send notification (implement webhook/email here)
-curl -X POST $FAIRDB_MONITORING_WEBHOOK \
-  -H 'Content-Type: application/json' \
-  -d "{\"text\":\"FairDB full backup completed successfully\"}" 2>/dev/null || true
+if [[ -n "${FAIRDB_MONITORING_WEBHOOK:-}" ]]; then
+  curl -X POST "$FAIRDB_MONITORING_WEBHOOK" \
+    -H 'Content-Type: application/json' \
+    -d '{"text":"FairDB full backup completed successfully"}' 2>/dev/null || true
+fi
 EOF
 
 # Incremental backup script
