@@ -1,0 +1,38 @@
+{
+  "name": "@intentsolutionsio/database-archival-system",
+  "version": "1.0.0",
+  "description": "Database plugin for database-archival-system",
+  "keywords": [
+    "database",
+    "backend",
+    "archival",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/database/database-archival-system"
+  },
+  "homepage": "https://tonsofskills.com/plugins/database-archival-system",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install database-archival-system\\\\n  or /plugin install database-archival-system@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

@@ -1,15 +1,15 @@
 {
   "meta": {
     "version": "1.0.0",
-    "generated": "2026-04-20T16:51:48.940Z",
+    "generated": "2026-04-21T01:10:01.053Z",
     "source": "marketplace.extended.json",
     "generator": "scripts/sync-catalog.mjs"
   },
   "stats": {
-    "totalPlugins": 423,
-    "totalSkills": 2817,
+    "totalPlugins": 422,
+    "totalSkills": 2787,
     "totalCommands": 80,
-    "pluginsWithSkills": 396,
+    "pluginsWithSkills": 395,
     "byCategory": {
       "productivity": 42,
       "security": 29,
@@ -35,16 +35,15 @@
       "development": 1,
       "data-engineering": 2,
       "enterprise": 2,
-      "analytics": 2,
-      "saas-packs": 1
+      "analytics": 2
     },
     "byStatus": {
-      "active": 404,
+      "active": 403,
       "maintained": 19
     },
     "featured": 7,
-    "new": 402,
-    "generatedAt": "2026-04-20T16:51:48.940Z"
+    "new": 401,
+    "generatedAt": "2026-04-21T01:10:01.053Z"
   },
   "plugins": [
     {
@@ -11534,39 +11533,6 @@
       "author": {
         "name": "Wondel.ai",
         "url": "https://github.com/wondelai"
-      },
-      "type": "instruction-plugin"
-    },
-    {
-      "slug": "windsurf",
-      "name": "windsurf",
-      "displayName": "windsurf",
-      "description": "Windsurf AI IDE skill pack with 30 skills covering code flows, AI workflows, workspace management, and productivity features.",
-      "version": "1.0.0",
-      "category": "saas-packs",
-      "keywords": [
-        "windsurf",
-        "ai-ide",
-        "code-editor",
-        "cascade",
-        "ai-coding"
-      ],
-      "hasSkills": true,
-      "skillCount": 30,
-      "commandCount": 0,
-      "installCommand": "/plugin install windsurf",
-      "sourcePath": "./plugins/saas-packs/skill-databases/windsurf",
-      "lastUpdatedEpoch": 1773195376,
-      "lastUpdatedDate": "2026-03-11T02:16:16.550Z",
-      "status": "active",
-      "badges": [
-        "new"
-      ],
-      "isFeatured": false,
-      "isNew": true,
-      "author": {
-        "name": "Jeremy Longshore",
-        "email": "jeremy@intentsolutions.io"
       },
       "type": "instruction-plugin"
     },

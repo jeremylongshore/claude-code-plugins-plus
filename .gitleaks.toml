@@ -1,0 +1,67 @@
+# gitleaks configuration for claude-code-plugins-plus-skills
+#
+# Primary secret scanner (replaces the ad-hoc regex scan in validate-plugins.yml
+# for the purpose of catching leaked credentials). The repo also runs trufflehog
+# on a weekly schedule against the full history as a verified-credentials check.
+#
+# Extends the upstream default ruleset. Add repo-specific rules for Anthropic,
+# Firebase, and GCP credential shapes. Allowlists exclude documentation
+# examples, test fixtures, and plugin author-provided placeholder tokens.
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "anthropic-api-key"
+description = "Anthropic API key"
+regex = '''sk-ant-(?:api03|admin01)-[A-Za-z0-9_-]{95,}'''
+tags = ["key", "anthropic"]
+
+[[rules]]
+id = "firebase-service-account"
+description = "Firebase / GCP service-account private key block"
+regex = '''-----BEGIN PRIVATE KEY-----[\s\S]+?-----END PRIVATE KEY-----'''
+tags = ["key", "gcp", "firebase"]
+
+[[rules]]
+id = "groq-api-key"
+description = "Groq API key"
+regex = '''gsk_[A-Za-z0-9]{40,}'''
+tags = ["key", "groq"]
+
+[[rules]]
+id = "slack-webhook"
+description = "Slack incoming webhook URL"
+regex = '''https://hooks\.slack\.com/services/T[A-Z0-9]{8,}/B[A-Z0-9]{8,}/[A-Za-z0-9]{24,}'''
+tags = ["url", "slack"]
+
+[allowlist]
+description = "Repo-wide allowlist for documentation, tests, and placeholder fixtures."
+paths = [
+    '''(?i).*/README\.md$''',
+    '''(?i).*/CHANGELOG\.md$''',
+    '''(?i).*/SKILL\.md$''',
+    '''(?i).*/references/.*\.md$''',
+    '''.*/tests?/.*''',
+    '''.*/__tests__/.*''',
+    '''.*/fixtures/.*''',
+    '''^plugins/mcp/.*/dist/.*\.js$''',
+    '''^\.gitleaks\.toml$''',
+    '''^scripts/validate-skills-schema\.py$''',
+    '''^freshie/.*''',
+    '''^marketplace/src/data/.*\.json$''',
+    '''^marketplace/dist/.*''',
+]
+
+regexes = [
+    # AWS public example key — documented by AWS, not a real credential.
+    '''AKIAIOSFODNN7EXAMPLE''',
+    # Common placeholder patterns used in plugin bodies.
+    '''your[-_](api[-_])?key[-_]here''',
+    '''YOUR_[A-Z_]+_HERE''',
+    '''xxx+''',
+    '''\*\*\*+''',
+    '''placeholder''',
+    '''replace[-_]me''',
+    '''example\.com''',
+]

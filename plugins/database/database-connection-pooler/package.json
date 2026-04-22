@@ -1,0 +1,40 @@
+{
+  "name": "@intentsolutionsio/database-connection-pooler",
+  "version": "1.0.0",
+  "description": "Implement and optimize database connection pooling for improved performance and resource management",
+  "keywords": [
+    "connection-pool",
+    "database",
+    "performance",
+    "backend",
+    "optimization",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/database/database-connection-pooler"
+  },
+  "homepage": "https://tonsofskills.com/plugins/database-connection-pooler",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install database-connection-pooler\\\\n  or /plugin install database-connection-pooler@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

@@ -1,10 +1,11 @@
 ---
 name: gitops-workflow
-description: $(echo "$description" | cut -d' ' -f1-5)
+description: Build GitOps workflows with ArgoCD and Flux
 ---
-# $(echo "$name" | sed 's/-/ /g' | sed 's/\b\(.\)/\u\1/g')
+# Gitops Workflow Builder
 
-$(echo "$description")
+Build GitOps workflows with ArgoCD and Flux
+
 
 ## Key Features
 

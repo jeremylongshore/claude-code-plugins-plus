@@ -1,0 +1,39 @@
+{
+  "name": "@intentsolutionsio/sentiment-analysis-tool",
+  "version": "1.0.0",
+  "description": "Sentiment analysis on text data",
+  "keywords": [
+    "sentiment",
+    "opinion",
+    "emotion",
+    "polarity",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/ai-ml/sentiment-analysis-tool"
+  },
+  "homepage": "https://tonsofskills.com/plugins/sentiment-analysis-tool",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install sentiment-analysis-tool\\\\n  or /plugin install sentiment-analysis-tool@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

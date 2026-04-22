@@ -1,0 +1,35 @@
+{
+  "name": "@intentsolutionsio/wondelai-obviously-awesome",
+  "version": "1.0.0",
+  "description": "Product positioning framework for competitive differentiation",
+  "keywords": [
+    "business-tools",
+    "wondelai",
+    "skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/business-tools/wondelai-obviously-awesome"
+  },
+  "homepage": "https://tonsofskills.com/plugins/wondelai-obviously-awesome",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Wondel.ai"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install wondelai-obviously-awesome\\\\n  or /plugin install wondelai-obviously-awesome@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

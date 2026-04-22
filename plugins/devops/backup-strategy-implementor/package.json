@@ -1,0 +1,39 @@
+{
+  "name": "@intentsolutionsio/backup-strategy-implementor",
+  "version": "1.0.0",
+  "description": "Implement backup strategies for databases and applications",
+  "keywords": [
+    "backup",
+    "disaster-recovery",
+    "restoration",
+    "devops",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/devops/backup-strategy-implementor"
+  },
+  "homepage": "https://tonsofskills.com/plugins/backup-strategy-implementor",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install backup-strategy-implementor\\\\n  or /plugin install backup-strategy-implementor@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

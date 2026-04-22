@@ -1,10 +1,11 @@
 ---
 name: service-mesh
-description: $(echo "$description" | cut -d' ' -f1-5)
+description: Configure service mesh (Istio, Linkerd) for microservices
 ---
-# $(echo "$name" | sed 's/-/ /g' | sed 's/\b\(.\)/\u\1/g')
+# Service Mesh Configurator
 
-$(echo "$description")
+Configure service mesh (Istio, Linkerd) for microservices
+
 
 ## Key Features
 

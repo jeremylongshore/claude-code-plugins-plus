@@ -1,0 +1,40 @@
+{
+  "name": "@intentsolutionsio/whale-alert-monitor",
+  "version": "1.0.0",
+  "description": "Monitor large crypto transactions and whale wallet movements in real-time",
+  "keywords": [
+    "whale",
+    "alert",
+    "monitor",
+    "large",
+    "transactions",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/crypto/whale-alert-monitor"
+  },
+  "homepage": "https://tonsofskills.com/plugins/whale-alert-monitor",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Intent Solutions IO",
+    "email": "jeremy@intentsolutions.ai",
+    "url": "https://intentsolutions.ai"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install whale-alert-monitor\\\\n  or /plugin install whale-alert-monitor@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "name": "@intentsolutionsio/ml-model-trainer",
+  "version": "1.0.0",
+  "description": "Train and optimize machine learning models with automated workflows",
+  "keywords": [
+    "ml",
+    "machine-learning",
+    "training",
+    "models",
+    "ai",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/ai-ml/ml-model-trainer"
+  },
+  "homepage": "https://tonsofskills.com/plugins/ml-model-trainer",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install ml-model-trainer\\\\n  or /plugin install ml-model-trainer@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

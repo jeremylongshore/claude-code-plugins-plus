@@ -1,10 +1,11 @@
 ---
 name: pipeline-orchestrate
-description: $(echo "$description" | cut -d' ' -f1-5)
+description: Orchestrate complex multi-stage deployment pipelines
 ---
-# $(echo "$name" | sed 's/-/ /g' | sed 's/\b\(.\)/\u\1/g')
+# Deployment Pipeline Orchestrator
 
-$(echo "$description")
+Orchestrate complex multi-stage deployment pipelines
+
 
 ## Key Features
 

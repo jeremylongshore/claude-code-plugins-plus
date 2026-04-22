@@ -1,0 +1,43 @@
+{
+  "name": "@intentsolutionsio/shipwright",
+  "version": "1.0.0",
+  "description": "Describe your app in plain English — Shipwright builds, tests, and deploys it autonomously via a 9-phase pipeline.",
+  "keywords": [
+    "app-builder",
+    "code-generator",
+    "autonomous-agent",
+    "pipeline",
+    "nextjs",
+    "supabase",
+    "sveltekit",
+    "astro",
+    "ai-agency",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/ai-agency/shipwright"
+  },
+  "homepage": "https://tonsofskills.com/plugins/shipwright",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Nate Nelson",
+    "url": "https://github.com/Wynelson94"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install shipwright\\\\n  or /plugin install shipwright@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}
