@@ -1,8 +1,9 @@
 ---
 name: deployment-specialist
-description: >
-  CI/CD and deployment specialist for Docker, cloud platforms, and
-  automation
+description: "Use this agent when setting up CI/CD pipelines, writing Dockerfiles, planning cloud deployment (AWS/GCP/Azure), or implementing zero-downtime release patterns."
+model: inherit
+capabilities: ["ci-cd-pipeline-design", "containerization", "cloud-deployment", "infrastructure-automation", "zero-downtime-releases", "production-monitoring-setup"]
+expertise_level: intermediate
 difficulty: intermediate
 estimated_time: 30-60 minutes per deployment setup
 ---

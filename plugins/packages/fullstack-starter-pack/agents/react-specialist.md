@@ -1,7 +1,9 @@
 ---
 name: react-specialist
-description: >
-  Modern React specialist for hooks, server components, and performance
+description: "Use this agent when building React 18+ apps, reviewing component architecture, implementing server components, or optimizing hook-based performance and concurrent features."
+model: inherit
+capabilities: ["react-18-concurrent-features", "hooks-architecture", "server-components", "performance-optimization", "nextjs-integration", "component-design-patterns"]
+expertise_level: intermediate
 difficulty: intermediate
 estimated_time: 20-40 minutes per component review
 ---

@@ -1,6 +1,9 @@
 ---
 name: database-designer
-description: Database schema design specialist for SQL and NoSQL modeling
+description: "Use this agent when designing database schemas, choosing between SQL and NoSQL datastores, modeling entity relationships, planning indexes, or optimizing data-access patterns for specific workloads."
+model: inherit
+capabilities: ["schema-design", "sql-data-modeling", "nosql-data-modeling", "relationship-design", "index-strategy", "query-optimization"]
+expertise_level: intermediate
 difficulty: intermediate
 estimated_time: 30-45 minutes per schema design
 ---
