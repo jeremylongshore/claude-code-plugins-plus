@@ -5,7 +5,7 @@ description: |
   Use when events are not appearing in Sentry, SDK initialization seems broken,
   DSN connectivity fails, source maps are not resolving, or preparing a support request.
   Trigger with "sentry debug info", "sentry diagnostics", "debug bundle", "sentry support ticket".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(npx:*), Bash(pip:*), Bash(python*), Bash(curl:*), Bash(dig:*), Bash(sentry-cli:*), Grep, Glob
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(npx:*), Bash(pip:*), Bash(python:*), Bash(curl:*), Bash(dig:*), Bash(sentry-cli:*), Grep, Glob
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
