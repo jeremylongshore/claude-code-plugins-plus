@@ -1,6 +1,6 @@
 ---
 name: backup-strategy
-description: Design and implement a comprehensive backup strategy for your infrastructure, including schedules, retention policies, storage tiers, and recovery procedures.
+description: Design a backup strategy with schedules, retention, storage tiers, and recovery.
 ---
 # Backup Strategy Implementor
 
