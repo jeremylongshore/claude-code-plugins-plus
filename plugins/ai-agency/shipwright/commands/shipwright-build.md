@@ -1,7 +1,7 @@
 ---
 name: shipwright-build
 description: Build a new app from a plain-English description
-category: ai-agency
+category: deployment
 ---
 
 # /shipwright-build

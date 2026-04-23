@@ -1,0 +1,43 @@
+{
+  "name": "@intentsolutionsio/tweetclaw",
+  "version": "1.5.3",
+  "description": "X/Twitter automation - post, reply, like, retweet, follow, DM, search, extract data, monitor accounts, run giveaways via Xquik REST API.",
+  "keywords": [
+    "twitter",
+    "x",
+    "automation",
+    "social-media",
+    "tweets",
+    "monitoring",
+    "giveaway",
+    "scraping",
+    "mcp",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/devops/tweetclaw"
+  },
+  "homepage": "https://tonsofskills.com/plugins/tweetclaw",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Burak Bayir",
+    "email": "burak@xquik.com"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install tweetclaw\\\\n  or /plugin install tweetclaw@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

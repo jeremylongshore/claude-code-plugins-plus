@@ -1,0 +1,88 @@
+name: Plane Sync (quiet mode)
+
+on:
+  issues:
+    types: [opened]
+  pull_request:
+    types: [closed]
+
+env:
+  PLANE_HOST: https://projects.intentsolutions.io
+  PLANE_WORKSPACE: internal
+  PLANE_PROJECT_ID: ${{ secrets.PLANE_PROJECT_ID }}
+  PLANE_API_KEY:    ${{ secrets.PLANE_API_KEY }}
+  PLANE_IDENTIFIER: CCP
+
+jobs:
+  gh-issue-to-plane:
+    if: github.event_name == 'issues' && github.event.action == 'opened'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Resolve Backlog state id
+        id: state
+        run: |
+          set -euo pipefail
+          ID=$(curl -fsSL -H "X-API-Key: $PLANE_API_KEY" \
+            "$PLANE_HOST/api/v1/workspaces/$PLANE_WORKSPACE/projects/$PLANE_PROJECT_ID/states/" \
+            | jq -r '.results[] | select(.group=="backlog") | .id' | head -1)
+          [ -n "$ID" ] || { echo "::error::no Backlog state on project"; exit 1; }
+          echo "backlog=$ID" >> "$GITHUB_OUTPUT"
+
+      - name: Create matching Plane issue
+        env:
+          TITLE:  ${{ github.event.issue.title }}
+          BODY:   ${{ github.event.issue.body }}
+          GH_URL: ${{ github.event.issue.html_url }}
+          BACKLOG: ${{ steps.state.outputs.backlog }}
+        run: |
+          set -euo pipefail
+          HTML=$(jq -n --arg body "${BODY:-<no description>}" --arg url "$GH_URL" \
+            '"<p>" + $body + "</p><hr><p>Mirrored from <a href=\"" + $url + "\">" + $url + "</a></p>"')
+          PAYLOAD=$(jq -n --arg name "$TITLE" --argjson html "$HTML" --arg state "$BACKLOG" \
+            '{name:$name, description_html:$html, state:$state}')
+          RESP=$(curl -fsSL -H "X-API-Key: $PLANE_API_KEY" -H "Content-Type: application/json" \
+            -X POST -d "$PAYLOAD" \
+            "$PLANE_HOST/api/v1/workspaces/$PLANE_WORKSPACE/projects/$PLANE_PROJECT_ID/issues/")
+          SEQ=$(echo "$RESP" | jq -r '.sequence_id // empty')
+          echo "::notice::created $PLANE_IDENTIFIER-${SEQ:-?} from GH issue #${{ github.event.issue.number }}"
+
+  pr-closes-plane-issue:
+    if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Parse closing references
+        id: parse
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+          BODY:  ${{ github.event.pull_request.body }}
+        run: |
+          set -euo pipefail
+          printf '%s\n%s\n' "$TITLE" "${BODY:-}" > /tmp/haystack.txt
+          CODES=$(grep -Eoi "(close[sd]?|fix(e[sd])?|resolve[sd]?)[[:space:]]+${PLANE_IDENTIFIER}-[0-9]+" /tmp/haystack.txt \
+            | grep -Eoi "${PLANE_IDENTIFIER}-[0-9]+" | sort -u || true)
+          if [ -z "$CODES" ]; then echo "::notice::no closing refs"; echo "codes=" >> "$GITHUB_OUTPUT"; exit 0; fi
+          {
+            echo "codes<<EOF"
+            echo "$CODES"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Flip referenced Plane issues to Done
+        if: steps.parse.outputs.codes != ''
+        run: |
+          set -euo pipefail
+          DONE=$(curl -fsSL -H "X-API-Key: $PLANE_API_KEY" \
+            "$PLANE_HOST/api/v1/workspaces/$PLANE_WORKSPACE/projects/$PLANE_PROJECT_ID/states/" \
+            | jq -r '.results[] | select(.group=="completed") | .id' | head -1)
+          ISSUES=$(curl -fsSL -H "X-API-Key: $PLANE_API_KEY" \
+            "$PLANE_HOST/api/v1/workspaces/$PLANE_WORKSPACE/projects/$PLANE_PROJECT_ID/issues/")
+          while read -r CODE; do
+            [ -n "$CODE" ] || continue
+            SEQ=${CODE#${PLANE_IDENTIFIER}-}
+            UUID=$(echo "$ISSUES" | jq -r --arg seq "$SEQ" '.results[] | select(.sequence_id==($seq | tonumber)) | .id')
+            if [ -z "$UUID" ]; then echo "::warning::$CODE not found in Plane"; continue; fi
+            curl -fsSL -o /dev/null -H "X-API-Key: $PLANE_API_KEY" -H "Content-Type: application/json" \
+              -X PATCH -d "{\"state\":\"$DONE\"}" \
+              "$PLANE_HOST/api/v1/workspaces/$PLANE_WORKSPACE/projects/$PLANE_PROJECT_ID/issues/$UUID/"
+            echo "::notice::$CODE → Done"
+          done <<< "${{ steps.parse.outputs.codes }}"

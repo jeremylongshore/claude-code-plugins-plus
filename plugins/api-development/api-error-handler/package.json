@@ -1,0 +1,38 @@
+{
+  "name": "@intentsolutionsio/api-error-handler",
+  "version": "1.0.0",
+  "description": "Implement standardized error handling with proper HTTP status codes",
+  "keywords": [
+    "error-handling",
+    "api",
+    "http-status",
+    "exceptions",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/api-development/api-error-handler"
+  },
+  "homepage": "https://tonsofskills.com/plugins/api-error-handler",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install api-error-handler\\\\n  or /plugin install api-error-handler@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

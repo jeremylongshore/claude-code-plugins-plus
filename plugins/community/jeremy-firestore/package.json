@@ -1,0 +1,48 @@
+{
+  "name": "@intentsolutionsio/jeremy-firestore",
+  "version": "2.0.0",
+  "description": "Firestore database specialist for schema design, queries, and real-time sync",
+  "keywords": [
+    "firebase",
+    "firestore",
+    "database",
+    "crud",
+    "security-rules",
+    "cloud-functions",
+    "batch-operations",
+    "data-migration",
+    "performance",
+    "cost-optimization",
+    "nosql",
+    "google-cloud",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/community/jeremy-firestore"
+  },
+  "homepage": "https://tonsofskills.com/plugins/jeremy-firestore",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]",
+    "url": "https://intentsolutions.io"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands",
+    "agents"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install jeremy-firestore\\\\n  or /plugin install jeremy-firestore@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

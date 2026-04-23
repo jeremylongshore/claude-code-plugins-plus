@@ -8,7 +8,7 @@ description: |
   status reports. Trigger with "freshie status", "inventory scan", "ecosystem audit",
   "grade report", "compliance check", "remediate skills", "query freshie",
   "compare runs", "export grades", or "freshie report".
-allowed-tools: Read, Write, Edit, Bash(sqlite3:*), Bash(python3:*), Bash(node:*), Bash(mkdir:*), Bash(wc:*), Glob, Grep, AskUserQuestion, Skill, Agent
+allowed-tools: Read, Write, Edit, Bash(sqlite3:*), Bash(python3:*), Bash(node:*), Bash(mkdir:*), Bash(wc:*), Glob, Grep, AskUserQuestion, Skill, Task
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT

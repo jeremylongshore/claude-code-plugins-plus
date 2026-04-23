@@ -80,17 +80,25 @@ exports.subscribeEmail = onCall(
       subscribedAt: admin.firestore.FieldValue.serverTimestamp(),
     });
 
-    // Send Slack notification to #intent-notifier
+    // Send Slack notification
     try {
       const webhookUrl = slackWebhookUrl.value();
-      if (webhookUrl) {
-        await fetch(webhookUrl, {
+      if (!webhookUrl) {
+        console.error("Slack webhook URL not configured");
+      } else {
+        const resp = await fetch(webhookUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             text: `New email signup: *${email.toLowerCase()}* (from ${source} form)`,
           }),
         });
+        if (!resp.ok) {
+          const body = await resp.text();
+          console.error(`Slack webhook returned ${resp.status}: ${body}`);
+        } else {
+          console.log(`Slack notification sent for ${email.toLowerCase()}`);
+        }
       }
     } catch (slackErr) {
       console.error("Slack notification failed:", slackErr);
@@ -144,14 +152,22 @@ exports.submitNomination = onCall(
     // Slack notification
     try {
       const webhookUrl = slackWebhookUrl.value();
-      if (webhookUrl) {
-        await fetch(webhookUrl, {
+      if (!webhookUrl) {
+        console.error("Slack webhook URL not configured");
+      } else {
+        const resp = await fetch(webhookUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             text: `New Killer Skill nomination: *<${cleanUrl}|${cleanUrl.replace("https://github.com/", "")}>* (from ${source} form)`,
           }),
         });
+        if (!resp.ok) {
+          const body = await resp.text();
+          console.error(`Slack webhook returned ${resp.status}: ${body}`);
+        } else {
+          console.log(`Slack notification sent for nomination ${cleanUrl}`);
+        }
       }
     } catch (slackErr) {
       console.error("Slack notification failed:", slackErr);

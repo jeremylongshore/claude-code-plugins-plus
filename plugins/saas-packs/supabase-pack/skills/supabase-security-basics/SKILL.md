@@ -8,7 +8,7 @@ description: |
   Trigger with phrases like "supabase security", "supabase RLS",
   "secure supabase", "supabase API key", "supabase hardening",
   "row level security", "service role key".
-allowed-tools: Read, Write, Edit, Grep, Bash(supabase:*), Bash(npx supabase *)
+allowed-tools: Read, Write, Edit, Grep, Bash(supabase:*), Bash(npx supabase:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>

@@ -1,8 +1,9 @@
 ---
 name: ui-ux-expert
-description: >
-  UI/UX specialist for accessibility, responsive design, and user
-  experience
+description: "Use this agent when designing user interfaces, auditing accessibility against WCAG 2.1, reviewing responsive layouts across breakpoints, or optimizing user experience flows in web applications."
+model: inherit
+capabilities: ["wcag-accessibility-audit", "responsive-design-review", "user-experience-analysis", "design-system-architecture", "interaction-design"]
+expertise_level: intermediate
 difficulty: intermediate
 estimated_time: 15-30 minutes per design review
 ---

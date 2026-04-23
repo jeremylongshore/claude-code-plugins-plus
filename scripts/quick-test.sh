@@ -19,7 +19,11 @@ echo ""
 
 # Test 1: Check tools
 echo -e "${BLUE}Checking tools...${NC}"
-command -v pnpm > /dev/null || (echo "Installing pnpm..." && npm install -g pnpm@9.15.9)
+if ! command -v pnpm > /dev/null; then
+  echo -e "${YELLOW}pnpm not found. Install it with: corepack enable pnpm${NC}"
+  echo "See: https://pnpm.io/installation"
+  exit 1
+fi
 echo -e "${GREEN}✓ Tools ready${NC}"
 echo ""
 

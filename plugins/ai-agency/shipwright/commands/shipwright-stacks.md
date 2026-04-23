@@ -1,7 +1,7 @@
 ---
 name: shipwright-stacks
 description: List supported Shipwright tech stacks
-category: ai-agency
+category: deployment
 ---
 
 # /shipwright-stacks

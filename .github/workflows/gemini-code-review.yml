@@ -1,9 +1,34 @@
 name: 'Gemini PR Review'
 
+# SAFE-FOR-FORKS design (adapted from claude-code-slack-channel):
+#
+# Uses `pull_request_target` so the workflow runs in the BASE branch
+# context — meaning WIF auth and secrets ARE available even when the PR
+# comes from a fork. This is the only way forked-repo contributions get
+# Gemini review coverage (the prior `pull_request` event silently skipped
+# secret-requiring steps on forks, leaving external contributors with no
+# CI feedback at all).
+#
+# The safety of this pattern depends on TWO rules being followed below:
+#   1. We check out the PR HEAD SHA with persist-credentials: false.
+#      Using the SHA (not the ref) prevents TOCTOU on force-pushes.
+#   2. The Gemini step is READ-ONLY: it reads the diff via the GitHub
+#      API and its shell tools are restricted to cat/echo/grep/head/tail.
+#      No install, no build, no test — we never execute PR code.
+#
+# A malicious fork can put anything in the diff; Gemini just reads it
+# and comments on it. The workflow never runs PR-controlled code.
+
 on:
-  pull_request:
+  pull_request_target:
     types: [opened, synchronize, reopened]
     branches: [main]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number to review'
+        required: true
+        type: number
 
 permissions:
   contents: read
@@ -11,7 +36,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: 'gemini-review-${{ github.event.pull_request.number }}'
+  group: 'gemini-review-${{ github.event.pull_request.number || inputs.pr_number }}'
   cancel-in-progress: true
 
 jobs:
@@ -20,7 +45,39 @@ jobs:
     timeout-minutes: 7
     if: ${{ vars.ENABLE_GEMINI_REVIEW == 'true' }}
     steps:
+      # Resolve PR number from event or input
+      - name: Get PR number
+        id: pr
+        run: |
+          if [ -n "${{ github.event.pull_request.number }}" ]; then
+            echo "number=${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
+          else
+            echo "number=${{ inputs.pr_number }}" >> $GITHUB_OUTPUT
+          fi
+
+      # Fetch PR metadata for workflow_dispatch (not available in event context)
+      # Also gives us head.sha which is what we check out below.
+      - name: Fetch PR metadata
+        id: pr_meta
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          PR_DATA=$(gh api repos/${{ github.repository }}/pulls/${{ steps.pr.outputs.number }})
+          echo "title=$(echo "$PR_DATA" | jq -r '.title')" >> $GITHUB_OUTPUT
+          echo "body<<EOF" >> $GITHUB_OUTPUT
+          echo "$PR_DATA" | jq -r '.body // ""' >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          echo "head_sha=$(echo "$PR_DATA" | jq -r '.head.sha')" >> $GITHUB_OUTPUT
+
+      # Checkout the PR head SHA explicitly (not the ref) with no persisted
+      # credentials. Gemini needs the .gemini/commands/gemini-review.toml
+      # prompt file from the checkout dir. Checking out the SHA (not branch)
+      # prevents TOCTOU if the fork force-pushes mid-run.
       - uses: actions/checkout@v6
+        with:
+          ref: ${{ steps.pr_meta.outputs.head_sha }}
+          persist-credentials: false
+          fetch-depth: 0
 
       # Write PR title/body to files to avoid env-var injection into Gemini shell
       - name: Persist PR metadata safely
@@ -29,15 +86,20 @@ jobs:
           printf '%s' "$PR_TITLE" > /tmp/pr-meta/title.txt
           printf '%s' "$PR_BODY" > /tmp/pr-meta/body.txt
         env:
-          PR_TITLE: ${{ github.event.pull_request.title }}
-          PR_BODY: ${{ github.event.pull_request.body }}
+          PR_TITLE: ${{ steps.pr_meta.outputs.title }}
+          PR_BODY: ${{ steps.pr_meta.outputs.body }}
 
       - name: 'Gemini PR Review'
+        id: gemini
         uses: 'google-github-actions/run-gemini-cli@v0'
         env:
           GITHUB_TOKEN: '${{ github.token }}'
-          PULL_REQUEST_NUMBER: '${{ github.event.pull_request.number }}'
+          PULL_REQUEST_NUMBER: '${{ steps.pr.outputs.number }}'
           REPOSITORY: '${{ github.repository }}'
+          # Temporary: surfaces Gemini CLI stdout/stderr in run logs so we can
+          # see exactly what the CLI reports when talking to the MCP server.
+          # Remove once reviews are confirmed posting reliably.
+          GEMINI_DEBUG: 'true'
         with:
           gcp_workload_identity_provider: '${{ vars.WIF_PROVIDER }}'
           gcp_service_account: '${{ vars.WIF_SERVICE_ACCOUNT }}'
@@ -47,6 +109,13 @@ jobs:
           gemini_model: 'gemini-2.5-pro'
           workflow_name: 'gemini-review'
           prompt: '/gemini-review'
+          # MCP server wiring — REQUIRED. Empirically verified:
+          # every repo in this ecosystem that posts actual reviews
+          # (claude-code-slack-channel, x-bug-triage-plugin) has this
+          # mcpServers block. Repos without it (wild-admin-tools-mcp)
+          # post nothing. Tools under tools.includeTools at the top
+          # level do not wire up for the Gemini CLI; they must be
+          # declared under the MCP server definition.
           settings: |-
             {
               "model": {
@@ -80,3 +149,24 @@ jobs:
                 ]
               }
             }
+
+      # Ping #operation-hired so Jeremy sees activity without being the bottleneck.
+      # Follows the pattern in secret-scan.yml (same webhook, same user-ID mention).
+      # if: always() so both successes and failures surface.
+      - name: Notify Slack on review completion
+        if: always()
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_OPERATION_HIRED_WEBHOOK_URL }}
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+          PR_TITLE: ${{ steps.pr_meta.outputs.title }}
+          REPO: ${{ github.repository }}
+          REVIEW_STATUS: ${{ steps.gemini.outcome }}
+        run: |
+          if [ -z "$SLACK_WEBHOOK" ]; then
+            echo "No Slack webhook configured; skipping notification."
+            exit 0
+          fi
+          payload=$(jq -n \
+            --arg text "Gemini reviewed PR #${PR_NUMBER} \"${PR_TITLE}\" — status: ${REVIEW_STATUS}. https://github.com/${REPO}/pull/${PR_NUMBER} <@U099CBRE7CL>" \
+            '{text: $text}')
+          curl -sS -X POST -H 'Content-type: application/json' --data "$payload" "$SLACK_WEBHOOK"

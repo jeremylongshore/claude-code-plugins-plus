@@ -2,6 +2,39 @@
 
 Thank you for your interest in contributing to the Claude Code Plugins marketplace. With hundreds of plugins and thousands of agent skills, this is a community-driven project and contributions of all sizes are welcome.
 
+## Before You Submit — Read This
+
+Tons of Skills publishes Intent Solutions-grade plugins and skills. That means full-capability, enterprise-ready implementations — validators, tests, docs, license, the works.
+
+### The Intent Solutions standard
+
+At Intent Solutions we ship the full-fledged capability. We don't publish half-implementations, stubs, or "minimum viable" versions. When a contribution lands in this marketplace, it lands as a complete, enterprise-grade artifact: proper frontmatter, tested code, real documentation, a valid license, security-scanned content, and a score above our 100-point rubric threshold.
+
+**That's our side of the contract.** Once a user acquires a plugin or skill from this marketplace, they own it — they can strip it down, fork it, gut it, simplify it, inline it into their own workflow, remove features they don't want, or rewrite it from scratch. That's their prerogative as the consumer.
+
+**But what we *publish* is the full-capability version.** The validators exist to enforce that bar. If your submission gets flagged, it's not personal — it's the same bar we hold ourselves to internally.
+
+### What this means practically for your PR
+
+- Your `SKILL.md` needs the full frontmatter schema (not just `name` + `description`). See [Adding Skills](#adding-skills) below.
+- Your plugin needs a `README.md`, a `LICENSE`, a valid `plugin.json` (allowed fields only), and an entry in `.claude-plugin/marketplace.extended.json`.
+- Your code and config can't trip the security scanner — no `rm -rf`, no `eval`, no base64 obfuscation, no hardcoded secrets, no URL shorteners, HTTPS only.
+- Your skill needs to score at or above the enterprise threshold on our 100-point rubric. Run the same validator CI runs:
+  ```bash
+  python3 scripts/validate-skills-schema.py --enterprise --verbose plugins/<category>/<name>/
+  ```
+- If any of this fails in CI, **Gemini 2.5 Pro will post a specific, actionable review** on your PR explaining exactly what's wrong and how to fix it. A human maintainer will follow up if the bot was unclear.
+
+### "But I just want to submit a small skill"
+
+The bar isn't *size*, it's *completeness of what you do ship*. Start from `templates/minimal-plugin/` — even the minimum template passes enterprise validators. A one-command plugin with proper frontmatter, a real README, and a valid license is welcome. A sprawling plugin with placeholder text and bare `Bash` permissions is not.
+
+### Now what
+
+Read the rest of this doc, then run `./scripts/quick-test.sh` locally before you push. That script runs the same validators CI runs — passing it locally means your PR will pass the hard gates.
+
+---
+
 ## Quick Start
 
 1. Fork and clone the repository
@@ -69,9 +102,19 @@ CI runs the following checks on every PR:
 
 Run `./scripts/quick-test.sh` locally to catch most issues before pushing.
 
+### What happens when you open the PR
+
+1. GitHub runs all 15+ validators (`validate-plugins.yml`).
+2. Gemini 2.5 Pro reviews your code and posts inline comments within ~2–5 minutes.
+3. A maintainer gets a Slack ping — we'll follow up if Gemini missed something or was wrong.
+4. Push fixes; both the validators and Gemini re-run on each push.
+5. Once validators pass and Gemini has no `[Critical]` or `[High]` findings, a maintainer reviews and merges.
+
+The Gemini reviewer reads from a project-specific prompt at `.gemini/commands/gemini-review.toml` — it knows the catalog system, plugin structure, SKILL.md schema, severity classifications, and anti-patterns. If you think it got something wrong, just reply to the review and a human will weigh in.
+
 ## PR Process
 
-- The PR template is auto-populated when you open a pull request. Fill it out completely.
+- The PR template at [`.github/PULL_REQUEST_TEMPLATE.md`](.github/PULL_REQUEST_TEMPLATE.md) pre-fills when you open a pull request. Fill it out completely.
 - Include test evidence (validation output, screenshots, or logs as appropriate).
 - Reviews are typically completed within 48 hours.
 - Address review comments, re-run validation, and push before requesting re-review.

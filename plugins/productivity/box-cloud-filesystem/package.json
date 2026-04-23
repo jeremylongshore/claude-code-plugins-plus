@@ -1,0 +1,45 @@
+{
+  "name": "@intentsolutionsio/box-cloud-filesystem",
+  "version": "1.0.0",
+  "description": "Transparent cloud filesystem for AI agents using Box CLI (@box/cli). Upload, download, search, share, and sync files to Box cloud storage with operational safety guardrails.",
+  "keywords": [
+    "box",
+    "cloud-storage",
+    "filesystem",
+    "file-sync",
+    "box-cli",
+    "upload",
+    "download",
+    "document-management",
+    "collaboration",
+    "ai-agent-storage",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/productivity/box-cloud-filesystem"
+  },
+  "homepage": "https://tonsofskills.com/plugins/box-cloud-filesystem",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "hooks",
+    "scripts"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install box-cloud-filesystem\\\\n  or /plugin install box-cloud-filesystem@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

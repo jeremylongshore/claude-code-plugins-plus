@@ -1,5 +1,10 @@
 # Pull Request
 
+> 📘 **First time contributing?** Read [CONTRIBUTING.md § Before You Submit](../blob/main/CONTRIBUTING.md#before-you-submit--read-this).
+> It explains the Intent Solutions enterprise-standards philosophy — why the
+> bar is where it is, and how to pass the validators on your first push.
+> Reading it up front saves a round-trip with our auto-review bot.
+
 ## Type of Change
 
 <!-- Select all that apply -->

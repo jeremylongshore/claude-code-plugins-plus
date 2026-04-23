@@ -1,7 +1,7 @@
 ---
 name: shipwright-enhance
 description: Add features to an existing Shipwright project
-category: ai-agency
+category: deployment
 ---
 
 # /shipwright-enhance

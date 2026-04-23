@@ -1,7 +1,7 @@
 ---
 name: shipwright-projects
 description: List and manage existing Shipwright projects
-category: ai-agency
+category: deployment
 ---
 
 # /shipwright-projects

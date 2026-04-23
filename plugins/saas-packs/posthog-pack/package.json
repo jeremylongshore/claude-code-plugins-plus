@@ -4,11 +4,33 @@
   "description": "Claude Code skill pack for PostHog - 24 skills covering product analytics and feature flags",
   "main": "README.md",
   "type": "module",
-  "files": ["README.md", ".claude-plugin/", "skills/"],
-  "keywords": ["claude-code", "claude-code-plugin", "posthog", "analytics", "feature-flags", "session-replay", "ai-skills", "saas-pack"],
-  "author": {"name": "Jeremy Longshore", "email": "jeremy@intentsolutions.io"},
+  "files": [
+    "README.md",
+    ".claude-plugin/",
+    "skills/"
+  ],
+  "keywords": [
+    "claude-code",
+    "claude-code-plugin",
+    "posthog",
+    "analytics",
+    "feature-flags",
+    "session-replay",
+    "ai-skills",
+    "saas-pack"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
   "license": "MIT",
-  "repository": {"type": "git", "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git", "directory": "plugins/saas-packs/posthog-pack"},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/saas-packs/posthog-pack"
+  },
   "homepage": "https://tonsofskills.com/learn/posthog/",
-  "publishConfig": {"access": "public"}
+  "publishConfig": {
+    "access": "public"
+  }
 }

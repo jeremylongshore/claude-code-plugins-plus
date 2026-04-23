@@ -1,7 +1,10 @@
 ---
 name: backend-architect
-description: >
-  System architecture specialist for scalable backend design and patterns
+description: "Use this agent when designing scalable backend systems, choosing monolithic vs microservices, planning distributed systems, or reviewing system-level architecture decisions."
+model: inherit
+capabilities: ["system-architecture-design", "scalability-patterns", "microservices-decomposition", "distributed-systems", "technology-selection", "high-availability-planning"]
+expertise_level: advanced
+activation_priority: high
 difficulty: advanced
 estimated_time: 30-60 minutes per architecture review
 ---

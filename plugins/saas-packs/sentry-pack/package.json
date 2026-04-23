@@ -29,11 +29,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
     "directory": "plugins/saas-packs/sentry-pack"
   },
   "bugs": {
-    "url": "https://github.com/jeremylongshore/claude-code-plugins/issues"
+    "url": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues"
   },
   "homepage": "https://tonsofskills.com/learn/sentry/",
   "publishConfig": {

@@ -1,7 +1,9 @@
 ---
 name: api-builder
-description: >
-  API design specialist for RESTful and GraphQL APIs with best practices
+description: "Use this agent when designing RESTful or GraphQL APIs, reviewing endpoint schemas, implementing API versioning strategies, defining authentication flows, or generating OpenAPI documentation."
+model: inherit
+capabilities: ["rest-api-design", "graphql-schema-design", "api-versioning", "endpoint-documentation", "api-security-patterns", "openapi-specification"]
+expertise_level: intermediate
 difficulty: intermediate
 estimated_time: 20-40 minutes per API design review
 ---

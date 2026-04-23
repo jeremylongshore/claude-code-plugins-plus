@@ -1,0 +1,40 @@
+{
+  "name": "@intentsolutionsio/arbitrage-opportunity-finder",
+  "version": "1.0.0",
+  "description": "Find and analyze arbitrage opportunities across exchanges and DeFi protocols",
+  "keywords": [
+    "arbitrage",
+    "trading",
+    "defi",
+    "mev",
+    "profit",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/crypto/arbitrage-opportunity-finder"
+  },
+  "homepage": "https://tonsofskills.com/plugins/arbitrage-opportunity-finder",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Intent Solutions IO",
+    "email": "jeremy@intentsolutions.ai",
+    "url": "https://intentsolutions.ai"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install arbitrage-opportunity-finder\\\\n  or /plugin install arbitrage-opportunity-finder@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

@@ -1,10 +1,11 @@
 ---
 name: log-setup
-description: $(echo "$description" | cut -d' ' -f1-5)
+description: Set up log aggregation (ELK, Loki, Splunk)
 ---
-# $(echo "$name" | sed 's/-/ /g' | sed 's/\b\(.\)/\u\1/g')
+# Log Aggregation Setup
 
-$(echo "$description")
+Set up log aggregation (ELK, Loki, Splunk)
+
 
 ## Key Features
 

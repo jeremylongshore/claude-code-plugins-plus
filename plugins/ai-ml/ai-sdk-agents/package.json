@@ -1,0 +1,49 @@
+{
+  "name": "@intentsolutionsio/ai-sdk-agents",
+  "version": "1.0.0",
+  "description": "Multi-agent orchestration with AI SDK v5 - handoffs, routing, and coordination for any AI provider (OpenAI, Anthropic, Google)",
+  "keywords": [
+    "ai-sdk",
+    "agents",
+    "multi-agent",
+    "orchestration",
+    "handoff",
+    "routing",
+    "llm",
+    "openai",
+    "anthropic",
+    "google",
+    "claude",
+    "ai",
+    "coordination",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/ai-ml/ai-sdk-agents"
+  },
+  "homepage": "https://tonsofskills.com/plugins/ai-sdk-agents",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands",
+    "agents"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install ai-sdk-agents\\\\n  or /plugin install ai-sdk-agents@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}
