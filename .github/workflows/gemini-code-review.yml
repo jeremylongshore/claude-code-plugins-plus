@@ -69,11 +69,16 @@ jobs:
           git checkout ${{ steps.pr_meta.outputs.head_ref }}
 
       - name: 'Gemini PR Review'
+        id: gemini
         uses: 'google-github-actions/run-gemini-cli@v0'
         env:
           GITHUB_TOKEN: '${{ github.token }}'
           PULL_REQUEST_NUMBER: '${{ steps.pr.outputs.number }}'
           REPOSITORY: '${{ github.repository }}'
+          # Temporary: surfaces Gemini CLI stdout/stderr in run logs so we can
+          # see exactly what the CLI reports when talking to the MCP server.
+          # Remove once reviews are confirmed posting reliably.
+          GEMINI_DEBUG: 'true'
         with:
           gcp_workload_identity_provider: '${{ vars.WIF_PROVIDER }}'
           gcp_service_account: '${{ vars.WIF_SERVICE_ACCOUNT }}'
@@ -83,30 +88,23 @@ jobs:
           gemini_model: 'gemini-2.5-pro'
           workflow_name: 'gemini-review'
           prompt: '/gemini-review'
+          # Use the Gemini CLI's built-in GitHub tools — same pattern as
+          # every other Gemini PR-review workflow in this ecosystem
+          # (wild-*, cad-dxf-agent, x-bug-triage-plugin). No MCP bridge,
+          # no docker, no external binary. Previous version pinned a
+          # 4-month-stale github-mcp-server image that silently crashed,
+          # producing green-but-empty runs for ~4 months.
           settings: |-
             {
               "model": {
                 "maxSessionTurns": 25
               },
-              "mcpServers": {
-                "github": {
-                  "command": "docker",
-                  "args": [
-                    "run", "-i", "--rm",
-                    "-e", "GITHUB_PERSONAL_ACCESS_TOKEN",
-                    "ghcr.io/github/github-mcp-server:v0.27.0"
-                  ],
-                  "includeTools": [
-                    "add_comment_to_pending_review",
-                    "pull_request_read",
-                    "pull_request_review_write"
-                  ],
-                  "env": {
-                    "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
-                  }
-                }
-              },
               "tools": {
+                "includeTools": [
+                  "add_comment_to_pending_review",
+                  "pull_request_read",
+                  "pull_request_review_write"
+                ],
                 "core": [
                   "run_shell_command(cat)",
                   "run_shell_command(echo)",
@@ -116,3 +114,24 @@ jobs:
                 ]
               }
             }
+
+      # Ping #operation-hired so Jeremy sees activity without being the bottleneck.
+      # Follows the pattern in secret-scan.yml (same webhook, same user-ID mention).
+      # if: always() so both successes and failures surface.
+      - name: Notify Slack on review completion
+        if: always()
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_OPERATION_HIRED_WEBHOOK_URL }}
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+          PR_TITLE: ${{ steps.pr_meta.outputs.title }}
+          REPO: ${{ github.repository }}
+          REVIEW_STATUS: ${{ steps.gemini.outcome }}
+        run: |
+          if [ -z "$SLACK_WEBHOOK" ]; then
+            echo "No Slack webhook configured; skipping notification."
+            exit 0
+          fi
+          payload=$(jq -n \
+            --arg text "Gemini reviewed PR #${PR_NUMBER} \"${PR_TITLE}\" — status: ${REVIEW_STATUS}. https://github.com/${REPO}/pull/${PR_NUMBER} <@U099CBRE7CL>" \
+            '{text: $text}')
+          curl -sS -X POST -H 'Content-type: application/json' --data "$payload" "$SLACK_WEBHOOK"
