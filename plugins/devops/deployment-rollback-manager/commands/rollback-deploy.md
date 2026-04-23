@@ -1,10 +1,11 @@
 ---
 name: rollback-deploy
-description: $(echo "$description" | cut -d' ' -f1-5)
+description: Manage and execute deployment rollbacks with safety checks
 ---
-# $(echo "$name" | sed 's/-/ /g' | sed 's/\b\(.\)/\u\1/g')
+# Deployment Rollback Manager
 
-$(echo "$description")
+Manage and execute deployment rollbacks with safety checks
+
 
 ## Key Features
 

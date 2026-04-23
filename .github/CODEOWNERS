@@ -1,0 +1,54 @@
+# CODEOWNERS for claude-code-plugins-plus-skills
+#
+# GitHub assigns review requests to the owners listed here whenever a
+# matching path changes. The *last* matching rule wins — more specific
+# paths near the bottom override the catch-all at the top.
+#
+# Paired with branch protection "Require review from Code Owners":
+# no PR merges until Jeremy has approved. That's the hard structural
+# gate on external contributions, not just policy.
+#
+# Docs: https://docs.github.com/en/repositories/managing-your-repositories-settings-and-security/customizing-your-repository/about-code-owners
+
+# Default: Jeremy owns everything. External contributions require his
+# explicit approval before merge, full stop.
+* @jeremylongshore
+
+# CI + release automation. Workflow edits can bypass the whole validator
+# gate, so they get the same ownership as code but with extra emphasis —
+# any PR touching these MUST be read line-by-line before approval.
+/.github/                       @jeremylongshore
+/.github/workflows/             @jeremylongshore
+
+# Validators + the validator config. The 100-point rubric and the
+# schema enforcement live here — changes to the bar itself require
+# intentional sign-off, not rubber-stamp.
+/scripts/validate-skills-schema.py  @jeremylongshore
+/scripts/run-verification-pipeline.mjs  @jeremylongshore
+/scripts/check-package-manager.mjs  @jeremylongshore
+
+# Gemini PR-review prompt. Affects what every community PR sees.
+/.gemini/                       @jeremylongshore
+
+# Source-of-truth catalog files. Direct edits to marketplace.json are
+# forbidden (must go through sync-marketplace); the .extended.json is
+# where real edits land. Both are owner-scoped.
+/.claude-plugin/                @jeremylongshore
+
+# Contributor-facing docs. The philosophy and the bar described here
+# set expectations for every inbound PR.
+/CONTRIBUTING.md                @jeremylongshore
+/SECURITY.md                    @jeremylongshore
+/CODE_OF_CONDUCT.md             @jeremylongshore
+/000-docs/                      @jeremylongshore
+
+# Root policy files.
+/CLAUDE.md                      @jeremylongshore
+/AGENTS.md                      @jeremylongshore
+/LICENSE                        @jeremylongshore
+/LICENSE-TEMPLATE-PROPRIETARY.txt  @jeremylongshore
+
+# Dependency manifests — a single bad upgrade is a supply-chain incident.
+/package.json                   @jeremylongshore
+/pnpm-lock.yaml                 @jeremylongshore
+/pnpm-workspace.yaml            @jeremylongshore

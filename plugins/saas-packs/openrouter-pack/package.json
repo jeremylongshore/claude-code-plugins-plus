@@ -4,11 +4,33 @@
   "description": "Claude Code skill pack for OpenRouter - 30 skills covering multi-model LLM gateway and API routing",
   "main": "README.md",
   "type": "module",
-  "files": ["README.md", ".claude-plugin/", "skills/"],
-  "keywords": ["claude-code", "claude-code-plugin", "openrouter", "llm-gateway", "multi-model", "api", "ai-skills", "saas-pack"],
-  "author": {"name": "Jeremy Longshore", "email": "jeremy@intentsolutions.io"},
+  "files": [
+    "README.md",
+    ".claude-plugin/",
+    "skills/"
+  ],
+  "keywords": [
+    "claude-code",
+    "claude-code-plugin",
+    "openrouter",
+    "llm-gateway",
+    "multi-model",
+    "api",
+    "ai-skills",
+    "saas-pack"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
   "license": "MIT",
-  "repository": {"type": "git", "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git", "directory": "plugins/saas-packs/openrouter-pack"},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/saas-packs/openrouter-pack"
+  },
   "homepage": "https://tonsofskills.com/learn/openrouter/",
-  "publishConfig": {"access": "public"}
+  "publishConfig": {
+    "access": "public"
+  }
 }

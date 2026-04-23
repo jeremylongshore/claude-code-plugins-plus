@@ -1,0 +1,99 @@
+name: Daily Slack download digest
+
+# Reads the latest marketplace/src/data/npm-stats.json and posts a concise
+# summary to #operation-hired. Runs daily at 18:00 UTC = 1pm Central.
+#
+# Follows the /slack skill conventions:
+#   - Webhook secret: SLACK_OPERATION_HIRED_WEBHOOK_URL
+#   - Target channel: #operation-hired
+#   - Mentions Jeremy: <@U099CBRE7CL>
+#
+# If the webhook secret is unset (initial deploy, opt-in flip), the job
+# short-circuits without erroring so the workflow isn't noisy red.
+
+on:
+  schedule:
+    - cron: '0 18 * * *'  # 18:00 UTC daily = 1pm America/Chicago
+  workflow_dispatch:       # manual fire for testing
+
+permissions:
+  contents: read
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Short-circuit if webhook not configured
+        id: check
+        run: |
+          if [ -z "${{ secrets.SLACK_OPERATION_HIRED_WEBHOOK_URL }}" ]; then
+            echo "SLACK_OPERATION_HIRED_WEBHOOK_URL not set; skipping. Configure the repo secret to enable."
+            echo "skip=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build Slack payload
+        if: steps.check.outputs.skip != 'true'
+        id: build
+        run: |
+          set -euo pipefail
+          FILE=marketplace/src/data/npm-stats.json
+          if [ ! -f "$FILE" ]; then
+            echo "npm-stats.json not found; fetching fresh data first"
+            node scripts/fetch-npm-stats.mjs
+          fi
+
+          PAYLOAD=$(python3 <<'PY'
+          import json, os
+          d = json.load(open('marketplace/src/data/npm-stats.json'))
+          pub = d.get('publishedCount', 0)
+          total_day = d.get('totalDay', 0)
+          total_week = d.get('totalWeek', 0)
+          total_month = d.get('totalMonth', 0)
+          top = d.get('top', [])[:5]
+          top_lines = '\n'.join(
+              f"  • `{p['name']}` — {p['lastMonth']:,} (30d)" for p in top
+          )
+          blocks = [
+              {"type": "header", "text": {"type": "plain_text",
+                "text": "📦 Daily npm download digest"}},
+              {"type": "section", "text": {"type": "mrkdwn",
+                "text": (
+                    f"<@U099CBRE7CL> *{pub} published packages* | Totals: "
+                    f"*{total_day:,}* today · *{total_week:,}* this week · "
+                    f"*{total_month:,}* last 30 days"
+                )}},
+              {"type": "section", "text": {"type": "mrkdwn",
+                "text": f"*Top 5 (last 30 days)*\n{top_lines}"}},
+              {"type": "context", "elements": [{"type": "mrkdwn",
+                "text": f"Updated {d.get('generatedAt', '')} · <https://tonsofskills.com|tonsofskills.com> · <https://github.com/jeremylongshore/claude-code-plugins|repo>"}]},
+          ]
+          # Include top-line text so notifications/previews show something
+          # useful even when Slack collapses the blocks.
+          fallback = (
+              f"📦 {pub} packages | {total_day:,} today · "
+              f"{total_week:,} this week · {total_month:,} this month"
+          )
+          print(json.dumps({"text": fallback, "blocks": blocks}))
+          PY
+          )
+          # Emit the payload as a single-line env var for the next step
+          {
+            echo "payload<<EOF"
+            echo "$PAYLOAD"
+            echo "EOF"
+          } >> $GITHUB_OUTPUT
+
+      - name: Post to Slack
+        if: steps.check.outputs.skip != 'true'
+        env:
+          WEBHOOK: ${{ secrets.SLACK_OPERATION_HIRED_WEBHOOK_URL }}
+          PAYLOAD: ${{ steps.build.outputs.payload }}
+        run: |
+          # --fail so non-2xx aborts the job with a clear signal
+          curl --silent --show-error --fail \
+            --header "Content-Type: application/json" \
+            --data "$PAYLOAD" \
+            "$WEBHOOK" > /dev/null
+          echo "✓ Slack message posted."

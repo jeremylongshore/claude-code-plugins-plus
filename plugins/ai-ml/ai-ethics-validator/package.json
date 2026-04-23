@@ -1,0 +1,39 @@
+{
+  "name": "@intentsolutionsio/ai-ethics-validator",
+  "version": "1.0.0",
+  "description": "AI ethics and fairness validation",
+  "keywords": [
+    "ethics",
+    "fairness",
+    "bias",
+    "responsible-ai",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/ai-ml/ai-ethics-validator"
+  },
+  "homepage": "https://tonsofskills.com/plugins/ai-ethics-validator",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install ai-ethics-validator\\\\n  or /plugin install ai-ethics-validator@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

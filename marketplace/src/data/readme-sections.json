@@ -72,6 +72,29 @@
     "features": "<ul>\n<li>Automated workflows</li>\n<li>Best practices implementation</li>\n<li>Performance optimization</li>\n<li>Error handling</li>\n</ul>",
     "usage": "<pre data-lang=\"bash\"><code>\n/validate-ethics\n</code></pre>"
   },
+  "ai-experiment-logger": {
+    "overview": "<p>The AI Experiment Logger helps you systematically track experiments across different AI tools (ChatGPT, Claude, Gemini, etc.), analyze effectiveness patterns, and make data-driven decisions about which tools and prompting strategies work best for your use cases.</p>\n<p><strong>Key Features:</strong></p>\n<ul>\n<li>🎯 <strong>Structured Experiment Logging</strong> - Capture tool, prompt, result, rating, and tags</li>\n<li>📊 <strong>Rich Statistics Dashboard</strong> - Visualize tool performance, rating distribution, and trends</li>\n<li>🔍 <strong>Advanced Search & Filtering</strong> - Find experiments by any field or search term</li>\n<li>📈 <strong>Performance Analytics</strong> - Track which AI tools perform best for your needs</li>\n<li>💾 <strong>Data Persistence</strong> - Local JSON storage with CSV export capability</li>\n<li>🌐 <strong>Dual Interface</strong> - MCP tools for Claude Code + web UI for visual exploration</li>\n<li>🎨 <strong>Modern UI</strong> - Clean, responsive interface built with Tailwind CSS</li>\n</ul>",
+    "usage": "<h3>Using MCP Tools (in Claude Code)</h3>\n<h4>Log an Experiment</h4>\n<pre><code>\nUse the log_experiment tool to record:\n- AI Tool: &quot;ChatGPT o1-preview&quot;\n- Prompt: &quot;Write a Python function to calculate Fibonacci numbers recursively&quot;\n- Result: &quot;Provided clean recursive implementation with base cases. Included time complexity analysis (O(2^n)).&quot;\n- Rating: 4\n- Tags: [&quot;code-generation&quot;, &quot;python&quot;, &quot;algorithms&quot;]\n</code></pre>\n<h4>List Recent Experiments</h4>\n<pre><code>\nUse the list_experiments tool to show my last 10 experiments\n</code></pre>\n<h4>Search Experiments</h4>\n<pre><code>\nUse the list_experiments tool with searchQuery=&quot;code-generation&quot; to find all coding experiments\n</code></pre>\n<h4>Get Statistics</h4>\n<pre><code>\nUse the get_statistics tool to show me which AI tools perform best\n</code></pre>\n<h4>Export Data</h4>\n<pre><code>\nUse the export_experiments tool to generate a CSV file of all my experiments\n</code></pre>\n<h3>Using the Web Dashboard</h3>\n<h4>Start the Web Server</h4>\n<pre data-lang=\"bash\"><code>\ncd plugins/mcp/ai-experiment-logger\npnpm web\n</code></pre>\n<p>The web UI will be available at <code>http://localhost:3000</code></p>\n<h4>Web Dashboard Features</h4>\n<ol>\n<li><strong>Dashboard Tab</strong></li>\n</ol>\n<ul>\n<li>View all experiments in a sortable table</li>\n<li>Search across all fields in real-time</li>\n<li>Filter by AI tool, rating, or date range</li>\n<li>Delete experiments with confirmation</li>\n</ul>\n<ol>\n<li><strong>Statistics Tab</strong></li>\n</ol>\n<ul>\n<li>Total experiments and average rating</li>\n<li>AI tool performance comparison</li>\n<li>Rating distribution visualization</li>\n<li>Top tags analysis</li>\n<li>Recent activity chart (30 days)</li>\n</ul>\n<ol>\n<li><strong>Log Experiment Button</strong></li>\n</ol>\n<ul>\n<li>Easy form with all fields</li>\n<li>Star rating selector (1-5)</li>\n<li>Tag management (comma-separated)</li>\n<li>Date/time picker (defaults to now)</li>\n</ul>\n<ol>\n<li><strong>Export CSV Button</strong></li>\n</ol>\n<ul>\n<li>Download all experiments as CSV</li>\n<li>Compatible with Excel, Google Sheets, etc.</li>\n<li>Includes all metadata</li>\n</ul>",
+    "useCases": "<ul>\n<li><strong>Prompt Engineering Research</strong> - Track which prompts work best across tools</li>\n<li><strong>AI Tool Evaluation</strong> - Compare ChatGPT, Claude, Gemini, etc. for your needs</li>\n<li><strong>Team Collaboration</strong> - Share experiment logs with team members</li>\n<li><strong>Quality Tracking</strong> - Monitor AI output quality over time</li>\n<li><strong>Cost Optimization</strong> - Identify most effective tools to reduce API costs</li>\n<li><strong>Documentation</strong> - Maintain records of successful AI interactions</li>\n<li><strong>Learning & Training</strong> - Build a knowledge base of effective prompts</li>\n</ul>",
+    "troubleshooting": [
+      {
+        "question": "MCP Server Not Appearing",
+        "answer": "<ol>\n<li>Check the absolute path in <code>mcp_config.json</code> is correct</li>\n<li>Verify the build completed: <code>ls dist/index.js</code></li>\n<li>Check Claude Code logs for error messages</li>\n<li>Restart Claude Code completely</li>\n</ol>"
+      },
+      {
+        "question": "Web Server Won't Start",
+        "answer": "<ol>\n<li>Check port 3000 is not in use: <code>lsof -i :3000</code></li>\n<li>Verify dependencies installed: <code>pnpm install</code></li>\n<li>Check build succeeded: <code>pnpm build</code></li>\n<li>Try a different port: <code>PORT=8080 pnpm web</code></li>\n</ol>"
+      },
+      {
+        "question": "Data Not Persisting",
+        "answer": "<ol>\n<li>Check permissions on <code>~/.ai-experiment-logger/</code> directory</li>\n<li>Verify JSON file is writable</li>\n<li>Look for error messages in console output</li>\n<li>Try manually creating the directory: <code>mkdir -p ~/.ai-experiment-logger</code></li>\n</ol>"
+      }
+    ]
+  },
+  "ai-ml-engineering-pack": {
+    "overview": "<p><strong>Professional toolkit for building production-ready AI/ML systems with Claude Code</strong></p>\n<p>Master prompt engineering, LLM integration, RAG systems, and AI safety with 12 specialized plugins that accelerate AI development by 10x.</p>\n<p><a href=\"https://img.shields.io/badge/License-MIT-yellow.svg\">![License: MIT</a>](https://opensource.org/licenses/MIT)</p>\n<p><a href=\"https://img.shields.io/badge/version-1.0.0-blue.svg\">![Version</a>](https://github.com/jeremylongshore/claude-code-plugins)</p>\n<p><a href=\"https://img.shields.io/badge/Claude_Code-0.1.0+-purple.svg\">![Claude Code</a>](https://claude.ai/code)</p>",
+    "usage": "<h3>Installation</h3>\n<pre data-lang=\"bash\"><code>\nclaude plugin marketplace add jeremylongshore/claude-code-plugins\n\nclaude plugin install ai-ml-engineering-pack@claude-code-plugins-plus\n\nclaude plugin list\n</code></pre>\n<p><strong>Full installation guide:</strong> <a href=\"./INSTALLATION.md\">INSTALLATION.md</a></p>\n<h3>10-Minute Tutorial</h3>\n<p>Build your first AI feature in 10 minutes:</p>\n<pre data-lang=\"bash\"><code>\nclaude\n\n&quot;Optimize this prompt for cost and quality:\n&#39;I would like you to create a detailed product description for...&#39;&quot;\n\n/ptg\n\n/las\n\n/rpg\n\n&quot;Implement PII detection and toxicity filtering for my chatbot&quot;\n</code></pre>\n<p><strong>Complete tutorial:</strong> <a href=\"./QUICK<em>START.md\">QUICK</em>START.md</a></p>"
+  },
   "ai-sdk-agents": {
     "overview": "<p><strong>Multi-agent orchestration with AI SDK v5 - handoffs, routing, and coordination for any AI provider.</strong></p>\n<p>Build sophisticated multi-agent systems with automatic handoffs, intelligent routing, and seamless coordination across <strong>Ollama (FREE)</strong>, OpenAI, Anthropic, Google, and other AI providers.</p>\n<p>💰 <strong>NEW</strong>: Use Ollama for zero-cost local AI agents - eliminate $30-200/month in API fees!</p>\n<hr>"
   },
@@ -300,6 +323,18 @@
     "usage": "<pre data-lang=\"bash\"><code>\n/contract-test\n/ct\n</code></pre>",
     "useCases": "<pre data-lang=\"bash\"><code>\n/contract-test\n\n</code></pre>"
   },
+  "conversational-api-debugger": {
+    "overview": "<p>This plugin transforms API debugging from guesswork into systematic analysis:</p>\n<ol>\n<li><strong>Load OpenAPI Specs</strong> - Parse API documentation (JSON/YAML)</li>\n<li><strong>Ingest HTTP Logs</strong> - Import request/response data (HAR, JSON)</li>\n<li><strong>Explain Failures</strong> - Analyze why API calls failed with root cause analysis</li>\n<li><strong>Generate Repros</strong> - Create cURL/HTTPie/fetch commands to reproduce issues</li>\n</ol>",
+    "features": "<h3>4 Powerful MCP Tools</h3>\n<h4>1. <code>load_openapi</code></h4>\n<p>Load and parse OpenAPI 3.x specifications.</p>\n<pre data-lang=\"json\"><code>\n{\n  &quot;filePath&quot;: &quot;/path/to/openapi.yaml&quot;,\n  &quot;name&quot;: &quot;my-api&quot;\n}\n</code></pre>\n<p><strong>Returns:</strong></p>\n<ul>\n<li>API title, version, description</li>\n<li>Base URL and servers</li>\n<li>Complete endpoint list</li>\n<li>Endpoint count and structure</li>\n</ul>\n<h4>2. <code>ingest_logs</code></h4>\n<p>Import HTTP request/response logs for analysis.</p>\n<pre data-lang=\"json\"><code>\n{\n  &quot;filePath&quot;: &quot;/path/to/requests.har&quot;,\n  &quot;format&quot;: &quot;har&quot;\n}\n</code></pre>\n<p>Or provide logs directly:</p>\n<pre data-lang=\"json\"><code>\n{\n  &quot;logs&quot;: [\n    {\n      &quot;timestamp&quot;: &quot;2025-10-10T12:00:00Z&quot;,\n      &quot;method&quot;: &quot;POST&quot;,\n      &quot;url&quot;: &quot;https://api.example.com/users&quot;,\n      &quot;statusCode&quot;: 400,\n      &quot;requestBody&quot;: { &quot;name&quot;: &quot;John&quot; },\n      &quot;responseBody&quot;: { &quot;error&quot;: &quot;Missing required field: email&quot; }\n    }\n  ]\n}\n</code></pre>\n<p><strong>Returns:</strong></p>\n<ul>\n<li>Total requests ingested</li>\n<li>Success/failure breakdown</li>\n<li>Status code distribution</li>\n<li>Method distribution</li>\n<li>Top errors (first 10)</li>\n</ul>\n<h4>3. <code>explain_failure</code></h4>\n<p>Analyze why an API call failed.</p>\n<pre data-lang=\"json\"><code>\n{\n  &quot;logIndex&quot;: 0,\n  &quot;specName&quot;: &quot;my-api&quot;\n}\n</code></pre>\n<p><strong>Returns:</strong></p>\n<ul>\n<li><strong>Severity</strong>: critical | high | medium | low</li>\n<li><strong>Possible Causes</strong>: List of likely root causes</li>\n<li><strong>Suggested Fixes</strong>: Actionable remediation steps</li>\n<li><strong>Matching Endpoint</strong>: Comparison with OpenAPI spec</li>\n<li><strong>Details</strong>: Request/response for inspection</li>\n</ul>\n<h4>4. <code>make_repro</code></h4>\n<p>Generate cURL command to reproduce API call.</p>\n<pre data-lang=\"json\"><code>\n{\n  &quot;logIndex&quot;: 0,\n  &quot;includeHeaders&quot;: true,\n  &quot;pretty&quot;: true\n}\n</code></pre>\n<p><strong>Returns:</strong></p>\n<ul>\n<li><strong>cURL Command</strong>: Ready to copy-paste</li>\n<li><strong>HTTPie Alternative</strong>: Shorter syntax</li>\n<li><strong>JavaScript fetch</strong>: For automated tests</li>\n<li><strong>Metadata</strong>: Method, URL, headers count</li>\n</ul>",
+    "usage": "<h3>Under the Hood</h3>\n<ol>\n<li><strong>OpenAPI Parsing</strong>: Uses <code>openapi-types</code> and <code>yaml</code> to parse specs</li>\n<li><strong>HAR Processing</strong>: Extracts requests/responses from browser exports</li>\n<li><strong>Pattern Matching</strong>: Matches URLs to OpenAPI endpoints with regex</li>\n<li><strong>Failure Analysis</strong>: Compares actual vs expected behavior</li>\n<li><strong>Command Generation</strong>: Creates executable test commands</li>\n</ol>\n<h3>In-Memory Storage</h3>\n<p>The plugin maintains:</p>\n<ul>\n<li><strong>API Specs</strong>: Map of loaded OpenAPI documents</li>\n<li><strong>HTTP Logs</strong>: Array of ingested requests/responses</li>\n<li><strong>Log Indexing</strong>: Fast lookup by index for analysis</li>\n</ul>\n<p>Data persists during the session but clears on restart (no disk storage).</p>",
+    "useCases": "<ol>\n<li><strong>Debugging Production Issues</strong> - Analyze production API failures quickly</li>\n<li><strong>API Integration</strong> - Understand third-party API errors</li>\n<li><strong>Documentation</strong> - Generate examples for API docs</li>\n<li><strong>Testing</strong> - Create reproducible test cases</li>\n<li><strong>Bug Reports</strong> - Include working repro commands</li>\n<li><strong>Onboarding</strong> - Help new developers understand APIs</li>\n</ol>",
+    "troubleshooting": [
+      {
+        "question": "**Q: OpenAPI spec fails to load**",
+        "answer": "<p>A: Ensure it's valid OpenAPI 3.x (check <code>openapi: \"3.0.0\"</code> field)</p>\n<p><strong>Q: HAR file won't parse</strong></p>\n<p>A: Verify it's exported with \"content\" option enabled</p>\n<p><strong>Q: Can't find matching endpoint</strong></p>\n<p>A: Check URL path matches OpenAPI spec (including base path)</p>\n<p><strong>Q: Generated cURL doesn't work</strong></p>\n<p>A: Verify all required headers are in original request</p>"
+      }
+    ]
+  },
   "cpu-usage-monitor": {
     "overview": "<p>Monitor and optimize CPU usage in your application.</p>",
     "features": "<ul>\n<li>CPU hotspot detection</li>\n<li>Algorithmic complexity analysis</li>\n<li>Blocking operation identification</li>\n<li>Loop optimization suggestions</li>\n<li>Regex performance analysis</li>\n<li>Detailed optimization recommendations</li>\n</ul>",
@@ -517,6 +552,15 @@
     "features": "<ul>\n<li>Production-ready</li>\n<li>Best practices</li>\n<li>Multi-platform</li>\n<li>Well-documented</li>\n</ul>",
     "usage": "<pre data-lang=\"bash\"><code>\n/rollback-deploy\n</code></pre>"
   },
+  "design-to-code": {
+    "overview": "<p><strong>Convert Figma designs and screenshots to production-ready code components</strong></p>\n<p>Transform design files into React, Svelte, or Vue components with built-in accessibility.</p>",
+    "features": "<ul>\n<li><strong>Figma Parser</strong> - Extract components from Figma JSON exports</li>\n<li><strong>Screenshot Analysis</strong> - Analyze UI layouts from images</li>\n<li><strong>Code Generation</strong> - React, Svelte, Vue components</li>\n<li><strong>A11y Built-in</strong> - ARIA labels, semantic HTML, keyboard navigation</li>\n<li><strong>Style Extraction</strong> - Colors, typography, spacing</li>\n</ul>",
+    "usage": "<pre data-lang=\"javascript\"><code>\n// 1. Parse Figma design\nconst design = await parse_figma({\n  json: figmaExport,\n  framework: &#39;react&#39;\n});\n\n// 2. Generate component\nconst component = await generate_component({\n  layout: design.layout,\n  framework: &#39;react&#39;,\n  includeA11y: true\n});\n\n// Result: Production-ready React component with accessibility\n</code></pre>"
+  },
+  "devops-automation-pack": {
+    "overview": "<p><strong>Created by:</strong> Intent Solutions</p>\n<p><strong>Version:</strong> 1.0.0</p>\n<p><strong>Released:</strong> October 2025</p>\n<p><strong>Support:</strong> mandy@intentsolutions.io</p>\n<p><strong>Built for Claude Code</strong> - The official CLI from Anthropic</p>\n<hr>",
+    "usage": "<p><strong>Installation takes 5 minutes:</strong></p>\n<ol>\n<li><strong>Download</strong> the pack from your purchase email</li>\n<li><strong>Extract</strong> the ZIP file</li>\n<li><strong>Install</strong> with <code>claude plugin install .</code></li>\n<li><strong>Try it</strong> with <code>/commit-smart</code></li>\n</ol>\n<p><strong>Your first workflow (5 minutes):</strong></p>\n<pre data-lang=\"bash\"><code>\n/branch-create\n\n/commit-smart\n\n/pr-create\n</code></pre>\n<p>See <a href=\"docs/QUICK<em>START.md\"><code>docs/QUICK</em>START.md</code></a> for detailed walkthrough.</p>\n<hr>"
+  },
   "dex-aggregator-router": {
     "overview": "<p>Find optimal routing for token swaps across multiple decentralized exchanges to maximize output and minimize costs.</p>",
     "features": "<ul>\n<li><strong>Multi-DEX Comparison</strong> - Analyze routes across Uniswap, SushiSwap, Curve, Balancer</li>\n<li><strong>Route Discovery</strong> - Find direct, multi-hop, and split order paths</li>\n<li><strong>Price Impact Analysis</strong> - Calculate slippage for different trade sizes</li>\n<li><strong>Gas Cost Optimization</strong> - Factor in transaction costs vs savings</li>\n<li><strong>Aggregator Integration</strong> - Leverage 1inch, Paraswap, Matcha routing</li>\n<li><strong>Execution Parameters</strong> - Optimal slippage and deadline settings</li>\n<li><strong>MEV Protection</strong> - Recommendations for large trade protection</li>\n</ul>",
@@ -541,6 +585,15 @@
     "overview": "<p>Generate production-ready Docker Compose configurations.</p>",
     "features": "<ul>\n<li>Multi-service orchestration</li>\n<li>Health check configurations</li>\n<li>Volume and network management</li>\n<li>Resource limits</li>\n<li>Environment variable support</li>\n<li>Production best practices</li>\n</ul>",
     "usage": "<pre data-lang=\"bash\"><code>\n/docker-compose\n</code></pre>"
+  },
+  "domain-memory-agent": {
+    "overview": "<p><strong>Knowledge base with semantic search, document storage, and automatic summarization</strong></p>\n<p>A lightweight MCP server for domain-specific knowledge management using TF-IDF semantic search (no external ML dependencies). Perfect for building AI memory systems and RAG applications.</p>",
+    "features": "<ul>\n<li><strong>Document Storage</strong> - Store documents with tags and metadata</li>\n<li><strong>Semantic Search</strong> - TF-IDF based search (no external dependencies)</li>\n<li><strong>Summarization</strong> - Automatic extractive summaries with caching</li>\n<li><strong>Full CRUD</strong> - Create, read, update, delete documents</li>\n<li><strong>Tagging System</strong> - Organize knowledge by tags</li>\n<li><strong>Pagination</strong> - Efficient browsing of large knowledge bases</li>\n</ul>",
+    "usage": "<pre data-lang=\"javascript\"><code>\n// 1. Store knowledge\nstore_document({\n  title: &quot;API Design Best Practices&quot;,\n  content: &quot;RESTful APIs should be...&quot;,\n  tags: [&quot;api&quot;, &quot;architecture&quot;]\n})\n\n// 2. Search knowledge\nsemantic_search({\n  query: &quot;REST API design patterns&quot;,\n  limit: 5\n})\n\n// 3. Get summary\nsummarize({\n  documentId: &quot;doc123&quot;,\n  maxSentences: 3\n})\n</code></pre>",
+    "useCases": "<ol>\n<li><strong>RAG Systems</strong> - Store domain knowledge for AI retrieval</li>\n<li><strong>Documentation Search</strong> - Index and search project docs</li>\n<li><strong>Research Notes</strong> - Organize research with semantic search</li>\n<li><strong>Customer Support</strong> - Build knowledge bases for support agents</li>\n<li><strong>Personal Knowledge</strong> - Second brain / Zettelkasten system</li>\n</ol>"
+  },
+  "lumera-agent-memory": {
+    "overview": "<p><strong>Durable agent memory with Cascade object storage and local FTS index</strong></p>"
   },
   "e2e-test-framework": {
     "overview": "<p>Browser-based E2E test automation with Playwright, Cypress, and Selenium support for complete user workflow testing.</p>",
@@ -580,6 +633,45 @@
       }
     ]
   },
+  "fairdb-ops-manager": {
+    "overview": "<p><strong>Comprehensive operations toolkit for managing FairDB managed PostgreSQL infrastructure</strong></p>\n<p>A Claude Code plugin that provides guided SOPs, incident response procedures, monitoring tools, and automation scripts for running a production-grade managed PostgreSQL service.</p>\n<hr>",
+    "features": "<h3>📚 Standard Operating Procedures (SOPs)</h3>\n<p>Detailed, beginner-friendly guides for:</p>\n<ul>\n<li><strong>SOP-001:</strong> VPS Initial Setup & Hardening (60 min)</li>\n<li>System updates and user configuration</li>\n<li>SSH hardening with key authentication</li>\n<li>Firewall (UFW) and Fail2ban setup</li>\n<li>Automatic security updates</li>\n<li>Complete security verification</li>\n</ul>\n<ul>\n<li><strong>SOP-002:</strong> PostgreSQL 16 Installation & Configuration (90 min)</li>\n<li>PostgreSQL 16 installation</li>\n<li>SSL/TLS encryption</li>\n<li>Performance tuning for available RAM</li>\n<li>pg<em>stat</em>statements monitoring</li>\n<li>Health check automation</li>\n</ul>\n<ul>\n<li><strong>SOP-003:</strong> Backup System Setup & Verification (120 min)</li>\n<li>pgBackRest configuration with Wasabi S3</li>\n<li>AES-256 encryption</li>\n<li>Automated daily/weekly backups</li>\n<li><strong>Backup restoration testing</strong> (critical!)</li>\n<li>Weekly verification automation</li>\n</ul>\n<h3>🤖 Autonomous Agents</h3>\n<p>Intelligent assistants that handle complex multi-step operations:</p>\n<ul>\n<li><strong>fairdb-setup-wizard:</strong> Complete guided setup from bare VPS to production-ready</li>\n<li><strong>fairdb-incident-responder:</strong> Autonomous incident response with diagnosis and recovery</li>\n<li><strong>fairdb-ops-auditor:</strong> Compliance auditing with detailed remediation plans</li>\n</ul>\n<h3>🛠️ Operational Commands</h3>\n<p>Quick-access commands for daily operations:</p>\n<ul>\n<li><code>/sop-001-vps-setup</code> - VPS hardening guide</li>\n<li><code>/sop-002-postgres-install</code> - PostgreSQL setup guide</li>\n<li><code>/sop-003-backup-setup</code> - Backup configuration guide</li>\n<li><code>/daily-health-check</code> - Morning health check routine</li>\n<li><code>/incident-p0-database-down</code> - Database down emergency response</li>\n<li><code>/incident-p0-disk-full</code> - Disk space emergency procedures</li>\n</ul>\n<h3>📊 Shell Scripts (Deploy to VPS)</h3>\n<p>Production-ready scripts for server deployment:</p>\n<ul>\n<li><strong>pg-health-check.sh</strong> - Automated PostgreSQL health monitoring</li>\n<li><strong>backup-status.sh</strong> - Visual backup status dashboard</li>\n<li><strong>sop-checklist.sh</strong> - Interactive SOP completion verification</li>\n</ul>\n<hr>",
+    "usage": "<h3>1. First Time Setup (New VPS)</h3>\n<p>Use the complete setup wizard for automated guidance:</p>\n<pre data-lang=\"bash\"><code>\n/agent fairdb-setup-wizard\n</code></pre>\n<p>The wizard will guide you through:</p>\n<ol>\n<li>VPS hardening (SOP-001)</li>\n<li>PostgreSQL installation (SOP-002)</li>\n<li>Backup configuration (SOP-003)</li>\n</ol>\n<p><strong>Total time:</strong> 3-4 hours</p>\n<h3>2. Manual Step-by-Step Setup</h3>\n<p>If you prefer manual control:</p>\n<pre data-lang=\"bash\"><code>\n/sop-001-vps-setup\n\n/sop-002-postgres-install\n\n/sop-003-backup-setup\n</code></pre>\n<h3>3. Deploy Helper Scripts to VPS</h3>\n<p>Once your VPS is set up, deploy the monitoring scripts:</p>\n<pre data-lang=\"bash\"><code>\nssh admin@your-vps-ip -p 2222\n\nsudo mkdir -p /opt/fairdb/scripts\n\n\nsudo chmod +x /opt/fairdb/scripts/*.sh\n\ncrontab -e\n</code></pre>\n<hr>",
+    "troubleshooting": [
+      {
+        "question": "Q: Do I need to know PostgreSQL to use this?",
+        "answer": "<p><strong>A:</strong> No! The SOPs are designed for beginners. Each command is explained with WHY, not just HOW. The setup wizard provides hand-holding throughout the process.</p>"
+      },
+      {
+        "question": "Q: How long does initial setup take?",
+        "answer": "<p><strong>A:</strong> 3-4 hours for complete setup (VPS hardening + PostgreSQL + Backups). You can take breaks between phases.</p>"
+      },
+      {
+        "question": "Q: Can I use this for production?",
+        "answer": "<p><strong>A:</strong> Yes! This plugin is based on production best practices for managed PostgreSQL services. However, always test in a staging environment first.</p>"
+      },
+      {
+        "question": "Q: What if something goes wrong during setup?",
+        "answer": "<p><strong>A:</strong> Each SOP has verification checkpoints. If something fails, restore from VPS snapshot and start fresh. The scripts include safety checks to prevent destructive actions.</p>"
+      },
+      {
+        "question": "Q: Do I need Wasabi, or can I use AWS S3?",
+        "answer": "<p><strong>A:</strong> The SOPs use Wasabi (cheaper than AWS S3), but pgBackRest works with any S3-compatible storage. You can modify the configuration for AWS S3, Google Cloud Storage, Azure Blob, etc.</p>"
+      },
+      {
+        "question": "Q: How much does this cost to run?",
+        "answer": "<p><strong>A:</strong> Example costs:</p>\n<ul>\n<li>Contabo VPS (8GB RAM, 200GB NVMe): ~$12/month</li>\n<li>Wasabi storage (first 1TB free, then $6.99/TB/month)</li>\n<li><strong>Total:</strong> ~$12-20/month for single VPS</li>\n</ul>"
+      },
+      {
+        "question": "Q: Can this manage multiple VPS instances?",
+        "answer": "<p><strong>A:</strong> Yes! Use the commands and agents for each VPS separately. The ops auditor can check compliance across your fleet.</p>"
+      },
+      {
+        "question": "Q: Is this suitable for enterprise use?",
+        "answer": "<p><strong>A:</strong> This plugin is designed for small-to-medium operations (1-20 VPS instances). For enterprise scale, consider additional monitoring tools (Prometheus, Grafana) and orchestration (Ansible, Terraform).</p>\n<hr>"
+      }
+    ]
+  },
   "feature-engineering-toolkit": {
     "overview": "<p>Feature creation, selection, and transformation tools</p>",
     "features": "<ul>\n<li>Automated workflows</li>\n<li>Best practices implementation</li>\n<li>Performance optimization</li>\n<li>Error handling</li>\n</ul>",
@@ -593,10 +685,16 @@
     "features": "<ul>\n<li><strong>Strategy Simulation</strong> - Model complex multi-step flash loan transactions</li>\n<li><strong>Profitability Analysis</strong> - Calculate net profit after all fees and costs</li>\n<li><strong>Risk Assessment</strong> - Identify execution risks and competition levels</li>\n<li><strong>Protocol Support</strong> - Aave V3, dYdX, Balancer, Uniswap V3</li>\n<li><strong>Gas Optimization</strong> - Estimate gas costs and optimize strategies</li>\n<li><strong>Historical Testing</strong> - Backtest strategies against historical data</li>\n</ul>",
     "usage": "<p>The flash loan agent automatically activates when you discuss:</p>\n<ul>\n<li>Flash loan strategies and simulations</li>\n<li>DeFi arbitrage opportunities</li>\n<li>Liquidation strategies</li>\n<li>Collateral swaps and refinancing</li>\n<li>Multi-protocol DeFi transactions</li>\n</ul>\n<h3>Example Queries</h3>\n<pre><code>\nSimulate a flash loan arbitrage between Uniswap and SushiSwap for ETH\n\nCalculate profitability of liquidating this Aave position\n\nWhat&#39;s the optimal flash loan amount for this arbitrage opportunity?\n\nSimulate a collateral swap from USDC to ETH on Aave V3\n\nBuild a flash loan strategy to arbitrage these 3 DEXes\n</code></pre>"
   },
+  "formatter": {
+    "overview": "<p>A comprehensive code formatting plugin for Claude Code that automatically formats your code using Prettier and other formatting tools. Includes automatic formatting hooks, validation commands, and Agent Skills for intelligent formatting assistance.</p>"
+  },
   "freshie-inventory-manager": {
     "overview": "<p>Unified command center for the freshie ecosystem inventory database. Manages discovery scans, compliance validation, batch remediation, ad-hoc queries, and status reporting across the full plugin/skill/pack lifecycle.</p>",
     "features": "<ul>\n<li>Pre-loaded DB status via dynamic context injection</li>\n<li>10 distinct operations with automatic intent detection</li>\n<li>Pre-built query library for common investigations</li>\n<li>Delta reporting between discovery runs</li>\n<li>Dry-run-first remediation safety pattern</li>\n</ul>",
     "usage": "<p>Invoke with natural language:</p>\n<ul>\n<li><code>freshie status</code> — dashboard with run counts, grades, staleness</li>\n<li><code>run a discovery scan</code> — trigger rebuild-inventory.py</li>\n<li><code>compliance check</code> — validate and populate DB with enterprise grading</li>\n<li><code>remediate skills</code> — batch fix compliance issues</li>\n<li><code>query freshie for stub skills</code> — ad-hoc SQLite queries</li>\n<li><code>freshie report</code> — generate a status update summary</li>\n<li><code>compare discovery runs</code> — delta analysis between runs</li>\n<li><code>show pack coverage</code> — SaaS pack completeness metrics</li>\n<li><code>find anomalies</code> — detect data quality issues</li>\n<li><code>export grades to CSV</code> — export compliance data</li>\n</ul>"
+  },
+  "fullstack-starter-pack": {
+    "overview": "<p>Complete documentation for the Fullstack Starter Pack plugin collection for Claude Code.</p>\n<hr>"
   },
   "gas-fee-optimizer": {
     "overview": "<p>Optimize Ethereum transaction gas fees through strategic timing, routing alternatives, and Layer 2 solutions.</p>",
@@ -642,6 +740,10 @@
     "overview": "<p>Generate gRPC services with Protocol Buffers, streaming, and production-ready patterns.</p>",
     "features": "<ul>\n<li>Protocol Buffer schemas</li>\n<li>Unary and streaming RPCs</li>\n<li>TLS security</li>\n<li>Interceptors</li>\n<li>Service discovery</li>\n</ul>",
     "usage": "<pre data-lang=\"bash\"><code>\n/generate-grpc-service\n</code></pre>"
+  },
+  "hello-world": {
+    "overview": "<p>Provides a friendly greeting command that welcomes users and asks how it can help.</p>",
+    "usage": "<pre data-lang=\"bash\"><code>\n/hello\n/h\n</code></pre>"
   },
   "helm-chart-generator": {
     "overview": "<p>Generate Helm charts for Kubernetes applications</p>",
@@ -952,9 +1054,19 @@
     "features": "<ul>\n<li><strong>Load testing</strong> - Gradual ramp-up, sustained load, peak capacity</li>\n<li><strong>Stress testing</strong> - Breaking point identification, recovery validation</li>\n<li><strong>Spike testing</strong> - Sudden traffic surges, flash sale scenarios</li>\n<li><strong>Endurance testing</strong> - Long-running stability, memory leak detection</li>\n<li><strong>Metrics analysis</strong> - Response times, throughput, error rates, resources</li>\n<li><strong>Bottleneck identification</strong> - CPU, memory, database, network issues</li>\n<li><strong>Comprehensive reporting</strong> - Percentiles, graphs, recommendations</li>\n</ul>",
     "usage": "<p>The performance testing agent activates automatically when discussing performance or load testing:</p>\n<h3>Design load test</h3>\n<pre><code>\nCreate a load test for the API that ramps up to 500 concurrent users over 5 minutes\n</code></pre>\n<h3>Stress test to find limits</h3>\n<pre><code>\nDesign a stress test to find the breaking point of the checkout API\n</code></pre>\n<h3>Spike test for flash sales</h3>\n<pre><code>\nCreate a spike test simulating a flash sale with sudden 10x traffic increase\n</code></pre>\n<h3>Endurance test for stability</h3>\n<pre><code>\nDesign an endurance test running at 200 users for 4 hours to check for memory leaks\n</code></pre>"
   },
+  "pi-pathfinder": {
+    "overview": "<p><strong>Finds the path through 229 plugins</strong> 🎯</p>\n<p>You don't pick plugins - PI does. Smart pathfinder that analyzes your request, automatically selects the best plugin, extracts its skills, and applies them.</p>\n<p><strong>Ultra-think mode: OFF | Easy mode: ON</strong></p>\n<p><a href=\"https://img.shields.io/badge/version-1.0.0-brightgreen\">![Version</a>](.)</p>\n<p><a href=\"https://img.shields.io/badge/agent--skills-1-blue\">![Agent Skills</a>](.)</p>\n<p><a href=\"https://img.shields.io/badge/License-MIT-yellow.svg\">![License: MIT</a>](LICENSE)</p>\n<hr>",
+    "usage": "<p><strong>You:</strong> Describe what you want in plain English</p>\n<p><strong>PI Pathfinder:</strong></p>\n<ol>\n<li>Understands your task</li>\n<li>Searches your installed plugins (all 228 if you want)</li>\n<li>Picks the best one(s) automatically</li>\n<li>Extracts how they work</li>\n<li>Applies their skills to your problem</li>\n<li>Done</li>\n</ol>\n<p><strong>You never:</strong></p>\n<ul>\n<li>❌ Pick plugins</li>\n<li>❌ Remember names</li>\n<li>❌ Read docs</li>\n<li>❌ Run commands</li>\n</ul>\n<hr>"
+  },
   "code-cleanup": {
     "overview": "<p>Comprehensive codebase cleanup across <strong>11 quality dimensions</strong> with confidence scoring, build verification gates, and specialized agents.</p>\n<p>Born from a real cleanup session — 25,000 lines removed, 4 bugs caught — packaged into a reusable Claude Code plugin.</p>",
     "usage": "<ol>\n<li><strong>Safety checkpoint</strong> — verify clean git state, green tests, record baseline</li>\n<li><strong>Scope determination</strong> — full codebase, directory, or changed files</li>\n<li><strong>Dimensional scan</strong> — each dimension scans with tools + grep patterns</li>\n<li><strong>Confidence scoring</strong> — HIGH (auto-apply), MEDIUM (flag with fix), LOW (flag only)</li>\n<li><strong>Build verification</strong> — type check + tests after each auto-applied dimension</li>\n<li><strong>Report generation</strong> — summary table, applied changes, flagged items</li>\n</ol>"
+  },
+  "project-health-auditor": {
+    "overview": "<p><strong>MCP Server Plugin for Claude Code</strong></p>\n<p>Analyze local repositories for code health, complexity, test coverage gaps, and git churn patterns. Get multi-dimensional insights into your codebase health combining complexity metrics, change frequency, and test coverage.</p>\n<hr>",
+    "features": "<h3>4 Powerful MCP Tools</h3>\n<p><strong>1. <code>list<em>repo</em>files</code></strong> - File Discovery</p>\n<ul>\n<li>List all files in a repository with glob pattern matching</li>\n<li>Exclude patterns (node_modules, .git, dist, build)</li>\n<li>Returns file count and full file list</li>\n</ul>\n<p><strong>2. <code>file_metrics</code></strong> - Code Health Analysis</p>\n<ul>\n<li>Cyclomatic complexity calculation</li>\n<li>Function/method counting</li>\n<li>Comment ratio analysis</li>\n<li>File size and line count</li>\n<li>Health score (0-100) based on multiple factors</li>\n</ul>\n<p><strong>3. <code>git_churn</code></strong> - Change Frequency Analysis</p>\n<ul>\n<li>Identify files that change frequently</li>\n<li>Track authors per file</li>\n<li>Find hot spots in your codebase</li>\n<li>Analyze commit patterns over time</li>\n</ul>\n<p><strong>4. <code>map_tests</code></strong> - Test Coverage Mapping</p>\n<ul>\n<li>Map source files to test files</li>\n<li>Identify files missing tests</li>\n<li>Calculate test coverage ratio</li>\n<li>Get actionable recommendations</li>\n</ul>\n<hr>",
+    "usage": "<h3>Quick Analysis</h3>\n<pre><code>\nAnalyze the health of /path/to/my-project\n</code></pre>\n<p>Claude will use the MCP tools to:</p>\n<ol>\n<li>List all source files</li>\n<li>Analyze complexity of key files</li>\n<li>Check git churn patterns</li>\n<li>Map test coverage</li>\n</ol>\n<h3>Individual Tool Usage</h3>\n<p><strong>List Repository Files:</strong></p>\n<pre><code>\nUse list_repo_files on /path/to/repo with globs [&quot;src/**/*.ts&quot;, &quot;lib/**/*.js&quot;]\n</code></pre>\n<p><strong>Analyze File Metrics:</strong></p>\n<pre><code>\nWhat&#39;s the complexity of src/services/auth.ts?\n</code></pre>\n<p><strong>Check Git Churn:</strong></p>\n<pre><code>\nShow me the most frequently changed files in the last 6 months\n</code></pre>\n<p><strong>Map Tests:</strong></p>\n<pre><code>\nWhich files are missing tests in this project?\n</code></pre>\n<hr>",
+    "useCases": "<h3>1. Pre-Refactoring Analysis</h3>\n<p>Before refactoring, identify:</p>\n<ul>\n<li>High complexity files (complexity > 10)</li>\n<li>High churn files (commits > 10)</li>\n<li>Files missing tests</li>\n</ul>\n<p><strong>Strategy:</strong> Refactor high-complexity, high-churn files first.</p>\n<h3>2. Code Review Preparation</h3>\n<p>Analyze changed files:</p>\n<pre><code>\nWhat&#39;s the complexity of the files I changed in the last commit?\n</code></pre>\n<h3>3. Test Coverage Improvement</h3>\n<p>Find critical files without tests:</p>\n<pre><code>\nWhich files in src/services/ are missing tests?\n</code></pre>\n<h3>4. Technical Debt Identification</h3>\n<p>Combine metrics to find problematic files:</p>\n<ul>\n<li>High complexity + High churn + Missing tests = <strong>Technical debt hot spot</strong></li>\n</ul>\n<h3>5. Onboarding New Developers</h3>\n<p>Show new team members:</p>\n<ul>\n<li>Most frequently changed files</li>\n<li>Core files with good health scores</li>\n<li>Areas needing test coverage</li>\n</ul>\n<hr>"
   },
   "promptbook": {
     "overview": "<p>Build better. See your progress. Post the proof.</p>\n<p>Promptbook is an opt-in analytics plugin for Claude Code. After setup consent, it tracks prompts, tokens, and build time, sends session metrics to <a href=\"https://promptbook.gg\">promptbook.gg</a>, and turns each session into shareable progress.</p>",
@@ -1027,6 +1139,10 @@
     "features": "<ul>\n<li>Production-ready</li>\n<li>Best practices</li>\n<li>Multi-platform</li>\n<li>Well-documented</li>\n</ul>",
     "usage": "<pre data-lang=\"bash\"><code>\n/secrets-integrate\n</code></pre>"
   },
+  "security-agent": {
+    "overview": "<p>A specialized security review subagent for identifying vulnerabilities and providing security guidance.</p>",
+    "usage": "<p>The security reviewer agent will automatically activate when you:</p>\n<ul>\n<li>Ask Claude to review code for security issues</li>\n<li>Request a security audit</li>\n<li>Mention security concerns in your prompt</li>\n</ul>\n<p><strong>Manual invocation</strong>:</p>\n<pre><code>\n@security-reviewer Please review this authentication code for security vulnerabilities\n</code></pre>"
+  },
   "security-audit-reporter": {
     "overview": "<p>Generate comprehensive security audit reports with vulnerability assessments, compliance status, and remediation roadmaps.</p>",
     "features": "<ul>\n<li><strong>Executive Summaries</strong> - High-level security posture for leadership</li>\n<li><strong>Technical Details</strong> - In-depth vulnerability analysis for security teams</li>\n<li><strong>Compliance Tracking</strong> - OWASP, GDPR, HIPAA, PCI-DSS, SOC2 status</li>\n<li><strong>Remediation Roadmaps</strong> - Prioritized action plans</li>\n<li><strong>Multiple Formats</strong> - PDF, HTML, JSON, Markdown</li>\n<li><strong>Trend Analysis</strong> - Security metrics over time</li>\n</ul>",
@@ -1042,6 +1158,11 @@
     "features": "<ul>\n<li><strong>Incident Classification</strong> - Categorize security incidents</li>\n<li><strong>Response Playbooks</strong> - Guided response procedures</li>\n<li><strong>Evidence Collection</strong> - Gather forensic data</li>\n<li><strong>Timeline Construction</strong> - Build incident timeline</li>\n<li><strong>Remediation Steps</strong> - Guided recovery process</li>\n<li><strong>Post-Incident Reporting</strong> - Lessons learned documentation</li>\n</ul>",
     "usage": "<pre data-lang=\"bash\"><code>\n/incident-response\n/incident\n</code></pre>"
   },
+  "security-pro-pack": {
+    "overview": "<p>The <strong>Security Pro Pack</strong> is a comprehensive collection of security-focused plugins for Claude Code, providing automated vulnerability scanning, compliance checking, cryptography review, and infrastructure security analysis.</p>\n<p><strong>Perfect for:</strong></p>\n<ul>\n<li>Security engineers and DevSecOps teams</li>\n<li>Developers building secure applications</li>\n<li>Companies preparing for compliance audits (HIPAA, PCI DSS, GDPR, SOC 2)</li>\n<li>Organizations requiring security-first development practices</li>\n</ul>\n<hr>",
+    "features": "<h3>Automated Security Scanning</h3>\n<ul>\n<li>Detects hardcoded secrets (API keys, passwords, tokens)</li>\n<li>Identifies known CVEs in dependencies</li>\n<li>Finds security misconfigurations</li>\n<li>Reports severity-rated findings (Critical → Low)</li>\n<li>Provides actionable remediation steps</li>\n</ul>\n<h3>Compliance Made Easy</h3>\n<ul>\n<li>Generate audit-ready documentation in minutes</li>\n<li>Multi-framework support (HIPAA, PCI DSS, GDPR, SOC 2)</li>\n<li>Gap analysis against compliance requirements</li>\n<li>Policy and procedure templates</li>\n<li>Risk assessment frameworks</li>\n</ul>\n<h3>Cryptography Security</h3>\n<ul>\n<li>Reviews encryption implementations (AES, RSA, ECC)</li>\n<li>Validates password hashing (Argon2, bcrypt)</li>\n<li>Detects weak algorithms (MD5, SHA-1, DES)</li>\n<li>Checks for hardcoded keys and IV reuse</li>\n<li>TLS/SSL configuration analysis</li>\n</ul>\n<h3>Infrastructure Protection</h3>\n<ul>\n<li>STRIDE threat modeling for architectural security</li>\n<li>Container security scanning (vulnerabilities, misconfigurations)</li>\n<li>Docker image hardening recommendations</li>\n<li>API security testing (OWASP API Top 10)</li>\n<li>Kubernetes pod security analysis</li>\n</ul>\n<hr>",
+    "usage": "<pre data-lang=\"bash\"><code>\nclaude plugin install security-pro-pack\n\n/ss\n\n/dss nginx:latest\n\n/asa https://api.example.com\n\n&quot;Please use Security Auditor Expert to review this authentication code&quot;\n</code></pre>\n<p><strong>See QUICK_START.md for detailed walkthrough</strong></p>\n<hr>"
+  },
   "security-test-scanner": {
     "overview": "<p>Automated security vulnerability testing covering OWASP Top 10, SQL injection, XSS, CSRF, authentication issues, and authorization flaws.</p>",
     "features": "<ul>\n<li><strong>OWASP Top 10 testing</strong> - Complete coverage of critical web vulnerabilities</li>\n<li><strong>Injection testing</strong> - SQL, NoSQL, command, LDAP, template injection</li>\n<li><strong>XSS detection</strong> - Reflected, stored, and DOM-based XSS</li>\n<li><strong>Authentication testing</strong> - Weak passwords, session management, JWT flaws</li>\n<li><strong>Authorization testing</strong> - Privilege escalation, IDOR, access control</li>\n<li><strong>Security misconfiguration</strong> - Default credentials, verbose errors, headers</li>\n<li><strong>API security</strong> - Rate limiting, CORS, input validation</li>\n<li><strong>Comprehensive reporting</strong> - Severity ratings, PoC, remediation steps</li>\n</ul>",
@@ -1056,6 +1177,24 @@
     "overview": "<p>Configure service mesh (Istio, Linkerd) for microservices</p>",
     "features": "<ul>\n<li>Production-ready</li>\n<li>Best practices</li>\n<li>Multi-platform</li>\n<li>Well-documented</li>\n</ul>",
     "usage": "<pre data-lang=\"bash\"><code>\n/service-mesh\n</code></pre>"
+  },
+  "jeremy-plugin-tool": {
+    "overview": "<p><strong>Production-grade plugin creator with nixtla-validated quality standards</strong> - Includes 4 Agent Skills that automatically create, validate, audit, and version plugins for the claude-code-plugins marketplace.</p>\n<p><a href=\"https://img.shields.io/badge/version-2.0.0-brightgreen\">![Version</a>](.)</p>\n<p><a href=\"https://img.shields.io/badge/skills-4-blue\">![Skills</a>](.)</p>\n<p><a href=\"https://img.shields.io/badge/type-meta--plugin-purple\">![Type</a>](.)</p>\n<p><a href=\"https://img.shields.io/badge/License-MIT-yellow.svg\">![License: MIT</a>](LICENSE)</p>\n<hr>",
+    "usage": "<p><strong>Just talk naturally while working on plugins!</strong></p>\n<h3>Example Workflows</h3>\n<p><strong>Workflow 1: Create New Plugin</strong></p>\n<pre><code>\nYou: &quot;I need to create a new DevOps plugin called &#39;docker-optimizer&#39; with commands&quot;\n\nSkills Powerkit automatically:\n1. Recognizes &quot;create new plugin&quot; → Invokes Plugin Creator\n2. Scaffolds plugins/devops/docker-optimizer/\n3. Generates plugin.json, README, LICENSE, commands/\n4. Adds to marketplace.extended.json\n5. Syncs marketplace.json\n6. Validates everything\n7. Reports: &quot;✅ Plugin created and ready!&quot;\n</code></pre>\n<p><strong>Workflow 2: Validate Before Commit</strong></p>\n<pre><code>\nYou: &quot;Is my owasp-scanner plugin ready to commit?&quot;\n\nSkills Powerkit automatically:\n1. Recognizes &quot;ready to commit&quot; → Invokes Plugin Validator\n2. Checks plugin.json schema\n3. Validates frontmatter\n4. Verifies marketplace entry\n5. Checks permissions\n6. Reports: &quot;✅ PASSED - Ready to commit!&quot;\n</code></pre>\n<p><strong>Workflow 3: Security Audit</strong></p>\n<pre><code>\nYou: &quot;Security audit on the new password-manager plugin&quot;\n\nSkills Powerkit automatically:\n1. Recognizes &quot;security audit&quot; → Invokes Plugin Auditor\n2. Scans for hardcoded secrets\n3. Checks dangerous commands\n4. Validates security patterns\n5. Generates audit report\n6. Reports: &quot;⚠️ Found 2 issues - no hardcoded credentials allowed&quot;\n</code></pre>\n<p><strong>Workflow 4: Release Management</strong></p>\n<pre><code>\nYou: &quot;Bump docker-optimizer to minor version and update marketplace&quot;\n\nSkills Powerkit automatically:\n1. Recognizes &quot;bump to minor&quot; → Invokes Version Bumper\n2. Calculates new version (1.0.0 → 1.1.0)\n3. Updates plugin.json\n4. Recognizes &quot;update marketplace&quot; → Invokes Marketplace Manager\n5. Updates marketplace.extended.json\n6. Syncs marketplace.json\n7. Reports: &quot;✅ Version bumped to 1.1.0, marketplace updated&quot;\n</code></pre>\n<hr>",
+    "troubleshooting": [
+      {
+        "question": "Skills not activating",
+        "answer": "<ul>\n<li>Ensure you're in claude-code-plugins repository</li>\n<li>Check you said trigger keywords (\"create plugin\", \"validate\", etc.)</li>\n<li>Verify Skills Powerkit is installed: <code>/plugin list</code></li>\n</ul>"
+      },
+      {
+        "question": "Marketplace sync fails",
+        "answer": "<ul>\n<li>Run manually: <code>npm run sync-marketplace</code></li>\n<li>Check marketplace.extended.json syntax with <code>jq</code></li>\n<li>Verify no duplicate plugin names</li>\n</ul>"
+      },
+      {
+        "question": "Validation fails",
+        "answer": "<ul>\n<li>Check error message for specific issue</li>\n<li>Run: <code>./scripts/validate-all.sh plugins/your-plugin/</code></li>\n<li>Fix reported issues</li>\n</ul>\n<hr>"
+      }
+    ]
   },
   "sla-sli-tracker": {
     "overview": "<p>Define and track Service Level Agreements, Indicators, and Objectives.</p>",
@@ -1098,6 +1237,29 @@
     "overview": "<p>Database plugin for stored-procedure-generator</p>",
     "features": "<ul>\n<li>Database best practices</li>\n<li>Multi-database support</li>\n<li>Production-ready implementations</li>\n<li>Comprehensive documentation</li>\n</ul>",
     "usage": "<pre data-lang=\"bash\"><code>\n/stored-procedure-generator\n</code></pre>"
+  },
+  "jeremy-firestore": {
+    "overview": "<p><strong>Production-ready Firebase/Firestore operations for Claude Code</strong></p>\n<p>Build, manage, and optimize Firebase/Firestore databases with AI-powered agents that handle CRUD operations, security rules, batch processing, migrations, and performance monitoring.</p>\n<hr>",
+    "features": "<h3>Core Capabilities</h3>\n<ul>\n<li><strong>CRUD Operations</strong> - Create, read, update, delete with batch support</li>\n<li><strong>Security Rules</strong> - Generate, validate, and deploy Firestore security rules</li>\n<li><strong>Data Migration</strong> - Migrate data between collections, projects, or environments</li>\n<li><strong>Batch Operations</strong> - Process thousands of documents efficiently</li>\n<li><strong>Cost Optimization</strong> - Analyze and reduce Firebase costs</li>\n<li><strong>Performance Monitoring</strong> - Track queries, indexes, and bottlenecks</li>\n<li><strong>Cloud Functions Integration</strong> - Trigger and manage Cloud Functions</li>\n<li><strong>Collection Management</strong> - Schema validation, indexing, and organization</li>\n</ul>\n<h3>AI Agents</h3>\n<ul>\n<li><strong>firebase-operations-agent</strong> - CRUD, queries, batch operations</li>\n<li><strong>firestore-security-agent</strong> - Security rules generation and validation</li>\n<li><strong>firestore-migration-agent</strong> - Data migration and transformation</li>\n<li><strong>firestore-optimizer-agent</strong> - Performance and cost optimization</li>\n</ul>\n<h3>Commands</h3>\n<ul>\n<li><code>/firestore-setup</code> - Initialize Firebase SDK and credentials</li>\n<li><code>/firestore-query</code> - Interactive query builder</li>\n<li><code>/firestore-migrate</code> - Guided migration workflow</li>\n</ul>\n<hr>",
+    "usage": "<h3>Installation</h3>\n<pre data-lang=\"bash\"><code>\n/plugin install jeremy-firestore@claude-code-plugins-plus\n\n/firestore-setup\n</code></pre>\n<h3>Prerequisites</h3>\n<ol>\n<li><strong>Firebase Project</strong> - Create at https://console.firebase.google.com</li>\n<li><strong>Service Account</strong> - Download JSON key from Project Settings > Service Accounts</li>\n<li><strong>Node.js</strong> - Version 18+ with npm/pnpm/yarn</li>\n</ol>\n<h3>First-Time Setup</h3>\n<pre data-lang=\"bash\"><code>\nnpm install firebase-admin\n\nexport GOOGLE_APPLICATION_CREDENTIALS=&quot;/path/to/serviceAccountKey.json&quot;\n\n/firestore-setup\n</code></pre>\n<hr>",
+    "troubleshooting": [
+      {
+        "question": "Error: Permission Denied",
+        "answer": "<pre data-lang=\"bash\"><code>\nfirebase firestore:rules:get\n\nfirebase emulators:start --only firestore\n\n&quot;Why am I getting permission denied when reading /users/user123?&quot;\n</code></pre>"
+      },
+      {
+        "question": "Error: Missing Index",
+        "answer": "<pre data-lang=\"bash\"><code>\n&quot;Create an index for querying users by (status, createdAt)&quot;\n\nfirebase firestore:indexes\n\nfirebase deploy --only firestore:indexes\n</code></pre>"
+      },
+      {
+        "question": "Error: Rate Limits",
+        "answer": "<pre data-lang=\"bash\"><code>\n&quot;Batch update 50,000 users with rate limit handling&quot;\n</code></pre>"
+      },
+      {
+        "question": "Error: Invalid Credentials",
+        "answer": "<pre data-lang=\"bash\"><code>\ngcloud auth application-default login\n\nexport GOOGLE_APPLICATION_CREDENTIALS=&quot;/path/to/serviceAccountKey.json&quot;\n\nfirebase projects:list\n</code></pre>\n<hr>"
+      }
+    ]
   },
   "sugar": {
     "overview": "<p>Transform your Claude Code experience with autonomous AI development capabilities!</p>",
@@ -1210,6 +1372,12 @@
     "overview": "<p>Real-time monitoring of large cryptocurrency transactions and whale wallet movements.</p>",
     "features": "<ul>\n<li>Large transaction alerts</li>\n<li>Exchange whale tracking</li>\n<li>Wallet clustering analysis</li>\n<li>Market impact assessment</li>\n<li>Historical whale patterns</li>\n</ul>"
   },
+  "workflow-orchestrator": {
+    "overview": "<p><strong>DAG-based workflow orchestration with parallel execution and run history</strong></p>\n<p>Automate complex multi-step workflows with dependency management, parallel execution, and comprehensive run tracking.</p>",
+    "features": "<ul>\n<li><strong>DAG Execution</strong> - Directed Acyclic Graph task dependencies</li>\n<li><strong>Parallel Tasks</strong> - Execute independent tasks concurrently</li>\n<li><strong>Run History</strong> - Track all workflow executions</li>\n<li><strong>Status Monitoring</strong> - Real-time workflow progress</li>\n<li><strong>Error Handling</strong> - Graceful failure management</li>\n</ul>",
+    "usage": "<pre data-lang=\"javascript\"><code>\n// 1. Create workflow\nconst workflow = await create_workflow({\n  name: &quot;CI/CD Pipeline&quot;,\n  tasks: [\n    { id: &quot;lint&quot;, name: &quot;Lint&quot;, command: &quot;npm run lint&quot;, dependencies: [] },\n    { id: &quot;test&quot;, name: &quot;Test&quot;, command: &quot;npm test&quot;, dependencies: [&quot;lint&quot;] },\n    { id: &quot;build&quot;, name: &quot;Build&quot;, command: &quot;npm run build&quot;, dependencies: [&quot;test&quot;] }\n  ]\n});\n\n// 2. Execute workflow\nconst result = await execute_workflow({\n  workflowId: workflow.workflowId,\n  parallel: true\n});\n\n// 3. Check status\nconst status = await get_workflow({\n  workflowId: workflow.workflowId\n});\n</code></pre>",
+    "useCases": "<ol>\n<li><strong>CI/CD Pipelines</strong> - Automated build, test, deploy</li>\n<li><strong>Data Pipelines</strong> - ETL workflows with dependencies</li>\n<li><strong>Deployment Automation</strong> - Multi-stage deployments</li>\n<li><strong>Testing Workflows</strong> - Parallel test execution</li>\n<li><strong>Batch Processing</strong> - Complex job orchestration</li>\n</ol>"
+  },
   "xss-vulnerability-scanner": {
     "overview": "<p>Comprehensive cross-site scripting (XSS) vulnerability detection with context-aware analysis and bypass technique testing.</p>",
     "features": "<ul>\n<li><strong>All XSS Types</strong> - Reflected, Stored, DOM-based</li>\n<li><strong>Context Analysis</strong> - HTML, JavaScript, CSS, URL contexts</li>\n<li><strong>WAF Bypass Testing</strong> - Common filter evasion techniques</li>\n<li><strong>Mutation XSS Detection</strong> - Browser-specific quirks</li>\n<li><strong>CSP Evaluation</strong> - Content Security Policy effectiveness</li>\n<li><strong>Exploitation PoCs</strong> - Safe proof-of-concept payloads</li>\n</ul>",
@@ -1311,6 +1479,29 @@
     "features": "<ul>\n<li><strong>Create mode</strong>: Build complete skill packages from scratch with interactive wizard</li>\n<li><strong>Validate mode</strong>: Grade existing skills against the Intent Solutions 100-point rubric</li>\n<li><strong>Auto-fix</strong>: Automatically apply improvements to boost marketplace scores</li>\n<li><strong>Eval-driven</strong>: Built-in evaluation framework for testing skill quality</li>\n</ul>",
     "usage": "<pre><code>\n/skill-creator              # Interactive skill creation\n/skill-creator validate     # Grade an existing skill\n</code></pre>"
   },
+  "claude-never-forgets": {
+    "overview": "<p>A Claude Code plugin that provides persistent memory across sessions and context windows.</p>\n<p>!<a href=\"claude_terminal.png\">Claude Never Forgets</a></p>",
+    "usage": "<p><strong>Automatic saving:</strong></p>\n<ul>\n<li>Every user message and Claude response is saved</li>\n<li>Tool rejections (when you decline a suggested action) are captured as corrections</li>\n<li>Memories are stored in <code>.claude/memories/project_memory.json</code></li>\n</ul>\n<p><strong>Automatic loading:</strong></p>\n<ul>\n<li>When you start a new session, saved memories are loaded into context</li>\n<li>Claude sees your previous preferences and decisions</li>\n</ul>\n<p><strong>Automatic cleanup:</strong></p>\n<ul>\n<li>When memories exceed 10 entries, Claude consolidates them</li>\n<li>Keeps important information (preferences, decisions, corrections)</li>\n<li>Removes noise (greetings, acknowledgments)</li>\n<li>The threshold (10) can be changed in <code>hooks/stop_cleanup.py</code></li>\n</ul>",
+    "useCases": "<pre><code>\nSession 1:\nYou: &quot;Use pnpm instead of npm for this project&quot;\nClaude: *uses pnpm*\n→ Saved to memory\n\nSession 2 (next day):\n🧠 Loaded 3 memories\nYou: &quot;Install axios&quot;\nClaude: *runs pnpm add axios*\n→ Remembered your preference\n</code></pre>"
+  },
+  "geepers-agents": {
+    "overview": "<p>Multi-agent orchestration system with MCP tools and Claude Code plugin agents.</p>",
+    "usage": "<h3>Using Agents in Claude Code</h3>\n<pre><code>\n@geepers_scout          # Quick project reconnaissance\n@geepers_caddy          # Caddy configuration changes\n@geepers_orchestrator_checkpoint  # End-of-session cleanup\n</code></pre>\n<h3>Using MCP Tools</h3>\n<p>Once configured, tools are available via the MCP protocol.</p>"
+  },
+  "sprint": {
+    "overview": "<p>> Autonomous multi-agent development plugin for Claude Code. Spec-driven, iterative sprints with specialized agents.</p>\n<p><strong>Part of <a href=\"https://github.com/damienlaine/agentic-forge\">Agentic Forge</a></strong> — Claude Code plugins for autonomous AI workflows.</p>\n<p><strong>Stop prompting in circles.</strong> Sprint replaces ad-hoc AI coding with structured, specification-driven development. Write specs, run <code>/sprint</code>, and let coordinated agents handle the rest.</p>\n<p>At its core, the <code>/sprint</code> command is a <strong>spec-driven, self-iterative state machine</strong> — it reads your specifications, orchestrates specialized agents through defined phases, and loops autonomously until the work is done or validation passes.</p>",
+    "usage": "<h3>1. Set Up Your Project</h3>\n<pre data-lang=\"bash\"><code>\n/sprint:setup\n</code></pre>\n<p>This creates both Second Brain documents through guided questions:</p>\n<ul>\n<li><code>.claude/project-goals.md</code> (business vision)</li>\n<li><code>.claude/project-map.md</code> (technical architecture)</li>\n</ul>\n<h3>2. Create Your First Sprint</h3>\n<pre data-lang=\"bash\"><code>\n/sprint:new\n</code></pre>\n<p>This creates <code>.claude/sprint/1/specs.md</code>. Edit it with your requirements.</p>\n<h3>3. Run the Sprint</h3>\n<pre data-lang=\"bash\"><code>\n/sprint\n</code></pre>\n<p>Watch the agents work:</p>\n<ol>\n<li>Architect analyzes specs and creates detailed specifications</li>\n<li>Implementation agents build in parallel</li>\n<li>Testing agents validate the work</li>\n<li>Architect reviews and iterates (up to 5 times)</li>\n<li>Sprint completes with a status summary</li>\n</ol>",
+    "troubleshooting": [
+      {
+        "question": "Sprint stuck in iteration loop",
+        "answer": "<ul>\n<li>Check <code>status.md</code> for blockers</li>\n<li>Review agent reports for errors</li>\n<li>Max 5 iterations before pause</li>\n</ul>"
+      },
+      {
+        "question": "Agents not following specs",
+        "answer": "<ul>\n<li>Ensure <code>api-contract.md</code> is clear and complete</li>\n<li>Check for conflicting information in spec files</li>\n<li>Architect may need to clarify specs</li>\n</ul>"
+      }
+    ]
+  },
   "vibe-guide": {
     "overview": "<p>Non-technical progress summaries for Claude Code work. Hides diffs, logs, and technical noise so you can pair program with AI without being overwhelmed by implementation details.</p>",
     "usage": "<pre data-lang=\"bash\"><code>\n/vibe-guide:vibe Build a WNBA stats table page\n\n/vibe-guide:status\n\n/vibe-guide:continue\n\n/vibe-guide:learn on\n\n/vibe-guide:guide\n</code></pre>",
@@ -1352,6 +1543,163 @@
   "mattyp-changelog": {
     "overview": "<p>Generate weekly/monthly changelogs with a hybrid <strong>Skill + MCP</strong> workflow: collect changes (GitHub/Slack/Git), synthesize release notes, validate structure/quality, then create a branch/PR.</p>",
     "usage": "<ol>\n<li>Create <code>.changelog-config.json</code> in your repo (copy from the example):</li>\n</ol>\n<pre data-lang=\"bash\"><code>\ncp ${CLAUDE_PLUGIN_ROOT}/config/changelog-config.example.json .changelog-config.json\n</code></pre>\n<ol>\n<li>Set required environment variables:</li>\n</ol>\n<pre data-lang=\"bash\"><code>\nexport GITHUB_TOKEN=&quot;ghp_...&quot;\nexport SLACK_TOKEN=&quot;xoxb-...&quot;\n</code></pre>\n<ol>\n<li>Run:</li>\n</ol>\n<ul>\n<li><code>/changelog-validate</code> (sanity checks)</li>\n<li><code>/changelog-weekly</code> (last 7 days)</li>\n<li><code>/changelog-custom start<em>date=YYYY-MM-DD end</em>date=YYYY-MM-DD</code></li>\n</ul>"
+  },
+  "supabase-pack": {
+    "overview": "<p>> 30 production-grade Claude Code skills for Supabase: real <code>@supabase/supabase-js</code> v2 client methods, real PostgreSQL RLS policies, real Edge Functions, real Supabase CLI workflows.</p>",
+    "usage": "<p>Skills auto-activate based on context. Examples:</p>\n<ul>\n<li>\"Help me set up Supabase\" activates <code>supabase-install-auth</code></li>\n<li>\"My Supabase query is slow\" activates <code>supabase-performance-tuning</code></li>\n<li>\"Set up RLS for my tables\" activates <code>supabase-security-basics</code></li>\n<li>\"Deploy my Edge Function\" activates <code>supabase-deploy-integration</code></li>\n<li>\"Migrate from Firebase to Supabase\" activates <code>supabase-migration-deep-dive</code></li>\n</ul>"
+  },
+  "vercel-pack": {
+    "overview": "<p>> 30 production-grade Claude Code skills for Vercel deployments, serverless functions, Edge Runtime, and platform operations.</p>\n<p>Deploy, scale, and operate Vercel applications with real API endpoints (<code>api.vercel.com/v9/*</code>), real CLI commands (<code>vercel deploy</code>, <code>vercel env</code>, <code>vercel rollback</code>), real Edge Function patterns (<code>export const config = { runtime: 'edge' }</code>), and real error codes (<code>FUNCTION<em>INVOCATION</em>FAILED</code>, <code>FUNCTION_THROTTLED</code>). Every skill contains working code, not placeholders.</p>\n<p><strong>Links:</strong> <a href=\"https://vercel.com/docs\">Vercel Docs</a> | <a href=\"https://vercel.com/docs/rest-api\">Vercel REST API</a> | <a href=\"#installation\">Install</a></p>\n<hr>",
+    "usage": "<p>Skills trigger automatically when you discuss Vercel topics:</p>\n<ul>\n<li>\"Help me set up Vercel\" triggers <code>vercel-install-auth</code></li>\n<li>\"Deploy my app to production\" triggers <code>vercel-prod-checklist</code></li>\n<li>\"My Vercel function is timing out\" triggers <code>vercel-common-errors</code></li>\n<li>\"Set up edge middleware for auth\" triggers <code>vercel-edge-functions</code></li>\n<li>\"Why is my Vercel bill so high?\" triggers <code>vercel-cost-tuning</code></li>\n</ul>"
+  },
+  "clay-pack": {
+    "overview": "<p>> Claude Code skill pack for Clay.com data enrichment platform (30 skills)</p>\n<p>Clay is a data enrichment and lead research platform that aggregates 150+ data providers (Apollo, Clearbit, Hunter, ZoomInfo, People Data Labs) into a table-based workflow with waterfall enrichment, Claygent AI research, and CRM synchronization. This skill pack covers the full integration surface: webhooks, HTTP API columns, Claygent prompts, CRM sync, credit optimization, and production pipeline architecture.</p>\n<p><strong>Links:</strong> <a href=\"https://university.clay.com\">Clay University</a> | <a href=\"https://www.clay.com\">Clay.com</a> | <a href=\"https://community.clay.com\">Community</a></p>\n<hr>",
+    "usage": "<p>Skills trigger automatically when you discuss Clay topics. For example:</p>\n<ul>\n<li>\"Help me set up Clay\" triggers <code>clay-install-auth</code></li>\n<li>\"Enrich a list of leads\" triggers <code>clay-core-workflow-a</code></li>\n<li>\"Debug this Clay error\" triggers <code>clay-common-errors</code></li>\n<li>\"Optimize Clay costs\" triggers <code>clay-cost-tuning</code></li>\n<li>\"Write Claygent prompts\" triggers <code>clay-core-workflow-b</code></li>\n</ul>"
+  },
+  "cursor-pack": {
+    "overview": "<p>> 30 production-grade skills for Cursor IDE mastery -- real .cursor/rules, real Composer workflows, real @-symbol patterns</p>\n<p>Complete Claude Code skill pack for <a href=\"https://cursor.com\">Cursor</a>, the AI-first code editor. Every skill contains real configuration examples, real keyboard shortcuts, real settings paths, and real architectural patterns drawn from Cursor's actual documentation and feature set.</p>",
+    "usage": "<p>After installation, skills activate automatically when you ask about Cursor setup, rules, Composer, indexing, or any other Cursor topic.</p>"
+  },
+  "exa-pack": {
+    "overview": "<p>> 30 Claude Code skills for Exa neural search API integration — from first query to production RAG pipelines</p>\n<p><strong>Exa</strong> is a neural search API at <code>api.exa.ai</code> that retrieves web content using semantic similarity. Unlike traditional search engines, Exa understands query meaning and returns contextually relevant results with full text, highlights, and AI-generated summaries.</p>\n<p><strong>SDK:</strong> <code>exa-js</code> (npm) / <code>exa-py</code> (PyPI) | <strong>Auth:</strong> <code>x-api-key</code> header | <strong>Rate limit:</strong> 10 QPS default</p>",
+    "usage": "<pre data-lang=\"typescript\"><code>\nimport Exa from &quot;exa-js&quot;;\nconst exa = new Exa(process.env.EXA_API_KEY);\n\n// Search with content extraction\nconst results = await exa.searchAndContents(\n  &quot;best practices for building RAG pipelines&quot;,\n  {\n    type: &quot;neural&quot;,\n    numResults: 5,\n    text: { maxCharacters: 2000 },\n    highlights: { maxCharacters: 500 },\n    summary: { query: &quot;key takeaways&quot; },\n  }\n);\n</code></pre>"
+  },
+  "firecrawl-pack": {
+    "overview": "<p>Firecrawl converts websites into clean markdown or structured JSON for LLM consumption. It handles JavaScript rendering, anti-bot bypassing, and pagination automatically. This skill pack teaches Claude Code every Firecrawl pattern from hello-world to enterprise content pipelines.</p>\n<p><strong>SDK:</strong> <code>@mendable/firecrawl-js</code> (npm) / <code>firecrawl-py</code> (PyPI)</p>\n<p><strong>API:</strong> <code>api.firecrawl.dev/v1</code> — scrape, crawl, map, extract, batch scrape</p>\n<p><strong>Pricing:</strong> Credit-based (1 credit = 1 page scraped)</p>",
+    "usage": "<pre data-lang=\"typescript\"><code>\nimport FirecrawlApp from &quot;@mendable/firecrawl-js&quot;;\n\nconst firecrawl = new FirecrawlApp({\n  apiKey: process.env.FIRECRAWL_API_KEY!,\n});\n\n// Scrape a page to markdown\nconst page = await firecrawl.scrapeUrl(&quot;https://docs.example.com&quot;, {\n  formats: [&quot;markdown&quot;],\n  onlyMainContent: true,\n});\n\n// Crawl an entire site\nconst site = await firecrawl.crawlUrl(&quot;https://docs.example.com&quot;, {\n  limit: 50,\n  scrapeOptions: { formats: [&quot;markdown&quot;] },\n});\n\n// Discover all URLs instantly\nconst map = await firecrawl.mapUrl(&quot;https://docs.example.com&quot;);\n\n// Extract structured data with LLM\nconst data = await firecrawl.scrapeUrl(&quot;https://example.com/pricing&quot;, {\n  formats: [&quot;extract&quot;],\n  extract: { schema: { type: &quot;object&quot;, properties: { plans: { type: &quot;array&quot; } } } },\n});\n</code></pre>"
+  },
+  "klingai-pack": {
+    "overview": "<p>30 production-ready skills for <a href=\"https://klingai.com/\">Kling AI</a> -- the leading AI video generation platform by Kuaishou Technology. Covers the full API surface: text-to-video, image-to-video, video extension, lip sync, effects, camera control, motion brush, virtual try-on, and Kolors image generation.</p>\n<p><strong>API Base URL:</strong> <code>https://api.klingai.com/v1</code></p>\n<p><strong>Auth:</strong> JWT tokens from Access Key (AK) + Secret Key (SK), 30-minute expiry, HS256 signing.</p>\n<hr>",
+    "usage": "<pre data-lang=\"bash\"><code>\nexport KLING_ACCESS_KEY=&quot;ak_your_key&quot;\nexport KLING_SECRET_KEY=&quot;sk_your_key&quot;\n</code></pre>\n<p>Then ask Claude: \"Generate a 5-second video of a sunset over the ocean using Kling AI\"</p>"
+  },
+  "openrouter-pack": {
+    "overview": "<p>Complete Claude Code skill pack for <a href=\"https://openrouter.ai\">OpenRouter</a> -- the unified API for 300+ LLM models from OpenAI, Anthropic, Google, Meta, Mistral, and more. Every skill contains real API calls to <code>https://openrouter.ai/api/v1</code>, real model IDs, real provider routing, and real cost/credit management code.</p>",
+    "usage": "<p>After installation, these skills activate automatically when you:</p>\n<ul>\n<li>Set up OpenRouter API integration</li>\n<li>Configure model fallbacks and provider routing</li>\n<li>Optimize LLM costs and manage credits</li>\n<li>Debug API requests and handle errors</li>\n<li>Implement streaming, tool calling, or caching</li>\n</ul>"
+  },
+  "perplexity-pack": {
+    "overview": "<p>> Claude Code skill pack for Perplexity Sonar API — AI-powered search with web-grounded answers and citations (30 skills)</p>",
+    "usage": "<pre data-lang=\"typescript\"><code>\nimport OpenAI from &quot;openai&quot;;\n\nconst perplexity = new OpenAI({\n  apiKey: process.env.PERPLEXITY_API_KEY,\n  baseURL: &quot;https://api.perplexity.ai&quot;,\n});\n\nconst response = await perplexity.chat.completions.create({\n  model: &quot;sonar&quot;,\n  messages: [{ role: &quot;user&quot;, content: &quot;What are the latest AI developments?&quot; }],\n});\n\nconsole.log(response.choices[0].message.content);\nconsole.log(&quot;Sources:&quot;, (response as any).citations);\n</code></pre>"
+  },
+  "replit-pack": {
+    "overview": "<p>> 30 production-grade Claude Code skills for building, deploying, and operating applications on Replit.</p>\n<p>Real <code>.replit</code> and <code>replit.nix</code> configuration. Real Replit Database, Object Storage, and Auth APIs. Real deployment patterns for Autoscale, Reserved VM, and Static hosting. Every code example runs on Replit as written.</p>"
+  },
+  "retellai-pack": {
+    "overview": "<p>> Claude Code skill pack for Retell AI — AI voice agents, phone call automation, LLM-powered conversations, and telephony integration (30 skills)</p>"
+  },
+  "sentry-pack": {
+    "overview": "<p>Complete Sentry integration for Claude Code — 30 skills covering SDK v8, error tracking, performance monitoring, source maps, release management, distributed tracing, and production operations.</p>"
+  },
+  "windsurf-pack": {
+    "overview": "<p>> Master Windsurf IDE by Codeium — Cascade agentic AI, Supercomplete, Workflows, Rules, and enterprise deployment (30 skills)</p>\n<p>Windsurf is an AI-powered code editor built on VS Code with Cascade (agentic multi-file editing), Supercomplete (intent-aware autocomplete), Workflows (reusable automation), and deep codebase indexing. This pack covers everything from first install to 1000-developer enterprise rollout.</p>",
+    "usage": "<p>Skills trigger automatically when you discuss Windsurf topics. For example:</p>\n<ul>\n<li>\"Help me set up Windsurf\" triggers <code>windsurf-install-auth</code></li>\n<li>\"Cascade is slow\" triggers <code>windsurf-performance-tuning</code></li>\n<li>\"Deploy from Windsurf\" triggers <code>windsurf-deploy-integration</code></li>\n<li>\"Set up Windsurf for my team\" triggers <code>windsurf-multi-env-setup</code></li>\n</ul>"
+  },
+  "coderabbit-pack": {
+    "overview": "<p>> Claude Code skill pack for CodeRabbit AI code review (24 skills)</p>",
+    "usage": "<p>Skills trigger automatically when you discuss CodeRabbit topics. For example:</p>\n<ul>\n<li>\"Help me set up CodeRabbit\" triggers <code>coderabbit-install-auth</code></li>\n<li>\"Configure CodeRabbit for my project\" triggers <code>coderabbit-core-workflow-a</code></li>\n<li>\"Debug CodeRabbit not reviewing PRs\" triggers <code>coderabbit-common-errors</code></li>\n<li>\"Set up CodeRabbit as a required check\" triggers <code>coderabbit-ci-integration</code></li>\n<li>\"Reduce CodeRabbit costs\" triggers <code>coderabbit-cost-tuning</code></li>\n<li>\"Migrate from Codacy to CodeRabbit\" triggers <code>coderabbit-migration-deep-dive</code></li>\n</ul>"
+  },
+  "fireflies-pack": {
+    "overview": "<p>> 24 production-ready skills for the Fireflies.ai GraphQL API -- transcript retrieval, AskFred AI, webhook processing, meeting analytics, and enterprise access control.</p>\n<p>Fireflies.ai is an AI meeting notetaker that auto-joins video calls (Zoom, Google Meet, Teams), generates speaker-diarized transcripts, extracts action items, and provides AI-powered Q&A via AskFred. This skill pack covers the entire Fireflies GraphQL API surface at <code>https://api.fireflies.ai/graphql</code>.</p>",
+    "usage": "<p>Skills trigger automatically when you discuss Fireflies.ai topics:</p>\n<ul>\n<li>\"Help me set up the Fireflies API\" -- triggers <code>fireflies-install-auth</code></li>\n<li>\"Fetch my recent meeting transcripts\" -- triggers <code>fireflies-core-workflow-a</code></li>\n<li>\"Search meetings for quarterly review\" -- triggers <code>fireflies-core-workflow-b</code></li>\n<li>\"Set up a webhook for transcript notifications\" -- triggers <code>fireflies-webhooks-events</code></li>\n<li>\"Upload a recording to Fireflies\" -- triggers <code>fireflies-migration-deep-dive</code></li>\n<li>\"Ask Fred about my last meeting\" -- triggers <code>fireflies-core-workflow-b</code></li>\n</ul>"
+  },
+  "groq-pack": {
+    "overview": "<p>> 24 Claude Code skills for Groq's ultra-fast LPU inference API -- real SDK code, real model IDs, real speed benchmarks.</p>",
+    "usage": "<p>Skills trigger automatically when you discuss Groq topics:</p>\n<ul>\n<li>\"Help me set up Groq\" triggers <code>groq-install-auth</code></li>\n<li>\"Groq 429 error\" triggers <code>groq-common-errors</code></li>\n<li>\"Transcribe audio with Groq\" triggers <code>groq-core-workflow-b</code></li>\n<li>\"Deploy my Groq app to Vercel\" triggers <code>groq-deploy-integration</code></li>\n<li>\"Migrate from OpenAI to Groq\" triggers <code>groq-migration-deep-dive</code></li>\n</ul>"
+  },
+  "ideogram-pack": {
+    "overview": "<p>> 24 Claude Code skills for Ideogram AI image generation -- text-to-image, editing, remixing, upscaling, and asset pipelines with real <code>api.ideogram.ai</code> endpoints.</p>\n<p>Ideogram is an AI image generation API that excels at rendering legible text inside images -- a capability where most image models fail. This skill pack provides production-ready patterns for all six API endpoints: Generate, Edit (Magic Fill), Remix, Upscale, Describe, and Reframe.</p>\n<p><strong>Links:</strong> <a href=\"https://developer.ideogram.ai\">Ideogram Developer Docs</a> | <a href=\"https://developer.ideogram.ai/api-reference\">API Reference</a> | <a href=\"https://ideogram.ai/features/api-pricing\">Pricing</a> | <a href=\"https://tonsofskills.com/learn/ideogram/\">Tons of Skills</a></p>\n<hr>",
+    "usage": "<p>Skills trigger automatically when you discuss Ideogram topics:</p>\n<ul>\n<li>\"Help me set up Ideogram\" -> <code>ideogram-install-auth</code></li>\n<li>\"Generate an image with text\" -> <code>ideogram-core-workflow-a</code></li>\n<li>\"Edit this image with a mask\" -> <code>ideogram-core-workflow-b</code></li>\n<li>\"Debug this Ideogram 422 error\" -> <code>ideogram-common-errors</code></li>\n<li>\"Deploy my Ideogram integration\" -> <code>ideogram-deploy-integration</code></li>\n</ul>"
+  },
+  "instantly-pack": {
+    "overview": "<p>> Cold email outreach automation via Instantly.ai API v2 — campaigns, leads, warmup, analytics, and webhooks (24 skills)</p>\n<p>Instantly.ai is a cold email outreach platform that manages sending infrastructure, email warmup, campaign sequencing, and reply detection at scale. This skill pack provides production-ready patterns for the Instantly API v2 (<code>https://api.instantly.ai/api/v2/</code>), covering the full campaign lifecycle from account warmup through lead import, sequence creation, launch, analytics, and webhook-driven CRM sync.</p>\n<p><strong>API Version:</strong> v2 (v1 deprecated January 2026)</p>\n<p><strong>Auth:</strong> Bearer token with scoped API keys</p>\n<p><strong>Plan Required:</strong> Hypergrowth ($97.95/mo) for full API + webhooks</p>",
+    "usage": "<p>Skills trigger automatically when you discuss Instantly topics:</p>\n<ul>\n<li>\"Set up Instantly API\" triggers <code>instantly-install-auth</code></li>\n<li>\"Create a cold email campaign\" triggers <code>instantly-core-workflow-a</code></li>\n<li>\"Enable warmup on my accounts\" triggers <code>instantly-core-workflow-b</code></li>\n<li>\"Handle Instantly webhooks\" triggers <code>instantly-webhooks-events</code></li>\n<li>\"Debug Instantly errors\" triggers <code>instantly-common-errors</code></li>\n</ul>"
+  },
+  "posthog-pack": {
+    "overview": "<p>> Claude Code skill pack for PostHog product analytics — event capture, feature flags, experiments, session recordings, and HogQL queries (24 skills)</p>"
+  },
+  "vastai-pack": {
+    "overview": "<p>> Claude Code skill pack for Vast.ai GPU cloud marketplace integration (24 skills)</p>",
+    "usage": "<pre data-lang=\"bash\"><code>\npip install vastai\n\nvastai set api-key YOUR_KEY_FROM_CLOUD_VAST_AI\n\nvastai search offers &#39;num_gpus=1 gpu_ram&gt;=24 reliability&gt;0.95&#39; --order dph_total --limit 5\n\nvastai create instance OFFER_ID --image pytorch/pytorch:2.2.0-cuda12.1-cudnn8-runtime --disk 20\n\nssh -p PORT root@HOST &quot;nvidia-smi&quot;\n\nvastai destroy instance INSTANCE_ID\n</code></pre>"
+  },
+  "apollo-pack": {
+    "overview": "<p>> Claude Code skill pack for Apollo.io sales intelligence platform (24 skills)</p>\n<p>Apollo.io is a B2B sales intelligence and engagement platform with 275M+ contacts, lead search, enrichment, email sequences, and deal management. This pack provides production-ready skills for every stage of Apollo API integration — from first API call to enterprise deployment.</p>\n<p><strong>Links:</strong> <a href=\"https://docs.apollo.io/\">Apollo API Docs</a> | <a href=\"https://tonsofskills.com\">Tons of Skills</a> | <a href=\"#installation\">Install</a></p>\n<hr>"
+  },
+  "deepgram-pack": {
+    "overview": "<p>> Speech-to-text, text-to-speech, and audio intelligence for Claude Code. 24 skills covering the full Deepgram platform: Nova-3/Nova-2 transcription, Aura-2 TTS, live streaming WebSocket, diarization, summarization, and enterprise deployment.</p>\n<p><strong>SDK:</strong> <code>@deepgram/sdk</code> (TypeScript) / <code>deepgram-sdk</code> (Python)</p>\n<p><strong>API:</strong> <code>createClient()</code> (v3/v4) or <code>new DeepgramClient()</code> (v5)</p>\n<p><strong>Models:</strong> Nova-3 (best accuracy), Nova-2 (proven), Base (fastest), Whisper (multilingual)</p>",
+    "usage": "<pre data-lang=\"typescript\"><code>\nimport { createClient } from &#39;@deepgram/sdk&#39;;\n\nconst deepgram = createClient(process.env.DEEPGRAM_API_KEY!);\n\n// Pre-recorded transcription\nconst { result } = await deepgram.listen.prerecorded.transcribeUrl(\n  { url: &#39;https://static.deepgram.com/examples/Bueller-Life-moves-702702706.wav&#39; },\n  { model: &#39;nova-3&#39;, smart_format: true, diarize: true }\n);\nconsole.log(result.results.channels[0].alternatives[0].transcript);\n\n// Text-to-speech\nconst response = await deepgram.speak.request(\n  { text: &#39;Hello from Deepgram.&#39; },\n  { model: &#39;aura-2-thalia-en&#39; }\n);\n</code></pre>"
+  },
+  "juicebox-pack": {
+    "overview": "<p>> Claude Code skill pack for Juicebox PeopleGPT integration (24 skills)</p>\n<p>AI-powered people search and recruiting platform with 800M+ profiles. Build candidate sourcing pipelines with natural language search, enrichment, contact data, and ATS integration.</p>"
+  },
+  "customerio-pack": {
+    "overview": "<p>> 24 production-grade Claude Code skills for Customer.io marketing automation (email, push, SMS, in-app messaging)</p>\n<p>Build, debug, and scale Customer.io integrations with real <code>customerio-node</code> SDK code -- <code>TrackClient</code> for behavioral data, <code>APIClient</code> for transactional messages and broadcasts, webhook handling, and enterprise reliability patterns.</p>",
+    "usage": "<pre data-lang=\"typescript\"><code>\nimport { TrackClient, APIClient, SendEmailRequest, RegionUS } from &quot;customerio-node&quot;;\n\n// Track API -- identify users and track events\nconst cio = new TrackClient(siteId, trackApiKey, { region: RegionUS });\nawait cio.identify(&quot;user-123&quot;, { email: &quot;jane@example.com&quot;, plan: &quot;pro&quot; });\nawait cio.track(&quot;user-123&quot;, { name: &quot;signed_up&quot;, data: { method: &quot;google&quot; } });\n\n// App API -- send transactional messages\nconst api = new APIClient(appApiKey, { region: RegionUS });\nawait api.sendEmail(new SendEmailRequest({\n  to: &quot;jane@example.com&quot;,\n  transactional_message_id: &quot;1&quot;,\n  message_data: { name: &quot;Jane&quot; },\n  identifiers: { id: &quot;user-123&quot; },\n}));\n</code></pre>"
+  },
+  "langchain-pack": {
+    "overview": "<p>> 24 production-grade skills for building LLM applications with LangChain.js and LangChain Python. Covers LCEL chains, agents with tool calling, RAG pipelines, vector stores, LangSmith tracing, and enterprise deployment patterns.</p>\n<p><strong>Install:</strong> <code>/plugin install langchain-pack@claude-code-plugins-plus</code></p>\n<p><strong>Links:</strong> <a href=\"https://tonsofskills.com/learn/langchain/\">Tons of Skills</a> | <a href=\"https://js.langchain.com/docs/\">LangChain.js Docs</a> | <a href=\"https://python.langchain.com/docs/\">LangChain Python Docs</a> | <a href=\"https://smith.langchain.com\">LangSmith</a></p>\n<hr>"
+  },
+  "lindy-pack": {
+    "overview": "<p>> 24 enterprise-grade skills for building, integrating, and operating Lindy AI agents — the no-code AI automation platform with 7,000+ integrations.</p>"
+  },
+  "granola-pack": {
+    "overview": "<p>> Claude Code skill pack for Granola AI meeting notes — 24 skills covering installation, templates, integrations, API access, security, enterprise deployment, and migration. Built on real Granola APIs, MCP, and Zapier automation.</p>"
+  },
+  "gamma-pack": {
+    "overview": "<p>> Claude Code skill pack for Gamma.app integration — AI presentation generation (24 skills)</p>",
+    "usage": "<p>Skills trigger automatically when you discuss Gamma topics:</p>\n<ul>\n<li>\"Help me set up Gamma API\" triggers <code>gamma-install-auth</code></li>\n<li>\"Generate a presentation with Gamma\" triggers <code>gamma-core-workflow-a</code></li>\n<li>\"Debug this Gamma error\" triggers <code>gamma-common-errors</code></li>\n<li>\"Deploy my Gamma integration\" triggers <code>gamma-deploy-integration</code></li>\n<li>\"Migrate from PowerPoint to Gamma\" triggers <code>gamma-migration-deep-dive</code></li>\n</ul>"
+  },
+  "clerk-pack": {
+    "overview": "<p>> 24 production-ready Claude Code skills for Clerk authentication -- real <code>@clerk/nextjs</code> v6 API code, not templates.</p>",
+    "usage": "<p>Skills trigger automatically when you discuss Clerk topics:</p>\n<ul>\n<li>\"Help me set up Clerk\" -> <code>clerk-install-auth</code></li>\n<li>\"Fix this Clerk error\" -> <code>clerk-common-errors</code></li>\n<li>\"Deploy my Clerk app\" -> <code>clerk-deploy-integration</code></li>\n<li>\"Migrate from Auth0 to Clerk\" -> <code>clerk-migration-deep-dive</code></li>\n</ul>"
+  },
+  "linear-pack": {
+    "overview": "<p>> 24 production-grade skills for building Linear integrations with the <code>@linear/sdk</code> TypeScript SDK and GraphQL API</p>\n<p><strong>Install:</strong> <code>/plugin install linear-pack@claude-code-plugins-plus</code></p>"
+  },
+  "databricks-pack": {
+    "overview": "<p>This pack gives Claude Code deep operational knowledge of Databricks: real REST API endpoints (<code>/api/2.1/jobs/<em></code>, <code>/api/2.0/clusters/</em></code>), real Python SDK patterns (<code>databricks-sdk</code> WorkspaceClient, typed error handling), real Spark SQL (Auto Loader, MERGE INTO, OPTIMIZE, Liquid Clustering), and real deployment workflows (Declarative Automation Bundles, GitHub Actions CI/CD).</p>\n<p>Every skill contains working code, not placeholder templates.</p>",
+    "usage": "<p>Skills trigger automatically on Databricks topics:</p>\n<ul>\n<li>\"Set up Databricks auth\" -- <code>databricks-install-auth</code></li>\n<li>\"Build a Delta Lake pipeline\" -- <code>databricks-core-workflow-a</code></li>\n<li>\"Deploy my Databricks job\" -- <code>databricks-deploy-integration</code></li>\n<li>\"Optimize my Spark queries\" -- <code>databricks-performance-tuning</code></li>\n<li>\"Set up Unity Catalog permissions\" -- <code>databricks-enterprise-rbac</code></li>\n<li>\"Migrate from Snowflake\" -- <code>databricks-migration-deep-dive</code></li>\n</ul>"
+  },
+  "mistral-pack": {
+    "overview": "<p>> 24 production-ready skills for Mistral AI integration — chat completions, embeddings, function calling, agents, batch API, vision, code generation, and enterprise operations.</p>\n<p><strong>SDK:</strong> <code>@mistralai/mistralai</code> (TypeScript, ESM-only) | <code>mistralai</code> (Python)</p>\n<p><strong>API Base:</strong> <code>api.mistral.ai</code> | <strong>Console:</strong> <a href=\"https://console.mistral.ai/\">console.mistral.ai</a></p>\n<p><strong>By:</strong> <a href=\"https://tonsofskills.com\">Tons of Skills</a> / Intent Solutions</p>",
+    "usage": "<p>Skills activate automatically based on context:</p>\n<ul>\n<li>\"Set up Mistral\" activates <code>mistral-install-auth</code></li>\n<li>\"Debug this Mistral error\" activates <code>mistral-common-errors</code></li>\n<li>\"Deploy my Mistral app\" activates <code>mistral-deploy-integration</code></li>\n<li>\"Migrate from OpenAI\" activates <code>mistral-migration-deep-dive</code></li>\n<li>\"Optimize Mistral costs\" activates <code>mistral-cost-tuning</code></li>\n</ul>"
+  },
+  "langfuse-pack": {
+    "overview": "<p>> Claude Code skill pack for <a href=\"https://langfuse.com\">Langfuse</a> LLM observability -- 24 skills covering tracing, evaluation, prompt management, and production operations.</p>",
+    "usage": "<p>Skills trigger automatically when you discuss Langfuse topics:</p>\n<ul>\n<li>\"Help me set up Langfuse\" -> <code>langfuse-install-auth</code></li>\n<li>\"Add tracing to my OpenAI calls\" -> <code>langfuse-core-workflow-a</code></li>\n<li>\"Set up evaluation for my LLM app\" -> <code>langfuse-core-workflow-b</code></li>\n<li>\"Debug this Langfuse error\" -> <code>langfuse-common-errors</code></li>\n<li>\"Track LLM costs with Langfuse\" -> <code>langfuse-cost-tuning</code></li>\n<li>\"Migrate from langfuse v3 to v4\" -> <code>langfuse-upgrade-migration</code></li>\n</ul>"
+  },
+  "obsidian-pack": {
+    "overview": "<p>> 24 Claude Code skills for Obsidian plugin development — from first scaffold to community plugin submission.</p>\n<p>Every skill uses real Obsidian Plugin API: <code>Plugin</code>, <code>Vault</code>, <code>MetadataCache</code>, <code>ItemView</code>, <code>Modal</code>, <code>Editor</code>, <code>FuzzySuggestModal</code>. No stubs, no placeholders.</p>",
+    "usage": "<p>Skills trigger automatically when you discuss Obsidian topics:</p>\n<ul>\n<li>\"Help me create an Obsidian plugin\" -> <code>obsidian-core-workflow-a</code></li>\n<li>\"My plugin crashes on startup\" -> <code>obsidian-common-errors</code></li>\n<li>\"Set up CI for my Obsidian plugin\" -> <code>obsidian-ci-integration</code></li>\n<li>\"Migrate my Notion notes to Obsidian\" -> <code>obsidian-migration-deep-dive</code></li>\n<li>\"My plugin is slow on large vaults\" -> <code>obsidian-performance-tuning</code></li>\n</ul>"
+  },
+  "documenso-pack": {
+    "overview": "<p>> Claude Code skill pack for Documenso integration — open-source document signing (24 skills)</p>",
+    "usage": "<p>Skills trigger automatically when you discuss Documenso topics:</p>\n<ul>\n<li>\"Help me set up Documenso\" triggers <code>documenso-install-auth</code></li>\n<li>\"Debug this Documenso error\" triggers <code>documenso-common-errors</code></li>\n<li>\"Configure Documenso webhooks\" triggers <code>documenso-webhooks-events</code></li>\n<li>\"Deploy my Documenso integration\" triggers <code>documenso-deploy-integration</code></li>\n<li>\"Migrate from DocuSign\" triggers <code>documenso-migration-deep-dive</code></li>\n</ul>"
+  },
+  "evernote-pack": {
+    "overview": "<p>> Claude Code skill pack for Evernote Cloud API integration (24 skills)</p>",
+    "usage": "<pre data-lang=\"javascript\"><code>\nconst Evernote = require(&#39;evernote&#39;);\n\n// Initialize with developer token (sandbox)\nconst client = new Evernote.Client({\n  token: process.env.EVERNOTE_DEV_TOKEN,\n  sandbox: true,\n});\n\n// Create a note\nconst noteStore = client.getNoteStore();\nconst note = new Evernote.Types.Note();\nnote.title = &#39;Hello from Claude Code&#39;;\nnote.content = `&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;\n&lt;!DOCTYPE en-note SYSTEM &quot;http://xml.evernote.com/pub/enml2.dtd&quot;&gt;\n&lt;en-note&gt;&lt;p&gt;Created via the Evernote API!&lt;/p&gt;&lt;/en-note&gt;`;\n\nconst created = await noteStore.createNote(note);\nconsole.log(&#39;Note GUID:&#39;, created.guid);\n</code></pre>"
+  },
+  "guidewire-pack": {
+    "overview": "<p>> 24 production-ready Claude Code skills for Guidewire InsuranceSuite -- real Cloud API calls, Gosu patterns, and PolicyCenter/ClaimCenter/BillingCenter workflows.</p>"
+  },
+  "lokalise-pack": {
+    "overview": "<p>> Claude Code skill pack for Lokalise translation management — 24 skills covering the full localization lifecycle from SDK setup through production operations.</p>",
+    "usage": "<p>Skills activate automatically when you discuss Lokalise topics:</p>\n<ul>\n<li>\"Help me set up Lokalise\" activates <code>lokalise-install-auth</code></li>\n<li>\"Debug this Lokalise error\" activates <code>lokalise-common-errors</code></li>\n<li>\"Set up CI for translations\" activates <code>lokalise-ci-integration</code></li>\n<li>\"Handle Lokalise webhooks\" activates <code>lokalise-webhooks-events</code></li>\n<li>\"Optimize Lokalise costs\" activates <code>lokalise-cost-tuning</code></li>\n</ul>"
+  },
+  "maintainx-pack": {
+    "overview": "<p>> Claude Code skill pack for MaintainX CMMS integration (24 skills)</p>",
+    "usage": "<pre data-lang=\"bash\"><code>\nexport MAINTAINX_API_KEY=&quot;your-api-key&quot;\n\ncurl -X POST https://api.getmaintainx.com/v1/workorders \\\n  -H &quot;Authorization: Bearer $MAINTAINX_API_KEY&quot; \\\n  -H &quot;Content-Type: application/json&quot; \\\n  -d &#39;{&quot;title&quot;: &quot;HVAC Filter Replacement&quot;, &quot;priority&quot;: &quot;MEDIUM&quot;, &quot;status&quot;: &quot;OPEN&quot;}&#39;\n\ncurl -s &quot;https://api.getmaintainx.com/v1/workorders?status=OPEN&amp;limit=5&quot; \\\n  -H &quot;Authorization: Bearer $MAINTAINX_API_KEY&quot; | jq &#39;.workOrders[] | {id, title, status}&#39;\n</code></pre>"
+  },
+  "openevidence-pack": {
+    "overview": "<p>> Claude Code skill pack for OpenEvidence integration (24 skills)</p>\n<p>Medical AI API for clinical decision support, evidence-based queries, and DeepConsult research synthesis.</p>",
+    "usage": "<p>Skills trigger automatically when you discuss OpenEvidence topics.</p>"
+  },
+  "speak-pack": {
+    "overview": "<p>> Claude Code skill pack for Speak AI language learning platform integration (24 skills)</p>",
+    "usage": "<pre data-lang=\"typescript\"><code>\nimport { SpeakClient } from &#39;@speak/language-sdk&#39;;\n\nconst client = new SpeakClient({\n  apiKey: process.env.SPEAK_API_KEY!,\n  appId: process.env.SPEAK_APP_ID!,\n  language: &#39;es&#39;,\n});\n\n// Start conversation practice\nconst session = await client.startConversation({\n  scenario: &#39;ordering-food&#39;,\n  language: &#39;es&#39;,\n  level: &#39;intermediate&#39;,\n});\nconsole.log(&#39;Tutor:&#39;, session.firstPrompt.text);\n\n// Assess pronunciation\nconst result = await client.assessPronunciation({\n  audioPath: &#39;./recording.wav&#39;,\n  targetText: &#39;Hola, como estas?&#39;,\n  language: &#39;es&#39;,\n  detailLevel: &#39;phoneme&#39;,\n});\nconsole.log(`Score: ${result.score}/100`);\n</code></pre>"
+  },
+  "twinmind-pack": {
+    "overview": "<p>> Claude Code skill pack for TwinMind AI meeting assistant integration (24 skills)</p>",
+    "usage": "<ol>\n<li>Install Chrome extension from <a href=\"https://chromewebstore.google.com/detail/twinmind/agpbjhhcmoanaljagpoheldgjhclepdj\">Chrome Web Store</a></li>\n<li>Sign in with Google or email</li>\n<li>Join a Google Meet, Zoom, or Teams call in your browser</li>\n<li>Click TwinMind icon and \"Start Transcribing\"</li>\n<li>After the meeting: review transcript, AI summary, and action items</li>\n</ol>"
   },
   "gastown": {
     "overview": "<p>Gas Town is a multi-agent workspace manager that enables you to run multiple Claude Code agents on projects simultaneously. Think of it as a factory floor where:</p>\n<ul>\n<li><strong>Polecats</strong> (🦨) are quick task workers that spawn, complete work, and vanish</li>\n<li><strong>Crew</strong> (👷) are persistent named helpers that stick around</li>\n<li><strong>Mayor</strong> (🦊) dispatches work and coordinates across rigs</li>\n<li><strong>Witness</strong> (🦅) watches workers and nudges when stuck</li>\n<li><strong>Refinery</strong> (🦡) merges code and handles quality control</li>\n</ul>",
@@ -1467,6 +1815,220 @@
   "wondelai-web-typography": {
     "overview": "<p>Web typography framework for readable, beautiful type</p>"
   },
+  "abridge-pack": {
+    "overview": "<p>> Claude Code skills for Abridge clinical AI integration — ambient documentation, EHR integration, HIPAA-compliant workflows (18 skills)</p>\n<p>Abridge is the leading ambient AI platform for clinical documentation, used by major health systems (Northwell, WVU Medicine, Emory, UI Health). Named Best in KLAS for Ambient AI (2025, 2026). These skills cover the full integration lifecycle: EHR connectivity (Epic, Athena, Cerner), FHIR R4 note push, patient-facing summaries, and HIPAA-compliant deployment.</p>"
+  },
+  "adobe-pack": {
+    "overview": "<p>> 30 production-grade skills for Adobe Firefly Services, PDF Services, Photoshop API, Lightroom API, and I/O Events. Real OAuth Server-to-Server auth, real endpoints, real SDK patterns.</p>"
+  },
+  "alchemy-pack": {
+    "overview": "<p>> Claude Code skills for Alchemy Web3 blockchain development — NFTs, DeFi, multi-chain APIs (18 skills)</p>\n<p>Alchemy is the leading Web3 development platform, providing blockchain infrastructure across Ethereum, Polygon, Arbitrum, Optimism, Base, and Solana. These skills use the real <code>alchemy-sdk</code> npm package with actual API methods: <code>getBalance</code>, <code>getTokenBalances</code>, <code>getNftsForOwner</code>, <code>getAssetTransfers</code>, Notify webhooks, and more.</p>"
+  },
+  "algolia-pack": {
+    "overview": "<p>> 24 production-ready Claude Code skills for Algolia search — real <code>algoliasearch</code> v5 API code, not templates.</p>",
+    "usage": "<p>Skills trigger automatically when you discuss Algolia topics:</p>\n<ul>\n<li>\"Help me set up Algolia\" -> <code>algolia-install-auth</code></li>\n<li>\"Search not returning results\" -> <code>algolia-common-errors</code></li>\n<li>\"Migrate from Elasticsearch\" -> <code>algolia-migration-deep-dive</code></li>\n<li>\"Optimize Algolia costs\" -> <code>algolia-cost-tuning</code></li>\n</ul>"
+  },
+  "anima-pack": {
+    "overview": "<p>> Claude Code skills for Anima design-to-code automation — Figma to React/Vue/HTML with Tailwind, MUI, shadcn (18 skills)</p>\n<p>Anima converts Figma designs into production-ready code using AI-powered code generation. These skills use the real <code>@animaapp/anima-sdk</code> npm package with the <code>generateCode</code> API supporting React, Vue, HTML, TypeScript, Tailwind, MUI, AntD, and shadcn output.</p>"
+  },
+  "anthropic-pack": {
+    "overview": "<p>> Claude Code skill pack for Anthropic Claude API integration (30 skills)</p>\n<p>Build production Claude API integrations with the Messages API, tool use, streaming, Message Batches, prompt caching, and multi-model routing. Real code examples using the official Python (<code>anthropic</code>) and TypeScript (<code>@anthropic-ai/sdk</code>) SDKs.</p>"
+  },
+  "apify-pack": {
+    "overview": "<p>> 18 production-grade skills for web scraping, Actor development, and data extraction with the Apify platform</p>\n<p><strong>What it does:</strong> Gives Claude Code deep knowledge of Apify's entire ecosystem — the <code>apify-client</code> JS library, the <code>apify</code> Actor SDK, Crawlee crawlers (Cheerio, Playwright, Puppeteer), the Apify CLI, platform storage (datasets, key-value stores, request queues), webhooks, proxy management, and deployment workflows.</p>\n<p><strong>Who it's for:</strong> Developers building web scrapers, data pipelines, and automation on Apify's cloud platform.</p>",
+    "usage": "<p>Skills trigger automatically when you discuss Apify topics:</p>\n<ul>\n<li>\"Help me scrape a website with Apify\" triggers <code>apify-core-workflow-a</code></li>\n<li>\"My Actor run failed\" triggers <code>apify-common-errors</code></li>\n<li>\"Optimize my Apify costs\" triggers <code>apify-cost-tuning</code></li>\n<li>\"Set up webhooks for Actor runs\" triggers <code>apify-webhooks-events</code></li>\n</ul>"
+  },
+  "appfolio-pack": {
+    "overview": "<p>> Claude Code skills for AppFolio Property Manager API integration — properties, tenants, leases, accounting (18 skills)</p>\n<p>AppFolio is a cloud-based property management platform. These skills use the real AppFolio Stack REST API with Basic Auth, covering properties, tenants, units, leases, bills, vendors, and owners endpoints. No npm SDK exists -- all code uses direct REST calls via axios.</p>"
+  },
+  "apple-notes-pack": {
+    "overview": "<p>> Claude Code skills for Apple Notes automation — JXA, AppleScript, Shortcuts, osascript (24 skills)</p>\n<p>Apple Notes has no REST API. These skills use real macOS scripting technologies: JavaScript for Automation (JXA), AppleScript, osascript command-line tool, and Apple Shortcuts. All code examples are runnable on macOS via <code>osascript -l JavaScript</code>.</p>"
+  },
+  "assemblyai-pack": {
+    "overview": "<p>> Claude Code skill pack for AssemblyAI speech-to-text, LeMUR, and streaming transcription (18 skills)</p>\n<p><strong>What it does:</strong> Gives Claude Code deep knowledge of the AssemblyAI API — async transcription with audio intelligence (speaker diarization, sentiment, entities, PII redaction), real-time streaming via WebSocket, and LeMUR for LLM-powered audio analysis (summarization, Q&A, action items). Every skill uses the real <code>assemblyai</code> npm package with real SDK methods.</p>\n<p><strong>Links:</strong> <a href=\"https://www.assemblyai.com/docs\">AssemblyAI Docs</a> | <a href=\"https://github.com/AssemblyAI/assemblyai-node-sdk\">Node SDK</a> | <a href=\"https://www.assemblyai.com/docs/api-reference/overview\">API Reference</a> | <a href=\"https://www.assemblyai.com/pricing\">Pricing</a></p>"
+  },
+  "attio-pack": {
+    "overview": "<p>> 18 production-grade Claude Code skills for the Attio CRM REST API — real endpoints, real data models, real error codes.</p>\n<p>Build Attio integrations with <code>https://api.attio.com/v2</code> using typed TypeScript patterns, from first API call through production deployment. Every skill uses actual Attio endpoints, the real object/record/list data model, real attribute types, and actual error response formats.</p>",
+    "usage": "<p>Skills trigger automatically when you discuss Attio topics:</p>\n<ul>\n<li>\"Set up Attio API auth\" triggers <code>attio-install-auth</code></li>\n<li>\"Create an Attio person record\" triggers <code>attio-core-workflow-a</code></li>\n<li>\"Add a record to a pipeline list\" triggers <code>attio-core-workflow-b</code></li>\n<li>\"Fix this Attio 429 error\" triggers <code>attio-rate-limits</code></li>\n<li>\"Deploy my Attio webhook handler\" triggers <code>attio-deploy-integration</code></li>\n</ul>"
+  },
+  "bamboohr-pack": {
+    "overview": "<p>> 18 Claude Code skills for building production BambooHR API integrations — employee management, time off, webhooks, and HR data pipelines.</p>\n<p>Build real BambooHR integrations with real API endpoints (<code>api.bamboohr.com/api/gateway.php/{company}/v1/</code>), real employee fields, real webhook HMAC verification, and real error handling. Every skill uses the actual BambooHR REST API — no fake SDKs or placeholder code.</p>",
+    "usage": "<pre data-lang=\"bash\"><code>\nexport BAMBOOHR_API_KEY=&quot;your-key&quot;\nexport BAMBOOHR_COMPANY_DOMAIN=&quot;yourcompany&quot;\n\ncurl -s -u &quot;${BAMBOOHR_API_KEY}:x&quot; \\\n  &quot;https://api.bamboohr.com/api/gateway.php/${BAMBOOHR_COMPANY_DOMAIN}/v1/employees/directory&quot; \\\n  -H &quot;Accept: application/json&quot; | head -c 200\n</code></pre>\n<p>Then ask Claude: \"Help me sync BambooHR employees to my database\" and the relevant skills activate automatically.</p>"
+  },
+  "brightdata-pack": {
+    "overview": "<p>Gives Claude Code deep knowledge of Bright Data's proxy infrastructure, Scraping Browser, SERP API, Web Scraper API, and Datasets API. Every skill contains real proxy configuration code using <code>brd.superproxy.io</code>, actual API endpoints, and production-tested patterns — no fake SDK imports.</p>"
+  },
+  "canva-pack": {
+    "overview": "<p>Gives Claude Code deep knowledge of the Canva Connect API at <code>api.canva.com/rest/v1/*</code> — real endpoints, real OAuth flows, real rate limits, real error codes. Every skill uses actual API calls with <code>fetch</code>, not a fictitious SDK.</p>",
+    "usage": "<p>Skills trigger automatically when you discuss Canva topics:</p>\n<ul>\n<li>\"Help me set up Canva OAuth\" triggers <code>canva-install-auth</code></li>\n<li>\"Export this design as PDF\" triggers <code>canva-core-workflow-a</code></li>\n<li>\"Autofill a brand template\" triggers <code>canva-core-workflow-b</code></li>\n<li>\"Debug this Canva 429 error\" triggers <code>canva-rate-limits</code></li>\n<li>\"Deploy my Canva integration\" triggers <code>canva-deploy-integration</code></li>\n</ul>"
+  },
+  "castai-pack": {
+    "overview": "<p>> 18 production-grade Claude Code skills for Kubernetes cost optimization with CAST AI</p>",
+    "usage": "<h3>1. Install the Pack</h3>\n<pre data-lang=\"bash\"><code>\n/plugin install castai-pack@claude-code-plugins-plus\n</code></pre>\n<h3>2. Get Your API Key</h3>\n<p>Sign up at <a href=\"https://console.cast.ai\">console.cast.ai</a>, navigate to <strong>API > API Access Keys</strong>, and create a Full Access key.</p>\n<h3>3. Connect Your First Cluster</h3>\n<pre data-lang=\"bash\"><code>\nexport CASTAI_API_KEY=&quot;your-key&quot;\n\nhelm repo add castai-helm https://castai.github.io/helm-charts\nhelm repo update\n\nhelm upgrade --install castai-agent castai-helm/castai-agent \\\n  -n castai-agent --create-namespace \\\n  --set apiKey=&quot;${CASTAI_API_KEY}&quot; \\\n  --set provider=&quot;eks&quot;\n</code></pre>\n<h3>4. Check Your Savings</h3>\n<pre data-lang=\"bash\"><code>\nexport CASTAI_CLUSTER_ID=&quot;your-cluster-id&quot;\n\ncurl -s -H &quot;X-API-Key: ${CASTAI_API_KEY}&quot; \\\n  &quot;https://api.cast.ai/v1/kubernetes/clusters/${CASTAI_CLUSTER_ID}/savings&quot; \\\n  | jq &#39;{monthly: .monthlySavings, percent: .savingsPercentage}&#39;\n</code></pre>\n<h3>5. Enable Autoscaling</h3>\n<p>Follow <code>castai-core-workflow-a</code> to configure autoscaler policies and start saving.</p>"
+  },
+  "clari-pack": {
+    "overview": "<p>> 18 production-grade Claude Code skills for revenue intelligence and forecast data pipelines with Clari</p>",
+    "usage": "<h3>1. Install the Pack</h3>\n<pre data-lang=\"bash\"><code>\n/plugin install clari-pack@claude-code-plugins-plus\n</code></pre>\n<h3>2. Get Your API Token</h3>\n<p>Log in to <a href=\"https://app.clari.com\">app.clari.com</a>, go to <strong>User Settings > API Token</strong>, and click <strong>Generate New API Token</strong>.</p>\n<h3>3. Export Your First Forecast</h3>\n<pre data-lang=\"python\"><code>\nimport requests, os\n\napi_key = os.environ[&quot;CLARI_API_KEY&quot;]\nheaders = {&quot;apikey&quot;: api_key, &quot;Content-Type&quot;: &quot;text/plain&quot;}\n\nforecasts = requests.get(\n    &quot;https://api.clari.com/v4/export/forecast/list&quot;,\n    headers=headers\n).json()\n\nprint(f&quot;Found {len(forecasts[&#39;forecasts&#39;])} forecasts&quot;)\n</code></pre>\n<h3>4. Build Your Pipeline</h3>\n<p>Follow <code>clari-core-workflow-a</code> to build a complete export-transform-load pipeline.</p>"
+  },
+  "clickhouse-pack": {
+    "overview": "<p>> 24 skills for building, operating, and scaling ClickHouse-powered analytics — real <code>@clickhouse/client</code> code, real SQL, real MergeTree engines.</p>\n<p>Every skill uses the <strong>official ClickHouse Node.js client</strong> (<code>@clickhouse/client</code> with <code>createClient</code>), actual ClickHouse SQL syntax (MergeTree, ReplacingMergeTree, AggregatingMergeTree), real system tables (<code>system.parts</code>, <code>system.query_log</code>, <code>system.merges</code>), and production patterns (parameterized queries, streaming inserts, materialized views).</p>\n<p><strong>Links:</strong> <a href=\"https://tonsofskills.com\">tonsofskills.com</a> | <a href=\"https://clickhouse.com/docs\">ClickHouse Docs</a> | <a href=\"https://github.com/ClickHouse/clickhouse-js\">@clickhouse/client</a></p>\n<hr>"
+  },
+  "clickup-pack": {
+    "overview": "<p>> 24 production-ready Claude Code skills for ClickUp API v2 integration — from first API call to enterprise multi-workspace apps.</p>\n<p>Build, test, deploy, and operate ClickUp integrations using real API v2 endpoints (<code>https://api.clickup.com/api/v2/</code>), real response shapes, and real error codes. No fake SDKs, no placeholder code.</p>\n<p><strong>Links:</strong> <a href=\"https://developer.clickup.com/\">ClickUp API Docs</a> | <a href=\"https://status.clickup.com\">ClickUp Status</a> | <a href=\"https://tonsofskills.com\">Tons of Skills</a></p>\n<hr>"
+  },
+  "cohere-pack": {
+    "overview": "<p>> 24 production-ready Claude Code skills for Cohere API v2 — Chat, Embed, Rerank, Classify, RAG, and tool-use agents.</p>",
+    "usage": "<p>Skills trigger automatically when you discuss Cohere topics:</p>\n<ul>\n<li>\"Set up Cohere in my project\" -> <code>cohere-install-auth</code></li>\n<li>\"Build a RAG pipeline with Cohere\" -> <code>cohere-core-workflow-a</code></li>\n<li>\"Create a Cohere agent with tools\" -> <code>cohere-core-workflow-b</code></li>\n<li>\"Fix this Cohere error\" -> <code>cohere-common-errors</code></li>\n<li>\"Migrate from OpenAI to Cohere\" -> <code>cohere-migration-deep-dive</code></li>\n</ul>"
+  },
+  "coreweave-pack": {
+    "overview": "<p>> 24 production-grade Claude Code skills for GPU cloud computing with CoreWeave Kubernetes Service</p>",
+    "usage": "<h3>1. Install the Pack</h3>\n<pre data-lang=\"bash\"><code>\n/plugin install coreweave-pack@claude-code-plugins-plus\n</code></pre>\n<h3>2. Configure kubectl</h3>\n<p>Download your kubeconfig from <a href=\"https://cloud.coreweave.com\">cloud.coreweave.com</a> and set it up:</p>\n<pre data-lang=\"bash\"><code>\nexport KUBECONFIG=~/.kube/coreweave\nkubectl get nodes\n</code></pre>\n<h3>3. Deploy Your First GPU Workload</h3>\n<pre data-lang=\"bash\"><code>\nkubectl run gpu-test --image=nvidia/cuda:12.2.0-base-ubuntu22.04 \\\n  --restart=Never \\\n  --overrides=&#39;{&quot;spec&quot;:{&quot;containers&quot;:[{&quot;name&quot;:&quot;gpu-test&quot;,&quot;image&quot;:&quot;nvidia/cuda:12.2.0-base-ubuntu22.04&quot;,&quot;command&quot;:[&quot;nvidia-smi&quot;],&quot;resources&quot;:{&quot;limits&quot;:{&quot;nvidia.com/gpu&quot;:&quot;1&quot;}}}]}}&#39; \\\n  -- nvidia-smi\n\nkubectl logs gpu-test\nkubectl delete pod gpu-test\n</code></pre>\n<h3>4. Deploy an Inference Service</h3>\n<p>Follow <code>coreweave-core-workflow-a</code> to deploy a KServe InferenceService with autoscaling.</p>"
+  },
+  "elevenlabs-pack": {
+    "overview": "<p>> 18 Claude Code skills for ElevenLabs text-to-speech, voice cloning, speech-to-speech, sound effects, audio isolation, and real-time WebSocket streaming.</p>\n<p><strong>Install:</strong></p>\n<pre data-lang=\"bash\"><code>\n/plugin install elevenlabs-pack@claude-code-plugins-plus\n</code></pre>"
+  },
+  "fathom-pack": {
+    "overview": "<p>> 18 production-grade Claude Code skills for AI meeting intelligence with Fathom</p>",
+    "usage": "<h3>1. Install the Pack</h3>\n<pre data-lang=\"bash\"><code>\n/plugin install fathom-pack@claude-code-plugins-plus\n</code></pre>\n<h3>2. Get Your API Key</h3>\n<p>Go to <a href=\"https://fathom.video\">fathom.video</a> > <strong>Settings</strong> > <strong>Integrations</strong> > <strong>API Access</strong> and generate a key.</p>\n<h3>3. Fetch Your First Meeting</h3>\n<pre data-lang=\"bash\"><code>\nexport FATHOM_API_KEY=&quot;your-key&quot;\n\ncurl -s -H &quot;X-Api-Key: ${FATHOM_API_KEY}&quot; \\\n  &quot;https://api.fathom.ai/external/v1/meetings?limit=1&amp;include_summary=true&quot; \\\n  | jq &#39;.meetings[0] | {title, summary, action_items}&#39;\n</code></pre>\n<h3>4. Set Up Webhooks</h3>\n<p>Follow <code>fathom-webhooks-events</code> to receive real-time meeting data automatically.</p>"
+  },
+  "figma-pack": {
+    "overview": "<p>> 30 production-grade Claude Code skills for the Figma REST API and Plugin API</p>\n<p>Build design-to-code pipelines, extract design tokens, export assets, handle webhooks, and manage Enterprise features -- all with real Figma API endpoints, actual response shapes, and working TypeScript code.</p>",
+    "usage": "<pre data-lang=\"bash\"><code>\n/plugin install figma-pack@claude-code-plugins-plus\n\nexport FIGMA_PAT=&quot;figd_your-personal-access-token&quot;\nexport FIGMA_FILE_KEY=&quot;your-file-key-from-figma-url&quot;\n\n&quot;Help me extract design tokens from my Figma file&quot;\n&quot;Export all icons from my Figma components as SVG&quot;\n&quot;Set up a webhook to sync tokens when my Figma file changes&quot;\n</code></pre>"
+  },
+  "finta-pack": {
+    "overview": "<p>> 18 production-grade Claude Code skills for startup fundraising with Finta CRM</p>",
+    "usage": "<h3>1. Install the Pack</h3>\n<pre data-lang=\"bash\"><code>\n/plugin install finta-pack@claude-code-plugins-plus\n</code></pre>\n<h3>2. Create Your Finta Account</h3>\n<p>Sign up at <a href=\"https://www.trustfinta.com\">trustfinta.com</a> and complete the onboarding wizard with your company details and fundraise parameters.</p>\n<h3>3. Connect Email and Calendar</h3>\n<p>Go to <strong>Settings</strong> > <strong>Integrations</strong> and connect Gmail/Outlook for automatic investor communication tracking.</p>\n<h3>4. Build Your Pipeline</h3>\n<p>Import your investor list via CSV or use Aurora AI to discover relevant investors. Follow <code>finta-core-workflow-a</code> for the complete fundraise playbook.</p>"
+  },
+  "flexport-pack": {
+    "overview": "<p>> 24 production-ready Claude Code skills for Flexport supply chain and logistics API -- real REST API v2 code with actual endpoints, not templates.</p>"
+  },
+  "flyio-pack": {
+    "overview": "<p>> 18 production-ready Claude Code skills for Fly.io edge compute -- real flyctl commands, Machines API code, and fly.toml configuration.</p>"
+  },
+  "fondo-pack": {
+    "overview": "<p>> 18 production-ready Claude Code skills for Fondo startup bookkeeping, R&D tax credits, and financial operations -- real workflows with actual provider integrations.</p>"
+  },
+  "framer-pack": {
+    "overview": "<p>Gives Claude Code deep knowledge of Framer's Plugin SDK, Server API, CMS Managed Collections, Code Components, and Code Overrides. Every skill uses real <code>framer-plugin</code> and <code>framer-api</code> APIs with actual React + Framer Motion code.</p>"
+  },
+  "glean-pack": {
+    "overview": "<p>> 24 production-ready Claude Code skills for Glean enterprise search -- real Indexing API and Client API code with actual endpoints.</p>"
+  },
+  "grammarly-pack": {
+    "overview": "<p>Gives Claude Code deep knowledge of Grammarly's Writing Score API, AI Detection API, and Plagiarism Detection API. Skills cover OAuth 2.0 client credentials auth, document scoring with quality gates, AI content detection, plagiarism checking, and enterprise multi-team governance.</p>"
+  },
+  "hex-pack": {
+    "overview": "<p>Gives Claude Code deep knowledge of Hex's public API for triggering notebook project runs, polling status, managing users, and building data pipelines. Skills cover API token authentication, project orchestration with Airflow/Dagster, scheduled runs, and the Admin API for workspace management.</p>"
+  },
+  "hootsuite-pack": {
+    "overview": "<p>Gives Claude Code deep knowledge of Hootsuite's REST API v1 for social media publishing, analytics, and management. Skills cover OAuth 2.0 authentication, message scheduling with media upload, URL shortening with Ow.ly, and cross-platform post management.</p>"
+  },
+  "hubspot-pack": {
+    "overview": "<p>> Claude Code skill pack for HubSpot CRM integration -- 30 skills covering the CRM v3 API, marketing automation, sales pipelines, and production operations.</p>",
+    "usage": "<p>Skills trigger automatically when you discuss HubSpot topics:</p>\n<ul>\n<li>\"Help me set up HubSpot\" triggers <code>hubspot-install-auth</code></li>\n<li>\"Create a contact in HubSpot\" triggers <code>hubspot-hello-world</code></li>\n<li>\"I'm getting a 429 error from HubSpot\" triggers <code>hubspot-rate-limits</code></li>\n<li>\"Deploy my HubSpot integration\" triggers <code>hubspot-deploy-integration</code></li>\n</ul>"
+  },
+  "intercom-pack": {
+    "overview": "<p>> 24 Claude Code skills for building production Intercom integrations with the <code>intercom-client</code> TypeScript SDK</p>"
+  },
+  "klaviyo-pack": {
+    "overview": "<p>> 24 production-grade Claude Code skills for Klaviyo email marketing, CDP, and customer engagement API integration.</p>\n<p>Real <code>klaviyo-api</code> SDK code. Real <code>a.klaviyo.com/api/*</code> endpoints. Real <code>ApiKeySession</code> + <code>ProfilesApi</code> / <code>EventsApi</code> / <code>ListsApi</code> patterns. Covers profiles, events, lists, segments, campaigns, flows, webhooks, GDPR deletion, and the full operational stack from install to incident response.</p>\n<p><strong>Links:</strong> <a href=\"https://developers.klaviyo.com/en/reference/api_overview\">Klaviyo API Reference</a> | <a href=\"https://www.npmjs.com/package/klaviyo-api\">klaviyo-api npm</a> | <a href=\"https://tonsofskills.com\">Tons of Skills</a></p>\n<hr>"
+  },
+  "linktree-pack": {
+    "overview": "<p>> Claude Code skill pack for Linktree integration (18 skills)</p>\n<p>Link-in-bio platform API integration for profile and link management across 25M+ creators.</p>",
+    "usage": "<p>Skills trigger automatically when you discuss Linktree topics.</p>"
+  },
+  "lucidchart-pack": {
+    "overview": "<p>> Claude Code skill pack for Lucidchart integration (18 skills)</p>\n<p>Lucid REST API for programmatic diagram creation, data-linked visualizations, and document management.</p>",
+    "usage": "<p>Skills trigger automatically when you discuss Lucidchart topics.</p>"
+  },
+  "mindtickle-pack": {
+    "overview": "<p>> Claude Code skill pack for MindTickle integration (18 skills)</p>\n<p>Sales readiness platform API for training content management, rep performance analytics, and coaching.</p>",
+    "usage": "<p>Skills trigger automatically when you discuss MindTickle topics.</p>"
+  },
+  "miro-pack": {
+    "overview": "<p>> 24 Claude Code skills for building integrations with the Miro REST API v2 — real endpoints, real item types, real OAuth flows.</p>\n<p>Every skill targets <code>https://api.miro.com/v2/</code> with actual Miro concepts: boards, sticky notes, shapes, cards, frames, connectors, tags, app cards, webhooks, SCIM provisioning, and the credit-based rate limiting system.</p>"
+  },
+  "navan-pack": {
+    "overview": "<p>> Claude Code skill pack for Navan integration (24 skills)</p>\n<p>Corporate travel and expense management API for flight booking, expense reporting, and spend analytics.</p>",
+    "usage": "<p>Skills trigger automatically when you discuss Navan topics.</p>"
+  },
+  "notion-pack": {
+    "overview": "<p>> 30 production-ready skills for building Notion API integrations with <code>@notionhq/client</code></p>\n<p>Real API code. Real filter syntax. Real error handling. No placeholders.</p>"
+  },
+  "onenote-pack": {
+    "overview": "<p>> Claude Code skill pack for OneNote integration (18 skills)</p>\n<p>Microsoft Graph OneNote API for notebook, section, and page management with HTML content.</p>",
+    "usage": "<p>Skills trigger automatically when you discuss OneNote topics.</p>"
+  },
+  "oraclecloud-pack": {
+    "overview": "<p>> Claude Code skill pack for Oracle Cloud integration (24 skills)</p>\n<p>Oracle Cloud Infrastructure (OCI) SDK for compute instances, object storage, networking, and IAM.</p>",
+    "usage": "<p>Skills trigger automatically when you discuss Oracle Cloud topics.</p>"
+  },
+  "palantir-pack": {
+    "overview": "<p>> Claude Code skill pack for Palantir Foundry — Ontology SDK, data pipelines, transforms, and enterprise data integration (24 skills)</p>",
+    "usage": "<p>Skills trigger automatically when you discuss Palantir Foundry topics:</p>\n<ul>\n<li>\"Set up Palantir SDK\" -- triggers <code>palantir-install-auth</code></li>\n<li>\"Query Ontology objects\" -- triggers <code>palantir-core-workflow-b</code></li>\n<li>\"Build a data pipeline\" -- triggers <code>palantir-core-workflow-a</code></li>\n<li>\"Fix Foundry 403 error\" -- triggers <code>palantir-common-errors</code></li>\n<li>\"Deploy Foundry integration\" -- triggers <code>palantir-deploy-integration</code></li>\n</ul>"
+  },
+  "persona-pack": {
+    "overview": "<p>> Claude Code skill pack for Persona identity verification — KYC, inquiry flows, government ID verification, and webhook-driven verification pipelines (18 skills)</p>",
+    "usage": "<ul>\n<li>\"Set up Persona verification\" -- triggers <code>persona-install-auth</code></li>\n<li>\"Create KYC inquiry\" -- triggers <code>persona-core-workflow-a</code></li>\n<li>\"Handle Persona webhook\" -- triggers <code>persona-webhooks-events</code></li>\n</ul>"
+  },
+  "podium-pack": {
+    "overview": "<p>> Claude Code skill pack for Podium — business messaging, reviews management, payments, and webchat API integration (18 skills)</p>",
+    "usage": "<ul>\n<li>\"Set up Podium API\" -- triggers <code>podium-install-auth</code></li>\n<li>\"Send a Podium message\" -- triggers <code>podium-core-workflow-a</code></li>\n<li>\"Handle Podium webhook\" -- triggers <code>podium-webhooks-events</code></li>\n</ul>"
+  },
+  "procore-pack": {
+    "overview": "<p>> Claude Code skill pack for Procore — construction management, projects, RFIs, submittals, and project management API (24 skills)</p>"
+  },
+  "quicknode-pack": {
+    "overview": "<p>> Claude Code skill pack for QuickNode — blockchain RPC, multi-chain APIs, Streams, and Web3 infrastructure (18 skills)</p>"
+  },
+  "ramp-pack": {
+    "overview": "<p>> Claude Code skill pack for Ramp — corporate card management, expense tracking, accounting integration, and spend management API (24 skills)</p>"
+  },
+  "remofirst-pack": {
+    "overview": "<p>> Claude Code skill pack for RemoFirst — global HR, Employer of Record (EOR), payroll, and compliance management (12 skills)</p>"
+  },
+  "runway-pack": {
+    "overview": "<p>> Claude Code skill pack for Runway — AI video generation, Gen-3 Alpha, image-to-video, text-to-video, and creative AI API (18 skills)</p>"
+  },
+  "salesforce-pack": {
+    "overview": "<p>> 30 production-grade Claude Code skills for Salesforce CRM integration — jsforce, SOQL, Bulk API 2.0, Change Data Capture, and Apex development patterns.</p>",
+    "usage": "<p>Skills trigger automatically when you discuss Salesforce topics:</p>\n<ul>\n<li>\"Query Salesforce accounts\" triggers <code>salesforce-core-workflow-a</code></li>\n<li>\"Set up Salesforce authentication\" triggers <code>salesforce-install-auth</code></li>\n<li>\"Bulk import contacts to Salesforce\" triggers <code>salesforce-core-workflow-b</code></li>\n<li>\"Debug Salesforce API limit error\" triggers <code>salesforce-common-errors</code></li>\n<li>\"Set up Salesforce Change Data Capture\" triggers <code>salesforce-webhooks-events</code></li>\n</ul>"
+  },
+  "salesloft-pack": {
+    "overview": "<p>> 18 production-ready Claude Code skills for SalesLoft -- real REST API v2 code with OAuth, cadences, people, and activity tracking.</p>"
+  },
+  "serpapi-pack": {
+    "overview": "<p>> 18 production-ready Claude Code skills for SerpApi -- real search scraping code for Google, Bing, YouTube, News, Shopping, and Maps.</p>"
+  },
+  "shopify-pack": {
+    "overview": "<p>> 38 production-grade Claude Code skills for building Shopify apps, integrations, and headless storefronts</p>",
+    "usage": "<h3>1. Install the Pack</h3>\n<pre data-lang=\"bash\"><code>\n/plugin install shopify-pack@claude-code-plugins-plus\n</code></pre>\n<h3>2. Create a Development Store</h3>\n<p>Go to <a href=\"https://partners.shopify.com\">partners.shopify.com</a> and create a free development store for testing.</p>\n<h3>3. Set Up Your First App</h3>\n<pre data-lang=\"bash\"><code>\nnpm install -g @shopify/cli\nshopify app init --template remix\ncd my-shopify-app\nshopify app dev\n</code></pre>\n<p>Or set up a standalone integration:</p>\n<pre data-lang=\"bash\"><code>\nmkdir shopify-app &amp;&amp; cd shopify-app\nnpm init -y\nnpm install @shopify/shopify-api dotenv\n</code></pre>\n<h3>4. Make Your First API Call</h3>\n<pre data-lang=\"typescript\"><code>\nimport &quot;@shopify/shopify-api/adapters/node&quot;;\nimport { shopifyApi, LATEST_API_VERSION } from &quot;@shopify/shopify-api&quot;;\n\nconst shopify = shopifyApi({\n  apiKey: process.env.SHOPIFY_API_KEY!,\n  apiSecretKey: process.env.SHOPIFY_API_SECRET!,\n  hostName: &quot;localhost&quot;,\n  apiVersion: LATEST_API_VERSION,\n  isCustomStoreApp: true,\n  adminApiAccessToken: process.env.SHOPIFY_ACCESS_TOKEN!,\n});\n\nconst session = shopify.session.customAppSession(&quot;your-store.myshopify.com&quot;);\nconst client = new shopify.clients.Graphql({ session });\n\nconst response = await client.request(`{\n  shop { name }\n  products(first: 5) {\n    edges { node { id title status } }\n  }\n}`);\n\nconsole.log(&quot;Store:&quot;, response.data.shop.name);\n</code></pre>\n<h3>5. Go to Production</h3>\n<p>Follow <code>shopify-prod-checklist</code> for the complete launch checklist including GDPR webhooks, security review, and App Store submission requirements.</p>"
+  },
+  "snowflake-pack": {
+    "overview": "<p>> 30 production-grade Claude Code skills for Snowflake data platform development — real <code>snowflake-sdk</code>, <code>snowflake-connector-python</code>, and Snowflake SQL patterns.</p>"
+  },
+  "stackblitz-pack": {
+    "overview": "<p>> 18 production-ready Claude Code skills for StackBlitz WebContainers -- real browser-based Node.js runtime code.</p>"
+  },
+  "techsmith-pack": {
+    "overview": "<p>> 18 production-ready Claude Code skills for TechSmith -- real Snagit COM API and Camtasia batch production code.</p>"
+  },
+  "together-pack": {
+    "overview": "<p>> 18 production-ready Claude Code skills for Together AI -- real OpenAI-compatible inference, fine-tuning, and model deployment code.</p>"
+  },
+  "veeva-pack": {
+    "overview": "<p>> 24 production-ready Claude Code skills for Veeva Vault -- real REST API, VQL queries, and VAPIL SDK code for life sciences.</p>"
+  },
+  "webflow-pack": {
+    "overview": "<p>> 24 Claude Code skills for the Webflow Data API v2 — CMS content management, ecommerce, forms, webhooks, and site operations via the <code>webflow-api</code> SDK.</p>\n<p>Production-ready patterns for building Webflow integrations. Every skill uses real v2 endpoints (<code>api.webflow.com/v2/*</code>), real SDK methods (<code>webflow-api</code> npm package, <code>WebflowClient</code> class), real OAuth 2.0 scopes, and real rate limit handling.</p>\n<p><strong>Links:</strong> <a href=\"https://www.npmjs.com/package/webflow-api\">npm: webflow-api</a> | <a href=\"https://developers.webflow.com\">Webflow Developer Docs</a> | <a href=\"https://developers.webflow.com/data/reference/rest-introduction\">API Reference</a> | <a href=\"https://github.com/webflow/js-webflow-api\">SDK GitHub</a></p>\n<hr>",
+    "usage": "<pre data-lang=\"typescript\"><code>\nimport { WebflowClient } from &quot;webflow-api&quot;;\n\nconst webflow = new WebflowClient({\n  accessToken: process.env.WEBFLOW_API_TOKEN!,\n});\n\n// List sites\nconst { sites } = await webflow.sites.list();\n\n// List CMS collections\nconst { collections } = await webflow.collections.list(sites![0].id!);\n\n// Create a CMS item\nawait webflow.collections.items.createItem(collections![0].id!, {\n  fieldData: { name: &quot;Hello API&quot;, slug: &quot;hello-api&quot; },\n  isDraft: false,\n});\n\n// Bulk create up to 100 items\nawait webflow.collections.items.createItemsBulk(collections![0].id!, {\n  items: [{ fieldData: { name: &quot;Item 1&quot;, slug: &quot;item-1&quot; } }],\n});\n</code></pre>"
+  },
+  "wispr-pack": {
+    "overview": "<p>> 18 production-ready Claude Code skills for Wispr Flow -- real voice-to-text API code with WebSocket streaming and REST transcription.</p>"
+  },
+  "workhuman-pack": {
+    "overview": "<p>> 18 production-ready Claude Code skills for Workhuman -- real Social Recognition API code for nominations, rewards, and HRIS integration.</p>"
+  },
   "pm-ai-partner": {
     "overview": "<p>Structured thinking partner for Product Managers. 12 agent skills, 6 workflow commands, 3 automation hooks.</p>"
   },
@@ -1480,6 +2042,20 @@
   "box-cloud-filesystem": {
     "overview": "<p>Transparent cloud filesystem for AI agents using the official <a href=\"https://www.box.com/\">Box</a> CLI (<code>@box/cli</code>). Upload, download, search, share, and sync files to Box cloud storage with operational safety guardrails. Works with any Box account — personal, business, or enterprise.</p>\n<p><strong>Compatible with:</strong> Claude Code, Codex, Perplexity Computer, OpenClaw, and any agent platform that supports skills or system prompts.</p>",
     "usage": "<p><strong>Transparent mode</strong> — initialize a workspace, then work normally:</p>\n<pre data-lang=\"bash\"><code>\n./scripts/box-init-workspace.sh 123456789 /tmp/box-workspace\n\n</code></pre>\n<p><strong>Explicit mode</strong> — use Box CLI directly with the skill's guidance:</p>\n<pre data-lang=\"bash\"><code>\nbox search &quot;quarterly report&quot; --json           # Find files\nbox files:download FILE_ID --destination ./     # Download\nbox files:upload ./report.md --parent-id 123    # Upload new\nbox files:versions:upload FILE_ID ./report.md   # Update existing (preserves history)\nbox files:share FILE_ID --access collaborators  # Share (never defaults to public)\n</code></pre>"
+  },
+  "pr-to-spec": {
+    "overview": "<pre><code>\ndeclare intent → make changes → pr-to-spec check → agent sees clean/drift/high-risk\n</code></pre>\n<ol>\n<li><strong>Declare intent</strong>: Tell <code>pr-to-spec</code> what you're building, what scope is allowed, and your risk ceiling</li>\n<li><strong>Make changes</strong>: Work normally in your branch</li>\n<li><strong>Check drift</strong>: <code>pr-to-spec check --json</code> produces a structured spec + drift signals</li>\n<li><strong>Agent consumes</strong>: Any agent reads the envelope and acts accordingly</li>\n</ol>\n<hr>",
+    "usage": "<h3>Local Diff (no GitHub needed)</h3>\n<pre data-lang=\"bash\"><code>\npr-to-spec scan --branch main --json\n\npr-to-spec scan --staged --json\n\npr-to-spec scan --diff 3 --json\n</code></pre>\n<h3>Intent + Drift Detection</h3>\n<pre data-lang=\"bash\"><code>\npr-to-spec intent set \\\n  --goal &quot;Add rate limiting to API&quot; \\\n  --scope &quot;src/middleware/**&quot; \\\n  --forbid &quot;src/db/**&quot; \\\n  --max-risk medium \\\n  --type feature\n\npr-to-spec check --json\n\npr-to-spec intent show\n</code></pre>\n<h3>GitHub PR Analysis</h3>\n<pre data-lang=\"bash\"><code>\npr-to-spec --repo owner/repo --pr 42 --json | your-agent review\n\npr-to-spec --repo owner/repo --pr 42 --json | jq &#39;.spec.risk_flags&#39;\n\npr-to-spec --repo owner/repo --pr 42 --json \\\n  | claude --print &quot;Review this spec and decide: approve, request changes, or needs info&quot;\n</code></pre>\n<hr>",
+    "troubleshooting": [
+      {
+        "question": "**\"GitHub token is invalid or expired\"**",
+        "answer": "<p>Your <code>GITHUB_TOKEN</code> has expired or is malformed. Generate a new one with <code>repo</code> scope (or fine-grained: pull requests read access).</p>\n<p><strong>\"PR #N not found in owner/repo\"</strong></p>\n<p>The PR doesn't exist, or your token doesn't have access to this repo. Check the repo name (<code>owner/name</code>) and PR number.</p>\n<p><strong>\"GitHub API rate limit exceeded\"</strong></p>\n<p>You've hit the GitHub API rate limit. Wait for the reset time shown in the error, or use a token with higher limits.</p>\n<p><strong>\"Not a git repository\"</strong></p>\n<p>Run <code>pr-to-spec scan</code> or <code>pr-to-spec check</code> from inside a git repository. For GitHub PRs, use <code>--repo</code> and <code>--pr</code> instead.</p>\n<p><strong>\"Branch or ref 'X' not found\"</strong></p>\n<p>The branch you specified with <code>--branch</code> doesn't exist locally. Check with <code>git branch -a</code>.</p>\n<p><strong>\"PR has 300+ files; results may be incomplete\"</strong></p>\n<p>GitHub's API returns at most 300 files per page. Very large PRs may have truncated file lists.</p>\n<hr>"
+      }
+    ]
+  },
+  "slack-channel": {
+    "overview": "<p>Two-way Slack ↔ Claude Code bridge. Chat with Claude from Slack DMs and channels, just like you'd chat in the terminal.</p>\n<p><a href=\"https://github.com/jeremylongshore/claude-code-slack-channel/actions/workflows/ci.yml/badge.svg\">![CI</a>](https://github.com/jeremylongshore/claude-code-slack-channel/actions/workflows/ci.yml)</p>\n<p><a href=\"https://img.shields.io/badge/License-MIT-blue.svg\">![License: MIT</a>](LICENSE)</p>\n<p>> <strong>Research Preview</strong> — Channels require Claude Code v2.1.80+ and <code>claude.ai</code> login.</p>",
+    "usage": "<h3>1. Create a Slack App</h3>\n<ol>\n<li>Go to <a href=\"https://api.slack.com/apps\">api.slack.com/apps</a> → <strong>Create New App</strong> → From scratch</li>\n<li><strong>Socket Mode</strong>: Settings → Socket Mode → Enable → Generate App-Level Token (<code>xapp-...</code>) with <code>connections:write</code> scope</li>\n<li><strong>Event Subscriptions</strong>: Enable → Subscribe to bot events:</li>\n</ol>\n<ul>\n<li><code>message.im</code> — DMs</li>\n<li><code>message.channels</code> — public channels</li>\n<li><code>message.groups</code> — private channels</li>\n<li><code>app_mention</code> — @ mentions</li>\n</ul>\n<ol>\n<li><strong>Bot Token Scopes</strong> (OAuth & Permissions):</li>\n</ol>\n<ul>\n<li><code>chat:write</code> — send messages</li>\n<li><code>channels:history</code> — read public channels</li>\n<li><code>groups:history</code> — read private channels</li>\n<li><code>im:history</code> — read DMs</li>\n<li><code>reactions:write</code> — add reactions</li>\n<li><code>files:read</code> — download shared files</li>\n<li><code>files:write</code> — upload files</li>\n<li><code>users:read</code> — resolve display names</li>\n</ul>\n<ol>\n<li><strong>Install to Workspace</strong> → Copy Bot Token (<code>xoxb-...</code>)</li>\n</ol>\n<h3>2. Configure Tokens</h3>\n<pre data-lang=\"bash\"><code>\n/slack-channel:configure xoxb-your-bot-token xapp-your-app-token\n</code></pre>\n<h3>3. Run</h3>\n<p>Pick your runtime:</p>\n<h4>Option A: Bun (recommended)</h4>\n<pre data-lang=\"bash\"><code>\ncd slack &amp;&amp; bun install\nclaude --channels plugin:slack-channel@claude-code-plugins\n</code></pre>\n<h4>Option B: Node.js / npx</h4>\n<pre data-lang=\"bash\"><code>\ncd slack &amp;&amp; npm install\nclaude --channels plugin:slack-channel@claude-code-plugins\n</code></pre>\n<h4>Option C: Docker</h4>\n<pre data-lang=\"bash\"><code>\ncd slack &amp;&amp; docker build -t claude-slack-channel .\nclaude --channels plugin:slack-channel@claude-code-plugins\n</code></pre>\n<h3>4. Pair Your Account</h3>\n<ol>\n<li>DM the bot in Slack — you'll get a 6-character pairing code</li>\n<li>In your terminal: <code>/slack-channel:access pair <code></code></li>\n<li>You're connected. Chat away.</li>\n</ol>"
   },
   "framecraft": {
     "overview": "<p>Generate polished demo videos from a single prompt. Orchestrates Playwright, FFmpeg, and Edge TTS MCP servers to produce 1920x1080 videos with voiceover, transitions, and CSS animations.</p>"
@@ -1495,5 +2071,21 @@
   "hyperfocus": {
     "overview": "<p><strong>ADHD-friendly output formatting for Claude Code.</strong></p>\n<p>Restructures AI responses with evidence-based cognitive accessibility — chunking, visual hierarchy, front-loaded answers, and progressive disclosure.</p>",
     "usage": "<ul>\n<li><code>/hyperfocus</code> — activate (default: flow mode)</li>\n<li><code>/hyperfocus clean|flow|zen</code> — switch modes</li>\n<li><code>stop hyperfocus</code> — deactivate</li>\n</ul>"
+  },
+  "local-tts": {
+    "overview": "<p><strong>Generate speech locally with VoxCPM2. 30 languages, voice design, voice cloning. Zero cloud, zero cost.</strong></p>\n<p>Runs 100% on your machine using VoxCPM2 (2B-parameter model, Apache-2.0). Optimized for Apple Silicon via Metal (MPS). No API keys, no rate limits, no telemetry.</p>\n<hr>",
+    "features": "<table><thead><tr>\n<th>Feature</th>\n<th>Description</th>\n</tr></thead><tbody>\n<tr>\n<td><strong>Text-to-Speech</strong></td>\n<td>30 languages, auto-detected from input text</td>\n</tr>\n<tr>\n<td><strong>Voice Design</strong></td>\n<td>Describe a voice in natural language (e.g. \"warm female voice, mid-30s\")</td>\n</tr>\n<tr>\n<td><strong>Voice Cloning</strong></td>\n<td>Clone any voice from a 3-10 second reference clip</td>\n</tr>\n<tr>\n<td><strong>Ultimate Cloning</strong></td>\n<td>Reference + prompt for maximum fidelity (vocal micro-nuances)</td>\n</tr>\n<tr>\n<td><strong>48 kHz output</strong></td>\n<td>Production-quality WAV ready for Telegram, video, podcast</td>\n</tr>\n</tbody></table>\n<hr>",
+    "usage": "<h3>Via natural language (auto-triggered)</h3>\n<p>Just ask Claude to:</p>\n<ul>\n<li>\"Say hello in French\"</li>\n<li>\"Generate a voiceover for this text: ...\"</li>\n<li>\"Clone this voice: /path/to/sample.wav and say ...\"</li>\n<li>\"Make a warm female voice reading: ...\"</li>\n</ul>\n<h3>Direct invocation</h3>\n<pre data-lang=\"bash\"><code>\nVENV=~/.local-tts/venv\nSCRIPT=${CLAUDE_PLUGIN_ROOT}/scripts/generate.py\n\n&quot;$VENV/bin/python&quot; &quot;$SCRIPT&quot; --text &quot;Hello world&quot; --out /tmp/hello.wav\n\n&quot;$VENV/bin/python&quot; &quot;$SCRIPT&quot; \\\n  --text &quot;(warm female voice, mid-30s, calm)Welcome back.&quot; \\\n  --out /tmp/design.wav\n\n&quot;$VENV/bin/python&quot; &quot;$SCRIPT&quot; \\\n  --text &quot;This is my cloned voice.&quot; \\\n  --ref /path/to/sample.wav \\\n  --out /tmp/clone.wav\n\ncat article.txt | &quot;$VENV/bin/python&quot; &quot;$SCRIPT&quot; --stdin --out /tmp/article.wav\n</code></pre>\n<h3>Supported languages (30)</h3>\n<p>Arabic, Burmese, Chinese (+ dialects), Danish, Dutch, English, Finnish, French, German, Greek, Hebrew, Hindi, Indonesian, Italian, Japanese, Khmer, Korean, Lao, Malay, Norwegian, Polish, Portuguese, Russian, Spanish, Swahili, Swedish, Tagalog, Thai, Turkish, Vietnamese.</p>\n<p>No language tag needed — VoxCPM auto-detects from the text.</p>\n<hr>",
+    "troubleshooting": [
+      {
+        "question": "**`ModuleNotFoundError: voxcpm`** — venv missing or wrong path. Run the setup commands above.",
+        "answer": "<p><strong><code>No such file: VoxCPM2 weights</code></strong> — HuggingFace cache missing. First run will download (needs network).</p>\n<p><strong>Slow first call</strong> — normal, model load takes 30s after cache warms. Subsequent calls in the same Python process are instant; this script spawns a fresh process per call. For batch work, write a wrapper that loads the model once.</p>\n<p><strong>French pronunciation of names</strong> — add an IPA-ish hint or rephrase. Most names work out of the box.</p>\n<hr>"
+      }
+    ]
+  },
+  "boycott-filter": {
+    "overview": "<p><strong>Tell your Claude agent which brands to avoid. Chrome extension warns you on any page from those brands — with your own reasons displayed.</strong></p>\n<p>The problem: you decide to boycott a brand. Two weeks later, you've forgotten why, and you click \"buy\". This plugin fixes that. You complain to your agent once, the extension reminds you forever.</p>\n<hr>",
+    "features": "<table><thead><tr>\n<th>Feature</th>\n<th>Description</th>\n</tr></thead><tbody>\n<tr>\n<td><strong>Conversational management</strong></td>\n<td>Complain naturally, agent handles the list</td>\n</tr>\n<tr>\n<td><strong>Reason tracking</strong></td>\n<td>Your own words shown back to you as a reminder</td>\n</tr>\n<tr>\n<td><strong>Brand aliases</strong></td>\n<td>Boycott a parent company, catch all subsidiaries (Nestlé → Nespresso, KitKat, Purina, etc.)</td>\n</tr>\n<tr>\n<td><strong>Red warning banner</strong></td>\n<td>Slides in at top of matching pages, hard to miss</td>\n</tr>\n<tr>\n<td><strong>Extension icon badge</strong></td>\n<td>Match count visible at a glance</td>\n</tr>\n<tr>\n<td><strong>Offline capable</strong></td>\n<td>Extension caches the list, works without the server</td>\n</tr>\n<tr>\n<td><strong>Popup UI</strong></td>\n<td>Quick manual add/remove from the extension icon</td>\n</tr>\n<tr>\n<td><strong>100% local</strong></td>\n<td>Nothing leaves your Mac</td>\n</tr>\n</tbody></table>\n<hr>",
+    "usage": "<h3>Conversational examples</h3>\n<p>Say things like:</p>\n<ul>\n<li><em>\"Boycott Nestlé, their water practices are criminal.\"</em></li>\n<li><em>\"I'm done with Shein — fast fashion, can't support it.\"</em></li>\n<li><em>\"Add all Nestlé brands — Nespresso, KitKat, Purina, Perrier.\"</em></li>\n<li><em>\"What's on my boycott list?\"</em></li>\n<li><em>\"Remove Amazon from the list.\"</em></li>\n</ul>\n<p>The agent calls the local API at <code>http://127.0.0.1:7847</code> to read/write the list.</p>\n<h3>Manual via curl</h3>\n<pre data-lang=\"bash\"><code>\ncurl -X POST http://127.0.0.1:7847/add \\\n  -H &#39;Content-Type: application/json&#39; \\\n  -d &#39;{&quot;name&quot;:&quot;Temu&quot;,&quot;reason&quot;:&quot;Cheap garbage&quot;,&quot;aliases&quot;:[&quot;temu.com&quot;]}&#39;\n\ncurl http://127.0.0.1:7847/list\n\ncurl -X DELETE http://127.0.0.1:7847/remove \\\n  -H &#39;Content-Type: application/json&#39; \\\n  -d &#39;{&quot;name&quot;:&quot;Temu&quot;}&#39;\n</code></pre>\n<h3>Manual via extension popup</h3>\n<p>Click the extension icon → add/remove brands directly. Useful when the server isn't running (popup falls back to <code>chrome.storage</code>).</p>\n<hr>"
   }
 }

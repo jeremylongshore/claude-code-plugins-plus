@@ -1,0 +1,35 @@
+{
+  "name": "@intentsolutionsio/wondelai-top-design",
+  "version": "1.0.0",
+  "description": "Award-winning web design framework for premium experiences",
+  "keywords": [
+    "design",
+    "wondelai",
+    "skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/design/wondelai-top-design"
+  },
+  "homepage": "https://tonsofskills.com/plugins/wondelai-top-design",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Wondel.ai"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install wondelai-top-design\\\\n  or /plugin install wondelai-top-design@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

@@ -1,10 +1,10 @@
 ---
 name: backup-strategy
-description: $(echo "$description" | cut -d' ' -f1-5)
+description: Design and implement a comprehensive backup strategy for your infrastructure, including schedules, retention policies, storage tiers, and recovery procedures.
 ---
-# $(echo "$name" | sed 's/-/ /g' | sed 's/\b\(.\)/\u\1/g')
+# Backup Strategy Implementor
 
-$(echo "$description")
+Design and implement production-ready backup strategies for your infrastructure.
 
 ## Key Features
 

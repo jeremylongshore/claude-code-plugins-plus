@@ -1,0 +1,130 @@
+name: Publish changed @intentsolutionsio packages
+
+# Runs on every push to main that touches a plugin directory. For each
+# changed plugin whose package.json `version` is not yet on npm, publish it.
+# No auto-bumping — authors are expected to bump the version in their plugin's
+# package.json when they want a new release. This workflow just mirrors intent.
+#
+# Only handles @intentsolutionsio/* scoped packages. Other packages (the 12
+# pre-existing heterogeneous ones, plus packages/cli which has its own
+# tag-based publish) are ignored here.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'plugins/**'
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: npm-publish-main
+  cancel-in-progress: false
+
+jobs:
+  detect:
+    name: Detect changed plugin packages
+    runs-on: ubuntu-latest
+    outputs:
+      count: ${{ steps.build.outputs.count }}
+      packages_json: ${{ steps.build.outputs.packages_json }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 2  # need previous commit to diff against
+
+      - name: Build change list
+        id: build
+        run: |
+          set -euo pipefail
+          # Changed files in this push
+          git diff --name-only HEAD~1 HEAD > /tmp/changed.txt || git diff --name-only HEAD > /tmp/changed.txt
+          # Map to plugin directories (plugins/<category>/<slug>/...)
+          awk -F/ '/^plugins\// && NF>=3 {print $1"/"$2"/"$3}' /tmp/changed.txt | sort -u > /tmp/plugin-dirs.txt
+          # Some plugin dirs are nested deeper (saas-packs/skill-databases/*) — handle
+          awk -F/ '/^plugins\/saas-packs\/skill-databases\// && NF>=4 {print $1"/"$2"/"$3"/"$4}' /tmp/changed.txt | sort -u >> /tmp/plugin-dirs.txt
+          sort -u -o /tmp/plugin-dirs.txt /tmp/plugin-dirs.txt
+
+          echo "Changed plugin directories:"
+          cat /tmp/plugin-dirs.txt || true
+
+          # Filter to those with a package.json and @intentsolutionsio scope
+          python3 <<'PY' > /tmp/packages.json
+          import json, os
+          dirs = [d.strip() for d in open('/tmp/plugin-dirs.txt') if d.strip()]
+          out = []
+          for d in dirs:
+              pj = os.path.join(d, 'package.json')
+              if not os.path.isfile(pj):
+                  continue
+              try:
+                  pkg = json.load(open(pj))
+              except Exception:
+                  continue
+              name = pkg.get('name', '')
+              if not name.startswith('@intentsolutionsio/'):
+                  continue
+              if pkg.get('private'):
+                  continue
+              out.append({
+                  'name': name,
+                  'version': pkg.get('version', '0.0.0'),
+                  'dir': d,
+              })
+          print(json.dumps(out))
+          PY
+
+          COUNT=$(jq length /tmp/packages.json)
+          echo "count=$COUNT" >> $GITHUB_OUTPUT
+          echo "packages_json=$(jq -c . /tmp/packages.json)" >> $GITHUB_OUTPUT
+          echo "Publish candidates: $COUNT"
+          jq -r '.[] | "  \(.name)@\(.version)"' /tmp/packages.json
+
+  publish:
+    name: Publish candidates (skip if version already on npm)
+    runs-on: ubuntu-latest
+    needs: detect
+    if: ${{ needs.detect.outputs.count != '0' }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Publish each changed package
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          PACKAGES_JSON: ${{ needs.detect.outputs.packages_json }}
+        run: |
+          set -euo pipefail
+          PUBLISHED=0; SKIPPED=0; FAILED=0
+          echo "$PACKAGES_JSON" | jq -c '.[]' | while read -r row; do
+            NAME=$(echo "$row" | jq -r '.name')
+            DIR=$(echo "$row" | jq -r '.dir')
+            VERSION=$(echo "$row" | jq -r '.version')
+
+            # Does this exact version already exist on npm?
+            ENC=$(echo "$NAME" | sed 's/@/%40/;s|/|%2F|')
+            HTTP=$(curl -s -o /dev/null -w '%{http_code}' \
+              "https://registry.npmjs.org/$ENC/$VERSION")
+            if [ "$HTTP" = "200" ]; then
+              echo "⊙ skip (already published): $NAME@$VERSION"
+              SKIPPED=$((SKIPPED+1))
+              continue
+            fi
+
+            if (cd "$DIR" && npm publish --access public --provenance); then
+              echo "✓ published: $NAME@$VERSION"
+              PUBLISHED=$((PUBLISHED+1))
+            else
+              echo "❌ FAILED: $NAME@$VERSION — investigate and bump patch to retry"
+              FAILED=$((FAILED+1))
+            fi
+            sleep 2
+          done
+          echo ""
+          echo "Summary: published=$PUBLISHED skipped=$SKIPPED failed=$FAILED"
+          [ "$FAILED" -eq 0 ] || exit 1

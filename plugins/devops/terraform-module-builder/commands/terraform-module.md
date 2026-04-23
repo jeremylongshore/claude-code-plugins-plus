@@ -1,10 +1,11 @@
 ---
 name: terraform-module
-description: $(echo "$description" | cut -d' ' -f1-5)
+description: Build reusable Terraform modules
 ---
-# $(echo "$name" | sed 's/-/ /g' | sed 's/\b\(.\)/\u\1/g')
+# Terraform Module Builder
 
-$(echo "$description")
+Build reusable Terraform modules
+
 
 ## Key Features
 

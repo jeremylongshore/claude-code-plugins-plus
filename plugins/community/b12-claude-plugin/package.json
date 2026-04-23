@@ -1,0 +1,37 @@
+{
+  "name": "@intentsolutionsio/b12-claude-plugin",
+  "version": "1.0.0",
+  "description": "B12 Website Generator plugin allows you to create a professional, engaging, and user-friendly website in seconds using AI. To create a website, you need to provide a name for your project/business, al",
+  "keywords": [
+    "website",
+    "b12",
+    "hosting",
+    "web-design",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/community/b12-claude-plugin"
+  },
+  "homepage": "https://tonsofskills.com/plugins/b12-claude-plugin",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "Apache-2.0",
+  "author": {
+    "name": "B12.io",
+    "url": "https://github.com/b12io"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install b12-claude-plugin\\\\n  or /plugin install b12-claude-plugin@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

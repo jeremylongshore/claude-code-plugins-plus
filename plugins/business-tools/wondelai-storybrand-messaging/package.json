@@ -1,0 +1,35 @@
+{
+  "name": "@intentsolutionsio/wondelai-storybrand-messaging",
+  "version": "1.0.0",
+  "description": "StoryBrand messaging framework that positions customer as hero",
+  "keywords": [
+    "business-tools",
+    "wondelai",
+    "skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/business-tools/wondelai-storybrand-messaging"
+  },
+  "homepage": "https://tonsofskills.com/plugins/wondelai-storybrand-messaging",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Wondel.ai"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install wondelai-storybrand-messaging\\\\n  or /plugin install wondelai-storybrand-messaging@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

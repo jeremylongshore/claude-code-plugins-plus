@@ -1,0 +1,39 @@
+{
+  "name": "@intentsolutionsio/geepers-agents",
+  "version": "1.0.0",
+  "description": "Multi-agent orchestration system with MCP tools and Claude Code plugin agents. 51 specialized agents for development workflows, code quality, deployment, research, and more.",
+  "keywords": [
+    "mcp",
+    "orchestration",
+    "multi-agent",
+    "development-workflow",
+    "code-quality",
+    "deployment",
+    "geepers",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/community/geepers-agents"
+  },
+  "homepage": "https://tonsofskills.com/plugins/geepers-agents",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Luke Steuber"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "agents"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install geepers-agents\\\\n  or /plugin install geepers-agents@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

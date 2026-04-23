@@ -1,10 +1,11 @@
 ---
 name: helm-chart
-description: $(echo "$description" | cut -d' ' -f1-5)
+description: Generate Helm charts for Kubernetes applications
 ---
-# $(echo "$name" | sed 's/-/ /g' | sed 's/\b\(.\)/\u\1/g')
+# Helm Chart Generator
 
-$(echo "$description")
+Generate Helm charts for Kubernetes applications
+
 
 ## Key Features
 

@@ -1,0 +1,40 @@
+{
+  "name": "@intentsolutionsio/regression-test-tracker",
+  "version": "1.0.0",
+  "description": "Track and run regression tests to ensure new changes don't break existing functionality",
+  "keywords": [
+    "testing",
+    "regression-testing",
+    "test-tracking",
+    "ci-cd",
+    "quality-assurance",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/testing/regression-test-tracker"
+  },
+  "homepage": "https://tonsofskills.com/plugins/regression-test-tracker",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install regression-test-tracker\\\\n  or /plugin install regression-test-tracker@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

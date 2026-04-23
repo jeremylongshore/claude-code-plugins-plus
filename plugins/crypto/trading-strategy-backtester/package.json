@@ -1,0 +1,41 @@
+{
+  "name": "@intentsolutionsio/trading-strategy-backtester",
+  "version": "1.0.0",
+  "description": "Backtest trading strategies with historical data, performance metrics, and risk analysis",
+  "keywords": [
+    "trading",
+    "backtesting",
+    "strategy",
+    "historical",
+    "performance",
+    "risk",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/crypto/trading-strategy-backtester"
+  },
+  "homepage": "https://tonsofskills.com/plugins/trading-strategy-backtester",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Intent Solutions IO",
+    "email": "jeremy@intentsolutions.ai",
+    "url": "https://intentsolutions.ai"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install trading-strategy-backtester\\\\n  or /plugin install trading-strategy-backtester@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

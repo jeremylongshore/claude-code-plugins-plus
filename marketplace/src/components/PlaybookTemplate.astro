@@ -1,5 +1,9 @@
 ---
-// PlaybookTemplate.astro - Reusable template for all playbook pages
+// PlaybookTemplate.astro — reusable template for playbook pages.
+// Wraps content in BaseLayout so every playbook gets the site nav, footer,
+// theme system, and SEO — same pattern as DocsTemplate.astro.
+import BaseLayout from '../layouts/BaseLayout.astro';
+
 interface Props {
   title: string;
   description: string;
@@ -22,7 +26,10 @@ const playbooks = [
   { slug: '08-team-presets', title: 'Team Presets & Workflows' },
   { slug: '09-cost-attribution', title: 'Cost Attribution System' },
   { slug: '10-progressive-enhancement', title: 'Progressive Enhancement Patterns' },
-  { slug: '11-advanced-tool-use', title: 'Advanced Tool Use' }
+  { slug: '11-advanced-tool-use', title: 'Advanced Tool Use' },
+  { slug: '12-beginner-onboarding', title: 'Beginner Onboarding' },
+  { slug: '13-production-setup', title: 'Production Setup' },
+  { slug: '14-troubleshooting', title: 'Troubleshooting' }
 ];
 
 const currentIndex = playbooks.findIndex(p => p.slug === slug);
@@ -30,21 +37,11 @@ const prevPlaybook = currentIndex > 0 ? playbooks[currentIndex - 1] : null;
 const nextPlaybook = currentIndex < playbooks.length - 1 ? playbooks[currentIndex + 1] : null;
 ---
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{title} | Production Playbooks</title>
-  <meta name="description" content={description}>
-  <link rel="stylesheet" href="/styles/global.css">
-</head>
-<body>
+<BaseLayout title={`${title} | Production Playbooks`} description={description}>
   <div class="playbook-page">
-    <!-- Header -->
     <header class="playbook-header">
       <div class="container">
-        <nav class="breadcrumbs">
+        <nav class="breadcrumbs" aria-label="Breadcrumb">
           <a href="/">Home</a>
           <span class="breadcrumb-separator">/</span>
           <a href="/playbooks">Playbooks</a>
@@ -67,21 +64,18 @@ const nextPlaybook = currentIndex < playbooks.length - 1 ? playbooks[currentInde
       </div>
     </header>
 
-    <!-- Main Content -->
     <main class="playbook-main">
       <div class="container">
         <div class="playbook-layout">
-          <!-- Table of Contents (Sidebar) -->
           <aside class="toc-sidebar" id="toc-sidebar">
             <div class="toc-sticky">
               <h2 class="toc-title">Table of Contents</h2>
-              <nav class="toc-nav" id="toc-nav">
-                <!-- Will be populated by JavaScript -->
+              <nav class="toc-nav" id="toc-nav" aria-label="Section navigation">
+                <!-- Populated by script below -->
               </nav>
             </div>
           </aside>
 
-          <!-- Playbook Content -->
           <article class="playbook-content">
             <slot />
           </article>
@@ -89,7 +83,6 @@ const nextPlaybook = currentIndex < playbooks.length - 1 ? playbooks[currentInde
       </div>
     </main>
 
-    <!-- Navigation Footer -->
     <footer class="playbook-footer">
       <div class="container">
         <div class="footer-nav">
@@ -121,10 +114,10 @@ const nextPlaybook = currentIndex < playbooks.length - 1 ? playbooks[currentInde
       flex-direction: column;
     }
 
-    /* Header Styles */
+    /* Header */
     .playbook-header {
-      background: var(--brand-light);
-      border-bottom: 1px solid var(--brand-light-gray);
+      background: var(--surface, var(--brand-light));
+      border-bottom: 1px solid var(--border, var(--brand-light-gray));
       padding: 2rem 0;
     }
 
@@ -134,55 +127,45 @@ const nextPlaybook = currentIndex < playbooks.length - 1 ? playbooks[currentInde
       gap: 0.5rem;
       font-size: 0.875rem;
       margin-bottom: 2rem;
-      color: var(--brand-mid-gray);
+      color: var(--text-3, var(--brand-mid-gray));
     }
 
     .breadcrumbs a {
-      color: var(--brand-mid-gray);
-      transition: color var(--transition-fast);
+      color: var(--text-3, var(--brand-mid-gray));
+      transition: color var(--transition-fast, 150ms ease);
     }
 
-    .breadcrumbs a:hover {
-      color: var(--brand-orange);
-    }
+    .breadcrumbs a:hover { color: var(--primary, var(--brand-orange)); }
+    .breadcrumb-separator { color: var(--text-3, var(--brand-mid-gray)); }
+    .breadcrumb-current { color: var(--text, var(--brand-dark)); }
 
-    .breadcrumb-separator {
-      color: var(--brand-mid-gray);
-    }
-
-    .breadcrumb-current {
-      color: var(--brand-dark);
-    }
-
-    .playbook-hero {
-      max-width: 800px;
-    }
+    .playbook-hero { max-width: 800px; }
 
     .category-badge {
       display: inline-block;
-      background: rgba(217, 119, 87, 0.1);
-      color: var(--brand-orange);
+      background: var(--primary-tint, rgba(217, 119, 87, 0.1));
+      color: var(--primary, var(--brand-orange));
       padding: 0.375rem 0.75rem;
       border-radius: 0.375rem;
       font-size: 0.75rem;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      border: 1px solid rgba(217, 119, 87, 0.2);
+      border: 1px solid var(--primary-border, rgba(217, 119, 87, 0.2));
       margin-bottom: 1rem;
     }
 
     .playbook-title {
       font-size: clamp(2rem, 4vw, 3rem);
       font-weight: 900;
-      color: var(--brand-dark);
+      color: var(--text, var(--brand-dark));
       margin-bottom: 1rem;
       line-height: 1.1;
     }
 
     .playbook-description {
       font-size: 1.125rem;
-      color: var(--brand-mid-gray);
+      color: var(--text-2, var(--brand-mid-gray));
       line-height: 1.6;
       margin-bottom: 1rem;
     }
@@ -192,18 +175,13 @@ const nextPlaybook = currentIndex < playbooks.length - 1 ? playbooks[currentInde
       align-items: center;
       gap: 0.75rem;
       font-size: 0.875rem;
-      color: var(--brand-mid-gray);
+      color: var(--text-3, var(--brand-mid-gray));
     }
 
-    .meta-divider {
-      color: var(--brand-light-gray);
-    }
+    .meta-divider { color: var(--border, var(--brand-light-gray)); }
 
-    /* Main Content Layout */
-    .playbook-main {
-      flex: 1;
-      padding: 3rem 0;
-    }
+    /* Main layout */
+    .playbook-main { flex: 1; padding: 3rem 0; }
 
     .playbook-layout {
       display: grid;
@@ -213,72 +191,59 @@ const nextPlaybook = currentIndex < playbooks.length - 1 ? playbooks[currentInde
     }
 
     /* Table of Contents */
-    .toc-sidebar {
-      position: relative;
-    }
-
-    .toc-sticky {
-      position: sticky;
-      top: 2rem;
-    }
+    .toc-sidebar { position: relative; }
+    .toc-sticky { position: sticky; top: 2rem; }
 
     .toc-title {
       font-size: 0.875rem;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      color: var(--brand-mid-gray);
+      color: var(--text-3, var(--brand-mid-gray));
       margin-bottom: 1rem;
     }
 
-    .toc-nav {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
+    .toc-nav { display: flex; flex-direction: column; gap: 0.5rem; }
 
     .toc-nav a {
       display: block;
-      color: var(--brand-mid-gray);
+      color: var(--text-2, var(--brand-mid-gray));
       font-size: 0.875rem;
       padding: 0.375rem 0.75rem;
-      border-left: 2px solid var(--brand-light-gray);
-      transition: all var(--transition-fast);
+      border-left: 2px solid var(--border, var(--brand-light-gray));
+      transition: all var(--transition-fast, 150ms ease);
     }
 
     .toc-nav a:hover {
-      color: var(--brand-orange);
-      border-left-color: var(--brand-orange);
-      background: rgba(217, 119, 87, 0.05);
+      color: var(--primary, var(--brand-orange));
+      border-left-color: var(--primary, var(--brand-orange));
+      background: var(--primary-tint, rgba(217, 119, 87, 0.05));
     }
 
     .toc-nav a.active {
-      color: var(--brand-orange);
-      border-left-color: var(--brand-orange);
+      color: var(--primary, var(--brand-orange));
+      border-left-color: var(--primary, var(--brand-orange));
       font-weight: 600;
     }
 
-    /* Playbook Content */
-    .playbook-content {
-      max-width: 800px;
-    }
+    /* Content typography */
+    .playbook-content { max-width: 800px; }
 
-    /* Typography within content */
     .playbook-content :global(h2) {
       font-size: 2rem;
       font-weight: 800;
-      color: var(--brand-dark);
+      color: var(--text, var(--brand-dark));
       margin-top: 3rem;
       margin-bottom: 1.5rem;
       padding-bottom: 0.5rem;
-      border-bottom: 2px solid var(--brand-light-gray);
+      border-bottom: 2px solid var(--border, var(--brand-light-gray));
       scroll-margin-top: 2rem;
     }
 
     .playbook-content :global(h3) {
       font-size: 1.5rem;
       font-weight: 700;
-      color: var(--brand-dark);
+      color: var(--text, var(--brand-dark));
       margin-top: 2rem;
       margin-bottom: 1rem;
       scroll-margin-top: 2rem;
@@ -287,7 +252,7 @@ const nextPlaybook = currentIndex < playbooks.length - 1 ? playbooks[currentInde
     .playbook-content :global(h4) {
       font-size: 1.25rem;
       font-weight: 600;
-      color: var(--brand-dark);
+      color: var(--text, var(--brand-dark));
       margin-top: 1.5rem;
       margin-bottom: 0.75rem;
       scroll-margin-top: 2rem;
@@ -296,85 +261,96 @@ const nextPlaybook = currentIndex < playbooks.length - 1 ? playbooks[currentInde
     .playbook-content :global(p) {
       margin-bottom: 1.25rem;
       line-height: 1.7;
-      color: var(--brand-dark);
+      color: var(--text, var(--brand-dark));
     }
 
-    .playbook-content :global(ul),
-    .playbook-content :global(ol) {
-      margin-bottom: 1.25rem;
-      padding-left: 1.5rem;
+    .playbook-content :global(a) {
+      color: var(--primary, var(--brand-orange));
+      text-decoration: underline;
+      text-underline-offset: 2px;
     }
+    .playbook-content :global(a:hover) { color: var(--primary-dark, var(--brand-orange-dark)); }
+
+    .playbook-content :global(ul),
+    .playbook-content :global(ol) { margin-bottom: 1.25rem; padding-left: 1.5rem; }
 
     .playbook-content :global(li) {
       margin-bottom: 0.5rem;
       line-height: 1.7;
-      color: var(--brand-dark);
+      color: var(--text, var(--brand-dark));
     }
 
     .playbook-content :global(table) {
       width: 100%;
       margin: 2rem 0;
       border-collapse: collapse;
-      background: var(--brand-light);
-      border: 1px solid var(--brand-light-gray);
+      background: var(--card, var(--brand-light));
+      border: 1px solid var(--border, var(--brand-light-gray));
       border-radius: 0.5rem;
       overflow: hidden;
     }
 
     .playbook-content :global(th) {
-      background: var(--brand-light-gray);
-      color: var(--brand-dark);
+      background: var(--surface-2, var(--brand-light-gray));
+      color: var(--text, var(--brand-dark));
       font-weight: 600;
       text-align: left;
       padding: 0.75rem 1rem;
-      border-bottom: 2px solid var(--brand-light-gray);
+      border-bottom: 2px solid var(--border, var(--brand-light-gray));
     }
 
     .playbook-content :global(td) {
       padding: 0.75rem 1rem;
-      border-bottom: 1px solid var(--brand-light-gray);
-      color: var(--brand-dark);
+      border-bottom: 1px solid var(--border, var(--brand-light-gray));
+      color: var(--text, var(--brand-dark));
     }
 
-    .playbook-content :global(tr:last-child td) {
-      border-bottom: none;
-    }
+    .playbook-content :global(tr:last-child td) { border-bottom: none; }
 
     .playbook-content :global(pre) {
-      background: var(--brand-light);
-      border: 1px solid var(--brand-light-gray);
+      background: var(--surface-2, var(--brand-light));
+      border: 1px solid var(--border, var(--brand-light-gray));
       border-radius: 0.5rem;
       padding: 1.5rem;
       overflow-x: auto;
       margin: 1.5rem 0;
       font-size: 0.875rem;
       line-height: 1.6;
+      color: var(--text, var(--brand-dark));
     }
 
     .playbook-content :global(code) {
-      font-family: var(--font-mono);
+      font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
       font-size: 0.875em;
     }
 
+    .playbook-content :global(:not(pre) > code) {
+      background: var(--surface-2, var(--brand-light-gray));
+      color: var(--text, var(--brand-dark));
+      padding: 0.15em 0.4em;
+      border-radius: 0.25rem;
+      border: 1px solid var(--border, var(--brand-light-gray));
+    }
+
     .playbook-content :global(blockquote) {
-      border-left: 4px solid var(--brand-orange);
-      background: rgba(217, 119, 87, 0.05);
+      border-left: 4px solid var(--primary, var(--brand-orange));
+      background: var(--primary-tint, rgba(217, 119, 87, 0.05));
       padding: 1rem 1.5rem;
       margin: 1.5rem 0;
-      color: var(--brand-dark);
+      color: var(--text, var(--brand-dark));
       font-style: italic;
     }
 
     .playbook-content :global(hr) {
       border: none;
-      border-top: 1px solid var(--brand-light-gray);
+      border-top: 1px solid var(--border, var(--brand-light-gray));
       margin: 3rem 0;
     }
 
-    /* Footer Navigation */
+    /* Footer nav */
     .playbook-footer {
-      background: var(--brand-light);
-      border-top: 1px solid var(--brand-light-gray);
+      background: var(--surface, var(--brand-light));
+      border-top: 1px solid var(--border, var(--brand-light-gray));
       padding: 2rem 0;
       margin-top: 4rem;
     }
@@ -391,136 +367,95 @@ const nextPlaybook = currentIndex < playbooks.length - 1 ? playbooks[currentInde
       flex-direction: column;
       gap: 0.5rem;
       padding: 1.5rem;
-      background: var(--brand-light-gray);
-      border: 1px solid var(--brand-light-gray);
+      background: var(--card, var(--brand-light-gray));
+      border: 1px solid var(--border, var(--brand-light-gray));
       border-radius: 0.75rem;
-      transition: all var(--transition-base);
+      transition: all var(--transition-base, 200ms ease);
     }
 
     .nav-link:hover {
-      border-color: var(--brand-orange);
-      box-shadow: 0 0 0 1px var(--brand-orange);
+      border-color: var(--primary, var(--brand-orange));
+      box-shadow: 0 0 0 1px var(--primary, var(--brand-orange));
       transform: translateY(-2px);
     }
 
-    .nav-prev {
-      text-align: left;
-    }
-
-    .nav-next {
-      text-align: right;
-      margin-left: auto;
-    }
+    .nav-prev { text-align: left; }
+    .nav-next { text-align: right; margin-left: auto; }
 
     .nav-label {
       font-size: 0.75rem;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      color: var(--brand-mid-gray);
+      color: var(--text-3, var(--brand-mid-gray));
     }
 
     .nav-title {
       font-size: 1rem;
       font-weight: 600;
-      color: var(--brand-dark);
+      color: var(--text, var(--brand-dark));
     }
 
     .back-to-index {
       text-align: center;
       padding-top: 1.5rem;
-      border-top: 1px solid var(--brand-light-gray);
+      border-top: 1px solid var(--border, var(--brand-light-gray));
     }
 
     .back-link {
-      color: var(--brand-orange);
+      color: var(--primary, var(--brand-orange));
       font-weight: 600;
-      transition: color var(--transition-fast);
+      transition: color var(--transition-fast, 150ms ease);
     }
 
-    .back-link:hover {
-      color: var(--brand-orange-light);
-    }
+    .back-link:hover { color: var(--primary-dark, var(--brand-orange-light)); }
 
-    /* Responsive Design */
+    /* Responsive */
     @media (max-width: 1024px) {
-      .playbook-layout {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-      }
-
-      .toc-sidebar {
-        display: none;
-      }
+      .playbook-layout { grid-template-columns: 1fr; gap: 2rem; }
+      .toc-sidebar { display: none; }
     }
 
     @media (max-width: 640px) {
-      .playbook-header {
-        padding: 1.5rem 0;
-      }
-
-      .playbook-main {
-        padding: 2rem 0;
-      }
-
-      .footer-nav {
-        grid-template-columns: 1fr;
-      }
-
-      .nav-next {
-        margin-left: 0;
-      }
-
-      .playbook-meta {
-        flex-wrap: wrap;
-      }
+      .playbook-header { padding: 1.5rem 0; }
+      .playbook-main { padding: 2rem 0; }
+      .footer-nav { grid-template-columns: 1fr; }
+      .nav-next { margin-left: 0; }
+      .playbook-meta { flex-wrap: wrap; }
     }
   </style>
 
   <script>
-    // Generate Table of Contents from h2 and h3 headings
+    // Generate Table of Contents from h2 and h3 headings within playbook content.
     function generateTOC() {
       const content = document.querySelector('.playbook-content');
       const tocNav = document.getElementById('toc-nav');
-
       if (!content || !tocNav) return;
 
       const headings = content.querySelectorAll('h2, h3');
-
       headings.forEach((heading, index) => {
-        // Add ID to heading if it doesn't have one
-        if (!heading.id) {
-          heading.id = `section-${index}`;
-        }
-
+        if (!heading.id) heading.id = `section-${index}`;
         const link = document.createElement('a');
         link.href = `#${heading.id}`;
         link.textContent = heading.textContent;
         link.style.paddingLeft = heading.tagName === 'H3' ? '1.5rem' : '0.75rem';
-
         tocNav.appendChild(link);
       });
 
-      // Active section tracking
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
             const id = entry.target.id;
-            const links = tocNav.querySelectorAll('a');
-            links.forEach(link => {
+            tocNav.querySelectorAll('a').forEach(link => {
               link.classList.toggle('active', link.getAttribute('href') === `#${id}`);
             });
           }
         });
-      }, {
-        rootMargin: '-100px 0px -66%'
-      });
+      }, { rootMargin: '-100px 0px -66%' });
 
       headings.forEach(heading => observer.observe(heading));
     }
 
-    // Run on page load
     document.addEventListener('DOMContentLoaded', generateTOC);
   </script>
-</body>
-</html>
+</BaseLayout>

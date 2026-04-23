@@ -1,0 +1,45 @@
+{
+  "name": "@intentsolutionsio/fairdb-ops-manager",
+  "version": "1.0.0",
+  "description": "Comprehensive operations manager for FairDB managed PostgreSQL service - SOPs, incident response, monitoring, and automation",
+  "keywords": [
+    "database",
+    "postgresql",
+    "devops",
+    "operations",
+    "monitoring",
+    "backup",
+    "incident-response",
+    "sop",
+    "managed-services",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/community/fairdb-ops-manager"
+  },
+  "homepage": "https://tonsofskills.com/plugins/fairdb-ops-manager",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Intent Solutions IO",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands",
+    "agents",
+    "scripts"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install fairdb-ops-manager\\\\n  or /plugin install fairdb-ops-manager@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

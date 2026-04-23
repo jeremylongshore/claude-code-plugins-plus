@@ -1,0 +1,43 @@
+{
+  "name": "@intentsolutionsio/youtube-strategy",
+  "version": "1.0.0",
+  "description": "Complete YouTube content production workflow: research competitors, generate video ideas, build briefs, craft titles and thumbnails, and create detailed video outlines with demo prep checklists.",
+  "keywords": [
+    "youtube",
+    "content-strategy",
+    "video-production",
+    "ideation",
+    "research",
+    "thumbnails",
+    "titles",
+    "outlining",
+    "content-creation",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/productivity/youtube-strategy"
+  },
+  "homepage": "https://tonsofskills.com/plugins/youtube-strategy",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugins"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands",
+    "agents"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install youtube-strategy\\\\n  or /plugin install youtube-strategy@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

@@ -1,15 +1,37 @@
 name: maintainer-ready-automerge
+
+# Enable GitHub native auto-merge (squash) when Jeremy applies the
+# `maintainer-ready` label to a PR. "Native auto-merge" means: GitHub
+# waits for all required checks + required reviews to pass, then squashes
+# and merges. If any check fails or a required review is missing, nothing
+# merges — the label just arms the trigger.
+#
+# Fires ONLY on the `labeled` event and ONLY when:
+#   - the label being added is exactly `maintainer-ready`
+#   - the sender is Jeremy
+#
+# That triple-guard prevents:
+#   - a contributor from labeling their own PR ("maintainer-ready" on a
+#     fork PR — sender would be the fork owner, not Jeremy)
+#   - another maintainer / bot / automation from flipping the label
+#   - a synchronize/reopened event from re-arming automerge if the label
+#     was already present (the previous version fired on those events too,
+#     which created a race where a push to a labeled PR could re-enable
+#     automerge even if someone had turned it off)
+
 on:
   pull_request:
-    types: [labeled, synchronize, reopened, ready_for_review]
+    types: [labeled]
+
 permissions:
   pull-requests: write
   contents: write
+
 jobs:
   enable-auto-merge:
-    # Enable auto-merge on PRs explicitly marked by maintainers
     if: >-
-      contains(join(fromJson(toJson(github.event.pull_request.labels)).*.name, ','), 'maintainer-ready')
+      github.event.label.name == 'maintainer-ready' &&
+      github.event.sender.login == 'jeremylongshore'
     runs-on: ubuntu-latest
     steps:
       - name: Enable auto-merge (squash)

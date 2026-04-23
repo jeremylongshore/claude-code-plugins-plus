@@ -1,0 +1,40 @@
+{
+  "name": "@intentsolutionsio/auto-scaling-configurator",
+  "version": "1.0.0",
+  "description": "Configure auto-scaling policies for applications and infrastructure",
+  "keywords": [
+    "autoscaling",
+    "scaling",
+    "hpa",
+    "kubernetes",
+    "devops",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/devops/auto-scaling-configurator"
+  },
+  "homepage": "https://tonsofskills.com/plugins/auto-scaling-configurator",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "commands"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install auto-scaling-configurator\\\\n  or /plugin install auto-scaling-configurator@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

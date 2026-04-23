@@ -1,0 +1,39 @@
+{
+  "name": "@intentsolutionsio/langchain-py-pack",
+  "version": "2.0.0",
+  "description": "Claude Code skill pack for LangChain 1.0 + LangGraph 1.0 (Python) - 34 skills covering chains, agents, RAG, middleware, checkpointing, HITL, streaming, and production patterns",
+  "main": "README.md",
+  "type": "module",
+  "files": [
+    "README.md",
+    ".claude-plugin/",
+    "skills/",
+    "000-docs/"
+  ],
+  "keywords": [
+    "claude-code",
+    "claude-code-plugin",
+    "langchain",
+    "langgraph",
+    "python",
+    "llm-framework",
+    "agents",
+    "rag",
+    "ai-skills",
+    "saas-pack"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/saas-packs/langchain-py-pack"
+  },
+  "homepage": "https://tonsofskills.com/learn/langchain-py/",
+  "publishConfig": {
+    "access": "public"
+  }
+}
