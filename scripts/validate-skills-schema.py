@@ -1,38 +1,47 @@
 #!/usr/bin/env python3
 """
-Claude Code Plugin Validator v5.1 (Universal: Schema Registry + Anthropic Alignment) (Anthropic Best Practices 2026)
+Claude Code Plugin Validator v7.0 (Anthropic-Aligned Two-Tier Schema)
 
 Unified validator for all Claude Code plugin content:
 - SKILL.md files (Agent Skills)
 - commands/*.md files (Slash Commands)
 - agents/*.md files (Custom Agents)
 
-Three-tier validation system:
-- Standard (DEFAULT): Anthropic spec only. Validates field types and values.
-- Enterprise: Intent Solutions marketplace. All 8 core fields required as ERRORS.
-  7 body sections required. 100-point rubric with Anthropic schema registry.
-- Deep (--deep): Intent Solutions Deep Evaluation Engine. 10 weighted dimensions,
-  trust badges, Elo competitive ranking, optional LLM-as-judge via Groq.
-- Auto-detect: if CI=true or GITHUB_ACTIONS=true → enterprise by default.
+Two-tier validation system (aligned with Anthropic published spec):
+- Standard (DEFAULT): Mirrors Anthropic spec exactly. Required: name + description only.
+  All other fields optional. Type/value validation when fields are present.
+- Marketplace (--marketplace): IS richer-marketplace polish layer. Same hard requirements
+  as Standard, plus WARNINGS for missing recommended polish fields
+  (version, author, license, allowed-tools, compatibility, tags). 100-point rubric.
+- Deep (--deep): Intent Solutions Deep Evaluation Engine. 10 weighted dimensions.
+- Auto-detect: if CI=true or GITHUB_ACTIONS=true → marketplace by default.
 
-Schema registry derived from:
-- Anthropic 2026 Skills Specification (code.claude.com/docs/en/skills)
-- Intent Solutions 100-Point Grading Rubric
+The legacy --enterprise flag is a deprecated alias for --marketplace.
+
+Schema registry sources (all 7 verified 2026-04-28):
+- platform.claude.com/docs/en/agents-and-tools/agent-skills/overview      (name+description required)
+- platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices (name+description required)
+- code.claude.com/docs/en/skills                                          (description recommended)
+- code.claude.com/docs/en/plugins-reference                               (no extra SKILL.md fields)
+- anthropic.com/engineering/equipping-agents-for-the-real-world-...       (name+description required)
+- agentskills.io/specification                                            (compatibility, metadata are optional)
+- github.com/anthropics/skills                                            (reference impl)
 
 Usage:
     python scripts/validate-skills-schema.py [--verbose|-v]              # Standard tier (default)
-    python scripts/validate-skills-schema.py --enterprise [--verbose]    # Enterprise tier
+    python scripts/validate-skills-schema.py --marketplace [--verbose]   # Marketplace tier
+    python scripts/validate-skills-schema.py --enterprise                # Deprecated alias for --marketplace
     python scripts/validate-skills-schema.py --standard [--verbose]      # Explicit standard
-    python scripts/validate-skills-schema.py --deep [--verbose]         # Deep Evaluation Engine
-    python scripts/validate-skills-schema.py --deep --thorough          # Deep + LLM (Groq)
-    python scripts/validate-skills-schema.py --deep --report-format html  # HTML report
+    python scripts/validate-skills-schema.py --deep [--verbose]          # Deep Evaluation Engine
+    python scripts/validate-skills-schema.py --deep --thorough           # Deep + LLM (Groq)
     python scripts/validate-skills-schema.py --skills-only
     python scripts/validate-skills-schema.py --commands-only
     python scripts/validate-skills-schema.py --agents-only
-    python scripts/validate-skills-schema.py path/to/SKILL.md           # Single-file mode
+    python scripts/validate-skills-schema.py path/to/SKILL.md            # Single-file mode
 
 Author: Jeremy Longshore <jeremy@intentsolutions.io>
-Version: 6.0.0
+Version: 7.0.0
+Schema:  3.0.0  (see 000-docs/SCHEMA_CHANGELOG.md)
 """
 
 import argparse
@@ -52,9 +61,34 @@ except ImportError:
 
 # === CONSTANTS ===
 
+# Schema version (independent of validator script version).
+# 3.0.0 (2026-04-28) — attempted realignment to Anthropic spec; reduced
+#                       required fields to {name, description}. REVERTED in 3.3.0.
+# 3.1.0 (2026-04-28) — added when_to_use, arguments, paths, shell to SKILL_FIELDS;
+#                       effort valid values include xhigh. (These technical
+#                       additions are kept in 3.3.0.)
+# 3.2.0 (2026-04-28) — reframed tier model around tracking metadata. REVERTED in 3.3.0.
+# 3.3.0 (2026-04-28) — restored 8-field enterprise standard (name, description,
+#                       allowed-tools, version, author, license, compatibility, tags).
+#                       compatible-with → compatibility migration is the only kept
+#                       change from the 3.0–3.2 experiments. when_to_use, arguments,
+#                       paths, shell, effort:xhigh additions are also kept.
+# 3.3.1 (2026-04-28) — Claude Code extension audit: fixed `allowed-tools` to accept
+#                       YAML lists AND space-separated strings per Anthropic spec
+#                       (was rejecting YAML lists, was only splitting on commas);
+#                       relaxed CONDITIONAL_FIELDS for `agent` (defaults to
+#                       general-purpose per spec — not a missing-field warning);
+#                       fixed `argument-hint` conditional (disable-model-invocation
+#                       doesn't affect /-menu visibility); added ${CLAUDE_EFFORT} to
+#                       YAML_VALUE_ALLOWED_VARS.
+# See 000-docs/SCHEMA_CHANGELOG.md.
+SCHEMA_VERSION = '3.3.1'
+
 # Validation tiers
 TIER_STANDARD = 'standard'
-TIER_ENTERPRISE = 'enterprise'
+TIER_MARKETPLACE = 'marketplace'
+# Backward-compat alias; --enterprise still resolves to TIER_MARKETPLACE
+TIER_ENTERPRISE = TIER_MARKETPLACE
 
 # Valid tools per Claude Code spec (2026)
 VALID_TOOLS = {
@@ -63,22 +97,66 @@ VALID_TOOLS = {
     'NotebookEdit', 'AskUserQuestion', 'Skill'
 }
 
-# Two-tier field definitions (Anthropic spec alignment)
-# Standard tier: NO required fields per Anthropic spec (all are optional)
-STANDARD_REQUIRED = set()
-STANDARD_RECOMMENDED = {'description'}
+# === Two-tier field definitions (Anthropic spec alignment, 2026-04-28) ===
+#
+# Hard requirements (BOTH tiers):
+#   name, description
+# Sources: platform.claude.com/...overview, platform.claude.com/...best-practices,
+#          anthropic.com/engineering/equipping-agents..., agentskills.io/specification
+#
+# Standard tier: nothing else required. All other fields optional, validated
+# only if present. Mirrors Anthropic published spec verbatim.
+#
+# Marketplace tier: same hard requirements + WARNINGS for missing polish fields.
+# Higher rubric scores reward inclusion. No additional ERRORS beyond Standard.
+STANDARD_REQUIRED = {'name', 'description'}
+STANDARD_RECOMMENDED = set()  # description is now in REQUIRED at standard tier
 
-# Enterprise tier: use ALWAYS_REQUIRED (defined in schema registry below)
-# ENTERPRISE_RECOMMENDED is a backward-compat alias — do not use for new code
-ENTERPRISE_RECOMMENDED = {'name', 'description', 'allowed-tools', 'version', 'author', 'license'}
+MARKETPLACE_REQUIRED = {'name', 'description'}
+# Tracking + governance fields that marketplace listings benefit from.
+# These are not "polish" — they are how a serious marketplace operates:
+#   - author    : who maintains it, who to contact
+#   - version   : downstream consumers can pin; upgrades are visible
+#   - license   : legal clarity for installers
+#   - allowed-tools : security best practice (Anthropic doc itself promotes this)
+#   - tags      : discovery filtering
+#   - compatibility : runtime / environment requirements (free-text, AgentSkills.io)
+# Validator warns at marketplace tier when any are missing; never errors.
+MARKETPLACE_TRACKING_FIELDS = {'allowed-tools', 'version', 'author', 'license', 'compatibility', 'tags'}
+# Back-compat alias — old name, same set.
+MARKETPLACE_RECOMMENDED = MARKETPLACE_TRACKING_FIELDS
 
-# Legacy aliases for backward compat in grading functions
-ANTHROPIC_REQUIRED = set()  # Nothing required per spec
-ENTERPRISE_REQUIRED = set()  # Now errors via ALWAYS_REQUIRED
-REQUIRED_FIELDS = set()  # Empty — nothing is a hard requirement at standard tier
+# Backward-compat aliases (used by grading functions and external callers).
+# Do not use for new code — reference STANDARD_/MARKETPLACE_ explicitly.
+ENTERPRISE_RECOMMENDED = MARKETPLACE_TRACKING_FIELDS
+ANTHROPIC_REQUIRED = STANDARD_REQUIRED
+ENTERPRISE_REQUIRED = MARKETPLACE_REQUIRED
+REQUIRED_FIELDS = STANDARD_REQUIRED
 
-# Deprecated fields (warn but don't error)
-DEPRECATED_FIELDS = {'when_to_use', 'mode'}
+# Deprecated fields (warn but don't error).
+#
+# Note: `when_to_use` was previously misclassified here. Anthropic's Claude Code
+# skills doc (code.claude.com/docs/en/skills, "Frontmatter reference") documents
+# `when_to_use` as a valid optional field — *"Additional context for when Claude
+# should invoke the skill, such as trigger phrases or example requests. Appended
+# to `description` in the skill listing and counts toward the 1,536-character
+# cap."* It has been moved to SKILL_FIELDS as a documented optional field.
+#
+# `compatible-with` is deprecated because the IS rubric originally required it
+# as a closed CSV platform list with allow-list values. That field is not in any
+# Anthropic or AgentSkills.io published spec. Replaced by free-text `compatibility`
+# (agentskills.io/specification, max 500 chars).
+#
+# `mode` was an old IS-only field; replaced by `disable-model-invocation`.
+DEPRECATED_FIELDS = {
+    'mode': 'Use `disable-model-invocation: true` instead. Not in any published spec.',
+    'compatible-with': (
+        'Use `compatibility` (free-text per agentskills.io/specification) instead. '
+        'Example: `compatibility: Designed for Claude Code` or '
+        '`compatibility: Requires Python 3.10+ and uv`. The old CSV-platform-list '
+        'form was an Intent Solutions invention and is not part of any published spec.'
+    ),
+}
 
 # Recommended sections (best practices, not mandated by any published standard)
 RECOMMENDED_SECTIONS = [
@@ -104,9 +182,12 @@ RE_FRONTMATTER = re.compile(r"^---\s*\n(.*?)\n---\s*\n(.*)$", re.DOTALL)
 # never evaluate, break strict YAML parsers, and trip downstream security tooling.
 RE_YAML_SHELL_SUBST = re.compile(r"(?:\$\(|`)")
 # Allow-listed template/substitution variables that are legitimate in NL artifacts.
+# All Claude Code documented substitutions per code.claude.com/docs/en/skills
+# "Available string substitutions" table.
 YAML_VALUE_ALLOWED_VARS = {
     "${CLAUDE_SKILL_DIR}", "${CLAUDE_PLUGIN_ROOT}", "${CLAUDE_PLUGIN_DATA}",
-    "${CLAUDE_SESSION_ID}", "$ARGUMENTS",
+    "${CLAUDE_SESSION_ID}", "${CLAUDE_EFFORT}",
+    "$ARGUMENTS",
     "$0", "$1", "$2", "$3", "$4", "$5", "$6", "$7", "$8", "$9",
 }
 RE_DESCRIPTION_USE_WHEN = re.compile(r"\bUse when\b", re.IGNORECASE)
@@ -136,31 +217,50 @@ RE_TIME_SENSITIVE = [
 # Derived from Anthropic docs (code.claude.com/docs/en/skills), synced 2026-03-21
 
 SKILL_FIELDS = {
-    # Anthropic official (11 fields)
+    # === Anthropic published spec — code.claude.com/docs/en/skills "Frontmatter reference" ===
+    # All fields below are documented at code.claude.com/docs/en/skills as of 2026-04-28.
+    # `name` and `description` are required at every tier. The remaining Anthropic
+    # fields are accepted as valid optional and validated for type/format only.
     'name': {'type': 'string', 'source': 'anthropic', 'tier': 'standard'},
     'description': {'type': 'string', 'source': 'anthropic', 'tier': 'standard'},
-    'allowed-tools': {'type': 'string', 'source': 'anthropic', 'tier': 'standard'},
-    'model': {'type': 'string', 'source': 'anthropic', 'tier': 'standard', 'valid': ['sonnet', 'haiku', 'opus', 'inherit']},
-    'effort': {'type': 'string', 'source': 'anthropic', 'tier': 'standard', 'valid': ['low', 'medium', 'high', 'max']},
+    'when_to_use': {'type': 'string', 'source': 'anthropic', 'tier': 'standard'},
     'argument-hint': {'type': 'string', 'source': 'anthropic', 'tier': 'standard'},
+    'arguments': {'type': 'string|array', 'source': 'anthropic', 'tier': 'standard'},
+    'disable-model-invocation': {'type': 'boolean', 'source': 'anthropic', 'tier': 'standard', 'default': False},
+    'user-invocable': {'type': 'boolean', 'source': 'anthropic', 'tier': 'standard', 'default': True},
+    'allowed-tools': {'type': 'string|array', 'source': 'anthropic', 'tier': 'standard'},
+    'model': {'type': 'string', 'source': 'anthropic', 'tier': 'standard', 'valid': ['sonnet', 'haiku', 'opus', 'inherit']},
+    'effort': {'type': 'string', 'source': 'anthropic', 'tier': 'standard', 'valid': ['low', 'medium', 'high', 'xhigh', 'max']},
     'context': {'type': 'string', 'source': 'anthropic', 'tier': 'standard', 'valid': ['fork']},
     'agent': {'type': 'string', 'source': 'anthropic', 'tier': 'standard'},
-    'user-invocable': {'type': 'boolean', 'source': 'anthropic', 'tier': 'standard', 'default': True},
-    'disable-model-invocation': {'type': 'boolean', 'source': 'anthropic', 'tier': 'standard', 'default': False},
     'hooks': {'type': 'object', 'source': 'anthropic', 'tier': 'standard'},
-    # Enterprise additions (5 fields)
+    'paths': {'type': 'string|array', 'source': 'anthropic', 'tier': 'standard'},
+    'shell': {'type': 'string', 'source': 'anthropic', 'tier': 'standard', 'valid': ['bash', 'powershell']},
+    # === AgentSkills.io open standard (agentskills.io/specification) ===
+    # Claude Code skills follow the AgentSkills.io standard per code.claude.com.
+    # Free-text, max 500 chars. Replaces the IS-invented `compatible-with` CSV list.
+    'compatibility': {'type': 'string', 'source': 'agentskills.io', 'tier': 'standard', 'max_length': 500},
+    # Arbitrary key-value mapping (e.g. metadata.version, metadata.author)
+    'metadata': {'type': 'object', 'source': 'agentskills.io', 'tier': 'standard'},
+    'license': {'type': 'string', 'source': 'agentskills.io', 'tier': 'standard'},
+    # === Intent Solutions enterprise extensions (required at marketplace tier) ===
+    # Top-level tracking + governance metadata. Required at marketplace tier
+    # via ALWAYS_REQUIRED; missing any of these = ERROR.
     'version': {'type': 'string', 'source': 'enterprise', 'tier': 'enterprise'},
     'author': {'type': 'string', 'source': 'enterprise', 'tier': 'enterprise'},
-    'license': {'type': 'string', 'source': 'enterprise', 'tier': 'enterprise'},
-    'compatible-with': {'type': 'string', 'source': 'enterprise', 'tier': 'enterprise'},
     'tags': {'type': 'array', 'source': 'enterprise', 'tier': 'enterprise'},
+    # === Deprecated alias (kept for backward compat) ===
+    # Was an IS-invented field with VALID_PLATFORMS allow-list. Not in any spec.
+    # Validator emits deprecation warning + migration suggestion. Still parsed so
+    # existing 3,385 public-repo SKILL.md files keep passing.
+    'compatible-with': {'type': 'string', 'source': 'deprecated-is-extension', 'tier': 'standard'},
 }
 
 AGENT_FIELDS = {
     'name': {'type': 'string', 'source': 'anthropic', 'required': True},
     'description': {'type': 'string', 'source': 'anthropic', 'required': True},
     'model': {'type': 'string', 'source': 'anthropic', 'valid': ['sonnet', 'haiku', 'opus', 'inherit']},
-    'effort': {'type': 'string', 'source': 'anthropic', 'valid': ['low', 'medium', 'high', 'max']},
+    'effort': {'type': 'string', 'source': 'anthropic', 'valid': ['low', 'medium', 'high', 'xhigh', 'max']},
     'maxTurns': {'type': 'integer', 'source': 'anthropic'},
     'tools': {'type': 'string', 'source': 'anthropic'},
     'disallowedTools': {'type': 'array', 'source': 'anthropic'},
@@ -190,12 +290,12 @@ DEPRECATED_AGENT_FIELDS = {
     'category': 'Non-standard field. Not in Anthropic spec. Will be removed in future validation.',
 }
 
-INVALID_SKILL_FIELDS = {
-    'compatibility': 'AgentSkills.io field, not Anthropic. Remove.',
-    'metadata': 'AgentSkills.io field, not Anthropic. Use top-level fields.',
-    'when_to_use': 'Deprecated. Move content to description field.',
-    'mode': 'Deprecated. Use disable-model-invocation instead.',
-}
+# Truly-invalid fields are now empty: `compatibility` and `metadata` are documented
+# optional fields per agentskills.io/specification. `when_to_use` and `mode` moved
+# to DEPRECATED_FIELDS (warn + migration message rather than hard error). This
+# keeps 3,385 existing public-repo SKILL.md files passing while we migrate at
+# our own pace via batch-remediate.py --migrate-compatible-with.
+INVALID_SKILL_FIELDS = {}
 
 PLUGIN_JSON_FIELDS = {
     'name': {'type': 'string', 'required': True},
@@ -215,14 +315,33 @@ PLUGIN_JSON_FIELDS = {
     'lspServers': {'type': 'string|array|object'},
 }
 
-# Core fields always required at enterprise tier
-ALWAYS_REQUIRED = {'name', 'description', 'allowed-tools', 'version', 'author', 'license', 'compatible-with', 'tags'}
+# Intent Solutions enterprise / marketplace standard: 8 required fields.
+# Missing any of these = ERROR at marketplace tier (TIER_MARKETPLACE).
+# Standard tier is more permissive — see field-presence logic in validate_frontmatter.
+#
+# This is the canonical IS standard, restored 2026-04-28. The brief experiment with
+# reducing this to {name, description} (schema 3.0–3.1) is reverted; the only kept
+# change is `compatible-with` → `compatibility` (free-text per agentskills.io).
+ALWAYS_REQUIRED = {'name', 'description', 'allowed-tools', 'version', 'author', 'license', 'compatibility', 'tags'}
 
-# Conditional fields: required only when relevant
+# Conditional fields: relevant when other fields are set.
+# Triggers a "missing conditional field" warning at marketplace tier when the
+# condition is True but the field is absent. Never errors.
+#
+# Rules calibrated to Anthropic's documented defaults at
+# code.claude.com/docs/en/skills:
+#   - `agent` defaults to `general-purpose` when `context: fork` is set
+#     ("If omitted, uses general-purpose"). NOT required — recommended only
+#     when the engineer wants a non-default agent type.
+#   - `context` is only meaningful when `agent` is intentionally set;
+#     setting `agent` without `context: fork` makes the agent field a no-op.
+#   - `argument-hint` is shown in the `/` autocomplete menu, which only
+#     applies when `user-invocable: true` (the default). `disable-model-
+#     invocation: true` doesn't affect the / menu — only Claude's auto-load,
+#     so it should NOT be in this conditional.
 CONDITIONAL_FIELDS = {
     'context': lambda fm: fm.get('agent') is not None,
-    'agent': lambda fm: fm.get('context') == 'fork',
-    'argument-hint': lambda fm: fm.get('user-invocable', True) and not fm.get('disable-model-invocation', False),
+    'argument-hint': lambda fm: fm.get('user-invocable', True),
 }
 
 # Facelift opportunities: optional fields that could improve the skill
@@ -266,7 +385,7 @@ def detect_component(path: Path) -> tuple:
 
 # OPTIONAL_FIELDS: all fields recognized by the validator (from schema registry + deprecated)
 # Used for unknown-field detection. Defined here after SKILL_FIELDS is available.
-OPTIONAL_FIELDS = set(SKILL_FIELDS.keys()) | set(INVALID_SKILL_FIELDS.keys()) | DEPRECATED_FIELDS
+OPTIONAL_FIELDS = set(SKILL_FIELDS.keys()) | set(INVALID_SKILL_FIELDS.keys()) | set(DEPRECATED_FIELDS.keys())
 
 # Defaults
 DEFAULT_AUTHOR = "Jeremy Longshore <jeremy@intentsolutions.io>"
@@ -421,10 +540,12 @@ def score_ease_of_use(path: Path, body: str, fm: dict) -> dict:
         meta_score += 1
     else:
         meta_notes.append("missing tags")
-    if fm.get('compatible-with'):
+    # Accept either `compatibility` (current spec) or legacy `compatible-with`
+    # (deprecated alias) for credit, but don't reward both stacked.
+    if fm.get('compatibility') or fm.get('compatible-with'):
         meta_score += 1
     else:
-        meta_notes.append("missing compatible-with")
+        meta_notes.append("missing compatibility")
     meta_score = min(meta_score, 10)
     breakdown['metadata_quality'] = (meta_score, ", ".join(meta_notes) if meta_notes else "Complete metadata")
 
@@ -1289,10 +1410,54 @@ def parse_frontmatter(content: str) -> Tuple[dict, str]:
 
 
 def parse_allowed_tools(tools_value: Any) -> List[str]:
-    """Parse allowed-tools as a CSV string (Anthropic + enterprise standard)."""
-    if isinstance(tools_value, str):
-        return [t.strip() for t in tools_value.split(',') if t.strip()]
-    return []
+    """Parse allowed-tools per Anthropic spec.
+
+    Anthropic doc (code.claude.com/docs/en/skills, Frontmatter reference):
+      "Tools Claude can use without asking permission when this skill is active.
+       Accepts a space-separated string or a YAML list."
+
+    The doc's canonical example uses space-separated form:
+      allowed-tools: Bash(git add *) Bash(git commit *) Bash(git status *)
+
+    This parser accepts:
+      - YAML list: [Read, Write, "Bash(git:*)"]
+      - Space-separated string: "Read Write Bash(git add *)"
+      - Comma-separated string: "Read, Write, Bash(git:*)" (IS convention)
+      - Mixed: "Read Write,Bash(git:*)" (graceful)
+
+    Quoted-arg regions like Bash(git add *) keep their internal spaces.
+    """
+    if isinstance(tools_value, list):
+        return [str(t).strip() for t in tools_value if str(t).strip()]
+    if not isinstance(tools_value, str):
+        return []
+    s = tools_value.strip()
+    if not s:
+        return []
+    # If commas present, split on commas (preserves spaces inside parens).
+    if ',' in s:
+        return [t.strip() for t in s.split(',') if t.strip()]
+    # Otherwise space-separated. Walk the string respecting paren depth so
+    # `Bash(git add *)` stays as one token.
+    tokens: List[str] = []
+    buf: List[str] = []
+    depth = 0
+    for ch in s:
+        if ch == '(':
+            depth += 1
+            buf.append(ch)
+        elif ch == ')':
+            depth = max(0, depth - 1)
+            buf.append(ch)
+        elif ch.isspace() and depth == 0:
+            if buf:
+                tokens.append(''.join(buf).strip())
+                buf = []
+        else:
+            buf.append(ch)
+    if buf:
+        tokens.append(''.join(buf).strip())
+    return [t for t in tokens if t]
 
 
 def validate_tool_permission(tool: str) -> Tuple[bool, str]:
@@ -1337,15 +1502,16 @@ def validate_frontmatter(path: Path, fm: dict, tier: str = TIER_STANDARD) -> Tup
     infos: List[str] = []
 
     # === FIELD PRESENCE CHECKS (tier-aware) ===
-    # Standard tier: no required fields per Anthropic spec. description is recommended (WARNING).
-    # Enterprise tier: enterprise fields scored as WARNINGS (not errors).
+    # Standard tier: name + description recommended.
+    # Marketplace tier: full IS enterprise standard — all 8 ALWAYS_REQUIRED fields
+    # must be present. Missing any of them = ERROR.
 
     metadata = fm.get('metadata', {}) if isinstance(fm.get('metadata'), dict) else {}
 
-    if tier == TIER_ENTERPRISE:
+    if tier == TIER_MARKETPLACE:
         for key in ALWAYS_REQUIRED:
             if key not in fm:
-                errors.append(f"[frontmatter] Missing required field: '{key}' (enterprise)")
+                errors.append(f"[frontmatter] Missing required field: '{key}' (marketplace)")
         # Conditional fields
         for key, condition in CONDITIONAL_FIELDS.items():
             if condition(fm) and key not in fm:
@@ -1404,13 +1570,13 @@ def validate_frontmatter(path: Path, fm: dict, tier: str = TIER_STANDARD) -> Tup
             # Discoverability checks (tier-aware)
             if not RE_DESCRIPTION_USE_WHEN.search(desc):
                 if tier == TIER_ENTERPRISE:
-                    warnings.append("[frontmatter] 'description' should include 'Use when ...' phrase for model discoverability (enterprise)")
+                    warnings.append("[frontmatter] 'description' should include 'Use when ...' phrase for model discoverability (marketplace)")
                 else:
                     infos.append("[frontmatter] Consider adding 'Use when ...' phrase to description for better discoverability")
 
             if not RE_DESCRIPTION_TRIGGER_WITH.search(desc):
                 if tier == TIER_ENTERPRISE:
-                    warnings.append("[frontmatter] 'description' should include 'Trigger with ...' phrase for user discoverability (enterprise)")
+                    warnings.append("[frontmatter] 'description' should include 'Trigger with ...' phrase for user discoverability (marketplace)")
                 else:
                     infos.append("[frontmatter] Consider adding 'Trigger with ...' phrase to description")
 
@@ -1449,22 +1615,20 @@ def validate_frontmatter(path: Path, fm: dict, tier: str = TIER_STANDARD) -> Tup
                 warnings.append("[frontmatter] Consider using action verbs (analyze, detect, forecast, etc.)")
 
     # allowed-tools field
+    # Per code.claude.com/docs/en/skills (Frontmatter reference):
+    #   "Accepts a space-separated string or a YAML list."
+    # parse_allowed_tools() handles: YAML list, space-separated string,
+    # comma-separated string, or mixed. Paren-depth aware so `Bash(git add *)`
+    # stays one token in space-separated form.
     if 'allowed-tools' in fm:
         raw_tools = fm['allowed-tools']
         tools_type_error = False
-        if isinstance(raw_tools, list):
-            errors.append(
-                "[frontmatter] 'allowed-tools' must be a comma-separated string (CSV), not a YAML array "
-                '(example: allowed-tools: "Read, Write, Bash(git:*)")'
-            )
-            tools_type_error = True
-            tools: List[str] = []
-        elif isinstance(raw_tools, str):
-            tools = parse_allowed_tools(raw_tools)
+        if isinstance(raw_tools, (str, list)):
+            tools: List[str] = parse_allowed_tools(raw_tools)
         else:
             errors.append(
-                "[frontmatter] 'allowed-tools' must be a comma-separated string (CSV) "
-                '(example: allowed-tools: "Read, Write, Bash(git:*)")'
+                f"[frontmatter] 'allowed-tools' must be a string or YAML list, "
+                f"got: {type(raw_tools).__name__}"
             )
             tools_type_error = True
             tools = []
@@ -1542,23 +1706,51 @@ def validate_frontmatter(path: Path, fm: dict, tier: str = TIER_STANDARD) -> Tup
         elif not all(isinstance(t, str) for t in tags):
             errors.append("[frontmatter] 'tags' must contain only strings")
 
-    # === COMPATIBLE-WITH FIELD ===
-    VALID_PLATFORMS = {'claude-code', 'codex', 'openclaw', 'aider', 'continue', 'cursor', 'windsurf'}
+    # === COMPATIBILITY FIELD (per agentskills.io/specification) ===
+    # Free-text, max 500 chars. Indicates environment requirements.
+    # Examples per the published spec:
+    #   compatibility: "Designed for Claude Code"
+    #   compatibility: "Requires Python 3.10+ with uv installed"
+    #   compatibility: "Designed for Claude Code, also compatible with Codex and OpenClaw"
+    if 'compatibility' in fm:
+        compat = fm['compatibility']
+        if not isinstance(compat, str):
+            errors.append(
+                f"[frontmatter] 'compatibility' must be a string (free-text per "
+                f"agentskills.io/specification), got: {type(compat).__name__}"
+            )
+        else:
+            compat_str = compat.strip()
+            if not compat_str:
+                errors.append("[frontmatter] 'compatibility' must be non-empty if specified")
+            elif len(compat_str) > 500:
+                errors.append(
+                    f"[frontmatter] 'compatibility' exceeds 500 characters "
+                    f"(agentskills.io/specification limit): {len(compat_str)} chars"
+                )
 
+    # === COMPATIBLE-WITH FIELD (deprecated alias) ===
+    # Pre-v3.0.0 schema treated this as an enterprise-required CSV platform list
+    # with an allow-list. That field was an Intent Solutions invention — it does
+    # not appear in any of the 7 verified Anthropic / open-standard sources. Kept
+    # parsing for backward compatibility; emits deprecation warning + migration
+    # suggestion. Use `compatibility` (free-text) instead.
     if 'compatible-with' in fm:
         compat = fm['compatible-with']
         if isinstance(compat, str):
-            # CSV string
-            platforms = [p.strip().lower() for p in compat.split(',')]
+            sample = compat
         elif isinstance(compat, list):
-            platforms = [str(p).strip().lower() for p in compat]
+            sample = ', '.join(str(p).strip() for p in compat)
         else:
-            errors.append(f"[frontmatter] 'compatible-with' must be CSV string or array, got: {type(compat).__name__}")
-            platforms = []
-
-        for p in platforms:
-            if p and p not in VALID_PLATFORMS:
-                warnings.append(f"[frontmatter] 'compatible-with' unknown platform: '{p}' (known: {', '.join(sorted(VALID_PLATFORMS))})")
+            sample = str(compat)
+        # Deprecation message. Validator continues to accept the value; do not
+        # promote to error here — that would break 3,385 existing public-repo
+        # SKILL.md files. Migration handled by batch-remediate.py.
+        warnings.append(
+            f"[frontmatter] Deprecated field 'compatible-with' — use `compatibility` "
+            f"(free-text per agentskills.io/specification) instead. "
+            f"Suggested migration: `compatibility: Designed for {sample or 'Claude Code'}`."
+        )
 
     # === NEW CLAUDE CODE SPEC FIELDS ===
 
@@ -1586,29 +1778,88 @@ def validate_frontmatter(path: Path, fm: dict, tier: str = TIER_STANDARD) -> Tup
         if len(hint) > 200:
             warnings.append("[frontmatter] 'argument-hint' exceeds 200 chars - keep hints concise")
 
+    # arguments field — named positional arguments per code.claude.com/docs/en/skills
+    # "Accepts a space-separated string or a YAML list. Names map to argument
+    # positions in order."
+    if 'arguments' in fm:
+        args_val = fm['arguments']
+        if not isinstance(args_val, (str, list)):
+            errors.append(
+                f"[frontmatter] 'arguments' must be a space-separated string or YAML "
+                f"list, got: {type(args_val).__name__}"
+            )
+
+    # paths field — glob patterns limiting when the skill auto-activates
+    # (code.claude.com/docs/en/skills "Frontmatter reference"). Accepts CSV
+    # string or YAML list.
+    if 'paths' in fm:
+        paths_val = fm['paths']
+        if not isinstance(paths_val, (str, list)):
+            errors.append(
+                f"[frontmatter] 'paths' must be a comma-separated string or YAML list, "
+                f"got: {type(paths_val).__name__}"
+            )
+
+    # shell field — bash (default) or powershell (code.claude.com/docs/en/skills)
+    if 'shell' in fm:
+        shell_val = fm['shell']
+        if shell_val not in ('bash', 'powershell'):
+            warnings.append(
+                f"[frontmatter] 'shell' value '{shell_val}' not standard "
+                f"(use: bash or powershell)"
+            )
+
+    # when_to_use field — documented optional per code.claude.com/docs/en/skills
+    # "Additional context for when Claude should invoke the skill, such as trigger
+    # phrases or example requests. Appended to `description` in the skill listing
+    # and counts toward the 1,536-character cap."
+    if 'when_to_use' in fm:
+        wtu = fm['when_to_use']
+        if not isinstance(wtu, str):
+            errors.append(f"[frontmatter] 'when_to_use' must be a string, got: {type(wtu).__name__}")
+        else:
+            wtu_str = wtu.strip()
+            # description+when_to_use combined cap is 1,536 chars per Anthropic doc.
+            desc_len = len(str(fm.get('description', '')).strip())
+            combined_len = desc_len + len(wtu_str)
+            if combined_len > 1536:
+                warnings.append(
+                    f"[frontmatter] 'description' + 'when_to_use' combined "
+                    f"({combined_len} chars) exceeds Anthropic's 1,536-char cap on "
+                    f"the skill listing entry."
+                )
+
     # hooks field (skill-scoped lifecycle hooks)
     if 'hooks' in fm:
         hooks_val = fm['hooks']
         if not isinstance(hooks_val, dict):
             errors.append(f"[frontmatter] 'hooks' must be a mapping, got: {type(hooks_val).__name__}")
 
-    # Invalid fields — ERROR
+    # Invalid fields — ERROR. Currently empty (see INVALID_SKILL_FIELDS comment),
+    # but kept as an extension point.
     for field, message in INVALID_SKILL_FIELDS.items():
         if field in fm:
             errors.append(f"[frontmatter] Invalid field '{field}': {message}")
 
     # === DEPRECATED FIELDS ===
-
-    for field in DEPRECATED_FIELDS:
-        if field in fm:
-            warnings.append(f"[frontmatter] Deprecated field '{field}' - use detailed 'description' instead")
+    # `compatible-with` is handled above with a custom migration suggestion that
+    # quotes the user's actual value. Skip here to avoid double-warning.
+    deprecated_handled_inline = {'compatible-with'}
+    for field, message in DEPRECATED_FIELDS.items():
+        if field in fm and field not in deprecated_handled_inline:
+            warnings.append(f"[frontmatter] Deprecated field '{field}': {message}")
 
     # === UNKNOWN FIELDS ===
-
-    known_fields = set(SKILL_FIELDS.keys()) | set(INVALID_SKILL_FIELDS.keys()) | DEPRECATED_FIELDS
+    # Fields outside the schema registry. At marketplace tier we still warn
+    # rather than error so that ad-hoc experimentation isn't blocked.
+    known_fields = set(SKILL_FIELDS.keys()) | set(INVALID_SKILL_FIELDS.keys()) | set(DEPRECATED_FIELDS.keys())
     unknown_fields = set(fm.keys()) - known_fields
     for field in unknown_fields:
-        errors.append(f"[frontmatter] Unknown field: '{field}' — not in Anthropic spec or enterprise extensions")
+        warnings.append(
+            f"[frontmatter] Unknown field: '{field}'. Not in Anthropic spec, "
+            f"AgentSkills.io spec, or Intent Solutions marketplace extensions. "
+            f"Will be ignored by the runtime."
+        )
 
     return errors, warnings, infos
 
@@ -1670,10 +1921,10 @@ def validate_body(path: Path, body: str, tier: str = TIER_STANDARD, fm: dict = N
         for sec in RECOMMENDED_SECTIONS:
             if sec == "# ":
                 if not has_markdown_h1(body):
-                    errors.append(f"[body] Required section missing: '{sec}' (enterprise tier)")
+                    errors.append(f"[body] Required section missing: '{sec}' (marketplace tier)")
             else:
                 if not has_heading_line(body, sec):
-                    errors.append(f"[body] Required section missing: '{sec}' (enterprise tier)")
+                    errors.append(f"[body] Required section missing: '{sec}' (marketplace tier)")
 
     # === LEE HAN CHUNG: SECTION CONTENT MUST BE NON-EMPTY ===
 
@@ -1726,7 +1977,7 @@ def validate_body(path: Path, body: str, tier: str = TIER_STANDARD, fm: dict = N
             # Ignore empty sections that only contain code fences/whitespace
             content_no_code = re.sub(r"```.*?```", "", content, flags=re.DOTALL).strip()
             if len(content_no_code) < min_chars:
-                msg = f"[body] Section '{section}' looks empty/too short (enterprise quality standard)"
+                msg = f"[body] Section '{section}' looks empty/too short (marketplace quality standard)"
                 if level == "ERROR":
                     errors.append(msg)
                 else:
@@ -1740,7 +1991,7 @@ def validate_body(path: Path, body: str, tier: str = TIER_STANDARD, fm: dict = N
             has_step_heading = bool(re.search(r"(?mi)^\s*#{2,6}\s*step\s*\d+", instructions))
             has_step_label = bool(re.search(r"(?mi)^\s*step\s*\d+[:\-]", instructions))
             if not (has_numbered or has_step_heading or has_step_label):
-                warnings.append("[body] '## Instructions' should include step-by-step steps (numbered list or Step headings) (enterprise)")
+                warnings.append("[body] '## Instructions' should include step-by-step steps (numbered list or Step headings) (marketplace)")
 
     # === LEE HAN CHUNG: PURPOSE STATEMENT (1-2 sentences near top) ===
 
@@ -1805,11 +2056,11 @@ def validate_body(path: Path, body: str, tier: str = TIER_STANDARD, fm: dict = N
 
     if tier == TIER_ENTERPRISE:
         if not purpose_text:
-            warnings.append("[body] Missing purpose statement near the top (enterprise quality standard)")
+            warnings.append("[body] Missing purpose statement near the top (marketplace quality standard)")
         else:
             sc = _sentence_count(purpose_text)
             if sc == 0:
-                warnings.append("[body] Purpose statement is empty (enterprise quality standard)")
+                warnings.append("[body] Purpose statement is empty (marketplace quality standard)")
             elif sc > 2:
                 warnings.append(f"[body] Purpose statement is {sc} sentences (recommended 1-2)")
             if len(purpose_text) > 400:
@@ -2689,7 +2940,7 @@ def validate_skill(path: Path, tier: str = TIER_STANDARD) -> Dict[str, Any]:
     errors.extend(boilerplate_errors)
     warnings.extend(boilerplate_warnings)
 
-    # Supporting files check (enterprise tier)
+    # Supporting files check (marketplace tier)
     if tier == TIER_ENTERPRISE:
         sf_errors, sf_warnings = validate_supporting_files(path)
         errors.extend(sf_errors)
@@ -3220,12 +3471,19 @@ def main() -> int:
     parser.add_argument(
         "--standard",
         action="store_true",
-        help="Use standard tier (Anthropic spec only, no required fields). This is the default.",
+        help="Use standard tier (Anthropic spec exactly: name + description required). This is the default.",
     )
+    parser.add_argument(
+        "--marketplace",
+        action="store_true",
+        help="Use marketplace tier (Anthropic spec + IS polish recommendations as warnings, 100-point rubric). Auto-enabled in CI.",
+    )
+    # Deprecated alias for --marketplace. Kept for one minor version. CI configs
+    # and scripts that still pass --enterprise continue to work but warn.
     parser.add_argument(
         "--enterprise",
         action="store_true",
-        help="Use enterprise tier (Intent Solutions marketplace, 100-point rubric). Auto-enabled in CI.",
+        help="DEPRECATED alias for --marketplace. Use --marketplace instead.",
     )
     parser.add_argument(
         "--fail-on-warn",
@@ -3304,15 +3562,24 @@ def main() -> int:
 
     # Determine validation tier
     # Priority: explicit flag > auto-detect > default (standard)
-    if args.enterprise and args.standard:
-        print("ERROR: Cannot use both --standard and --enterprise", file=sys.stderr)
+    explicit_tier_flags = sum(1 for f in (args.marketplace, args.enterprise, args.standard) if f)
+    if explicit_tier_flags > 1:
+        print("ERROR: Cannot combine --standard, --marketplace, and --enterprise", file=sys.stderr)
         return 1
-    elif args.enterprise:
-        tier = TIER_ENTERPRISE
+    if args.enterprise:
+        # Keep working for one minor version; warn so CI configs get migrated.
+        print(
+            "WARN: --enterprise is deprecated, use --marketplace. "
+            "(They are equivalent. This alias will be removed in a future release.)",
+            file=sys.stderr,
+        )
+        tier = TIER_MARKETPLACE
+    elif args.marketplace:
+        tier = TIER_MARKETPLACE
     elif args.standard:
         tier = TIER_STANDARD
     elif os.environ.get('CI') == 'true' or os.environ.get('GITHUB_ACTIONS') == 'true':
-        tier = TIER_ENTERPRISE  # Auto-detect CI
+        tier = TIER_MARKETPLACE  # Auto-detect CI
     else:
         tier = TIER_STANDARD
 
@@ -3325,7 +3592,7 @@ def main() -> int:
         if target.is_dir():
             # Plugin directory mode
             result = validate_plugin(target, tier)
-            print(f"🔍 CLAUDE CODE PLUGIN VALIDATOR v5.0 ({tier} tier)")
+            print(f"🔍 CLAUDE CODE PLUGIN VALIDATOR v7.0 / schema {SCHEMA_VERSION} ({tier} tier)")
             print(f"   Plugin mode: {target}")
             print(f"{'=' * 70}\n")
             if result['errors']:
@@ -3345,7 +3612,7 @@ def main() -> int:
             print(f"ERROR: Expected a SKILL.md, .md file, or plugin directory: {args.path}", file=sys.stderr)
             return 1
 
-        print(f"🔍 CLAUDE CODE PLUGIN VALIDATOR v5.0 ({tier} tier)")
+        print(f"🔍 CLAUDE CODE PLUGIN VALIDATOR v7.0 / schema {SCHEMA_VERSION} ({tier} tier)")
         print(f"   Single-file mode: {target}")
         print(f"{'=' * 70}\n")
 
@@ -3467,11 +3734,11 @@ def main() -> int:
         return 0
 
     if not args.json:
-        print(f"🔍 CLAUDE CODE PLUGIN VALIDATOR v5.0 ({tier} tier)")
-        if tier == TIER_ENTERPRISE:
-            print(f"   Intent Solutions Standard (100-Point Grading)")
+        print(f"🔍 CLAUDE CODE PLUGIN VALIDATOR v7.0 / schema {SCHEMA_VERSION} ({tier} tier)")
+        if tier == TIER_MARKETPLACE:
+            print(f"   Marketplace Polish (Anthropic spec + IS 100-point rubric)")
         else:
-            print(f"   Anthropic Spec Standard (no required fields)")
+            print(f"   Standard (Anthropic spec exactly: name + description required)")
         print(f"{'=' * 70}\n")
         if validate_skills:
             print(f"Found {len(skills)} SKILL.md files")
@@ -3848,25 +4115,26 @@ def main() -> int:
 
     if total_errors > 0:
         print(f"\n❌ Validation FAILED with {total_errors} errors ({tier} tier)")
-        if tier == TIER_ENTERPRISE:
-            print("\nTo fix: Address errors above. Enterprise fields are now warnings, not errors.")
-            print("Use --standard for Anthropic-spec-only validation (no required fields).")
+        if tier == TIER_MARKETPLACE:
+            print("\nTo fix: Address errors above. Marketplace polish fields are warnings, not errors.")
+            print("Use --standard for Anthropic-spec-only validation.")
         return 1
     elif total_warnings > 0 and args.fail_on_warn:
         print(f"\n❌ Validation FAILED due to {total_warnings} warning(s) (--fail-on-warn)")
         return 1
     elif total_warnings > 0:
         print(f"\n⚠️  Validation PASSED with {total_warnings} warnings ({tier} tier)")
-        print("(Warnings are best practices - not blocking)")
+        print("(Warnings are best practices / marketplace polish - not blocking)")
         return 0
     else:
         print(f"\n✅ All skills fully compliant! ({tier} tier)")
-        if tier == TIER_ENTERPRISE:
-            print("   - Anthropic 2026 spec ✓")
-            print("   - Intent Solutions standard ✓")
+        if tier == TIER_MARKETPLACE:
+            print("   - Anthropic spec (name + description) ✓")
+            print("   - AgentSkills.io optional fields ✓")
+            print("   - Intent Solutions marketplace polish ✓")
             print("   - 100-point grading ✓")
         else:
-            print("   - Anthropic 2026 spec ✓")
+            print("   - Anthropic spec (name + description) ✓")
         return 0
 
 

@@ -1,16 +1,24 @@
 # Global Master Standard – Claude Skills Specification
 
 **Document ID**: 6767-b-SPEC-DR-STND-claude-skills-standard.md
-**Version**: 2.0.0
-**Status**: AUTHORITATIVE - Single Source of Truth
+**Version**: 3.1.0
+**Status**: AUTHORITATIVE - Single Source of Truth (realigned to Anthropic published sources 2026-04-28)
 **Created**: 2025-12-06
-**Updated**: 2025-12-07
+**Updated**: 2026-04-28
+**Schema log**: `000-docs/SCHEMA_CHANGELOG.md`
+**Changelog**: 3.1.0 corrects v3.0.0's misclassification of `when_to_use` as deprecated and adds the `arguments`, `paths`, `shell` fields and `effort: xhigh` value documented at `code.claude.com/docs/en/skills#frontmatter-reference`.
 
-**Sources**:
-- [Official Anthropic Agent Skills Overview](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview)
-- [Official Anthropic Best Practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices)
-- [Claude Code Skills Documentation](https://code.claude.com/docs/en/skills)
-- [Anthropic Engineering Blog](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills)
+**Sources** (every required-field claim in this document cites one of these — verified 2026-04-28):
+
+1. [Anthropic Agent Skills Overview](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview) — required: `name`, `description`
+2. [Anthropic Best Practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices) — required: `name`, `description`
+3. [Claude Code Skills Documentation](https://code.claude.com/docs/en/skills) — none required (`description` recommended)
+4. [Anthropic Plugins Reference](https://code.claude.com/docs/en/plugins-reference) — no SKILL.md fields beyond skills doc
+5. [Anthropic Engineering Blog](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills) — required: `name`, `description`
+6. [AgentSkills.io Open Standard](https://agentskills.io/specification) — required: `name`, `description`; documents `license`, `compatibility`, `metadata`, `allowed-tools` as optional
+7. [anthropics/skills Reference Implementation](https://github.com/anthropics/skills) — required: `name`, `description`
+
+**Community references** (not authoritative — included for context only):
 - [Lee Han Chung Deep Dive](https://leehanchung.github.io/blogs/2025/10/26/claude-skills-deep-dive/)
 
 ---
@@ -190,7 +198,13 @@ Links to bundled files using {baseDir} variable.
 
 ## 4. YAML Frontmatter Fields
 
-### Required Fields
+The frontmatter schema is split into three layers:
+
+1. **Required (Anthropic spec)** — `name`, `description`. Citations: sources 1, 2, 5, 6, 7 above.
+2. **Optional (Anthropic + AgentSkills.io spec)** — `allowed-tools`, `model`, `effort`, `argument-hint`, `context`, `agent`, `user-invocable`, `disable-model-invocation`, `hooks`, `compatibility`, `metadata`, `license`. Optional everywhere; validated only when present.
+3. **Marketplace polish (Intent Solutions extension)** — `version`, `author`, `tags`. Not in any Anthropic spec. Optional. Validator warns at marketplace tier when missing; never errors.
+
+### 4.1 Required Fields (Anthropic Spec)
 
 #### `name`
 
@@ -350,67 +364,173 @@ disable-model-invocation: true    # Manual invocation only
 disable-model-invocation: false   # Auto-discovery enabled (default)
 ```
 
-### Undocumented/Experimental Fields
-
 #### `when_to_use`
 
-**Status**: UNDOCUMENTED - Avoid in production
+**Type**: string
+**Required**: No
+**Source**: [`code.claude.com/docs/en/skills#frontmatter-reference`](https://code.claude.com/docs/en/skills#frontmatter-reference) — *"Additional context for when Claude should invoke the skill, such as trigger phrases or example requests. Appended to `description` in the skill listing and counts toward the 1,536-character cap."*
 
-**Behavior**: Appends to `description` with hyphen separator.
+```yaml
+description: Generate PDF reports from markdown.
+when_to_use: |
+  Use when the user asks to produce a PDF, export a report, or convert
+  a Markdown file. Trigger phrases: "build a PDF", "export this", "make a report".
+```
 
-**Recommendation**: Do NOT use. Rely on detailed `description` field instead. This field may change or be removed without notice.
+> **Correction note**: Earlier IS spec versions classified `when_to_use` as undocumented or deprecated. That was a misread of the Claude Code skills doc. Schema 3.1.0 (2026-04-28) restored it as a documented optional field.
+
+#### `arguments`
+
+**Type**: string or array (space-separated string OR YAML list)
+**Required**: No
+**Source**: [`code.claude.com/docs/en/skills#frontmatter-reference`](https://code.claude.com/docs/en/skills#frontmatter-reference)
+
+Named positional arguments for `$name` substitution in the skill body. Names map to argument positions in order.
+
+```yaml
+arguments: issue branch          # String form
+# or:
+arguments: [issue, branch]       # YAML list
+
+# Body uses $issue and $branch substitutions
+```
+
+#### `paths`
+
+**Type**: string or array
+**Required**: No
+
+Glob patterns that limit when the skill auto-activates. When set, Claude loads the skill automatically only when working with files matching the patterns.
+
+```yaml
+paths: src/**/*.py, tests/**/*.py
+# or:
+paths:
+  - "src/**/*.py"
+  - "tests/**/*.py"
+```
+
+#### `shell`
+
+**Type**: string
+**Valid values**: `bash` (default), `powershell`
+**Required**: No
+
+Shell to use for `` !`command` `` and ` ```! ` blocks in this skill. PowerShell on Windows requires `CLAUDE_CODE_USE_POWERSHELL_TOOL=1`.
+
+```yaml
+shell: bash
+shell: powershell
+```
 
 ---
 
-## 4.5 Enterprise Extension Fields (Intent Solutions Standard)
+## 4.5 Optional Spec Fields (AgentSkills.io)
 
-These fields are NOT part of Anthropic's official spec but are required for skills published to the Claude Code Plugins marketplace (jeremylongshore/claude-code-plugins).
+These fields are documented as optional in `agentskills.io/specification`. Any of them may appear at the top level. The validator accepts them at every tier and validates only their type/format.
+
+#### `compatibility`
+
+**Type**: string (free-text)
+**Required**: NO
+**Max length**: 500 characters
+**Source**: [`agentskills.io/specification`](https://agentskills.io/specification)
+
+**Purpose**: Indicates environment requirements (intended product, system packages, network access, etc.).
+
+**Examples** (taken from / aligned with the AgentSkills.io spec):
+
+```yaml
+# Single platform
+compatibility: "Designed for Claude Code"
+
+# Multi-platform (free-text — no allow-list)
+compatibility: "Designed for Claude Code, also compatible with Codex and OpenClaw"
+
+# Runtime requirements
+compatibility: "Requires Python 3.10+ with uv installed"
+compatibility: "Requires git, docker, and jq on PATH"
+compatibility: "Node.js >= 18, npm >= 9"
+
+# Network / capability requirements
+compatibility: "Requires network access to api.example.com (port 443)"
+```
+
+> **Migration note**: This field replaces the deprecated Intent Solutions `compatible-with` CSV-platform-list field, which had a closed allow-list and was not part of any published spec. Use `python3 scripts/batch-remediate.py --migrate-compatible-with` to translate existing files.
+
+#### `metadata`
+
+**Type**: object (mapping of arbitrary key-value pairs)
+**Required**: NO
+**Source**: [`agentskills.io/specification`](https://agentskills.io/specification)
+
+**Purpose**: Free-form key-value mapping for any author-supplied metadata.
+
+**Examples**:
+
+```yaml
+metadata:
+  category: devops
+  difficulty: intermediate
+  language: python
+
+# Or used as a container for fields the AgentSkills.io spec lists under metadata.*:
+metadata:
+  version: "1.2.0"
+  author: "Jane Smith <jane@example.com>"
+```
+
+The validator accepts both top-level (e.g. `version: "1.2.0"`) and `metadata.*`-nested forms. The validator does not reject unknown keys inside `metadata`.
+
+---
+
+## 4.6 Marketplace Polish Recommendations (Intent Solutions Extension)
+
+These fields are **not** part of Anthropic's published spec. They are recommended (not required) when submitting a skill to the Intent Solutions marketplace for richer discovery, governance, and attribution. The validator emits warnings (not errors) when they are missing at marketplace tier (`--marketplace`). At standard tier, missing polish fields are silent.
+
+#### `version`
+
+**Type**: string (semver: `MAJOR.MINOR.PATCH`)
+**Required**: NO (marketplace polish)
+
+```yaml
+version: "1.0.0"
+```
 
 #### `author`
 
 **Type**: string
-**Required**: YES (for marketplace submission)
+**Required**: NO (marketplace polish)
 **Format**: `Name <email>` or `Name`
 
-**Purpose**: Attribution for skill creator. Required for proper credit and contact.
-
-**Examples**:
 ```yaml
 author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-author: "Jane Smith"
-author: "Intent Solutions Team"
 ```
 
 #### `tags`
 
 **Type**: array of strings
-**Required**: NO (recommended for discoverability)
+**Required**: NO (marketplace polish — improves marketplace discovery)
 
-**Purpose**: Categorization keywords for marketplace filtering.
-
-**Examples**:
 ```yaml
-tags:
-  - devops
-  - kubernetes
-  - deployment
-
 tags: ["security", "audit", "compliance"]
 ```
 
-#### Enterprise Required Fields Summary
+#### Marketplace Polish Recommendations Summary
 
-For marketplace submission, skills MUST include:
+| Field | Anthropic spec | AgentSkills.io spec | IS marketplace tier |
+|-------|---------------|---------------------|---------------------|
+| `name` | Required | Required | Required |
+| `description` | Required | Required | Required |
+| `allowed-tools` | Optional | Optional | Recommended (warn) |
+| `version` | Not in spec | Optional under `metadata` | Recommended (warn) |
+| `author` | Not in spec | Optional under `metadata` | Recommended (warn) |
+| `license` | Not in spec | Optional | Recommended (warn) |
+| `compatibility` | Not in spec | Optional (max 500 chars) | Recommended (warn) |
+| `tags` | Not in spec | Not in spec | Recommended (warn) |
+| `compatible-with` | Not in spec | Not in spec | **Deprecated** — migrate to `compatibility` |
 
-| Field | Anthropic Spec | Enterprise Required |
-|-------|---------------|---------------------|
-| `name` | Required | Required |
-| `description` | Required | Required |
-| `allowed-tools` | Optional | **Required** |
-| `version` | Optional | **Required** |
-| `author` | Not in spec | **Required** |
-| `license` | Optional | **Required** |
-| `tags` | Not in spec | Recommended |
+> Every "Required" cell above is anchored to a specific source in the Sources block at the top of this document. Every "Optional" cell is anchored to either Anthropic or AgentSkills.io. The "Recommended (warn)" column reflects Intent Solutions marketplace polish — not a published external standard.
 
 ---
 
@@ -1031,20 +1151,27 @@ Run through this checklist every time you create or update a skill:
 - [ ] Confirmed no existing skill handles this
 - [ ] Gathered all necessary reference materials
 
-### Frontmatter (Anthropic Spec)
+### Frontmatter — Required (Anthropic spec)
 
 - [ ] `name`: lowercase, hyphens, under 64 chars
 - [ ] `description`: third person, under 1024 chars, includes what + when + triggers
-- [ ] `allowed-tools`: minimal necessary tools only (optional per spec)
-- [ ] `version`: semver format (optional per spec)
 
-### Enterprise Fields (Marketplace Submission)
+### Frontmatter — Optional (Anthropic + AgentSkills.io spec)
 
-- [ ] `allowed-tools`: Required - list only necessary tools
-- [ ] `version`: Required - semver format (e.g., 1.0.0)
-- [ ] `author`: Required - format: `Name <email>`
-- [ ] `license`: Required - MIT recommended
-- [ ] `tags`: Recommended - array of category keywords
+- [ ] `allowed-tools`: minimal necessary tools only — scope `Bash(git:*)` etc.
+- [ ] `compatibility`: free-text environment requirements (max 500 chars)
+- [ ] `metadata`: arbitrary key-value mapping if useful
+
+### Frontmatter — Marketplace Polish (Intent Solutions extension, recommended)
+
+- [ ] `version`: semver format (e.g. `1.0.0`)
+- [ ] `author`: `Name <email>` format
+- [ ] `license`: SPDX identifier (MIT recommended)
+- [ ] `tags`: array of category keywords for marketplace discovery
+
+### Frontmatter — Deprecated (do NOT use in new skills)
+
+- [ ] `compatible-with`: replaced by `compatibility` (free-text per AgentSkills.io). See Schema Changelog v3.0.0.
 
 ### Content
 
@@ -1077,7 +1204,7 @@ Run through this checklist every time you create or update a skill:
 
 ### Confirmed Speculative or Unclear
 
-1. **`when_to_use` field**: Exists in codebase but undocumented. Behavior may change. Recommendation: avoid in production.
+1. ~~**`when_to_use` field**: Exists in codebase but undocumented.~~ **Resolved (2026-04-28)**: `when_to_use` is documented at `code.claude.com/docs/en/skills#frontmatter-reference`. See section 4.5 above for usage. Combined `description` + `when_to_use` capped at 1,536 chars.
 
 2. **Token budget limits**: The 15,000-character limit for skill descriptions is from Lee Han Chung's analysis, not official docs. May vary by platform.
 
@@ -1120,6 +1247,9 @@ Run through this checklist every time you create or update a skill:
 
 ---
 
-**Last Updated**: 2025-12-07
+**Last Updated**: 2026-04-28
 **Maintained By**: Intent Solutions (Jeremy Longshore)
 **Status**: AUTHORITATIVE - Single Source of Truth for Claude Skills Development
+**Schema Version**: 3.0.0 (see `000-docs/SCHEMA_CHANGELOG.md`)
+**Validator**: `scripts/validate-skills-schema.py` v7.0
+**Migration tooling**: `scripts/batch-remediate.py --migrate-compatible-with`

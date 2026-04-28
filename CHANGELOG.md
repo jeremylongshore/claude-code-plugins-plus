@@ -7,6 +7,77 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.29.0] - 2026-04-28
+
+### Validator: spec-compliance fixes + `compatible-with` → `compatibility` migration
+
+This release lands on **schema 3.3.1** of the validator after a one-day churn that
+went through schema versions 3.0 → 3.1 → 3.2 before stabilizing. The full
+back-and-forth is preserved in [`000-docs/SCHEMA_CHANGELOG.md`](000-docs/SCHEMA_CHANGELOG.md)
+including a "Non-negotiables" section and a "How we got here — the 2026-04-28
+schema debacle" post-mortem so the same dance doesn't get repeated.
+
+The IS enterprise standard (8 required fields at marketplace tier — `name`,
+`description`, `allowed-tools`, `version`, `author`, `license`, `compatibility`,
+`tags`) is **unchanged**. Earlier intra-day attempts to relax this to Anthropic's
+2-field spec floor were reverted.
+
+### Changed
+
+- **`compatible-with` → `compatibility`** — the IS-invented closed-CSV platform list (`compatible-with: claude-code, codex, openclaw`) is replaced by the AgentSkills.io free-text `compatibility` field (max 500 chars per spec). Old field still parses as a deprecated alias with a per-file migration suggestion. New ALWAYS_REQUIRED set substitutes `compatibility` for `compatible-with`. This is the only structural change to ALWAYS_REQUIRED in this release.
+- **Validator script v6.0 → v7.0** — spec-source citations updated, deprecation messaging cleaned up.
+
+### Fixed (spec-compliance bugs)
+
+- **`allowed-tools` accepts YAML list** per `code.claude.com/docs/en/skills` ("Accepts a space-separated string or a YAML list"). Old validator rejected YAML lists with *"must be a comma-separated string (CSV)"*.
+- **`allowed-tools` parses space-separated form** per Anthropic's canonical example `Bash(git add *) Bash(git commit *) Bash(git status *)`. Old parser only split on commas. New parser is paren-depth-aware so multi-word tools stay as one token.
+- **`when_to_use` reclassified as documented Anthropic optional** — earlier IS rubrics flagged it as deprecated, but Anthropic documents it explicitly. Validator now only warns when combined `description` + `when_to_use` exceeds the 1,536-char listing cap.
+- **`agent` field no longer triggers "missing" warning when defaulting** — Anthropic doc states *"If omitted, uses general-purpose"*. Old validator warned that `agent` was missing whenever `context: fork` was set.
+- **`argument-hint` conditional** — was incorrectly suppressed by `disable-model-invocation: true`, but the user can still invoke via `/`, so the hint is still relevant. Now tied to `user-invocable=true` only.
+
+### Added
+
+- **`scripts/batch-remediate.py`** — bulk-fix script for spec migrations. `--migrate-compatible-with` flag translates `compatible-with: claude-code, codex` → `compatibility: Designed for Claude Code, also compatible with Codex` per AgentSkills.io spec. Idempotent — safe to run twice.
+- **`arguments`, `paths`, `shell` added to schema registry** — all documented Anthropic optional fields that were missing from `SKILL_FIELDS`. Type-validated.
+- **`effort: xhigh`** added to valid values per Anthropic doc (`low/medium/high/xhigh/max`).
+- **`${CLAUDE_EFFORT}`** added to `YAML_VALUE_ALLOWED_VARS` substitution allow-list.
+- **`Skill()` permission rule documentation** in `references/frontmatter-spec.md` (`Skill(name)` exact match, `Skill(name *)` prefix match, `Skill` deny-all).
+- **`000-docs/SCHEMA_CHANGELOG.md`** — new doc tracking validator schema versions independently from this main CHANGELOG. Includes the "Non-negotiables" rules and the "2026-04-28 schema debacle" post-mortem.
+
+### Important: what was NOT changed (and won't be without explicit approval)
+
+Per the new "Non-negotiables" section in `SCHEMA_CHANGELOG.md`:
+
+- `ALWAYS_REQUIRED` is the IS enterprise 8-field set. Not reducible to Anthropic's 2-field spec floor without explicit user approval.
+- Marketplace tier produces ERRORS for missing required fields, not warnings.
+- The IS rubric SITS ON TOP of Anthropic's spec — additive, never subtractive.
+- Tracking metadata (`version`, `author`, `license`) is REQUIRED at marketplace tier, not optional polish.
+
+### Migration
+
+Skills using the deprecated `compatible-with` field continue to validate (with a deprecation warning). Bulk-migrate via:
+
+```bash
+python3 scripts/batch-remediate.py --migrate-compatible-with --root <path>
+```
+
+Migration translation table:
+
+```diff
+ ---
+ name: my-skill
+ description: Does the thing. Use when ...
+-compatible-with: claude-code, codex, openclaw
++compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+ ---
+```
+
+The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in this release. Bulk migration tracked in #610.
+
+### Tracking issue
+
+[#610](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues/610) — `[spec] Realign skill validator + master spec to Anthropic's authoritative sources`. Note: the issue title still says "Realign" — the actual outcome was "fix bugs and add tooling without realigning." See `000-docs/SCHEMA_CHANGELOG.md` for the corrected story.
+
 ## [4.28.0] - 2026-04-23
 
 ### Added

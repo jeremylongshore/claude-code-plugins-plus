@@ -33,14 +33,16 @@ pnpm lint                           # ESLint across all packages
 # Single MCP plugin
 cd plugins/mcp/[name]/ && pnpm build && chmod +x dist/index.js
 
-# Universal validator v5.0 (single source of truth)
-python3 scripts/validate-skills-schema.py --verbose                # Standard tier (Anthropic minimum)
-python3 scripts/validate-skills-schema.py --enterprise --verbose   # Enterprise tier (100-point rubric)
-python3 scripts/validate-skills-schema.py --enterprise --populate-db freshie/inventory.sqlite  # Write to DB
-python3 scripts/validate-skills-schema.py --enterprise --show-low-grades  # Show D/F skills
-python3 scripts/validate-skills-schema.py --skills-only            # SKILL.md files only
-python3 scripts/validate-skills-schema.py --commands-only          # commands/*.md only
-python3 scripts/validate-skills-schema.py --agents-only            # agents/*.md only
+# Universal validator v7.0 / schema 3.0.0 (single source of truth — see 000-docs/SCHEMA_CHANGELOG.md)
+python3 scripts/validate-skills-schema.py --verbose                  # Standard tier (Anthropic spec exactly: name + description required)
+python3 scripts/validate-skills-schema.py --marketplace --verbose    # Marketplace tier (Anthropic spec + IS polish recommendations + 100-point rubric)
+python3 scripts/validate-skills-schema.py --marketplace --populate-db freshie/inventory.sqlite  # Write to DB
+python3 scripts/validate-skills-schema.py --marketplace --show-low-grades  # Show D/F skills
+python3 scripts/validate-skills-schema.py --skills-only              # SKILL.md files only
+python3 scripts/validate-skills-schema.py --commands-only            # commands/*.md only
+python3 scripts/validate-skills-schema.py --agents-only              # agents/*.md only
+# Migration tool: legacy compatible-with → spec-aligned compatibility (per agentskills.io/specification)
+python3 scripts/batch-remediate.py --migrate-compatible-with --root .  # Add --dry-run to preview
 
 # Ecosystem inventory (freshie)
 python3 freshie/scripts/rebuild-inventory.py              # Full repo scan → new discovery run
@@ -202,28 +204,65 @@ plugins/mcp/[plugin-name]/
 
 `plugin.json` only allows these fields: `name`, `version`, `description`, `author`, `repository`, `homepage`, `license`, `keywords`. CI rejects any others.
 
-### SKILL.md Frontmatter (2026 Spec)
+### SKILL.md Frontmatter (IS Enterprise Standard, Schema v3.3.0)
+
+**Required at marketplace tier — all 8 fields must be present:**
+
 ```yaml
 ---
 name: skill-name
 description: |
-  When to use this skill. Include trigger phrases.
+  Capability summary. Use when ... Trigger with "...".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Glob
 version: 1.0.0
 author: Name <email>
 license: MIT
-# Optional fields:
-# model: sonnet                    # LLM model override
-# context: fork                    # Run in subagent
-# agent: Explore                   # Subagent type
-# user-invocable: false            # Hide from / menu
-# argument-hint: "<file-path>"     # Autocomplete hint
-# hooks: { pre-tool-call: ... }    # Lifecycle hooks
-# compatibility: "Node.js >= 18"   # Environment requirements (AgentSkills.io)
-# compatible-with: claude-code, cursor  # Platform compatibility
-# tags: [devops, ci]               # Discovery tags
+compatibility: Designed for Claude Code              # free-text per agentskills.io/specification (max 500 chars)
+tags: [devops, ci]
 ---
 ```
+
+**Other optional fields (Anthropic spec — full reference at `code.claude.com/docs/en/skills#frontmatter-reference`):**
+
+```yaml
+# Trigger / discovery
+# when_to_use: "Trigger phrases or example requests. Appended to description."  # Combined cap 1,536 chars
+# argument-hint: "<file-path>"                # Autocomplete hint
+# arguments: issue branch                     # Named positional args ($issue, $branch in body)
+# paths: src/**/*.py, tests/**/*.py           # Glob patterns limiting auto-activation
+
+# Invocation control (see "Control who invokes a skill")
+# user-invocable: false                       # Hide from / menu (Claude can still invoke)
+# disable-model-invocation: true              # Manual /name only — Claude cannot auto-invoke
+
+# Execution
+# model: sonnet                               # LLM model override (or inherit / haiku / opus)
+# effort: medium                              # low / medium / high / xhigh / max
+# context: fork                               # Run in isolated subagent
+# agent: Explore                              # Subagent type (with context: fork)
+# shell: bash                                 # bash (default) or powershell
+# hooks: { PreToolUse: [...] }                # Skill-scoped lifecycle hooks
+# metadata: { custom: ... }                   # Free-form key-value (per agentskills.io)
+```
+
+**`compatibility` examples** (free-text per `agentskills.io/specification`, max 500 chars):
+
+```yaml
+compatibility: "Designed for Claude Code"
+compatibility: "Designed for Claude Code, also compatible with Codex and OpenClaw"
+compatibility: "Requires Python 3.10+ with uv installed"
+compatibility: "Requires git, docker, and jq on PATH"
+compatibility: "Node.js >= 18, npm >= 9"
+```
+
+**Deprecated:** `compatible-with` (CSV platform list — was an Intent Solutions invention, never in any spec).
+Migration: `python3 scripts/batch-remediate.py --migrate-compatible-with`.
+
+**Source citations** (every claim above defensible against published sources):
+- `name` + `description` required: `platform.claude.com/docs/en/agents-and-tools/agent-skills/overview`, `...best-practices`, `anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills`, `agentskills.io/specification`, `github.com/anthropics/skills`
+- `compatibility` (free-text, optional, max 500 chars): `agentskills.io/specification`
+- `metadata` (optional object): `agentskills.io/specification`
+- `allowed-tools` optional (not required): `code.claude.com/docs/en/skills`
 
 Valid tools: `Read`, `Write`, `Edit`, `Bash`, `Glob`, `Grep`, `WebFetch`, `WebSearch`, `Task`, `TodoWrite`, `NotebookEdit`, `AskUserQuestion`, `Skill`
 
@@ -281,7 +320,7 @@ PRs trigger parallel jobs:
 |-----|---------------|
 | `validate` | JSON validity, plugin structure, catalog sync, secret scanning, dangerous patterns |
 | `verify` | Verification pipeline + badge generation |
-| `test` (matrix) | MCP plugin builds + vitest, Python pytest, universal validator v5.0 (smoke + enterprise report) + `ccpi validate --strict` |
+| `test` (matrix) | MCP plugin builds + vitest, Python pytest, universal validator v7.0 (smoke + marketplace report) + `ccpi validate --strict` |
 | `check-package-manager` | Enforces pnpm/npm policy per directory |
 | `marketplace-validation` | Astro build, route validation, link validation, smoke tests, cowork downloads/security, performance budget |
 | `playwright-tests` | E2E tests on chromium + webkit + mobile (needs marketplace-validation) |
