@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/jeremylongshore-claude-code-plugins-plus-skills-badge.png)](https://mseep.ai/app/jeremylongshore-claude-code-plugins-plus-skills)
+
 # Tons of Skills — Claude Code Plugins Marketplace
 
 [![CLI](https://img.shields.io/badge/CLI-ccpi-blueviolet?logo=npm)](https://www.npmjs.com/package/@intentsolutionsio/ccpi)
