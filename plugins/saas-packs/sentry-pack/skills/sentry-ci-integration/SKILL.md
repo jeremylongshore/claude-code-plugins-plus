@@ -1,19 +1,34 @@
 ---
 name: sentry-ci-integration
-description: |
-  Integrate Sentry into CI/CD pipelines for automated release creation,
+description: 'Integrate Sentry into CI/CD pipelines for automated release creation,
+
   source map uploads, and deploy notifications.
+
   Use when setting up GitHub Actions, GitLab CI, or CircleCI to automate
+
   Sentry releases, upload source maps, or associate commits with deploys.
+
   Trigger with phrases like "sentry github actions", "sentry CI pipeline",
+
   "automate sentry releases", "sentry source map upload CI",
+
   "sentry gitlab ci", "sentry circleci".
-allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(sentry-cli:*), Bash(npm:*), Bash(npx:*), Grep, Glob
+
+  '
+allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(sentry-cli:*), Bash(npm:*), Bash(npx:*),
+  Grep, Glob
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, sentry, ci-cd, github-actions, gitlab-ci, source-maps, deployment]
+tags:
+- saas
+- sentry
+- ci-cd
+- github-actions
+- gitlab-ci
+- source-maps
+- deployment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Sentry CI Integration
 

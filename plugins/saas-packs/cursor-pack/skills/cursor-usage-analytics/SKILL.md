@@ -1,15 +1,23 @@
 ---
-name: "cursor-usage-analytics"
-description: |
-  Track and analyze Cursor usage metrics via admin dashboard: requests, model usage, team productivity,
+name: cursor-usage-analytics
+description: 'Track and analyze Cursor usage metrics via admin dashboard: requests,
+  model usage, team productivity,
+
   and cost optimization. Triggers on "cursor analytics", "cursor usage", "cursor metrics",
+
   "cursor reporting", "cursor dashboard", "cursor ROI".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, cursor, analytics, dashboard]
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- cursor
+- analytics
+- dashboard
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Cursor Usage Analytics
 

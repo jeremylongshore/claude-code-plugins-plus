@@ -1,16 +1,25 @@
 ---
 name: groq-multi-env-setup
-description: |
-  Configure Groq across dev, staging, and production with environment-specific
+description: 'Configure Groq across dev, staging, and production with environment-specific
+
   model selection, rate limits, and API keys.
+
   Trigger with phrases like "groq environments", "groq staging", "groq dev prod",
+
   "groq environment setup", "groq multi-env", "groq config by env".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, groq, deployment, api, llm]
+tags:
+- saas
+- groq
+- deployment
+- api
+- llm
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Groq Multi-Environment Setup
 

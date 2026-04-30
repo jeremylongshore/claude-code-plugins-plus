@@ -1,19 +1,27 @@
 ---
 name: notion-advanced-troubleshooting
-description: |
-  Deep debugging for Notion API: response inspection, permission chain tracing,
+description: 'Deep debugging for Notion API: response inspection, permission chain
+  tracing,
+
   property type mismatches, pagination edge cases, and block nesting limits.
+
   Use when standard troubleshooting fails or investigating intermittent errors.
+
   Trigger with phrases like "notion deep debug", "notion permission trace",
+
   "notion property mismatch", "notion pagination bug", "notion nesting limit".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notion]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- notion
+compatibility: Designed for Claude Code
 ---
-
 # Notion Advanced Troubleshooting
 
 ## Overview

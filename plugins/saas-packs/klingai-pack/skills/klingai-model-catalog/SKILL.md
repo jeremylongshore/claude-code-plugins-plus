@@ -1,15 +1,23 @@
 ---
 name: klingai-model-catalog
-description: |
-  Explore Kling AI models, versions, and capabilities for video and image generation. Use when
-  selecting models or comparing features. Trigger with phrases like 'kling ai models',
-  'klingai capabilities', 'kling video models', 'klingai features'.
+description: 'Explore Kling AI models, versions, and capabilities for video and image
+  generation. Use when
+
+  selecting models or comparing features. Trigger with phrases like ''kling ai models'',
+
+  ''klingai capabilities'', ''kling video models'', ''klingai features''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, kling-ai, models, reference]
+tags:
+- saas
+- kling-ai
+- models
+- reference
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Kling AI Model Catalog
 

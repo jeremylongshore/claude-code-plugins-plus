@@ -1,17 +1,28 @@
 ---
 name: vercel-data-handling
-description: |
-  Implement data handling, PII protection, and GDPR/CCPA compliance for Vercel deployments.
+description: 'Implement data handling, PII protection, and GDPR/CCPA compliance for
+  Vercel deployments.
+
   Use when handling sensitive data in serverless functions, implementing data redaction,
+
   or ensuring privacy compliance on Vercel.
+
   Trigger with phrases like "vercel data", "vercel PII",
+
   "vercel GDPR", "vercel data retention", "vercel privacy", "vercel compliance".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vercel, compliance, privacy, security]
+tags:
+- saas
+- vercel
+- compliance
+- privacy
+- security
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vercel Data Handling
 

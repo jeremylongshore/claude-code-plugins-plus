@@ -1,16 +1,24 @@
 ---
 name: granola-sdk-patterns
-description: |
-  Zapier automation patterns and Enterprise API integration for Granola.
+description: 'Zapier automation patterns and Enterprise API integration for Granola.
+
   Use when building automated workflows, connecting Granola to 8,000+ apps via Zapier,
+
   or querying the Enterprise API for notes and transcripts.
+
   Trigger: "granola zapier", "granola automation", "granola API", "granola SDK".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, granola, automation, api]
+tags:
+- saas
+- granola
+- automation
+- api
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Granola SDK Patterns
 

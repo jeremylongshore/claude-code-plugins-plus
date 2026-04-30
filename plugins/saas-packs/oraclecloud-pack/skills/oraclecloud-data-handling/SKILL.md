@@ -1,17 +1,19 @@
 ---
 name: oraclecloud-data-handling
-description: |
-  Manage OCI Object Storage — buckets, uploads, PARs, and lifecycle policies.
-  Use when uploading objects, creating pre-authenticated requests, or configuring lifecycle rules.
-  Trigger with "oci object storage", "oci bucket", "par url", "multipart upload", "oci lifecycle".
+description: "Manage OCI Object Storage \u2014 buckets, uploads, PARs, and lifecycle\
+  \ policies.\nUse when uploading objects, creating pre-authenticated requests, or\
+  \ configuring lifecycle rules.\nTrigger with \"oci object storage\", \"oci bucket\"\
+  , \"par url\", \"multipart upload\", \"oci lifecycle\".\n"
 allowed-tools: Read, Write, Edit, Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, oraclecloud, oci]
-compatible-with: claude-code
+tags:
+- saas
+- oraclecloud
+- oci
+compatibility: Designed for Claude Code
 ---
-
 # OCI Object Storage — Buckets, PARs & Lifecycle
 
 ## Overview

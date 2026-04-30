@@ -1,19 +1,27 @@
 ---
 name: salesforce-deploy-integration
-description: |
-  Deploy Salesforce-connected applications to Heroku, Vercel, and Cloud Run with proper credential management.
+description: 'Deploy Salesforce-connected applications to Heroku, Vercel, and Cloud
+  Run with proper credential management.
+
   Use when deploying Salesforce-powered applications to production,
+
   configuring platform-specific secrets, or setting up Heroku Connect.
+
   Trigger with phrases like "deploy salesforce app", "salesforce Heroku",
+
   "salesforce production deploy", "salesforce Cloud Run", "Heroku Connect".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(heroku:*), Bash(vercel:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, salesforce]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- salesforce
+compatibility: Designed for Claude Code
 ---
-
 # Salesforce Deploy Integration
 
 ## Overview

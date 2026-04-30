@@ -1,17 +1,25 @@
 ---
 name: checking-infrastructure-compliance
-description: |
-  Execute use when you need to work with compliance checking.
-  This skill provides compliance monitoring and validation with comprehensive guidance and automation.
+description: 'Execute use when you need to work with compliance checking.
+
+  This skill provides compliance monitoring and validation with comprehensive guidance
+  and automation.
+
   Trigger with phrases like "check compliance", "validate policies",
+
   or "audit compliance".
 
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [devops, monitoring, compliance, audit]
+tags:
+- devops
+- monitoring
+- compliance
+- audit
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Checking Infrastructure Compliance
 

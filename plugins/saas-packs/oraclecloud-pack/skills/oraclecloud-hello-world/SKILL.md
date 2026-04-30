@@ -1,17 +1,24 @@
 ---
 name: oraclecloud-hello-world
-description: |
-  Launch your first OCI compute instance with capacity retry logic.
-  Use when creating a new compute instance, testing OCI connectivity, or hitting "Out of host capacity" errors on Always Free ARM shapes.
-  Trigger with "oraclecloud hello world", "launch oci instance", "oci compute example", "out of capacity oci".
+description: 'Launch your first OCI compute instance with capacity retry logic.
+
+  Use when creating a new compute instance, testing OCI connectivity, or hitting "Out
+  of host capacity" errors on Always Free ARM shapes.
+
+  Trigger with "oraclecloud hello world", "launch oci instance", "oci compute example",
+  "out of capacity oci".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(pip:*), Bash(oci:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, oraclecloud, oci]
-compatible-with: claude-code
+tags:
+- saas
+- oraclecloud
+- oci
+compatibility: Designed for Claude Code
 ---
-
 # Oracle Cloud Hello World
 
 ## Overview

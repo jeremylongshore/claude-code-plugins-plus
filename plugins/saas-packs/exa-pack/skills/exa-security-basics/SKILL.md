@@ -1,17 +1,27 @@
 ---
 name: exa-security-basics
-description: |
-  Secure Exa API keys, implement content moderation, and manage domain restrictions.
+description: 'Secure Exa API keys, implement content moderation, and manage domain
+  restrictions.
+
   Use when securing API keys, auditing Exa security configuration,
+
   or implementing content safety filtering.
+
   Trigger with phrases like "exa security", "exa secrets",
+
   "secure exa", "exa API key security", "exa content moderation".
+
+  '
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, exa, api, security]
+tags:
+- saas
+- exa
+- api
+- security
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Exa Security Basics
 

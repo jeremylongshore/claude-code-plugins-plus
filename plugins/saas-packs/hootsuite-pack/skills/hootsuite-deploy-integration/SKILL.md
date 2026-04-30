@@ -1,19 +1,26 @@
 ---
 name: hootsuite-deploy-integration
-description: |
-  Deploy Hootsuite integrations to Vercel, Fly.io, and Cloud Run platforms.
+description: 'Deploy Hootsuite integrations to Vercel, Fly.io, and Cloud Run platforms.
+
   Use when deploying Hootsuite-powered applications to production,
+
   configuring platform-specific secrets, or setting up deployment pipelines.
+
   Trigger with phrases like "deploy hootsuite", "hootsuite Vercel",
+
   "hootsuite production deploy", "hootsuite Cloud Run", "hootsuite Fly.io".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hootsuite, social-media]
-compatible-with: claude-code
+tags:
+- saas
+- hootsuite
+- social-media
+compatibility: Designed for Claude Code
 ---
-
 # Hootsuite Deploy Integration
 
 ## Overview

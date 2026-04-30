@@ -1,13 +1,21 @@
 ---
 name: openrouter-context-optimization
-description: |
-  Optimize context window usage for OpenRouter models to reduce cost and improve quality. Use when hitting context limits, managing long conversations, or building RAG systems. Triggers: 'openrouter context', 'context window', 'openrouter token limit', 'reduce tokens openrouter'.
+description: 'Optimize context window usage for OpenRouter models to reduce cost and
+  improve quality. Use when hitting context limits, managing long conversations, or
+  building RAG systems. Triggers: ''openrouter context'', ''context window'', ''openrouter
+  token limit'', ''reduce tokens openrouter''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash, Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, openrouter, optimization, context-window]
+tags:
+- saas
+- openrouter
+- optimization
+- context-window
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # OpenRouter Context Optimization
 

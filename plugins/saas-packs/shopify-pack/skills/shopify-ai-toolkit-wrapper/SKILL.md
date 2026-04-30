@@ -1,20 +1,29 @@
 ---
 name: shopify-ai-toolkit-wrapper
-description: |
-  Integrate Shopify's AI Toolkit MCP server with Claude Code for GraphQL validation,
+description: 'Integrate Shopify''s AI Toolkit MCP server with Claude Code for GraphQL
+  validation,
+
   Liquid linting, and documentation search.
+
   Use when setting up Shopify MCP integration, validating GraphQL queries,
+
   or linting Liquid templates.
+
   Trigger with phrases like "shopify ai toolkit", "shopify mcp",
+
   "shopify claude integration", "shopify graphql validation", "shopify liquid lint".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ecommerce, shopify]
-compatible-with: claude-code
+tags:
+- saas
+- ecommerce
+- shopify
+compatibility: Designed for Claude Code
 ---
-
 # Shopify AI Toolkit Wrapper
 
 ## Overview

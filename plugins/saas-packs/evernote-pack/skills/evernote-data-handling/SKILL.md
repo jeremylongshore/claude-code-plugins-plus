@@ -1,17 +1,25 @@
 ---
 name: evernote-data-handling
-description: |
-  Best practices for handling Evernote data.
+description: 'Best practices for handling Evernote data.
+
   Use when implementing data storage, processing notes,
+
   handling attachments, or ensuring data integrity.
+
   Trigger with phrases like "evernote data", "handle evernote notes",
+
   "evernote storage", "process evernote content".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, evernote, evernote-data]
+tags:
+- saas
+- evernote
+- evernote-data
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Evernote Data Handling
 

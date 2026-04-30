@@ -1,12 +1,18 @@
 ---
 name: detecting-performance-regressions
-description: Automatically detect performance regressions in CI/CD pipelines by comparing metrics against baselines. Use when validating builds or analyzing performance trends. Trigger with phrases like "detect performance regression", "compare performance metrics", or "analyze performance degradation".
+description: Automatically detect performance regressions in CI/CD pipelines by comparing
+  metrics against baselines. Use when validating builds or analyzing performance trends.
+  Trigger with phrases like "detect performance regression", "compare performance
+  metrics", or "analyze performance degradation".
 version: 1.0.0
-allowed-tools: "Read, Write, Edit, Grep, Glob, Bash(ci:*), Bash(metrics:*), Bash(testing:*)"
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(ci:*), Bash(metrics:*), Bash(testing:*)
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [performance, ci-cd, detecting-performance]
+tags:
+- performance
+- ci-cd
+- detecting-performance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Performance Regression Detector
 

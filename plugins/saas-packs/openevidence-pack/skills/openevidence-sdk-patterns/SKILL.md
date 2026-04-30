@@ -1,16 +1,20 @@
 ---
 name: openevidence-sdk-patterns
-description: |
-  Sdk Patterns for OpenEvidence.
+description: 'Sdk Patterns for OpenEvidence.
+
   Trigger: "openevidence sdk patterns".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, openevidence, healthcare]
-compatible-with: claude-code
+tags:
+- saas
+- openevidence
+- healthcare
+compatibility: Designed for Claude Code
 ---
-
 # OpenEvidence SDK Patterns
 
 ## Overview

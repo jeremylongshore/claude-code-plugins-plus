@@ -1,17 +1,26 @@
 ---
 name: mistral-sdk-patterns
-description: |
-  Apply production-ready Mistral AI SDK patterns for TypeScript and Python.
+description: 'Apply production-ready Mistral AI SDK patterns for TypeScript and Python.
+
   Use when implementing Mistral integrations, refactoring SDK usage,
+
   or establishing team coding standards for Mistral AI.
+
   Trigger with phrases like "mistral SDK patterns", "mistral best practices",
+
   "mistral code patterns", "idiomatic mistral".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, mistral, python, typescript]
+tags:
+- saas
+- mistral
+- python
+- typescript
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Mistral SDK Patterns
 

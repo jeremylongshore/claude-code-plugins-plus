@@ -1,19 +1,27 @@
 ---
 name: shopify-enterprise-rbac
-description: |
-  Implement Shopify Plus access control patterns with staff permissions,
+description: 'Implement Shopify Plus access control patterns with staff permissions,
+
   multi-location management, and Shopify Organization features.
-  Use when building apps for Shopify Plus merchants, implementing per-staff permissions, or managing multi-store organizations.
+
+  Use when building apps for Shopify Plus merchants, implementing per-staff permissions,
+  or managing multi-store organizations.
+
   Trigger with phrases like "shopify permissions", "shopify staff",
+
   "shopify Plus organization", "shopify roles", "shopify multi-location".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ecommerce, shopify]
-compatible-with: claude-code
+tags:
+- saas
+- ecommerce
+- shopify
+compatibility: Designed for Claude Code
 ---
-
 # Shopify Enterprise RBAC
 
 ## Overview

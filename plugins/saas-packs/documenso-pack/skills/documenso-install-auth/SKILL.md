@@ -1,17 +1,26 @@
 ---
 name: documenso-install-auth
-description: |
-  Install and configure Documenso SDK/API authentication.
+description: 'Install and configure Documenso SDK/API authentication.
+
   Use when setting up a new Documenso integration, configuring API keys,
+
   or initializing Documenso in your project.
+
   Trigger with phrases like "install documenso", "setup documenso",
+
   "documenso auth", "configure documenso API key".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, documenso, api, authentication]
+tags:
+- saas
+- documenso
+- api
+- authentication
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Documenso Install & Auth
 

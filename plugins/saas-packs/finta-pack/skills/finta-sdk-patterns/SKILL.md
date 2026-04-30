@@ -1,19 +1,28 @@
 ---
 name: finta-sdk-patterns
-description: |
-  Integration patterns for Finta fundraising CRM with email and calendar APIs.
+description: 'Integration patterns for Finta fundraising CRM with email and calendar
+  APIs.
+
   Use when building automated investor outreach, syncing data from Finta exports,
+
   or creating custom fundraising dashboards.
+
   Trigger with phrases like "finta integration", "finta patterns",
+
   "finta automation", "finta data pipeline".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, fundraising-crm, investor-management, finta]
-compatible-with: claude-code
+tags:
+- saas
+- fundraising-crm
+- investor-management
+- finta
+compatibility: Designed for Claude Code
 ---
-
 # Finta SDK Patterns
 
 ## Overview

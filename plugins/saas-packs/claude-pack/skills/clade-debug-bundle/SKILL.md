@@ -1,19 +1,20 @@
 ---
 name: clade-debug-bundle
-description: |
-  Collect debug evidence for Anthropic API issues — request IDs, headers,
-  Use when working with debug-bundle patterns.
-  error payloads, and reproduction steps for support tickets.
-  Trigger with "anthropic debug", "claude support ticket", "anthropic request id",
-  "debug claude api call".
+description: "Collect debug evidence for Anthropic API issues \u2014 request IDs,\
+  \ headers,\nUse when working with debug-bundle patterns.\nerror payloads, and reproduction\
+  \ steps for support tickets.\nTrigger with \"anthropic debug\", \"claude support\
+  \ ticket\", \"anthropic request id\",\n\"debug claude api call\".\n"
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code
-tags: [saas, anthropic, claude, debugging]
+tags:
+- saas
+- anthropic
+- claude
+- debugging
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Debug Bundle
 
 ## Overview

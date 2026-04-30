@@ -1,19 +1,28 @@
 ---
 name: klaviyo-performance-tuning
-description: |
-  Optimize Klaviyo API performance with caching, batching, and pagination tuning.
+description: 'Optimize Klaviyo API performance with caching, batching, and pagination
+  tuning.
+
   Use when experiencing slow API responses, implementing caching strategies,
+
   or optimizing request throughput for Klaviyo integrations.
+
   Trigger with phrases like "klaviyo performance", "optimize klaviyo",
+
   "klaviyo latency", "klaviyo caching", "klaviyo slow", "klaviyo batch".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, klaviyo, email-marketing, cdp]
-compatible-with: claude-code
+tags:
+- saas
+- klaviyo
+- email-marketing
+- cdp
+compatibility: Designed for Claude Code
 ---
-
 # Klaviyo Performance Tuning
 
 ## Overview

@@ -1,19 +1,29 @@
 ---
 name: alchemy-core-workflow-a
-description: |
-  Build a complete wallet portfolio tracker using Alchemy Enhanced APIs.
+description: 'Build a complete wallet portfolio tracker using Alchemy Enhanced APIs.
+
   Use when implementing token balance dashboards, NFT galleries,
+
   transaction history views, or wallet analytics applications.
+
   Trigger: "alchemy wallet tracker", "alchemy portfolio", "alchemy token dashboard",
+
   "alchemy transaction history", "build dApp with alchemy".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, blockchain, web3, alchemy, defi, portfolio]
-compatible-with: claude-code
+tags:
+- saas
+- blockchain
+- web3
+- alchemy
+- defi
+- portfolio
+compatibility: Designed for Claude Code
 ---
-
 # Alchemy Core Workflow A — Wallet Portfolio Tracker
 
 ## Overview

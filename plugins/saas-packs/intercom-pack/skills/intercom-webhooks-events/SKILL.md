@@ -1,20 +1,29 @@
 ---
 name: intercom-webhooks-events
-description: |
-  Implement Intercom webhook handling and data event tracking.
+description: 'Implement Intercom webhook handling and data event tracking.
+
   Use when setting up webhook endpoints, processing Intercom notifications,
+
   or submitting custom data events for contact activity tracking.
+
   Trigger with phrases like "intercom webhook", "intercom events",
+
   "intercom webhook signature", "handle intercom events", "intercom data events",
+
   "track intercom events".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, support, messaging, intercom]
-compatible-with: claude-code
+tags:
+- saas
+- support
+- messaging
+- intercom
+compatibility: Designed for Claude Code
 ---
-
 # Intercom Webhooks & Events
 
 ## Overview

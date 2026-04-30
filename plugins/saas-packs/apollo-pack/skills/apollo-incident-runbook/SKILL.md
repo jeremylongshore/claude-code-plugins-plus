@@ -1,17 +1,26 @@
 ---
 name: apollo-incident-runbook
-description: |
-  Apollo.io incident response procedures.
+description: 'Apollo.io incident response procedures.
+
   Use when handling Apollo outages, debugging production issues,
+
   or responding to integration failures.
+
   Trigger with phrases like "apollo incident", "apollo outage",
+
   "apollo down", "apollo production issue", "apollo emergency".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(kubectl:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, apollo, debugging, incident-response]
+tags:
+- saas
+- apollo
+- debugging
+- incident-response
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Apollo Incident Runbook
 

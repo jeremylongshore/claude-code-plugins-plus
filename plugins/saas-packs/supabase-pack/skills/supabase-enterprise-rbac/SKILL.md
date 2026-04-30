@@ -1,20 +1,36 @@
 ---
 name: supabase-enterprise-rbac
-description: |
-  Implement custom role-based access control via JWT claims in Supabase: app_metadata.role,
-  RLS policies with auth.jwt() role extraction, organization-scoped access, and API key scoping.
+description: 'Implement custom role-based access control via JWT claims in Supabase:
+  app_metadata.role,
+
+  RLS policies with auth.jwt() role extraction, organization-scoped access, and API
+  key scoping.
+
   Use when implementing role-based permissions, configuring organization-level access,
+
   building admin/member/viewer hierarchies, or scoping API keys per role.
-  Trigger: "supabase RBAC", "supabase roles", "supabase permissions", "supabase JWT claims",
+
+  Trigger: "supabase RBAC", "supabase roles", "supabase permissions", "supabase JWT
+  claims",
+
   "supabase organization access", "supabase custom roles", "supabase app_metadata".
-allowed-tools: Read, Write, Edit, Bash(npx supabase:*), Bash(supabase:*), Bash(psql:*), Grep, Glob
+
+  '
+allowed-tools: Read, Write, Edit, Bash(npx supabase:*), Bash(supabase:*), Bash(psql:*),
+  Grep, Glob
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, supabase, rbac, security, enterprise, roles, permissions]
+tags:
+- saas
+- supabase
+- rbac
+- security
+- enterprise
+- roles
+- permissions
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Supabase Enterprise RBAC
 
 ## Overview

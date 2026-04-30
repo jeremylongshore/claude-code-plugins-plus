@@ -1,16 +1,23 @@
 ---
 name: generating-grpc-services
-description: |
-  Generate gRPC service definitions, stubs, and implementations from Protocol Buffers.
+description: 'Generate gRPC service definitions, stubs, and implementations from Protocol
+  Buffers.
+
   Use when creating high-performance gRPC services.
-  Trigger with phrases like "generate gRPC service", "create gRPC API", or "build gRPC server".
-  
+
+  Trigger with phrases like "generate gRPC service", "create gRPC API", or "build
+  gRPC server".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:grpc-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [api, performance, grpc-services]
+tags:
+- api
+- performance
+- grpc-services
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Generating gRPC Services
 

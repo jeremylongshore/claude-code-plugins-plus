@@ -1,17 +1,27 @@
 ---
 name: replit-multi-env-setup
-description: |
-  Configure Replit dev/staging/production environments with separate databases, secrets, and deployment tiers.
+description: 'Configure Replit dev/staging/production environments with separate databases,
+  secrets, and deployment tiers.
+
   Use when setting up multi-environment deployments, managing per-environment secrets,
+
   or implementing environment-specific Replit configurations.
+
   Trigger with phrases like "replit environments", "replit staging",
+
   "replit dev prod", "replit environment setup", "replit separate databases".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, replit, deployment, environments]
+tags:
+- saas
+- replit
+- deployment
+- environments
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Replit Multi-Environment Setup
 

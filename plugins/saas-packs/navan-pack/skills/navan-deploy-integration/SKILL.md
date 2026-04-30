@@ -1,16 +1,22 @@
 ---
 name: navan-deploy-integration
-description: |
-  Use when deploying Navan integrations with ERP systems (NetSuite, Sage Intacct, Xero), HRIS platforms (Workday, BambooHR), or identity providers (Okta, Azure AD).
+description: 'Use when deploying Navan integrations with ERP systems (NetSuite, Sage
+  Intacct, Xero), HRIS platforms (Workday, BambooHR), or identity providers (Okta,
+  Azure AD).
+
   Trigger with "navan deploy integration" or "navan erp setup" or "navan sso deployment".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep, Glob
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, navan, travel]
-compatible-with: claude-code
+tags:
+- saas
+- navan
+- travel
+compatibility: Designed for Claude Code
 ---
-
 # Navan Deploy Integration
 
 ## Overview

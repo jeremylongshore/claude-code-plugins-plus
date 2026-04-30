@@ -1,17 +1,26 @@
 ---
 name: firecrawl-install-auth
-description: |
-  Install and configure Firecrawl SDK authentication for web scraping.
+description: 'Install and configure Firecrawl SDK authentication for web scraping.
+
   Use when setting up a new Firecrawl integration, configuring API keys,
+
   or initializing Firecrawl in your project.
+
   Trigger with phrases like "install firecrawl", "setup firecrawl",
+
   "firecrawl auth", "configure firecrawl API key".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, firecrawl, api, authentication]
+tags:
+- saas
+- firecrawl
+- api
+- authentication
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Firecrawl Install & Auth
 

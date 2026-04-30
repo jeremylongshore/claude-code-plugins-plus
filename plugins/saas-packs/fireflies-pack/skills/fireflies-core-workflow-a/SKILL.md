@@ -1,17 +1,27 @@
 ---
 name: fireflies-core-workflow-a
-description: |
-  Retrieve and process Fireflies.ai meeting transcripts with speaker diarization and summaries.
+description: 'Retrieve and process Fireflies.ai meeting transcripts with speaker diarization
+  and summaries.
+
   Use when fetching transcripts, extracting action items,
+
   or building meeting intelligence pipelines.
+
   Trigger with phrases like "fireflies transcript", "get meeting notes",
+
   "fireflies meeting data", "fetch fireflies recording".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, fireflies, workflow, transcripts]
+tags:
+- saas
+- fireflies
+- workflow
+- transcripts
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Fireflies.ai Core Workflow A -- Transcript Retrieval & Processing
 

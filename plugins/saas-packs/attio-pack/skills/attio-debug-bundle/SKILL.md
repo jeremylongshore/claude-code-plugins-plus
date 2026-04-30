@@ -1,18 +1,24 @@
 ---
 name: attio-debug-bundle
-description: |
-  Collect Attio integration diagnostic evidence -- API health, scopes,
+description: 'Collect Attio integration diagnostic evidence -- API health, scopes,
+
   object schema, and rate limit status -- for debugging or support tickets.
+
   Trigger: "attio debug", "attio support bundle", "attio diagnostic",
+
   "collect attio logs", "attio not working debug".
+
+  '
 allowed-tools: Read, Bash(curl:*), Bash(jq:*), Bash(tar:*), Bash(node:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, attio]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- attio
+compatibility: Designed for Claude Code
 ---
-
 # Attio Debug Bundle
 
 ## Overview

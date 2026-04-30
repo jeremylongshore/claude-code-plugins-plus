@@ -1,17 +1,27 @@
 ---
 name: langfuse-data-handling
-description: |
-  Manage Langfuse data export, retention, and compliance requirements.
+description: 'Manage Langfuse data export, retention, and compliance requirements.
+
   Use when exporting trace data, configuring retention policies,
+
   or implementing data compliance for LLM observability.
+
   Trigger with phrases like "langfuse data export", "langfuse retention",
+
   "langfuse GDPR", "langfuse compliance", "export langfuse traces".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langfuse, observability, llm, compliance]
+tags:
+- saas
+- langfuse
+- observability
+- llm
+- compliance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Langfuse Data Handling
 

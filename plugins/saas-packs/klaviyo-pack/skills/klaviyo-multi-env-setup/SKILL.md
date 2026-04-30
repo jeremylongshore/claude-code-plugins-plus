@@ -1,19 +1,28 @@
 ---
 name: klaviyo-multi-env-setup
-description: |
-  Configure Klaviyo across development, staging, and production environments.
-  Use when setting up multi-environment deployments, configuring per-environment API keys,
+description: 'Configure Klaviyo across development, staging, and production environments.
+
+  Use when setting up multi-environment deployments, configuring per-environment API
+  keys,
+
   or implementing environment-specific Klaviyo configurations.
+
   Trigger with phrases like "klaviyo environments", "klaviyo staging",
+
   "klaviyo dev prod", "klaviyo environment setup", "klaviyo config by env".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, klaviyo, email-marketing, cdp]
-compatible-with: claude-code
+tags:
+- saas
+- klaviyo
+- email-marketing
+- cdp
+compatibility: Designed for Claude Code
 ---
-
 # Klaviyo Multi-Environment Setup
 
 ## Overview

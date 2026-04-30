@@ -1,20 +1,32 @@
 ---
 name: supabase-auth-storage-realtime-core
-description: |
-  Implement Supabase Auth (signUp, signIn, OAuth, session management), Storage
+description: 'Implement Supabase Auth (signUp, signIn, OAuth, session management),
+  Storage
+
   (upload, download, signed URLs, bucket policies), and Realtime (Postgres changes,
+
   broadcast, presence). Use when building user auth flows, file upload features,
+
   or live-updating UIs with Supabase. Trigger with phrases like "supabase auth",
+
   "supabase storage upload", "supabase realtime subscribe", "supabase oauth",
+
   "supabase file upload", "supabase presence", "supabase rls storage".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(supabase:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, cursor
-tags: [saas, supabase, auth, storage, realtime, rls]
+tags:
+- saas
+- supabase
+- auth
+- storage
+- realtime
+- rls
+compatibility: Designed for Claude Code, also compatible with Cursor
 ---
-
 # Supabase Auth + Storage + Realtime Core
 
 ## Overview

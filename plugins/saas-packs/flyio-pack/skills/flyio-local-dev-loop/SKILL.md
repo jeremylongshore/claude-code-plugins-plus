@@ -1,18 +1,24 @@
 ---
 name: flyio-local-dev-loop
-description: |
-  Configure Fly.io local development with Docker, proxy, and SSH console.
+description: 'Configure Fly.io local development with Docker, proxy, and SSH console.
+
   Use when setting up local dev against Fly services, testing Dockerfiles,
+
   or establishing a fast iteration cycle.
+
   Trigger: "fly.io dev setup", "fly.io local development", "fly proxy".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(fly:*), Bash(docker:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, edge-compute, flyio]
-compatible-with: claude-code
+tags:
+- saas
+- edge-compute
+- flyio
+compatibility: Designed for Claude Code
 ---
-
 # Fly.io Local Dev Loop
 
 ## Overview

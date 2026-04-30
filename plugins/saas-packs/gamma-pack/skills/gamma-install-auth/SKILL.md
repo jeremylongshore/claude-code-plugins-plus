@@ -1,17 +1,26 @@
 ---
 name: gamma-install-auth
-description: |
-  Set up Gamma API v1.0 authentication and first request.
+description: 'Set up Gamma API v1.0 authentication and first request.
+
   Use when configuring API keys, setting up X-API-KEY header,
+
   or initializing Gamma REST API access in a project.
+
   Trigger: "install gamma", "setup gamma API", "gamma auth",
+
   "gamma API key", "configure gamma".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(npm:*), Bash(pip:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, gamma, api, authentication]
+tags:
+- saas
+- gamma
+- api
+- authentication
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Gamma Install & Auth
 

@@ -1,17 +1,23 @@
 ---
 name: veeva-incident-runbook
-description: |
-  Veeva Vault incident runbook for enterprise operations.
+description: 'Veeva Vault incident runbook for enterprise operations.
+
   Use when implementing advanced Veeva Vault patterns.
+
   Trigger: "veeva incident runbook".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, life-sciences, crm, veeva]
-compatible-with: claude-code
+tags:
+- saas
+- life-sciences
+- crm
+- veeva
+compatibility: Designed for Claude Code
 ---
-
 # Veeva Vault Incident Runbook
 
 ## Overview

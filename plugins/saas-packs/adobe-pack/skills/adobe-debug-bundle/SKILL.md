@@ -1,19 +1,26 @@
 ---
 name: adobe-debug-bundle
-description: |
-  Collect Adobe debug evidence for support tickets and troubleshooting.
+description: 'Collect Adobe debug evidence for support tickets and troubleshooting.
+
   Use when encountering persistent issues, preparing support tickets,
+
   or collecting diagnostic information for Adobe API problems.
+
   Trigger with phrases like "adobe debug", "adobe support bundle",
+
   "collect adobe logs", "adobe diagnostic".
+
+  '
 allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, adobe]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- adobe
+compatibility: Designed for Claude Code
 ---
-
 # Adobe Debug Bundle
 
 ## Overview

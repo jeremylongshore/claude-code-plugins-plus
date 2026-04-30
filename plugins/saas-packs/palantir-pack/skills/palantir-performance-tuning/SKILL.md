@@ -1,19 +1,29 @@
 ---
 name: palantir-performance-tuning
-description: |
-  Optimize Palantir Foundry API performance with caching, batching, and pagination.
+description: 'Optimize Palantir Foundry API performance with caching, batching, and
+  pagination.
+
   Use when experiencing slow API responses, optimizing transform builds,
+
   or improving request throughput for Foundry integrations.
+
   Trigger with phrases like "palantir performance", "optimize foundry",
+
   "foundry slow", "palantir caching", "foundry batch".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, palantir, foundry, performance, optimization]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- palantir
+- foundry
+- performance
+- optimization
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Palantir Performance Tuning
 
 ## Overview

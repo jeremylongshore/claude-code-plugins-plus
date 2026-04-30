@@ -1,19 +1,27 @@
 ---
 name: brightdata-common-errors
-description: |
-  Diagnose and fix Bright Data common errors and exceptions.
+description: 'Diagnose and fix Bright Data common errors and exceptions.
+
   Use when encountering Bright Data errors, debugging failed requests,
+
   or troubleshooting integration issues.
+
   Trigger with phrases like "brightdata error", "fix brightdata",
+
   "brightdata not working", "debug brightdata".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, scraping, data, brightdata]
-compatible-with: claude-code
+tags:
+- saas
+- scraping
+- data
+- brightdata
+compatibility: Designed for Claude Code
 ---
-
 # Bright Data Common Errors
 
 ## Overview

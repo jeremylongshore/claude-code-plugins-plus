@@ -1,17 +1,27 @@
 ---
 name: twinmind-core-workflow-a
-description: |
-  Execute TwinMind primary workflow: Meeting transcription and summary generation.
+description: 'Execute TwinMind primary workflow: Meeting transcription and summary
+  generation.
+
   Use when implementing meeting capture, building transcription features,
+
   or automating meeting documentation.
+
   Trigger with phrases like "twinmind transcription workflow",
+
   "meeting transcription", "capture meeting with twinmind".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, twinmind, transcription, workflow]
+tags:
+- saas
+- twinmind
+- transcription
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # TwinMind Core Workflow A: Meeting Transcription & Summary
 

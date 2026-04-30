@@ -1,16 +1,20 @@
 ---
 name: mindtickle-ci-integration
-description: |
-  Ci Integration for MindTickle.
+description: 'Ci Integration for MindTickle.
+
   Trigger: "mindtickle ci integration".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, mindtickle, sales]
-compatible-with: claude-code
+tags:
+- saas
+- mindtickle
+- sales
+compatibility: Designed for Claude Code
 ---
-
 # MindTickle CI Integration
 
 ## Overview

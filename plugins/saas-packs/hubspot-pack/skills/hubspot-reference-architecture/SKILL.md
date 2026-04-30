@@ -1,19 +1,28 @@
 ---
 name: hubspot-reference-architecture
-description: |
-  Implement a production-ready HubSpot integration architecture with layered design.
+description: 'Implement a production-ready HubSpot integration architecture with layered
+  design.
+
   Use when designing new HubSpot integrations, reviewing project structure,
+
   or establishing architecture standards for HubSpot CRM applications.
+
   Trigger with phrases like "hubspot architecture", "hubspot project structure",
+
   "hubspot integration design", "hubspot best practices layout", "hubspot layers".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, marketing, hubspot]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- marketing
+- hubspot
+compatibility: Designed for Claude Code
 ---
-
 # HubSpot Reference Architecture
 
 ## Overview

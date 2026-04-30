@@ -1,19 +1,27 @@
 ---
 name: apify-security-basics
-description: |
-  Secure Apify API tokens, configure proxy access, and protect Actor data.
+description: 'Secure Apify API tokens, configure proxy access, and protect Actor data.
+
   Use when hardening API key management, setting up environment-specific tokens,
+
   or auditing Apify security configuration.
+
   Trigger: "apify security", "apify secrets", "secure apify token",
+
   "apify API key security", "rotate apify token".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, scraping, automation, apify]
-compatible-with: claude-code
+tags:
+- saas
+- scraping
+- automation
+- apify
+compatibility: Designed for Claude Code
 ---
-
 # Apify Security Basics
 
 ## Overview

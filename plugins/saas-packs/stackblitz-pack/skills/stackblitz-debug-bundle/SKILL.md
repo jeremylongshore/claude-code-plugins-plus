@@ -1,17 +1,24 @@
 ---
 name: stackblitz-debug-bundle
-description: |
-  Collect WebContainer diagnostic info: boot state, file system, process list.
+description: 'Collect WebContainer diagnostic info: boot state, file system, process
+  list.
+
   Use when working with WebContainers or StackBlitz SDK.
+
   Trigger: "stackblitz debug".
+
+  '
 allowed-tools: Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ide, webcontainers, stackblitz]
-compatible-with: claude-code
+tags:
+- saas
+- ide
+- webcontainers
+- stackblitz
+compatibility: Designed for Claude Code
 ---
-
 # StackBlitz Debug Bundle
 
 ## Overview

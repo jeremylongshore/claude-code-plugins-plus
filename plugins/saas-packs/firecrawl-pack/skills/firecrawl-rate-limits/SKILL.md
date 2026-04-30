@@ -1,17 +1,25 @@
 ---
 name: firecrawl-rate-limits
-description: |
-  Implement Firecrawl rate limiting, backoff, and request queuing patterns.
+description: 'Implement Firecrawl rate limiting, backoff, and request queuing patterns.
+
   Use when handling 429 errors, implementing retry logic,
+
   or optimizing API request throughput for Firecrawl.
+
   Trigger with phrases like "firecrawl rate limit", "firecrawl throttling",
+
   "firecrawl 429", "firecrawl retry", "firecrawl backoff".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, firecrawl, api]
+tags:
+- saas
+- firecrawl
+- api
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Firecrawl Rate Limits
 

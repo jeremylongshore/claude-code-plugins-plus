@@ -1,21 +1,35 @@
 ---
 name: supabase-advanced-troubleshooting
-description: |
-  Deep Supabase diagnostics: pg_stat_statements for slow queries, lock debugging with
+description: 'Deep Supabase diagnostics: pg_stat_statements for slow queries, lock
+  debugging with
+
   pg_locks, connection leak detection, RLS policy conflicts, Edge Function cold starts,
+
   and Realtime connection drop analysis.
-  Use when standard troubleshooting fails, investigating performance regressions, debugging
+
+  Use when standard troubleshooting fails, investigating performance regressions,
+  debugging
+
   race conditions, or building evidence for Supabase support escalation.
+
   Trigger: "supabase deep debug", "supabase slow query", "supabase lock contention",
+
   "supabase connection leak", "supabase RLS conflict", "supabase cold start".
+
+  '
 allowed-tools: Read, Grep, Bash(npx supabase:*), Bash(supabase:*), Bash(curl:*), Bash(psql:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, supabase, debugging, advanced, performance, troubleshooting]
+tags:
+- saas
+- supabase
+- debugging
+- advanced
+- performance
+- troubleshooting
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Supabase Advanced Troubleshooting
 
 ## Overview

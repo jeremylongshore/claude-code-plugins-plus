@@ -1,20 +1,29 @@
 ---
 name: shopify-performance-tuning
-description: |
-  Optimize Shopify API performance with GraphQL query cost reduction, bulk operations,
+description: 'Optimize Shopify API performance with GraphQL query cost reduction,
+  bulk operations,
+
   caching strategies, and Storefront API for high-traffic storefronts.
+
   Use when queries are slow or hitting THROTTLED errors, exporting large datasets,
+
   or optimizing API throughput for a high-traffic storefront.
+
   Trigger with phrases like "shopify performance", "optimize shopify",
+
   "shopify slow", "shopify caching", "shopify bulk operation", "shopify query cost".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ecommerce, shopify]
-compatible-with: claude-code
+tags:
+- saas
+- ecommerce
+- shopify
+compatibility: Designed for Claude Code
 ---
-
 # Shopify Performance Tuning
 
 ## Overview

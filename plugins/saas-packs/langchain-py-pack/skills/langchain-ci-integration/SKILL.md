@@ -1,22 +1,28 @@
 ---
 name: langchain-ci-integration
-description: |
-  Wire LangChain 1.0 / LangGraph 1.0 tests into a GitHub Actions pipeline —
-  unit tests with FakeListChatModel, VCR-gated integration tests, warning-filter
-  policy, and eval-regression merge gates. Complements langchain-local-dev-loop
-  (F23) which covers the inner loop; THIS covers the CI wire-up. Use when setting
-  up GHA for a new LLM service, after a VCR cassette leak incident, or hardening
-  an existing pipeline.
-  Trigger with "langchain ci", "langchain github actions", "langchain test pipeline",
-  "vcr ci", "langchain eval gate", "pytest -W error langchain".
+description: "Wire LangChain 1.0 / LangGraph 1.0 tests into a GitHub Actions pipeline\
+  \ \u2014\nunit tests with FakeListChatModel, VCR-gated integration tests, warning-filter\n\
+  policy, and eval-regression merge gates. Complements langchain-local-dev-loop\n\
+  (F23) which covers the inner loop; THIS covers the CI wire-up. Use when setting\n\
+  up GHA for a new LLM service, after a VCR cassette leak incident, or hardening\n\
+  an existing pipeline.\nTrigger with \"langchain ci\", \"langchain github actions\"\
+  , \"langchain test pipeline\",\n\"vcr ci\", \"langchain eval gate\", \"pytest -W\
+  \ error langchain\".\n"
 allowed-tools: Read, Write, Edit, Bash(python:*), Bash(pytest:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, langchain, langgraph, python, langchain-1.0, ci, github-actions, testing]
-compatible-with: claude-code, codex
+tags:
+- saas
+- langchain
+- langgraph
+- python
+- langchain-1.0
+- ci
+- github-actions
+- testing
+compatibility: Designed for Claude Code, also compatible with Codex
 ---
-
 # LangChain CI Integration (Python)
 
 ## Overview

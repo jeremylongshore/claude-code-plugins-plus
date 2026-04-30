@@ -1,19 +1,27 @@
 ---
 name: apify-reference-architecture
-description: |
-  Production-grade architecture patterns for Apify-powered applications.
+description: 'Production-grade architecture patterns for Apify-powered applications.
+
   Use when designing scraping infrastructure, building multi-Actor pipelines,
+
   or integrating Apify into a larger system architecture.
+
   Trigger: "apify architecture", "apify best practices",
+
   "apify project structure", "scraping architecture", "apify system design".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, scraping, automation, apify]
-compatible-with: claude-code
+tags:
+- saas
+- scraping
+- automation
+- apify
+compatibility: Designed for Claude Code
 ---
-
 # Apify Reference Architecture
 
 ## Overview

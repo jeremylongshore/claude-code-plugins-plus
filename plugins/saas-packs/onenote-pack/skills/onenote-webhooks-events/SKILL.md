@@ -1,17 +1,24 @@
 ---
 name: onenote-webhooks-events
-description: |
-  Implement change detection for OneNote using polling and delta queries (webhooks decommissioned June 2023).
+description: 'Implement change detection for OneNote using polling and delta queries
+  (webhooks decommissioned June 2023).
+
   Use when building real-time sync, change monitoring, or event-driven OneNote integrations.
-  Trigger with "onenote changes", "onenote polling", "onenote sync", "onenote delta query".
+
+  Trigger with "onenote changes", "onenote polling", "onenote sync", "onenote delta
+  query".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, onenote, microsoft]
-compatible-with: claude-code
+tags:
+- saas
+- onenote
+- microsoft
+compatibility: Designed for Claude Code
 ---
-
 # OneNote — Change Detection (Polling & Delta Queries)
 
 ## Overview

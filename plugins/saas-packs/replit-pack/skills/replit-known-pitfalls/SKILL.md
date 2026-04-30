@@ -1,17 +1,27 @@
 ---
 name: replit-known-pitfalls
-description: |
-  Avoid the top Replit anti-patterns: ephemeral filesystem, public secrets, port binding, Nix gotchas, and database limits.
+description: 'Avoid the top Replit anti-patterns: ephemeral filesystem, public secrets,
+  port binding, Nix gotchas, and database limits.
+
   Use when reviewing Replit code, onboarding developers,
+
   or auditing existing Replit apps for common mistakes.
+
   Trigger with phrases like "replit mistakes", "replit anti-patterns",
+
   "replit pitfalls", "replit what not to do", "replit code review".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, replit, audit, anti-patterns]
+tags:
+- saas
+- replit
+- audit
+- anti-patterns
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Replit Known Pitfalls
 

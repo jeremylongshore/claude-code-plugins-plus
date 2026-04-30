@@ -1,19 +1,31 @@
 ---
 name: elevenlabs-core-workflow-b
-description: |
-  Implement ElevenLabs speech-to-speech, sound effects, audio isolation, and speech-to-text.
+description: 'Implement ElevenLabs speech-to-speech, sound effects, audio isolation,
+  and speech-to-text.
+
   Use when converting voice to another voice, generating sound effects from text,
+
   removing background noise, or transcribing audio.
+
   Trigger: "elevenlabs speech to speech", "voice changer", "sound effects",
+
   "audio isolation", "remove background noise", "elevenlabs transcribe".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, voice, ai, elevenlabs, speech-to-speech, sound-effects, audio-isolation]
-compatible-with: claude-code
+tags:
+- saas
+- voice
+- ai
+- elevenlabs
+- speech-to-speech
+- sound-effects
+- audio-isolation
+compatibility: Designed for Claude Code
 ---
-
 # ElevenLabs Core Workflow B — Speech-to-Speech, Sound Effects & Audio Isolation
 
 ## Overview

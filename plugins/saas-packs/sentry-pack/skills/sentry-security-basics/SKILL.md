@@ -1,17 +1,28 @@
 ---
 name: sentry-security-basics
-description: |
-  Configure Sentry security settings and data protection.
+description: 'Configure Sentry security settings and data protection.
+
   Use when setting up PII scrubbing, managing sensitive data,
+
   configuring data scrubbing rules, or hardening Sentry for compliance.
+
   Trigger with phrases like "sentry security", "sentry PII",
+
   "sentry data scrubbing", "secure sentry", "sentry GDPR".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Bash(grep:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, sentry, security, pii, data-scrubbing, gdpr]
+tags:
+- saas
+- sentry
+- security
+- pii
+- data-scrubbing
+- gdpr
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Sentry Security Basics
 

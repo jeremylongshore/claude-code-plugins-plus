@@ -1,19 +1,28 @@
 ---
 name: palantir-debug-bundle
-description: |
-  Collect Palantir Foundry debug evidence for support tickets and troubleshooting.
+description: 'Collect Palantir Foundry debug evidence for support tickets and troubleshooting.
+
   Use when encountering persistent Foundry issues, preparing support tickets,
+
   or collecting diagnostic information for Foundry problems.
+
   Trigger with phrases like "palantir debug", "foundry support bundle",
+
   "collect palantir logs", "foundry diagnostic".
+
+  '
 allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, palantir, foundry, debugging, diagnostics]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- palantir
+- foundry
+- debugging
+- diagnostics
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Palantir Debug Bundle
 
 ## Overview

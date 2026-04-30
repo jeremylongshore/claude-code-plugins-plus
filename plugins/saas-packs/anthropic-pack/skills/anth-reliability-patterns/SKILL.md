@@ -1,18 +1,24 @@
 ---
 name: anth-reliability-patterns
-description: |
-  Implement reliability patterns for Claude API: circuit breakers,
+description: 'Implement reliability patterns for Claude API: circuit breakers,
+
   graceful degradation, idempotency, and fallback strategies.
+
   Trigger with phrases like "anthropic reliability", "claude circuit breaker",
+
   "claude fallback", "anthropic fault tolerance".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, anthropic]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- anthropic
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Reliability Patterns
 
 ## Overview

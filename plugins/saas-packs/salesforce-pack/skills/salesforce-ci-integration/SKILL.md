@@ -1,19 +1,27 @@
 ---
 name: salesforce-ci-integration
-description: |
-  Configure Salesforce CI/CD with GitHub Actions, SFDX deployments, and Apex testing.
+description: 'Configure Salesforce CI/CD with GitHub Actions, SFDX deployments, and
+  Apex testing.
+
   Use when setting up automated testing, configuring CI pipelines for metadata deployment,
+
   or integrating Salesforce tests into your build process.
+
   Trigger with phrases like "salesforce CI", "salesforce GitHub Actions",
+
   "salesforce automated tests", "CI salesforce", "sfdx deploy CI".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(sf:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, salesforce]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- salesforce
+compatibility: Designed for Claude Code
 ---
-
 # Salesforce CI Integration
 
 ## Overview

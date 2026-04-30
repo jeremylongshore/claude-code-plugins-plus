@@ -1,19 +1,25 @@
 ---
 name: figma-load-scale
-description: |
-  Load test Figma API integrations and plan for scale.
+description: 'Load test Figma API integrations and plan for scale.
+
   Use when benchmarking API throughput, testing rate limit behavior,
+
   or planning capacity for high-volume Figma integrations.
+
   Trigger with phrases like "figma load test", "figma scale",
+
   "figma benchmark", "figma capacity", "figma throughput".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(k6:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, figma]
-compatible-with: claude-code
+tags:
+- saas
+- figma
+compatibility: Designed for Claude Code
 ---
-
 # Figma Load & Scale
 
 ## Overview

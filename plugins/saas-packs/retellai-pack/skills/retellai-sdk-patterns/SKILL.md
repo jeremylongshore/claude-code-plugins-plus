@@ -1,17 +1,26 @@
 ---
 name: retellai-sdk-patterns
-description: |
-  Production-ready Retell AI SDK patterns for voice agent applications.
-  Use when building production voice agents, implementing retry logic, or establishing patterns.
-  Trigger with phrases like "retell patterns", "voice agent patterns", "retell best practices".
+description: 'Production-ready Retell AI SDK patterns for voice agent applications.
+
+  Use when building production voice agents, implementing retry logic, or establishing
+  patterns.
+
+  Trigger with phrases like "retell patterns", "voice agent patterns", "retell best
+  practices".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, retellai, voice, telephony, patterns]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- retellai
+- voice
+- telephony
+- patterns
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Retell AI SDK Patterns
 
 ## Overview

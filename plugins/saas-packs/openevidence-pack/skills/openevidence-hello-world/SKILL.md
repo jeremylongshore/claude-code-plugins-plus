@@ -1,16 +1,20 @@
 ---
 name: openevidence-hello-world
-description: |
-  Create a minimal working OpenEvidence example.
+description: 'Create a minimal working OpenEvidence example.
+
   Trigger: "openevidence hello world", "openevidence example", "test openevidence".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, openevidence, healthcare]
-compatible-with: claude-code
+tags:
+- saas
+- openevidence
+- healthcare
+compatibility: Designed for Claude Code
 ---
-
 # OpenEvidence Hello World
 
 ## Overview

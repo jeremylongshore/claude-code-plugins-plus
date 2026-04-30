@@ -1,17 +1,27 @@
 ---
 name: evernote-observability
-description: |
-  Implement observability for Evernote integrations.
+description: 'Implement observability for Evernote integrations.
+
   Use when setting up monitoring, logging, tracing,
+
   or alerting for Evernote applications.
+
   Trigger with phrases like "evernote monitoring", "evernote logging",
+
   "evernote metrics", "evernote observability".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, evernote, monitoring, observability, logging]
+tags:
+- saas
+- evernote
+- monitoring
+- observability
+- logging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Evernote Observability
 

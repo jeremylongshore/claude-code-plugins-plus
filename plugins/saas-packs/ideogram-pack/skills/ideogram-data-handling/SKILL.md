@@ -1,17 +1,27 @@
 ---
 name: ideogram-data-handling
-description: |
-  Manage Ideogram generated image assets, metadata tracking, and lifecycle management.
+description: 'Manage Ideogram generated image assets, metadata tracking, and lifecycle
+  management.
+
   Use when implementing image persistence, tracking generation history,
+
   or building asset management for Ideogram outputs.
+
   Trigger with phrases like "ideogram data", "ideogram images",
+
   "ideogram asset management", "ideogram metadata", "ideogram image storage".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, ideogram, data, asset-management]
+tags:
+- saas
+- ideogram
+- data
+- asset-management
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Ideogram Data Handling
 

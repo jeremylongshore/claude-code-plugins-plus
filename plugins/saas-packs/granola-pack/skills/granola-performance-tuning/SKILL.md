@@ -1,17 +1,27 @@
 ---
 name: granola-performance-tuning
-description: |
-  Optimize Granola transcription accuracy, note quality, and processing speed.
+description: 'Optimize Granola transcription accuracy, note quality, and processing
+  speed.
+
   Use when improving transcription quality, reducing processing time,
+
   optimizing templates for better AI output, or tuning audio setup.
+
   Trigger: "granola performance", "granola accuracy", "granola quality",
+
   "improve granola", "granola transcription better".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, granola, performance, transcription]
+tags:
+- saas
+- granola
+- performance
+- transcription
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Granola Performance Tuning
 

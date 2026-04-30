@@ -1,17 +1,25 @@
 ---
 name: apollo-multi-env-setup
-description: |
-  Configure Apollo.io multi-environment setup.
+description: 'Configure Apollo.io multi-environment setup.
+
   Use when setting up development, staging, and production environments,
+
   or managing multiple Apollo configurations.
+
   Trigger with phrases like "apollo environments", "apollo staging",
+
   "apollo dev prod", "apollo multi-tenant", "apollo env config".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(kubectl:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, apollo, apollo-multi]
+tags:
+- saas
+- apollo
+- apollo-multi
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Apollo Multi-Environment Setup
 

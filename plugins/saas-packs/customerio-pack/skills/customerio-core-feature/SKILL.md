@@ -1,16 +1,25 @@
 ---
 name: customerio-core-feature
-description: |
-  Implement Customer.io core features: transactional messages,
+description: 'Implement Customer.io core features: transactional messages,
+
   API-triggered broadcasts, segments, and person merge.
+
   Trigger: "customer.io segments", "customer.io transactional",
+
   "customer.io broadcast", "customer.io merge users", "customer.io send email".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Glob, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, customer-io, transactional, broadcasts, segments]
+tags:
+- saas
+- customer-io
+- transactional
+- broadcasts
+- segments
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Customer.io Core Features
 

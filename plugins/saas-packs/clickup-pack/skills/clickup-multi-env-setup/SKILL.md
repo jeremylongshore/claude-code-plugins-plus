@@ -1,18 +1,24 @@
 ---
 name: clickup-multi-env-setup
-description: |
-  Configure ClickUp API access across dev, staging, and production environments
+description: 'Configure ClickUp API access across dev, staging, and production environments
+
   with per-environment tokens and workspace isolation.
+
   Trigger: "clickup environments", "clickup staging", "clickup dev prod",
+
   "clickup environment setup", "clickup config by env", "clickup multi-env".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, clickup]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- clickup
+compatibility: Designed for Claude Code
 ---
-
 # ClickUp Multi-Environment Setup
 
 ## Overview

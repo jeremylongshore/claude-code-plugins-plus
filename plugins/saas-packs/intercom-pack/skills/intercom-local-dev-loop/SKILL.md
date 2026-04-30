@@ -1,19 +1,28 @@
 ---
 name: intercom-local-dev-loop
-description: |
-  Configure Intercom local development with testing, mocking, and hot reload.
+description: 'Configure Intercom local development with testing, mocking, and hot
+  reload.
+
   Use when setting up a development environment, writing tests against the
+
   Intercom API, or establishing a fast iteration cycle.
+
   Trigger with phrases like "intercom dev setup", "intercom local development",
+
   "intercom dev environment", "develop with intercom", "test intercom locally".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, support, messaging, intercom]
-compatible-with: claude-code
+tags:
+- saas
+- support
+- messaging
+- intercom
+compatibility: Designed for Claude Code
 ---
-
 # Intercom Local Dev Loop
 
 ## Overview

@@ -1,15 +1,23 @@
 ---
-name: "cursor-extension-integration"
-description: |
-  Integrate VS Code extensions with Cursor IDE: compatibility, Open VSX registry, VSIX installation,
-  conflict resolution, and essential extensions. Triggers on "cursor extensions", "cursor vscode extensions",
+name: cursor-extension-integration
+description: 'Integrate VS Code extensions with Cursor IDE: compatibility, Open VSX
+  registry, VSIX installation,
+
+  conflict resolution, and essential extensions. Triggers on "cursor extensions",
+  "cursor vscode extensions",
+
   "cursor plugins", "cursor marketplace", "open vsx", "vsix install".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, cursor, cursor-extension]
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- cursor
+- cursor-extension
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Cursor Extension Integration
 

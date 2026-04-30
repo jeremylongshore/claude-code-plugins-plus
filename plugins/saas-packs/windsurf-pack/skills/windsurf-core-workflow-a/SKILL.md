@@ -1,16 +1,27 @@
 ---
 name: windsurf-core-workflow-a
-description: |
-  Execute Windsurf's primary workflow: Cascade Write mode for multi-file agentic coding.
-  Use when building features, refactoring across files, or performing complex code tasks.
+description: 'Execute Windsurf''s primary workflow: Cascade Write mode for multi-file
+  agentic coding.
+
+  Use when building features, refactoring across files, or performing complex code
+  tasks.
+
   Trigger with phrases like "windsurf cascade write", "windsurf agentic coding",
+
   "windsurf multi-file edit", "cascade write mode", "windsurf build feature".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, cascade, write-mode, agentic]
+tags:
+- saas
+- windsurf
+- cascade
+- write-mode
+- agentic
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Windsurf Core Workflow A — Cascade Write Mode
 

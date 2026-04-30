@@ -1,17 +1,23 @@
 ---
 name: glean-core-workflow-a
-description: |
-  Execute Glean primary workflow: search, chat, and AI-powered answers across enterprise data.
+description: 'Execute Glean primary workflow: search, chat, and AI-powered answers
+  across enterprise data.
+
   Use when building search integrations, implementing Glean chat, or creating AI assistants.
+
   Trigger: "glean search API", "glean chat", "glean AI answers", "enterprise search".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, enterprise-search, glean]
-compatible-with: claude-code
+tags:
+- saas
+- enterprise-search
+- glean
+compatibility: Designed for Claude Code
 ---
-
 # Glean Core Workflow A: Search & Chat
 
 ## Overview

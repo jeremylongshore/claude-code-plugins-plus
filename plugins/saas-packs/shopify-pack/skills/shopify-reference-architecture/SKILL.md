@@ -1,20 +1,29 @@
 ---
 name: shopify-reference-architecture
-description: |
-  Implement Shopify app reference architecture with Remix, Prisma session storage,
+description: 'Implement Shopify app reference architecture with Remix, Prisma session
+  storage,
+
   and the official app template patterns.
+
   Use when setting up a new Shopify app, structuring a Remix-based project,
+
   or configuring Prisma session storage for production.
+
   Trigger with phrases like "shopify architecture", "shopify app structure",
+
   "shopify project layout", "shopify Remix template", "shopify app design".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ecommerce, shopify]
-compatible-with: claude-code
+tags:
+- saas
+- ecommerce
+- shopify
+compatibility: Designed for Claude Code
 ---
-
 # Shopify Reference Architecture
 
 ## Overview

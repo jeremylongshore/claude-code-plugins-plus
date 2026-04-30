@@ -1,17 +1,27 @@
 ---
 name: deepgram-enterprise-rbac
-description: |
-  Configure enterprise role-based access control for Deepgram integrations.
+description: 'Configure enterprise role-based access control for Deepgram integrations.
+
   Use when implementing team permissions, managing API key scopes,
+
   or setting up organization-level access controls.
+
   Trigger: "deepgram RBAC", "deepgram permissions", "deepgram access control",
+
   "deepgram team roles", "deepgram enterprise", "deepgram key scopes".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, deepgram, api, rbac, enterprise]
+tags:
+- saas
+- deepgram
+- api
+- rbac
+- enterprise
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Deepgram Enterprise RBAC
 

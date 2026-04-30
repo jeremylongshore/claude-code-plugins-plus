@@ -1,12 +1,18 @@
 ---
 name: implementing-real-user-monitoring
-description: Implement Real User Monitoring (RUM) to capture actual user performance data including Core Web Vitals and page load times. Use when setting up user experience monitoring or tracking custom performance events. Trigger with phrases like "setup RUM", "track Core Web Vitals", or "monitor real user performance".
+description: Implement Real User Monitoring (RUM) to capture actual user performance
+  data including Core Web Vitals and page load times. Use when setting up user experience
+  monitoring or tracking custom performance events. Trigger with phrases like "setup
+  RUM", "track Core Web Vitals", or "monitor real user performance".
 version: 1.0.0
-allowed-tools: "Read, Write, Edit, Grep, Glob, Bash(npm:*), Bash(rum:*)"
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(npm:*), Bash(rum:*)
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [performance, monitoring, real-user]
+tags:
+- performance
+- monitoring
+- real-user
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Real User Monitoring
 

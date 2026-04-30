@@ -1,17 +1,21 @@
 ---
 name: podium-core-workflow-a
-description: |
-  Podium core workflow a — business messaging and communication platform integration.
-  Use when working with Podium API for messaging, reviews, or payments.
-  Trigger with phrases like "podium core workflow a", "podium-core-workflow-a".
+description: "Podium core workflow a \u2014 business messaging and communication platform\
+  \ integration.\nUse when working with Podium API for messaging, reviews, or payments.\n\
+  Trigger with phrases like \"podium core workflow a\", \"podium-core-workflow-a\"\
+  .\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, podium, messaging, reviews, payments]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- podium
+- messaging
+- reviews
+- payments
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Podium Core Workflow A
 
 ## Overview

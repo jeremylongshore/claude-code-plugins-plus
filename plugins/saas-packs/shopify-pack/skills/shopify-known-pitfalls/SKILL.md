@@ -1,19 +1,28 @@
 ---
 name: shopify-known-pitfalls
-description: |
-  Identify and avoid Shopify API anti-patterns: ignoring userErrors, wrong API version,
+description: 'Identify and avoid Shopify API anti-patterns: ignoring userErrors, wrong
+  API version,
+
   REST instead of GraphQL, missing GDPR webhooks, and webhook timeout issues.
-  Use when reviewing a Shopify codebase, preparing for App Store submission, or debugging mysterious API failures.
+
+  Use when reviewing a Shopify codebase, preparing for App Store submission, or debugging
+  mysterious API failures.
+
   Trigger with phrases like "shopify mistakes", "shopify anti-patterns",
+
   "shopify pitfalls", "shopify what not to do", "shopify code review".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ecommerce, shopify]
-compatible-with: claude-code
+tags:
+- saas
+- ecommerce
+- shopify
+compatibility: Designed for Claude Code
 ---
-
 # Shopify Known Pitfalls
 
 ## Overview

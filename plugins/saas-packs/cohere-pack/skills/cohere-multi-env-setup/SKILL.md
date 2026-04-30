@@ -1,19 +1,27 @@
 ---
 name: cohere-multi-env-setup
-description: |
-  Configure Cohere across development, staging, and production environments.
+description: 'Configure Cohere across development, staging, and production environments.
+
   Use when setting up multi-environment deployments, configuring per-environment
+
   API keys, model selection, and rate limit strategies.
+
   Trigger with phrases like "cohere environments", "cohere staging",
+
   "cohere dev prod", "cohere environment setup", "cohere config by env".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, nlp, cohere]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- nlp
+- cohere
+compatibility: Designed for Claude Code
 ---
-
 # Cohere Multi-Environment Setup
 
 ## Overview

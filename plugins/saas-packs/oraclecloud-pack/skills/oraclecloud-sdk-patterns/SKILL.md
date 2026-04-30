@@ -1,17 +1,25 @@
 ---
 name: oraclecloud-sdk-patterns
-description: |
-  Production-grade OCI SDK patterns for client lifecycle, retry logic, and memory leak avoidance.
-  Use when building long-running OCI services, fixing memory leaks with Instance Principal auth, or implementing retry/backoff.
-  Trigger with "oci sdk patterns", "oci retry", "oci memory leak", "oraclecloud client lifecycle".
+description: 'Production-grade OCI SDK patterns for client lifecycle, retry logic,
+  and memory leak avoidance.
+
+  Use when building long-running OCI services, fixing memory leaks with Instance Principal
+  auth, or implementing retry/backoff.
+
+  Trigger with "oci sdk patterns", "oci retry", "oci memory leak", "oraclecloud client
+  lifecycle".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, oraclecloud, oci]
-compatible-with: claude-code
+tags:
+- saas
+- oraclecloud
+- oci
+compatibility: Designed for Claude Code
 ---
-
 # Oracle Cloud SDK Patterns
 
 ## Overview

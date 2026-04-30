@@ -1,16 +1,20 @@
 ---
 name: openevidence-migration-deep-dive
-description: |
-  Migration Deep Dive for OpenEvidence.
+description: 'Migration Deep Dive for OpenEvidence.
+
   Trigger: "openevidence migration deep dive".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, openevidence, healthcare]
-compatible-with: claude-code
+tags:
+- saas
+- openevidence
+- healthcare
+compatibility: Designed for Claude Code
 ---
-
 # OpenEvidence Migration Deep Dive
 
 ## Migration Strategies

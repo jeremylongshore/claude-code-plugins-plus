@@ -1,18 +1,24 @@
 ---
 name: clickup-cost-tuning
-description: |
-  Optimize ClickUp API usage costs through plan selection, request reduction,
+description: 'Optimize ClickUp API usage costs through plan selection, request reduction,
+
   caching, and usage monitoring.
+
   Trigger: "clickup cost", "clickup billing", "reduce clickup usage",
+
   "clickup pricing", "clickup plan comparison", "clickup API usage".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, clickup]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- clickup
+compatibility: Designed for Claude Code
 ---
-
 # ClickUp Cost Tuning
 
 ## Overview

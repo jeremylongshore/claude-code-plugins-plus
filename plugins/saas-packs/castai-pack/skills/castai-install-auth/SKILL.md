@@ -1,19 +1,29 @@
 ---
 name: castai-install-auth
-description: |
-  Install and configure CAST AI agent on a Kubernetes cluster with API key authentication.
+description: 'Install and configure CAST AI agent on a Kubernetes cluster with API
+  key authentication.
+
   Use when onboarding a cluster to CAST AI, setting up Helm charts,
+
   or configuring Terraform provider authentication.
+
   Trigger with phrases like "install cast ai", "connect cluster to cast ai",
+
   "cast ai setup", "cast ai api key", "cast ai helm install".
-allowed-tools: Read, Write, Edit, Bash(helm:*), Bash(kubectl:*), Bash(terraform:*), Grep
+
+  '
+allowed-tools: Read, Write, Edit, Bash(helm:*), Bash(kubectl:*), Bash(terraform:*),
+  Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, kubernetes, cost-optimization, castai]
-compatible-with: claude-code
+tags:
+- saas
+- kubernetes
+- cost-optimization
+- castai
+compatibility: Designed for Claude Code
 ---
-
 # CAST AI Install & Auth
 
 ## Overview

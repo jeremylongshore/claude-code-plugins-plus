@@ -1,19 +1,30 @@
 ---
 name: persona-core-workflow-b
-description: |
-  Work with Persona verification types: government ID, selfie, database checks.
+description: 'Work with Persona verification types: government ID, selfie, database
+  checks.
+
   Use when implementing specific verification checks, reviewing verification results,
+
   or building custom verification workflows.
+
   Trigger with phrases like "persona verification", "government ID check",
+
   "selfie verification", "persona database check", "verification results".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, persona, verification, government-id, selfie, kyc]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- persona
+- verification
+- government-id
+- selfie
+- kyc
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Persona Core Workflow B — Verification Checks
 
 ## Overview

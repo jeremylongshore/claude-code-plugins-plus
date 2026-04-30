@@ -1,17 +1,25 @@
 ---
 name: groq-deploy-integration
-description: |
-  Deploy Groq integrations to Vercel, Cloud Run, and containerized platforms.
+description: 'Deploy Groq integrations to Vercel, Cloud Run, and containerized platforms.
+
   Use when deploying Groq-powered applications to production,
+
   configuring platform-specific secrets, or setting up deployment pipelines.
+
   Trigger with phrases like "deploy groq", "groq Vercel",
+
   "groq production deploy", "groq Cloud Run", "groq Docker".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, groq, deployment]
+tags:
+- saas
+- groq
+- deployment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Groq Deploy Integration
 

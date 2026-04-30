@@ -1,17 +1,28 @@
 ---
 name: vercel-observability
-description: |
-  Set up Vercel observability with runtime logs, analytics, log drains, and OpenTelemetry tracing.
+description: 'Set up Vercel observability with runtime logs, analytics, log drains,
+  and OpenTelemetry tracing.
+
   Use when implementing monitoring for Vercel deployments, setting up log drains,
+
   or configuring alerting for function errors and performance.
+
   Trigger with phrases like "vercel monitoring", "vercel metrics",
+
   "vercel observability", "vercel logs", "vercel alerts", "vercel tracing".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vercel, monitoring, observability, logging]
+tags:
+- saas
+- vercel
+- monitoring
+- observability
+- logging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vercel Observability
 

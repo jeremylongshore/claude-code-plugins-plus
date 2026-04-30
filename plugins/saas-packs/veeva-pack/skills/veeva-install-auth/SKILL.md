@@ -1,17 +1,23 @@
 ---
 name: veeva-install-auth
-description: |
-  Veeva Vault install auth with REST API and VQL.
+description: 'Veeva Vault install auth with REST API and VQL.
+
   Use when integrating with Veeva Vault for life sciences document management.
+
   Trigger: "veeva install auth".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, life-sciences, crm, veeva]
-compatible-with: claude-code
+tags:
+- saas
+- life-sciences
+- crm
+- veeva
+compatibility: Designed for Claude Code
 ---
-
 # Veeva Vault Install & Auth
 
 ## Overview

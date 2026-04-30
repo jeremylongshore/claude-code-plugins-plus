@@ -1,17 +1,26 @@
 ---
 name: lokalise-sdk-patterns
-description: |
-  Apply production-ready Lokalise SDK patterns for TypeScript and Node.js.
+description: 'Apply production-ready Lokalise SDK patterns for TypeScript and Node.js.
+
   Use when implementing Lokalise integrations, refactoring SDK usage,
+
   or establishing team coding standards for Lokalise.
+
   Trigger with phrases like "lokalise SDK patterns", "lokalise best practices",
+
   "lokalise code patterns", "idiomatic lokalise".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lokalise, typescript, nodejs]
+tags:
+- saas
+- lokalise
+- typescript
+- nodejs
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lokalise SDK Patterns
 

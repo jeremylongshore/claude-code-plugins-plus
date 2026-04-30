@@ -1,16 +1,23 @@
 ---
 name: finding-arbitrage-opportunities
-description: |
-  Detect profitable arbitrage opportunities across CEX, DEX, and cross-chain markets in real-time.
-  Use when scanning for price spreads, finding arbitrage paths, comparing exchange prices, or analyzing triangular arbitrage opportunities.
-  Trigger with phrases like "find arbitrage", "scan for arb", "price spread", "exchange arbitrage", "triangular arb", "DEX price difference", or "cross-exchange opportunity".
+description: 'Detect profitable arbitrage opportunities across CEX, DEX, and cross-chain
+  markets in real-time.
 
+  Use when scanning for price spreads, finding arbitrage paths, comparing exchange
+  prices, or analyzing triangular arbitrage opportunities.
+
+  Trigger with phrases like "find arbitrage", "scan for arb", "price spread", "exchange
+  arbitrage", "triangular arb", "DEX price difference", or "cross-exchange opportunity".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:arbitrage-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [crypto, finding-arbitrage]
+tags:
+- crypto
+- finding-arbitrage
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Finding Arbitrage Opportunities
 

@@ -1,17 +1,25 @@
 ---
 name: navan-sdk-patterns
-description: |
-  Build a typed API wrapper around Navan REST endpoints since no official SDK exists.
-  Use when you need production-grade API access with auto token refresh, retry logic, and typed responses.
-  Trigger with "navan sdk patterns", "navan api wrapper", "navan client class", "navan typed client".
+description: 'Build a typed API wrapper around Navan REST endpoints since no official
+  SDK exists.
+
+  Use when you need production-grade API access with auto token refresh, retry logic,
+  and typed responses.
+
+  Trigger with "navan sdk patterns", "navan api wrapper", "navan client class", "navan
+  typed client".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, navan, travel]
-compatible-with: claude-code
+tags:
+- saas
+- navan
+- travel
+compatibility: Designed for Claude Code
 ---
-
 # Navan SDK Patterns
 
 ## Overview

@@ -1,17 +1,26 @@
 ---
 name: granola-incident-runbook
-description: |
-  Incident response procedures for Granola meeting capture failures and outages.
-  Use when meetings aren't recording, transcription fails mid-meeting,
+description: 'Incident response procedures for Granola meeting capture failures and
+  outages.
+
+  Use when meetings aren''t recording, transcription fails mid-meeting,
+
   integrations stop syncing, or the Granola service is down.
+
   Trigger: "granola incident", "granola outage", "granola down",
+
   "granola not recording", "granola emergency".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(pgrep:*), Bash(pkill:*), Bash(open:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, granola, incident-response]
+tags:
+- saas
+- granola
+- incident-response
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Granola Incident Runbook
 

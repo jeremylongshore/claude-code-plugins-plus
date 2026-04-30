@@ -1,17 +1,28 @@
 ---
 name: coderabbit-sdk-patterns
-description: |
-  Apply production-ready CodeRabbit automation patterns using GitHub API and PR comments.
+description: 'Apply production-ready CodeRabbit automation patterns using GitHub API
+  and PR comments.
+
   Use when building automation around CodeRabbit reviews, processing review feedback
+
   programmatically, or integrating CodeRabbit into custom workflows.
+
   Trigger with phrases like "coderabbit automation", "coderabbit API patterns",
+
   "automate coderabbit", "coderabbit github api", "process coderabbit reviews".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, coderabbit, automation, github-api, typescript]
+tags:
+- saas
+- coderabbit
+- automation
+- github-api
+- typescript
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # CodeRabbit SDK Patterns
 

@@ -1,19 +1,27 @@
 ---
 name: salesforce-upgrade-migration
-description: |
-  Analyze, plan, and execute Salesforce API version upgrades and jsforce major version migrations.
+description: 'Analyze, plan, and execute Salesforce API version upgrades and jsforce
+  major version migrations.
+
   Use when upgrading Salesforce API versions, migrating jsforce v1 to v3,
+
   or adapting to deprecated API changes.
+
   Trigger with phrases like "upgrade salesforce", "salesforce API version",
+
   "jsforce upgrade", "salesforce deprecation", "salesforce version migration".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(sf:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, salesforce]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- salesforce
+compatibility: Designed for Claude Code
 ---
-
 # Salesforce Upgrade & Migration
 
 ## Overview

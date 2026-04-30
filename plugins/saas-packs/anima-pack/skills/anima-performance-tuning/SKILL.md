@@ -1,18 +1,27 @@
 ---
 name: anima-performance-tuning
-description: |
-  Optimize Anima code generation performance with caching, parallelism, and output tuning.
+description: 'Optimize Anima code generation performance with caching, parallelism,
+  and output tuning.
+
   Use when reducing generation latency, optimizing batch component generation,
+
   or improving generated code quality for production use.
+
   Trigger: "anima performance", "anima slow", "anima optimization", "anima caching".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, figma, anima, performance]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- figma
+- anima
+- performance
+compatibility: Designed for Claude Code
 ---
-
 # Anima Performance Tuning
 
 ## Performance Targets

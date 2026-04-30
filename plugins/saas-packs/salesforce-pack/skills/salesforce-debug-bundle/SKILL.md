@@ -1,19 +1,27 @@
 ---
 name: salesforce-debug-bundle
-description: |
-  Collect Salesforce debug evidence including API limits, debug logs, and org info for support tickets.
+description: 'Collect Salesforce debug evidence including API limits, debug logs,
+  and org info for support tickets.
+
   Use when encountering persistent issues, preparing support tickets,
+
   or collecting diagnostic information for Salesforce problems.
+
   Trigger with phrases like "salesforce debug", "salesforce support bundle",
+
   "collect salesforce logs", "salesforce diagnostic", "salesforce debug log".
+
+  '
 allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(sf:*), Bash(tar:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, salesforce]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- salesforce
+compatibility: Designed for Claude Code
 ---
-
 # Salesforce Debug Bundle
 
 ## Overview

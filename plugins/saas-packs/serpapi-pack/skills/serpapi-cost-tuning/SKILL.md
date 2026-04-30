@@ -1,18 +1,26 @@
 ---
 name: serpapi-cost-tuning
-description: |
-  Optimize SerpApi costs by reducing credit consumption and choosing the right plan.
+description: 'Optimize SerpApi costs by reducing credit consumption and choosing the
+  right plan.
+
   Use when analyzing search usage, reducing monthly costs,
+
   or implementing credit-saving strategies.
+
   Trigger: "serpapi cost", "serpapi pricing", "reduce serpapi costs", "serpapi credits".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, seo, serpapi]
-compatible-with: claude-code
+tags:
+- saas
+- search
+- seo
+- serpapi
+compatibility: Designed for Claude Code
 ---
-
 # SerpApi Cost Tuning
 
 ## Overview

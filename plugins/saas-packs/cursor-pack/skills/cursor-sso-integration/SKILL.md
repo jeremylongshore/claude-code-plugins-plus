@@ -1,15 +1,23 @@
 ---
-name: "cursor-sso-integration"
-description: |
-  Configure SAML 2.0 and OIDC SSO for Cursor with Okta, Microsoft Entra ID, and Google Workspace.
-  Triggers on "cursor sso", "cursor saml", "cursor oauth", "enterprise cursor auth", "cursor okta",
+name: cursor-sso-integration
+description: 'Configure SAML 2.0 and OIDC SSO for Cursor with Okta, Microsoft Entra
+  ID, and Google Workspace.
+
+  Triggers on "cursor sso", "cursor saml", "cursor oauth", "enterprise cursor auth",
+  "cursor okta",
+
   "cursor entra", "cursor scim".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, cursor, authentication]
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- cursor
+- authentication
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Cursor SSO Integration
 

@@ -1,17 +1,26 @@
 ---
 name: exa-local-dev-loop
-description: |
-  Configure Exa local development with hot reload, testing, and mock responses.
+description: 'Configure Exa local development with hot reload, testing, and mock responses.
+
   Use when setting up a development environment, writing tests against Exa,
+
   or establishing a fast iteration cycle.
+
   Trigger with phrases like "exa dev setup", "exa local development",
+
   "exa test setup", "develop with exa", "mock exa".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Bash(npx:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, exa, testing, development]
+tags:
+- saas
+- exa
+- testing
+- development
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Exa Local Dev Loop
 

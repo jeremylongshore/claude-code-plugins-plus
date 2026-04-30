@@ -1,16 +1,23 @@
 ---
 name: logging-api-requests
-description: |
-  Monitor and log API requests with correlation IDs, performance metrics, and security audit trails.
+description: 'Monitor and log API requests with correlation IDs, performance metrics,
+  and security audit trails.
+
   Use when auditing API requests and responses.
+
   Trigger with phrases like "log API requests", "add API logging", or "track API calls".
-  
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:log-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [api, security, monitoring, performance]
+tags:
+- api
+- security
+- monitoring
+- performance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Logging API Requests
 

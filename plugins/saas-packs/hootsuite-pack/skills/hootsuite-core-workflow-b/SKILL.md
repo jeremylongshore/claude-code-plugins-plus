@@ -1,19 +1,27 @@
 ---
 name: hootsuite-core-workflow-b
-description: |
-  Execute Hootsuite secondary workflow: Core Workflow B.
+description: 'Execute Hootsuite secondary workflow: Core Workflow B.
+
   Use when implementing secondary use case,
+
   or complementing primary workflow.
+
   Trigger with phrases like "hootsuite secondary workflow",
+
   "secondary task with hootsuite".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hootsuite, social-media, analytics]
-compatible-with: claude-code
+tags:
+- saas
+- hootsuite
+- social-media
+- analytics
+compatibility: Designed for Claude Code
 ---
-
 # Hootsuite Analytics & URL Shortening
 
 ## Overview

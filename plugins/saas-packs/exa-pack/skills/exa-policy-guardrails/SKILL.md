@@ -1,17 +1,27 @@
 ---
 name: exa-policy-guardrails
-description: |
-  Implement content policy enforcement, domain filtering, and usage guardrails for Exa.
+description: 'Implement content policy enforcement, domain filtering, and usage guardrails
+  for Exa.
+
   Use when setting up content safety rules, restricting search domains,
+
   or enforcing query and budget policies for Exa integrations.
+
   Trigger with phrases like "exa policy", "exa content filter",
+
   "exa guardrails", "exa domain allowlist", "exa content moderation".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npx:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, exa, policy, content-moderation]
+tags:
+- saas
+- exa
+- policy
+- content-moderation
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Exa Policy Guardrails
 

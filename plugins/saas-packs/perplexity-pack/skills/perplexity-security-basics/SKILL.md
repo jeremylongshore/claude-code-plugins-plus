@@ -1,17 +1,28 @@
 ---
 name: perplexity-security-basics
-description: |
-  Apply Perplexity security best practices for API key management and query safety.
+description: 'Apply Perplexity security best practices for API key management and
+  query safety.
+
   Use when securing API keys, implementing query sanitization,
+
   or auditing Perplexity security configuration.
+
   Trigger with phrases like "perplexity security", "perplexity secrets",
+
   "secure perplexity", "perplexity API key security", "perplexity PII".
+
+  '
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, perplexity, api, security, audit]
+tags:
+- saas
+- perplexity
+- api
+- security
+- audit
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Perplexity Security Basics
 

@@ -1,17 +1,29 @@
 ---
 name: coderabbit-enterprise-rbac
-description: |
-  Configure CodeRabbit enterprise access control, seat management, and organization policies.
+description: 'Configure CodeRabbit enterprise access control, seat management, and
+  organization policies.
+
   Use when managing who gets AI reviews, configuring organization-level defaults,
+
   or implementing access policies for CodeRabbit across teams.
+
   Trigger with phrases like "coderabbit SSO", "coderabbit RBAC",
-  "coderabbit enterprise", "coderabbit roles", "coderabbit permissions", "coderabbit seats".
+
+  "coderabbit enterprise", "coderabbit roles", "coderabbit permissions", "coderabbit
+  seats".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, coderabbit, enterprise, rbac, access-control]
+tags:
+- saas
+- coderabbit
+- enterprise
+- rbac
+- access-control
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # CodeRabbit Enterprise RBAC
 

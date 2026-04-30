@@ -1,17 +1,28 @@
 ---
 name: firecrawl-observability
-description: |
-  Monitor Firecrawl scraping pipelines with metrics, credit tracking, and quality alerts.
+description: 'Monitor Firecrawl scraping pipelines with metrics, credit tracking,
+  and quality alerts.
+
   Use when implementing monitoring for Firecrawl operations, setting up dashboards,
+
   or configuring alerting for scrape failures and credit consumption.
+
   Trigger with phrases like "firecrawl monitoring", "firecrawl metrics",
+
   "firecrawl observability", "monitor firecrawl", "firecrawl alerts".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, firecrawl, monitoring, observability, dashboard]
+tags:
+- saas
+- firecrawl
+- monitoring
+- observability
+- dashboard
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Firecrawl Observability
 

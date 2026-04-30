@@ -1,16 +1,19 @@
 ---
 name: navan-migration-deep-dive
-description: |
-  Use when planning or executing a migration from SAP Concur or legacy TMC to Navan — data migration, user provisioning, policy recreation, and cutover planning.
-  Trigger with "navan migration deep dive" or "migrate to navan from concur".
+description: "Use when planning or executing a migration from SAP Concur or legacy\
+  \ TMC to Navan \u2014 data migration, user provisioning, policy recreation, and\
+  \ cutover planning.\nTrigger with \"navan migration deep dive\" or \"migrate to\
+  \ navan from concur\".\n"
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(jq:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, navan, travel]
-compatible-with: claude-code
+tags:
+- saas
+- navan
+- travel
+compatibility: Designed for Claude Code
 ---
-
 # Navan Migration Deep Dive
 
 ## Overview

@@ -1,18 +1,25 @@
 ---
 name: serpapi-local-dev-loop
-description: |
-  Configure SerpApi local development with cached responses and test fixtures.
+description: 'Configure SerpApi local development with cached responses and test fixtures.
+
   Use when building search integrations, avoiding API calls during development,
+
   or setting up reproducible test data from SerpApi.
+
   Trigger: "serpapi dev setup", "serpapi local", "test serpapi locally".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, seo, serpapi]
-compatible-with: claude-code
+tags:
+- saas
+- search
+- seo
+- serpapi
+compatibility: Designed for Claude Code
 ---
-
 # SerpApi Local Dev Loop
 
 ## Overview

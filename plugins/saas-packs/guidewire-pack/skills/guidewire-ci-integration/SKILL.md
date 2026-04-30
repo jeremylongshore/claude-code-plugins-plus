@@ -1,16 +1,21 @@
 ---
 name: guidewire-ci-integration
-description: |
-  Configure CI/CD pipelines for Guidewire with Gosu compilation, GUnit tests, and configuration deployment.
+description: 'Configure CI/CD pipelines for Guidewire with Gosu compilation, GUnit
+  tests, and configuration deployment.
+
   Trigger: "guidewire ci integration", "ci-integration".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(gradle:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, insurance, guidewire]
-compatible-with: claude-code
+tags:
+- saas
+- insurance
+- guidewire
+compatibility: Designed for Claude Code
 ---
-
 # Guidewire Ci Integration
 
 ## Overview

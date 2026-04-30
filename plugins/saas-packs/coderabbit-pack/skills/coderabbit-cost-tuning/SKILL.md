@@ -1,17 +1,28 @@
 ---
 name: coderabbit-cost-tuning
-description: |
-  Optimize CodeRabbit costs through seat management, repo selection, and review scope tuning.
+description: 'Optimize CodeRabbit costs through seat management, repo selection, and
+  review scope tuning.
+
   Use when analyzing CodeRabbit billing, reducing per-seat costs,
+
   or implementing usage monitoring and budget optimization.
+
   Trigger with phrases like "coderabbit cost", "coderabbit billing",
-  "reduce coderabbit costs", "coderabbit pricing", "coderabbit expensive", "coderabbit budget".
+
+  "reduce coderabbit costs", "coderabbit pricing", "coderabbit expensive", "coderabbit
+  budget".
+
+  '
 allowed-tools: Read, Grep, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, coderabbit, cost-optimization, billing]
+tags:
+- saas
+- coderabbit
+- cost-optimization
+- billing
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # CodeRabbit Cost Tuning
 

@@ -1,19 +1,26 @@
 ---
 name: hootsuite-ci-integration
-description: |
-  Configure Hootsuite CI/CD integration with GitHub Actions and testing.
+description: 'Configure Hootsuite CI/CD integration with GitHub Actions and testing.
+
   Use when setting up automated testing, configuring CI pipelines,
+
   or integrating Hootsuite tests into your build process.
+
   Trigger with phrases like "hootsuite CI", "hootsuite GitHub Actions",
+
   "hootsuite automated tests", "CI hootsuite".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hootsuite, social-media]
-compatible-with: claude-code
+tags:
+- saas
+- hootsuite
+- social-media
+compatibility: Designed for Claude Code
 ---
-
 # Hootsuite CI Integration
 
 ## Overview

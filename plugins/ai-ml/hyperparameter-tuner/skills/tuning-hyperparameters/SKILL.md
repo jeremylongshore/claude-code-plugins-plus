@@ -1,13 +1,20 @@
 ---
 name: tuning-hyperparameters
-description: |
-  Optimize machine learning model hyperparameters using grid search, random search, or Bayesian optimization. Finds best parameter configurations to maximize performance. Use when asked to "tune hyperparameters" or "optimize model". Trigger with relevant phrases based on skill purpose.
+description: 'Optimize machine learning model hyperparameters using grid search, random
+  search, or Bayesian optimization. Finds best parameter configurations to maximize
+  performance. Use when asked to "tune hyperparameters" or "optimize model". Trigger
+  with relevant phrases based on skill purpose.
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [ai, ml, performance]
+tags:
+- ai
+- ml
+- performance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Hyperparameter Tuner
 

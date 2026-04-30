@@ -1,16 +1,21 @@
 ---
 name: appfolio-local-dev-loop
-description: |
-  Set up local development for AppFolio property management API integration.
+description: 'Set up local development for AppFolio property management API integration.
+
   Trigger: "appfolio local dev".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, property-management, appfolio, real-estate]
-compatible-with: claude-code
+tags:
+- saas
+- property-management
+- appfolio
+- real-estate
+compatibility: Designed for Claude Code
 ---
-
 # AppFolio Local Dev Loop
 
 ## Overview

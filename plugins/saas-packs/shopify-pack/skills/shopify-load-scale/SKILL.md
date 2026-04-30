@@ -1,19 +1,28 @@
 ---
 name: shopify-load-scale
-description: |
-  Load test Shopify integrations respecting API rate limits, plan capacity with
+description: 'Load test Shopify integrations respecting API rate limits, plan capacity
+  with
+
   k6, and scale for Shopify Plus burst events (flash sales, BFCM).
-  Use when preparing for high-traffic events, benchmarking API throughput, or sizing infrastructure for Shopify webhook volume.
+
+  Use when preparing for high-traffic events, benchmarking API throughput, or sizing
+  infrastructure for Shopify webhook volume.
+
   Trigger with phrases like "shopify load test", "shopify scale",
+
   "shopify BFCM", "shopify flash sale", "shopify capacity", "shopify k6 test".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(k6:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ecommerce, shopify]
-compatible-with: claude-code
+tags:
+- saas
+- ecommerce
+- shopify
+compatibility: Designed for Claude Code
 ---
-
 # Shopify Load & Scale
 
 ## Overview

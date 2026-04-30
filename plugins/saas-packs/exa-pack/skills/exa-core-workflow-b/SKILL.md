@@ -1,17 +1,27 @@
 ---
 name: exa-core-workflow-b
-description: |
-  Execute Exa findSimilar, getContents, answer, and streaming answer workflows.
+description: 'Execute Exa findSimilar, getContents, answer, and streaming answer workflows.
+
   Use when finding pages similar to a URL, retrieving content for known URLs,
+
   or getting AI-generated answers with citations.
+
   Trigger with phrases like "exa find similar", "exa get contents",
+
   "exa answer", "exa similarity search", "findSimilarAndContents".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, exa, workflow, similarity-search, answer]
+tags:
+- saas
+- exa
+- workflow
+- similarity-search
+- answer
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Exa Core Workflow B — Similarity, Contents & Answer
 

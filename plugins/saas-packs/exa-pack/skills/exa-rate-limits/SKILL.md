@@ -1,17 +1,26 @@
 ---
 name: exa-rate-limits
-description: |
-  Implement Exa rate limiting, exponential backoff, and request queuing.
+description: 'Implement Exa rate limiting, exponential backoff, and request queuing.
+
   Use when handling 429 errors, implementing retry logic,
+
   or optimizing API request throughput for Exa.
+
   Trigger with phrases like "exa rate limit", "exa throttling",
+
   "exa 429", "exa retry", "exa backoff", "exa QPS".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, exa, api, rate-limiting]
+tags:
+- saas
+- exa
+- api
+- rate-limiting
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Exa Rate Limits
 

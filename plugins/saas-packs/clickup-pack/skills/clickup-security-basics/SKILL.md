@@ -1,19 +1,27 @@
 ---
 name: clickup-security-basics
-description: |
-  Secure ClickUp API tokens, implement least-privilege access, and audit usage.
+description: 'Secure ClickUp API tokens, implement least-privilege access, and audit
+  usage.
+
   Use when securing API keys, rotating tokens, configuring per-environment
+
   credentials, or auditing ClickUp API access patterns.
+
   Trigger: "clickup security", "clickup secrets", "secure clickup token",
+
   "clickup API key rotation", "clickup access audit".
+
+  '
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, clickup]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- clickup
+compatibility: Designed for Claude Code
 ---
-
 # ClickUp Security Basics
 
 ## Overview

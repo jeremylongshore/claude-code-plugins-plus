@@ -1,19 +1,30 @@
 ---
 name: notion-rate-limits
-description: |
-  Manage Notion API rate limits with exponential backoff, queue-based throttling,
+description: 'Manage Notion API rate limits with exponential backoff, queue-based
+  throttling,
+
   and batch optimization. Use when hitting 429 errors, implementing retry logic,
+
   or optimizing API request throughput for Notion integrations.
+
   Trigger with "notion rate limit", "notion 429", "notion retry", "notion backoff",
+
   "notion throttling", "notion too many requests", "notion queue".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Glob, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notion, rate-limiting, api, resilience]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- notion
+- rate-limiting
+- api
+- resilience
+compatibility: Designed for Claude Code
 ---
-
 # Notion Rate Limits
 
 ## Overview

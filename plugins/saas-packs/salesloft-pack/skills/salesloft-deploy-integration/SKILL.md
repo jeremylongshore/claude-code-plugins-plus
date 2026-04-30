@@ -1,18 +1,25 @@
 ---
 name: salesloft-deploy-integration
-description: |
-  Deploy SalesLoft integrations to Vercel, Fly.io, and Cloud Run.
+description: 'Deploy SalesLoft integrations to Vercel, Fly.io, and Cloud Run.
+
   Use when deploying SalesLoft-powered apps to production,
+
   configuring platform secrets, or setting up webhook endpoints.
+
   Trigger: "deploy salesloft", "salesloft Vercel", "salesloft Cloud Run".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, sales, outreach, salesloft]
-compatible-with: claude-code
+tags:
+- saas
+- sales
+- outreach
+- salesloft
+compatibility: Designed for Claude Code
 ---
-
 # SalesLoft Deploy Integration
 
 ## Overview

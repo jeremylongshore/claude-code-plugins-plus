@@ -15,10 +15,14 @@ export default defineConfig({
         '**/*.spec.js',
       ],
       all: true,
-      lines: 80,
-      functions: 80,
-      branches: 80,
-      statements: 80,
+      // Migrated from vitest 0.x flat format to vitest 2.x nested
+      // `thresholds: {}`. Floor declared in tests/TESTING.md.
+      thresholds: {
+        lines: 80,
+        functions: 80,
+        branches: 80,
+        statements: 80,
+      },
     },
     include: ['tests/**/*.test.js'],
     exclude: ['node_modules/', 'dist/'],

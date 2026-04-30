@@ -1,17 +1,25 @@
 ---
 name: gamma-multi-env-setup
-description: |
-  Configure Gamma across development, staging, and production environments.
+description: 'Configure Gamma across development, staging, and production environments.
+
   Use when setting up multi-environment deployments, configuring per-environment secrets,
+
   or implementing environment-specific Gamma configurations.
+
   Trigger with phrases like "gamma environments", "gamma staging",
+
   "gamma dev prod", "gamma environment setup", "gamma config by env".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, gamma, deployment]
+tags:
+- saas
+- gamma
+- deployment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Gamma Multi-Environment Setup
 

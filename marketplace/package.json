@@ -14,6 +14,7 @@
     "validate:internal-links": "node scripts/validate-internal-links.mjs",
     "validate": "node scripts/validate-playbook-routes.mjs && node scripts/validate-routes.mjs",
     "validate:dist": "node scripts/validate-playbook-routes.mjs --dist && node scripts/validate-internal-links.mjs",
+    "test:a11y": "npx playwright test tests/a11y/",
     "test:production": "npx playwright test --config=playwright.production.config.ts"
   },
   "dependencies": {
@@ -23,7 +24,9 @@
     "tailwindcss": "^4.1.18"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.2",
     "@playwright/test": "^1.57.0",
-    "archiver": "^7.0.1"
+    "archiver": "^7.0.1",
+    "axe-core": "^4.11.4"
   }
 }

@@ -1,17 +1,27 @@
 ---
 name: apollo-local-dev-loop
-description: |
-  Configure Apollo.io local development workflow.
+description: 'Configure Apollo.io local development workflow.
+
   Use when setting up development environment, testing API calls locally,
+
   or establishing team development practices.
+
   Trigger with phrases like "apollo local dev", "apollo development setup",
+
   "apollo dev environment", "apollo testing locally".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, apollo, api, testing, workflow]
+tags:
+- saas
+- apollo
+- api
+- testing
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Apollo Local Dev Loop
 

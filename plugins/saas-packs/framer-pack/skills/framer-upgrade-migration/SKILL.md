@@ -1,19 +1,26 @@
 ---
 name: framer-upgrade-migration
-description: |
-  Analyze, plan, and execute Framer SDK upgrades with breaking change detection.
+description: 'Analyze, plan, and execute Framer SDK upgrades with breaking change
+  detection.
+
   Use when upgrading Framer SDK versions, detecting deprecations,
+
   or migrating to new API versions.
+
   Trigger with phrases like "upgrade framer", "framer migration",
+
   "framer breaking changes", "update framer SDK", "analyze framer version".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, framer]
-compatible-with: claude-code
+tags:
+- saas
+- framer
+compatibility: Designed for Claude Code
 ---
-
 # Framer Upgrade & Migration
 
 ## Overview

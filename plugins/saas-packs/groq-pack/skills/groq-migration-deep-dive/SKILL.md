@@ -1,16 +1,23 @@
 ---
 name: groq-migration-deep-dive
-description: |
-  Migrate from OpenAI/Anthropic/other LLM providers to Groq, or migrate
+description: 'Migrate from OpenAI/Anthropic/other LLM providers to Groq, or migrate
+
   between Groq model generations with zero-downtime traffic shifting.
+
   Trigger with phrases like "migrate to groq", "switch to groq",
+
   "groq migration", "openai to groq", "groq replatform".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, groq, migration]
+tags:
+- saas
+- groq
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Groq Migration Deep Dive
 

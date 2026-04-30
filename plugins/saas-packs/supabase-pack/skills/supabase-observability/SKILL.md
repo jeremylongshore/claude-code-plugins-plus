@@ -1,21 +1,31 @@
 ---
 name: supabase-observability
-description: |
-  Set up monitoring and observability for Supabase projects using Dashboard
+description: 'Set up monitoring and observability for Supabase projects using Dashboard
+
   reports, CLI inspect commands, pg_stat_statements, log drains, and alerting.
+
   Use when implementing monitoring, diagnosing slow queries, forwarding logs,
+
   or configuring alerts for Supabase project health.
+
   Trigger with phrases like "supabase monitoring", "supabase metrics",
+
   "supabase observability", "supabase logs", "supabase alerts",
+
   "supabase inspect", "supabase log drain".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npx supabase:*), Bash(supabase:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code
-tags: [saas, supabase, monitoring, observability]
+tags:
+- saas
+- supabase
+- monitoring
+- observability
+compatibility: Designed for Claude Code
 ---
-
 # Supabase Observability
 
 ## Overview

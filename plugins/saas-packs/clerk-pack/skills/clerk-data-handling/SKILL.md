@@ -1,17 +1,25 @@
 ---
 name: clerk-data-handling
-description: |
-  Handle user data, privacy, and GDPR compliance with Clerk.
+description: 'Handle user data, privacy, and GDPR compliance with Clerk.
+
   Use when implementing data export, user deletion,
+
   or privacy compliance features.
+
   Trigger with phrases like "clerk user data", "clerk GDPR",
+
   "clerk privacy", "clerk data export", "clerk delete user".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clerk, compliance]
+tags:
+- saas
+- clerk
+- compliance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clerk Data Handling
 

@@ -1,17 +1,26 @@
 ---
 name: langfuse-prod-checklist
-description: |
-  Langfuse production readiness checklist and verification.
+description: 'Langfuse production readiness checklist and verification.
+
   Use when preparing to deploy Langfuse to production,
+
   validating production configuration, or auditing existing setup.
+
   Trigger with phrases like "langfuse production", "langfuse prod ready",
+
   "deploy langfuse", "langfuse checklist", "langfuse go live".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langfuse, deployment, audit]
+tags:
+- saas
+- langfuse
+- deployment
+- audit
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Langfuse Production Checklist
 

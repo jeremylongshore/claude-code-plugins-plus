@@ -1,18 +1,25 @@
 ---
 name: flexport-webhooks-events
-description: |
-  Implement Flexport webhook event handling for shipment milestones, booking updates,
+description: 'Implement Flexport webhook event handling for shipment milestones, booking
+  updates,
+
   purchase order events, and invoice notifications.
+
   Trigger: "flexport webhooks", "flexport events", "flexport milestones",
+
   "flexport shipment tracking webhook".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, logistics, flexport]
-compatible-with: claude-code
+tags:
+- saas
+- logistics
+- flexport
+compatibility: Designed for Claude Code
 ---
-
 # Flexport Webhooks & Events
 
 ## Overview

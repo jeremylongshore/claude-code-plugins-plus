@@ -1,17 +1,22 @@
 ---
 name: mindtickle-install-auth
-description: |
-  Install and configure MindTickle SDK/API authentication.
+description: 'Install and configure MindTickle SDK/API authentication.
+
   Use when setting up a new MindTickle integration.
+
   Trigger: "install mindtickle", "setup mindtickle", "mindtickle auth".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, mindtickle, sales]
-compatible-with: claude-code
+tags:
+- saas
+- mindtickle
+- sales
+compatibility: Designed for Claude Code
 ---
-
 # MindTickle Install & Auth
 
 ## Overview

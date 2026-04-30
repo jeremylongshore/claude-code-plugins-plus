@@ -1,19 +1,27 @@
 ---
 name: apify-core-workflow-a
-description: |
-  Build a complete web scraping Actor with Crawlee and deploy to Apify.
+description: 'Build a complete web scraping Actor with Crawlee and deploy to Apify.
+
   Use when implementing end-to-end scraping: input schema, crawler,
+
   data extraction, dataset output, and platform deployment.
+
   Trigger: "apify scrape website", "build apify actor",
+
   "crawlee scraper", "apify main workflow".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(apify:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, scraping, automation, apify]
-compatible-with: claude-code
+tags:
+- saas
+- scraping
+- automation
+- apify
+compatibility: Designed for Claude Code
 ---
-
 # Apify Core Workflow A — Build & Deploy a Scraper
 
 ## Overview

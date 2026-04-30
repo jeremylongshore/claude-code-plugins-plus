@@ -1,20 +1,28 @@
 ---
 name: adobe-local-dev-loop
-description: |
-  Configure Adobe local development with App Builder CLI, Runtime actions,
+description: 'Configure Adobe local development with App Builder CLI, Runtime actions,
+
   hot reload, and mock testing for Firefly/PDF/Photoshop APIs.
+
   Use when setting up a development environment, configuring test workflows,
+
   or establishing a fast iteration cycle with Adobe APIs.
+
   Trigger with phrases like "adobe dev setup", "adobe local development",
+
   "adobe dev environment", "develop with adobe", "aio app".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, adobe]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- adobe
+compatibility: Designed for Claude Code
 ---
-
 # Adobe Local Dev Loop
 
 ## Overview

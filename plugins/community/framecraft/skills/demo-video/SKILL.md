@@ -1,16 +1,27 @@
 ---
 name: demo-video
-description: |
-  Generate polished demo videos from a single prompt. Use when the user asks
+description: 'Generate polished demo videos from a single prompt. Use when the user
+  asks
+
   to create a demo video, product walkthrough, feature showcase, or animated
+
   presentation. Trigger with "make a demo video", "create a product video",
+
   "demo walkthrough", or "feature showcase video".
+
+  '
 allowed-tools: Read, Write, Edit, Bash, Glob
 version: 1.0.0
 author: Srinivas Vaddisrinivas <vaddisrinivas170497@gmail.com>
 license: MIT
-compatible-with: claude-code
-tags: [video, demo, playwright, ffmpeg, edge-tts, mcp]
+tags:
+- video
+- demo
+- playwright
+- ffmpeg
+- edge-tts
+- mcp
+compatibility: Designed for Claude Code
 ---
 # Demo Video Generator
 

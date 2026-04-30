@@ -1,17 +1,26 @@
 ---
 name: firecrawl-core-workflow-b
-description: |
-  Execute Firecrawl secondary workflow: LLM extraction, batch scraping, and site mapping.
+description: 'Execute Firecrawl secondary workflow: LLM extraction, batch scraping,
+  and site mapping.
+
   Use when extracting structured data from pages, batch scraping known URLs,
+
   or discovering site structure with the map endpoint.
+
   Trigger with phrases like "firecrawl extract", "firecrawl batch scrape",
+
   "firecrawl map site", "firecrawl structured data", "firecrawl JSON extract".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, firecrawl, workflow]
+tags:
+- saas
+- firecrawl
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Firecrawl Core Workflow B — Extract, Batch & Map
 

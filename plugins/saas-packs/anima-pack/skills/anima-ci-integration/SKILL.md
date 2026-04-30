@@ -1,18 +1,27 @@
 ---
 name: anima-ci-integration
-description: |
-  Configure CI/CD pipeline for automated Figma-to-code generation with Anima.
+description: 'Configure CI/CD pipeline for automated Figma-to-code generation with
+  Anima.
+
   Use when automating design-to-code in GitHub Actions, setting up PR-based
+
   component generation, or integrating Anima into design handoff workflows.
+
   Trigger: "anima CI", "anima GitHub Actions", "anima automated generation".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, figma, anima, ci-cd]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- figma
+- anima
+- ci-cd
+compatibility: Designed for Claude Code
 ---
-
 # Anima CI Integration
 
 ## Instructions

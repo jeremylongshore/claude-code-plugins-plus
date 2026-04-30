@@ -1,18 +1,25 @@
 ---
 name: algolia-enterprise-rbac
-description: |
-  Configure Algolia enterprise access control: team-scoped API keys, Secured API Keys
+description: 'Configure Algolia enterprise access control: team-scoped API keys, Secured
+  API Keys
+
   for multi-tenant RBAC, dashboard team management, and audit logging.
+
   Trigger: "algolia RBAC", "algolia enterprise", "algolia roles", "algolia permissions",
+
   "algolia team access", "algolia multi-tenant", "algolia SSO".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, algolia]
-compatible-with: claude-code
+tags:
+- saas
+- search
+- algolia
+compatibility: Designed for Claude Code
 ---
-
 # Algolia Enterprise RBAC
 
 ## Overview

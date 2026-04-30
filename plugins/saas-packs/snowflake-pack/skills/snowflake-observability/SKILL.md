@@ -1,19 +1,29 @@
 ---
 name: snowflake-observability
-description: |
-  Set up Snowflake observability using ACCOUNT_USAGE views, alerts, and external monitoring.
-  Use when implementing Snowflake monitoring dashboards, setting up query performance tracking,
+description: 'Set up Snowflake observability using ACCOUNT_USAGE views, alerts, and
+  external monitoring.
+
+  Use when implementing Snowflake monitoring dashboards, setting up query performance
+  tracking,
+
   or configuring alerting for warehouse and pipeline health.
+
   Trigger with phrases like "snowflake monitoring", "snowflake metrics",
+
   "snowflake observability", "snowflake dashboard", "snowflake alerts".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, data-warehouse, analytics, snowflake]
-compatible-with: claude-code
+tags:
+- saas
+- data-warehouse
+- analytics
+- snowflake
+compatibility: Designed for Claude Code
 ---
-
 # Snowflake Observability
 
 ## Overview

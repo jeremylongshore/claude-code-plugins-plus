@@ -1,17 +1,26 @@
 ---
 name: deepgram-cost-tuning
-description: |
-  Optimize Deepgram costs and usage for budget-conscious deployments.
+description: 'Optimize Deepgram costs and usage for budget-conscious deployments.
+
   Use when reducing transcription costs, implementing usage controls,
+
   or optimizing pricing tier utilization.
+
   Trigger: "deepgram cost", "reduce deepgram spending", "deepgram pricing",
+
   "deepgram budget", "optimize deepgram usage", "deepgram billing".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(ffmpeg:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, deepgram, cost-optimization, billing]
+tags:
+- saas
+- deepgram
+- cost-optimization
+- billing
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Deepgram Cost Tuning
 

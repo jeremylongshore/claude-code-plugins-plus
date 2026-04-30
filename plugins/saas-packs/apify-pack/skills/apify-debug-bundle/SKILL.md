@@ -1,19 +1,28 @@
 ---
 name: apify-debug-bundle
-description: |
-  Collect Apify debug evidence for support tickets and troubleshooting.
+description: 'Collect Apify debug evidence for support tickets and troubleshooting.
+
   Use when encountering persistent issues, preparing support tickets,
+
   or collecting diagnostic information about failed Actor runs.
+
   Trigger: "apify debug", "apify support bundle", "collect apify logs",
+
   "apify diagnostic", "apify run failed why".
-allowed-tools: Read, Bash(curl:*), Bash(npm:*), Bash(node:*), Bash(tar:*), Bash(apify:*), Grep
+
+  '
+allowed-tools: Read, Bash(curl:*), Bash(npm:*), Bash(node:*), Bash(tar:*), Bash(apify:*),
+  Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, scraping, automation, apify]
-compatible-with: claude-code
+tags:
+- saas
+- scraping
+- automation
+- apify
+compatibility: Designed for Claude Code
 ---
-
 # Apify Debug Bundle
 
 ## Overview

@@ -1,17 +1,26 @@
 ---
 name: clerk-migration-deep-dive
-description: |
-  Migrate from other authentication providers to Clerk.
+description: 'Migrate from other authentication providers to Clerk.
+
   Use when migrating from Auth0, Firebase, Supabase Auth, NextAuth,
+
   or custom authentication solutions.
+
   Trigger with phrases like "migrate to clerk", "clerk migration",
+
   "switch to clerk", "auth0 to clerk", "firebase auth to clerk".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clerk, migration, authentication]
+tags:
+- saas
+- clerk
+- migration
+- authentication
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clerk Migration Deep Dive
 

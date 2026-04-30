@@ -1,19 +1,30 @@
 ---
 name: elevenlabs-ci-integration
-description: |
-  Configure CI/CD pipelines for ElevenLabs with mocked unit tests and gated integration tests.
+description: 'Configure CI/CD pipelines for ElevenLabs with mocked unit tests and
+  gated integration tests.
+
   Use when setting up GitHub Actions for TTS projects, configuring CI test strategies,
+
   or automating ElevenLabs integration validation.
+
   Trigger: "elevenlabs CI", "elevenlabs GitHub Actions",
+
   "elevenlabs automated tests", "CI elevenlabs", "elevenlabs pipeline".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, voice, ai, elevenlabs, ci, github-actions]
-compatible-with: claude-code
+tags:
+- saas
+- voice
+- ai
+- elevenlabs
+- ci
+- github-actions
+compatibility: Designed for Claude Code
 ---
-
 # ElevenLabs CI Integration
 
 ## Overview

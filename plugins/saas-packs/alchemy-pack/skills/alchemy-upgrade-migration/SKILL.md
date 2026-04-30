@@ -1,19 +1,28 @@
 ---
 name: alchemy-upgrade-migration
-description: |
-  Migrate from alchemy-sdk v2 to v3 and handle breaking changes.
+description: 'Migrate from alchemy-sdk v2 to v3 and handle breaking changes.
+
   Use when upgrading Alchemy SDK versions, migrating from deprecated
+
   alchemy-web3, or adapting to new API patterns.
+
   Trigger: "alchemy upgrade", "alchemy migration", "alchemy-sdk v3",
+
   "migrate alchemy-web3", "alchemy breaking changes".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, blockchain, web3, alchemy, migration]
-compatible-with: claude-code
+tags:
+- saas
+- blockchain
+- web3
+- alchemy
+- migration
+compatibility: Designed for Claude Code
 ---
-
 # Alchemy Upgrade & Migration
 
 ## Overview

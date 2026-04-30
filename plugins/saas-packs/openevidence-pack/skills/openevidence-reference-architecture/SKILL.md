@@ -1,16 +1,20 @@
 ---
 name: openevidence-reference-architecture
-description: |
-  Reference Architecture for OpenEvidence.
+description: 'Reference Architecture for OpenEvidence.
+
   Trigger: "openevidence reference architecture".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, openevidence, healthcare]
-compatible-with: claude-code
+tags:
+- saas
+- openevidence
+- healthcare
+compatibility: Designed for Claude Code
 ---
-
 # OpenEvidence Reference Architecture
 
 ## Overview

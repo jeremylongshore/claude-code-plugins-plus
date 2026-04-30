@@ -1,19 +1,27 @@
 ---
 name: canva-core-workflow-a
-description: |
-  Execute the Canva design creation and export pipeline via the Connect API.
+description: 'Execute the Canva design creation and export pipeline via the Connect
+  API.
+
   Use when building design creation workflows, exporting designs programmatically,
-  or integrating Canva's design tools into your application.
+
+  or integrating Canva''s design tools into your application.
+
   Trigger with phrases like "canva create design", "canva export",
+
   "canva design pipeline", "canva generate content".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, canva]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- canva
+compatibility: Designed for Claude Code
 ---
-
 # Canva Core Workflow A — Design Creation & Export
 
 ## Overview

@@ -1,17 +1,25 @@
 ---
 name: lindy-rate-limits
-description: |
-  Manage Lindy AI credits, rate limits, and usage optimization.
+description: 'Manage Lindy AI credits, rate limits, and usage optimization.
+
   Use when hitting rate limits, optimizing credit consumption,
+
   or implementing usage controls.
+
   Trigger with phrases like "lindy rate limit", "lindy credits",
+
   "lindy quota", "lindy throttling", "lindy API limits".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lindy, api]
+tags:
+- saas
+- lindy
+- api
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lindy Rate Limits & Credits
 

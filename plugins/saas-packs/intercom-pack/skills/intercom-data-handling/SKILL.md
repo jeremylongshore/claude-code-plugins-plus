@@ -1,20 +1,30 @@
 ---
 name: intercom-data-handling
-description: |
-  Implement Intercom data handling for GDPR, contact export, data retention, and PII.
+description: 'Implement Intercom data handling for GDPR, contact export, data retention,
+  and PII.
+
   Use when handling sensitive data, implementing data export/deletion requests,
+
   or ensuring compliance with privacy regulations for Intercom integrations.
+
   Trigger with phrases like "intercom data", "intercom PII",
+
   "intercom GDPR", "intercom data retention", "intercom privacy", "intercom CCPA",
+
   "intercom data export", "intercom delete contact".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, support, messaging, intercom]
-compatible-with: claude-code
+tags:
+- saas
+- support
+- messaging
+- intercom
+compatibility: Designed for Claude Code
 ---
-
 # Intercom Data Handling
 
 ## Overview

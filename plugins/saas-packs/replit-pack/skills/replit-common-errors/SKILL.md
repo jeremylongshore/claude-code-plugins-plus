@@ -1,17 +1,27 @@
 ---
 name: replit-common-errors
-description: |
-  Diagnose and fix the top Replit errors: container sleep, port binding, Nix failures, DB limits.
+description: 'Diagnose and fix the top Replit errors: container sleep, port binding,
+  Nix failures, DB limits.
+
   Use when encountering Replit errors, debugging failed deployments,
+
   or troubleshooting workspace and hosting issues.
+
   Trigger with phrases like "replit error", "fix replit", "replit not working",
+
   "debug replit", "replit broken", "replit deploy failed".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, replit, debugging, errors]
+tags:
+- saas
+- replit
+- debugging
+- errors
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Replit Common Errors
 

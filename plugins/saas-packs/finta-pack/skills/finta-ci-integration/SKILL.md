@@ -1,16 +1,21 @@
 ---
 name: finta-ci-integration
-description: |
-  Automate Finta data export and reporting in CI pipelines.
+description: 'Automate Finta data export and reporting in CI pipelines.
+
   Trigger with phrases like "finta CI", "finta automated reporting".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, fundraising-crm, investor-management, finta]
-compatible-with: claude-code
+tags:
+- saas
+- fundraising-crm
+- investor-management
+- finta
+compatibility: Designed for Claude Code
 ---
-
 # Finta CI Integration
 
 ## Overview

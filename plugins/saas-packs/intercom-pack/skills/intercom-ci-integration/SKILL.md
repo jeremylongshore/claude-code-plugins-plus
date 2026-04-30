@@ -1,19 +1,27 @@
 ---
 name: intercom-ci-integration
-description: |
-  Configure CI/CD pipelines for Intercom integrations with GitHub Actions.
+description: 'Configure CI/CD pipelines for Intercom integrations with GitHub Actions.
+
   Use when setting up automated testing, configuring CI with Intercom secrets,
+
   or integrating Intercom API tests into your build process.
+
   Trigger with phrases like "intercom CI", "intercom GitHub Actions",
+
   "intercom automated tests", "CI intercom", "intercom pipeline".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, support, messaging, intercom]
-compatible-with: claude-code
+tags:
+- saas
+- support
+- messaging
+- intercom
+compatibility: Designed for Claude Code
 ---
-
 # Intercom CI Integration
 
 ## Overview

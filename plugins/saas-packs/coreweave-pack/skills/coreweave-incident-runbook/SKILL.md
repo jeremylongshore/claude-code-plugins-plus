@@ -1,19 +1,28 @@
 ---
 name: coreweave-incident-runbook
-description: |
-  Incident response runbook for CoreWeave GPU workload failures.
+description: 'Incident response runbook for CoreWeave GPU workload failures.
+
   Use when inference services are down, GPUs are unavailable,
+
   or responding to production incidents on CoreWeave.
+
   Trigger with phrases like "coreweave incident", "coreweave outage",
+
   "coreweave runbook", "coreweave service down".
+
+  '
 allowed-tools: Read, Bash(kubectl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, gpu-cloud, kubernetes, inference, coreweave]
-compatible-with: claude-code
+tags:
+- saas
+- gpu-cloud
+- kubernetes
+- inference
+- coreweave
+compatibility: Designed for Claude Code
 ---
-
 # CoreWeave Incident Runbook
 
 ## Triage Steps

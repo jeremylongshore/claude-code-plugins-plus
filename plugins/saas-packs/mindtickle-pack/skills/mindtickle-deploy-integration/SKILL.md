@@ -1,16 +1,20 @@
 ---
 name: mindtickle-deploy-integration
-description: |
-  Deploy Integration for MindTickle.
+description: 'Deploy Integration for MindTickle.
+
   Trigger: "mindtickle deploy integration".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, mindtickle, sales]
-compatible-with: claude-code
+tags:
+- saas
+- mindtickle
+- sales
+compatibility: Designed for Claude Code
 ---
-
 # MindTickle Deploy Integration
 
 ## Overview

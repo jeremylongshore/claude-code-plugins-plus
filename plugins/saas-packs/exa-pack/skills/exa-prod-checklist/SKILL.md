@@ -1,17 +1,27 @@
 ---
 name: exa-prod-checklist
-description: |
-  Execute Exa production deployment checklist with pre-flight, deploy, and rollback.
+description: 'Execute Exa production deployment checklist with pre-flight, deploy,
+  and rollback.
+
   Use when deploying Exa integrations to production, preparing for launch,
+
   or verifying production readiness.
+
   Trigger with phrases like "exa production", "deploy exa to prod",
+
   "exa go-live", "exa launch checklist", "exa production ready".
+
+  '
 allowed-tools: Read, Bash(curl:*), Bash(node:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, exa, deployment, production]
+tags:
+- saas
+- exa
+- deployment
+- production
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Exa Production Checklist
 

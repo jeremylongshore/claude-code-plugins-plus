@@ -1,17 +1,27 @@
 ---
 name: windsurf-multi-env-setup
-description: |
-  Configure Windsurf IDE and Cascade AI across team members and project environments.
+description: 'Configure Windsurf IDE and Cascade AI across team members and project
+  environments.
+
   Use when onboarding teams to Windsurf, setting up per-project Cascade configuration,
+
   or managing Windsurf settings across development, staging, and production contexts.
+
   Trigger with phrases like "windsurf team setup", "windsurf environments",
+
   "windsurf multi-project", "windsurf team config", "cascade rules per env".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, team-setup, multi-environment]
+tags:
+- saas
+- windsurf
+- team-setup
+- multi-environment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Windsurf Multi-Environment Setup
 

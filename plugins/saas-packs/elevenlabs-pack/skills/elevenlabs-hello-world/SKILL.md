@@ -1,19 +1,29 @@
 ---
 name: elevenlabs-hello-world
-description: |
-  Generate your first ElevenLabs text-to-speech audio file.
+description: 'Generate your first ElevenLabs text-to-speech audio file.
+
   Use when starting a new ElevenLabs integration, testing your setup,
+
   or learning basic TTS API patterns.
+
   Trigger: "elevenlabs hello world", "elevenlabs example",
+
   "elevenlabs quick start", "first elevenlabs TTS", "text to speech demo".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, voice, ai, elevenlabs, tts, audio]
-compatible-with: claude-code
+tags:
+- saas
+- voice
+- ai
+- elevenlabs
+- tts
+- audio
+compatibility: Designed for Claude Code
 ---
-
 # ElevenLabs Hello World
 
 ## Overview

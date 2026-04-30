@@ -1,17 +1,23 @@
 ---
 name: fondo-reference-architecture
-description: |
-  Reference architecture for startup financial operations using Fondo as the
+description: 'Reference architecture for startup financial operations using Fondo
+  as the
+
   bookkeeping backbone with complementary tools for banking, payroll, and reporting.
+
   Trigger: "fondo architecture", "startup finance stack", "fondo integration architecture".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, accounting, fondo]
-compatible-with: claude-code
+tags:
+- saas
+- accounting
+- fondo
+compatibility: Designed for Claude Code
 ---
-
 # Fondo Reference Architecture
 
 ## Overview

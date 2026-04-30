@@ -1,18 +1,26 @@
 ---
 name: miro-ci-integration
-description: |
-  Configure CI/CD pipelines for Miro REST API v2 integrations with GitHub Actions,
+description: 'Configure CI/CD pipelines for Miro REST API v2 integrations with GitHub
+  Actions,
+
   test board isolation, and automated validation.
+
   Trigger with phrases like "miro CI", "miro GitHub Actions",
+
   "miro automated tests", "CI miro", "miro pipeline".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, miro, ci-cd, github-actions]
-compatible-with: claude-code
+tags:
+- saas
+- miro
+- ci-cd
+- github-actions
+compatibility: Designed for Claude Code
 ---
-
 # Miro CI Integration
 
 ## Overview

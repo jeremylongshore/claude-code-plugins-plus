@@ -1,17 +1,25 @@
 ---
 name: onenote-reference-architecture
-description: |
-  Reference architecture for OneNote integrations covering all notebook locations and API path patterns.
-  Use when designing multi-tenant OneNote integrations or choosing between personal, SharePoint, and group notebook APIs.
-  Trigger with "onenote architecture", "onenote api paths", "onenote sharepoint vs personal".
+description: 'Reference architecture for OneNote integrations covering all notebook
+  locations and API path patterns.
+
+  Use when designing multi-tenant OneNote integrations or choosing between personal,
+  SharePoint, and group notebook APIs.
+
+  Trigger with "onenote architecture", "onenote api paths", "onenote sharepoint vs
+  personal".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, onenote, microsoft]
-compatible-with: claude-code
+tags:
+- saas
+- onenote
+- microsoft
+compatibility: Designed for Claude Code
 ---
-
 # OneNote Reference Architecture
 
 ## Overview

@@ -1,19 +1,21 @@
 ---
 name: webflow-ci-integration
-description: |
-  Configure Webflow CI/CD with GitHub Actions — automated CMS validation,
-  integration tests with test tokens, and publish-on-merge workflows.
-  Use when setting up automated testing or CI pipelines for Webflow integrations.
-  Trigger with phrases like "webflow CI", "webflow GitHub Actions",
-  "webflow automated tests", "CI webflow", "webflow pipeline".
+description: "Configure Webflow CI/CD with GitHub Actions \u2014 automated CMS validation,\n\
+  integration tests with test tokens, and publish-on-merge workflows.\nUse when setting\
+  \ up automated testing or CI pipelines for Webflow integrations.\nTrigger with phrases\
+  \ like \"webflow CI\", \"webflow GitHub Actions\",\n\"webflow automated tests\"\
+  , \"CI webflow\", \"webflow pipeline\".\n"
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, no-code, webflow]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- no-code
+- webflow
+compatibility: Designed for Claude Code
 ---
-
 # Webflow CI Integration
 
 ## Overview

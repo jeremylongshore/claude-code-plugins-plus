@@ -1,19 +1,26 @@
 ---
 name: grammarly-hello-world
-description: |
-  Create a minimal working Grammarly example.
+description: 'Create a minimal working Grammarly example.
+
   Use when starting a new Grammarly integration, testing your setup,
+
   or learning basic Grammarly API patterns.
+
   Trigger with phrases like "grammarly hello world", "grammarly example",
+
   "grammarly quick start", "simple grammarly code".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, grammarly, writing]
-compatible-with: claude-code
+tags:
+- saas
+- grammarly
+- writing
+compatibility: Designed for Claude Code
 ---
-
 # Grammarly Hello World
 
 ## Overview

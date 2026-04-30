@@ -1,21 +1,35 @@
 ---
 name: langchain-sdk-patterns
-description: |
-  Compose LangChain 1.0 Python runnables with the production defaults the docs
+description: 'Compose LangChain 1.0 Python runnables with the production defaults
+  the docs
+
   do not warn about: parallel batching, narrow fallbacks, and brace-safe prompts.
+
   Use when building an LCEL chain with RunnableSequence / RunnableParallel,
+
   adding resilience via `.with_fallbacks()`, tuning throughput with `.batch()`
+
   or `.abatch()`, or wrapping user input in a prompt template.
+
   Trigger with "langchain runnable", "with_fallbacks", "langchain batch",
+
   "runnable sequence", "lcel", "runnableparallel", "chain composition".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(python:*), Bash(pip:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, langchain, langgraph, python, langchain-1.0, lcel, runnables]
-compatible-with: claude-code, codex
+tags:
+- saas
+- langchain
+- langgraph
+- python
+- langchain-1.0
+- lcel
+- runnables
+compatibility: Designed for Claude Code, also compatible with Codex
 ---
-
 # LangChain SDK Patterns (Python)
 
 ## Overview

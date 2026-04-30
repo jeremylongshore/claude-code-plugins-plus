@@ -1,17 +1,27 @@
 ---
 name: instantly-observability
-description: |
-  Set up monitoring, alerting, and dashboards for Instantly.ai integrations.
+description: 'Set up monitoring, alerting, and dashboards for Instantly.ai integrations.
+
   Use when implementing campaign health monitoring, account health alerts,
+
   or building analytics dashboards from Instantly data.
+
   Trigger with phrases like "instantly monitoring", "instantly dashboard",
+
   "instantly alerts", "instantly observability", "monitor instantly campaigns".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, instantly, observability, monitoring, alerting]
+tags:
+- saas
+- instantly
+- observability
+- monitoring
+- alerting
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Instantly Observability
 

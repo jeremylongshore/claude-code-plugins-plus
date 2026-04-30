@@ -1,18 +1,25 @@
 ---
 name: salesloft-debug-bundle
-description: |
-  Collect SalesLoft debug evidence for support tickets and troubleshooting.
+description: 'Collect SalesLoft debug evidence for support tickets and troubleshooting.
+
   Use when encountering persistent issues, preparing support tickets,
+
   or collecting diagnostic info for SalesLoft API problems.
+
   Trigger: "salesloft debug", "salesloft diagnostic", "salesloft support bundle".
+
+  '
 allowed-tools: Read, Bash(curl:*), Bash(tar:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, sales, outreach, salesloft]
-compatible-with: claude-code
+tags:
+- saas
+- sales
+- outreach
+- salesloft
+compatibility: Designed for Claude Code
 ---
-
 # SalesLoft Debug Bundle
 
 ## Overview

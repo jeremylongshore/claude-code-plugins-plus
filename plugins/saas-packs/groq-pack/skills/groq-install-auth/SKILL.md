@@ -1,17 +1,26 @@
 ---
 name: groq-install-auth
-description: |
-  Install and configure Groq SDK authentication for TypeScript or Python.
+description: 'Install and configure Groq SDK authentication for TypeScript or Python.
+
   Use when setting up a new Groq integration, configuring API keys,
+
   or initializing the groq-sdk in your project.
+
   Trigger with phrases like "install groq", "setup groq",
+
   "groq auth", "configure groq API key".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, groq, api, authentication]
+tags:
+- saas
+- groq
+- api
+- authentication
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Groq Install & Auth
 

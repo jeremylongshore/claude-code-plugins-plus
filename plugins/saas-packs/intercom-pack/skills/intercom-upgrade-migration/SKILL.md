@@ -1,19 +1,27 @@
 ---
 name: intercom-upgrade-migration
-description: |
-  Upgrade intercom-client SDK versions and handle API version changes.
+description: 'Upgrade intercom-client SDK versions and handle API version changes.
+
   Use when upgrading the SDK, migrating between API versions,
+
   or detecting breaking changes in Intercom releases.
+
   Trigger with phrases like "upgrade intercom", "intercom migration",
+
   "intercom breaking changes", "update intercom SDK", "intercom API version".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, support, messaging, intercom]
-compatible-with: claude-code
+tags:
+- saas
+- support
+- messaging
+- intercom
+compatibility: Designed for Claude Code
 ---
-
 # Intercom Upgrade & Migration
 
 ## Overview

@@ -1,17 +1,23 @@
 ---
 name: navan-rate-limits
-description: |
-  Implement adaptive rate-limiting for the Navan REST API with exponential backoff and request queuing.
+description: 'Implement adaptive rate-limiting for the Navan REST API with exponential
+  backoff and request queuing.
+
   Use when building bulk data operations or encountering 429 errors from Navan.
+
   Trigger with "navan rate limits", "navan throttling", "navan 429".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, navan, travel]
-compatible-with: claude-code
+tags:
+- saas
+- navan
+- travel
+compatibility: Designed for Claude Code
 ---
-
 # Navan Rate Limits
 
 ## Overview

@@ -1,20 +1,35 @@
 ---
 name: sentry-enterprise-rbac
-description: |
-  Configure enterprise role-based access control, SSO/SAML2, and SCIM
+description: 'Configure enterprise role-based access control, SSO/SAML2, and SCIM
+
   provisioning in Sentry. Use when setting up organization hierarchy,
+
   team permissions, identity provider integration, API token governance,
+
   or audit logging for compliance.
+
   Trigger: "sentry rbac", "sentry permissions", "sentry team access",
+
   "sentry sso setup", "sentry scim", "sentry audit log".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Bash(curl:*), Bash(python3:*), Bash(jq:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, sentry, rbac, sso, saml, scim, teams, permissions, audit, enterprise]
+tags:
+- saas
+- sentry
+- rbac
+- sso
+- saml
+- scim
+- teams
+- permissions
+- audit
+- enterprise
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Sentry Enterprise RBAC
 
 ## Overview

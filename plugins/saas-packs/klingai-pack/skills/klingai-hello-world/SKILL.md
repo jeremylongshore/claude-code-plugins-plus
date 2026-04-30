@@ -1,15 +1,23 @@
 ---
 name: klingai-hello-world
-description: |
-  Create your first Kling AI video generation with a minimal working example. Use when learning
-  Kling AI or testing your setup. Trigger with phrases like 'kling ai hello world', 'first kling video',
-  'klingai quickstart', 'test klingai'.
+description: 'Create your first Kling AI video generation with a minimal working example.
+  Use when learning
+
+  Kling AI or testing your setup. Trigger with phrases like ''kling ai hello world'',
+  ''first kling video'',
+
+  ''klingai quickstart'', ''test klingai''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, kling-ai, quickstart]
+tags:
+- saas
+- kling-ai
+- quickstart
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Kling AI Hello World
 

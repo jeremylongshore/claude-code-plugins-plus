@@ -1,17 +1,25 @@
 ---
 name: ideogram-deploy-integration
-description: |
-  Deploy Ideogram integrations to Vercel, Cloud Run, and Docker platforms.
+description: 'Deploy Ideogram integrations to Vercel, Cloud Run, and Docker platforms.
+
   Use when deploying Ideogram-powered applications to production,
+
   configuring platform-specific secrets, or setting up deployment pipelines.
+
   Trigger with phrases like "deploy ideogram", "ideogram Vercel",
+
   "ideogram production deploy", "ideogram Cloud Run", "ideogram Docker".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(gcloud:*), Bash(docker:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, ideogram, deployment]
+tags:
+- saas
+- ideogram
+- deployment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Ideogram Deploy Integration
 

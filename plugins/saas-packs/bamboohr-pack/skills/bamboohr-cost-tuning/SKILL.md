@@ -1,19 +1,27 @@
 ---
 name: bamboohr-cost-tuning
-description: |
-  Optimize BambooHR integration costs through request reduction, caching,
+description: 'Optimize BambooHR integration costs through request reduction, caching,
+
   and usage monitoring. Use when analyzing API usage patterns, reducing
+
   unnecessary calls, or implementing request budgets.
+
   Trigger with phrases like "bamboohr cost", "bamboohr usage",
+
   "reduce bamboohr calls", "bamboohr optimization", "bamboohr budget".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hr, bamboohr, optimization]
-compatible-with: claude-code
+tags:
+- saas
+- hr
+- bamboohr
+- optimization
+compatibility: Designed for Claude Code
 ---
-
 # BambooHR Cost Tuning
 
 ## Overview

@@ -1,19 +1,28 @@
 ---
 name: clade-multi-env-setup
-description: |
-  Configure Claude across dev, staging, and production with different
+description: 'Configure Claude across dev, staging, and production with different
+
   Use when working with multi-env-setup patterns.
+
   models, keys, and rate limits per environment.
+
   Trigger with "anthropic environments", "claude staging",
+
   "anthropic dev vs prod", "claude multi-environment".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code
-tags: [saas, anthropic, claude, environments, config]
+tags:
+- saas
+- anthropic
+- claude
+- environments
+- config
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Multi-Environment Setup
 
 ## Overview

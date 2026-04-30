@@ -1,19 +1,29 @@
 ---
 name: palantir-security-basics
-description: |
-  Apply Palantir Foundry security best practices for credentials, scopes, and access control.
+description: 'Apply Palantir Foundry security best practices for credentials, scopes,
+  and access control.
+
   Use when securing API tokens, implementing least privilege access,
+
   or auditing Foundry security configuration.
+
   Trigger with phrases like "palantir security", "foundry secrets",
+
   "secure palantir", "palantir API key security", "foundry scopes".
+
+  '
 allowed-tools: Read, Write, Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, palantir, foundry, security, oauth]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- palantir
+- foundry
+- security
+- oauth
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Palantir Security Basics
 
 ## Overview

@@ -1,16 +1,22 @@
 ---
 name: guidewire-core-workflow-b
-description: |
-  Execute Guidewire claims workflow in ClaimCenter: FNOL, investigation, reserves, and settlement.
-  Trigger: "claimcenter workflow", "create claim", "FNOL", "claim settlement", "process claim".
+description: 'Execute Guidewire claims workflow in ClaimCenter: FNOL, investigation,
+  reserves, and settlement.
+
+  Trigger: "claimcenter workflow", "create claim", "FNOL", "claim settlement", "process
+  claim".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, insurance, guidewire]
-compatible-with: claude-code
+tags:
+- saas
+- insurance
+- guidewire
+compatibility: Designed for Claude Code
 ---
-
 # Guidewire Core Workflow B: Claims Processing
 
 ## Overview

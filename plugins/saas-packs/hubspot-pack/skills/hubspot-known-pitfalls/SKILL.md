@@ -1,19 +1,28 @@
 ---
 name: hubspot-known-pitfalls
-description: |
-  Identify and avoid HubSpot API anti-patterns and common integration mistakes.
+description: 'Identify and avoid HubSpot API anti-patterns and common integration
+  mistakes.
+
   Use when reviewing HubSpot code, onboarding developers to HubSpot integrations,
+
   or auditing existing CRM integrations for best practice violations.
+
   Trigger with phrases like "hubspot mistakes", "hubspot anti-patterns",
+
   "hubspot pitfalls", "hubspot code review", "hubspot gotchas".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, marketing, hubspot]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- marketing
+- hubspot
+compatibility: Designed for Claude Code
 ---
-
 # HubSpot Known Pitfalls
 
 ## Overview

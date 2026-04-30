@@ -1,17 +1,27 @@
 ---
 name: lokalise-enterprise-rbac
-description: |
-  Configure Lokalise enterprise SSO, role-based access control, and team management.
+description: 'Configure Lokalise enterprise SSO, role-based access control, and team
+  management.
+
   Use when implementing SSO integration, configuring role-based permissions,
+
   or setting up organization-level controls for Lokalise.
+
   Trigger with phrases like "lokalise SSO", "lokalise RBAC",
+
   "lokalise enterprise", "lokalise roles", "lokalise permissions", "lokalise team".
-allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(jq:*), Bash(node:*), Bash(npm:*), Grep
+
+  '
+allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(jq:*), Bash(node:*), Bash(npm:*),
+  Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lokalise, rbac]
+tags:
+- saas
+- lokalise
+- rbac
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lokalise Enterprise RBAC
 

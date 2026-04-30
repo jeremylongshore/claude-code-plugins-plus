@@ -1,17 +1,24 @@
 ---
 name: navan-data-sync
-description: |
-  Implement incremental sync strategies for Navan BOOKING and TRANSACTION data with ETL pipeline patterns.
-  Use when setting up production data pipelines, debugging sync drift, or adding real-time event processing.
+description: 'Implement incremental sync strategies for Navan BOOKING and TRANSACTION
+  data with ETL pipeline patterns.
+
+  Use when setting up production data pipelines, debugging sync drift, or adding real-time
+  event processing.
+
   Trigger with "navan data sync", "navan incremental sync", "navan ETL pipeline".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, navan, travel]
-compatible-with: claude-code
+tags:
+- saas
+- navan
+- travel
+compatibility: Designed for Claude Code
 ---
-
 # Navan — Data Sync
 
 ## Overview

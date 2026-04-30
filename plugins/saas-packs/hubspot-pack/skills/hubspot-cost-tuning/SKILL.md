@@ -1,19 +1,28 @@
 ---
 name: hubspot-cost-tuning
-description: |
-  Optimize HubSpot costs through API call reduction, plan selection, and usage monitoring.
+description: 'Optimize HubSpot costs through API call reduction, plan selection, and
+  usage monitoring.
+
   Use when analyzing HubSpot API usage, reducing unnecessary calls,
+
   or implementing usage tracking and budget alerts.
+
   Trigger with phrases like "hubspot cost", "hubspot API usage",
+
   "reduce hubspot calls", "hubspot pricing", "hubspot budget", "hubspot quota".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, marketing, hubspot]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- marketing
+- hubspot
+compatibility: Designed for Claude Code
 ---
-
 # HubSpot Cost Tuning
 
 ## Overview

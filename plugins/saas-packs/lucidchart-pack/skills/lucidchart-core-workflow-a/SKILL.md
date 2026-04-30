@@ -1,16 +1,20 @@
 ---
 name: lucidchart-core-workflow-a
-description: |
-  Execute Lucidchart primary workflow: Document & Shape Creation.
+description: 'Execute Lucidchart primary workflow: Document & Shape Creation.
+
   Trigger: "lucidchart document & shape creation", "primary lucidchart workflow".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, lucidchart, diagramming]
-compatible-with: claude-code
+tags:
+- saas
+- lucidchart
+- diagramming
+compatibility: Designed for Claude Code
 ---
-
 # Lucidchart — Document & Diagram Management
 
 ## Overview

@@ -1,17 +1,23 @@
 ---
 name: flyio-sdk-patterns
-description: |
-  Apply production-ready Fly.io Machines API patterns for TypeScript with typed
+description: 'Apply production-ready Fly.io Machines API patterns for TypeScript with
+  typed
+
   clients, machine lifecycle management, and multi-region orchestration.
+
   Trigger: "fly.io Machines API", "fly.io SDK patterns", "fly.io API client".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, edge-compute, flyio]
-compatible-with: claude-code
+tags:
+- saas
+- edge-compute
+- flyio
+compatibility: Designed for Claude Code
 ---
-
 # Fly.io SDK Patterns
 
 ## Overview

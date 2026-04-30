@@ -1,19 +1,29 @@
 ---
 name: persona-install-auth
-description: |
-  Configure Persona API authentication with sandbox and production API keys.
+description: 'Configure Persona API authentication with sandbox and production API
+  keys.
+
   Use when setting up identity verification, configuring API credentials,
+
   or initializing Persona in your project.
+
   Trigger with phrases like "install persona", "setup persona",
+
   "persona auth", "persona API key", "KYC setup".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, persona, identity, kyc, authentication]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- persona
+- identity
+- kyc
+- authentication
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Persona Install & Auth
 
 ## Overview

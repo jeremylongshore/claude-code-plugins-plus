@@ -1,19 +1,27 @@
 ---
 name: canva-prod-checklist
-description: |
-  Execute Canva Connect API production deployment checklist and go-live procedures.
+description: 'Execute Canva Connect API production deployment checklist and go-live
+  procedures.
+
   Use when deploying Canva integrations to production, preparing for launch,
+
   or validating production readiness.
+
   Trigger with phrases like "canva production", "deploy canva",
+
   "canva go-live", "canva launch checklist".
+
+  '
 allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, canva]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- canva
+compatibility: Designed for Claude Code
 ---
-
 # Canva Production Checklist
 
 ## Overview

@@ -1,19 +1,28 @@
 ---
 name: clade-model-inference
-description: |
-  Stream Claude responses, use system prompts, handle multi-turn conversations,
+description: 'Stream Claude responses, use system prompts, handle multi-turn conversations,
+
   Use when working with model-inference patterns.
+
   and process structured output with the Messages API.
+
   Trigger with "anthropic streaming", "claude messages api", "claude inference",
+
   "stream claude response".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code
-tags: [saas, anthropic, claude, streaming, messages-api]
+tags:
+- saas
+- anthropic
+- claude
+- streaming
+- messages-api
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Messages API — Streaming & Advanced Patterns
 
 ## Overview

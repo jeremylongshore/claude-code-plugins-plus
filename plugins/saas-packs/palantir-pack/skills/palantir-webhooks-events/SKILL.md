@@ -1,19 +1,28 @@
 ---
 name: palantir-webhooks-events
-description: |
-  Implement Palantir Foundry webhook handling for Ontology change events.
+description: 'Implement Palantir Foundry webhook handling for Ontology change events.
+
   Use when reacting to Ontology object changes, dataset updates,
+
   or build completion events from Foundry.
+
   Trigger with phrases like "palantir webhook", "foundry events",
+
   "palantir notifications", "ontology change events".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, palantir, foundry, webhooks, events]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- palantir
+- foundry
+- webhooks
+- events
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Palantir Webhooks & Events
 
 ## Overview

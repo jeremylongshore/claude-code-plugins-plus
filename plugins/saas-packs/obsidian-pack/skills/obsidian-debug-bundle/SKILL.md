@@ -1,17 +1,25 @@
 ---
 name: obsidian-debug-bundle
-description: |
-  Collect Obsidian plugin debug evidence for support and troubleshooting.
+description: 'Collect Obsidian plugin debug evidence for support and troubleshooting.
+
   Use when encountering persistent issues, preparing bug reports,
+
   or collecting diagnostic information for plugin problems.
+
   Trigger with phrases like "obsidian debug", "obsidian diagnostic",
+
   "collect obsidian logs", "obsidian support bundle".
+
+  '
 allowed-tools: Read, Bash(grep:*), Bash(tar:*), Grep, Write
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, obsidian, debugging]
+tags:
+- saas
+- obsidian
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Obsidian Debug Bundle
 

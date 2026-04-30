@@ -1,16 +1,20 @@
 ---
 name: lucidchart-webhooks-events
-description: |
-  Webhooks Events for Lucidchart.
+description: 'Webhooks Events for Lucidchart.
+
   Trigger: "lucidchart webhooks events".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, lucidchart, diagramming]
-compatible-with: claude-code
+tags:
+- saas
+- lucidchart
+- diagramming
+compatibility: Designed for Claude Code
 ---
-
 # Lucidchart Webhooks & Events
 
 ## Overview

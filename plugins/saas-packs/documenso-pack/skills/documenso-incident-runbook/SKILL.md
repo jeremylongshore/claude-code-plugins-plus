@@ -1,17 +1,25 @@
 ---
 name: documenso-incident-runbook
-description: |
-  Manage incident response for Documenso integration issues.
+description: 'Manage incident response for Documenso integration issues.
+
   Use when diagnosing production incidents, handling outages,
+
   or responding to Documenso service disruptions.
+
   Trigger with phrases like "documenso incident", "documenso outage",
+
   "documenso down", "documenso troubleshooting".
+
+  '
 allowed-tools: Read, Bash(curl:*), Bash(kubectl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, documenso, incident-response]
+tags:
+- saas
+- documenso
+- incident-response
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Documenso Incident Runbook
 

@@ -1,16 +1,23 @@
 ---
 name: building-api-gateway
-description: |
-  Create API gateways with routing, load balancing, rate limiting, and authentication.
+description: 'Create API gateways with routing, load balancing, rate limiting, and
+  authentication.
+
   Use when routing and managing multiple API services.
-  Trigger with phrases like "build API gateway", "create API router", or "setup API gateway".
-  
+
+  Trigger with phrases like "build API gateway", "create API router", or "setup API
+  gateway".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:gateway-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [api, authentication, api-gateway]
+tags:
+- api
+- authentication
+- api-gateway
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Building API Gateway
 

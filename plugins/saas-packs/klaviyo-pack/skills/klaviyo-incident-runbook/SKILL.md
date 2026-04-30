@@ -1,19 +1,28 @@
 ---
 name: klaviyo-incident-runbook
-description: |
-  Execute Klaviyo incident response procedures with triage, mitigation, and postmortem.
+description: 'Execute Klaviyo incident response procedures with triage, mitigation,
+  and postmortem.
+
   Use when responding to Klaviyo-related outages, investigating API errors,
+
   or running post-incident reviews for Klaviyo integration failures.
+
   Trigger with phrases like "klaviyo incident", "klaviyo outage",
+
   "klaviyo down", "klaviyo on-call", "klaviyo emergency", "klaviyo broken".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*), Bash(kubectl:*), Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, klaviyo, email-marketing, cdp]
-compatible-with: claude-code
+tags:
+- saas
+- klaviyo
+- email-marketing
+- cdp
+compatibility: Designed for Claude Code
 ---
-
 # Klaviyo Incident Runbook
 
 ## Overview

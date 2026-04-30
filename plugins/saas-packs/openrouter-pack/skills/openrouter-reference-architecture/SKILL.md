@@ -1,13 +1,22 @@
 ---
 name: openrouter-reference-architecture
-description: |
-  Design production architectures using OpenRouter as the LLM gateway. Use when planning system design, reviewing architecture, or scaling AI applications. Triggers: 'openrouter architecture', 'openrouter system design', 'openrouter at scale', 'llm gateway architecture'.
+description: 'Design production architectures using OpenRouter as the LLM gateway.
+  Use when planning system design, reviewing architecture, or scaling AI applications.
+  Triggers: ''openrouter architecture'', ''openrouter system design'', ''openrouter
+  at scale'', ''llm gateway architecture''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash, Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, openrouter, architecture, system-design, scaling]
+tags:
+- saas
+- openrouter
+- architecture
+- system-design
+- scaling
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # OpenRouter Reference Architecture
 

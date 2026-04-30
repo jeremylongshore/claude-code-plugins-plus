@@ -1,17 +1,27 @@
 ---
 name: lokalise-security-basics
-description: |
-  Apply Lokalise security best practices for API tokens and access control.
+description: 'Apply Lokalise security best practices for API tokens and access control.
+
   Use when securing API tokens, implementing least privilege access,
+
   or auditing Lokalise security configuration.
+
   Trigger with phrases like "lokalise security", "lokalise secrets",
+
   "secure lokalise", "lokalise API token security".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(jq:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lokalise, api, security, audit]
+tags:
+- saas
+- lokalise
+- api
+- security
+- audit
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lokalise Security Basics
 

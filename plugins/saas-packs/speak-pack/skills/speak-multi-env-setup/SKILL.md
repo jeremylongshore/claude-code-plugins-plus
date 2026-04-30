@@ -1,16 +1,24 @@
 ---
 name: speak-multi-env-setup
-description: |
-  Configure Speak across dev, staging, and production with separate API keys and mock modes.
+description: 'Configure Speak across dev, staging, and production with separate API
+  keys and mock modes.
+
   Use when implementing multi env setup,
+
   or managing Speak language learning platform operations.
+
   Trigger with phrases like "speak multi env setup", "speak multi env setup".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, speak, api]
+tags:
+- saas
+- speak
+- api
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Speak Multi-Environment Setup
 

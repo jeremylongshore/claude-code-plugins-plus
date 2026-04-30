@@ -1,17 +1,26 @@
 ---
 name: fireflies-upgrade-migration
-description: |
-  Handle Fireflies.ai API deprecations and migrate to current query patterns.
+description: 'Handle Fireflies.ai API deprecations and migrate to current query patterns.
+
   Use when updating deprecated fields, migrating query patterns,
+
   or responding to Fireflies API changelog updates.
+
   Trigger with phrases like "upgrade fireflies", "fireflies deprecated",
+
   "fireflies migration", "fireflies breaking changes", "fireflies changelog".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, fireflies, api, migration]
+tags:
+- saas
+- fireflies
+- api
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Fireflies.ai Upgrade & Migration
 

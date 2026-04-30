@@ -1,17 +1,26 @@
 ---
 name: apollo-install-auth
-description: |
-  Install and configure Apollo.io API authentication.
+description: 'Install and configure Apollo.io API authentication.
+
   Use when setting up a new Apollo integration, configuring API keys,
+
   or initializing Apollo client in your project.
+
   Trigger with phrases like "install apollo", "setup apollo api",
+
   "apollo authentication", "configure apollo api key".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, apollo, api, authentication]
+tags:
+- saas
+- apollo
+- api
+- authentication
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Apollo Install & Auth
 

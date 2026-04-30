@@ -1,17 +1,27 @@
 ---
 name: exa-core-workflow-a
-description: |
-  Execute Exa neural search with contents, date filters, and domain scoping.
+description: 'Execute Exa neural search with contents, date filters, and domain scoping.
+
   Use when building search features, implementing RAG context retrieval,
+
   or querying the web with semantic understanding.
+
   Trigger with phrases like "exa search", "exa neural search",
+
   "search with exa", "exa searchAndContents", "exa query".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, exa, workflow, neural-search, search]
+tags:
+- saas
+- exa
+- workflow
+- neural-search
+- search
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Exa Core Workflow A — Neural Search
 

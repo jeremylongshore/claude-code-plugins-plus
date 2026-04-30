@@ -1,17 +1,27 @@
 ---
 name: clerk-local-dev-loop
-description: |
-  Set up local development workflow with Clerk.
+description: 'Set up local development workflow with Clerk.
+
   Use when configuring development environment, testing auth locally,
+
   or setting up hot reload with Clerk.
+
   Trigger with phrases like "clerk local dev", "clerk development",
+
   "test clerk locally", "clerk dev environment".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clerk, testing, authentication, workflow]
+tags:
+- saas
+- clerk
+- testing
+- authentication
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clerk Local Dev Loop
 

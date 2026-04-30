@@ -1,15 +1,22 @@
 ---
 name: optimizing-gas-fees
-description: |
-  Optimize blockchain gas costs by analyzing prices, patterns, and timing.
+description: 'Optimize blockchain gas costs by analyzing prices, patterns, and timing.
+
   Use when checking gas prices, estimating costs, or finding optimal windows.
-  Trigger with phrases like "gas prices", "optimize gas", "transaction cost", "when to transact".
+
+  Trigger with phrases like "gas prices", "optimize gas", "transaction cost", "when
+  to transact".
+
+  '
 allowed-tools: Read, Bash(python3:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [crypto, cost-optimization, optimizing-gas]
+tags:
+- crypto
+- cost-optimization
+- optimizing-gas
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Optimizing Gas Fees
 

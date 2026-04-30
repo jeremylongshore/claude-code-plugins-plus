@@ -1,17 +1,23 @@
 ---
 name: flyio-security-basics
-description: |
-  Apply Fly.io security best practices for secrets management, private networking,
+description: 'Apply Fly.io security best practices for secrets management, private
+  networking,
+
   TLS certificates, and deploy token scoping.
+
   Trigger: "fly.io security", "fly secrets", "fly.io TLS", "fly.io private network".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(fly:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, edge-compute, flyio]
-compatible-with: claude-code
+tags:
+- saas
+- edge-compute
+- flyio
+compatibility: Designed for Claude Code
 ---
-
 # Fly.io Security Basics
 
 ## Overview

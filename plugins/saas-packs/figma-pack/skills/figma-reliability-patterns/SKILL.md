@@ -1,19 +1,26 @@
 ---
 name: figma-reliability-patterns
-description: |
-  Build resilient Figma integrations with circuit breakers, fallbacks, and graceful degradation.
+description: 'Build resilient Figma integrations with circuit breakers, fallbacks,
+  and graceful degradation.
+
   Use when implementing fault tolerance, handling Figma outages gracefully,
+
   or building production-grade reliability into Figma API consumers.
+
   Trigger with phrases like "figma reliability", "figma circuit breaker",
+
   "figma fallback", "figma resilience", "figma graceful degradation".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, figma]
-compatible-with: claude-code
+tags:
+- saas
+- figma
+compatibility: Designed for Claude Code
 ---
-
 # Figma Reliability Patterns
 
 ## Overview

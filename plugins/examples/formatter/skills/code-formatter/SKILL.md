@@ -1,16 +1,25 @@
 ---
 name: code-formatter
-description: |
-  Execute automatically formats and validates code files using Prettier and other formatting tools.
+description: 'Execute automatically formats and validates code files using Prettier
+  and other formatting tools.
+
   Use when users mention "format my code", "fix formatting", "apply code style",
+
   "check formatting", "make code consistent", or "clean up code formatting".
-  Handles JavaScript, TypeScript, JSON, CSS, Markdown, and many other file types. Trigger with relevant phrases based on skill purpose.
+
+  Handles JavaScript, TypeScript, JSON, CSS, Markdown, and many other file types.
+  Trigger with relevant phrases based on skill purpose.
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [example, typescript, code-formatter]
+tags:
+- example
+- typescript
+- code-formatter
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Code Formatter
 

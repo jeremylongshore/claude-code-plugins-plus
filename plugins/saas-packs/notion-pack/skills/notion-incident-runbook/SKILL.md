@@ -1,19 +1,27 @@
 ---
 name: notion-incident-runbook
-description: |
-  Execute Notion incident response procedures with triage, mitigation, and postmortem.
+description: 'Execute Notion incident response procedures with triage, mitigation,
+  and postmortem.
+
   Use when responding to Notion API outages, investigating errors,
+
   or running post-incident reviews for Notion integration failures.
+
   Trigger with phrases like "notion incident", "notion outage",
+
   "notion down", "notion on-call", "notion emergency", "notion broken".
+
+  '
 allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notion]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- notion
+compatibility: Designed for Claude Code
 ---
-
 # Notion Incident Runbook
 
 ## Overview

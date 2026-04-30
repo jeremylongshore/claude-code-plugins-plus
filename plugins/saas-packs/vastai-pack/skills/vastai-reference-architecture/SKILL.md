@@ -1,17 +1,25 @@
 ---
 name: vastai-reference-architecture
-description: |
-  Implement Vast.ai reference architecture for GPU compute workflows.
+description: 'Implement Vast.ai reference architecture for GPU compute workflows.
+
   Use when designing ML training pipelines, structuring GPU orchestration,
+
   or establishing architecture patterns for Vast.ai applications.
+
   Trigger with phrases like "vastai architecture", "vastai design pattern",
+
   "vastai project structure", "vastai ml pipeline".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vast-ai, architecture]
+tags:
+- saas
+- vast-ai
+- architecture
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vast.ai Reference Architecture
 

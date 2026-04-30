@@ -1,19 +1,27 @@
 ---
 name: clade-install-auth
-description: |
-  Install and configure the Anthropic SDK for Claude API access.
+description: 'Install and configure the Anthropic SDK for Claude API access.
+
   Use when setting up Claude integration, configuring API keys,
+
   or initializing the Anthropic client in your project.
+
   Trigger with phrases like "install anthropic", "setup claude api",
+
   "anthropic auth", "configure anthropic API key".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code
-tags: [saas, anthropic, claude, ai]
+tags:
+- saas
+- anthropic
+- claude
+- ai
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Install & Auth
 
 ## Overview

@@ -1,16 +1,21 @@
 ---
 name: guidewire-performance-tuning
-description: |
-  Optimize Guidewire performance: Gosu query optimization, batch processing, caching, and JVM tuning.
+description: 'Optimize Guidewire performance: Gosu query optimization, batch processing,
+  caching, and JVM tuning.
+
   Trigger: "guidewire performance tuning", "performance-tuning".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(gradle:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, insurance, guidewire]
-compatible-with: claude-code
+tags:
+- saas
+- insurance
+- guidewire
+compatibility: Designed for Claude Code
 ---
-
 # Guidewire Performance Tuning
 
 ## Overview

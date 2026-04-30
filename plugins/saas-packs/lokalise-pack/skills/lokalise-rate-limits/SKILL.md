@@ -1,17 +1,25 @@
 ---
 name: lokalise-rate-limits
-description: |
-  Implement Lokalise rate limiting, backoff, and request queuing patterns.
+description: 'Implement Lokalise rate limiting, backoff, and request queuing patterns.
+
   Use when handling rate limit errors, implementing retry logic,
+
   or optimizing API request throughput for Lokalise.
+
   Trigger with phrases like "lokalise rate limit", "lokalise throttling",
+
   "lokalise 429", "lokalise retry", "lokalise backoff".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lokalise, api]
+tags:
+- saas
+- lokalise
+- api
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lokalise Rate Limits
 

@@ -1,18 +1,27 @@
 ---
 name: abridge-hello-world
-description: |
-  Create a minimal Abridge ambient AI clinical documentation example.
+description: 'Create a minimal Abridge ambient AI clinical documentation example.
+
   Use when testing Abridge integration, verifying EHR connectivity,
+
   or learning how Abridge captures and structures clinical conversations.
-  Trigger: "abridge hello world", "abridge example", "abridge quick start", "test abridge".
+
+  Trigger: "abridge hello world", "abridge example", "abridge quick start", "test
+  abridge".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, healthcare, ai, abridge, clinical-documentation]
-compatible-with: claude-code
+tags:
+- saas
+- healthcare
+- ai
+- abridge
+- clinical-documentation
+compatibility: Designed for Claude Code
 ---
-
 # Abridge Hello World
 
 ## Overview

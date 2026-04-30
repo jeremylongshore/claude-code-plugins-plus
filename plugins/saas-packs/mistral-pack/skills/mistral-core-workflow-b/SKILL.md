@@ -1,17 +1,27 @@
 ---
 name: mistral-core-workflow-b
-description: |
-  Execute Mistral AI embeddings, function calling, and RAG pipelines.
+description: 'Execute Mistral AI embeddings, function calling, and RAG pipelines.
+
   Use when implementing semantic search, RAG applications,
+
   tool-augmented LLM interactions, or code embeddings.
+
   Trigger with phrases like "mistral embeddings", "mistral function calling",
+
   "mistral tools", "mistral RAG", "mistral semantic search".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, mistral, llm, embeddings, workflow]
+tags:
+- saas
+- mistral
+- llm
+- embeddings
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Mistral AI Core Workflow B: Embeddings & Function Calling
 

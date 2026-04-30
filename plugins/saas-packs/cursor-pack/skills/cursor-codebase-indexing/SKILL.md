@@ -1,15 +1,23 @@
 ---
-name: "cursor-codebase-indexing"
-description: |
-  Set up and optimize Cursor codebase indexing for semantic code search and @Codebase queries.
-  Triggers on "cursor index", "codebase indexing", "index codebase", "cursor semantic search",
+name: cursor-codebase-indexing
+description: 'Set up and optimize Cursor codebase indexing for semantic code search
+  and @Codebase queries.
+
+  Triggers on "cursor index", "codebase indexing", "index codebase", "cursor semantic
+  search",
+
   "@codebase", "cursor embeddings".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, cursor, cursor-codebase]
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- cursor
+- cursor-codebase
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Cursor Codebase Indexing
 

@@ -1,19 +1,21 @@
 ---
 name: clade-load-scale
-description: |
-  Scale Claude usage for high-throughput applications — batches, queues,
-  Use when working with load-scale patterns.
-  concurrency control, and tier upgrades.
-  Trigger with "anthropic scale", "claude high volume", "anthropic throughput",
-  "scale claude api", "anthropic concurrent requests".
+description: "Scale Claude usage for high-throughput applications \u2014 batches,\
+  \ queues,\nUse when working with load-scale patterns.\nconcurrency control, and\
+  \ tier upgrades.\nTrigger with \"anthropic scale\", \"claude high volume\", \"anthropic\
+  \ throughput\",\n\"scale claude api\", \"anthropic concurrent requests\".\n"
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code
-tags: [saas, anthropic, claude, scale, throughput]
+tags:
+- saas
+- anthropic
+- claude
+- scale
+- throughput
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Load & Scale
 
 ## Overview

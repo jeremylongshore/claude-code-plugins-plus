@@ -1,18 +1,24 @@
 ---
 name: attio-security-basics
-description: |
-  Secure Attio API integrations -- token scoping, secret management,
+description: 'Secure Attio API integrations -- token scoping, secret management,
+
   scope auditing, webhook signature verification, and rotation procedures.
+
   Trigger: "attio security", "attio secrets", "secure attio",
+
   "attio API key security", "attio scopes", "attio token rotation".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, attio]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- attio
+compatibility: Designed for Claude Code
 ---
-
 # Attio Security Basics
 
 ## Overview

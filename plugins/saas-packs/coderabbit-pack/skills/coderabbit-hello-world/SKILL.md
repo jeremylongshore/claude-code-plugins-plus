@@ -1,17 +1,27 @@
 ---
 name: coderabbit-hello-world
-description: |
-  Create a minimal working CodeRabbit configuration and trigger your first AI review.
+description: 'Create a minimal working CodeRabbit configuration and trigger your first
+  AI review.
+
   Use when starting with CodeRabbit, testing your setup,
+
   or learning basic .coderabbit.yaml patterns.
+
   Trigger with phrases like "coderabbit hello world", "coderabbit example",
+
   "coderabbit quick start", "first coderabbit review".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, coderabbit, quickstart, testing]
+tags:
+- saas
+- coderabbit
+- quickstart
+- testing
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # CodeRabbit Hello World
 

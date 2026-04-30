@@ -1,18 +1,25 @@
 ---
 name: serpapi-prod-checklist
-description: |
-  Production readiness checklist for SerpApi integrations.
+description: 'Production readiness checklist for SerpApi integrations.
+
   Use when deploying search features, validating credit budgets,
+
   or preparing SerpApi-powered apps for launch.
+
   Trigger: "serpapi production", "deploy serpapi", "serpapi go-live".
+
+  '
 allowed-tools: Read, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, seo, serpapi]
-compatible-with: claude-code
+tags:
+- saas
+- search
+- seo
+- serpapi
+compatibility: Designed for Claude Code
 ---
-
 # SerpApi Production Checklist
 
 ## Checklist

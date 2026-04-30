@@ -1,17 +1,25 @@
 ---
 name: perplexity-core-workflow-a
-description: |
-  Execute Perplexity primary workflow: single-query search with citations.
+description: 'Execute Perplexity primary workflow: single-query search with citations.
+
   Use when implementing AI search, building fact-checking tools,
+
   or integrating web-grounded answers into your application.
+
   Trigger with phrases like "perplexity search", "perplexity query",
+
   "search with citations", "perplexity main workflow".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, perplexity, workflow]
+tags:
+- saas
+- perplexity
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Perplexity Core Workflow A: Search with Citations
 

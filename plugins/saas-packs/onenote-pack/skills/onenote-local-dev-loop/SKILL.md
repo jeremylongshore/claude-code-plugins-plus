@@ -1,17 +1,24 @@
 ---
 name: onenote-local-dev-loop
-description: |
-  Set up a local development loop for OneNote integrations with mock Graph API responses.
-  Use when developing OneNote features without Azure credentials or to avoid rate limits during development.
+description: 'Set up a local development loop for OneNote integrations with mock Graph
+  API responses.
+
+  Use when developing OneNote features without Azure credentials or to avoid rate
+  limits during development.
+
   Trigger with "onenote local dev", "onenote mock", "onenote testing setup".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, onenote, microsoft]
-compatible-with: claude-code
+tags:
+- saas
+- onenote
+- microsoft
+compatibility: Designed for Claude Code
 ---
-
 # OneNote Local Dev Loop
 
 ## Overview

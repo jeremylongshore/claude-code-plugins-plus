@@ -1,17 +1,25 @@
 ---
 name: oraclecloud-rate-limits
-description: |
-  Handle OCI API rate limits with defensive retry patterns and known limits by service.
-  Use when automating bulk OCI operations, hitting 429 TooManyRequests errors, or building resilient API clients.
-  Trigger with "oraclecloud rate limits", "oci 429 error", "oci throttling", "oci backoff".
+description: 'Handle OCI API rate limits with defensive retry patterns and known limits
+  by service.
+
+  Use when automating bulk OCI operations, hitting 429 TooManyRequests errors, or
+  building resilient API clients.
+
+  Trigger with "oraclecloud rate limits", "oci 429 error", "oci throttling", "oci
+  backoff".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(pip:*), Bash(oci:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, oraclecloud, oci]
-compatible-with: claude-code
+tags:
+- saas
+- oraclecloud
+- oci
+compatibility: Designed for Claude Code
 ---
-
 # Oracle Cloud Rate Limits
 
 ## Overview

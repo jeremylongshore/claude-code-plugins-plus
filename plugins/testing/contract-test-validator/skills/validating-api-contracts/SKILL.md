@@ -1,16 +1,23 @@
 ---
 name: validating-api-contracts
-description: |
-  Validate API contracts using consumer-driven contract testing (Pact, Spring Cloud Contract).
-  Use when performing specialized testing.
-  Trigger with phrases like "validate API contract", "run contract tests", or "check consumer contracts".
+description: 'Validate API contracts using consumer-driven contract testing (Pact,
+  Spring Cloud Contract).
 
+  Use when performing specialized testing.
+
+  Trigger with phrases like "validate API contract", "run contract tests", or "check
+  consumer contracts".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:contract-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [testing, api, validating-api]
+tags:
+- testing
+- api
+- validating-api
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Contract Test Validator
 

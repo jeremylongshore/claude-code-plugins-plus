@@ -1,16 +1,21 @@
 ---
 name: navan-cost-tuning
-description: |
-  Use when optimizing travel spend with Navan's policy engine, analyzing booking patterns for savings, and configuring the Navan Rewards program.
+description: 'Use when optimizing travel spend with Navan''s policy engine, analyzing
+  booking patterns for savings, and configuring the Navan Rewards program.
+
   Trigger with "navan cost tuning" or "navan travel savings" or "navan spend optimization".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep, Glob
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, navan, travel]
-compatible-with: claude-code
+tags:
+- saas
+- navan
+- travel
+compatibility: Designed for Claude Code
 ---
-
 # Navan Cost Tuning
 
 ## Overview

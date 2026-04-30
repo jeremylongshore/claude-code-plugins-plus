@@ -1,18 +1,24 @@
 ---
 name: anth-policy-guardrails
-description: |
-  Implement content policy guardrails, input/output validation,
+description: 'Implement content policy guardrails, input/output validation,
+
   and usage governance for Claude API integrations.
+
   Trigger with phrases like "anthropic guardrails", "claude content policy",
+
   "claude input validation", "anthropic safety rules".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, anthropic]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- anthropic
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Policy Guardrails
 
 ## Overview

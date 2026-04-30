@@ -1,17 +1,23 @@
 ---
 name: guidewire-install-auth
-description: |
-  Install Guidewire Studio, configure Cloud API OAuth2 authentication,
+description: 'Install Guidewire Studio, configure Cloud API OAuth2 authentication,
+
   and register applications with Guidewire Hub.
-  Trigger: "install guidewire", "guidewire auth", "guidewire OAuth2", "guidewire Cloud API setup".
+
+  Trigger: "install guidewire", "guidewire auth", "guidewire OAuth2", "guidewire Cloud
+  API setup".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(java:*), Bash(gradle:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, insurance, guidewire]
-compatible-with: claude-code
+tags:
+- saas
+- insurance
+- guidewire
+compatibility: Designed for Claude Code
 ---
-
 # Guidewire Install & Auth
 
 ## Overview

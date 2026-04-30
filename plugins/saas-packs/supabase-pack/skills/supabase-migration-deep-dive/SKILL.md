@@ -1,20 +1,36 @@
 ---
 name: supabase-migration-deep-dive
-description: |
-  Database migration patterns with Supabase CLI: npx supabase migration new, zero-downtime
-  migrations, data backfill strategies, schema versioning, rollback strategies, and type generation.
-  Use when creating database migrations, performing zero-downtime schema changes, backfilling
+description: 'Database migration patterns with Supabase CLI: npx supabase migration
+  new, zero-downtime
+
+  migrations, data backfill strategies, schema versioning, rollback strategies, and
+  type generation.
+
+  Use when creating database migrations, performing zero-downtime schema changes,
+  backfilling
+
   data in production, managing schema versions, or planning rollback strategies.
+
   Trigger: "supabase migration", "supabase schema change", "supabase zero downtime",
+
   "supabase rollback", "supabase db push", "supabase migration new".
-allowed-tools: Read, Write, Edit, Bash(npx supabase:*), Bash(supabase:*), Bash(psql:*), Grep, Glob
+
+  '
+allowed-tools: Read, Write, Edit, Bash(npx supabase:*), Bash(supabase:*), Bash(psql:*),
+  Grep, Glob
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, supabase, migration, database, schema, zero-downtime, rollback]
+tags:
+- saas
+- supabase
+- migration
+- database
+- schema
+- zero-downtime
+- rollback
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Supabase Migration Deep Dive
 
 ## Overview

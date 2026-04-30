@@ -1,19 +1,29 @@
 ---
 name: elevenlabs-install-auth
-description: |
-  Install and configure ElevenLabs SDK authentication for Node.js or Python.
+description: 'Install and configure ElevenLabs SDK authentication for Node.js or Python.
+
   Use when setting up a new ElevenLabs project, configuring API keys,
+
   or initializing the elevenlabs npm/pip package.
+
   Trigger: "install elevenlabs", "setup elevenlabs", "elevenlabs auth",
+
   "configure elevenlabs API key", "elevenlabs credentials".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, voice, ai, elevenlabs, tts, audio]
-compatible-with: claude-code
+tags:
+- saas
+- voice
+- ai
+- elevenlabs
+- tts
+- audio
+compatibility: Designed for Claude Code
 ---
-
 # ElevenLabs Install & Auth
 
 ## Overview

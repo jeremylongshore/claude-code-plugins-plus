@@ -1,18 +1,29 @@
 ---
 name: obsidian-security-basics
-description: |
-  Implement secure Obsidian plugin development practices. Covers credential
+description: 'Implement secure Obsidian plugin development practices. Covers credential
+
   storage, input validation, XSS prevention, network security, URI handler
+
   safety, and Electron security. Use when handling user data, storing API keys,
+
   making network requests, or preparing for community plugin submission.
+
   Trigger with phrases like "obsidian security", "secure obsidian plugin",
+
   "obsidian data protection", "obsidian privacy", "obsidian api key storage".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [obsidian, security, authentication, privacy, electron]
+tags:
+- obsidian
+- security
+- authentication
+- privacy
+- electron
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Obsidian Security Basics
 

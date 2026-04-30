@@ -1,16 +1,25 @@
 ---
 name: routing-dex-trades
-description: |
-  Route trades across multiple DEXs to find optimal prices with minimal slippage and gas costs.
-  Use when comparing DEX prices, finding optimal swap routes, analyzing price impact, splitting large orders, or assessing MEV risk.
-  Trigger with phrases like "find best swap", "compare DEX prices", "route trade", "optimal swap route", "split order", "DEX aggregator", "check slippage", or "MEV protection".
+description: 'Route trades across multiple DEXs to find optimal prices with minimal
+  slippage and gas costs.
 
+  Use when comparing DEX prices, finding optimal swap routes, analyzing price impact,
+  splitting large orders, or assessing MEV risk.
+
+  Trigger with phrases like "find best swap", "compare DEX prices", "route trade",
+  "optimal swap route", "split order", "DEX aggregator", "check slippage", or "MEV
+  protection".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:dex-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [crypto, cost-optimization, routing-dex]
+tags:
+- crypto
+- cost-optimization
+- routing-dex
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Routing DEX Trades
 

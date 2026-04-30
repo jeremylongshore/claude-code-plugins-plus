@@ -1,17 +1,29 @@
 ---
 name: sentry-prod-checklist
-description: |
-  Production deployment checklist for Sentry integration.
+description: 'Production deployment checklist for Sentry integration.
+
   Use when preparing a production deployment, auditing an existing
+
   Sentry setup, or running a go-live readiness review.
+
   Trigger: "sentry production checklist", "deploy sentry",
+
   "sentry go-live", "audit sentry config", "production readiness sentry".
-allowed-tools: Read, Grep, Glob, Bash(npm:*), Bash(npx:*), Bash(node:*), Bash(curl:*), Bash(sentry-cli:*)
+
+  '
+allowed-tools: Read, Grep, Glob, Bash(npm:*), Bash(npx:*), Bash(node:*), Bash(curl:*),
+  Bash(sentry-cli:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, sentry, deployment, production, checklist, operations]
+tags:
+- saas
+- sentry
+- deployment
+- production
+- checklist
+- operations
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Sentry Production Deployment Checklist
 

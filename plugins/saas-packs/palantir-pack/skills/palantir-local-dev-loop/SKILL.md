@@ -1,19 +1,29 @@
 ---
 name: palantir-local-dev-loop
-description: |
-  Configure Palantir Foundry local development with Python transforms and testing.
+description: 'Configure Palantir Foundry local development with Python transforms
+  and testing.
+
   Use when setting up a development environment, running transforms locally,
+
   or establishing a fast iteration cycle with Foundry.
+
   Trigger with phrases like "palantir dev setup", "palantir local development",
+
   "foundry local dev", "develop with palantir".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(pip:*), Bash(npm:*), Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, palantir, foundry, development, testing]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- palantir
+- foundry
+- development
+- testing
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Palantir Local Dev Loop
 
 ## Overview

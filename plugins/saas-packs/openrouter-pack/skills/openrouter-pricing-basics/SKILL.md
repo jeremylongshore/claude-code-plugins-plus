@@ -1,13 +1,21 @@
 ---
 name: openrouter-pricing-basics
-description: |
-  Understand OpenRouter pricing, calculate costs, and optimize spend. Use when budgeting, comparing model costs, or tracking spend. Triggers: 'openrouter pricing', 'openrouter cost', 'model pricing', 'openrouter budget', 'how much does openrouter cost'.
+description: 'Understand OpenRouter pricing, calculate costs, and optimize spend.
+  Use when budgeting, comparing model costs, or tracking spend. Triggers: ''openrouter
+  pricing'', ''openrouter cost'', ''model pricing'', ''openrouter budget'', ''how
+  much does openrouter cost''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash, Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, openrouter, pricing, cost-optimization]
+tags:
+- saas
+- openrouter
+- pricing
+- cost-optimization
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # OpenRouter Pricing Basics
 

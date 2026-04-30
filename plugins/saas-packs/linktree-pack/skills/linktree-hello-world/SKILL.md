@@ -1,16 +1,20 @@
 ---
 name: linktree-hello-world
-description: |
-  Create a minimal working Linktree example.
+description: 'Create a minimal working Linktree example.
+
   Trigger: "linktree hello world", "linktree example", "test linktree".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, linktree, social]
-compatible-with: claude-code
+tags:
+- saas
+- linktree
+- social
+compatibility: Designed for Claude Code
 ---
-
 # Linktree Hello World
 
 ## Overview

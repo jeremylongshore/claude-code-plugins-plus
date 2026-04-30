@@ -1,19 +1,27 @@
 ---
 name: fathom-webhooks-events
-description: |
-  Configure Fathom webhooks for real-time meeting notifications.
+description: 'Configure Fathom webhooks for real-time meeting notifications.
+
   Use when setting up automated meeting processing, receiving real-time
+
   transcripts, or triggering workflows when meetings complete.
+
   Trigger with phrases like "fathom webhook", "fathom notifications",
+
   "fathom real-time", "fathom event handler".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, meeting-intelligence, ai-notes, fathom]
-compatible-with: claude-code
+tags:
+- saas
+- meeting-intelligence
+- ai-notes
+- fathom
+compatibility: Designed for Claude Code
 ---
-
 # Fathom Webhooks & Events
 
 ## Overview

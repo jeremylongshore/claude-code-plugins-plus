@@ -1,19 +1,27 @@
 ---
 name: brightdata-deploy-integration
-description: |
-  Deploy Bright Data integrations to Vercel, Fly.io, and Cloud Run platforms.
+description: 'Deploy Bright Data integrations to Vercel, Fly.io, and Cloud Run platforms.
+
   Use when deploying Bright Data-powered applications to production,
+
   configuring platform-specific secrets, or setting up deployment pipelines.
+
   Trigger with phrases like "deploy brightdata", "brightdata Vercel",
+
   "brightdata production deploy", "brightdata Cloud Run", "brightdata Fly.io".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, scraping, data, brightdata]
-compatible-with: claude-code
+tags:
+- saas
+- scraping
+- data
+- brightdata
+compatibility: Designed for Claude Code
 ---
-
 # Bright Data Deploy Integration
 
 ## Overview

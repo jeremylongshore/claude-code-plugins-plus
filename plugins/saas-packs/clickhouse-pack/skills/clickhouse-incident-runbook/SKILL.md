@@ -1,19 +1,22 @@
 ---
 name: clickhouse-incident-runbook
-description: |
-  ClickHouse incident response — triage, diagnose, and remediate server issues
-  using system tables, kill stuck queries, and execute recovery procedures.
-  Use when ClickHouse is slow, unresponsive, or producing errors in production.
-  Trigger: "clickhouse incident", "clickhouse outage", "clickhouse down",
-  "clickhouse emergency", "clickhouse on-call", "clickhouse broken".
+description: "ClickHouse incident response \u2014 triage, diagnose, and remediate\
+  \ server issues\nusing system tables, kill stuck queries, and execute recovery procedures.\n\
+  Use when ClickHouse is slow, unresponsive, or producing errors in production.\n\
+  Trigger: \"clickhouse incident\", \"clickhouse outage\", \"clickhouse down\",\n\"\
+  clickhouse emergency\", \"clickhouse on-call\", \"clickhouse broken\".\n"
 allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, database, analytics, clickhouse, olap]
-compatible-with: claude-code
+tags:
+- saas
+- database
+- analytics
+- clickhouse
+- olap
+compatibility: Designed for Claude Code
 ---
-
 # ClickHouse Incident Runbook
 
 ## Overview

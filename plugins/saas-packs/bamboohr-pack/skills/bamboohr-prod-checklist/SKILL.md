@@ -1,19 +1,27 @@
 ---
 name: bamboohr-prod-checklist
-description: |
-  Execute BambooHR production deployment checklist and rollback procedures.
+description: 'Execute BambooHR production deployment checklist and rollback procedures.
+
   Use when deploying BambooHR integrations to production, preparing for launch,
+
   or implementing go-live procedures with BambooHR API.
+
   Trigger with phrases like "bamboohr production", "deploy bamboohr",
+
   "bamboohr go-live", "bamboohr launch checklist", "bamboohr prod ready".
+
+  '
 allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hr, bamboohr, production]
-compatible-with: claude-code
+tags:
+- saas
+- hr
+- bamboohr
+- production
+compatibility: Designed for Claude Code
 ---
-
 # BambooHR Production Checklist
 
 ## Overview

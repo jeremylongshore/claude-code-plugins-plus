@@ -1,20 +1,28 @@
 ---
 name: notion-known-pitfalls
-description: |
-  Common Notion API mistakes: wrong page ID format (dashes), rich text
+description: 'Common Notion API mistakes: wrong page ID format (dashes), rich text
+
   array structure, block children not returned with page, pagination
+
   required for all lists, 3 req/sec shared across endpoints, not sharing
+
   pages with integration. Use when debugging or reviewing Notion code.
+
   Trigger with phrases like "notion mistakes", "notion pitfalls",
+
   "notion common errors", "notion gotchas", "notion debugging".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notion]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- notion
+compatibility: Designed for Claude Code
 ---
-
 # Notion Known Pitfalls
 
 ## Overview

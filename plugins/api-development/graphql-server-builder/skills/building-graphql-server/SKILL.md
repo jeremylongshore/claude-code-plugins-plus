@@ -1,16 +1,23 @@
 ---
 name: building-graphql-server
-description: |
-  Build production-ready GraphQL servers with schema design, resolvers, and subscriptions.
+description: 'Build production-ready GraphQL servers with schema design, resolvers,
+  and subscriptions.
+
   Use when building GraphQL APIs with schemas and resolvers.
-  Trigger with phrases like "build GraphQL API", "create GraphQL server", or "setup GraphQL".
-  
+
+  Trigger with phrases like "build GraphQL API", "create GraphQL server", or "setup
+  GraphQL".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:graphql-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [api, graphql, graphql-server]
+tags:
+- api
+- graphql
+- graphql-server
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Building GraphQL Server
 

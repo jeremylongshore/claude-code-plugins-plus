@@ -1,17 +1,27 @@
 ---
 name: firecrawl-data-handling
-description: |
-  Process, validate, and store Firecrawl scraped content with deduplication and chunking.
-  Use when handling scraped markdown, implementing content pipelines, building RAG knowledge
+description: 'Process, validate, and store Firecrawl scraped content with deduplication
+  and chunking.
+
+  Use when handling scraped markdown, implementing content pipelines, building RAG
+  knowledge
+
   bases, or processing crawl results for downstream consumption.
+
   Trigger with phrases like "firecrawl data", "firecrawl content processing",
+
   "firecrawl markdown cleaning", "firecrawl storage", "firecrawl RAG pipeline".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, firecrawl, compliance]
+tags:
+- saas
+- firecrawl
+- compliance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Firecrawl Data Handling
 

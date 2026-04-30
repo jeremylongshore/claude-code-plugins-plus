@@ -1,18 +1,24 @@
 ---
 name: attio-prod-checklist
-description: |
-  Production readiness checklist for Attio API integrations -- auth,
+description: 'Production readiness checklist for Attio API integrations -- auth,
+
   error handling, rate limits, health checks, monitoring, and rollback.
+
   Trigger: "attio production", "deploy attio", "attio go-live",
+
   "attio launch checklist", "attio production ready".
+
+  '
 allowed-tools: Read, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, attio]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- attio
+compatibility: Designed for Claude Code
 ---
-
 # Attio Production Checklist
 
 ## Overview

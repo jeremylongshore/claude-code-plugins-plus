@@ -1,18 +1,26 @@
 ---
 name: together-hello-world
-description: |
-  Run inference with Together AI -- chat completions, streaming, and model selection.
+description: 'Run inference with Together AI -- chat completions, streaming, and model
+  selection.
+
   Use when testing open-source models, comparing model performance,
+
   or learning the Together AI API.
+
   Trigger: "together hello world, together AI example, run llama".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(pip:*), Bash(python3:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, inference, together]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- inference
+- together
+compatibility: Designed for Claude Code
 ---
-
 # Together AI Hello World
 
 ## Overview

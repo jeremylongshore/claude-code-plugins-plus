@@ -1,17 +1,27 @@
 ---
 name: maintainx-observability
-description: |
-  Implement comprehensive observability for MaintainX integrations.
+description: 'Implement comprehensive observability for MaintainX integrations.
+
   Use when setting up monitoring, logging, tracing, and alerting
+
   for MaintainX API integrations.
+
   Trigger with phrases like "maintainx monitoring", "maintainx logging",
+
   "maintainx metrics", "maintainx observability", "maintainx alerts".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, maintainx, api, monitoring, observability]
+tags:
+- saas
+- maintainx
+- api
+- monitoring
+- observability
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # MaintainX Observability
 

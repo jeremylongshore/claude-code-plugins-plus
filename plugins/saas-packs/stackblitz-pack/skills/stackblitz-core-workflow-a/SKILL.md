@@ -1,18 +1,26 @@
 ---
 name: stackblitz-core-workflow-a
-description: |
-  Build a browser-based code editor with WebContainers: file tree, editor, terminal, and preview.
+description: 'Build a browser-based code editor with WebContainers: file tree, editor,
+  terminal, and preview.
+
   Use when creating interactive coding environments, building educational tools,
+
   or embedding development environments in web apps.
+
   Trigger: "webcontainer IDE", "browser IDE", "stackblitz editor", "code playground".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ide, webcontainers, stackblitz]
-compatible-with: claude-code
+tags:
+- saas
+- ide
+- webcontainers
+- stackblitz
+compatibility: Designed for Claude Code
 ---
-
 # StackBlitz Core Workflow A: Browser IDE
 
 ## Overview

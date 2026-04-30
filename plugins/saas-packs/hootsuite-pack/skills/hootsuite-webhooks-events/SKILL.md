@@ -1,19 +1,26 @@
 ---
 name: hootsuite-webhooks-events
-description: |
-  Implement Hootsuite webhook signature validation and event handling.
+description: 'Implement Hootsuite webhook signature validation and event handling.
+
   Use when setting up webhook endpoints, implementing signature verification,
+
   or handling Hootsuite event notifications securely.
+
   Trigger with phrases like "hootsuite webhook", "hootsuite events",
+
   "hootsuite webhook signature", "handle hootsuite events", "hootsuite notifications".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hootsuite, social-media]
-compatible-with: claude-code
+tags:
+- saas
+- hootsuite
+- social-media
+compatibility: Designed for Claude Code
 ---
-
 # Hootsuite Webhooks & Events
 
 ## Overview

@@ -1,19 +1,28 @@
 ---
 name: coreweave-performance-tuning
-description: |
-  Optimize CoreWeave GPU inference latency and throughput.
+description: 'Optimize CoreWeave GPU inference latency and throughput.
+
   Use when reducing inference latency, maximizing GPU utilization,
+
   or tuning batch sizes and concurrency.
+
   Trigger with phrases like "coreweave performance", "coreweave latency",
+
   "coreweave throughput", "optimize coreweave inference".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, gpu-cloud, kubernetes, inference, coreweave]
-compatible-with: claude-code
+tags:
+- saas
+- gpu-cloud
+- kubernetes
+- inference
+- coreweave
+compatibility: Designed for Claude Code
 ---
-
 # CoreWeave Performance Tuning
 
 ## GPU Selection by Workload

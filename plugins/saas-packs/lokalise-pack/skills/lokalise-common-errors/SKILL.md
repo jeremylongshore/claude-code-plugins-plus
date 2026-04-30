@@ -1,17 +1,25 @@
 ---
 name: lokalise-common-errors
-description: |
-  Diagnose and fix Lokalise common errors and exceptions.
+description: 'Diagnose and fix Lokalise common errors and exceptions.
+
   Use when encountering Lokalise errors, debugging failed requests,
+
   or troubleshooting integration issues.
+
   Trigger with phrases like "lokalise error", "fix lokalise",
+
   "lokalise not working", "debug lokalise", "lokalise 401", "lokalise 429".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*), Bash(lokalise2:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lokalise, debugging]
+tags:
+- saas
+- lokalise
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lokalise Common Errors
 

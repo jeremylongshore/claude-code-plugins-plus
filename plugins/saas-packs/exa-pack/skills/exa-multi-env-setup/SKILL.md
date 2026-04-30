@@ -1,17 +1,27 @@
 ---
 name: exa-multi-env-setup
-description: |
-  Configure Exa across development, staging, and production environments.
+description: 'Configure Exa across development, staging, and production environments.
+
   Use when setting up multi-environment search pipelines, managing API key isolation,
+
   or configuring per-environment search limits and caching.
+
   Trigger with phrases like "exa environments", "exa staging", "exa dev prod",
+
   "exa environment setup", "exa multi-env".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, exa, deployment, api, environments]
+tags:
+- saas
+- exa
+- deployment
+- api
+- environments
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Exa Multi-Environment Setup
 

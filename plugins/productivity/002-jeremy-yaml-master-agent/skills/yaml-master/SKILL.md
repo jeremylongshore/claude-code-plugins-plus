@@ -1,15 +1,20 @@
 ---
 name: yaml-master
-description: |
-  Execute proactive YAML intelligence: automatically activates when working with YAML files.
-  Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
-  
+description: 'Execute proactive YAML intelligence: automatically activates when working
+  with YAML files.
+
+  Use when appropriate context detected. Trigger with relevant phrases based on skill
+  purpose.
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(general:*), Bash(util:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [productivity, yaml-master]
+tags:
+- productivity
+- yaml-master
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # YAML Master
 

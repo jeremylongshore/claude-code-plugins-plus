@@ -1,17 +1,22 @@
 ---
 name: flyio-rate-limits
-description: |
-  Handle Fly.io Machines API rate limits with backoff, concurrency control,
+description: 'Handle Fly.io Machines API rate limits with backoff, concurrency control,
+
   and request batching for machine management operations.
+
   Trigger: "fly.io rate limit", "fly.io 429", "fly.io throttling", "machines API limit".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, edge-compute, flyio]
-compatible-with: claude-code
+tags:
+- saas
+- edge-compute
+- flyio
+compatibility: Designed for Claude Code
 ---
-
 # Fly.io Rate Limits
 
 ## Overview

@@ -1,17 +1,28 @@
 ---
 name: firecrawl-security-basics
-description: |
-  Apply Firecrawl security best practices for API key management and webhook verification.
+description: 'Apply Firecrawl security best practices for API key management and webhook
+  verification.
+
   Use when securing API keys, implementing webhook signature validation,
+
   or auditing Firecrawl security configuration.
+
   Trigger with phrases like "firecrawl security", "firecrawl secrets",
+
   "secure firecrawl", "firecrawl API key security", "firecrawl webhook signature".
+
+  '
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, firecrawl, api, security, audit]
+tags:
+- saas
+- firecrawl
+- api
+- security
+- audit
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Firecrawl Security Basics
 

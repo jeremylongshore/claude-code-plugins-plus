@@ -1,17 +1,25 @@
 ---
 name: maintainx-migration-deep-dive
-description: |
-  Execute complete platform migrations to or from MaintainX.
+description: 'Execute complete platform migrations to or from MaintainX.
+
   Use when migrating from legacy CMMS systems, performing major re-platforming,
+
   or transitioning to MaintainX from spreadsheets or other tools.
+
   Trigger with phrases like "migrate to maintainx", "maintainx migration",
+
   "cmms migration", "switch to maintainx", "maintainx data migration".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, maintainx, migration]
+tags:
+- saas
+- maintainx
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # MaintainX Migration Deep Dive
 

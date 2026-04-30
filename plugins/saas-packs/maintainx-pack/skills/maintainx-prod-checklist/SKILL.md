@@ -1,17 +1,26 @@
 ---
 name: maintainx-prod-checklist
-description: |
-  Production deployment checklist for MaintainX integrations.
+description: 'Production deployment checklist for MaintainX integrations.
+
   Use when preparing to deploy a MaintainX integration to production,
+
   verifying production readiness, or auditing existing deployments.
+
   Trigger with phrases like "maintainx production", "deploy maintainx",
+
   "maintainx go-live", "maintainx production checklist", "maintainx launch".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, maintainx, deployment, audit]
+tags:
+- saas
+- maintainx
+- deployment
+- audit
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # MaintainX Production Checklist
 

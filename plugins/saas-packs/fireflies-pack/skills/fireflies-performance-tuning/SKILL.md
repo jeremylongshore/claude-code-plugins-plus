@@ -1,17 +1,27 @@
 ---
 name: fireflies-performance-tuning
-description: |
-  Optimize Fireflies.ai GraphQL query performance with field selection, caching, and batching.
+description: 'Optimize Fireflies.ai GraphQL query performance with field selection,
+  caching, and batching.
+
   Use when experiencing slow API responses, implementing caching,
+
   or optimizing transcript processing throughput.
+
   Trigger with phrases like "fireflies performance", "optimize fireflies",
+
   "fireflies latency", "fireflies caching", "fireflies slow", "fireflies batch".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, fireflies, api, performance]
+tags:
+- saas
+- fireflies
+- api
+- performance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Fireflies.ai Performance Tuning
 

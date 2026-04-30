@@ -1,17 +1,25 @@
 ---
 name: onenote-deploy-integration
-description: |
-  Deploy OneNote integrations with MSAL token persistence, health checks, and container best practices.
-  Use when containerizing OneNote services, configuring health endpoints, or managing token cache in production.
-  Trigger with "onenote deploy", "onenote docker", "onenote container", "onenote health check".
+description: 'Deploy OneNote integrations with MSAL token persistence, health checks,
+  and container best practices.
+
+  Use when containerizing OneNote services, configuring health endpoints, or managing
+  token cache in production.
+
+  Trigger with "onenote deploy", "onenote docker", "onenote container", "onenote health
+  check".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, onenote, microsoft]
-compatible-with: claude-code
+tags:
+- saas
+- onenote
+- microsoft
+compatibility: Designed for Claude Code
 ---
-
 # OneNote Deploy Integration
 
 ## Overview

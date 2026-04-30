@@ -1,18 +1,29 @@
 ---
 name: linear-observability
-description: |
-  Implement monitoring, logging, and alerting for Linear integrations.
+description: 'Implement monitoring, logging, and alerting for Linear integrations.
+
   Use when setting up metrics collection, dashboards,
+
   or configuring alerts for Linear API usage.
+
   Trigger: "linear monitoring", "linear observability",
+
   "linear metrics", "linear logging", "monitor linear",
+
   "linear Prometheus", "linear Grafana".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, linear, api, monitoring, observability]
+tags:
+- saas
+- linear
+- api
+- monitoring
+- observability
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Linear Observability
 

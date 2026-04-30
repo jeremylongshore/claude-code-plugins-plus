@@ -1,17 +1,27 @@
 ---
 name: exa-load-scale
-description: |
-  Implement Exa load testing, capacity planning, and scaling strategies.
+description: 'Implement Exa load testing, capacity planning, and scaling strategies.
+
   Use when running performance tests, planning capacity for Exa integrations,
+
   or designing high-throughput search architectures.
+
   Trigger with phrases like "exa load test", "exa scale",
+
   "exa capacity", "exa k6", "exa benchmark", "exa throughput".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(k6:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, exa, testing, performance, scaling]
+tags:
+- saas
+- exa
+- testing
+- performance
+- scaling
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Exa Load & Scale
 

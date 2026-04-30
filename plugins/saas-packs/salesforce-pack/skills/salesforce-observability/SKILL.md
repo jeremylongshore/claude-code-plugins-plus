@@ -1,19 +1,28 @@
 ---
 name: salesforce-observability
-description: |
-  Set up observability for Salesforce integrations with API limit monitoring, error tracking, and alerting.
+description: 'Set up observability for Salesforce integrations with API limit monitoring,
+  error tracking, and alerting.
+
   Use when implementing monitoring for Salesforce operations, tracking API consumption,
+
   or configuring alerting for Salesforce integration health.
+
   Trigger with phrases like "salesforce monitoring", "salesforce metrics",
-  "salesforce observability", "monitor salesforce", "salesforce alerts", "salesforce API usage dashboard".
+
+  "salesforce observability", "monitor salesforce", "salesforce alerts", "salesforce
+  API usage dashboard".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, salesforce]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- salesforce
+compatibility: Designed for Claude Code
 ---
-
 # Salesforce Observability
 
 ## Overview

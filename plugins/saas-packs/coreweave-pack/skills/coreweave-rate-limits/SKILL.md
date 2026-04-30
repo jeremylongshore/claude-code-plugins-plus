@@ -1,19 +1,28 @@
 ---
 name: coreweave-rate-limits
-description: |
-  Handle CoreWeave API and GPU quota limits.
+description: 'Handle CoreWeave API and GPU quota limits.
+
   Use when hitting quota limits, managing GPU resource allocation,
+
   or implementing request queuing for inference endpoints.
+
   Trigger with phrases like "coreweave quota", "coreweave limits",
+
   "coreweave gpu allocation", "coreweave throttle".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, gpu-cloud, kubernetes, inference, coreweave]
-compatible-with: claude-code
+tags:
+- saas
+- gpu-cloud
+- kubernetes
+- inference
+- coreweave
+compatibility: Designed for Claude Code
 ---
-
 # CoreWeave Rate Limits
 
 ## Overview

@@ -1,19 +1,28 @@
 ---
 name: coreweave-deploy-integration
-description: |
-  Deploy inference services on CoreWeave with Helm charts and Kustomize.
+description: 'Deploy inference services on CoreWeave with Helm charts and Kustomize.
+
   Use when deploying multi-model inference, managing GPU deployments at scale,
+
   or templating CoreWeave manifests.
+
   Trigger with phrases like "deploy coreweave", "coreweave helm",
+
   "coreweave kustomize", "coreweave deployment patterns".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(helm:*), Bash(kubectl:*), Bash(kustomize:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, gpu-cloud, kubernetes, inference, coreweave]
-compatible-with: claude-code
+tags:
+- saas
+- gpu-cloud
+- kubernetes
+- inference
+- coreweave
+compatibility: Designed for Claude Code
 ---
-
 # CoreWeave Deploy Integration
 
 ## Overview

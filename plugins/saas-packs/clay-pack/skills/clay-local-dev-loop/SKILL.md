@@ -1,17 +1,27 @@
 ---
 name: clay-local-dev-loop
-description: |
-  Set up a local development loop for building and testing Clay integrations.
+description: 'Set up a local development loop for building and testing Clay integrations.
+
   Use when iterating on Clay webhook handlers, testing enrichment pipelines,
+
   or building scripts that push data into Clay tables.
+
   Trigger with phrases like "clay local dev", "clay development setup",
+
   "clay testing locally", "clay dev workflow", "iterate clay integration".
-allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(npm:*), Bash(npx:*), Bash(node:*), Bash(python3:*)
+
+  '
+allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(npm:*), Bash(npx:*), Bash(node:*),
+  Bash(python3:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clay, development, testing]
+tags:
+- saas
+- clay
+- development
+- testing
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clay Local Dev Loop
 

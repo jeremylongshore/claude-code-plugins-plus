@@ -1,19 +1,29 @@
 ---
 name: elevenlabs-common-errors
-description: |
-  Diagnose and fix ElevenLabs API errors by HTTP status code.
+description: 'Diagnose and fix ElevenLabs API errors by HTTP status code.
+
   Use when encountering ElevenLabs errors, debugging failed TTS/STS requests,
+
   or troubleshooting voice cloning and streaming issues.
+
   Trigger: "elevenlabs error", "fix elevenlabs", "elevenlabs not working",
+
   "debug elevenlabs", "elevenlabs 401", "elevenlabs 429", "elevenlabs 400".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, voice, ai, elevenlabs, debugging, errors]
-compatible-with: claude-code
+tags:
+- saas
+- voice
+- ai
+- elevenlabs
+- debugging
+- errors
+compatibility: Designed for Claude Code
 ---
-
 # ElevenLabs Common Errors
 
 ## Overview

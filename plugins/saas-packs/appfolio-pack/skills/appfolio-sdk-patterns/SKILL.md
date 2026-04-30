@@ -1,16 +1,21 @@
 ---
 name: appfolio-sdk-patterns
-description: |
-  Apply production-ready patterns for AppFolio REST API integration.
+description: 'Apply production-ready patterns for AppFolio REST API integration.
+
   Trigger: "appfolio patterns".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, property-management, appfolio, real-estate]
-compatible-with: claude-code
+tags:
+- saas
+- property-management
+- appfolio
+- real-estate
+compatibility: Designed for Claude Code
 ---
-
 # AppFolio SDK Patterns
 
 ## Overview

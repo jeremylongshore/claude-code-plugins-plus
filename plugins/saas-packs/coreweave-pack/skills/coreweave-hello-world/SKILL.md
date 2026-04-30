@@ -1,19 +1,28 @@
 ---
 name: coreweave-hello-world
-description: |
-  Deploy a GPU workload on CoreWeave with kubectl.
+description: 'Deploy a GPU workload on CoreWeave with kubectl.
+
   Use when running your first GPU job, testing inference,
+
   or verifying CoreWeave cluster access.
+
   Trigger with phrases like "coreweave hello world", "coreweave first deploy",
+
   "coreweave gpu test", "run on coreweave".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, gpu-cloud, kubernetes, inference, coreweave]
-compatible-with: claude-code
+tags:
+- saas
+- gpu-cloud
+- kubernetes
+- inference
+- coreweave
+compatibility: Designed for Claude Code
 ---
-
 # CoreWeave Hello World
 
 ## Overview

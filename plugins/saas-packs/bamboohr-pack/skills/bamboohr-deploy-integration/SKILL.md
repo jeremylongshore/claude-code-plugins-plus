@@ -1,19 +1,27 @@
 ---
 name: bamboohr-deploy-integration
-description: |
-  Deploy BambooHR integrations to Vercel, Fly.io, and Cloud Run platforms.
+description: 'Deploy BambooHR integrations to Vercel, Fly.io, and Cloud Run platforms.
+
   Use when deploying BambooHR-powered applications to production,
+
   configuring platform-specific secrets, or setting up deployment pipelines.
+
   Trigger with phrases like "deploy bamboohr", "bamboohr Vercel",
+
   "bamboohr production deploy", "bamboohr Cloud Run", "bamboohr Fly.io".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hr, bamboohr, deployment]
-compatible-with: claude-code
+tags:
+- saas
+- hr
+- bamboohr
+- deployment
+compatibility: Designed for Claude Code
 ---
-
 # BambooHR Deploy Integration
 
 ## Overview

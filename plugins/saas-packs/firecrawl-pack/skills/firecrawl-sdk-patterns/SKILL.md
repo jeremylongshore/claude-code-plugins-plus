@@ -1,17 +1,26 @@
 ---
 name: firecrawl-sdk-patterns
-description: |
-  Apply production-ready Firecrawl SDK patterns for TypeScript and Python.
+description: 'Apply production-ready Firecrawl SDK patterns for TypeScript and Python.
+
   Use when implementing Firecrawl integrations, building reusable scraping services,
+
   or establishing team coding standards for Firecrawl.
+
   Trigger with phrases like "firecrawl SDK patterns", "firecrawl best practices",
+
   "firecrawl code patterns", "idiomatic firecrawl", "firecrawl wrapper".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, firecrawl, python, typescript]
+tags:
+- saas
+- firecrawl
+- python
+- typescript
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Firecrawl SDK Patterns
 

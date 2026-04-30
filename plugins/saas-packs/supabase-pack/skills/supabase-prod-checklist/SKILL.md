@@ -1,21 +1,33 @@
 ---
 name: supabase-prod-checklist
-description: |
-  Execute Supabase production deployment checklist covering RLS, key hygiene,
+description: 'Execute Supabase production deployment checklist covering RLS, key hygiene,
+
   connection pooling, backups, monitoring, Edge Functions, and Storage policies.
+
   Use when deploying to production, preparing for launch,
+
   or auditing a live Supabase project for security and performance gaps.
+
   Trigger with "supabase production", "supabase go-live",
+
   "supabase launch checklist", "supabase prod ready", "deploy supabase",
+
   "supabase production readiness".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npx supabase:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, supabase, deployment, production, security, rls]
+tags:
+- saas
+- supabase
+- deployment
+- production
+- security
+- rls
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Supabase Production Deployment Checklist
 
 ## Overview

@@ -1,19 +1,27 @@
 ---
 name: shopify-core-workflow-b
-description: |
-  Manage Shopify orders, customers, and fulfillments using the GraphQL Admin API.
+description: 'Manage Shopify orders, customers, and fulfillments using the GraphQL
+  Admin API.
+
   Use when querying orders, processing fulfillments, managing customers,
+
   or building order management integrations.
+
   Trigger with phrases like "shopify orders", "shopify customers",
+
   "shopify fulfillment", "process shopify order", "shopify checkout".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ecommerce, shopify]
-compatible-with: claude-code
+tags:
+- saas
+- ecommerce
+- shopify
+compatibility: Designed for Claude Code
 ---
-
 # Shopify Orders & Customer Management
 
 ## Overview

@@ -1,17 +1,27 @@
 ---
 name: exa-cost-tuning
-description: |
-  Optimize Exa costs through search type selection, caching, and usage monitoring.
+description: 'Optimize Exa costs through search type selection, caching, and usage
+  monitoring.
+
   Use when analyzing Exa billing, reducing API costs,
+
   or implementing budget controls and usage alerts.
+
   Trigger with phrases like "exa cost", "exa billing",
+
   "reduce exa costs", "exa pricing", "exa expensive", "exa budget".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, exa, api, cost-optimization]
+tags:
+- saas
+- exa
+- api
+- cost-optimization
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Exa Cost Tuning
 

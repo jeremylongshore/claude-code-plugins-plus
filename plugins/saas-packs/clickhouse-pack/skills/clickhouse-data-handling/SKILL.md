@@ -1,20 +1,23 @@
 ---
 name: clickhouse-data-handling
-description: |
-  Handle data lifecycle in ClickHouse — TTL expiration, data deletion (GDPR),
-  column-level encryption, and audit logging with real ClickHouse SQL.
-  Use when implementing data retention, GDPR deletion requests,
-  or managing sensitive data in ClickHouse.
-  Trigger: "clickhouse data retention", "clickhouse TTL", "clickhouse GDPR",
-  "delete data clickhouse", "clickhouse data lifecycle", "clickhouse PII".
+description: "Handle data lifecycle in ClickHouse \u2014 TTL expiration, data deletion\
+  \ (GDPR),\ncolumn-level encryption, and audit logging with real ClickHouse SQL.\n\
+  Use when implementing data retention, GDPR deletion requests,\nor managing sensitive\
+  \ data in ClickHouse.\nTrigger: \"clickhouse data retention\", \"clickhouse TTL\"\
+  , \"clickhouse GDPR\",\n\"delete data clickhouse\", \"clickhouse data lifecycle\"\
+  , \"clickhouse PII\".\n"
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, database, analytics, clickhouse, olap]
-compatible-with: claude-code
+tags:
+- saas
+- database
+- analytics
+- clickhouse
+- olap
+compatibility: Designed for Claude Code
 ---
-
 # ClickHouse Data Handling
 
 ## Overview

@@ -1,17 +1,26 @@
 ---
 name: lokalise-core-workflow-b
-description: |
-  Manage Lokalise secondary workflow: Download translations and integrate with app.
+description: 'Manage Lokalise secondary workflow: Download translations and integrate
+  with app.
+
   Use when downloading translation files, exporting translations,
+
   or integrating Lokalise output into your application.
+
   Trigger with phrases like "lokalise download", "lokalise pull translations",
+
   "export lokalise", "get translations from lokalise".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(lokalise2:*), Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lokalise, workflow]
+tags:
+- saas
+- lokalise
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lokalise Core Workflow B
 

@@ -1,19 +1,27 @@
 ---
 name: clade-hello-world
-description: |
-  Send your first message to Claude using the Anthropic SDK.
+description: 'Send your first message to Claude using the Anthropic SDK.
+
   Use when starting a new Claude integration, testing your setup,
+
   or learning the Messages API basics.
+
   Trigger with phrases like "anthropic hello world", "claude api example",
+
   "first claude call", "anthropic quick start".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code
-tags: [saas, anthropic, claude, messages-api]
+tags:
+- saas
+- anthropic
+- claude
+- messages-api
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Hello World
 
 ## Overview

@@ -1,19 +1,28 @@
 ---
 name: alchemy-rate-limits
-description: |
-  Implement Alchemy Compute Unit (CU) rate limiting and request throttling.
+description: 'Implement Alchemy Compute Unit (CU) rate limiting and request throttling.
+
   Use when handling 429 errors, optimizing CU usage, or managing
+
   concurrent blockchain queries within plan limits.
+
   Trigger: "alchemy rate limit", "alchemy 429", "alchemy compute units",
+
   "alchemy throttling", "alchemy CU budget".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, blockchain, web3, alchemy, rate-limiting]
-compatible-with: claude-code
+tags:
+- saas
+- blockchain
+- web3
+- alchemy
+- rate-limiting
+compatibility: Designed for Claude Code
 ---
-
 # Alchemy Rate Limits
 
 ## Overview

@@ -1,17 +1,26 @@
 ---
 name: exa-observability
-description: |
-  Set up monitoring, metrics, and alerting for Exa search integrations.
+description: 'Set up monitoring, metrics, and alerting for Exa search integrations.
+
   Use when implementing monitoring for Exa operations, building dashboards,
+
   or configuring alerting for search quality and latency.
+
   Trigger with phrases like "exa monitoring", "exa metrics",
+
   "exa observability", "monitor exa", "exa alerts", "exa dashboard".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, exa, monitoring, observability]
+tags:
+- saas
+- exa
+- monitoring
+- observability
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Exa Observability
 

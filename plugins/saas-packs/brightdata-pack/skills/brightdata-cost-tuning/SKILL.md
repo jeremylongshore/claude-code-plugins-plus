@@ -1,19 +1,29 @@
 ---
 name: brightdata-cost-tuning
-description: |
-  Optimize Bright Data costs through tier selection, sampling, and usage monitoring.
+description: 'Optimize Bright Data costs through tier selection, sampling, and usage
+  monitoring.
+
   Use when analyzing Bright Data billing, reducing API costs,
+
   or implementing usage monitoring and budget alerts.
+
   Trigger with phrases like "brightdata cost", "brightdata billing",
-  "reduce brightdata costs", "brightdata pricing", "brightdata expensive", "brightdata budget".
+
+  "reduce brightdata costs", "brightdata pricing", "brightdata expensive", "brightdata
+  budget".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, scraping, data, brightdata]
-compatible-with: claude-code
+tags:
+- saas
+- scraping
+- data
+- brightdata
+compatibility: Designed for Claude Code
 ---
-
 # Bright Data Cost Tuning
 
 ## Overview

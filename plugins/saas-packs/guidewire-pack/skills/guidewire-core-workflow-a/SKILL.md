@@ -1,17 +1,22 @@
 ---
 name: guidewire-core-workflow-a
-description: |
-  Execute Guidewire primary workflow: Policy lifecycle in PolicyCenter.
+description: 'Execute Guidewire primary workflow: Policy lifecycle in PolicyCenter.
+
   Use when implementing quoting, binding, issuing, endorsing, or renewing policies.
+
   Trigger: "policycenter workflow", "create policy", "bind submission", "issue policy".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, insurance, guidewire]
-compatible-with: claude-code
+tags:
+- saas
+- insurance
+- guidewire
+compatibility: Designed for Claude Code
 ---
-
 # Guidewire Core Workflow A: Policy Lifecycle
 
 ## Overview

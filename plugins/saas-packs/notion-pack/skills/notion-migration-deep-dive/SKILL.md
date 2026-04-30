@@ -1,19 +1,27 @@
 ---
 name: notion-migration-deep-dive
-description: |
-  Migrate data to/from Notion or between Notion workspaces with data mapping and validation.
+description: 'Migrate data to/from Notion or between Notion workspaces with data mapping
+  and validation.
+
   Use when migrating data into Notion databases, exporting from Notion, syncing between
+
   workspaces, or building ETL pipelines with Notion as source or destination.
+
   Trigger with phrases like "migrate notion", "notion migration", "import to notion",
+
   "export from notion", "notion data migration", "notion ETL".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notion]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- notion
+compatibility: Designed for Claude Code
 ---
-
 # Notion Migration Deep Dive
 
 ## Overview

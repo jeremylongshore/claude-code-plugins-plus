@@ -1,17 +1,28 @@
 ---
 name: replit-enterprise-rbac
-description: |
-  Configure Replit Teams roles, SSO/SAML, custom groups, and organization-level access control.
+description: 'Configure Replit Teams roles, SSO/SAML, custom groups, and organization-level
+  access control.
+
   Use when setting up team permissions, configuring SSO, managing deployment access,
+
   or auditing organization security on Replit.
+
   Trigger with phrases like "replit SSO", "replit RBAC", "replit enterprise",
+
   "replit roles", "replit permissions", "replit SAML", "replit teams admin".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, replit, rbac, enterprise, sso]
+tags:
+- saas
+- replit
+- rbac
+- enterprise
+- sso
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Replit Enterprise RBAC
 

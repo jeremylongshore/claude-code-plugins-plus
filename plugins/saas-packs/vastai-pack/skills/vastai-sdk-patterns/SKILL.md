@@ -1,17 +1,26 @@
 ---
 name: vastai-sdk-patterns
-description: |
-  Apply production-ready Vast.ai SDK patterns for Python and REST API.
+description: 'Apply production-ready Vast.ai SDK patterns for Python and REST API.
+
   Use when implementing Vast.ai integrations, refactoring SDK usage,
+
   or establishing coding standards for GPU cloud operations.
+
   Trigger with phrases like "vastai SDK patterns", "vastai best practices",
+
   "vastai code patterns", "idiomatic vastai".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vast-ai, python, patterns]
+tags:
+- saas
+- vast-ai
+- python
+- patterns
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vast.ai SDK Patterns
 

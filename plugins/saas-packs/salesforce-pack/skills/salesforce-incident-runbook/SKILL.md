@@ -1,19 +1,27 @@
 ---
 name: salesforce-incident-runbook
-description: |
-  Execute Salesforce incident response procedures with triage, mitigation, and postmortem.
+description: 'Execute Salesforce incident response procedures with triage, mitigation,
+  and postmortem.
+
   Use when responding to Salesforce-related outages, investigating API errors,
+
   or running post-incident reviews for Salesforce integration failures.
+
   Trigger with phrases like "salesforce incident", "salesforce outage",
+
   "salesforce down", "salesforce on-call", "salesforce emergency", "salesforce broken".
+
+  '
 allowed-tools: Read, Grep, Bash(sf:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, salesforce]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- salesforce
+compatibility: Designed for Claude Code
 ---
-
 # Salesforce Incident Runbook
 
 ## Overview

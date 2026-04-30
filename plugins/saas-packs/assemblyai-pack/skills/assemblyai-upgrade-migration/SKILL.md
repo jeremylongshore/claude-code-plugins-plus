@@ -1,19 +1,29 @@
 ---
 name: assemblyai-upgrade-migration
-description: |
-  Analyze, plan, and execute AssemblyAI SDK upgrades with breaking change detection.
+description: 'Analyze, plan, and execute AssemblyAI SDK upgrades with breaking change
+  detection.
+
   Use when upgrading the assemblyai npm package, migrating from the old SDK,
+
   or switching between speech models (Best, Nano, Universal).
+
   Trigger with phrases like "upgrade assemblyai", "assemblyai migration",
+
   "assemblyai breaking changes", "update assemblyai SDK".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, speech-to-text, assemblyai, transcription]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- speech-to-text
+- assemblyai
+- transcription
+compatibility: Designed for Claude Code
 ---
-
 # AssemblyAI Upgrade & Migration
 
 ## Overview

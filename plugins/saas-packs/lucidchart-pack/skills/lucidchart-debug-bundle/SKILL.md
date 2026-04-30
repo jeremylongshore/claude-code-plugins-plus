@@ -1,16 +1,20 @@
 ---
 name: lucidchart-debug-bundle
-description: |
-  Debug Bundle for Lucidchart.
+description: 'Debug Bundle for Lucidchart.
+
   Trigger: "lucidchart debug bundle".
+
+  '
 allowed-tools: Read, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, lucidchart, diagramming]
-compatible-with: claude-code
+tags:
+- saas
+- lucidchart
+- diagramming
+compatibility: Designed for Claude Code
 ---
-
 # Lucidchart Debug Bundle
 
 ## Overview

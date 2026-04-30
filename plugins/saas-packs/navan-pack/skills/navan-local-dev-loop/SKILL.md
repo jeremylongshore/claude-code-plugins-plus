@@ -1,17 +1,24 @@
 ---
 name: navan-local-dev-loop
-description: |
-  Set up a local development environment for Navan API integrations with token caching and request logging.
+description: 'Set up a local development environment for Navan API integrations with
+  token caching and request logging.
+
   Use when starting a new Navan project or debugging API issues locally.
-  Trigger with "navan local dev", "navan dev setup", "navan local dev loop", "navan dev environment".
+
+  Trigger with "navan local dev", "navan dev setup", "navan local dev loop", "navan
+  dev environment".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, navan, travel]
-compatible-with: claude-code
+tags:
+- saas
+- navan
+- travel
+compatibility: Designed for Claude Code
 ---
-
 # Navan Local Dev Loop
 
 ## Overview

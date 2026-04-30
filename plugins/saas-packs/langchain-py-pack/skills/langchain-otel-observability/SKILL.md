@@ -1,22 +1,39 @@
 ---
 name: langchain-otel-observability
-description: |
-  Wire LangChain 1.0 / LangGraph 1.0 traces into an OpenTelemetry-native backend
+description: 'Wire LangChain 1.0 / LangGraph 1.0 traces into an OpenTelemetry-native
+  backend
+
   (Jaeger, Honeycomb, Grafana Tempo, Datadog) with LLM-specific SLOs, safe
+
   prompt-content policy, and subgraph-aware span propagation. Use when LangSmith
+
   is not the right fit (existing OTEL stack, compliance, multi-cloud) or
+
   alongside LangSmith for deep-system traces.
+
   Trigger with "langchain OTEL", "langchain opentelemetry", "langchain jaeger",
+
   "langchain honeycomb", "langchain SLO", "LLM span", "langchain tempo",
+
   "langchain datadog tracing".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(python:*), Bash(pip:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, langchain, langgraph, python, langchain-1.0, observability, opentelemetry, jaeger, honeycomb]
-compatible-with: claude-code, codex
+tags:
+- saas
+- langchain
+- langgraph
+- python
+- langchain-1.0
+- observability
+- opentelemetry
+- jaeger
+- honeycomb
+compatibility: Designed for Claude Code, also compatible with Codex
 ---
-
 # LangChain OTEL Observability (Python)
 
 ## Overview

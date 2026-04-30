@@ -1,17 +1,25 @@
 ---
 name: obsidian-data-handling
-description: |
-  Implement vault data backup, sync, and recovery strategies.
+description: 'Implement vault data backup, sync, and recovery strategies.
+
   Use when building backup features, implementing data export,
+
   or handling vault synchronization in your plugin.
+
   Trigger with phrases like "obsidian backup", "obsidian sync",
+
   "obsidian data export", "vault backup strategy".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, obsidian, backup]
+tags:
+- saas
+- obsidian
+- backup
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Obsidian Data Handling
 

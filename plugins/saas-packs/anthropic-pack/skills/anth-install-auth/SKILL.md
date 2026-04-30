@@ -1,19 +1,27 @@
 ---
 name: anth-install-auth
-description: |
-  Install and configure Anthropic Claude SDK authentication for Python and TypeScript.
+description: 'Install and configure Anthropic Claude SDK authentication for Python
+  and TypeScript.
+
   Use when setting up a new Claude API integration, configuring API keys,
+
   or initializing the Anthropic SDK in your project.
+
   Trigger with phrases like "install anthropic", "setup claude api",
+
   "anthropic auth", "configure anthropic API key", "claude sdk setup".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, anthropic]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- anthropic
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Install & Auth
 
 ## Overview

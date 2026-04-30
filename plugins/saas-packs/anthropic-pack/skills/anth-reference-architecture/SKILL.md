@@ -1,19 +1,26 @@
 ---
 name: anth-reference-architecture
-description: |
-  Implement Claude API reference architectures for common use cases.
+description: 'Implement Claude API reference architectures for common use cases.
+
   Use when designing a Claude-powered application, choosing between
+
   direct API vs queue-based, or planning a multi-model architecture.
+
   Trigger with phrases like "anthropic architecture", "claude system design",
+
   "anthropic reference architecture", "design claude integration".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, anthropic]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- anthropic
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Reference Architecture
 
 ## Overview

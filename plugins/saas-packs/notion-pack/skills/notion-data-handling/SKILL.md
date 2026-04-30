@@ -1,19 +1,27 @@
 ---
 name: notion-data-handling
-description: |
-  Implement data handling, PII protection, and GDPR/CCPA compliance for Notion integrations.
+description: 'Implement data handling, PII protection, and GDPR/CCPA compliance for
+  Notion integrations.
+
   Use when handling sensitive data from Notion pages, implementing data redaction,
+
   or ensuring compliance with privacy regulations.
+
   Trigger with phrases like "notion data", "notion PII",
+
   "notion GDPR", "notion data retention", "notion privacy", "notion CCPA".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notion]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- notion
+compatibility: Designed for Claude Code
 ---
-
 # Notion Data Handling
 
 ## Overview

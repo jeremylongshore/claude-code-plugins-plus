@@ -1,13 +1,22 @@
 ---
 name: openrouter-usage-analytics
-description: |
-  Track and analyze OpenRouter API usage patterns, costs, and performance. Use when building dashboards, optimizing spend, or reporting on AI usage. Triggers: 'openrouter analytics', 'openrouter usage', 'openrouter metrics', 'track openrouter spend'.
+description: 'Track and analyze OpenRouter API usage patterns, costs, and performance.
+  Use when building dashboards, optimizing spend, or reporting on AI usage. Triggers:
+  ''openrouter analytics'', ''openrouter usage'', ''openrouter metrics'', ''track
+  openrouter spend''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash, Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, openrouter, analytics, cost-optimization, monitoring]
+tags:
+- saas
+- openrouter
+- analytics
+- cost-optimization
+- monitoring
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # OpenRouter Usage Analytics
 

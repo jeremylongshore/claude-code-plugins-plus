@@ -1,13 +1,21 @@
 ---
 name: detecting-performance-bottlenecks
-description: |
-  Execute this skill enables AI assistant to detect and resolve performance bottlenecks in applications. it analyzes cpu, memory, i/o, and database performance to identify areas of concern. use this skill when you need to diagnose slow application performance, op... Use when optimizing performance. Trigger with phrases like 'optimize', 'performance', or 'speed up'.
+description: 'Execute this skill enables AI assistant to detect and resolve performance
+  bottlenecks in applications. it analyzes cpu, memory, i/o, and database performance
+  to identify areas of concern. use this skill when you need to diagnose slow application
+  performance, op... Use when optimizing performance. Trigger with phrases like ''optimize'',
+  ''performance'', or ''speed up''.
+
+  '
 allowed-tools: Read, Bash(cmd:*), Grep, Glob
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [performance, database, detecting-performance]
+tags:
+- performance
+- database
+- detecting-performance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Bottleneck Detector
 

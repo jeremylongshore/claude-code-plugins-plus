@@ -1,19 +1,21 @@
 ---
 name: clade-migration-deep-dive
-description: |
-  Migrate from OpenAI/GPT to Anthropic/Claude — API differences,
-  Use when working with migration-deep-dive patterns.
-  prompt adaptation, SDK swap, and feature mapping.
-  Trigger with "migrate to claude", "openai to anthropic",
-  "switch from gpt to claude", "replace openai with anthropic".
+description: "Migrate from OpenAI/GPT to Anthropic/Claude \u2014 API differences,\n\
+  Use when working with migration-deep-dive patterns.\nprompt adaptation, SDK swap,\
+  \ and feature mapping.\nTrigger with \"migrate to claude\", \"openai to anthropic\"\
+  ,\n\"switch from gpt to claude\", \"replace openai with anthropic\".\n"
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code
-tags: [saas, anthropic, claude, migration, openai]
+tags:
+- saas
+- anthropic
+- claude
+- migration
+- openai
+compatibility: Designed for Claude Code
 ---
-
 # Migrate from OpenAI to Anthropic
 
 ## Overview

@@ -1,20 +1,32 @@
 ---
 name: clickhouse-performance-tuning
-description: |
-  Optimize ClickHouse query performance with indexing, projections, settings tuning,
+description: 'Optimize ClickHouse query performance with indexing, projections, settings
+  tuning,
+
   and query analysis using system tables.
+
   Use when queries are slow, investigating performance bottlenecks,
+
   or tuning ClickHouse server settings.
-  Trigger: "clickhouse performance", "optimize clickhouse query", "clickhouse slow query",
+
+  Trigger: "clickhouse performance", "optimize clickhouse query", "clickhouse slow
+  query",
+
   "clickhouse indexing", "clickhouse tuning", "clickhouse projections".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, database, analytics, clickhouse, olap]
-compatible-with: claude-code
+tags:
+- saas
+- database
+- analytics
+- clickhouse
+- olap
+compatibility: Designed for Claude Code
 ---
-
 # ClickHouse Performance Tuning
 
 ## Overview

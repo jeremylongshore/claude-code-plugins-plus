@@ -1,17 +1,28 @@
 ---
 name: clerk-enterprise-rbac
-description: |
-  Configure enterprise SSO, role-based access control, and organization management.
+description: 'Configure enterprise SSO, role-based access control, and organization
+  management.
+
   Use when implementing SSO integration, configuring role-based permissions,
+
   or setting up organization-level controls.
+
   Trigger with phrases like "clerk SSO", "clerk RBAC",
+
   "clerk enterprise", "clerk roles", "clerk permissions", "clerk organizations".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clerk, rbac, enterprise, organizations]
+tags:
+- saas
+- clerk
+- rbac
+- enterprise
+- organizations
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clerk Enterprise RBAC
 

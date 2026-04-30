@@ -1,19 +1,20 @@
 ---
 name: clade-rate-limits
-description: |
-  Handle Anthropic rate limits — understand tiers, implement backoff,
-  Use when working with rate-limits patterns.
-  optimize throughput, and monitor usage.
-  Trigger with "anthropic rate limit", "claude 429", "anthropic throttling",
-  "anthropic usage limits", "claude tokens per minute".
+description: "Handle Anthropic rate limits \u2014 understand tiers, implement backoff,\n\
+  Use when working with rate-limits patterns.\noptimize throughput, and monitor usage.\n\
+  Trigger with \"anthropic rate limit\", \"claude 429\", \"anthropic throttling\"\
+  ,\n\"anthropic usage limits\", \"claude tokens per minute\".\n"
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code
-tags: [saas, anthropic, claude, rate-limits]
+tags:
+- saas
+- anthropic
+- claude
+- rate-limits
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Rate Limits
 
 ## Overview

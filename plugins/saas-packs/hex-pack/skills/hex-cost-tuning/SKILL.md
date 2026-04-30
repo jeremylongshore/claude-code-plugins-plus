@@ -1,19 +1,27 @@
 ---
 name: hex-cost-tuning
-description: |
-  Optimize Hex costs through tier selection, sampling, and usage monitoring.
+description: 'Optimize Hex costs through tier selection, sampling, and usage monitoring.
+
   Use when analyzing Hex billing, reducing API costs,
+
   or implementing usage monitoring and budget alerts.
+
   Trigger with phrases like "hex cost", "hex billing",
+
   "reduce hex costs", "hex pricing", "hex expensive", "hex budget".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hex, data, analytics]
-compatible-with: claude-code
+tags:
+- saas
+- hex
+- data
+- analytics
+compatibility: Designed for Claude Code
 ---
-
 # Hex Cost Tuning
 
 ## Overview

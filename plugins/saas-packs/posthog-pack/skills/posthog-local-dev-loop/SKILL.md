@@ -1,19 +1,27 @@
 ---
 name: posthog-local-dev-loop
-description: |
-  Configure PostHog local development with mocking, debug mode, and testing.
+description: 'Configure PostHog local development with mocking, debug mode, and testing.
+
   Use when setting up a development environment, mocking PostHog for tests,
+
   or establishing a fast iteration cycle with posthog-js or posthog-node.
+
   Trigger: "posthog dev setup", "posthog local development",
+
   "posthog dev environment", "mock posthog", "test posthog".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, posthog, testing, workflow]
+tags:
+- saas
+- posthog
+- testing
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # PostHog Local Dev Loop
 
 ## Overview

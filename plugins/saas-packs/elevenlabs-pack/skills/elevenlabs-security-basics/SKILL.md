@@ -1,21 +1,34 @@
 ---
 name: elevenlabs-security-basics
-description: |
-  Apply ElevenLabs security best practices for API keys, webhook HMAC validation,
+description: 'Apply ElevenLabs security best practices for API keys, webhook HMAC
+  validation,
+
   and voice data protection.
+
   Use when securing API keys, validating webhook signatures,
+
   or auditing ElevenLabs security configuration.
+
   Trigger: "elevenlabs security", "elevenlabs secrets",
+
   "secure elevenlabs", "elevenlabs API key security",
+
   "elevenlabs webhook signature", "elevenlabs HMAC".
+
+  '
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, voice, ai, elevenlabs, security, webhooks]
-compatible-with: claude-code
+tags:
+- saas
+- voice
+- ai
+- elevenlabs
+- security
+- webhooks
+compatibility: Designed for Claude Code
 ---
-
 # ElevenLabs Security Basics
 
 ## Overview

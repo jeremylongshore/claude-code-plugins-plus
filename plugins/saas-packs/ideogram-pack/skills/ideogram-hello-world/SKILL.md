@@ -1,17 +1,27 @@
 ---
 name: ideogram-hello-world
-description: |
-  Create a minimal working Ideogram image generation example.
+description: 'Create a minimal working Ideogram image generation example.
+
   Use when starting a new Ideogram integration, testing your setup,
+
   or learning basic Ideogram API patterns.
+
   Trigger with phrases like "ideogram hello world", "ideogram example",
+
   "ideogram quick start", "simple ideogram code", "first ideogram image".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(node:*), Bash(npx:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, ideogram, api, getting-started, image-generation]
+tags:
+- saas
+- ideogram
+- api
+- getting-started
+- image-generation
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Ideogram Hello World
 

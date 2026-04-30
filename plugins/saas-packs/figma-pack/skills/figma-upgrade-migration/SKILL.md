@@ -1,19 +1,25 @@
 ---
 name: figma-upgrade-migration
-description: |
-  Handle Figma REST API scope changes, deprecations, and migration tasks.
+description: 'Handle Figma REST API scope changes, deprecations, and migration tasks.
+
   Use when migrating from deprecated scopes, updating webhook versions,
+
   or adapting to Figma API changelog changes.
+
   Trigger with phrases like "upgrade figma", "figma deprecation",
+
   "figma scope migration", "figma API changes", "figma v2 webhooks".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, figma]
-compatible-with: claude-code
+tags:
+- saas
+- figma
+compatibility: Designed for Claude Code
 ---
-
 # Figma Upgrade & Migration
 
 ## Overview

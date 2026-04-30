@@ -1,17 +1,25 @@
 ---
 name: mistral-multi-env-setup
-description: |
-  Configure Mistral AI across development, staging, and production environments.
+description: 'Configure Mistral AI across development, staging, and production environments.
+
   Use when setting up multi-environment deployments, configuring per-environment secrets,
+
   or implementing environment-specific Mistral AI configurations.
+
   Trigger with phrases like "mistral environments", "mistral staging",
+
   "mistral dev prod", "mistral environment setup".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gcloud:*), Bash(vault:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, mistral, deployment]
+tags:
+- saas
+- mistral
+- deployment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Mistral AI Multi-Environment Setup
 

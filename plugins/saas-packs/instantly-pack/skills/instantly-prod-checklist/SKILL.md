@@ -1,17 +1,26 @@
 ---
 name: instantly-prod-checklist
-description: |
-  Execute Instantly.ai production launch checklist and pre-flight validation.
+description: 'Execute Instantly.ai production launch checklist and pre-flight validation.
+
   Use when deploying Instantly integrations to production, launching first campaign,
+
   or auditing production readiness.
+
   Trigger with phrases like "instantly production", "instantly launch checklist",
+
   "instantly go-live", "instantly pre-flight", "instantly prod ready".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, instantly, production, deployment]
+tags:
+- saas
+- instantly
+- production
+- deployment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Instantly Production Checklist
 

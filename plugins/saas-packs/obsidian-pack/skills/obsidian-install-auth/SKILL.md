@@ -1,17 +1,28 @@
 ---
 name: obsidian-install-auth
-description: |
-  Set up Obsidian plugin development environment with Node.js and TypeScript.
+description: 'Set up Obsidian plugin development environment with Node.js and TypeScript.
+
   Use when starting a new plugin project, configuring the dev environment,
+
   or initializing Obsidian plugin development from scratch.
+
   Trigger with phrases like "obsidian setup", "obsidian plugin dev",
+
   "create obsidian plugin", "obsidian development environment".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*), Bash(mkdir:*), Bash(ln:*), Grep
+
+  '
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*), Bash(mkdir:*), Bash(ln:*),
+  Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, obsidian, typescript, nodejs, setup]
+tags:
+- saas
+- obsidian
+- typescript
+- nodejs
+- setup
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Obsidian Install & Auth
 

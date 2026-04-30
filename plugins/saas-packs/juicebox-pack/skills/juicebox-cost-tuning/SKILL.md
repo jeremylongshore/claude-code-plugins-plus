@@ -1,16 +1,20 @@
 ---
 name: juicebox-cost-tuning
-description: |
-  Optimize Juicebox costs.
+description: 'Optimize Juicebox costs.
+
   Trigger: "juicebox cost", "juicebox billing", "juicebox budget".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, recruiting, juicebox]
-compatible-with: claude-code
+tags:
+- saas
+- recruiting
+- juicebox
+compatibility: Designed for Claude Code
 ---
-
 # Juicebox Cost Tuning
 
 ## Cost Factors

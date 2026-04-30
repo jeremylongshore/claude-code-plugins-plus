@@ -1,17 +1,30 @@
 ---
 name: sentry-release-management
-description: |
-  Manage Sentry releases with versioning, commit association, and source map uploads.
+description: 'Manage Sentry releases with versioning, commit association, and source
+  map uploads.
+
   Use when creating releases, linking commits to errors, uploading release artifacts,
+
   monitoring release health, or cleaning up old releases.
+
   Trigger with phrases like "sentry release", "create sentry version",
+
   "sentry source maps", "sentry suspect commits", "release health".
-allowed-tools: Read, Write, Edit, Bash(sentry-cli:*), Bash(npx:*), Bash(node:*), Bash(git:*), Grep
+
+  '
+allowed-tools: Read, Write, Edit, Bash(sentry-cli:*), Bash(npx:*), Bash(node:*), Bash(git:*),
+  Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, sentry, releases, source-maps, ci-cd, versioning]
+tags:
+- saas
+- sentry
+- releases
+- source-maps
+- ci-cd
+- versioning
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Sentry Release Management
 

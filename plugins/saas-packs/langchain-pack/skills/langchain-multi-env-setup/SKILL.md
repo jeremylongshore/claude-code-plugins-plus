@@ -1,16 +1,23 @@
 ---
 name: langchain-multi-env-setup
-description: |
-  Configure LangChain across dev/staging/production environments
+description: 'Configure LangChain across dev/staging/production environments
+
   with isolated API keys, environment-specific settings, and secrets.
+
   Trigger: "langchain environments", "langchain staging",
+
   "langchain dev prod", "environment configuration", "langchain env setup".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langchain, workflow]
+tags:
+- saas
+- langchain
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # LangChain Multi-Environment Setup
 

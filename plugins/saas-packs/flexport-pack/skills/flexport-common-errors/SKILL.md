@@ -1,17 +1,23 @@
 ---
 name: flexport-common-errors
-description: |
-  Diagnose and fix common Flexport API errors including HTTP status codes,
+description: 'Diagnose and fix common Flexport API errors including HTTP status codes,
+
   webhook failures, and data validation issues.
-  Trigger: "flexport error", "fix flexport", "flexport not working", "debug flexport API".
+
+  Trigger: "flexport error", "fix flexport", "flexport not working", "debug flexport
+  API".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, logistics, flexport]
-compatible-with: claude-code
+tags:
+- saas
+- logistics
+- flexport
+compatibility: Designed for Claude Code
 ---
-
 # Flexport Common Errors
 
 ## Overview

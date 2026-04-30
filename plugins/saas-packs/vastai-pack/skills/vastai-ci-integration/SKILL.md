@@ -1,17 +1,26 @@
 ---
 name: vastai-ci-integration
-description: |
-  Configure Vast.ai CI/CD integration with GitHub Actions and automated GPU testing.
+description: 'Configure Vast.ai CI/CD integration with GitHub Actions and automated
+  GPU testing.
+
   Use when setting up automated testing on GPU instances,
+
   or integrating Vast.ai provisioning into CI/CD pipelines.
+
   Trigger with phrases like "vastai CI", "vastai github actions",
+
   "vastai automated testing", "vastai pipeline".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vastai:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vast-ai, ci-cd]
+tags:
+- saas
+- vast-ai
+- ci-cd
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vast.ai CI Integration
 

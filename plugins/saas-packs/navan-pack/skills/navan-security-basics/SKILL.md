@@ -1,17 +1,24 @@
 ---
 name: navan-security-basics
-description: |
-  Secure Navan API credentials with OAuth 2.0 best practices, SSO/SAML, and SCIM provisioning.
-  Use when hardening a Navan integration, rotating credentials, or configuring identity provider SSO.
+description: 'Secure Navan API credentials with OAuth 2.0 best practices, SSO/SAML,
+  and SCIM provisioning.
+
+  Use when hardening a Navan integration, rotating credentials, or configuring identity
+  provider SSO.
+
   Trigger with "navan security", "navan sso", "navan credentials", "navan scim".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, navan, travel]
-compatible-with: claude-code
+tags:
+- saas
+- navan
+- travel
+compatibility: Designed for Claude Code
 ---
-
 # Navan Security Basics
 
 ## Overview

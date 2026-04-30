@@ -1,16 +1,20 @@
 ---
 name: mindtickle-upgrade-migration
-description: |
-  Upgrade Migration for MindTickle.
+description: 'Upgrade Migration for MindTickle.
+
   Trigger: "mindtickle upgrade migration".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, mindtickle, sales]
-compatible-with: claude-code
+tags:
+- saas
+- mindtickle
+- sales
+compatibility: Designed for Claude Code
 ---
-
 # MindTickle Upgrade & Migration
 
 ## Overview

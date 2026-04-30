@@ -1,19 +1,29 @@
 ---
 name: clickhouse-upgrade-migration
-description: |
-  Upgrade ClickHouse server versions and @clickhouse/client SDK safely.
+description: 'Upgrade ClickHouse server versions and @clickhouse/client SDK safely.
+
   Use when upgrading ClickHouse, handling breaking changes between versions,
+
   or migrating from older client libraries.
-  Trigger: "upgrade clickhouse", "clickhouse version upgrade", "update clickhouse client",
+
+  Trigger: "upgrade clickhouse", "clickhouse version upgrade", "update clickhouse
+  client",
+
   "clickhouse breaking changes", "new clickhouse version".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, database, analytics, clickhouse, olap]
-compatible-with: claude-code
+tags:
+- saas
+- database
+- analytics
+- clickhouse
+- olap
+compatibility: Designed for Claude Code
 ---
-
 # ClickHouse Upgrade & Migration
 
 ## Overview

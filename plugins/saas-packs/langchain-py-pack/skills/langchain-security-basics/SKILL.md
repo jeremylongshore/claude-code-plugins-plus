@@ -1,28 +1,34 @@
 ---
 name: langchain-security-basics
-description: |
-  Harden a LangChain 1.0 chain or LangGraph agent against prompt injection, tool
-  abuse, PII leakage in traces, and secrets exfiltration — wrap user content in
-  XML tags, enforce the tool allowlist via provider-native tool calling, redact
-  PII in middleware upstream of cache and tracing, validate outputs with Pydantic,
-  and lock down secrets behind a secret manager. Use when prepping for a security
-  review, responding to an incident, building a multi-tenant SaaS, or writing a
-  threat model.
-  Trigger with "langchain security", "prompt injection defense",
-  "langchain tool allowlist", "langchain PII redaction",
-  "langchain secrets management".
+description: "Harden a LangChain 1.0 chain or LangGraph agent against prompt injection,\
+  \ tool\nabuse, PII leakage in traces, and secrets exfiltration \u2014 wrap user\
+  \ content in\nXML tags, enforce the tool allowlist via provider-native tool calling,\
+  \ redact\nPII in middleware upstream of cache and tracing, validate outputs with\
+  \ Pydantic,\nand lock down secrets behind a secret manager. Use when prepping for\
+  \ a security\nreview, responding to an incident, building a multi-tenant SaaS, or\
+  \ writing a\nthreat model.\nTrigger with \"langchain security\", \"prompt injection\
+  \ defense\",\n\"langchain tool allowlist\", \"langchain PII redaction\",\n\"langchain\
+  \ secrets management\".\n"
 allowed-tools: Read, Write, Edit, Grep, Bash(grep:*)
 model: inherit
-argument-hint: "<chain-or-agent-path>"
+argument-hint: <chain-or-agent-path>
 user-invocable: true
 disable-model-invocation: false
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, langchain, langgraph, python, langchain-1.0, security, prompt-injection, pii, owasp-llm]
-compatible-with: claude-code, codex
+tags:
+- saas
+- langchain
+- langgraph
+- python
+- langchain-1.0
+- security
+- prompt-injection
+- pii
+- owasp-llm
+compatibility: Designed for Claude Code, also compatible with Codex
 ---
-
 # LangChain Security Basics (Python)
 
 ## Overview

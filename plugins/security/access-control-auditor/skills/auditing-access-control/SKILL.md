@@ -1,12 +1,17 @@
 ---
 name: auditing-access-control
-description: Audit access control implementations for security vulnerabilities and misconfigurations. Use when reviewing authentication and authorization. Trigger with 'audit access control', 'check permissions', or 'validate authorization'.
+description: Audit access control implementations for security vulnerabilities and
+  misconfigurations. Use when reviewing authentication and authorization. Trigger
+  with 'audit access control', 'check permissions', or 'validate authorization'.
 version: 1.0.0
-allowed-tools: "Read, Write, Edit, Grep, Glob, Bash(security:*), Bash(scan:*), Bash(audit:*)"
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(security:*), Bash(scan:*), Bash(audit:*)
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [security, authentication, audit]
+tags:
+- security
+- authentication
+- audit
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Access Control Auditing
 

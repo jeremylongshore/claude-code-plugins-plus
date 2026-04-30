@@ -1,16 +1,23 @@
 ---
 name: performing-security-testing
-description: |
-  Test automate security vulnerability testing covering OWASP Top 10, SQL injection, XSS, CSRF, and authentication issues.
-  Use when performing security assessments, penetration tests, or vulnerability scans.
-  Trigger with phrases like "scan for vulnerabilities", "test security", or "run penetration test".
+description: 'Test automate security vulnerability testing covering OWASP Top 10,
+  SQL injection, XSS, CSRF, and authentication issues.
 
+  Use when performing security assessments, penetration tests, or vulnerability scans.
+
+  Trigger with phrases like "scan for vulnerabilities", "test security", or "run penetration
+  test".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:security-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [testing, security, authentication]
+tags:
+- testing
+- security
+- authentication
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Security Test Scanner
 

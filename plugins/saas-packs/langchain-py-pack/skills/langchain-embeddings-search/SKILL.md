@@ -1,20 +1,33 @@
 ---
 name: langchain-embeddings-search
-description: |
-  Build and query vector stores with LangChain 1.0 without getting burned by
+description: 'Build and query vector stores with LangChain 1.0 without getting burned
+  by
+
   flipped score semantics, embedding-dim mismatches, reranker quirks, and
+
   chunk-splitter bugs. Use when building a RAG pipeline, choosing between FAISS /
+
   Pinecone / Chroma / PGVector, filtering by similarity score, or adding a reranker.
+
   Trigger with "langchain embeddings", "vector store similarity search",
+
   "langchain RAG retrieval", "FAISS score", "Pinecone score", "reranker score".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(python:*), Bash(pip:*), Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, langchain, python, langchain-1.0, embeddings, rag, vector-store]
-compatible-with: claude-code, codex
+tags:
+- saas
+- langchain
+- python
+- langchain-1.0
+- embeddings
+- rag
+- vector-store
+compatibility: Designed for Claude Code, also compatible with Codex
 ---
-
 # LangChain Embeddings and Vector Search (Python)
 
 ## Overview

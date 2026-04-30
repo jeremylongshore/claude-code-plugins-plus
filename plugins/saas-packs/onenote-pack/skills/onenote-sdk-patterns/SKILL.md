@@ -1,17 +1,24 @@
 ---
 name: onenote-sdk-patterns
-description: |
-  Production SDK patterns for OneNote Graph API: retry logic, batch requests, and safe file uploads.
-  Use when building production OneNote integrations that need rate limit handling and reliable uploads.
+description: 'Production SDK patterns for OneNote Graph API: retry logic, batch requests,
+  and safe file uploads.
+
+  Use when building production OneNote integrations that need rate limit handling
+  and reliable uploads.
+
   Trigger with "onenote sdk patterns", "onenote retry logic", "onenote batch requests".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, onenote, microsoft]
-compatible-with: claude-code
+tags:
+- saas
+- onenote
+- microsoft
+compatibility: Designed for Claude Code
 ---
-
 # OneNote SDK Patterns
 
 ## Overview

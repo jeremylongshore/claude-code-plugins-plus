@@ -1,16 +1,21 @@
 ---
 name: guidewire-reference-architecture
-description: |
-  Enterprise reference architecture for Guidewire InsuranceSuite Cloud deployments.
+description: 'Enterprise reference architecture for Guidewire InsuranceSuite Cloud
+  deployments.
+
   Trigger: "guidewire reference architecture", "reference-architecture".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(gradle:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, insurance, guidewire]
-compatible-with: claude-code
+tags:
+- saas
+- insurance
+- guidewire
+compatibility: Designed for Claude Code
 ---
-
 # Guidewire Reference Architecture
 
 ## Overview

@@ -1,19 +1,26 @@
 ---
 name: anth-upgrade-migration
-description: |
-  Upgrade Anthropic SDK versions and migrate between Claude API versions.
+description: 'Upgrade Anthropic SDK versions and migrate between Claude API versions.
+
   Use when upgrading the Python/TypeScript SDK, migrating from Text Completions
+
   to Messages API, or adopting new API features like tool use or batches.
+
   Trigger with phrases like "upgrade anthropic sdk", "anthropic migration",
+
   "update claude sdk", "migrate to messages api".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, anthropic]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- anthropic
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Upgrade & Migration
 
 ## Overview

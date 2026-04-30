@@ -1,17 +1,26 @@
 ---
 name: langfuse-upgrade-migration
-description: |
-  Upgrade Langfuse SDK versions and migrate between API changes.
+description: 'Upgrade Langfuse SDK versions and migrate between API changes.
+
   Use when upgrading Langfuse SDK, handling breaking changes,
+
   or migrating between Langfuse versions.
+
   Trigger with phrases like "upgrade langfuse", "langfuse migration",
+
   "update langfuse SDK", "langfuse breaking changes", "langfuse version".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langfuse, api, migration]
+tags:
+- saas
+- langfuse
+- api
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Langfuse Upgrade & Migration
 

@@ -1,15 +1,23 @@
 ---
 name: klingai-async-workflows
-description: |
-  Build async video generation workflows with Kling AI using queues, state machines, and
-  event-driven patterns. Trigger with phrases like 'klingai async', 'kling ai workflow',
-  'klingai pipeline', 'async video generation'.
+description: 'Build async video generation workflows with Kling AI using queues, state
+  machines, and
+
+  event-driven patterns. Trigger with phrases like ''klingai async'', ''kling ai workflow'',
+
+  ''klingai pipeline'', ''async video generation''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, kling-ai, async, workflows]
+tags:
+- saas
+- kling-ai
+- async
+- workflows
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Kling AI Async Workflows
 

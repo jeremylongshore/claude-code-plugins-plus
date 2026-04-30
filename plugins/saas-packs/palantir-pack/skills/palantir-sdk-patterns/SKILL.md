@@ -1,19 +1,30 @@
 ---
 name: palantir-sdk-patterns
-description: |
-  Apply production-ready Palantir Foundry SDK patterns for Python and TypeScript.
+description: 'Apply production-ready Palantir Foundry SDK patterns for Python and
+  TypeScript.
+
   Use when implementing Foundry integrations, refactoring SDK usage,
+
   or establishing team coding standards for Foundry API calls.
+
   Trigger with phrases like "palantir SDK patterns", "foundry best practices",
+
   "palantir code patterns", "idiomatic foundry SDK".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, palantir, foundry, sdk, patterns, typescript]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- palantir
+- foundry
+- sdk
+- patterns
+- typescript
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Palantir SDK Patterns
 
 ## Overview

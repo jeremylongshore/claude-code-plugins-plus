@@ -1,17 +1,25 @@
 ---
 name: documenso-hello-world
-description: |
-  Create a minimal working Documenso example.
+description: 'Create a minimal working Documenso example.
+
   Use when starting a new Documenso integration, testing your setup,
+
   or learning basic document signing patterns.
+
   Trigger with phrases like "documenso hello world", "documenso example",
+
   "documenso quick start", "simple documenso code", "first document".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, documenso, testing]
+tags:
+- saas
+- documenso
+- testing
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Documenso Hello World
 

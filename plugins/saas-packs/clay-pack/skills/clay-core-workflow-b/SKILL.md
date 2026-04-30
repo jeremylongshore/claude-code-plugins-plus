@@ -1,17 +1,28 @@
 ---
 name: clay-core-workflow-b
-description: |
-  Use Claygent AI research and AI-powered personalization to generate outreach copy from enriched data.
+description: 'Use Claygent AI research and AI-powered personalization to generate
+  outreach copy from enriched data.
+
   Use when writing personalized email openers, running Claygent research prompts,
+
   or configuring AI columns for campaign personalization at scale.
+
   Trigger with phrases like "clay AI personalization", "claygent research",
+
   "clay outreach copy", "clay secondary workflow", "clay AI column".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clay, workflow, ai, claygent]
+tags:
+- saas
+- clay
+- workflow
+- ai
+- claygent
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clay Core Workflow B: Claygent AI Research & Personalization
 

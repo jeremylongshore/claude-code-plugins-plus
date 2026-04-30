@@ -1,16 +1,25 @@
 ---
 name: granola-ci-integration
-description: |
-  Build automated pipelines from Granola meeting notes to GitHub Issues, Linear tasks,
+description: 'Build automated pipelines from Granola meeting notes to GitHub Issues,
+  Linear tasks,
+
   Slack notifications, and documentation updates using Zapier and GitHub Actions.
+
   Trigger: "granola CI", "granola automation pipeline", "granola to github",
+
   "granola to linear", "meeting notes automation".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, granola, ci-cd, automation]
+tags:
+- saas
+- granola
+- ci-cd
+- automation
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Granola CI Integration
 

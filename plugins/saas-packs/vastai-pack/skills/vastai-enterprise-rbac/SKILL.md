@@ -1,17 +1,26 @@
 ---
 name: vastai-enterprise-rbac
-description: |
-  Implement team access control and spending governance for Vast.ai GPU cloud.
+description: 'Implement team access control and spending governance for Vast.ai GPU
+  cloud.
+
   Use when managing multi-team GPU access, implementing spending controls,
+
   or setting up API key separation for different teams.
+
   Trigger with phrases like "vastai team access", "vastai RBAC",
+
   "vastai enterprise", "vastai spending controls", "vastai permissions".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vastai:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vast-ai, rbac]
+tags:
+- saas
+- vast-ai
+- rbac
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vast.ai Enterprise RBAC
 

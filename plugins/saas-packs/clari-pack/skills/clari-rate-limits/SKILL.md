@@ -1,19 +1,27 @@
 ---
 name: clari-rate-limits
-description: |
-  Handle Clari API rate limits with backoff and export job scheduling.
+description: 'Handle Clari API rate limits with backoff and export job scheduling.
+
   Use when hitting 429 errors, optimizing export frequency,
+
   or scheduling bulk forecast exports.
+
   Trigger with phrases like "clari rate limit", "clari 429",
+
   "clari throttle", "clari api limits".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, revenue-intelligence, forecasting, clari]
-compatible-with: claude-code
+tags:
+- saas
+- revenue-intelligence
+- forecasting
+- clari
+compatibility: Designed for Claude Code
 ---
-
 # Clari Rate Limits
 
 ## Overview

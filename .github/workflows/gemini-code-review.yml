@@ -96,6 +96,12 @@ jobs:
           GITHUB_TOKEN: '${{ github.token }}'
           PULL_REQUEST_NUMBER: '${{ steps.pr.outputs.number }}'
           REPOSITORY: '${{ github.repository }}'
+          # Trust the GitHub Actions workspace so the CLI runs in headless mode
+          # without prompting. Per Gemini docs: in CI we either set this env or
+          # pass --skip-trust. We control the runner + checkout, so the trust
+          # signal is correct here. (See issue #614 for the failure mode.)
+          # https://geminicli.com/docs/cli/trusted-folders/#headless-and-automated-environments
+          GEMINI_CLI_TRUST_WORKSPACE: 'true'
           # Temporary: surfaces Gemini CLI stdout/stderr in run logs so we can
           # see exactly what the CLI reports when talking to the MCP server.
           # Remove once reviews are confirmed posting reliably.

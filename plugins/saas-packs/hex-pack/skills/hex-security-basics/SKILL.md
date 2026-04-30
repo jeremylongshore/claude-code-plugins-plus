@@ -1,19 +1,27 @@
 ---
 name: hex-security-basics
-description: |
-  Apply Hex security best practices for secrets and access control.
+description: 'Apply Hex security best practices for secrets and access control.
+
   Use when securing API keys, implementing least privilege access,
+
   or auditing Hex security configuration.
+
   Trigger with phrases like "hex security", "hex secrets",
+
   "secure hex", "hex API key security".
+
+  '
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hex, data, analytics]
-compatible-with: claude-code
+tags:
+- saas
+- hex
+- data
+- analytics
+compatibility: Designed for Claude Code
 ---
-
 # Hex Security Basics
 
 ## Overview

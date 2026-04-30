@@ -1,17 +1,28 @@
 ---
 name: lokalise-observability
-description: |
-  Set up comprehensive observability for Lokalise integrations with metrics, traces, and alerts.
+description: 'Set up comprehensive observability for Lokalise integrations with metrics,
+  traces, and alerts.
+
   Use when implementing monitoring for Lokalise operations, setting up dashboards,
+
   or configuring alerting for Lokalise integration health.
+
   Trigger with phrases like "lokalise monitoring", "lokalise metrics",
+
   "lokalise observability", "monitor lokalise", "lokalise alerts", "lokalise tracing".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(jq:*), Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lokalise, monitoring, observability, dashboard]
+tags:
+- saas
+- lokalise
+- monitoring
+- observability
+- dashboard
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lokalise Observability
 

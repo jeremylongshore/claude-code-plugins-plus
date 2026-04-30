@@ -1,13 +1,19 @@
 ---
 name: google-cloud-agent-sdk-master
-description: |
-  Execute automatic activation for all google cloud agent development kit (adk) Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
+description: 'Execute automatic activation for all google cloud agent development
+  kit (adk) Use when appropriate context detected. Trigger with relevant phrases based
+  on skill purpose.
+
+  '
 allowed-tools: Read, WebFetch, WebSearch, Grep
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [productivity, gcp, google-cloud]
+tags:
+- productivity
+- gcp
+- google-cloud
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Google Cloud Agent SDK Master
 

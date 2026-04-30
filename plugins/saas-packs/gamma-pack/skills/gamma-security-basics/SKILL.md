@@ -1,17 +1,27 @@
 ---
 name: gamma-security-basics
-description: |
-  Implement security best practices for Gamma integration.
+description: 'Implement security best practices for Gamma integration.
+
   Use when securing API keys, implementing access controls,
+
   or auditing Gamma security configuration.
+
   Trigger with phrases like "gamma security", "gamma API key security",
+
   "gamma secure", "gamma credentials", "gamma access control".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, gamma, api, security, audit]
+tags:
+- saas
+- gamma
+- api
+- security
+- audit
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Gamma Security Basics
 

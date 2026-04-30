@@ -1,19 +1,20 @@
 ---
 name: adobe-upgrade-migration
-description: |
-  Analyze, plan, and execute Adobe SDK upgrades — including the critical
-  JWT-to-OAuth migration, PDF Services SDK v3-to-v4, and Photoshop API
-  endpoint changes (cutout v1 to remove-background v2).
-  Trigger with phrases like "upgrade adobe", "adobe migration",
-  "adobe breaking changes", "update adobe SDK", "jwt to oauth".
+description: "Analyze, plan, and execute Adobe SDK upgrades \u2014 including the critical\n\
+  JWT-to-OAuth migration, PDF Services SDK v3-to-v4, and Photoshop API\nendpoint changes\
+  \ (cutout v1 to remove-background v2).\nTrigger with phrases like \"upgrade adobe\"\
+  , \"adobe migration\",\n\"adobe breaking changes\", \"update adobe SDK\", \"jwt\
+  \ to oauth\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, adobe]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- adobe
+compatibility: Designed for Claude Code
 ---
-
 # Adobe Upgrade & Migration
 
 ## Overview

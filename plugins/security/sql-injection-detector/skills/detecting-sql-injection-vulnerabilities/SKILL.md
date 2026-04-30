@@ -1,16 +1,24 @@
 ---
 name: detecting-sql-injection-vulnerabilities
-description: |
-  Detect and analyze SQL injection vulnerabilities in application code and database queries.
-  Use when you need to scan code for SQL injection risks, review query construction, validate input sanitization, or implement secure query patterns.
-  Trigger with phrases like "detect SQL injection", "scan for SQLi vulnerabilities", "review database queries", or "check SQL security".
-  
+description: 'Detect and analyze SQL injection vulnerabilities in application code
+  and database queries.
+
+  Use when you need to scan code for SQL injection risks, review query construction,
+  validate input sanitization, or implement secure query patterns.
+
+  Trigger with phrases like "detect SQL injection", "scan for SQLi vulnerabilities",
+  "review database queries", or "check SQL security".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(code-scan:*), Bash(security-test:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [security, database, detecting-sql]
+tags:
+- security
+- database
+- detecting-sql
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Detecting SQL Injection Vulnerabilities
 

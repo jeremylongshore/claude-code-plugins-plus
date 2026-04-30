@@ -1,20 +1,32 @@
 ---
 name: supabase-sdk-patterns
-description: |
-  Apply production-ready Supabase SDK patterns for TypeScript and Python projects.
+description: 'Apply production-ready Supabase SDK patterns for TypeScript and Python
+  projects.
+
   Use when implementing queries, auth, realtime, storage, or RPC calls
+
   with @supabase/supabase-js or supabase-py.
+
   Trigger with phrases like "supabase SDK patterns", "supabase query",
+
   "supabase typescript", "supabase python", "supabase client setup",
+
   "supabase realtime", "supabase auth", "supabase storage".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, cursor
-tags: [saas, supabase, typescript, python, sdk, patterns]
+tags:
+- saas
+- supabase
+- typescript
+- python
+- sdk
+- patterns
+compatibility: Designed for Claude Code, also compatible with Cursor
 ---
-
 # Supabase SDK Patterns
 
 ## Overview

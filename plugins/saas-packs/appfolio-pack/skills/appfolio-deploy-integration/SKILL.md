@@ -1,16 +1,21 @@
 ---
 name: appfolio-deploy-integration
-description: |
-  Deploy AppFolio integration service to cloud infrastructure.
+description: 'Deploy AppFolio integration service to cloud infrastructure.
+
   Trigger: "deploy appfolio".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, property-management, appfolio, real-estate]
-compatible-with: claude-code
+tags:
+- saas
+- property-management
+- appfolio
+- real-estate
+compatibility: Designed for Claude Code
 ---
-
 # AppFolio Deploy Integration
 
 ## Overview

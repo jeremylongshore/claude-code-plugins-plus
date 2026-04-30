@@ -1,19 +1,28 @@
 ---
 name: salesforce-data-handling
-description: |
-  Implement Salesforce data privacy, GDPR/CCPA compliance, and field-level encryption patterns.
+description: 'Implement Salesforce data privacy, GDPR/CCPA compliance, and field-level
+  encryption patterns.
+
   Use when handling PII in Salesforce records, implementing data subject access requests,
+
   or configuring Salesforce Shield encryption.
+
   Trigger with phrases like "salesforce data privacy", "salesforce PII",
-  "salesforce GDPR", "salesforce data retention", "salesforce encryption", "salesforce CCPA".
+
+  "salesforce GDPR", "salesforce data retention", "salesforce encryption", "salesforce
+  CCPA".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, salesforce]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- salesforce
+compatibility: Designed for Claude Code
 ---
-
 # Salesforce Data Handling
 
 ## Overview

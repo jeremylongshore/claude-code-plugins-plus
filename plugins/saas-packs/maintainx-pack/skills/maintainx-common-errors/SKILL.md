@@ -1,17 +1,27 @@
 ---
 name: maintainx-common-errors
-description: |
-  Debug and resolve common MaintainX API errors.
+description: 'Debug and resolve common MaintainX API errors.
+
   Use when encountering API errors, authentication issues,
+
   or unexpected responses from the MaintainX API.
+
   Trigger with phrases like "maintainx error", "maintainx 401",
+
   "maintainx api problem", "maintainx not working", "debug maintainx".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, maintainx, api, debugging, authentication]
+tags:
+- saas
+- maintainx
+- api
+- debugging
+- authentication
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # MaintainX Common Errors
 

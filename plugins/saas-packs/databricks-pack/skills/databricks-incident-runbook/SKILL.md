@@ -1,17 +1,26 @@
 ---
 name: databricks-incident-runbook
-description: |
-  Execute Databricks incident response procedures with triage, mitigation, and postmortem.
+description: 'Execute Databricks incident response procedures with triage, mitigation,
+  and postmortem.
+
   Use when responding to Databricks-related outages, investigating job failures,
+
   or running post-incident reviews for pipeline failures.
+
   Trigger with phrases like "databricks incident", "databricks outage",
+
   "databricks down", "databricks on-call", "databricks emergency", "job failed".
+
+  '
 allowed-tools: Read, Grep, Bash(databricks:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, databricks, incident-response]
+tags:
+- saas
+- databricks
+- incident-response
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Databricks Incident Runbook
 

@@ -1,17 +1,25 @@
 ---
 name: perplexity-common-errors
-description: |
-  Diagnose and fix Perplexity Sonar API errors and exceptions.
+description: 'Diagnose and fix Perplexity Sonar API errors and exceptions.
+
   Use when encountering Perplexity errors, debugging failed requests,
+
   or troubleshooting integration issues.
+
   Trigger with phrases like "perplexity error", "fix perplexity",
+
   "perplexity not working", "debug perplexity", "perplexity 429".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, perplexity, debugging]
+tags:
+- saas
+- perplexity
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Perplexity Common Errors
 

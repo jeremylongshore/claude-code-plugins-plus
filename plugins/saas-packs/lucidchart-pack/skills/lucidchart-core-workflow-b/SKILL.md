@@ -1,16 +1,20 @@
 ---
 name: lucidchart-core-workflow-b
-description: |
-  Execute Lucidchart secondary workflow: Data-Linked Diagrams.
+description: 'Execute Lucidchart secondary workflow: Data-Linked Diagrams.
+
   Trigger: "lucidchart data-linked diagrams", "secondary lucidchart workflow".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, lucidchart, diagramming]
-compatible-with: claude-code
+tags:
+- saas
+- lucidchart
+- diagramming
+compatibility: Designed for Claude Code
 ---
-
 # Lucidchart — Collaboration & Sharing
 
 ## Overview

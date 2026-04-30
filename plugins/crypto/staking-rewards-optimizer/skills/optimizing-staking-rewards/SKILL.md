@@ -1,16 +1,23 @@
 ---
 name: optimizing-staking-rewards
-description: |
-  Compare and optimize staking rewards across validators, protocols, and blockchains with risk assessment.
-  Use when analyzing staking opportunities, comparing validators, calculating staking rewards, or optimizing PoS yields.
-  Trigger with phrases like "optimize staking", "compare staking", "best staking APY", "liquid staking", "validator comparison", "staking rewards", or "ETH staking options".
+description: 'Compare and optimize staking rewards across validators, protocols, and
+  blockchains with risk assessment.
 
+  Use when analyzing staking opportunities, comparing validators, calculating staking
+  rewards, or optimizing PoS yields.
+
+  Trigger with phrases like "optimize staking", "compare staking", "best staking APY",
+  "liquid staking", "validator comparison", "staking rewards", or "ETH staking options".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:staking-*)
 version: 2.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [crypto, optimizing-staking]
+tags:
+- crypto
+- optimizing-staking
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Optimizing Staking Rewards
 

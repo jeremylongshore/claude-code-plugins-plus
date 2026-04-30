@@ -1,16 +1,21 @@
 ---
 name: finta-performance-tuning
-description: |
-  Optimize Finta fundraise workflow efficiency.
+description: 'Optimize Finta fundraise workflow efficiency.
+
   Trigger with phrases like "finta performance", "finta efficiency", "optimize finta".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, fundraising-crm, investor-management, finta]
-compatible-with: claude-code
+tags:
+- saas
+- fundraising-crm
+- investor-management
+- finta
+compatibility: Designed for Claude Code
 ---
-
 # Finta Performance Tuning
 
 ## Overview

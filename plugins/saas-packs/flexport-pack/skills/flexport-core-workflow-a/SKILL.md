@@ -1,18 +1,25 @@
 ---
 name: flexport-core-workflow-a
-description: |
-  Execute Flexport primary workflow: shipment booking and purchase order management.
+description: 'Execute Flexport primary workflow: shipment booking and purchase order
+  management.
+
   Use when creating bookings, managing purchase orders, tracking freight,
+
   or building the core shipment lifecycle integration.
+
   Trigger: "flexport booking", "flexport purchase order", "create flexport shipment".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, logistics, flexport]
-compatible-with: claude-code
+tags:
+- saas
+- logistics
+- flexport
+compatibility: Designed for Claude Code
 ---
-
 # Flexport Core Workflow A: Bookings & Purchase Orders
 
 ## Overview

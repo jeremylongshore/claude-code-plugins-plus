@@ -1,19 +1,21 @@
 ---
 name: clade-prod-checklist
-description: |
-  Production readiness checklist for Claude-powered applications —
-  Use when working with prod-checklist patterns.
-  error handling, monitoring, fallbacks, cost controls, and security.
-  Trigger with "anthropic production", "claude production ready",
-  "anthropic launch checklist", "go live with claude".
+description: "Production readiness checklist for Claude-powered applications \u2014\
+  \nUse when working with prod-checklist patterns.\nerror handling, monitoring, fallbacks,\
+  \ cost controls, and security.\nTrigger with \"anthropic production\", \"claude\
+  \ production ready\",\n\"anthropic launch checklist\", \"go live with claude\".\n"
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code
-tags: [saas, anthropic, claude, production, checklist]
+tags:
+- saas
+- anthropic
+- claude
+- production
+- checklist
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Production Checklist
 
 ## Overview

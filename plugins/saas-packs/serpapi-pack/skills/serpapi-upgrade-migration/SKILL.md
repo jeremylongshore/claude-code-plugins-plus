@@ -1,18 +1,25 @@
 ---
 name: serpapi-upgrade-migration
-description: |
-  Migrate between SerpApi client versions and handle package changes.
+description: 'Migrate between SerpApi client versions and handle package changes.
+
   Use when upgrading from google-search-results to serpapi package,
+
   or handling API response schema changes.
+
   Trigger: "upgrade serpapi", "serpapi migration", "serpapi new package".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, seo, serpapi]
-compatible-with: claude-code
+tags:
+- saas
+- search
+- seo
+- serpapi
+compatibility: Designed for Claude Code
 ---
-
 # SerpApi Upgrade & Migration
 
 ## Overview

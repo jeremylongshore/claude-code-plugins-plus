@@ -1,17 +1,28 @@
 ---
 name: vercel-cost-tuning
-description: |
-  Optimize Vercel costs through plan selection, function efficiency, and usage monitoring.
+description: 'Optimize Vercel costs through plan selection, function efficiency, and
+  usage monitoring.
+
   Use when analyzing Vercel billing, reducing function execution costs,
+
   or implementing spend management and budget alerts.
+
   Trigger with phrases like "vercel cost", "vercel billing",
+
   "reduce vercel costs", "vercel pricing", "vercel expensive", "vercel budget".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vercel, cost-optimization, billing, monitoring]
+tags:
+- saas
+- vercel
+- cost-optimization
+- billing
+- monitoring
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vercel Cost Tuning
 

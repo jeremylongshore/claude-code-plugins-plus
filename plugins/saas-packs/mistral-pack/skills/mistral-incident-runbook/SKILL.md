@@ -1,17 +1,26 @@
 ---
 name: mistral-incident-runbook
-description: |
-  Execute Mistral AI incident response procedures with triage, mitigation, and postmortem.
+description: 'Execute Mistral AI incident response procedures with triage, mitigation,
+  and postmortem.
+
   Use when responding to Mistral AI-related outages, investigating errors,
+
   or running post-incident reviews.
+
   Trigger with phrases like "mistral incident", "mistral outage",
+
   "mistral down", "mistral on-call", "mistral emergency".
+
+  '
 allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, mistral, incident-response]
+tags:
+- saas
+- mistral
+- incident-response
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Mistral AI Incident Runbook
 

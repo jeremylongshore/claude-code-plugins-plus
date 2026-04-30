@@ -1,18 +1,25 @@
 ---
 name: salesloft-cost-tuning
-description: |
-  Optimize SalesLoft API costs by reducing request volume and deep pagination.
+description: 'Optimize SalesLoft API costs by reducing request volume and deep pagination.
+
   Use when analyzing API usage, reducing rate limit consumption,
+
   or planning capacity for bulk operations.
+
   Trigger: "salesloft cost", "salesloft billing", "reduce salesloft API usage".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, sales, outreach, salesloft]
-compatible-with: claude-code
+tags:
+- saas
+- sales
+- outreach
+- salesloft
+compatibility: Designed for Claude Code
 ---
-
 # SalesLoft Cost Tuning
 
 ## Overview

@@ -1,13 +1,21 @@
 ---
 name: openrouter-common-errors
-description: |
-  Diagnose and fix common OpenRouter API errors. Use when encountering error codes, unexpected failures, or debugging API responses. Triggers: 'openrouter error', 'openrouter 401', 'openrouter 429', 'openrouter 402', 'fix openrouter'.
+description: 'Diagnose and fix common OpenRouter API errors. Use when encountering
+  error codes, unexpected failures, or debugging API responses. Triggers: ''openrouter
+  error'', ''openrouter 401'', ''openrouter 429'', ''openrouter 402'', ''fix openrouter''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash, Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, openrouter, errors, debugging, troubleshooting]
+tags:
+- saas
+- openrouter
+- errors
+- debugging
+- troubleshooting
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # OpenRouter Common Errors
 

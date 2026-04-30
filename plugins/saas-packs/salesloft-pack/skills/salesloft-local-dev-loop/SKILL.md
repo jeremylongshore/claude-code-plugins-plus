@@ -1,18 +1,25 @@
 ---
 name: salesloft-local-dev-loop
-description: |
-  Configure SalesLoft local development with API mocking and sandbox testing.
+description: 'Configure SalesLoft local development with API mocking and sandbox testing.
+
   Use when setting up a development environment, building integration tests,
+
   or creating mock SalesLoft API responses for offline development.
+
   Trigger: "salesloft dev setup", "salesloft local", "test salesloft locally".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, sales, outreach, salesloft]
-compatible-with: claude-code
+tags:
+- saas
+- sales
+- outreach
+- salesloft
+compatibility: Designed for Claude Code
 ---
-
 # SalesLoft Local Dev Loop
 
 ## Overview

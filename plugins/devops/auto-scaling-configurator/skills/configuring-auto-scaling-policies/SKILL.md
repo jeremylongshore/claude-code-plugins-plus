@@ -1,17 +1,23 @@
 ---
 name: configuring-auto-scaling-policies
-description: |
-  Configure use when you need to work with auto-scaling.
+description: 'Configure use when you need to work with auto-scaling.
+
   This skill provides auto-scaling configuration with comprehensive guidance and automation.
+
   Trigger with phrases like "configure auto-scaling", "set up elastic scaling",
+
   or "implement scaling".
 
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [devops, scaling, auto-scaling]
+tags:
+- devops
+- scaling
+- auto-scaling
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Configuring Auto-Scaling Policies
 

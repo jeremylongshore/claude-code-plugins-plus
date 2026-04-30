@@ -1,17 +1,25 @@
 ---
 name: databricks-hello-world
-description: |
-  Create a minimal working Databricks example with cluster and notebook.
+description: 'Create a minimal working Databricks example with cluster and notebook.
+
   Use when starting a new Databricks project, testing your setup,
+
   or learning basic Databricks patterns.
+
   Trigger with phrases like "databricks hello world", "databricks example",
+
   "databricks quick start", "first databricks notebook", "create cluster".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(databricks:*), Bash(python:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, databricks, testing]
+tags:
+- saas
+- databricks
+- testing
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Databricks Hello World
 

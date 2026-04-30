@@ -1,17 +1,26 @@
 ---
 name: lokalise-reference-architecture
-description: |
-  Implement Lokalise reference architecture with best-practice project layout.
+description: 'Implement Lokalise reference architecture with best-practice project
+  layout.
+
   Use when designing new Lokalise integrations, reviewing project structure,
+
   or establishing architecture standards for Lokalise applications.
+
   Trigger with phrases like "lokalise architecture", "lokalise best practices",
+
   "lokalise project structure", "how to organize lokalise", "lokalise layout".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lokalise, lokalise-reference]
+tags:
+- saas
+- lokalise
+- lokalise-reference
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lokalise Reference Architecture
 

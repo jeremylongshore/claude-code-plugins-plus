@@ -1,18 +1,25 @@
 ---
 name: glean-install-auth
-description: |
-  Install and configure Glean API authentication with indexing and client tokens.
+description: 'Install and configure Glean API authentication with indexing and client
+  tokens.
+
   Use when setting up custom datasource indexing, configuring search API access,
+
   or initializing the Glean developer SDK for enterprise search.
+
   Trigger: "install glean", "setup glean", "glean auth", "glean API token".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, enterprise-search, glean]
-compatible-with: claude-code
+tags:
+- saas
+- enterprise-search
+- glean
+compatibility: Designed for Claude Code
 ---
-
 # Glean Install & Auth
 
 ## Overview

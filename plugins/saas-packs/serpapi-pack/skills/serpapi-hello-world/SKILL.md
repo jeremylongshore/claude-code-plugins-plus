@@ -1,18 +1,26 @@
 ---
 name: serpapi-hello-world
-description: |
-  Run your first SerpApi search -- Google, Bing, or YouTube results as JSON.
+description: 'Run your first SerpApi search -- Google, Bing, or YouTube results as
+  JSON.
+
   Use when starting with SerpApi, testing search queries,
+
   or learning the structured result format.
+
   Trigger: "serpapi hello world", "serpapi example", "serpapi first search".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(python3:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, seo, serpapi]
-compatible-with: claude-code
+tags:
+- saas
+- search
+- seo
+- serpapi
+compatibility: Designed for Claude Code
 ---
-
 # SerpApi Hello World
 
 ## Overview

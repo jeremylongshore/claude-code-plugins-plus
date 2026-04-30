@@ -1,17 +1,26 @@
 ---
 name: apollo-upgrade-migration
-description: |
-  Manage Apollo.io API upgrades and endpoint migrations.
+description: 'Manage Apollo.io API upgrades and endpoint migrations.
+
   Use when upgrading Apollo API versions, migrating to new endpoints,
+
   or updating deprecated API usage.
+
   Trigger with phrases like "apollo upgrade", "apollo migration",
+
   "update apollo api", "apollo breaking changes", "apollo deprecation".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, apollo, api, migration]
+tags:
+- saas
+- apollo
+- api
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Apollo Upgrade Migration
 

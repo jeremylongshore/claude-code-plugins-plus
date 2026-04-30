@@ -1,17 +1,21 @@
 ---
 name: oraclecloud-upgrade-migration
-description: |
-  Safely upgrade OCI Python SDK and Terraform provider — version pinning, breaking change detection, and rollback.
-  Use when upgrading oci pip packages, updating the Terraform OCI provider, or debugging post-upgrade failures.
-  Trigger with "oraclecloud upgrade", "oci sdk upgrade", "oci terraform provider update", "oci version migration".
-allowed-tools: Read, Write, Edit, Bash(pip:*), Bash(oci:*), Bash(terraform:*), Bash(python3:*), Grep
+description: "Safely upgrade OCI Python SDK and Terraform provider \u2014 version\
+  \ pinning, breaking change detection, and rollback.\nUse when upgrading oci pip\
+  \ packages, updating the Terraform OCI provider, or debugging post-upgrade failures.\n\
+  Trigger with \"oraclecloud upgrade\", \"oci sdk upgrade\", \"oci terraform provider\
+  \ update\", \"oci version migration\".\n"
+allowed-tools: Read, Write, Edit, Bash(pip:*), Bash(oci:*), Bash(terraform:*), Bash(python3:*),
+  Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, oraclecloud, oci]
-compatible-with: claude-code
+tags:
+- saas
+- oraclecloud
+- oci
+compatibility: Designed for Claude Code
 ---
-
 # Oracle Cloud Upgrade & Migration
 
 ## Overview

@@ -1,17 +1,23 @@
 ---
 name: comparing-database-schemas
-description: |
-  Process use when you need to work with schema comparison.
-  This skill provides database schema diff and sync with comprehensive guidance and automation.
+description: 'Process use when you need to work with schema comparison.
+
+  This skill provides database schema diff and sync with comprehensive guidance and
+  automation.
+
   Trigger with phrases like "compare schemas", "diff databases",
+
   or "sync database schemas".
 
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*), Bash(mongosh:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [database, comparing-database]
+tags:
+- database
+- comparing-database
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Database Diff Tool
 

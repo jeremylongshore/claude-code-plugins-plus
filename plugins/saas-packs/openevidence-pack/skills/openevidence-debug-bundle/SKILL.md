@@ -1,16 +1,20 @@
 ---
 name: openevidence-debug-bundle
-description: |
-  Debug Bundle for OpenEvidence.
+description: 'Debug Bundle for OpenEvidence.
+
   Trigger: "openevidence debug bundle".
+
+  '
 allowed-tools: Read, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, openevidence, healthcare]
-compatible-with: claude-code
+tags:
+- saas
+- openevidence
+- healthcare
+compatibility: Designed for Claude Code
 ---
-
 # OpenEvidence Debug Bundle
 
 ## Overview

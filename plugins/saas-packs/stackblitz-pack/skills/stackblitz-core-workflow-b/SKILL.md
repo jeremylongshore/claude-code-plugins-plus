@@ -1,18 +1,25 @@
 ---
 name: stackblitz-core-workflow-b
-description: |
-  Embed StackBlitz projects and manage WebContainer snapshots for sharing.
+description: 'Embed StackBlitz projects and manage WebContainer snapshots for sharing.
+
   Use when embedding code playgrounds in docs, creating shareable examples,
+
   or building interactive tutorials with StackBlitz.
+
   Trigger: "embed stackblitz", "stackblitz embed", "stackblitz share project".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ide, webcontainers, stackblitz]
-compatible-with: claude-code
+tags:
+- saas
+- ide
+- webcontainers
+- stackblitz
+compatibility: Designed for Claude Code
 ---
-
 # StackBlitz Core Workflow B: Embedding & Sharing
 
 ## Overview

@@ -1,17 +1,26 @@
 ---
 name: coderabbit-debug-bundle
-description: |
-  Collect CodeRabbit debug evidence for support tickets and troubleshooting.
+description: 'Collect CodeRabbit debug evidence for support tickets and troubleshooting.
+
   Use when encountering persistent issues, preparing support tickets,
+
   or collecting diagnostic information for CodeRabbit problems.
+
   Trigger with phrases like "coderabbit debug", "coderabbit support bundle",
+
   "coderabbit diagnostic", "coderabbit not working evidence".
+
+  '
 allowed-tools: Read, Bash(gh:*), Bash(git:*), Bash(python3:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, coderabbit, debugging, support]
+tags:
+- saas
+- coderabbit
+- debugging
+- support
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # CodeRabbit Debug Bundle
 

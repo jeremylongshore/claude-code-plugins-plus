@@ -1,20 +1,37 @@
 ---
 name: sentry-advanced-troubleshooting
-description: |
-  Advanced Sentry troubleshooting for complex SDK issues, silent event drops,
+description: 'Advanced Sentry troubleshooting for complex SDK issues, silent event
+  drops,
+
   source map failures, distributed tracing gaps, and SDK conflicts.
+
   Use when events silently disappear, source maps fail to resolve,
+
   traces break across service boundaries, or the SDK conflicts with
+
   other libraries like OpenTelemetry or winston.
+
   Trigger with phrases like "sentry events missing", "sentry source maps broken",
+
   "sentry debug", "sentry not capturing errors", "sentry tracing gaps",
+
   "sentry memory leak", "sentry sdk conflict".
-allowed-tools: Read, Write, Edit, Grep, Bash(node:*), Bash(npm:*), Bash(npx:*), Bash(curl:*), Bash(sentry-cli:*), Bash(dig:*)
+
+  '
+allowed-tools: Read, Write, Edit, Grep, Bash(node:*), Bash(npm:*), Bash(npx:*), Bash(curl:*),
+  Bash(sentry-cli:*), Bash(dig:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, sentry, debugging, troubleshooting, source-maps, distributed-tracing, sdk-conflicts]
+tags:
+- saas
+- sentry
+- debugging
+- troubleshooting
+- source-maps
+- distributed-tracing
+- sdk-conflicts
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Sentry Advanced Troubleshooting
 

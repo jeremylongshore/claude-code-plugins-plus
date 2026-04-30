@@ -1,15 +1,22 @@
 ---
 name: excel-dcf-modeler
-description: |
-  Build discounted cash flow (DCF) valuation models in Excel. Use when creating
+description: 'Build discounted cash flow (DCF) valuation models in Excel. Use when
+  creating
+
   DCF models, calculating enterprise value, or valuing companies.
-  Trigger with phrases like 'excel dcf', 'build dcf model', 'calculate enterprise value'.
+
+  Trigger with phrases like ''excel dcf'', ''build dcf model'', ''calculate enterprise
+  value''.
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [business, excel-dcf]
+tags:
+- business
+- excel-dcf
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Excel DCF Modeler
 

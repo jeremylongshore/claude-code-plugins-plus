@@ -1,17 +1,26 @@
 ---
 name: lokalise-debug-bundle
-description: |
-  Collect Lokalise debug evidence for support tickets and troubleshooting.
+description: 'Collect Lokalise debug evidence for support tickets and troubleshooting.
+
   Use when encountering persistent issues, preparing support tickets,
+
   or collecting diagnostic information for Lokalise problems.
+
   Trigger with phrases like "lokalise debug", "lokalise support bundle",
+
   "collect lokalise logs", "lokalise diagnostic".
-allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Bash(lokalise2:*), Bash(node:*), Bash(npm:*), Bash(jq:*), Bash(sed:*), Bash(mkdir:*), Grep
+
+  '
+allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Bash(lokalise2:*), Bash(node:*),
+  Bash(npm:*), Bash(jq:*), Bash(sed:*), Bash(mkdir:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lokalise, debugging]
+tags:
+- saas
+- lokalise
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lokalise Debug Bundle
 

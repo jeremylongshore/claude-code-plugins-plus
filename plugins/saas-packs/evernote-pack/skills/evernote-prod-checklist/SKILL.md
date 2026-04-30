@@ -1,17 +1,27 @@
 ---
 name: evernote-prod-checklist
-description: |
-  Production readiness checklist for Evernote integrations.
+description: 'Production readiness checklist for Evernote integrations.
+
   Use when preparing to deploy Evernote integration to production,
+
   or auditing production readiness.
+
   Trigger with phrases like "evernote production", "deploy evernote",
+
   "evernote go live", "production checklist evernote".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, evernote, deployment, golang, audit]
+tags:
+- saas
+- evernote
+- deployment
+- golang
+- audit
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Evernote Production Checklist
 

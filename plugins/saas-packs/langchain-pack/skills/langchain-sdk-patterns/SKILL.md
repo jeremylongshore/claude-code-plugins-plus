@@ -1,17 +1,25 @@
 ---
 name: langchain-sdk-patterns
-description: |
-  Apply production-ready LangChain SDK patterns for structured output,
+description: 'Apply production-ready LangChain SDK patterns for structured output,
+
   fallbacks, batch processing, streaming, and caching.
+
   Trigger: "langchain SDK patterns", "langchain best practices",
+
   "idiomatic langchain", "langchain architecture", "withStructuredOutput",
+
   "withFallbacks", "abatch".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langchain, langchain-sdk]
+tags:
+- saas
+- langchain
+- langchain-sdk
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # LangChain SDK Patterns
 

@@ -1,17 +1,27 @@
 ---
 name: customerio-prod-checklist
-description: |
-  Execute Customer.io production deployment checklist.
+description: 'Execute Customer.io production deployment checklist.
+
   Use when preparing for production launch, auditing integration
+
   quality, or performing pre-launch validation.
+
   Trigger: "customer.io production", "customer.io checklist",
+
   "deploy customer.io", "customer.io go-live", "customer.io launch".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(npx:*), Glob, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, customer-io, deployment, production, audit]
+tags:
+- saas
+- customer-io
+- deployment
+- production
+- audit
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Customer.io Production Checklist
 

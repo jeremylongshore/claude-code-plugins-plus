@@ -1,17 +1,26 @@
 ---
 name: ideogram-observability
-description: |
-  Set up monitoring, metrics, and alerts for Ideogram integrations.
+description: 'Set up monitoring, metrics, and alerts for Ideogram integrations.
+
   Use when implementing observability for Ideogram operations, tracking costs,
+
   or configuring alerting for generation health.
+
   Trigger with phrases like "ideogram monitoring", "ideogram metrics",
+
   "ideogram observability", "monitor ideogram", "ideogram alerts", "ideogram dashboard".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, ideogram, monitoring, observability]
+tags:
+- saas
+- ideogram
+- monitoring
+- observability
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Ideogram Observability
 

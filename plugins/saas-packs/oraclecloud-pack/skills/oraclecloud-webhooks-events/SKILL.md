@@ -1,17 +1,24 @@
 ---
 name: oraclecloud-webhooks-events
-description: |
-  Wire up event-driven workflows with OCI Events, Notifications, and Functions.
-  Use when building serverless event processing, subscribing to instance lifecycle changes, or routing audit events to alerting systems.
-  Trigger with "oraclecloud webhooks events", "oci events rules", "oci notifications", "oci ons topics".
+description: 'Wire up event-driven workflows with OCI Events, Notifications, and Functions.
+
+  Use when building serverless event processing, subscribing to instance lifecycle
+  changes, or routing audit events to alerting systems.
+
+  Trigger with "oraclecloud webhooks events", "oci events rules", "oci notifications",
+  "oci ons topics".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(pip:*), Bash(oci:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, oraclecloud, oci]
-compatible-with: claude-code
+tags:
+- saas
+- oraclecloud
+- oci
+compatibility: Designed for Claude Code
 ---
-
 # Oracle Cloud Webhooks & Events
 
 ## Overview

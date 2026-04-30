@@ -1,17 +1,26 @@
 ---
 name: firecrawl-webhooks-events
-description: |
-  Implement Firecrawl webhook event handling for async crawl and batch scrape jobs.
+description: 'Implement Firecrawl webhook event handling for async crawl and batch
+  scrape jobs.
+
   Use when setting up webhook endpoints, handling crawl.page/crawl.completed events,
+
   or processing async job results in real-time.
+
   Trigger with phrases like "firecrawl webhook", "firecrawl events",
+
   "firecrawl webhook signature", "handle firecrawl events", "firecrawl notifications".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, firecrawl, webhooks]
+tags:
+- saas
+- firecrawl
+- webhooks
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Firecrawl Webhooks & Events
 

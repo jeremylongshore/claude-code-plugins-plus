@@ -1,17 +1,25 @@
 ---
 name: documenso-prod-checklist
-description: |
-  Execute Documenso production deployment checklist and rollback procedures.
+description: 'Execute Documenso production deployment checklist and rollback procedures.
+
   Use when deploying Documenso integrations to production, preparing for launch,
+
   or implementing go-live procedures.
+
   Trigger with phrases like "documenso production", "deploy documenso",
+
   "documenso go-live", "documenso launch checklist".
+
+  '
 allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, documenso, deployment]
+tags:
+- saas
+- documenso
+- deployment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Documenso Production Checklist
 

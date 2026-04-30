@@ -1,19 +1,26 @@
 ---
 name: figma-performance-tuning
-description: |
-  Optimize Figma REST API performance with caching, partial fetches, and connection reuse.
+description: 'Optimize Figma REST API performance with caching, partial fetches, and
+  connection reuse.
+
   Use when experiencing slow API responses, reducing bandwidth for large files,
+
   or optimizing request throughput for Figma integrations.
+
   Trigger with phrases like "figma performance", "figma slow",
+
   "figma caching", "figma optimize", "figma large file".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, figma]
-compatible-with: claude-code
+tags:
+- saas
+- figma
+compatibility: Designed for Claude Code
 ---
-
 # Figma Performance Tuning
 
 ## Overview

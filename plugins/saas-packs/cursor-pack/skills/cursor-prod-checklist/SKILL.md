@@ -1,15 +1,23 @@
 ---
-name: "cursor-prod-checklist"
-description: |
-  Production readiness checklist for Cursor IDE setup: security, rules, indexing, privacy, and team
-  standards. Triggers on "cursor production", "cursor ready", "cursor checklist", "optimize cursor setup",
+name: cursor-prod-checklist
+description: 'Production readiness checklist for Cursor IDE setup: security, rules,
+  indexing, privacy, and team
+
+  standards. Triggers on "cursor production", "cursor ready", "cursor checklist",
+  "optimize cursor setup",
+
   "cursor onboarding".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, cursor, cursor-prod]
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- cursor
+- cursor-prod
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Cursor Production Checklist
 

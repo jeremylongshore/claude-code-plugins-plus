@@ -1,16 +1,23 @@
 ---
 name: langchain-webhooks-events
-description: |
-  Implement LangChain callback handlers, streaming, webhooks,
+description: 'Implement LangChain callback handlers, streaming, webhooks,
+
   Server-Sent Events (SSE), and WebSocket integration.
+
   Trigger: "langchain callbacks", "langchain webhooks",
+
   "langchain events", "langchain streaming", "langchain SSE", "WebSocket LLM".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langchain, webhooks]
+tags:
+- saas
+- langchain
+- webhooks
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # LangChain Webhooks & Events
 

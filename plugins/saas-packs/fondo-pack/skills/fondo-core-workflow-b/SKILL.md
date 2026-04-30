@@ -1,17 +1,24 @@
 ---
 name: fondo-core-workflow-b
-description: |
-  Execute Fondo R&D tax credit workflow: qualify activities, calculate credits,
+description: 'Execute Fondo R&D tax credit workflow: qualify activities, calculate
+  credits,
+
   file Form 6765, and claim payroll tax offset for startups.
-  Trigger: "fondo R&D credit", "fondo tax credit", "fondo Form 6765", "startup tax credit".
+
+  Trigger: "fondo R&D credit", "fondo tax credit", "fondo Form 6765", "startup tax
+  credit".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, accounting, fondo]
-compatible-with: claude-code
+tags:
+- saas
+- accounting
+- fondo
+compatibility: Designed for Claude Code
 ---
-
 # Fondo Core Workflow B: R&D Tax Credits
 
 ## Overview

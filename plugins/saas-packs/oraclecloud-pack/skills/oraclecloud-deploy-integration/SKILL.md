@@ -1,17 +1,24 @@
 ---
 name: oraclecloud-deploy-integration
-description: |
-  Deploy containers to OCI using OKE (Kubernetes) or Container Instances.
-  Use when deploying applications to Oracle Cloud, pushing images to OCIR, or configuring OKE clusters.
-  Trigger with "oraclecloud deploy", "oci kubernetes", "oke deploy", "oci container instances", "oracle cloud deploy integration".
+description: 'Deploy containers to OCI using OKE (Kubernetes) or Container Instances.
+
+  Use when deploying applications to Oracle Cloud, pushing images to OCIR, or configuring
+  OKE clusters.
+
+  Trigger with "oraclecloud deploy", "oci kubernetes", "oke deploy", "oci container
+  instances", "oracle cloud deploy integration".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(pip:*), Bash(kubectl:*), Bash(docker:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, oraclecloud, oci]
-compatible-with: claude-code
+tags:
+- saas
+- oraclecloud
+- oci
+compatibility: Designed for Claude Code
 ---
-
 # Oracle Cloud Deploy Integration
 
 ## Overview

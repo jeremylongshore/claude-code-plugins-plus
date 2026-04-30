@@ -1,19 +1,27 @@
 ---
 name: canva-ci-integration
-description: |
-  Configure CI/CD pipelines for Canva Connect API integrations with GitHub Actions.
+description: 'Configure CI/CD pipelines for Canva Connect API integrations with GitHub
+  Actions.
+
   Use when setting up automated testing, configuring CI pipelines,
+
   or integrating Canva API tests into your build process.
+
   Trigger with phrases like "canva CI", "canva GitHub Actions",
+
   "canva automated tests", "CI canva", "canva pipeline".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, canva]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- canva
+compatibility: Designed for Claude Code
 ---
-
 # Canva CI Integration
 
 ## Overview

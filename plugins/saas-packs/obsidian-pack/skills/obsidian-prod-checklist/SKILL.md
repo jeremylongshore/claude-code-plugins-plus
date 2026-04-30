@@ -1,17 +1,25 @@
 ---
 name: obsidian-prod-checklist
-description: |
-  Pre-release plugin verification checklist for Obsidian community plugins.
+description: 'Pre-release plugin verification checklist for Obsidian community plugins.
+
   Use when preparing to release, reviewing before submission,
+
   or validating plugin quality before publishing.
+
   Trigger with phrases like "obsidian release checklist", "publish obsidian plugin",
+
   "obsidian plugin submission", "obsidian prod ready".
+
+  '
 allowed-tools: Read, Grep, Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, obsidian, obsidian-prod]
+tags:
+- saas
+- obsidian
+- obsidian-prod
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Obsidian Prod Checklist
 

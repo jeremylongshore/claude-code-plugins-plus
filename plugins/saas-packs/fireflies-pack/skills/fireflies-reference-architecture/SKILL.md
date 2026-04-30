@@ -1,17 +1,26 @@
 ---
 name: fireflies-reference-architecture
-description: |
-  Design meeting intelligence architecture with Fireflies.ai GraphQL API, webhooks, and CRM sync.
+description: 'Design meeting intelligence architecture with Fireflies.ai GraphQL API,
+  webhooks, and CRM sync.
+
   Use when designing new integrations, planning transcript pipelines,
+
   or establishing architecture for meeting analytics platforms.
+
   Trigger with phrases like "fireflies architecture", "fireflies design",
+
   "fireflies project structure", "meeting intelligence pipeline".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, fireflies, architecture]
+tags:
+- saas
+- fireflies
+- architecture
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Fireflies.ai Reference Architecture
 

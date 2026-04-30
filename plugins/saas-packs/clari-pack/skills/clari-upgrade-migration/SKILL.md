@@ -1,19 +1,27 @@
 ---
 name: clari-upgrade-migration
-description: |
-  Handle Clari API version changes and export schema migrations.
+description: 'Handle Clari API version changes and export schema migrations.
+
   Use when Clari updates their API, export format changes,
+
   or migrating from v3 to v4 API.
+
   Trigger with phrases like "upgrade clari", "clari api migration",
+
   "clari schema change", "clari v4 migration".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, revenue-intelligence, forecasting, clari]
-compatible-with: claude-code
+tags:
+- saas
+- revenue-intelligence
+- forecasting
+- clari
+compatibility: Designed for Claude Code
 ---
-
 # Clari Upgrade & Migration
 
 ## Overview

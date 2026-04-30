@@ -1,20 +1,28 @@
 ---
 name: shopify-multi-env-setup
-description: |
-  Configure Shopify apps across development, staging, and production environments
+description: 'Configure Shopify apps across development, staging, and production environments
+
   with separate stores, API credentials, and app instances.
+
   Use when setting up isolated dev/staging/prod environments for a Shopify app,
+
   managing multiple development stores, or configuring per-environment credentials.
+
   Trigger with phrases like "shopify environments", "shopify staging",
+
   "shopify dev vs prod", "shopify multi-store", "shopify environment setup".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(shopify:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ecommerce, shopify]
-compatible-with: claude-code
+tags:
+- saas
+- ecommerce
+- shopify
+compatibility: Designed for Claude Code
 ---
-
 # Shopify Multi-Environment Setup
 
 ## Overview

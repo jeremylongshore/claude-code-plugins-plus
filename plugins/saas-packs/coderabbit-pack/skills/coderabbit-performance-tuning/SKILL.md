@@ -1,17 +1,27 @@
 ---
 name: coderabbit-performance-tuning
-description: |
-  Optimize CodeRabbit review speed, relevance, and signal-to-noise ratio.
+description: 'Optimize CodeRabbit review speed, relevance, and signal-to-noise ratio.
+
   Use when reviews take too long, contain too many irrelevant comments,
+
   or when teams are experiencing review fatigue.
+
   Trigger with phrases like "coderabbit performance", "optimize coderabbit",
-  "coderabbit slow", "coderabbit noise", "coderabbit too many comments", "coderabbit relevance".
+
+  "coderabbit slow", "coderabbit noise", "coderabbit too many comments", "coderabbit
+  relevance".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, coderabbit, performance, tuning]
+tags:
+- saas
+- coderabbit
+- performance
+- tuning
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # CodeRabbit Performance Tuning
 

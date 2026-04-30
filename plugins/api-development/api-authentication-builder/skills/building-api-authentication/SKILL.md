@@ -1,16 +1,23 @@
 ---
 name: building-api-authentication
-description: |
-  Build secure API authentication systems with OAuth2, JWT, API keys, and session management.
+description: 'Build secure API authentication systems with OAuth2, JWT, API keys,
+  and session management.
+
   Use when implementing secure authentication flows.
-  Trigger with phrases like "build authentication", "add API auth", or "secure the API".
-  
+
+  Trigger with phrases like "build authentication", "add API auth", or "secure the
+  API".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:auth-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [api, authentication, api-authentication]
+tags:
+- api
+- authentication
+- api-authentication
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Building API Authentication
 

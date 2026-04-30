@@ -1,17 +1,27 @@
 ---
 name: lindy-observability
-description: |
-  Monitor Lindy AI agent health, task success rates, and credit consumption.
+description: 'Monitor Lindy AI agent health, task success rates, and credit consumption.
+
   Use when setting up monitoring, building dashboards, configuring alerts,
+
   or tracking agent performance over time.
+
   Trigger with phrases like "lindy monitoring", "lindy observability",
+
   "lindy metrics", "lindy logging", "lindy dashboard".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lindy, monitoring, observability, dashboard]
+tags:
+- saas
+- lindy
+- monitoring
+- observability
+- dashboard
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lindy Observability
 

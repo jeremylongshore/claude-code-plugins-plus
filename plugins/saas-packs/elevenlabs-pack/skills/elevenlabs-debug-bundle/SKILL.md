@@ -1,19 +1,29 @@
 ---
 name: elevenlabs-debug-bundle
-description: |
-  Collect ElevenLabs debug evidence for support tickets and troubleshooting.
+description: 'Collect ElevenLabs debug evidence for support tickets and troubleshooting.
+
   Use when encountering persistent issues, preparing support tickets,
+
   or collecting diagnostic information for ElevenLabs problems.
+
   Trigger: "elevenlabs debug", "elevenlabs support bundle",
+
   "collect elevenlabs logs", "elevenlabs diagnostic", "elevenlabs support ticket".
+
+  '
 allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Bash(node:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, voice, ai, elevenlabs, debugging, support]
-compatible-with: claude-code
+tags:
+- saas
+- voice
+- ai
+- elevenlabs
+- debugging
+- support
+compatibility: Designed for Claude Code
 ---
-
 # ElevenLabs Debug Bundle
 
 ## Overview

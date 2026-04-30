@@ -1,17 +1,27 @@
 ---
 name: deepgram-common-errors
-description: |
-  Diagnose and fix common Deepgram errors and issues.
+description: 'Diagnose and fix common Deepgram errors and issues.
+
   Use when troubleshooting Deepgram API errors, debugging transcription failures,
+
   or resolving integration issues.
+
   Trigger: "deepgram error", "deepgram not working", "fix deepgram",
+
   "deepgram troubleshoot", "transcription failed", "deepgram 401".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, deepgram, api, debugging, transcription]
+tags:
+- saas
+- deepgram
+- api
+- debugging
+- transcription
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Deepgram Common Errors
 

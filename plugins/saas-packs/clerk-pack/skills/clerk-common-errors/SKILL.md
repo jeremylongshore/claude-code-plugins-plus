@@ -1,17 +1,25 @@
 ---
 name: clerk-common-errors
-description: |
-  Troubleshoot common Clerk errors and issues.
+description: 'Troubleshoot common Clerk errors and issues.
+
   Use when encountering authentication errors, SDK issues,
+
   or configuration problems with Clerk.
+
   Trigger with phrases like "clerk error", "clerk not working",
+
   "clerk authentication failed", "clerk issue", "fix clerk".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clerk, authentication]
+tags:
+- saas
+- clerk
+- authentication
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clerk Common Errors
 

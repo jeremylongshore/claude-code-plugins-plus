@@ -1,17 +1,26 @@
 ---
 name: fireflies-multi-env-setup
-description: |
-  Configure Fireflies.ai across dev, staging, and production with isolated API keys.
+description: 'Configure Fireflies.ai across dev, staging, and production with isolated
+  API keys.
+
   Use when setting up multi-environment deployments, managing per-env secrets,
+
   or implementing environment-specific Fireflies configurations.
+
   Trigger with phrases like "fireflies environments", "fireflies staging",
+
   "fireflies dev prod", "fireflies environment setup", "fireflies config by env".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, fireflies, deployment]
+tags:
+- saas
+- fireflies
+- deployment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Fireflies.ai Multi-Environment Setup
 

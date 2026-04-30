@@ -1,19 +1,28 @@
 ---
 name: brightdata-reference-architecture
-description: |
-  Implement Bright Data reference architecture with best-practice project layout.
+description: 'Implement Bright Data reference architecture with best-practice project
+  layout.
+
   Use when designing new Bright Data integrations, reviewing project structure,
+
   or establishing architecture standards for Bright Data applications.
+
   Trigger with phrases like "brightdata architecture", "brightdata best practices",
+
   "brightdata project structure", "how to organize brightdata", "brightdata layout".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, scraping, data, brightdata]
-compatible-with: claude-code
+tags:
+- saas
+- scraping
+- data
+- brightdata
+compatibility: Designed for Claude Code
 ---
-
 # Bright Data Reference Architecture
 
 ## Overview

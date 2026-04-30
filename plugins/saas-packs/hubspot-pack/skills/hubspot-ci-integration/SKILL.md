@@ -1,19 +1,27 @@
 ---
 name: hubspot-ci-integration
-description: |
-  Configure CI/CD pipelines for HubSpot integrations with GitHub Actions.
+description: 'Configure CI/CD pipelines for HubSpot integrations with GitHub Actions.
+
   Use when setting up automated testing, configuring CI with HubSpot secrets,
+
   or integrating HubSpot API tests into your build process.
+
   Trigger with phrases like "hubspot CI", "hubspot GitHub Actions",
+
   "hubspot automated tests", "CI hubspot", "hubspot pipeline test".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, marketing, hubspot]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- marketing
+- hubspot
+compatibility: Designed for Claude Code
 ---
-
 # HubSpot CI Integration
 
 ## Overview

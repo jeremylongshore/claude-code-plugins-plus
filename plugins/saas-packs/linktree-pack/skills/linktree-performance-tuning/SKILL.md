@@ -1,17 +1,24 @@
 ---
 name: linktree-performance-tuning
-description: |
-  Optimize Linktree API integration performance with caching, batching, and rate limit strategies.
-  Use when Linktree API calls are slow, hitting rate limits, or profile pages serve stale link data.
+description: 'Optimize Linktree API integration performance with caching, batching,
+  and rate limit strategies.
+
+  Use when Linktree API calls are slow, hitting rate limits, or profile pages serve
+  stale link data.
+
   Trigger with "linktree performance tuning".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, linktree, social]
-compatible-with: claude-code
+tags:
+- saas
+- linktree
+- social
+compatibility: Designed for Claude Code
 ---
-
 # Linktree Performance Tuning
 
 ## Overview

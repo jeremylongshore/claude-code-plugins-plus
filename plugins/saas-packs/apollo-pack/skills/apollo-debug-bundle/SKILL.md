@@ -1,17 +1,25 @@
 ---
 name: apollo-debug-bundle
-description: |
-  Collect Apollo.io debug evidence for support.
+description: 'Collect Apollo.io debug evidence for support.
+
   Use when preparing support tickets, documenting issues,
+
   or gathering diagnostic information for Apollo problems.
+
   Trigger with phrases like "apollo debug", "apollo support bundle",
+
   "collect apollo diagnostics", "apollo troubleshooting info".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, apollo, debugging]
+tags:
+- saas
+- apollo
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Apollo Debug Bundle
 

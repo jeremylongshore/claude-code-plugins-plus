@@ -1,18 +1,26 @@
 ---
 name: clade-webhooks-events
-description: |
-  Use Anthropic Message Batches for async bulk processing and event handling.
+description: 'Use Anthropic Message Batches for async bulk processing and event handling.
+
   Use when working with webhooks-events patterns.
+
   Trigger with "anthropic batches", "claude batch api", "anthropic async",
+
   "bulk claude processing", "anthropic webhook".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code
-tags: [saas, anthropic, claude, batches, async]
+tags:
+- saas
+- anthropic
+- claude
+- batches
+- async
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Message Batches & Async Processing
 
 ## Overview

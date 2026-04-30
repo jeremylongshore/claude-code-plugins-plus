@@ -1,17 +1,26 @@
 ---
 name: databricks-data-handling
-description: |
-  Implement Delta Lake data management patterns including GDPR, PII handling, and data lifecycle.
+description: 'Implement Delta Lake data management patterns including GDPR, PII handling,
+  and data lifecycle.
+
   Use when implementing data retention, handling GDPR requests,
+
   or managing data lifecycle in Delta Lake.
+
   Trigger with phrases like "databricks GDPR", "databricks PII",
+
   "databricks data retention", "databricks data lifecycle", "delete user data".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(databricks:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, databricks, databricks-data]
+tags:
+- saas
+- databricks
+- databricks-data
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Databricks Data Handling
 

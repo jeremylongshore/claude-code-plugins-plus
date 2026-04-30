@@ -1,17 +1,21 @@
 ---
 name: podium-upgrade-migration
-description: |
-  Podium upgrade migration — business messaging and communication platform integration.
-  Use when working with Podium API for messaging, reviews, or payments.
-  Trigger with phrases like "podium upgrade migration", "podium-upgrade-migration".
+description: "Podium upgrade migration \u2014 business messaging and communication\
+  \ platform integration.\nUse when working with Podium API for messaging, reviews,\
+  \ or payments.\nTrigger with phrases like \"podium upgrade migration\", \"podium-upgrade-migration\"\
+  .\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, podium, messaging, reviews, payments]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- podium
+- messaging
+- reviews
+- payments
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Podium Upgrade Migration
 
 ## Overview

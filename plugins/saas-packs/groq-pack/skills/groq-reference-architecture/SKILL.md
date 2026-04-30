@@ -1,17 +1,26 @@
 ---
 name: groq-reference-architecture
-description: |
-  Implement Groq reference architecture with model routing, streaming pipelines, and fallbacks.
+description: 'Implement Groq reference architecture with model routing, streaming
+  pipelines, and fallbacks.
+
   Use when designing new Groq integrations, reviewing project structure,
+
   or establishing architecture standards for Groq applications.
+
   Trigger with phrases like "groq architecture", "groq best practices",
+
   "groq project structure", "how to organize groq", "groq design".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, groq, groq-reference]
+tags:
+- saas
+- groq
+- groq-reference
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Groq Reference Architecture
 

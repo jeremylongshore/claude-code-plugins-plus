@@ -1,17 +1,25 @@
 ---
 name: gamma-migration-deep-dive
-description: |
-  Deep dive into migrating to Gamma from other presentation platforms.
+description: 'Deep dive into migrating to Gamma from other presentation platforms.
+
   Use when migrating from PowerPoint, Google Slides, Canva,
+
   or other presentation tools to Gamma.
+
   Trigger with phrases like "gamma migration", "migrate to gamma",
+
   "gamma import", "gamma from powerpoint", "gamma from google slides".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, gamma, migration]
+tags:
+- saas
+- gamma
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Gamma Migration Deep Dive
 

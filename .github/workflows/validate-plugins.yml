@@ -28,21 +28,31 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
           node-version: '20'
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+      - name: Install root dev dependencies
+        run: pnpm install --frozen-lockfile --filter "claude-code-plugins-monorepo"
 
-      - name: Install dependencies (root)
-        run: pnpm install --frozen-lockfile
+      # @intentsolutions/audit-harness verify — exit 0 when policy hashes
+      # match `.harness-hash`, exit 2 when a hash-pinned policy file (e.g.
+      # tests/TESTING.md, .dependency-cruiser.cjs, *.feature) was changed
+      # without a paired engineer-initiated `pnpm exec audit-harness init`.
+      # Hashing surface is currently empty (we declined the tools that get
+      # pinned — ADR-260/261/263) so this is exit 0; kept here so the gate
+      # is wired the moment any pinned file lands.
+      - name: Verify audit-harness integrity
+        run: pnpm exec audit-harness verify
 
-      # TODO(cleanup-pr-followup): These run in reporting mode (|| true) until the
-      # ~5 pre-existing ESLint errors and ~36 prettier formatting deltas are
-      # cleaned up in a follow-up PR. Once clean, drop the `|| true` so CI blocks
-      # on style regressions. Tracking: see #582 / #584 / Phase 5 PR2.
+      # TODO(cleanup-pr-followup): These run in reporting mode (|| true) until
+      # the ~5 pre-existing ESLint errors and ~36 prettier formatting deltas
+      # are cleaned up in a follow-up PR. Once clean, drop the `|| true` so CI
+      # blocks on style regressions. Tracking: see #582 / #584 / Phase 5 PR2.
       - name: Lint (root ESLint, reporting mode)
         run: pnpm run lint:root || true
 
@@ -67,8 +77,18 @@ jobs:
       - name: Validate JSON files
         run: |
           echo "Validating JSON files..."
-          # Exclude tsconfig*.json files as they use JSONC (JSON with Comments)
-          find . -name "*.json" -not -name "tsconfig*.json" -type f -exec sh -c '
+          # Exclude:
+          #  - tsconfig*.json (JSONC — JSON with Comments)
+          #  - node_modules/**/strictest.json and similar JSONC files shipped
+          #    by Astro and other transitive deps. The validate job now installs
+          #    root dev dependencies (for audit-harness verify + lint:root), so
+          #    node_modules/ exists at scan time and must be excluded.
+          find . \
+            -name "*.json" \
+            -not -name "tsconfig*.json" \
+            -not -path "./node_modules/*" \
+            -not -path "*/node_modules/*" \
+            -type f -exec sh -c '
             for file; do
               echo "Checking $file"
               if ! jq empty "$file" 2>/dev/null; then
@@ -273,6 +293,16 @@ jobs:
       - name: Setup pnpm
         if: matrix.test-type == 'mcp-plugins'
         uses: pnpm/action-setup@v4
+
+      # plugins/mcp/slack-channel uses `bun test` as its test runner.
+      # Other MCP plugins use vitest. Installing bun lets the per-plugin
+      # test loop run slack-channel's bun-native tests without forcing a
+      # framework migration. (See issue #615.)
+      - name: Setup Bun
+        if: matrix.test-type == 'mcp-plugins'
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
 
       - name: Install dependencies
         if: matrix.test-type == 'mcp-plugins'
@@ -622,6 +652,17 @@ jobs:
         env:
           CI: true
 
+      # A11y smoke tests (issue #588) — gate-wired-but-non-blocking. The spec
+      # baselines the current violation count per page; cleanup is tracked
+      # separately under the a11y-cleanup-followup workstream. We run the
+      # suite explicitly here so the result shows up as its own CI step.
+      - name: Run a11y baseline tests
+        run: |
+          cd marketplace
+          npx playwright test tests/a11y/ --reporter=list
+        env:
+          CI: true
+
       - name: Upload Playwright report
         uses: actions/upload-artifact@v6
         if: always()
@@ -794,3 +835,13 @@ jobs:
             echo "❌ npm pack failed"
             exit 1
           fi
+
+      # Bundle size budget (issue #591). Caps the gzipped JS shipped to npm
+      # so install latency stays bounded as the CLI grows. Budget is set ~50%
+      # above the current size (currently ~27 KB → 40 KB ceiling). Tighten
+      # the limit in .size-limit.json after every shrink. MCP plugins are
+      # intentionally excluded — they're server-side, not install-latency-bound.
+      - name: Bundle size budget
+        run: |
+          cd packages/cli
+          pnpm exec size-limit

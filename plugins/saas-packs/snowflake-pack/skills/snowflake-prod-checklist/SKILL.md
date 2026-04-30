@@ -1,19 +1,28 @@
 ---
 name: snowflake-prod-checklist
-description: |
-  Execute Snowflake production readiness checklist with monitoring and rollback.
+description: 'Execute Snowflake production readiness checklist with monitoring and
+  rollback.
+
   Use when deploying Snowflake pipelines to production, preparing for go-live,
+
   or validating production Snowflake configuration.
+
   Trigger with phrases like "snowflake production", "snowflake go-live",
+
   "snowflake launch checklist", "snowflake prod ready".
+
+  '
 allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, data-warehouse, analytics, snowflake]
-compatible-with: claude-code
+tags:
+- saas
+- data-warehouse
+- analytics
+- snowflake
+compatibility: Designed for Claude Code
 ---
-
 # Snowflake Production Checklist
 
 ## Overview

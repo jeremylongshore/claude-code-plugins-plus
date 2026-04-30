@@ -1,17 +1,27 @@
 ---
 name: twinmind-sdk-patterns
-description: |
-  Apply production-ready TwinMind SDK patterns for TypeScript and Python.
+description: 'Apply production-ready TwinMind SDK patterns for TypeScript and Python.
+
   Use when implementing TwinMind integrations, refactoring API usage,
+
   or establishing team coding standards for meeting AI integration.
+
   Trigger with phrases like "twinmind SDK patterns", "twinmind best practices",
+
   "twinmind code patterns", "idiomatic twinmind".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, twinmind, api, python, typescript]
+tags:
+- saas
+- twinmind
+- api
+- python
+- typescript
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # TwinMind SDK Patterns
 

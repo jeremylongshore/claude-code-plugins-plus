@@ -1,17 +1,20 @@
 ---
 name: procore-migration-deep-dive
-description: |
-  Procore migration deep dive — construction management platform integration.
-  Use when working with Procore API for project management, RFIs, or submittals.
-  Trigger with phrases like "procore migration deep dive", "procore-migration-deep-dive".
+description: "Procore migration deep dive \u2014 construction management platform\
+  \ integration.\nUse when working with Procore API for project management, RFIs,\
+  \ or submittals.\nTrigger with phrases like \"procore migration deep dive\", \"\
+  procore-migration-deep-dive\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(curl:*), Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, procore, construction, project-management]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- procore
+- construction
+- project-management
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Procore Migration Deep Dive
 
 ## Overview

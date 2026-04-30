@@ -1,19 +1,28 @@
 ---
 name: coreweave-data-handling
-description: |
-  Handle training data and model artifacts on CoreWeave persistent storage.
+description: 'Handle training data and model artifacts on CoreWeave persistent storage.
+
   Use when managing large datasets, configuring storage classes,
+
   or implementing data pipelines for GPU workloads.
+
   Trigger with phrases like "coreweave data", "coreweave storage",
+
   "coreweave pvc", "coreweave dataset management".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(kubectl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, gpu-cloud, kubernetes, inference, coreweave]
-compatible-with: claude-code
+tags:
+- saas
+- gpu-cloud
+- kubernetes
+- inference
+- coreweave
+compatibility: Designed for Claude Code
 ---
-
 # CoreWeave Data Handling
 
 ## Overview

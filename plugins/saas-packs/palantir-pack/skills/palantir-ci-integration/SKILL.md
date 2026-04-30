@@ -1,19 +1,29 @@
 ---
 name: palantir-ci-integration
-description: |
-  Configure CI/CD pipelines for Palantir Foundry integrations with GitHub Actions.
+description: 'Configure CI/CD pipelines for Palantir Foundry integrations with GitHub
+  Actions.
+
   Use when setting up automated testing, running transforms validation,
+
   or integrating Foundry SDK tests into your build process.
+
   Trigger with phrases like "palantir CI", "foundry GitHub Actions",
+
   "palantir automated tests", "CI foundry".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, palantir, foundry, ci-cd, github-actions]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- palantir
+- foundry
+- ci-cd
+- github-actions
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Palantir CI Integration
 
 ## Overview

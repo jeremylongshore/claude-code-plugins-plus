@@ -1,17 +1,27 @@
 ---
 name: documenso-performance-tuning
-description: |
-  Optimize Documenso integration performance with caching, batching, and efficient patterns.
+description: 'Optimize Documenso integration performance with caching, batching, and
+  efficient patterns.
+
   Use when improving response times, reducing API calls,
+
   or optimizing bulk document operations.
+
   Trigger with phrases like "documenso performance", "optimize documenso",
+
   "documenso caching", "documenso batch operations".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, documenso, api, performance]
+tags:
+- saas
+- documenso
+- api
+- performance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Documenso Performance Tuning
 

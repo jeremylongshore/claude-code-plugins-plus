@@ -1,16 +1,26 @@
 ---
 name: yt-packaging
-description: |
-  Create optimized YouTube titles and thumbnail concepts for maximum CTR. Use this skill whenever the user
-  says "title ideas", "thumbnail concepts", "package this video", "CTR optimization", "title options", "packaging",
-  or has an approved brief and needs to finalize the title and thumbnail direction before outlining. Packaging
-  determines whether viewers click. Use when working with yt packaging. Trigger with 'yt', 'packaging'.
+description: 'Create optimized YouTube titles and thumbnail concepts for maximum CTR.
+  Use this skill whenever the user
+
+  says "title ideas", "thumbnail concepts", "package this video", "CTR optimization",
+  "title options", "packaging",
+
+  or has an approved brief and needs to finalize the title and thumbnail direction
+  before outlining. Packaging
+
+  determines whether viewers click. Use when working with yt packaging. Trigger with
+  ''yt'', ''packaging''.
+
+  '
 allowed-tools: WebSearch, Read, Write
 version: 1.0.0
 author: Claude Code Plugins <plugins@claudecodeplugins.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [productivity, yt-packaging]
+tags:
+- productivity
+- yt-packaging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # YouTube Packaging
 

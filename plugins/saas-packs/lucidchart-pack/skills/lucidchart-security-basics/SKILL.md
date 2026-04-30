@@ -1,16 +1,20 @@
 ---
 name: lucidchart-security-basics
-description: |
-  Security Basics for Lucidchart.
+description: 'Security Basics for Lucidchart.
+
   Trigger: "lucidchart security basics".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, lucidchart, diagramming]
-compatible-with: claude-code
+tags:
+- saas
+- lucidchart
+- diagramming
+compatibility: Designed for Claude Code
 ---
-
 # Lucidchart Security Basics
 
 ## Overview

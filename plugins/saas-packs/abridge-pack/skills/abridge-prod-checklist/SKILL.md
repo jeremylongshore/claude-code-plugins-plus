@@ -1,19 +1,28 @@
 ---
 name: abridge-prod-checklist
-description: |
-  Execute Abridge production readiness checklist for clinical AI deployment.
+description: 'Execute Abridge production readiness checklist for clinical AI deployment.
+
   Use when launching Abridge in a healthcare org, preparing for go-live,
+
   or validating HIPAA compliance before production deployment.
+
   Trigger: "abridge production checklist", "abridge go-live",
+
   "abridge launch readiness", "abridge prod deploy".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, healthcare, ai, abridge, production]
-compatible-with: claude-code
+tags:
+- saas
+- healthcare
+- ai
+- abridge
+- production
+compatibility: Designed for Claude Code
 ---
-
 # Abridge Production Checklist
 
 ## Overview

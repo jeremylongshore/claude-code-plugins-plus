@@ -1,17 +1,28 @@
 ---
 name: replit-core-workflow-b
-description: |
-  Manage Replit Teams, member permissions, deployment promotion, and bulk Repl admin.
+description: 'Manage Replit Teams, member permissions, deployment promotion, and bulk
+  Repl admin.
+
   Use when managing team access, configuring deployment environments,
+
   auditing Repls, or administering organization settings.
+
   Trigger with phrases like "replit team management", "replit admin",
+
   "replit permissions", "replit bulk operations", "manage replit members".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, replit, workflow, admin, teams]
+tags:
+- saas
+- replit
+- workflow
+- admin
+- teams
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Replit Core Workflow B — Teams & Admin
 

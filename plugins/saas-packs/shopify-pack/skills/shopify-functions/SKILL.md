@@ -1,19 +1,27 @@
 ---
 name: shopify-functions
-description: |
-  Build Shopify Functions for custom discount, payment, and delivery logic in a WASM sandbox.
+description: 'Build Shopify Functions for custom discount, payment, and delivery logic
+  in a WASM sandbox.
+
   Use when creating custom discount rules, payment customizations, delivery options,
+
   or cart transformations that run server-side at checkout.
+
   Trigger with phrases like "shopify functions", "shopify discounts",
+
   "shopify wasm", "custom discount function", "shopify checkout customization".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ecommerce, shopify]
-compatible-with: claude-code
+tags:
+- saas
+- ecommerce
+- shopify
+compatibility: Designed for Claude Code
 ---
-
 # Shopify Functions
 
 ## Overview

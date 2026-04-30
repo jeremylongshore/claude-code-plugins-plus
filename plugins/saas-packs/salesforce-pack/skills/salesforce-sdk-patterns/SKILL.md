@@ -1,19 +1,27 @@
 ---
 name: salesforce-sdk-patterns
-description: |
-  Apply production-ready Salesforce jsforce patterns for TypeScript and Python.
+description: 'Apply production-ready Salesforce jsforce patterns for TypeScript and
+  Python.
+
   Use when implementing Salesforce integrations, refactoring SDK usage,
+
   or establishing team coding standards for Salesforce.
+
   Trigger with phrases like "salesforce SDK patterns", "jsforce best practices",
+
   "salesforce code patterns", "idiomatic salesforce", "salesforce typescript".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, salesforce]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- salesforce
+compatibility: Designed for Claude Code
 ---
-
 # Salesforce SDK Patterns
 
 ## Overview

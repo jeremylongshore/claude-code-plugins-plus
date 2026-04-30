@@ -1,17 +1,24 @@
 ---
 name: persona-local-dev-loop
-description: |
-  Local development with Persona sandbox, ngrok for webhooks, mock verifications.
+description: 'Local development with Persona sandbox, ngrok for webhooks, mock verifications.
+
   Use when working with Persona identity verification.
+
   Trigger with phrases like "persona local-dev-loop", "persona local-dev-loop".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, persona, identity, kyc, verification]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- persona
+- identity
+- kyc
+- verification
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # persona local dev loop | sed 's/\b\(.\)/\u\1/g'
 
 ## Overview

@@ -1,19 +1,30 @@
 ---
 name: assemblyai-security-basics
-description: |
-  Apply AssemblyAI security best practices for API keys, PII, and access control.
+description: 'Apply AssemblyAI security best practices for API keys, PII, and access
+  control.
+
   Use when securing API keys, implementing PII redaction,
+
   or configuring temporary tokens for browser-side streaming.
+
   Trigger with phrases like "assemblyai security", "assemblyai secrets",
+
   "secure assemblyai", "assemblyai API key security", "assemblyai PII".
+
+  '
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, speech-to-text, assemblyai, transcription, security]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- speech-to-text
+- assemblyai
+- transcription
+- security
+compatibility: Designed for Claude Code
 ---
-
 # AssemblyAI Security Basics
 
 ## Overview

@@ -1,17 +1,23 @@
 ---
 name: navan-hello-world
-description: |
-  Make your first Navan API call to retrieve trip and user data.
+description: 'Make your first Navan API call to retrieve trip and user data.
+
   Use when verifying a new Navan integration works end-to-end after auth setup.
-  Trigger with "navan hello world", "navan example", "test navan api", "first navan call".
+
+  Trigger with "navan hello world", "navan example", "test navan api", "first navan
+  call".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, navan, travel]
-compatible-with: claude-code
+tags:
+- saas
+- navan
+- travel
+compatibility: Designed for Claude Code
 ---
-
 # Navan Hello World
 
 ## Overview

@@ -1,17 +1,27 @@
 ---
 name: clay-advanced-troubleshooting
-description: |
-  Deep-debug complex Clay enrichment failures, provider degradation, and data flow issues.
+description: 'Deep-debug complex Clay enrichment failures, provider degradation, and
+  data flow issues.
+
   Use when standard troubleshooting fails, investigating intermittent enrichment failures,
+
   or preparing detailed evidence for Clay support escalation.
+
   Trigger with phrases like "clay hard bug", "clay mystery error",
+
   "clay impossible to debug", "difficult clay issue", "clay deep debug".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clay, debugging, scaling]
+tags:
+- saas
+- clay
+- debugging
+- scaling
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clay Advanced Troubleshooting
 

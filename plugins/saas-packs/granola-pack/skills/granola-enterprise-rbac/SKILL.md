@@ -1,17 +1,28 @@
 ---
 name: granola-enterprise-rbac
-description: |
-  Configure enterprise role-based access control for Granola workspaces.
-  Use when defining user roles, setting sharing permissions, configuring SSO group mappings,
+description: 'Configure enterprise role-based access control for Granola workspaces.
+
+  Use when defining user roles, setting sharing permissions, configuring SSO group
+  mappings,
+
   or implementing least-privilege access for meeting data.
+
   Trigger: "granola roles", "granola permissions", "granola access control",
+
   "granola RBAC", "granola admin roles".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, granola, rbac, enterprise, security]
+tags:
+- saas
+- granola
+- rbac
+- enterprise
+- security
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Granola Enterprise RBAC
 

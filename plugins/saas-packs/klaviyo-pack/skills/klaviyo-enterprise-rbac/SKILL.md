@@ -1,19 +1,28 @@
 ---
 name: klaviyo-enterprise-rbac
-description: |
-  Configure Klaviyo enterprise access control with API key scopes and OAuth.
+description: 'Configure Klaviyo enterprise access control with API key scopes and
+  OAuth.
+
   Use when implementing per-key scoping, configuring OAuth app authorization,
+
   or setting up organization-level access controls for Klaviyo.
+
   Trigger with phrases like "klaviyo scopes", "klaviyo RBAC",
+
   "klaviyo enterprise", "klaviyo permissions", "klaviyo OAuth", "klaviyo access control".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, klaviyo, email-marketing, cdp]
-compatible-with: claude-code
+tags:
+- saas
+- klaviyo
+- email-marketing
+- cdp
+compatibility: Designed for Claude Code
 ---
-
 # Klaviyo Enterprise RBAC
 
 ## Overview

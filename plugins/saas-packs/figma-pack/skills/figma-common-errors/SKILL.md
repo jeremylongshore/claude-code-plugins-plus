@@ -1,19 +1,25 @@
 ---
 name: figma-common-errors
-description: |
-  Diagnose and fix common Figma REST API and Plugin API errors.
+description: 'Diagnose and fix common Figma REST API and Plugin API errors.
+
   Use when encountering HTTP errors, plugin sandbox crashes,
+
   or unexpected API responses from Figma.
+
   Trigger with phrases like "figma error", "fix figma",
+
   "figma not working", "figma 403", "figma 429".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, figma]
-compatible-with: claude-code
+tags:
+- saas
+- figma
+compatibility: Designed for Claude Code
 ---
-
 # Figma Common Errors
 
 ## Overview

@@ -1,17 +1,23 @@
 ---
 name: stackblitz-deploy-integration
-description: |
-  Deploy WebContainer apps to Vercel, Netlify with proper COOP/COEP headers.
+description: 'Deploy WebContainer apps to Vercel, Netlify with proper COOP/COEP headers.
+
   Use when working with WebContainers or StackBlitz SDK.
+
   Trigger: "deploy stackblitz".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ide, webcontainers, stackblitz]
-compatible-with: claude-code
+tags:
+- saas
+- ide
+- webcontainers
+- stackblitz
+compatibility: Designed for Claude Code
 ---
-
 # StackBlitz Deploy Integration
 
 ## Overview

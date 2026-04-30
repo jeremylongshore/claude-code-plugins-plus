@@ -1,17 +1,24 @@
 ---
 name: validating-database-integrity
-description: |
-  Process use when you need to ensure database integrity through comprehensive data validation.
-  This skill validates data types, ranges, formats, referential integrity, and business rules.
+description: 'Process use when you need to ensure database integrity through comprehensive
+  data validation.
+
+  This skill validates data types, ranges, formats, referential integrity, and business
+  rules.
+
   Trigger with phrases like "validate database data", "implement data validation rules",
+
   "enforce data integrity constraints", or "validate data formats".
 
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [database, validating-database]
+tags:
+- database
+- validating-database
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Data Validation Engine
 

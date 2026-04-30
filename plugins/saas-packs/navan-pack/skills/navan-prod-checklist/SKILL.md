@@ -1,16 +1,19 @@
 ---
 name: navan-prod-checklist
-description: |
-  Use when validating production readiness for a Navan API integration — credential rotation, alerting, rate limits, SSO, SCIM, and compliance audit trails.
-  Trigger with "navan prod checklist" or "navan production readiness".
+description: "Use when validating production readiness for a Navan API integration\
+  \ \u2014 credential rotation, alerting, rate limits, SSO, SCIM, and compliance audit\
+  \ trails.\nTrigger with \"navan prod checklist\" or \"navan production readiness\"\
+  .\n"
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(jq:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, navan, travel]
-compatible-with: claude-code
+tags:
+- saas
+- navan
+- travel
+compatibility: Designed for Claude Code
 ---
-
 # Navan Production Checklist
 
 ## Overview

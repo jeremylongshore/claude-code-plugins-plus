@@ -1,19 +1,28 @@
 ---
 name: snowflake-incident-runbook
-description: |
-  Execute Snowflake incident response with triage, rollback, and postmortem using real SQL diagnostics.
+description: 'Execute Snowflake incident response with triage, rollback, and postmortem
+  using real SQL diagnostics.
+
   Use when responding to Snowflake outages, investigating query failures,
+
   or running post-incident reviews for pipeline failures.
+
   Trigger with phrases like "snowflake incident", "snowflake outage",
+
   "snowflake down", "snowflake on-call", "snowflake emergency".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*), Bash(snowsql:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, data-warehouse, analytics, snowflake]
-compatible-with: claude-code
+tags:
+- saas
+- data-warehouse
+- analytics
+- snowflake
+compatibility: Designed for Claude Code
 ---
-
 # Snowflake Incident Runbook
 
 ## Overview

@@ -1,17 +1,24 @@
 ---
 name: stackblitz-security-basics
-description: |
-  Secure WebContainer deployments: CSP headers, sandbox isolation, input validation.
+description: 'Secure WebContainer deployments: CSP headers, sandbox isolation, input
+  validation.
+
   Use when working with WebContainers or StackBlitz SDK.
+
   Trigger: "stackblitz security".
+
+  '
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ide, webcontainers, stackblitz]
-compatible-with: claude-code
+tags:
+- saas
+- ide
+- webcontainers
+- stackblitz
+compatibility: Designed for Claude Code
 ---
-
 # StackBlitz Security Basics
 
 ## Overview

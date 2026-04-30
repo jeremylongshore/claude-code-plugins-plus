@@ -1,17 +1,24 @@
 ---
 name: oraclecloud-security-basics
-description: |
-  Master OCI IAM policy syntax, common policy patterns, and API key management.
-  Use when writing IAM policies, granting access to compartments, or managing API keys.
-  Trigger with "oraclecloud security basics", "oci iam policy", "oci policy syntax", "oci api key setup".
+description: 'Master OCI IAM policy syntax, common policy patterns, and API key management.
+
+  Use when writing IAM policies, granting access to compartments, or managing API
+  keys.
+
+  Trigger with "oraclecloud security basics", "oci iam policy", "oci policy syntax",
+  "oci api key setup".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(pip:*), Bash(oci:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, oraclecloud, oci]
-compatible-with: claude-code
+tags:
+- saas
+- oraclecloud
+- oci
+compatibility: Designed for Claude Code
 ---
-
 # Oracle Cloud Security Basics
 
 ## Overview

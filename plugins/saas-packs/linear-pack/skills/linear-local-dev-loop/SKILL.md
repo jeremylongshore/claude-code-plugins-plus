@@ -1,17 +1,26 @@
 ---
 name: linear-local-dev-loop
-description: |
-  Set up local Linear development environment and testing workflow.
+description: 'Set up local Linear development environment and testing workflow.
+
   Use when configuring local dev, testing integrations,
+
   or setting up a development workflow with Linear webhooks.
+
   Trigger: "linear local development", "linear dev setup",
+
   "test linear locally", "linear development environment".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, linear, testing, workflow]
+tags:
+- saas
+- linear
+- testing
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Linear Local Dev Loop
 

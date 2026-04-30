@@ -1,17 +1,25 @@
 ---
 name: databricks-debug-bundle
-description: |
-  Collect Databricks debug evidence for support tickets and troubleshooting.
+description: 'Collect Databricks debug evidence for support tickets and troubleshooting.
+
   Use when encountering persistent issues, preparing support tickets,
+
   or collecting diagnostic information for Databricks problems.
+
   Trigger with phrases like "databricks debug", "databricks support bundle",
+
   "collect databricks logs", "databricks diagnostic".
+
+  '
 allowed-tools: Read, Bash(databricks:*), Bash(tar:*), Bash(python:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, databricks, debugging]
+tags:
+- saas
+- databricks
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Databricks Debug Bundle
 

@@ -1,19 +1,26 @@
 ---
 name: adobe-enterprise-rbac
-description: |
-  Configure Adobe enterprise identity with Admin Console SCIM provisioning,
+description: 'Configure Adobe enterprise identity with Admin Console SCIM provisioning,
+
   User Management API, product profile-based RBAC, and Federated ID
+
   with Azure AD or Google Workspace.
+
   Trigger with phrases like "adobe SSO", "adobe RBAC",
+
   "adobe enterprise", "adobe roles", "adobe SCIM", "adobe user management".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, adobe]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- adobe
+compatibility: Designed for Claude Code
 ---
-
 # Adobe Enterprise RBAC
 
 ## Overview

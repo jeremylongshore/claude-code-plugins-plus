@@ -1,17 +1,27 @@
 ---
 name: clay-ci-integration
-description: |
-  Configure CI/CD pipelines for Clay integrations with automated testing and validation.
+description: 'Configure CI/CD pipelines for Clay integrations with automated testing
+  and validation.
+
   Use when setting up automated tests for Clay webhook handlers, validating
+
   enrichment data quality in CI, or integrating Clay checks into your build process.
+
   Trigger with phrases like "clay CI", "clay GitHub Actions",
+
   "clay automated tests", "CI clay", "test clay integration".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clay, testing, ci-cd]
+tags:
+- saas
+- clay
+- testing
+- ci-cd
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clay CI Integration
 

@@ -1,20 +1,29 @@
 ---
 name: notion-performance-tuning
-description: |
-  Optimize Notion API performance with caching, batching, parallel requests, and incremental sync.
+description: 'Optimize Notion API performance with caching, batching, parallel requests,
+  and incremental sync.
+
   Use when experiencing slow API responses, implementing caching strategies,
+
   reducing API call volume, or tuning request patterns for Notion integrations.
+
   Trigger with phrases like "notion performance", "optimize notion api",
+
   "notion latency", "notion caching", "notion slow", "notion batch requests",
+
   "notion incremental sync", "notion reduce api calls".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notion]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- notion
+compatibility: Designed for Claude Code
 ---
-
 # Notion Performance Tuning
 
 ## Overview

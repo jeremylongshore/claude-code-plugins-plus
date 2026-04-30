@@ -1,17 +1,25 @@
 ---
 name: databricks-performance-tuning
-description: |
-  Optimize Databricks cluster and query performance.
+description: 'Optimize Databricks cluster and query performance.
+
   Use when jobs are running slowly, optimizing Spark configurations,
+
   or improving Delta Lake query performance.
+
   Trigger with phrases like "databricks performance", "spark tuning",
+
   "databricks slow", "optimize databricks", "cluster performance".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(databricks:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, databricks, performance]
+tags:
+- saas
+- databricks
+- performance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Databricks Performance Tuning
 

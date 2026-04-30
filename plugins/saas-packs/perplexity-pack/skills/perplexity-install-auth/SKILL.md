@@ -1,17 +1,26 @@
 ---
 name: perplexity-install-auth
-description: |
-  Install and configure Perplexity Sonar API authentication.
+description: 'Install and configure Perplexity Sonar API authentication.
+
   Use when setting up a new Perplexity integration, configuring API keys,
+
   or initializing the OpenAI-compatible client for Perplexity.
+
   Trigger with phrases like "install perplexity", "setup perplexity",
+
   "perplexity auth", "configure perplexity API key", "perplexity sonar setup".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, perplexity, api, authentication]
+tags:
+- saas
+- perplexity
+- api
+- authentication
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Perplexity Install & Auth
 

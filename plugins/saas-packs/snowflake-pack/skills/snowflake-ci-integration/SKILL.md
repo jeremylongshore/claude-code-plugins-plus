@@ -1,19 +1,27 @@
 ---
 name: snowflake-ci-integration
-description: |
-  Configure Snowflake CI/CD with GitHub Actions, SchemaChange, and Terraform.
+description: 'Configure Snowflake CI/CD with GitHub Actions, SchemaChange, and Terraform.
+
   Use when setting up automated schema migrations, CI pipelines for Snowflake,
+
   or integrating SchemaChange/Terraform into your deployment workflow.
+
   Trigger with phrases like "snowflake CI", "snowflake GitHub Actions",
+
   "snowflake SchemaChange", "snowflake terraform", "snowflake CI/CD".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, data-warehouse, analytics, snowflake]
-compatible-with: claude-code
+tags:
+- saas
+- data-warehouse
+- analytics
+- snowflake
+compatibility: Designed for Claude Code
 ---
-
 # Snowflake CI Integration
 
 ## Overview

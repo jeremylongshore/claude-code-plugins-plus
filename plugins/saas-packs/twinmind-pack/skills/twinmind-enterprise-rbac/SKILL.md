@@ -1,16 +1,24 @@
 ---
 name: twinmind-enterprise-rbac
-description: |
-  Configure TwinMind Enterprise with on-premise deployment, custom AI models, SSO integration, and team-wide transcript sharing.
+description: 'Configure TwinMind Enterprise with on-premise deployment, custom AI
+  models, SSO integration, and team-wide transcript sharing.
+
   Use when implementing enterprise rbac,
+
   or managing TwinMind meeting AI operations.
+
   Trigger with phrases like "twinmind enterprise rbac", "twinmind enterprise rbac".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: ['saas', 'twinmind', 'rbac']
+tags:
+- saas
+- twinmind
+- rbac
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # TwinMind Enterprise RBAC
 

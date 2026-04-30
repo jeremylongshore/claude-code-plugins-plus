@@ -1,17 +1,26 @@
 ---
 name: clerk-install-auth
-description: |
-  Install and configure Clerk SDK/CLI authentication.
+description: 'Install and configure Clerk SDK/CLI authentication.
+
   Use when setting up a new Clerk integration, configuring API keys,
+
   or initializing Clerk in your project.
+
   Trigger with phrases like "install clerk", "setup clerk",
+
   "clerk auth", "configure clerk API key", "add clerk to project".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clerk, api, authentication]
+tags:
+- saas
+- clerk
+- api
+- authentication
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clerk Install & Auth
 

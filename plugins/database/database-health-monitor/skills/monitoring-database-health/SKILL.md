@@ -1,17 +1,24 @@
 ---
 name: monitoring-database-health
-description: |
-  Monitor use when you need to work with monitoring and observability.
-  This skill provides health monitoring and alerting with comprehensive guidance and automation.
+description: 'Monitor use when you need to work with monitoring and observability.
+
+  This skill provides health monitoring and alerting with comprehensive guidance and
+  automation.
+
   Trigger with phrases like "monitor system health", "set up alerts",
+
   or "track metrics".
 
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*), Bash(mongosh:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [database, monitoring, observability]
+tags:
+- database
+- monitoring
+- observability
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Database Health Monitor
 

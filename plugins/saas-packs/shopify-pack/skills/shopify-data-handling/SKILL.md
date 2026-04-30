@@ -1,19 +1,28 @@
 ---
 name: shopify-data-handling
-description: |
-  Handle Shopify customer PII, implement GDPR/CCPA compliance, and manage data retention
-  with Shopify's mandatory privacy webhooks.
-  Use when building apps that store customer data, preparing for App Store review, or implementing deletion workflows.
+description: 'Handle Shopify customer PII, implement GDPR/CCPA compliance, and manage
+  data retention
+
+  with Shopify''s mandatory privacy webhooks.
+
+  Use when building apps that store customer data, preparing for App Store review,
+  or implementing deletion workflows.
+
   Trigger with phrases like "shopify data", "shopify PII", "shopify GDPR",
+
   "shopify customer data", "shopify privacy", "shopify CCPA", "shopify data request".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ecommerce, shopify]
-compatible-with: claude-code
+tags:
+- saas
+- ecommerce
+- shopify
+compatibility: Designed for Claude Code
 ---
-
 # Shopify Data Handling
 
 ## Overview

@@ -1,19 +1,26 @@
 ---
 name: adobe-policy-guardrails
-description: |
-  Implement Adobe-specific lint rules, CI policy checks, and runtime guardrails
+description: 'Implement Adobe-specific lint rules, CI policy checks, and runtime guardrails
+
   covering credential scanning (p8_ patterns), Firefly content policy pre-screening,
+
   PDF Services quota enforcement, and OAuth scope validation.
+
   Trigger with phrases like "adobe policy", "adobe lint",
+
   "adobe guardrails", "adobe eslint", "adobe content policy".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npx:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, adobe]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- adobe
+compatibility: Designed for Claude Code
 ---
-
 # Adobe Policy & Guardrails
 
 ## Overview

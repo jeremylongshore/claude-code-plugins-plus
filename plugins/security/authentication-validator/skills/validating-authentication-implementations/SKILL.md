@@ -1,12 +1,17 @@
 ---
 name: validating-authentication-implementations
-description: Validate authentication mechanisms for security weaknesses and compliance. Use when reviewing login systems or auth flows. Trigger with 'validate authentication', 'check auth security', or 'review login'.
+description: Validate authentication mechanisms for security weaknesses and compliance.
+  Use when reviewing login systems or auth flows. Trigger with 'validate authentication',
+  'check auth security', or 'review login'.
 version: 1.0.0
-allowed-tools: "Read, Write, Edit, Grep, Glob, Bash(security:*), Bash(scan:*), Bash(audit:*)"
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(security:*), Bash(scan:*), Bash(audit:*)
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [security, authentication, compliance]
+tags:
+- security
+- authentication
+- compliance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Validating Authentication Implementations
 

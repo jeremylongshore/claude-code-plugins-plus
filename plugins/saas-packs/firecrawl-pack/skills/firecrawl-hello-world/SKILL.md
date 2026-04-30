@@ -1,17 +1,26 @@
 ---
 name: firecrawl-hello-world
-description: |
-  Create a minimal working Firecrawl example that scrapes a page to markdown.
+description: 'Create a minimal working Firecrawl example that scrapes a page to markdown.
+
   Use when starting a new Firecrawl integration, testing your setup,
+
   or learning the scrape/crawl/map/extract API surface.
+
   Trigger with phrases like "firecrawl hello world", "firecrawl example",
+
   "firecrawl quick start", "simple firecrawl code".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, firecrawl, api, testing]
+tags:
+- saas
+- firecrawl
+- api
+- testing
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Firecrawl Hello World
 

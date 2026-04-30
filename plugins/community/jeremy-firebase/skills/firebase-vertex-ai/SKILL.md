@@ -1,13 +1,20 @@
 ---
 name: firebase-vertex-ai
-description: |
-  Execute firebase platform expert with Vertex AI Gemini integration for Authentication, Firestore, Storage, Functions, Hosting, and AI-powered features. Use when asked to "setup firebase", "deploy to firebase", or "integrate vertex ai with firebase". Trigger with relevant phrases based on skill purpose.
+description: 'Execute firebase platform expert with Vertex AI Gemini integration for
+  Authentication, Firestore, Storage, Functions, Hosting, and AI-powered features.
+  Use when asked to "setup firebase", "deploy to firebase", or "integrate vertex ai
+  with firebase". Trigger with relevant phrases based on skill purpose.
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [community, deployment, authentication]
+tags:
+- community
+- deployment
+- authentication
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Firebase Vertex AI
 

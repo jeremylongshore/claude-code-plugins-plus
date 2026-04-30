@@ -1,20 +1,30 @@
 ---
 name: snowflake-cost-tuning
-description: |
-  Optimize Snowflake costs with resource monitors, warehouse auto-suspend,
+description: 'Optimize Snowflake costs with resource monitors, warehouse auto-suspend,
+
   right-sizing, and credit consumption analysis.
+
   Use when analyzing Snowflake billing, reducing credit consumption,
+
   or implementing cost controls and budget alerts.
+
   Trigger with phrases like "snowflake cost", "snowflake billing",
-  "reduce snowflake cost", "snowflake credits", "snowflake expensive", "snowflake budget".
+
+  "reduce snowflake cost", "snowflake credits", "snowflake expensive", "snowflake
+  budget".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, data-warehouse, analytics, snowflake]
-compatible-with: claude-code
+tags:
+- saas
+- data-warehouse
+- analytics
+- snowflake
+compatibility: Designed for Claude Code
 ---
-
 # Snowflake Cost Tuning
 
 ## Overview

@@ -1,18 +1,24 @@
 ---
 name: algolia-debug-bundle
-description: |
-  Collect Algolia debug evidence: index stats, API key ACLs, query logs,
+description: 'Collect Algolia debug evidence: index stats, API key ACLs, query logs,
+
   and network diagnostics for support tickets.
+
   Trigger: "algolia debug", "algolia support bundle", "collect algolia logs",
+
   "algolia diagnostic", "algolia troubleshoot".
+
+  '
 allowed-tools: Read, Bash(curl:*), Bash(npm:*), Bash(tar:*), Bash(jq:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, algolia]
-compatible-with: claude-code
+tags:
+- saas
+- search
+- algolia
+compatibility: Designed for Claude Code
 ---
-
 # Algolia Debug Bundle
 
 ## Overview

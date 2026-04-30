@@ -1,17 +1,22 @@
 ---
 name: flyio-deploy-integration
-description: |
-  Advanced Fly.io deployment strategies including blue-green deployments,
+description: 'Advanced Fly.io deployment strategies including blue-green deployments,
+
   canary releases, multi-region rollouts, and Machines API orchestration.
+
   Trigger: "fly.io blue-green", "fly.io canary deploy", "fly.io rolling update".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(fly:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, edge-compute, flyio]
-compatible-with: claude-code
+tags:
+- saas
+- edge-compute
+- flyio
+compatibility: Designed for Claude Code
 ---
-
 # Fly.io Deploy Integration
 
 ## Overview

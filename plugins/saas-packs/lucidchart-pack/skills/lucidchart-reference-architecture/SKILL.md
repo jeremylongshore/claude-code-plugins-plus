@@ -1,16 +1,20 @@
 ---
 name: lucidchart-reference-architecture
-description: |
-  Reference Architecture for Lucidchart.
+description: 'Reference Architecture for Lucidchart.
+
   Trigger: "lucidchart reference architecture".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, lucidchart, diagramming]
-compatible-with: claude-code
+tags:
+- saas
+- lucidchart
+- diagramming
+compatibility: Designed for Claude Code
 ---
-
 # Lucidchart Reference Architecture
 
 ## Overview

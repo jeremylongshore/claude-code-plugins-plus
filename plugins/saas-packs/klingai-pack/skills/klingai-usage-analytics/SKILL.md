@@ -1,15 +1,23 @@
 ---
 name: klingai-usage-analytics
-description: |
-  Build usage analytics and reporting for Kling AI video generation. Use when tracking patterns,
-  analyzing costs, or building dashboards. Trigger with phrases like 'klingai analytics',
-  'kling ai usage report', 'klingai metrics', 'video generation stats'.
+description: 'Build usage analytics and reporting for Kling AI video generation. Use
+  when tracking patterns,
+
+  analyzing costs, or building dashboards. Trigger with phrases like ''klingai analytics'',
+
+  ''kling ai usage report'', ''klingai metrics'', ''video generation stats''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, kling-ai, analytics, reporting]
+tags:
+- saas
+- kling-ai
+- analytics
+- reporting
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Kling AI Usage Analytics
 

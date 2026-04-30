@@ -1,19 +1,27 @@
 ---
 name: hubspot-install-auth
-description: |
-  Install and configure HubSpot API client with authentication.
+description: 'Install and configure HubSpot API client with authentication.
+
   Use when setting up a new HubSpot integration, configuring private app tokens,
+
   OAuth 2.0 flows, or initializing the @hubspot/api-client SDK.
+
   Trigger with phrases like "install hubspot", "setup hubspot auth",
+
   "hubspot access token", "configure hubspot API", "hubspot private app".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, marketing, hubspot]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- marketing
+- hubspot
+compatibility: Designed for Claude Code
 ---
-
 # HubSpot Install & Auth
 
 ## Overview

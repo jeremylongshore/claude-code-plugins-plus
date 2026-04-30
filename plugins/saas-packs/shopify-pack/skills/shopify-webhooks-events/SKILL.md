@@ -1,19 +1,27 @@
 ---
 name: shopify-webhooks-events
-description: |
-  Register and handle Shopify webhooks including mandatory GDPR compliance topics.
+description: 'Register and handle Shopify webhooks including mandatory GDPR compliance
+  topics.
+
   Use when setting up webhook subscriptions, handling order/product events,
+
   or implementing the required GDPR webhooks for app store submission.
+
   Trigger with phrases like "shopify webhook", "shopify events",
+
   "shopify GDPR webhook", "handle shopify notifications", "shopify webhook register".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ecommerce, shopify]
-compatible-with: claude-code
+tags:
+- saas
+- ecommerce
+- shopify
+compatibility: Designed for Claude Code
 ---
-
 # Shopify Webhooks & Events
 
 ## Overview

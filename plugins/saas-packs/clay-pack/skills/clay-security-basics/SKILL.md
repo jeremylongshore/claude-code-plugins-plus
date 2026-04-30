@@ -1,17 +1,28 @@
 ---
 name: clay-security-basics
-description: |
-  Apply Clay security best practices for API keys, webhook secrets, and data access control.
+description: 'Apply Clay security best practices for API keys, webhook secrets, and
+  data access control.
+
   Use when securing Clay integrations, rotating API keys, auditing access,
+
   or implementing webhook authentication.
+
   Trigger with phrases like "clay security", "clay secrets", "secure clay",
+
   "clay API key security", "clay webhook security".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clay, api, security, audit]
+tags:
+- saas
+- clay
+- api
+- security
+- audit
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clay Security Basics
 

@@ -1,21 +1,27 @@
 ---
 name: langchain-performance-tuning
-description: |
-  Tune LangChain 1.0 / LangGraph 1.0 Python chains and agents for throughput,
-  latency, and cost — streaming modes, explicit batch concurrency, semantic
-  plus exact caches, persistent message history, and async-safe retriever
-  patterns. Use when p95 latency exceeds target, batching "does not work",
-  cost grows linearly with traffic, or a process restart wipes chat history.
-  Trigger with "langchain performance", "langchain slow batch",
-  "langchain throughput", "langchain p95 latency", "semantic cache hit rate".
+description: "Tune LangChain 1.0 / LangGraph 1.0 Python chains and agents for throughput,\n\
+  latency, and cost \u2014 streaming modes, explicit batch concurrency, semantic\n\
+  plus exact caches, persistent message history, and async-safe retriever\npatterns.\
+  \ Use when p95 latency exceeds target, batching \"does not work\",\ncost grows linearly\
+  \ with traffic, or a process restart wipes chat history.\nTrigger with \"langchain\
+  \ performance\", \"langchain slow batch\",\n\"langchain throughput\", \"langchain\
+  \ p95 latency\", \"semantic cache hit rate\".\n"
 allowed-tools: Read, Write, Edit, Bash(python:*), Bash(redis-cli:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex
-tags: [saas, langchain, langgraph, python, langchain-1.0, performance, caching, async]
+tags:
+- saas
+- langchain
+- langgraph
+- python
+- langchain-1.0
+- performance
+- caching
+- async
+compatibility: Designed for Claude Code, also compatible with Codex
 ---
-
 # LangChain Performance Tuning
 
 ## Overview

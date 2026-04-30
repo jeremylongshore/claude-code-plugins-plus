@@ -1,16 +1,21 @@
 ---
 name: apple-notes-debug-bundle
-description: |
-  Collect Apple Notes automation debug evidence for troubleshooting.
+description: 'Collect Apple Notes automation debug evidence for troubleshooting.
+
   Trigger: "apple notes debug".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(osascript:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, macos, apple-notes, automation]
-compatible-with: claude-code
+tags:
+- saas
+- macos
+- apple-notes
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Apple Notes Debug Bundle
 
 ## Overview

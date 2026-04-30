@@ -1,19 +1,27 @@
 ---
 name: hex-hello-world
-description: |
-  Create a minimal working Hex example.
+description: 'Create a minimal working Hex example.
+
   Use when starting a new Hex integration, testing your setup,
+
   or learning basic Hex API patterns.
+
   Trigger with phrases like "hex hello world", "hex example",
+
   "hex quick start", "simple hex code".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hex, data, analytics]
-compatible-with: claude-code
+tags:
+- saas
+- hex
+- data
+- analytics
+compatibility: Designed for Claude Code
 ---
-
 # Hex Hello World
 
 ## Overview

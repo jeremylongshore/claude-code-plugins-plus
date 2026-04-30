@@ -1,19 +1,27 @@
 ---
 name: castai-upgrade-migration
-description: |
-  Upgrade CAST AI Helm charts, Terraform provider, and agent components.
+description: 'Upgrade CAST AI Helm charts, Terraform provider, and agent components.
+
   Use when upgrading CAST AI versions, checking for breaking changes,
+
   or migrating between CAST AI agent releases.
+
   Trigger with phrases like "upgrade cast ai", "update cast ai agent",
+
   "cast ai helm upgrade", "cast ai terraform upgrade".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(helm:*), Bash(terraform:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, kubernetes, cost-optimization, castai]
-compatible-with: claude-code
+tags:
+- saas
+- kubernetes
+- cost-optimization
+- castai
+compatibility: Designed for Claude Code
 ---
-
 # CAST AI Upgrade & Migration
 
 ## Overview

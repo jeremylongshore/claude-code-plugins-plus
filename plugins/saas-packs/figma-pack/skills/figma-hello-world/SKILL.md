@@ -1,19 +1,26 @@
 ---
 name: figma-hello-world
-description: |
-  Make your first Figma REST API call to fetch a file and inspect its node tree.
+description: 'Make your first Figma REST API call to fetch a file and inspect its
+  node tree.
+
   Use when starting a new Figma integration, testing API connectivity,
+
   or learning the Figma document structure.
+
   Trigger with phrases like "figma hello world", "figma first call",
+
   "figma quick start", "fetch figma file".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(node:*), Bash(npx:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, figma]
-compatible-with: claude-code
+tags:
+- saas
+- figma
+compatibility: Designed for Claude Code
 ---
-
 # Figma Hello World
 
 ## Overview

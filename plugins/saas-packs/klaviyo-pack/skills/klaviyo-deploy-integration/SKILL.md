@@ -1,19 +1,27 @@
 ---
 name: klaviyo-deploy-integration
-description: |
-  Deploy Klaviyo integrations to Vercel, Fly.io, and Cloud Run platforms.
+description: 'Deploy Klaviyo integrations to Vercel, Fly.io, and Cloud Run platforms.
+
   Use when deploying Klaviyo-powered applications to production,
+
   configuring platform-specific secrets, or setting up deployment pipelines.
+
   Trigger with phrases like "deploy klaviyo", "klaviyo Vercel",
+
   "klaviyo production deploy", "klaviyo Cloud Run", "klaviyo Fly.io".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, klaviyo, email-marketing, cdp]
-compatible-with: claude-code
+tags:
+- saas
+- klaviyo
+- email-marketing
+- cdp
+compatibility: Designed for Claude Code
 ---
-
 # Klaviyo Deploy Integration
 
 ## Overview

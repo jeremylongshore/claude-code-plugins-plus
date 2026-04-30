@@ -1,19 +1,27 @@
 ---
 name: hubspot-local-dev-loop
-description: |
-  Configure HubSpot local development with testing and sandbox accounts.
+description: 'Configure HubSpot local development with testing and sandbox accounts.
+
   Use when setting up a development environment, mocking HubSpot APIs,
+
   or establishing a fast iteration cycle for HubSpot integrations.
+
   Trigger with phrases like "hubspot dev setup", "hubspot local development",
+
   "hubspot test sandbox", "develop with hubspot", "mock hubspot".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, marketing, hubspot]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- marketing
+- hubspot
+compatibility: Designed for Claude Code
 ---
-
 # HubSpot Local Dev Loop
 
 ## Overview

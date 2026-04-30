@@ -1,19 +1,26 @@
 ---
 name: hootsuite-install-auth
-description: |
-  Install and configure Hootsuite SDK/CLI authentication.
+description: 'Install and configure Hootsuite SDK/CLI authentication.
+
   Use when setting up a new Hootsuite integration, configuring API keys,
+
   or initializing Hootsuite in your project.
+
   Trigger with phrases like "install hootsuite", "setup hootsuite",
+
   "hootsuite auth", "configure hootsuite API key".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hootsuite, social-media]
-compatible-with: claude-code
+tags:
+- saas
+- hootsuite
+- social-media
+compatibility: Designed for Claude Code
 ---
-
 # Hootsuite Install & Auth
 
 ## Overview

@@ -1,19 +1,26 @@
 ---
 name: adobe-reference-architecture
-description: |
-  Implement Adobe reference architecture for production integrations covering
+description: 'Implement Adobe reference architecture for production integrations covering
+
   Firefly Services, PDF Services, I/O Events, and App Builder with layered
+
   project layout, error boundaries, and health monitoring.
+
   Trigger with phrases like "adobe architecture", "adobe project structure",
+
   "how to organize adobe", "adobe layout", "adobe best practices".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, adobe]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- adobe
+compatibility: Designed for Claude Code
 ---
-
 # Adobe Reference Architecture
 
 ## Overview

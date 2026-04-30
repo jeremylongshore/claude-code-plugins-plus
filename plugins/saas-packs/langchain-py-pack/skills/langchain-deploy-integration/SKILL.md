@@ -1,21 +1,27 @@
 ---
 name: langchain-deploy-integration
-description: |
-  Deploy a LangChain 1.0 / LangGraph 1.0 app to Cloud Run, Vercel, or LangServe
-  correctly — timeouts sized for chain length, cold-start mitigation, SSE
-  anti-buffering headers, Secret Manager over `.env`. Use when prepping first
-  prod deploy, debugging a stream that hangs behind a proxy, or diagnosing p99
-  latency spikes.
-  Trigger with "langchain deploy", "langchain cloud run", "langchain vercel python",
-  "langchain langserve", "langchain docker".
+description: "Deploy a LangChain 1.0 / LangGraph 1.0 app to Cloud Run, Vercel, or\
+  \ LangServe\ncorrectly \u2014 timeouts sized for chain length, cold-start mitigation,\
+  \ SSE\nanti-buffering headers, Secret Manager over `.env`. Use when prepping first\n\
+  prod deploy, debugging a stream that hangs behind a proxy, or diagnosing p99\nlatency\
+  \ spikes.\nTrigger with \"langchain deploy\", \"langchain cloud run\", \"langchain\
+  \ vercel python\",\n\"langchain langserve\", \"langchain docker\".\n"
 allowed-tools: Read, Write, Edit, Bash(docker:*), Bash(gcloud:*), Bash(vercel:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, langchain, langgraph, python, langchain-1.0, deployment, cloud-run, vercel, langserve]
-compatible-with: claude-code, codex
+tags:
+- saas
+- langchain
+- langgraph
+- python
+- langchain-1.0
+- deployment
+- cloud-run
+- vercel
+- langserve
+compatibility: Designed for Claude Code, also compatible with Codex
 ---
-
 # LangChain Deploy Integration (Python)
 
 ## Overview

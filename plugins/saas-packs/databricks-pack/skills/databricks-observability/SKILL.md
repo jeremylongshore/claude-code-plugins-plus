@@ -1,17 +1,29 @@
 ---
 name: databricks-observability
-description: |
-  Set up comprehensive observability for Databricks with metrics, traces, and alerts.
+description: 'Set up comprehensive observability for Databricks with metrics, traces,
+  and alerts.
+
   Use when implementing monitoring for Databricks jobs, setting up dashboards,
+
   or configuring alerting for pipeline health.
+
   Trigger with phrases like "databricks monitoring", "databricks metrics",
-  "databricks observability", "monitor databricks", "databricks alerts", "databricks logging".
+
+  "databricks observability", "monitor databricks", "databricks alerts", "databricks
+  logging".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(databricks:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, databricks, monitoring, observability, dashboard]
+tags:
+- saas
+- databricks
+- monitoring
+- observability
+- dashboard
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Databricks Observability
 

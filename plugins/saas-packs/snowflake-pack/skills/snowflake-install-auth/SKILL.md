@@ -1,19 +1,28 @@
 ---
 name: snowflake-install-auth
-description: |
-  Install and configure Snowflake driver authentication for Node.js and Python.
+description: 'Install and configure Snowflake driver authentication for Node.js and
+  Python.
+
   Use when setting up snowflake-sdk, snowflake-connector-python, key pair auth,
+
   OAuth, or SSO browser authentication.
+
   Trigger with phrases like "install snowflake", "setup snowflake",
+
   "snowflake auth", "snowflake connection", "snowflake key pair".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(openssl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, data-warehouse, analytics, snowflake]
-compatible-with: claude-code
+tags:
+- saas
+- data-warehouse
+- analytics
+- snowflake
+compatibility: Designed for Claude Code
 ---
-
 # Snowflake Install & Auth
 
 ## Overview

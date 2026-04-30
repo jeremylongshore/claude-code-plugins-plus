@@ -1,16 +1,21 @@
 ---
 name: guidewire-data-handling
-description: |
-  Data handling for Guidewire: entity management, data migration, batch operations, and governance.
+description: 'Data handling for Guidewire: entity management, data migration, batch
+  operations, and governance.
+
   Trigger: "guidewire data handling", "data-handling".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(gradle:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, insurance, guidewire]
-compatible-with: claude-code
+tags:
+- saas
+- insurance
+- guidewire
+compatibility: Designed for Claude Code
 ---
-
 # Guidewire Data Handling
 
 ## Overview

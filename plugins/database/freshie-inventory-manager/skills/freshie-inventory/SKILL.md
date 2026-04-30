@@ -1,21 +1,27 @@
 ---
 name: freshie-inventory
-description: |
-  Manage the freshie ecosystem inventory database — a CMDB tracking all plugins,
-  skills, packs, and compliance grades across 50 SQLite tables. Use when checking
-  ecosystem health, running discovery scans, validating compliance, remediating
-  issues, querying inventory data, comparing runs, exporting data, or generating
-  status reports. Trigger with "freshie status", "inventory scan", "ecosystem audit",
-  "grade report", "compliance check", "remediate skills", "query freshie",
-  "compare runs", "export grades", or "freshie report".
-allowed-tools: Read, Write, Edit, Bash(sqlite3:*), Bash(python3:*), Bash(node:*), Bash(mkdir:*), Bash(wc:*), Glob, Grep, AskUserQuestion, Skill, Task
+description: "Manage the freshie ecosystem inventory database \u2014 a CMDB tracking\
+  \ all plugins,\nskills, packs, and compliance grades across 50 SQLite tables. Use\
+  \ when checking\necosystem health, running discovery scans, validating compliance,\
+  \ remediating\nissues, querying inventory data, comparing runs, exporting data,\
+  \ or generating\nstatus reports. Trigger with \"freshie status\", \"inventory scan\"\
+  , \"ecosystem audit\",\n\"grade report\", \"compliance check\", \"remediate skills\"\
+  , \"query freshie\",\n\"compare runs\", \"export grades\", or \"freshie report\"\
+  .\n"
+allowed-tools: Read, Write, Edit, Bash(sqlite3:*), Bash(python3:*), Bash(node:*),
+  Bash(mkdir:*), Bash(wc:*), Glob, Grep, AskUserQuestion, Skill, Task
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [database, inventory, freshie, compliance, ecosystem, sqlite]
+tags:
+- database
+- inventory
+- freshie
+- compliance
+- ecosystem
+- sqlite
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Freshie Inventory Manager
 
 Interactive command center for the freshie ecosystem inventory database.

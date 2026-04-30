@@ -1,17 +1,25 @@
 ---
 name: firecrawl-prod-checklist
-description: |
-  Execute Firecrawl production deployment checklist and rollback procedures.
+description: 'Execute Firecrawl production deployment checklist and rollback procedures.
+
   Use when deploying Firecrawl integrations to production, preparing for launch,
+
   or implementing go-live procedures.
+
   Trigger with phrases like "firecrawl production", "deploy firecrawl",
+
   "firecrawl go-live", "firecrawl launch checklist".
+
+  '
 allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, firecrawl, deployment]
+tags:
+- saas
+- firecrawl
+- deployment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Firecrawl Production Checklist
 

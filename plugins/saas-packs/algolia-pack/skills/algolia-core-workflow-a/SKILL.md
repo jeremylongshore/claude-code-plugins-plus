@@ -1,18 +1,24 @@
 ---
 name: algolia-core-workflow-a
-description: |
-  Implement Algolia search with filters, facets, highlighting, and pagination.
+description: 'Implement Algolia search with filters, facets, highlighting, and pagination.
+
   The primary money-path workflow: search records, apply filters, display results.
+
   Trigger: "algolia search", "search with algolia", "algolia filters",
+
   "algolia facets", "algolia search implementation".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, algolia]
-compatible-with: claude-code
+tags:
+- saas
+- search
+- algolia
+compatibility: Designed for Claude Code
 ---
-
 # Algolia Core Workflow A — Search & Filtering
 
 ## Overview

@@ -1,19 +1,30 @@
 ---
 name: palantir-enterprise-rbac
-description: |
-  Configure Palantir Foundry enterprise access control with project roles, markings, and service users.
+description: 'Configure Palantir Foundry enterprise access control with project roles,
+  markings, and service users.
+
   Use when implementing role-based access, configuring project permissions,
+
   or setting up service user accounts for Foundry integrations.
+
   Trigger with phrases like "palantir RBAC", "foundry roles",
+
   "palantir permissions", "foundry access control", "foundry service user".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, palantir, foundry, rbac, enterprise, security]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- palantir
+- foundry
+- rbac
+- enterprise
+- security
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Palantir Enterprise RBAC
 
 ## Overview

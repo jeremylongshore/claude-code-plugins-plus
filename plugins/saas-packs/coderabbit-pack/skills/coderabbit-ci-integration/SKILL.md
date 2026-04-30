@@ -1,17 +1,27 @@
 ---
 name: coderabbit-ci-integration
-description: |
-  Configure CodeRabbit as a CI gate with GitHub Actions, branch protection, and review enforcement.
+description: 'Configure CodeRabbit as a CI gate with GitHub Actions, branch protection,
+  and review enforcement.
+
   Use when setting up CodeRabbit as a required check, gating merges on review approval,
+
   or integrating CodeRabbit status into your CI pipeline.
+
   Trigger with phrases like "coderabbit CI", "coderabbit GitHub Actions",
+
   "coderabbit required check", "coderabbit merge gate", "coderabbit CI pipeline".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, coderabbit, ci-cd, github-actions]
+tags:
+- saas
+- coderabbit
+- ci-cd
+- github-actions
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # CodeRabbit CI Integration
 

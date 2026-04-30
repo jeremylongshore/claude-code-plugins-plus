@@ -1,19 +1,27 @@
 ---
 name: bamboohr-local-dev-loop
-description: |
-  Configure BambooHR local development with hot reload, mocking, and testing.
+description: 'Configure BambooHR local development with hot reload, mocking, and testing.
+
   Use when setting up a development environment, configuring test workflows,
+
   or establishing a fast iteration cycle with BambooHR API.
+
   Trigger with phrases like "bamboohr dev setup", "bamboohr local development",
+
   "bamboohr dev environment", "develop with bamboohr", "bamboohr mock".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hr, bamboohr, development]
-compatible-with: claude-code
+tags:
+- saas
+- hr
+- bamboohr
+- development
+compatibility: Designed for Claude Code
 ---
-
 # BambooHR Local Dev Loop
 
 ## Overview

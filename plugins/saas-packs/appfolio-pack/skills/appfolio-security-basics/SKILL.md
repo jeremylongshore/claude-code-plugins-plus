@@ -1,16 +1,21 @@
 ---
 name: appfolio-security-basics
-description: |
-  Secure AppFolio API credentials and tenant data.
+description: 'Secure AppFolio API credentials and tenant data.
+
   Trigger: "appfolio security".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, property-management, appfolio, real-estate]
-compatible-with: claude-code
+tags:
+- saas
+- property-management
+- appfolio
+- real-estate
+compatibility: Designed for Claude Code
 ---
-
 # AppFolio Security Basics
 
 ## Overview

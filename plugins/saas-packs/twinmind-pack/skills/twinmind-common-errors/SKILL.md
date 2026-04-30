@@ -1,17 +1,26 @@
 ---
 name: twinmind-common-errors
-description: |
-  Diagnose and fix TwinMind common errors and exceptions.
+description: 'Diagnose and fix TwinMind common errors and exceptions.
+
   Use when encountering transcription errors, debugging failed requests,
+
   or troubleshooting integration issues.
+
   Trigger with phrases like "twinmind error", "fix twinmind",
+
   "twinmind not working", "debug twinmind", "transcription failed".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, twinmind, debugging, transcription]
+tags:
+- saas
+- twinmind
+- debugging
+- transcription
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # TwinMind Common Errors
 

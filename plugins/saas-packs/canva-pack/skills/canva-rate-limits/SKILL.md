@@ -1,19 +1,26 @@
 ---
 name: canva-rate-limits
-description: |
-  Handle Canva Connect API rate limits with backoff, queuing, and monitoring.
+description: 'Handle Canva Connect API rate limits with backoff, queuing, and monitoring.
+
   Use when hitting 429 errors, implementing retry logic,
+
   or optimizing API request throughput for Canva integrations.
+
   Trigger with phrases like "canva rate limit", "canva throttling",
+
   "canva 429", "canva retry", "canva backoff".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, canva]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- canva
+compatibility: Designed for Claude Code
 ---
-
 # Canva Rate Limits
 
 ## Overview

@@ -1,17 +1,26 @@
 ---
 name: instantly-local-dev-loop
-description: |
-  Configure Instantly.ai local development with mock server and test workflows.
+description: 'Configure Instantly.ai local development with mock server and test workflows.
+
   Use when setting up a dev environment, testing API calls without sending emails,
+
   or building integration tests against Instantly endpoints.
+
   Trigger with phrases like "instantly dev setup", "test instantly locally",
+
   "instantly mock server", "instantly development environment".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, instantly, development, testing]
+tags:
+- saas
+- instantly
+- development
+- testing
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Instantly Local Dev Loop
 

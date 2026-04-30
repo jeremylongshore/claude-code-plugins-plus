@@ -1,17 +1,27 @@
 ---
 name: clay-architecture-variants
-description: |
-  Choose and implement Clay integration architecture for different scales and use cases.
+description: 'Choose and implement Clay integration architecture for different scales
+  and use cases.
+
   Use when designing new Clay integrations, comparing direct vs queue-based vs event-driven,
+
   or planning architecture for Clay-powered data operations.
+
   Trigger with phrases like "clay architecture", "clay blueprint",
+
   "how to structure clay", "clay integration design", "clay event-driven".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clay, migration, scaling]
+tags:
+- saas
+- clay
+- migration
+- scaling
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clay Architecture Variants
 

@@ -1,17 +1,24 @@
 ---
 name: analyzing-database-indexes
-description: |
-  Process use when you need to work with database indexing.
-  This skill provides index design and optimization with comprehensive guidance and automation.
+description: 'Process use when you need to work with database indexing.
+
+  This skill provides index design and optimization with comprehensive guidance and
+  automation.
+
   Trigger with phrases like "create indexes", "optimize indexes",
+
   or "improve query performance".
 
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*), Bash(mongosh:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [database, performance, analyzing-database]
+tags:
+- database
+- performance
+- analyzing-database
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Database Index Advisor
 

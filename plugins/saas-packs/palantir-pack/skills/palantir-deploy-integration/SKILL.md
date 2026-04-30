@@ -1,19 +1,29 @@
 ---
 name: palantir-deploy-integration
-description: |
-  Deploy Palantir Foundry integrations to cloud platforms with secrets management.
+description: 'Deploy Palantir Foundry integrations to cloud platforms with secrets
+  management.
+
   Use when deploying Foundry-powered applications to production,
+
   configuring platform-specific secrets, or setting up deployment pipelines.
+
   Trigger with phrases like "deploy palantir", "foundry deploy",
+
   "palantir production deploy", "foundry Cloud Run".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gcloud:*), Bash(docker:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, palantir, foundry, deployment, cloud]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- palantir
+- foundry
+- deployment
+- cloud
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Palantir Deploy Integration
 
 ## Overview

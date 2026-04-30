@@ -1,19 +1,28 @@
 ---
 name: coreweave-local-dev-loop
-description: |
-  Set up local development workflow for CoreWeave GPU deployments.
+description: 'Set up local development workflow for CoreWeave GPU deployments.
+
   Use when building containers locally, testing YAML manifests,
+
   or iterating on model serving configurations before deploying.
+
   Trigger with phrases like "coreweave dev setup", "coreweave local testing",
+
   "develop for coreweave", "coreweave container build".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(kubectl:*), Bash(docker:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, gpu-cloud, kubernetes, inference, coreweave]
-compatible-with: claude-code
+tags:
+- saas
+- gpu-cloud
+- kubernetes
+- inference
+- coreweave
+compatibility: Designed for Claude Code
 ---
-
 # CoreWeave Local Dev Loop
 
 ## Overview

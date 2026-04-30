@@ -1,16 +1,20 @@
 ---
 name: lucidchart-hello-world
-description: |
-  Create a minimal working Lucidchart example.
+description: 'Create a minimal working Lucidchart example.
+
   Trigger: "lucidchart hello world", "lucidchart example", "test lucidchart".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, lucidchart, diagramming]
-compatible-with: claude-code
+tags:
+- saas
+- lucidchart
+- diagramming
+compatibility: Designed for Claude Code
 ---
-
 # Lucidchart Hello World
 
 ## Overview

@@ -1,17 +1,26 @@
 ---
 name: customerio-known-pitfalls
-description: |
-  Identify and avoid Customer.io anti-patterns and gotchas.
+description: 'Identify and avoid Customer.io anti-patterns and gotchas.
+
   Use when reviewing integrations, onboarding developers,
+
   or auditing existing Customer.io code.
+
   Trigger: "customer.io mistakes", "customer.io anti-patterns",
+
   "customer.io gotchas", "customer.io pitfalls", "customer.io code review".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Glob, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, customer-io, best-practices, anti-patterns]
+tags:
+- saas
+- customer-io
+- best-practices
+- anti-patterns
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Customer.io Known Pitfalls
 

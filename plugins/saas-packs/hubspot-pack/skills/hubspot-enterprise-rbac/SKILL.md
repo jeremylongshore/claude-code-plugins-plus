@@ -1,19 +1,29 @@
 ---
 name: hubspot-enterprise-rbac
-description: |
-  Configure HubSpot enterprise access control with OAuth scopes and team permissions.
+description: 'Configure HubSpot enterprise access control with OAuth scopes and team
+  permissions.
+
   Use when implementing role-based access, configuring per-team HubSpot scopes,
+
   or setting up multi-user access patterns for HubSpot integrations.
+
   Trigger with phrases like "hubspot RBAC", "hubspot roles",
-  "hubspot enterprise", "hubspot permissions", "hubspot team access", "hubspot OAuth scopes".
+
+  "hubspot enterprise", "hubspot permissions", "hubspot team access", "hubspot OAuth
+  scopes".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, marketing, hubspot]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- marketing
+- hubspot
+compatibility: Designed for Claude Code
 ---
-
 # HubSpot Enterprise RBAC
 
 ## Overview

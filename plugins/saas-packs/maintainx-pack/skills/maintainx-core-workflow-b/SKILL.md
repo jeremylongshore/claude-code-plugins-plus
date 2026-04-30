@@ -1,17 +1,25 @@
 ---
 name: maintainx-core-workflow-b
-description: |
-  Execute MaintainX secondary workflow: Asset and Location management.
+description: 'Execute MaintainX secondary workflow: Asset and Location management.
+
   Use when managing equipment assets, organizing locations/facilities,
+
   building asset hierarchies, and tracking equipment maintenance history.
+
   Trigger with phrases like "maintainx asset", "maintainx location",
+
   "equipment tracking", "asset management", "facility hierarchy".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, maintainx, workflow]
+tags:
+- saas
+- maintainx
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # MaintainX Core Workflow B: Asset & Location Management
 

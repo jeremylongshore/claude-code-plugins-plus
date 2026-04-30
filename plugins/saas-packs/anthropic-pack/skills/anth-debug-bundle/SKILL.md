@@ -1,19 +1,26 @@
 ---
 name: anth-debug-bundle
-description: |
-  Collect Anthropic Claude API debug evidence for support and troubleshooting.
+description: 'Collect Anthropic Claude API debug evidence for support and troubleshooting.
+
   Use when encountering persistent API issues, preparing support tickets,
+
   or collecting diagnostic information including request IDs and rate limit headers.
+
   Trigger with phrases like "anthropic debug", "claude debug bundle",
+
   "collect anthropic logs", "anthropic diagnostic", "claude support ticket".
+
+  '
 allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, anthropic]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- anthropic
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Debug Bundle
 
 ## Overview

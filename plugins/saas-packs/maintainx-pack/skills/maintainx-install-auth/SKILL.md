@@ -1,17 +1,26 @@
 ---
 name: maintainx-install-auth
-description: |
-  Install and configure MaintainX REST API authentication.
+description: 'Install and configure MaintainX REST API authentication.
+
   Use when setting up a new MaintainX integration, configuring API keys,
+
   or initializing MaintainX API access in your project.
+
   Trigger with phrases like "install maintainx", "setup maintainx",
+
   "maintainx auth", "configure maintainx API key", "maintainx credentials".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, maintainx, api, authentication]
+tags:
+- saas
+- maintainx
+- api
+- authentication
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # MaintainX Install & Auth
 

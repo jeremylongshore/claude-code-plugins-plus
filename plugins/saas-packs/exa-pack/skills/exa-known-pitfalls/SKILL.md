@@ -1,17 +1,26 @@
 ---
 name: exa-known-pitfalls
-description: |
-  Identify and avoid Exa anti-patterns and common integration mistakes.
+description: 'Identify and avoid Exa anti-patterns and common integration mistakes.
+
   Use when reviewing Exa code, onboarding new developers,
+
   or auditing existing Exa integrations for correctness.
+
   Trigger with phrases like "exa mistakes", "exa anti-patterns",
+
   "exa pitfalls", "exa what not to do", "exa code review".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, exa, audit, best-practices]
+tags:
+- saas
+- exa
+- audit
+- best-practices
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Exa Known Pitfalls
 

@@ -1,18 +1,24 @@
 ---
 name: flexport-prod-checklist
-description: |
-  Execute Flexport production deployment checklist for logistics integrations.
+description: 'Execute Flexport production deployment checklist for logistics integrations.
+
   Use when deploying shipment tracking, booking automation, or supply chain
+
   integrations to production with proper monitoring and rollback.
+
   Trigger: "flexport production", "deploy flexport", "flexport go-live checklist".
+
+  '
 allowed-tools: Read, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, logistics, flexport]
-compatible-with: claude-code
+tags:
+- saas
+- logistics
+- flexport
+compatibility: Designed for Claude Code
 ---
-
 # Flexport Production Checklist
 
 ## Overview

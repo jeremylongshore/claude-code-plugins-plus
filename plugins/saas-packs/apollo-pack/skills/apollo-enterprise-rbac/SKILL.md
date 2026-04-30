@@ -1,17 +1,26 @@
 ---
 name: apollo-enterprise-rbac
-description: |
-  Enterprise role-based access control for Apollo.io.
+description: 'Enterprise role-based access control for Apollo.io.
+
   Use when implementing team permissions, restricting data access,
+
   or setting up enterprise security controls.
+
   Trigger with phrases like "apollo rbac", "apollo permissions",
+
   "apollo roles", "apollo team access", "apollo enterprise security".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(kubectl:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, apollo, security, rbac]
+tags:
+- saas
+- apollo
+- security
+- rbac
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Apollo Enterprise RBAC
 

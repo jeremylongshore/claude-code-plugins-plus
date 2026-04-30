@@ -1,16 +1,21 @@
 ---
 name: appfolio-prod-checklist
-description: |
-  Production readiness checklist for AppFolio integrations.
+description: 'Production readiness checklist for AppFolio integrations.
+
   Trigger: "appfolio production checklist".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, property-management, appfolio, real-estate]
-compatible-with: claude-code
+tags:
+- saas
+- property-management
+- appfolio
+- real-estate
+compatibility: Designed for Claude Code
 ---
-
 # AppFolio Production Checklist
 
 ## Overview

@@ -1,13 +1,22 @@
 ---
 name: openrouter-data-privacy
-description: |
-  Implement data privacy controls for OpenRouter API usage. Use when handling PII, meeting GDPR/CCPA requirements, or protecting sensitive data in prompts. Triggers: 'openrouter privacy', 'openrouter pii', 'openrouter gdpr', 'openrouter data handling'.
+description: 'Implement data privacy controls for OpenRouter API usage. Use when handling
+  PII, meeting GDPR/CCPA requirements, or protecting sensitive data in prompts. Triggers:
+  ''openrouter privacy'', ''openrouter pii'', ''openrouter gdpr'', ''openrouter data
+  handling''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash, Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, openrouter, privacy, security, compliance]
+tags:
+- saas
+- openrouter
+- privacy
+- security
+- compliance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # OpenRouter Data Privacy
 

@@ -1,19 +1,25 @@
 ---
 name: figma-local-dev-loop
-description: |
-  Set up a local development workflow for Figma plugin and REST API projects.
+description: 'Set up a local development workflow for Figma plugin and REST API projects.
+
   Use when building Figma plugins, creating design-to-code pipelines,
+
   or developing against the Figma API with hot reload.
+
   Trigger with phrases like "figma dev setup", "figma plugin development",
+
   "figma local development", "develop figma plugin".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, figma]
-compatible-with: claude-code
+tags:
+- saas
+- figma
+compatibility: Designed for Claude Code
 ---
-
 # Figma Local Dev Loop
 
 ## Overview

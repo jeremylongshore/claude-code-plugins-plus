@@ -1,17 +1,26 @@
 ---
 name: exa-common-errors
-description: |
-  Diagnose and fix Exa API errors by HTTP code and error tag.
+description: 'Diagnose and fix Exa API errors by HTTP code and error tag.
+
   Use when encountering Exa errors, debugging failed requests,
+
   or troubleshooting integration issues.
+
   Trigger with phrases like "exa error", "fix exa",
+
   "exa not working", "debug exa", "exa 429", "exa 401".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, exa, debugging, errors]
+tags:
+- saas
+- exa
+- debugging
+- errors
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Exa Common Errors
 

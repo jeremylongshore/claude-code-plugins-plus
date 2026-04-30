@@ -1,16 +1,24 @@
 ---
 name: orchestrating-multi-agent-systems
-description: |
-  Execute orchestrate multi-agent systems with handoffs, routing, and workflows across AI providers.
-  Use when building complex AI systems requiring agent collaboration, task delegation, or workflow coordination.
-  Trigger with phrases like "create multi-agent system", "orchestrate agents", or "coordinate agent workflows".
-  
+description: 'Execute orchestrate multi-agent systems with handoffs, routing, and
+  workflows across AI providers.
+
+  Use when building complex AI systems requiring agent collaboration, task delegation,
+  or workflow coordination.
+
+  Trigger with phrases like "create multi-agent system", "orchestrate agents", or
+  "coordinate agent workflows".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(npm:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [ai, workflow, agent-orchestration]
+tags:
+- ai
+- workflow
+- agent-orchestration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Orchestrating Multi-Agent Systems
 

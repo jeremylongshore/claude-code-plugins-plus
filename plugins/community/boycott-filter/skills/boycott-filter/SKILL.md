@@ -1,22 +1,28 @@
 ---
 name: boycott-filter
-description: |
-  Personal boycott list — users can conversationally tell the agent which brands they
-  want to avoid, and why. A local sync server exposes the list at http://127.0.0.1:7847,
-  and a bundled Chrome extension warns the user when they land on pages from boycotted
-  brands. Use when the user says things like "I'm done with X", "boycott Y", "never
-  buying from Z again", "remove X from my boycott list", or asks to see their list.
-  Trigger phrases: "boycott", "never buying from", "sick of", "add to boycott",
-  "show my boycott list", "remove from boycott".
+description: "Personal boycott list \u2014 users can conversationally tell the agent\
+  \ which brands they\nwant to avoid, and why. A local sync server exposes the list\
+  \ at http://127.0.0.1:7847,\nand a bundled Chrome extension warns the user when\
+  \ they land on pages from boycotted\nbrands. Use when the user says things like\
+  \ \"I'm done with X\", \"boycott Y\", \"never\nbuying from Z again\", \"remove X\
+  \ from my boycott list\", or asks to see their list.\nTrigger phrases: \"boycott\"\
+  , \"never buying from\", \"sick of\", \"add to boycott\",\n\"show my boycott list\"\
+  , \"remove from boycott\".\n"
 allowed-tools: Bash(curl:*)
 version: 1.0.0
 author: Bubble Invest <contact@bubbleinvest.com>
 license: MIT
-compatible-with: claude-code
-tags: [boycott, consumer, shopping, brands, chrome-extension, productivity, ethical-consumption]
+tags:
+- boycott
+- consumer
+- shopping
+- brands
+- chrome-extension
+- productivity
+- ethical-consumption
 user-invocable: true
+compatibility: Designed for Claude Code
 ---
-
 # Boycott Filter
 
 Manage a personal boycott list conversationally. Users complain about brands, the agent adds them to a local list with their reason, and a Chrome extension warns them on any page from those brands — displaying their own words back to them.

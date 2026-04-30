@@ -1,18 +1,24 @@
 ---
 name: algolia-cost-tuning
-description: |
-  Optimize Algolia costs: understand search request vs record pricing,
+description: 'Optimize Algolia costs: understand search request vs record pricing,
+
   reduce operations with batching and caching, monitor usage via Analytics API.
+
   Trigger: "algolia cost", "algolia billing", "reduce algolia costs",
+
   "algolia pricing", "algolia expensive", "algolia budget".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, algolia]
-compatible-with: claude-code
+tags:
+- saas
+- search
+- algolia
+compatibility: Designed for Claude Code
 ---
-
 # Algolia Cost Tuning
 
 ## Overview

@@ -1,20 +1,28 @@
 ---
 name: adobe-cost-tuning
-description: |
-  Optimize Adobe API costs across Firefly Services (generative credits),
+description: 'Optimize Adobe API costs across Firefly Services (generative credits),
+
   PDF Services (document transactions), and Photoshop/Lightroom APIs.
+
   Use when analyzing Adobe billing, reducing API costs,
+
   or implementing usage monitoring and budget alerts.
+
   Trigger with phrases like "adobe cost", "adobe billing", "adobe credits",
+
   "reduce adobe costs", "adobe pricing", "adobe budget".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, adobe]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- adobe
+compatibility: Designed for Claude Code
 ---
-
 # Adobe Cost Tuning
 
 ## Overview

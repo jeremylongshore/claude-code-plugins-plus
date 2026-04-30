@@ -1,17 +1,25 @@
 ---
 name: lindy-core-workflow-a
-description: |
-  Build and configure multi-step Lindy AI agent workflows.
+description: 'Build and configure multi-step Lindy AI agent workflows.
+
   Use when creating agents with triggers, actions, conditions,
+
   knowledge bases, or agent steps.
+
   Trigger with phrases like "create lindy agent", "build lindy agent",
+
   "lindy agent workflow", "configure lindy agent", "lindy workflow".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lindy, workflow]
+tags:
+- saas
+- lindy
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lindy Core Workflow A: Agent Creation
 

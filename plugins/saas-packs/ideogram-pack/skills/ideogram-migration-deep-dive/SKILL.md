@@ -1,17 +1,26 @@
 ---
 name: ideogram-migration-deep-dive
-description: |
-  Migrate from other image generation APIs to Ideogram, or re-architect existing Ideogram integrations.
+description: 'Migrate from other image generation APIs to Ideogram, or re-architect
+  existing Ideogram integrations.
+
   Use when switching from DALL-E/Midjourney/Stable Diffusion to Ideogram,
+
   or performing major integration overhauls.
+
   Trigger with phrases like "migrate to ideogram", "switch to ideogram",
+
   "replace dall-e with ideogram", "ideogram replatform", "ideogram migration".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, ideogram, migration]
+tags:
+- saas
+- ideogram
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Ideogram Migration Deep Dive
 

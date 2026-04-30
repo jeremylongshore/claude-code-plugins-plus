@@ -1,18 +1,26 @@
 ---
 name: anima-debug-bundle
-description: |
-  Collect Anima SDK debug evidence for support tickets and troubleshooting.
+description: 'Collect Anima SDK debug evidence for support tickets and troubleshooting.
+
   Use when filing Anima support requests, debugging code generation issues,
+
   or collecting diagnostic data for the Anima team.
+
   Trigger: "anima debug bundle", "anima support ticket", "anima diagnostics".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(node:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, figma, anima, debugging]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- figma
+- anima
+- debugging
+compatibility: Designed for Claude Code
 ---
-
 # Anima Debug Bundle
 
 ## Instructions

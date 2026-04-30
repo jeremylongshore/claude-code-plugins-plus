@@ -1,19 +1,27 @@
 ---
 name: clickup-core-workflow-b
-description: |
-  Manage ClickUp workspaces, spaces, folders, lists, and views via API v2.
+description: 'Manage ClickUp workspaces, spaces, folders, lists, and views via API
+  v2.
+
   Use when creating project structures, organizing spaces and lists,
+
   or managing the ClickUp hierarchy programmatically.
+
   Trigger: "clickup space", "clickup folder", "clickup list", "clickup views",
+
   "create clickup space", "organize clickup workspace", "clickup hierarchy".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, clickup]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- clickup
+compatibility: Designed for Claude Code
 ---
-
 # ClickUp Core Workflow B — Spaces, Folders, Lists & Views
 
 ## Overview

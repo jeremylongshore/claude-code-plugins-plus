@@ -1,20 +1,31 @@
 ---
 name: notion-ci-integration
-description: |
-  Integrate the Notion API into CI/CD pipelines for automated documentation sync,
+description: 'Integrate the Notion API into CI/CD pipelines for automated documentation
+  sync,
+
   deploy tracking, and configuration reads. Use when setting up GitHub Actions
+
   workflows that push release notes to Notion, update database entries on deploy,
+
   create incident pages from CI, or read feature flags from Notion databases.
+
   Trigger with phrases like "notion CI", "notion GitHub Actions", "notion deploy sync",
+
   "notion release notes automation", "notion CI pipeline".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(npm:*), Bash(npx:*), Bash(python3:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notion, ci-cd, devops]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- notion
+- ci-cd
+- devops
+compatibility: Designed for Claude Code
 ---
-
 # Notion CI Integration
 
 ## Overview

@@ -1,16 +1,18 @@
 ---
 name: granola-cost-tuning
-description: |
-  Optimize Granola costs — plan selection, ROI calculation, seat management,
-  and billing strategies for individuals and teams.
-  Trigger: "granola cost", "granola pricing", "granola plan selection",
-  "save money granola", "granola ROI", "granola subscription".
+description: "Optimize Granola costs \u2014 plan selection, ROI calculation, seat\
+  \ management,\nand billing strategies for individuals and teams.\nTrigger: \"granola\
+  \ cost\", \"granola pricing\", \"granola plan selection\",\n\"save money granola\"\
+  , \"granola ROI\", \"granola subscription\".\n"
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, granola, cost-optimization]
+tags:
+- saas
+- granola
+- cost-optimization
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Granola Cost Tuning
 

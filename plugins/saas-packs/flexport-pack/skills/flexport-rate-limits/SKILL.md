@@ -1,17 +1,24 @@
 ---
 name: flexport-rate-limits
-description: |
-  Handle Flexport API rate limits with exponential backoff, queue-based throttling,
+description: 'Handle Flexport API rate limits with exponential backoff, queue-based
+  throttling,
+
   and response header monitoring for logistics API calls.
-  Trigger: "flexport rate limit", "flexport 429", "flexport throttling", "flexport backoff".
+
+  Trigger: "flexport rate limit", "flexport 429", "flexport throttling", "flexport
+  backoff".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, logistics, flexport]
-compatible-with: claude-code
+tags:
+- saas
+- logistics
+- flexport
+compatibility: Designed for Claude Code
 ---
-
 # Flexport Rate Limits
 
 ## Overview

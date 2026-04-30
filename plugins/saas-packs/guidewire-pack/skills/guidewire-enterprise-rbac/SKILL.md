@@ -1,16 +1,21 @@
 ---
 name: guidewire-enterprise-rbac
-description: |
-  Implement Guidewire RBAC: API roles, user permissions, and security policies.
+description: 'Implement Guidewire RBAC: API roles, user permissions, and security
+  policies.
+
   Trigger: "guidewire enterprise rbac", "enterprise-rbac".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(gradle:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, insurance, guidewire]
-compatible-with: claude-code
+tags:
+- saas
+- insurance
+- guidewire
+compatibility: Designed for Claude Code
 ---
-
 # Guidewire Enterprise RBAC
 
 ## Overview

@@ -1,19 +1,27 @@
 ---
 name: clari-install-auth
-description: |
-  Configure Clari API authentication with API key and set up export access.
+description: 'Configure Clari API authentication with API key and set up export access.
+
   Use when connecting to the Clari API, generating API tokens,
+
   or configuring forecast data exports.
+
   Trigger with phrases like "install clari", "setup clari api",
+
   "clari auth", "clari api key", "configure clari".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, revenue-intelligence, forecasting, clari]
-compatible-with: claude-code
+tags:
+- saas
+- revenue-intelligence
+- forecasting
+- clari
+compatibility: Designed for Claude Code
 ---
-
 # Clari Install & Auth
 
 ## Overview

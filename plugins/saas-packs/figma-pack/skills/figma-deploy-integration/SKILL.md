@@ -1,19 +1,25 @@
 ---
 name: figma-deploy-integration
-description: |
-  Deploy Figma-powered applications to Vercel, Cloud Run, and Fly.io.
+description: 'Deploy Figma-powered applications to Vercel, Cloud Run, and Fly.io.
+
   Use when deploying webhook receivers, design token APIs,
+
   or Figma-connected web apps to production platforms.
+
   Trigger with phrases like "deploy figma", "figma Vercel",
+
   "figma production deploy", "figma Cloud Run".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, figma]
-compatible-with: claude-code
+tags:
+- saas
+- figma
+compatibility: Designed for Claude Code
 ---
-
 # Figma Deploy Integration
 
 ## Overview

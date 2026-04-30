@@ -1,17 +1,27 @@
 ---
 name: perplexity-load-scale
-description: |
-  Load test Perplexity Sonar API integrations and plan capacity.
+description: 'Load test Perplexity Sonar API integrations and plan capacity.
+
   Use when running performance tests, planning for traffic growth,
+
   or benchmarking Perplexity latency under load.
+
   Trigger with phrases like "perplexity load test", "perplexity scale",
+
   "perplexity performance test", "perplexity capacity", "perplexity benchmark".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(k6:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, perplexity, testing, performance, scaling]
+tags:
+- saas
+- perplexity
+- testing
+- performance
+- scaling
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Perplexity Load & Scale
 

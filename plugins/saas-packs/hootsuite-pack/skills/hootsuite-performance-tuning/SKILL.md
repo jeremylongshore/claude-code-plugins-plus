@@ -1,19 +1,27 @@
 ---
 name: hootsuite-performance-tuning
-description: |
-  Optimize Hootsuite API performance with caching, batching, and connection pooling.
+description: 'Optimize Hootsuite API performance with caching, batching, and connection
+  pooling.
+
   Use when experiencing slow API responses, implementing caching strategies,
+
   or optimizing request throughput for Hootsuite integrations.
+
   Trigger with phrases like "hootsuite performance", "optimize hootsuite",
+
   "hootsuite latency", "hootsuite caching", "hootsuite slow", "hootsuite batch".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hootsuite, social-media]
-compatible-with: claude-code
+tags:
+- saas
+- hootsuite
+- social-media
+compatibility: Designed for Claude Code
 ---
-
 # Hootsuite Performance Tuning
 
 ## Instructions

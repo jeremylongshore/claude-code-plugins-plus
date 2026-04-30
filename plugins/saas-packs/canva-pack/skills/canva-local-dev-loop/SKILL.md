@@ -1,19 +1,27 @@
 ---
 name: canva-local-dev-loop
-description: |
-  Configure Canva Connect API local development with hot reload and mock server.
+description: 'Configure Canva Connect API local development with hot reload and mock
+  server.
+
   Use when setting up a development environment, testing OAuth flows locally,
+
   or establishing a fast iteration cycle for Canva integrations.
+
   Trigger with phrases like "canva dev setup", "canva local development",
+
   "canva dev environment", "develop with canva", "canva mock".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, canva]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- canva
+compatibility: Designed for Claude Code
 ---
-
 # Canva Local Dev Loop
 
 ## Overview

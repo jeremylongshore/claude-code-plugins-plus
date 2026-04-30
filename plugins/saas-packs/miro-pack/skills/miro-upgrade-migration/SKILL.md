@@ -1,19 +1,28 @@
 ---
 name: miro-upgrade-migration
-description: |
-  Migrate Miro integrations from REST API v1 to v2 and upgrade @mirohq/miro-api SDK.
+description: 'Migrate Miro integrations from REST API v1 to v2 and upgrade @mirohq/miro-api
+  SDK.
+
   Use when upgrading SDK versions, migrating v1 widget endpoints to v2 item endpoints,
+
   or handling breaking changes in the Miro platform.
+
   Trigger with phrases like "upgrade miro", "miro migration",
+
   "miro v1 to v2", "update miro SDK", "miro breaking changes".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, miro, migration, upgrade]
-compatible-with: claude-code
+tags:
+- saas
+- miro
+- migration
+- upgrade
+compatibility: Designed for Claude Code
 ---
-
 # Miro Upgrade & Migration
 
 ## Overview

@@ -1,17 +1,28 @@
 ---
 name: vercel-sdk-patterns
-description: |
-  Production-ready Vercel REST API patterns with typed fetch wrappers and error handling.
+description: 'Production-ready Vercel REST API patterns with typed fetch wrappers
+  and error handling.
+
   Use when integrating with the Vercel API programmatically, building deployment tools,
+
   or establishing team coding standards for Vercel API calls.
+
   Trigger with phrases like "vercel SDK patterns", "vercel API wrapper",
+
   "vercel REST API client", "vercel best practices", "idiomatic vercel API".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vercel, api, typescript, patterns]
+tags:
+- saas
+- vercel
+- api
+- typescript
+- patterns
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vercel SDK Patterns
 

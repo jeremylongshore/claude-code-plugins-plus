@@ -1,17 +1,22 @@
 ---
 name: flyio-reference-architecture
-description: |
-  Implement Fly.io reference architecture with multi-region apps, Postgres,
+description: 'Implement Fly.io reference architecture with multi-region apps, Postgres,
+
   Redis, background workers, and private networking.
+
   Trigger: "fly.io architecture", "fly.io system design", "fly.io multi-region".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, edge-compute, flyio]
-compatible-with: claude-code
+tags:
+- saas
+- edge-compute
+- flyio
+compatibility: Designed for Claude Code
 ---
-
 # Fly.io Reference Architecture
 
 ## Overview

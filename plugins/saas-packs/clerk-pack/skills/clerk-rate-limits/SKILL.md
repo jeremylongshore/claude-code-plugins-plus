@@ -1,17 +1,25 @@
 ---
 name: clerk-rate-limits
-description: |
-  Understand and manage Clerk rate limits and quotas.
+description: 'Understand and manage Clerk rate limits and quotas.
+
   Use when hitting rate limits, optimizing API usage,
+
   or planning for high-traffic scenarios.
+
   Trigger with phrases like "clerk rate limit", "clerk quota",
+
   "clerk API limits", "clerk throttling".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clerk, api]
+tags:
+- saas
+- clerk
+- api
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clerk Rate Limits
 

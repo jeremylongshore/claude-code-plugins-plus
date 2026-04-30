@@ -1,13 +1,20 @@
 ---
 name: profiling-application-performance
-description: |
-  Execute this skill enables AI assistant to profile application performance, analyzing cpu usage, memory consumption, and execution time. it is triggered when the user requests performance analysis, bottleneck identification, or optimization recommendations. the... Use when optimizing performance. Trigger with phrases like 'optimize', 'performance', or 'speed up'.
+description: 'Execute this skill enables AI assistant to profile application performance,
+  analyzing cpu usage, memory consumption, and execution time. it is triggered when
+  the user requests performance analysis, bottleneck identification, or optimization
+  recommendations. the... Use when optimizing performance. Trigger with phrases like
+  ''optimize'', ''performance'', or ''speed up''.
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [performance, profiling-application]
+tags:
+- performance
+- profiling-application
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Application Profiler
 

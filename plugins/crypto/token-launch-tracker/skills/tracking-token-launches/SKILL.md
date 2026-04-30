@@ -1,17 +1,24 @@
 ---
 name: tracking-token-launches
-description: |
-  Track new token launches across DEXes with risk analysis and contract verification.
+description: 'Track new token launches across DEXes with risk analysis and contract
+  verification.
+
   Use when discovering new token launches, monitoring IDOs, or analyzing token contracts.
+
   Trigger with phrases like "track launches", "find new tokens", "new pairs on uniswap",
+
   "token risk analysis", or "monitor IDOs".
 
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(python:*launch_tracker*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [crypto, monitoring, tracking-token]
+tags:
+- crypto
+- monitoring
+- tracking-token
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Token Launch Tracker
 

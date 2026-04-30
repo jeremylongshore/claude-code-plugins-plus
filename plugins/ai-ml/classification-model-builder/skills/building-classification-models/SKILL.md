@@ -1,13 +1,18 @@
 ---
 name: building-classification-models
-description: |
-  Build and evaluate classification models for supervised learning tasks with labeled data. Use when requesting "build a classifier", "create classification model", or "train classifier". Trigger with relevant phrases based on skill purpose.
+description: 'Build and evaluate classification models for supervised learning tasks
+  with labeled data. Use when requesting "build a classifier", "create classification
+  model", or "train classifier". Trigger with relevant phrases based on skill purpose.
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [ai, classification-models]
+tags:
+- ai
+- classification-models
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Classification Model Builder
 

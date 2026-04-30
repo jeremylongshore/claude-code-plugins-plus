@@ -1,18 +1,24 @@
 ---
 name: algolia-performance-tuning
-description: |
-  Optimize Algolia search performance: record size, searchable attributes,
+description: 'Optimize Algolia search performance: record size, searchable attributes,
+
   replica strategy, response caching, and query-time parameter tuning.
+
   Trigger: "algolia performance", "optimize algolia", "algolia latency",
+
   "algolia slow", "algolia caching", "algolia response time".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, algolia]
-compatible-with: claude-code
+tags:
+- saas
+- search
+- algolia
+compatibility: Designed for Claude Code
 ---
-
 # Algolia Performance Tuning
 
 ## Overview

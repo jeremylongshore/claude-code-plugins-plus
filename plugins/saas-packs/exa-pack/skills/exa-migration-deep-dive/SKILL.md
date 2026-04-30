@@ -1,17 +1,27 @@
 ---
 name: exa-migration-deep-dive
-description: |
-  Migrate from other search APIs (Google, Bing, Tavily, Serper) to Exa neural search.
+description: 'Migrate from other search APIs (Google, Bing, Tavily, Serper) to Exa
+  neural search.
+
   Use when switching to Exa from another search provider, migrating search pipelines,
+
   or evaluating Exa as a replacement for traditional search APIs.
-  Trigger with phrases like "migrate to exa", "switch to exa", "replace google search with exa",
+
+  Trigger with phrases like "migrate to exa", "switch to exa", "replace google search
+  with exa",
+
   "exa vs tavily", "exa migration", "move to exa".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, exa, migration]
+tags:
+- saas
+- exa
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Exa Migration Deep Dive
 

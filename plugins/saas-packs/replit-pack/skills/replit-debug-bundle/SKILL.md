@@ -1,17 +1,27 @@
 ---
 name: replit-debug-bundle
-description: |
-  Collect Replit diagnostic info for debugging deployments, workspace issues, and support tickets.
+description: 'Collect Replit diagnostic info for debugging deployments, workspace
+  issues, and support tickets.
+
   Use when encountering persistent issues, preparing support tickets,
+
   or collecting system state for troubleshooting Replit problems.
+
   Trigger with phrases like "replit debug", "replit support bundle",
+
   "collect replit logs", "replit diagnostic", "replit troubleshoot".
+
+  '
 allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, replit, debugging, support]
+tags:
+- saas
+- replit
+- debugging
+- support
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Replit Debug Bundle
 

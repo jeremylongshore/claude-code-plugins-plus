@@ -1,19 +1,27 @@
 ---
 name: finta-local-dev-loop
-description: |
-  Set up Finta workflow automation and data export for local analysis.
+description: 'Set up Finta workflow automation and data export for local analysis.
+
   Use when building fundraising reports, exporting pipeline data,
+
   or automating investor outreach workflows.
+
   Trigger with phrases like "finta workflow", "finta automation",
+
   "finta data export", "finta reporting".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(python3:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, fundraising-crm, investor-management, finta]
-compatible-with: claude-code
+tags:
+- saas
+- fundraising-crm
+- investor-management
+- finta
+compatibility: Designed for Claude Code
 ---
-
 # Finta Local Dev Loop
 
 ## Overview

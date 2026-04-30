@@ -1,17 +1,26 @@
 ---
 name: groq-hello-world
-description: |
-  Create a minimal working Groq chat completion example.
+description: 'Create a minimal working Groq chat completion example.
+
   Use when starting a new Groq integration, testing your setup,
+
   or learning basic Groq API patterns.
+
   Trigger with phrases like "groq hello world", "groq example",
+
   "groq quick start", "simple groq code".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, groq, api, testing]
+tags:
+- saas
+- groq
+- api
+- testing
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Groq Hello World
 

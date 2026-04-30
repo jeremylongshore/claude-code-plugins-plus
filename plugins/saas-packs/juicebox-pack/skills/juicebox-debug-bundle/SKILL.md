@@ -1,16 +1,20 @@
 ---
 name: juicebox-debug-bundle
-description: |
-  Collect Juicebox debug evidence.
+description: 'Collect Juicebox debug evidence.
+
   Trigger: "juicebox debug", "juicebox support ticket".
+
+  '
 allowed-tools: Read, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, recruiting, juicebox]
-compatible-with: claude-code
+tags:
+- saas
+- recruiting
+- juicebox
+compatibility: Designed for Claude Code
 ---
-
 # Juicebox Debug Bundle
 
 ## Overview

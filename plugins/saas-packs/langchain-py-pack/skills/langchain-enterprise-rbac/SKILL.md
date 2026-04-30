@@ -1,20 +1,27 @@
 ---
 name: langchain-enterprise-rbac
-description: |
-  Enforce tenant isolation and role-based access across LangChain 1.0 chains and
-  LangGraph 1.0 agents — per-request retriever construction, tenant-scoped rate
-  limits, role-scoped tool allowlists, and structured audit logs. Use when
-  building multi-tenant saas, passing soc2 review, or debugging cross-tenant
-  leak. Trigger with "langchain multi-tenant", "langchain tenant isolation",
-  "langchain rbac", "langchain row-level security", "langchain audit log".
+description: "Enforce tenant isolation and role-based access across LangChain 1.0\
+  \ chains and\nLangGraph 1.0 agents \u2014 per-request retriever construction, tenant-scoped\
+  \ rate\nlimits, role-scoped tool allowlists, and structured audit logs. Use when\n\
+  building multi-tenant saas, passing soc2 review, or debugging cross-tenant\nleak.\
+  \ Trigger with \"langchain multi-tenant\", \"langchain tenant isolation\",\n\"langchain\
+  \ rbac\", \"langchain row-level security\", \"langchain audit log\".\n"
 allowed-tools: Read, Write, Edit, Bash(python:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, langchain, langgraph, python, langchain-1.0, multi-tenant, rbac, enterprise, security]
-compatible-with: claude-code, codex
+tags:
+- saas
+- langchain
+- langgraph
+- python
+- langchain-1.0
+- multi-tenant
+- rbac
+- enterprise
+- security
+compatibility: Designed for Claude Code, also compatible with Codex
 ---
-
 # LangChain Enterprise RBAC (Python)
 
 ## Overview

@@ -1,17 +1,22 @@
 ---
 name: fondo-ci-integration
-description: |
-  Automate financial reporting workflows that complement Fondo with CI/CD
+description: 'Automate financial reporting workflows that complement Fondo with CI/CD
+
   pipelines for expense tracking, budget alerts, and financial data validation.
+
   Trigger: "fondo CI", "fondo automation", "fondo financial alerts".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, accounting, fondo]
-compatible-with: claude-code
+tags:
+- saas
+- accounting
+- fondo
+compatibility: Designed for Claude Code
 ---
-
 # Fondo CI Integration
 
 ## Overview

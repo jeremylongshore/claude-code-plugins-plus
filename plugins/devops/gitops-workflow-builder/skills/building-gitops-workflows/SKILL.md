@@ -1,13 +1,21 @@
 ---
 name: building-gitops-workflows
-description: |
-  Execute use when constructing GitOps workflows using ArgoCD or Flux. Trigger with phrases like "create GitOps workflow", "setup ArgoCD", "configure Flux", or "automate Kubernetes deployments". Generates production-ready configurations, implements best practices, and ensures security-first approach for continuous deployment.
+description: 'Execute use when constructing GitOps workflows using ArgoCD or Flux.
+  Trigger with phrases like "create GitOps workflow", "setup ArgoCD", "configure Flux",
+  or "automate Kubernetes deployments". Generates production-ready configurations,
+  implements best practices, and ensures security-first approach for continuous deployment.
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(kubectl:*), Bash(git:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [devops, deployment, kubernetes, security]
+tags:
+- devops
+- deployment
+- kubernetes
+- security
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Building GitOps Workflows
 

@@ -1,16 +1,23 @@
 ---
 name: managing-api-cache
-description: |
-  Implement intelligent API response caching with Redis, Memcached, and CDN integration.
+description: 'Implement intelligent API response caching with Redis, Memcached, and
+  CDN integration.
+
   Use when optimizing API performance with caching.
-  Trigger with phrases like "add caching", "optimize API performance", or "implement cache layer".
-  
+
+  Trigger with phrases like "add caching", "optimize API performance", or "implement
+  cache layer".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:cache-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [api, redis, performance]
+tags:
+- api
+- redis
+- performance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Managing API Cache
 

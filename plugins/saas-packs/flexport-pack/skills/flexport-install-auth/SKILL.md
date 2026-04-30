@@ -1,18 +1,25 @@
 ---
 name: flexport-install-auth
-description: |
-  Install and configure Flexport API authentication with API keys or OAuth credentials.
+description: 'Install and configure Flexport API authentication with API keys or OAuth
+  credentials.
+
   Use when setting up a new Flexport logistics integration, configuring bearer tokens,
+
   or initializing the Flexport REST API client for shipment and supply chain operations.
+
   Trigger: "install flexport", "setup flexport", "flexport auth", "flexport API key".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, logistics, flexport]
-compatible-with: claude-code
+tags:
+- saas
+- logistics
+- flexport
+compatibility: Designed for Claude Code
 ---
-
 # Flexport Install & Auth
 
 ## Overview

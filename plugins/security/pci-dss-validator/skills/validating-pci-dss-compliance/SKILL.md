@@ -1,12 +1,17 @@
 ---
 name: validating-pci-dss-compliance
-description: Validate PCI-DSS compliance for payment card data security. Use when auditing payment systems. Trigger with 'validate PCI-DSS', 'check payment security', or 'audit card data'.
+description: Validate PCI-DSS compliance for payment card data security. Use when
+  auditing payment systems. Trigger with 'validate PCI-DSS', 'check payment security',
+  or 'audit card data'.
 version: 1.0.0
-allowed-tools: "Read, Write, Edit, Grep, Glob, Bash(security:*), Bash(scan:*), Bash(audit:*)"
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(security:*), Bash(scan:*), Bash(audit:*)
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [security, compliance, audit]
+tags:
+- security
+- compliance
+- audit
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Pci Dss Validator
 

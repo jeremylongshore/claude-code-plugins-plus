@@ -1,16 +1,21 @@
 ---
 name: apple-notes-data-handling
-description: |
-  Handle Apple Notes data formats: HTML body, attachments, and rich content.
+description: 'Handle Apple Notes data formats: HTML body, attachments, and rich content.
+
   Trigger: "apple notes data handling".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(osascript:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, macos, apple-notes, automation]
-compatible-with: claude-code
+tags:
+- saas
+- macos
+- apple-notes
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Apple Notes Data Handling
 
 ## Overview

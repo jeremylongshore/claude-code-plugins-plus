@@ -1,16 +1,21 @@
 ---
 name: fathom-ci-integration
-description: |
-  Test Fathom integrations in CI/CD pipelines.
+description: 'Test Fathom integrations in CI/CD pipelines.
+
   Trigger with phrases like "fathom CI", "fathom github actions", "test fathom pipeline".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, meeting-intelligence, ai-notes, fathom]
-compatible-with: claude-code
+tags:
+- saas
+- meeting-intelligence
+- ai-notes
+- fathom
+compatibility: Designed for Claude Code
 ---
-
 # Fathom CI Integration
 
 ## Overview

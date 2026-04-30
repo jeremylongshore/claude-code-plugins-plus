@@ -1,19 +1,27 @@
 ---
 name: bamboohr-sdk-patterns
-description: |
-  Apply production-ready BambooHR API patterns for TypeScript and Python.
+description: 'Apply production-ready BambooHR API patterns for TypeScript and Python.
+
   Use when implementing BambooHR integrations, building reusable clients,
+
   or establishing team coding standards for BambooHR REST API.
+
   Trigger with phrases like "bamboohr SDK patterns", "bamboohr best practices",
+
   "bamboohr code patterns", "idiomatic bamboohr", "bamboohr client wrapper".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hr, bamboohr, patterns]
-compatible-with: claude-code
+tags:
+- saas
+- hr
+- bamboohr
+- patterns
+compatibility: Designed for Claude Code
 ---
-
 # BambooHR SDK Patterns
 
 ## Overview

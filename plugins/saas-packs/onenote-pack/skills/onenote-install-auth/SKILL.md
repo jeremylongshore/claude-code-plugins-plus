@@ -1,17 +1,25 @@
 ---
 name: onenote-install-auth
-description: |
-  Install and configure OneNote SDK/API authentication with delegated auth (MSAL).
-  Use when setting up a new OneNote integration, configuring Azure AD app registration, or migrating from deprecated app-only auth.
-  Trigger with "install onenote", "setup onenote auth", "onenote credentials", "azure ad onenote".
+description: 'Install and configure OneNote SDK/API authentication with delegated
+  auth (MSAL).
+
+  Use when setting up a new OneNote integration, configuring Azure AD app registration,
+  or migrating from deprecated app-only auth.
+
+  Trigger with "install onenote", "setup onenote auth", "onenote credentials", "azure
+  ad onenote".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, onenote, microsoft]
-compatible-with: claude-code
+tags:
+- saas
+- onenote
+- microsoft
+compatibility: Designed for Claude Code
 ---
-
 # OneNote Install & Auth
 
 ## Overview

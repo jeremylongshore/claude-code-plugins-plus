@@ -1,18 +1,26 @@
 ---
 name: serpapi-webhooks-events
-description: |
-  Implement SerpApi async search callbacks and scheduled search monitoring.
+description: 'Implement SerpApi async search callbacks and scheduled search monitoring.
+
   Use when setting up search monitoring, SERP tracking pipelines,
+
   or async search result retrieval.
-  Trigger: "serpapi webhooks", "serpapi monitoring", "serpapi scheduled search", "serpapi async".
+
+  Trigger: "serpapi webhooks", "serpapi monitoring", "serpapi scheduled search", "serpapi
+  async".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, seo, serpapi]
-compatible-with: claude-code
+tags:
+- saas
+- search
+- seo
+- serpapi
+compatibility: Designed for Claude Code
 ---
-
 # SerpApi Webhooks & Events
 
 ## Overview

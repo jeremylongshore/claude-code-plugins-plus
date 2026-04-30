@@ -1,17 +1,26 @@
 ---
 name: vastai-core-workflow-b
-description: |
-  Execute Vast.ai secondary workflow: multi-instance orchestration, spot recovery, and cost optimization.
+description: 'Execute Vast.ai secondary workflow: multi-instance orchestration, spot
+  recovery, and cost optimization.
+
   Use when running distributed training, handling spot preemption,
+
   or optimizing GPU spend across multiple instances.
+
   Trigger with phrases like "vastai distributed training", "vastai spot recovery",
+
   "vastai multi-gpu", "vastai cost optimization".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vastai:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vast-ai, workflow]
+tags:
+- saas
+- vast-ai
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vast.ai Core Workflow B: Multi-Instance & Cost Optimization
 

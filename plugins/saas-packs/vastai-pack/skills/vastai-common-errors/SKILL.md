@@ -1,17 +1,25 @@
 ---
 name: vastai-common-errors
-description: |
-  Diagnose and fix Vast.ai common errors and exceptions.
+description: 'Diagnose and fix Vast.ai common errors and exceptions.
+
   Use when encountering Vast.ai errors, debugging failed instances,
+
   or troubleshooting GPU rental issues.
+
   Trigger with phrases like "vastai error", "fix vastai",
+
   "vastai not working", "debug vastai", "vastai instance failed".
+
+  '
 allowed-tools: Read, Grep, Bash(vastai:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vast-ai, debugging]
+tags:
+- saas
+- vast-ai
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vast.ai Common Errors
 

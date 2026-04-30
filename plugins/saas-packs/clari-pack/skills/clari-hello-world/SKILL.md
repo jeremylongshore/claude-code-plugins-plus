@@ -1,19 +1,27 @@
 ---
 name: clari-hello-world
-description: |
-  Export your first Clari forecast and pipeline snapshot.
+description: 'Export your first Clari forecast and pipeline snapshot.
+
   Use when testing Clari API connectivity, pulling forecast data,
+
   or learning the export API structure.
+
   Trigger with phrases like "clari hello world", "clari first export",
+
   "clari test api", "clari forecast export".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(python3:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, revenue-intelligence, forecasting, clari]
-compatible-with: claude-code
+tags:
+- saas
+- revenue-intelligence
+- forecasting
+- clari
+compatibility: Designed for Claude Code
 ---
-
 # Clari Hello World
 
 ## Overview

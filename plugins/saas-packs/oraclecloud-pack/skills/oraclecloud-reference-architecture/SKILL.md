@@ -1,17 +1,26 @@
 ---
 name: oraclecloud-reference-architecture
-description: |
-  Standard 3-tier OCI reference architecture with VCN, subnets, gateways, load balancer, compute, and Autonomous DB.
-  Use when designing a new OCI deployment, translating AWS/Azure patterns, or creating Terraform for OCI infrastructure.
-  Trigger with "oraclecloud architecture", "oci reference design", "oci 3 tier", "oci vpc design".
-allowed-tools: Read, Write, Edit, Bash(oci:*), Bash(python3:*), Bash(terraform:*), Grep
+description: 'Standard 3-tier OCI reference architecture with VCN, subnets, gateways,
+  load balancer, compute, and Autonomous DB.
+
+  Use when designing a new OCI deployment, translating AWS/Azure patterns, or creating
+  Terraform for OCI infrastructure.
+
+  Trigger with "oraclecloud architecture", "oci reference design", "oci 3 tier", "oci
+  vpc design".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(oci:*), Bash(python3:*), Bash(terraform:*),
+  Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, oraclecloud, oci]
-compatible-with: claude-code
+tags:
+- saas
+- oraclecloud
+- oci
+compatibility: Designed for Claude Code
 ---
-
 # Oracle Cloud Reference Architecture
 
 ## Overview

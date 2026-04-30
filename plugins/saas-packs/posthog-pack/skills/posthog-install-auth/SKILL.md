@@ -1,19 +1,27 @@
 ---
 name: posthog-install-auth
-description: |
-  Install and configure PostHog SDKs with authentication.
+description: 'Install and configure PostHog SDKs with authentication.
+
   Use when setting up posthog-js (browser), posthog-node (server),
+
   or configuring API keys for a new PostHog integration.
+
   Trigger: "install posthog", "setup posthog", "posthog auth",
+
   "configure posthog API key", "posthog init".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, posthog, api, authentication]
+tags:
+- saas
+- posthog
+- api
+- authentication
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # PostHog Install & Auth
 
 ## Overview

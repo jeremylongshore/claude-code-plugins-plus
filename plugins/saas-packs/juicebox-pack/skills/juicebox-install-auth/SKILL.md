@@ -1,17 +1,22 @@
 ---
 name: juicebox-install-auth
-description: |
-  Install and configure Juicebox PeopleGPT API authentication.
+description: 'Install and configure Juicebox PeopleGPT API authentication.
+
   Use when setting up people search or initializing Juicebox.
+
   Trigger: "install juicebox", "setup juicebox", "juicebox auth".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, recruiting, juicebox]
-compatible-with: claude-code
+tags:
+- saas
+- recruiting
+- juicebox
+compatibility: Designed for Claude Code
 ---
-
 # Juicebox Install & Auth
 
 ## Overview

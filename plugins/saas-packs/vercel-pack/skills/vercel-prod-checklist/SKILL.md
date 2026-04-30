@@ -1,17 +1,27 @@
 ---
 name: vercel-prod-checklist
-description: |
-  Vercel production deployment checklist with rollback and promotion procedures.
+description: 'Vercel production deployment checklist with rollback and promotion procedures.
+
   Use when deploying to production, preparing for launch,
+
   or implementing go-live and instant rollback procedures.
+
   Trigger with phrases like "vercel production", "deploy vercel prod",
+
   "vercel go-live", "vercel launch checklist", "vercel promote".
+
+  '
 allowed-tools: Read, Bash(vercel:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vercel, deployment, production, checklist]
+tags:
+- saas
+- vercel
+- deployment
+- production
+- checklist
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vercel Prod Checklist
 

@@ -1,17 +1,26 @@
 ---
 name: coderabbit-core-workflow-a
-description: |
-  Execute CodeRabbit primary workflow: automated PR code review with configuration.
+description: 'Execute CodeRabbit primary workflow: automated PR code review with configuration.
+
   Use when setting up automated code reviews on pull requests,
+
   configuring review behavior, or establishing the core CodeRabbit review loop.
+
   Trigger with phrases like "coderabbit review workflow", "coderabbit PR review",
+
   "coderabbit auto review", "configure coderabbit reviews".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(git:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, coderabbit, workflow, code-review]
+tags:
+- saas
+- coderabbit
+- workflow
+- code-review
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # CodeRabbit Core Workflow A: Automated PR Review
 

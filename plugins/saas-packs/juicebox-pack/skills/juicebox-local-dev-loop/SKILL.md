@@ -1,16 +1,20 @@
 ---
 name: juicebox-local-dev-loop
-description: |
-  Configure Juicebox local dev workflow.
+description: 'Configure Juicebox local dev workflow.
+
   Trigger: "juicebox local dev", "juicebox dev setup".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, recruiting, juicebox]
-compatible-with: claude-code
+tags:
+- saas
+- recruiting
+- juicebox
+compatibility: Designed for Claude Code
 ---
-
 # Juicebox Local Dev Loop
 
 ## Overview

@@ -1,17 +1,25 @@
 ---
 name: evernote-enterprise-rbac
-description: |
-  Implement enterprise RBAC for Evernote integrations.
+description: 'Implement enterprise RBAC for Evernote integrations.
+
   Use when building multi-tenant systems, implementing
+
   role-based access, or handling business accounts.
+
   Trigger with phrases like "evernote enterprise", "evernote rbac",
+
   "evernote business", "evernote permissions".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, evernote, rbac]
+tags:
+- saas
+- evernote
+- rbac
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Evernote Enterprise RBAC
 

@@ -1,19 +1,27 @@
 ---
 name: hubspot-common-errors
-description: |
-  Diagnose and fix common HubSpot API errors with real error responses.
+description: 'Diagnose and fix common HubSpot API errors with real error responses.
+
   Use when encountering HubSpot errors, debugging failed API requests,
+
   or troubleshooting integration issues with specific HTTP status codes.
+
   Trigger with phrases like "hubspot error", "fix hubspot", "hubspot 401",
+
   "hubspot 429", "hubspot not working", "debug hubspot API".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, marketing, hubspot]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- marketing
+- hubspot
+compatibility: Designed for Claude Code
 ---
-
 # HubSpot Common Errors
 
 ## Overview

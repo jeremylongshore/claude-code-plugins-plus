@@ -1,16 +1,21 @@
 ---
 name: finta-cost-tuning
-description: |
-  Optimize Finta plan selection and feature usage.
+description: 'Optimize Finta plan selection and feature usage.
+
   Trigger with phrases like "finta cost", "finta pricing", "finta plan selection".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, fundraising-crm, investor-management, finta]
-compatible-with: claude-code
+tags:
+- saas
+- fundraising-crm
+- investor-management
+- finta
+compatibility: Designed for Claude Code
 ---
-
 # Finta Cost Tuning
 
 ## Overview

@@ -1,19 +1,27 @@
 ---
 name: clickup-migration-deep-dive
-description: |
-  Migrate to ClickUp from other project management tools (Jira, Asana, Trello)
+description: 'Migrate to ClickUp from other project management tools (Jira, Asana,
+  Trello)
+
   or migrate data between ClickUp workspaces using API v2.
+
   Trigger: "migrate to clickup", "clickup migration", "jira to clickup",
+
   "asana to clickup", "trello to clickup", "clickup data migration",
+
   "move tasks to clickup", "clickup import".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, clickup]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- clickup
+compatibility: Designed for Claude Code
 ---
-
 # ClickUp Migration Deep Dive
 
 ## Overview

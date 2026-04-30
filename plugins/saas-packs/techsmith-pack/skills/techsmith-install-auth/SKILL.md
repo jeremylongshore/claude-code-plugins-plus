@@ -1,18 +1,25 @@
 ---
 name: techsmith-install-auth
-description: |
-  Install TechSmith Snagit COM API and register the COM server for automation.
+description: 'Install TechSmith Snagit COM API and register the COM server for automation.
+
   Use when setting up Snagit automation, configuring COM interop,
+
   or initializing Camtasia batch processing.
+
   Trigger: "install techsmith, setup snagit, techsmith COM API".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, screen-capture, video, techsmith]
-compatible-with: claude-code
+tags:
+- saas
+- screen-capture
+- video
+- techsmith
+compatibility: Designed for Claude Code
 ---
-
 # TechSmith Install & Auth
 
 ## Overview

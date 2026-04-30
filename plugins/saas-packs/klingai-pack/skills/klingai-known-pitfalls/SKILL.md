@@ -1,15 +1,24 @@
 ---
 name: klingai-known-pitfalls
-description: |
-  Avoid common mistakes when using Kling AI API. Use when troubleshooting or learning best
-  practices. Trigger with phrases like 'klingai pitfalls', 'kling ai mistakes', 'klingai gotchas',
-  'klingai best practices'.
+description: 'Avoid common mistakes when using Kling AI API. Use when troubleshooting
+  or learning best
+
+  practices. Trigger with phrases like ''klingai pitfalls'', ''kling ai mistakes'',
+  ''klingai gotchas'',
+
+  ''klingai best practices''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, kling-ai, troubleshooting, best-practices]
+tags:
+- saas
+- kling-ai
+- troubleshooting
+- best-practices
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Kling AI Known Pitfalls
 

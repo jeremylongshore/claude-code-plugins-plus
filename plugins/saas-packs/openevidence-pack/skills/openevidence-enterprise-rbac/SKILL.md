@@ -1,16 +1,20 @@
 ---
 name: openevidence-enterprise-rbac
-description: |
-  Enterprise Rbac for OpenEvidence.
+description: 'Enterprise Rbac for OpenEvidence.
+
   Trigger: "openevidence enterprise rbac".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, openevidence, healthcare]
-compatible-with: claude-code
+tags:
+- saas
+- openevidence
+- healthcare
+compatibility: Designed for Claude Code
 ---
-
 # OpenEvidence Enterprise RBAC
 
 ## Overview

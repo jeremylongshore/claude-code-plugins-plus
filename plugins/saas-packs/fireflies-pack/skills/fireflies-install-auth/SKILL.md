@@ -1,17 +1,26 @@
 ---
 name: fireflies-install-auth
-description: |
-  Configure Fireflies.ai GraphQL API authentication and verify connectivity.
+description: 'Configure Fireflies.ai GraphQL API authentication and verify connectivity.
+
   Use when setting up a new Fireflies.ai integration, configuring API keys,
+
   or initializing the GraphQL client for transcript access.
+
   Trigger with phrases like "install fireflies", "setup fireflies",
+
   "fireflies auth", "configure fireflies API key".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, fireflies, api, authentication]
+tags:
+- saas
+- fireflies
+- api
+- authentication
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Fireflies.ai Install & Auth
 

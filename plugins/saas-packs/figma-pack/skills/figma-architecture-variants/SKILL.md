@@ -1,19 +1,26 @@
 ---
 name: figma-architecture-variants
-description: |
-  Choose between Figma integration architectures: CLI script, webhook service, or plugin.
+description: 'Choose between Figma integration architectures: CLI script, webhook
+  service, or plugin.
+
   Use when deciding how to integrate with Figma, comparing REST API vs Plugin API,
+
   or planning a Figma-connected application.
+
   Trigger with phrases like "figma architecture", "figma blueprint",
+
   "how to integrate figma", "figma plugin vs api", "figma project type".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, figma]
-compatible-with: claude-code
+tags:
+- saas
+- figma
+compatibility: Designed for Claude Code
 ---
-
 # Figma Architecture Variants
 
 ## Overview

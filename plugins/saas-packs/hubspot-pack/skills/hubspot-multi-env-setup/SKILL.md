@@ -1,19 +1,27 @@
 ---
 name: hubspot-multi-env-setup
-description: |
-  Configure HubSpot across development, staging, and production environments.
+description: 'Configure HubSpot across development, staging, and production environments.
+
   Use when setting up per-environment HubSpot portals, configuring separate
+
   access tokens, or implementing environment isolation for HubSpot integrations.
+
   Trigger with phrases like "hubspot environments", "hubspot staging",
+
   "hubspot dev prod", "hubspot test account", "hubspot config by env".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, marketing, hubspot]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- marketing
+- hubspot
+compatibility: Designed for Claude Code
 ---
-
 # HubSpot Multi-Environment Setup
 
 ## Overview

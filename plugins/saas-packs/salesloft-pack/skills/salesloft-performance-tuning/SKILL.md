@@ -1,18 +1,27 @@
 ---
 name: salesloft-performance-tuning
-description: |
-  Optimize SalesLoft API performance with caching, pagination strategies, and connection pooling.
+description: 'Optimize SalesLoft API performance with caching, pagination strategies,
+  and connection pooling.
+
   Use when experiencing slow API responses, reducing latency for bulk operations,
+
   or optimizing cadence sync throughput.
-  Trigger: "salesloft performance", "optimize salesloft", "salesloft slow", "salesloft caching".
+
+  Trigger: "salesloft performance", "optimize salesloft", "salesloft slow", "salesloft
+  caching".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, sales, outreach, salesloft]
-compatible-with: claude-code
+tags:
+- saas
+- sales
+- outreach
+- salesloft
+compatibility: Designed for Claude Code
 ---
-
 # SalesLoft Performance Tuning
 
 ## Overview

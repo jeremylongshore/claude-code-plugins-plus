@@ -1,19 +1,29 @@
 ---
 name: palantir-cost-tuning
-description: |
-  Optimize Palantir Foundry costs through compute tuning, incremental builds, and usage monitoring.
+description: 'Optimize Palantir Foundry costs through compute tuning, incremental
+  builds, and usage monitoring.
+
   Use when analyzing Foundry compute costs, reducing API usage,
+
   or implementing cost monitoring for Foundry workloads.
+
   Trigger with phrases like "palantir cost", "foundry billing",
+
   "reduce foundry costs", "foundry pricing", "foundry expensive".
+
+  '
 allowed-tools: Read, Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, palantir, foundry, cost, optimization]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- palantir
+- foundry
+- cost
+- optimization
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Palantir Cost Tuning
 
 ## Overview

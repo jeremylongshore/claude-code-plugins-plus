@@ -1,13 +1,21 @@
 ---
 name: analyzing-capacity-planning
-description: |
-  Execute this skill enables AI assistant to analyze capacity requirements and plan for future growth. it uses the capacity-planning-analyzer plugin to assess current utilization, forecast growth trends, and recommend scaling strategies. use this skill when the u... Use when analyzing code or data. Trigger with phrases like 'analyze', 'review', or 'examine'.
+description: 'Execute this skill enables AI assistant to analyze capacity requirements
+  and plan for future growth. it uses the capacity-planning-analyzer plugin to assess
+  current utilization, forecast growth trends, and recommend scaling strategies. use
+  this skill when the u... Use when analyzing code or data. Trigger with phrases like
+  ''analyze'', ''review'', or ''examine''.
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [performance, scaling, analyzing-capacity]
+tags:
+- performance
+- scaling
+- analyzing-capacity
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Capacity Planning Analyzer
 

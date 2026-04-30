@@ -1,17 +1,28 @@
 ---
 name: deepgram-deploy-integration
-description: |
-  Deploy Deepgram integrations to production environments.
+description: 'Deploy Deepgram integrations to production environments.
+
   Use when deploying to cloud platforms, configuring containers,
+
   or setting up Deepgram in Docker/Kubernetes/serverless.
+
   Trigger: "deploy deepgram", "deepgram docker", "deepgram kubernetes",
+
   "deepgram production deploy", "deepgram cloud run", "deepgram lambda".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(docker:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, deepgram, deployment, docker, kubernetes, serverless]
+tags:
+- saas
+- deepgram
+- deployment
+- docker
+- kubernetes
+- serverless
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Deepgram Deploy Integration
 

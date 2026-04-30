@@ -1,12 +1,17 @@
 ---
 name: overnight-development
-description: Automates software development overnight using git hooks to enforce test-driven Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
+description: Automates software development overnight using git hooks to enforce test-driven
+  Use when appropriate context detected. Trigger with relevant phrases based on skill
+  purpose.
 version: 1.0.0
-allowed-tools: "Read, Write, Edit, Grep, Glob, Bash(general:*), Bash(util:*)"
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(general:*), Bash(util:*)
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [productivity, testing, git]
+tags:
+- productivity
+- testing
+- git
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Overnight Development
 

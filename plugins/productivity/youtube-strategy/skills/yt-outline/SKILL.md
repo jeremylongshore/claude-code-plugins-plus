@@ -1,16 +1,26 @@
 ---
 name: yt-outline
-description: |
-  Build detailed step-by-step YouTube video outlines with demo prep, screen-share sequences, and visual
-  planning. Use this skill whenever the user says "create an outline", "outline this video", "video outline",
-  "build the outline", "production outline", or has an approved brief and packaging and needs the final
-  pre-production document before demo prep and filming. Use when working with yt outline. Trigger with 'yt', 'outline'.
+description: 'Build detailed step-by-step YouTube video outlines with demo prep, screen-share
+  sequences, and visual
+
+  planning. Use this skill whenever the user says "create an outline", "outline this
+  video", "video outline",
+
+  "build the outline", "production outline", or has an approved brief and packaging
+  and needs the final
+
+  pre-production document before demo prep and filming. Use when working with yt outline.
+  Trigger with ''yt'', ''outline''.
+
+  '
 allowed-tools: WebSearch, Read, Write
 version: 1.0.0
 author: Claude Code Plugins <plugins@claudecodeplugins.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [productivity, yt-outline]
+tags:
+- productivity
+- yt-outline
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # YouTube Outline
 

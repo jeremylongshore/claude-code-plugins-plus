@@ -1,20 +1,30 @@
 ---
 name: abridge-cost-tuning
-description: |
-  Optimize Abridge clinical AI costs through tier selection, session management,
+description: 'Optimize Abridge clinical AI costs through tier selection, session management,
+
   and usage monitoring for healthcare organizations.
+
   Use when analyzing Abridge billing, optimizing encounter volume,
+
   or right-sizing your Abridge contract for provider count.
+
   Trigger: "abridge cost", "abridge pricing", "abridge billing",
+
   "abridge budget", "abridge ROI".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, healthcare, ai, abridge, cost-optimization]
-compatible-with: claude-code
+tags:
+- saas
+- healthcare
+- ai
+- abridge
+- cost-optimization
+compatibility: Designed for Claude Code
 ---
-
 # Abridge Cost Tuning
 
 ## Overview

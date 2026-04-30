@@ -1,17 +1,26 @@
 ---
 name: clerk-security-basics
-description: |
-  Implement security best practices with Clerk authentication.
+description: 'Implement security best practices with Clerk authentication.
+
   Use when securing your application, reviewing auth implementation,
+
   or hardening Clerk configuration.
+
   Trigger with phrases like "clerk security", "secure clerk",
+
   "clerk best practices", "clerk hardening".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clerk, security, authentication]
+tags:
+- saas
+- clerk
+- security
+- authentication
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clerk Security Basics
 

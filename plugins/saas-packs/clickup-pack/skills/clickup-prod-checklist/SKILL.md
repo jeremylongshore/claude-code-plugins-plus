@@ -1,18 +1,24 @@
 ---
 name: clickup-prod-checklist
-description: |
-  Production readiness checklist for ClickUp API v2 integrations covering
+description: 'Production readiness checklist for ClickUp API v2 integrations covering
+
   auth, rate limits, error handling, monitoring, and rollback.
+
   Trigger: "clickup production", "clickup go-live", "clickup launch checklist",
+
   "clickup prod ready", "deploy clickup to production".
+
+  '
 allowed-tools: Read, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, clickup]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- clickup
+compatibility: Designed for Claude Code
 ---
-
 # ClickUp Production Checklist
 
 ## Overview

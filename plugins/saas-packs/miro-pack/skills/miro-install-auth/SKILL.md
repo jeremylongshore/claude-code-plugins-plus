@@ -1,19 +1,27 @@
 ---
 name: miro-install-auth
-description: |
-  Install and configure Miro REST API v2 authentication with OAuth 2.0.
+description: 'Install and configure Miro REST API v2 authentication with OAuth 2.0.
+
   Use when setting up a new Miro app, configuring OAuth tokens,
+
   or initializing the @mirohq/miro-api Node.js client.
+
   Trigger with phrases like "install miro", "setup miro",
+
   "miro auth", "miro OAuth", "configure miro API".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, miro, oauth, authentication]
-compatible-with: claude-code
+tags:
+- saas
+- miro
+- oauth
+- authentication
+compatibility: Designed for Claude Code
 ---
-
 # Miro Install & Auth
 
 ## Overview

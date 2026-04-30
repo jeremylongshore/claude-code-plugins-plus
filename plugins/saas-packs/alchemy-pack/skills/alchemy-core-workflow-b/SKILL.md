@@ -1,19 +1,29 @@
 ---
 name: alchemy-core-workflow-b
-description: |
-  Build NFT collection explorer and smart contract interaction with Alchemy.
+description: 'Build NFT collection explorer and smart contract interaction with Alchemy.
+
   Use when fetching NFT metadata, building galleries, reading contract state,
+
   or implementing NFT marketplace features.
+
   Trigger: "alchemy NFT", "alchemy smart contract", "alchemy collection",
+
   "alchemy NFT metadata", "alchemy contract read".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, blockchain, web3, alchemy, nft, smart-contracts]
-compatible-with: claude-code
+tags:
+- saas
+- blockchain
+- web3
+- alchemy
+- nft
+- smart-contracts
+compatibility: Designed for Claude Code
 ---
-
 # Alchemy Core Workflow B — NFT & Smart Contract Interaction
 
 ## Overview

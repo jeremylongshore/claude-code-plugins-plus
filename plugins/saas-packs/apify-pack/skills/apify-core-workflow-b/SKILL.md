@@ -1,19 +1,27 @@
 ---
 name: apify-core-workflow-b
-description: |
-  Manage Apify datasets, key-value stores, and request queues programmatically.
+description: 'Manage Apify datasets, key-value stores, and request queues programmatically.
+
   Use when reading/writing datasets, exporting data, managing Actor storage,
+
   or orchestrating multi-Actor pipelines.
+
   Trigger: "apify dataset", "apify key-value store", "apify storage",
+
   "export apify data", "apify pipeline", "apify request queue".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, scraping, automation, apify]
-compatible-with: claude-code
+tags:
+- saas
+- scraping
+- automation
+- apify
+compatibility: Designed for Claude Code
 ---
-
 # Apify Core Workflow B — Storage & Pipelines
 
 ## Overview

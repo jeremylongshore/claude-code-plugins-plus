@@ -1,19 +1,27 @@
 ---
 name: canva-migration-deep-dive
-description: |
-  Execute major Canva Connect API integration migrations with strangler fig pattern.
+description: 'Execute major Canva Connect API integration migrations with strangler
+  fig pattern.
+
   Use when migrating to Canva from another design platform, re-platforming
+
   existing integrations, or performing major architectural changes.
+
   Trigger with phrases like "migrate to canva", "canva migration",
+
   "switch to canva", "canva replatform", "replace design tool with canva".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, canva]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- canva
+compatibility: Designed for Claude Code
 ---
-
 # Canva Migration Deep Dive
 
 ## Overview

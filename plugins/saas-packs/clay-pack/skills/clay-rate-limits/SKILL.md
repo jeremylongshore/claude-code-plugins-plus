@@ -1,17 +1,25 @@
 ---
 name: clay-rate-limits
-description: |
-  Handle Clay rate limits, webhook throttling, and credit pacing strategies.
+description: 'Handle Clay rate limits, webhook throttling, and credit pacing strategies.
+
   Use when hitting 429 errors, managing webhook submission rates,
-  or optimizing throughput within Clay's plan limits.
+
+  or optimizing throughput within Clay''s plan limits.
+
   Trigger with phrases like "clay rate limit", "clay throttling",
+
   "clay 429", "clay slow", "clay records per hour".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clay, api]
+tags:
+- saas
+- clay
+- api
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clay Rate Limits
 

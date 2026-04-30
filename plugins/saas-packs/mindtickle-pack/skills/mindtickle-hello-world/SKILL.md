@@ -1,16 +1,20 @@
 ---
 name: mindtickle-hello-world
-description: |
-  Create a minimal working MindTickle example.
+description: 'Create a minimal working MindTickle example.
+
   Trigger: "mindtickle hello world", "mindtickle example", "test mindtickle".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, mindtickle, sales]
-compatible-with: claude-code
+tags:
+- saas
+- mindtickle
+- sales
+compatibility: Designed for Claude Code
 ---
-
 # MindTickle Hello World
 
 ## Overview

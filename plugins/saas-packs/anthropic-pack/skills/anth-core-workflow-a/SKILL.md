@@ -1,19 +1,27 @@
 ---
 name: anth-core-workflow-a
-description: |
-  Build Claude tool use (function calling) workflows with the Messages API.
+description: 'Build Claude tool use (function calling) workflows with the Messages
+  API.
+
   Use when implementing tool use, function calling, agent loops,
+
   or building AI assistants that interact with external systems.
+
   Trigger with phrases like "claude tool use", "anthropic function calling",
+
   "claude tools", "agent loop anthropic", "tool_use blocks".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, anthropic]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- anthropic
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Core Workflow A — Tool Use (Function Calling)
 
 ## Overview

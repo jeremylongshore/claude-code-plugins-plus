@@ -1,19 +1,29 @@
 ---
 name: abridge-core-workflow-b
-description: |
-  Implement Abridge patient-facing documentation and after-visit summary generation.
+description: 'Implement Abridge patient-facing documentation and after-visit summary
+  generation.
+
   Use when building patient portal integration, generating plain-language summaries,
+
   multi-language translations, or after-visit instructions from clinical encounters.
+
   Trigger: "abridge patient summary", "after-visit summary", "patient portal abridge",
+
   "abridge patient-facing", "abridge multilingual".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, healthcare, ai, abridge, patient-engagement]
-compatible-with: claude-code
+tags:
+- saas
+- healthcare
+- ai
+- abridge
+- patient-engagement
+compatibility: Designed for Claude Code
 ---
-
 # Abridge Core Workflow B — Patient-Facing Documentation
 
 ## Overview

@@ -1,17 +1,28 @@
 ---
 name: granola-multi-env-setup
-description: |
-  Configure Granola across multiple workspaces and teams with SSO/SCIM provisioning.
+description: 'Configure Granola across multiple workspaces and teams with SSO/SCIM
+  provisioning.
+
   Use when setting up department-level workspaces, configuring user provisioning,
+
   or managing enterprise-scale Granola deployments.
+
   Trigger: "granola workspaces", "granola multi-team", "granola SSO",
+
   "granola SCIM", "granola organization setup".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, granola, deployment, scaling, enterprise]
+tags:
+- saas
+- granola
+- deployment
+- scaling
+- enterprise
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Granola Multi-Environment Setup
 

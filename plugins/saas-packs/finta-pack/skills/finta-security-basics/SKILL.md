@@ -1,16 +1,21 @@
 ---
 name: finta-security-basics
-description: |
-  Secure Finta fundraising data and investor information.
+description: 'Secure Finta fundraising data and investor information.
+
   Trigger with phrases like "finta security", "finta data privacy".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, fundraising-crm, investor-management, finta]
-compatible-with: claude-code
+tags:
+- saas
+- fundraising-crm
+- investor-management
+- finta
+compatibility: Designed for Claude Code
 ---
-
 # Finta Security Basics
 
 ## Overview

@@ -1,17 +1,26 @@
 ---
 name: deepgram-rate-limits
-description: |
-  Implement Deepgram rate limiting and backoff strategies.
+description: 'Implement Deepgram rate limiting and backoff strategies.
+
   Use when handling API quotas, implementing request throttling,
+
   or dealing with 429 rate limit errors.
+
   Trigger: "deepgram rate limit", "deepgram throttling", "429 error deepgram",
+
   "deepgram quota", "deepgram backoff", "deepgram concurrency".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, deepgram, api, rate-limiting]
+tags:
+- saas
+- deepgram
+- api
+- rate-limiting
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Deepgram Rate Limits
 

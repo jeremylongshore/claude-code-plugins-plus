@@ -1,17 +1,22 @@
 ---
 name: flyio-cost-tuning
-description: |
-  Optimize Fly.io costs with auto-stop/suspend, right-sizing VMs,
+description: 'Optimize Fly.io costs with auto-stop/suspend, right-sizing VMs,
+
   volume management, and monitoring spend across apps and regions.
+
   Trigger: "fly.io costs", "fly.io pricing", "fly.io billing", "reduce fly.io spend".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(fly:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, edge-compute, flyio]
-compatible-with: claude-code
+tags:
+- saas
+- edge-compute
+- flyio
+compatibility: Designed for Claude Code
 ---
-
 # Fly.io Cost Tuning
 
 ## Overview

@@ -1,19 +1,26 @@
 ---
 name: anth-deploy-integration
-description: |
-  Deploy Claude API integrations to production cloud environments.
+description: 'Deploy Claude API integrations to production cloud environments.
+
   Use when deploying Claude-powered services to Docker, Cloud Run, ECS,
+
   or Kubernetes with proper secret management and health checks.
+
   Trigger with phrases like "deploy anthropic", "claude production deploy",
+
   "ship claude integration", "anthropic cloud deployment".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, anthropic]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- anthropic
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Deploy Integration
 
 ## Overview

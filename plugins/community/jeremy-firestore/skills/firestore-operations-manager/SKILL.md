@@ -1,15 +1,24 @@
 ---
 name: firestore-operations-manager
-description: |
-  Manage Firebase/Firestore operations including CRUD, queries, batch processing, and index/rule guidance.
-  Use when you need to create/update/query Firestore documents, run batch writes, troubleshoot missing indexes, or plan migrations.
-  Trigger with phrases like "firestore operations", "create firestore document", "batch write", "missing index", or "fix firestore query".
+description: 'Manage Firebase/Firestore operations including CRUD, queries, batch
+  processing, and index/rule guidance.
+
+  Use when you need to create/update/query Firestore documents, run batch writes,
+  troubleshoot missing indexes, or plan migrations.
+
+  Trigger with phrases like "firestore operations", "create firestore document", "batch
+  write", "missing index", or "fix firestore query".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [community, migration, firestore-operations]
+tags:
+- community
+- migration
+- firestore-operations
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Firestore Operations Manager
 

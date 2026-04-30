@@ -1,19 +1,25 @@
 ---
 name: figma-cost-tuning
-description: |
-  Optimize Figma API usage to minimize costs and stay within plan limits.
+description: 'Optimize Figma API usage to minimize costs and stay within plan limits.
+
   Use when analyzing request volumes, reducing unnecessary API calls,
+
   or choosing the right Figma plan for your integration needs.
+
   Trigger with phrases like "figma cost", "figma pricing",
+
   "reduce figma API calls", "figma plan limits", "figma budget".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, figma]
-compatible-with: claude-code
+tags:
+- saas
+- figma
+compatibility: Designed for Claude Code
 ---
-
 # Figma Cost Tuning
 
 ## Overview

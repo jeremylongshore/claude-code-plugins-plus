@@ -1,17 +1,28 @@
 ---
 name: instantly-enterprise-rbac
-description: |
-  Configure Instantly.ai workspace access control, team management, and API key governance.
+description: 'Configure Instantly.ai workspace access control, team management, and
+  API key governance.
+
   Use when managing workspace members, setting up team permissions,
+
   or implementing API key governance for multi-user Instantly workspaces.
+
   Trigger with phrases like "instantly team", "instantly permissions",
+
   "instantly workspace members", "instantly access control", "instantly rbac".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, instantly, enterprise, access-control, team-management]
+tags:
+- saas
+- instantly
+- enterprise
+- access-control
+- team-management
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Instantly Enterprise RBAC
 

@@ -1,17 +1,27 @@
 ---
 name: databricks-core-workflow-a
-description: |
-  Execute Databricks primary workflow: Delta Lake ETL pipelines.
+description: 'Execute Databricks primary workflow: Delta Lake ETL pipelines.
+
   Use when building data ingestion pipelines, implementing medallion architecture,
+
   or creating Delta Lake transformations.
+
   Trigger with phrases like "databricks ETL", "delta lake pipeline",
+
   "medallion architecture", "databricks data pipeline", "bronze silver gold".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(databricks:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, databricks, workflow, data-pipeline, etl]
+tags:
+- saas
+- databricks
+- workflow
+- data-pipeline
+- etl
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Databricks Core Workflow A: Delta Lake ETL
 

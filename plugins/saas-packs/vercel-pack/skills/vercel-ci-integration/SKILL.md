@@ -1,17 +1,28 @@
 ---
 name: vercel-ci-integration
-description: |
-  Configure Vercel CI/CD with GitHub Actions, preview deployments, and automated testing.
+description: 'Configure Vercel CI/CD with GitHub Actions, preview deployments, and
+  automated testing.
+
   Use when setting up automated deployments, configuring preview bots,
+
   or integrating Vercel into your CI pipeline.
+
   Trigger with phrases like "vercel CI", "vercel GitHub Actions",
+
   "vercel automated deploy", "CI vercel", "vercel pipeline".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(vercel:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vercel, ci-cd, github-actions, automation]
+tags:
+- saas
+- vercel
+- ci-cd
+- github-actions
+- automation
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vercel CI Integration
 

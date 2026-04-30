@@ -1,16 +1,20 @@
 ---
 name: granola-deploy-integration
-description: |
-  Deploy Granola native integrations — Slack, Notion, HubSpot, Attio, Affinity, and Zapier.
-  Step-by-step setup for each platform with configuration, testing, and automation chains.
-  Trigger: "granola slack", "granola notion", "granola hubspot",
-  "granola attio", "connect granola", "granola integration".
+description: "Deploy Granola native integrations \u2014 Slack, Notion, HubSpot, Attio,\
+  \ Affinity, and Zapier.\nStep-by-step setup for each platform with configuration,\
+  \ testing, and automation chains.\nTrigger: \"granola slack\", \"granola notion\"\
+  , \"granola hubspot\",\n\"granola attio\", \"connect granola\", \"granola integration\"\
+  .\n"
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, granola, integrations, deployment]
+tags:
+- saas
+- granola
+- integrations
+- deployment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Granola Deploy Integration
 

@@ -1,19 +1,27 @@
 ---
 name: canva-incident-runbook
-description: |
-  Execute Canva Connect API incident response with triage, mitigation, and postmortem.
+description: 'Execute Canva Connect API incident response with triage, mitigation,
+  and postmortem.
+
   Use when responding to Canva-related outages, investigating API errors,
+
   or running post-incident reviews for Canva integration failures.
+
   Trigger with phrases like "canva incident", "canva outage",
+
   "canva down", "canva on-call", "canva emergency", "canva broken".
+
+  '
 allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, canva]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- canva
+compatibility: Designed for Claude Code
 ---
-
 # Canva Incident Runbook
 
 ## Overview

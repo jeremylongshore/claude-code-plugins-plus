@@ -1,13 +1,21 @@
 ---
 name: generating-database-seed-data
-description: |
-  Process this skill enables AI assistant to generate realistic test data and database seed scripts for development and testing environments. it uses faker libraries to create realistic data, maintains relational integrity, and allows configurable data volumes. u... Use when working with databases or data models. Trigger with phrases like 'database', 'query', or 'schema'.
+description: 'Process this skill enables AI assistant to generate realistic test data
+  and database seed scripts for development and testing environments. it uses faker
+  libraries to create realistic data, maintains relational integrity, and allows configurable
+  data volumes. u... Use when working with databases or data models. Trigger with
+  phrases like ''database'', ''query'', or ''schema''.
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [database, testing, database-seed]
+tags:
+- database
+- testing
+- database-seed
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Data Seeder Generator
 

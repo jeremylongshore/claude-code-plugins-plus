@@ -1,17 +1,27 @@
 ---
 name: replit-prod-checklist
-description: |
-  Execute Replit production deployment checklist with rollback and health monitoring.
+description: 'Execute Replit production deployment checklist with rollback and health
+  monitoring.
+
   Use when deploying Replit apps to production, preparing for launch,
+
   or implementing go-live procedures with Autoscale or Reserved VM.
+
   Trigger with phrases like "replit production", "deploy replit",
+
   "replit go-live", "replit launch checklist", "replit prod ready".
+
+  '
 allowed-tools: Read, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, replit, deployment, production]
+tags:
+- saas
+- replit
+- deployment
+- production
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Replit Production Checklist
 

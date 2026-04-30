@@ -1,17 +1,27 @@
 ---
 name: groq-performance-tuning
-description: |
-  Optimize Groq API performance with model selection, caching, streaming, and parallel requests.
+description: 'Optimize Groq API performance with model selection, caching, streaming,
+  and parallel requests.
+
   Use when experiencing slow responses, implementing caching strategies,
+
   or optimizing request throughput for Groq integrations.
+
   Trigger with phrases like "groq performance", "optimize groq",
+
   "groq latency", "groq caching", "groq slow", "groq speed".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, groq, api, performance]
+tags:
+- saas
+- groq
+- api
+- performance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Groq Performance Tuning
 

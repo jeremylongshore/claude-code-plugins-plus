@@ -1,18 +1,27 @@
 ---
 name: anima-install-auth
-description: |
-  Install the Anima SDK and configure authentication for Figma-to-code generation.
+description: 'Install the Anima SDK and configure authentication for Figma-to-code
+  generation.
+
   Use when setting up design-to-code automation, configuring Figma token access,
+
   or initializing the @animaapp/anima-sdk for server-side code generation.
+
   Trigger: "install anima", "setup anima", "anima auth", "anima figma token".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, figma, anima, code-generation]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- figma
+- anima
+- code-generation
+compatibility: Designed for Claude Code
 ---
-
 # Anima Install & Auth
 
 ## Overview

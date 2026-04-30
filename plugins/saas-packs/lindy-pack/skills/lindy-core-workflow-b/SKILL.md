@@ -1,17 +1,25 @@
 ---
 name: lindy-core-workflow-b
-description: |
-  Configure Lindy triggers, scheduling, multi-agent delegation, and automation.
+description: 'Configure Lindy triggers, scheduling, multi-agent delegation, and automation.
+
   Use when setting up trigger-based workflows, scheduling agents,
+
   building multi-agent societies, or configuring agent delegation.
+
   Trigger with phrases like "lindy automation", "schedule lindy agent",
+
   "lindy workflow automation", "lindy delegation", "lindy multi-agent".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lindy, workflow]
+tags:
+- saas
+- lindy
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lindy Core Workflow B: Triggers & Multi-Agent Automation
 

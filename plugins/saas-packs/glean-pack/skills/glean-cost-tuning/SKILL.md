@@ -1,17 +1,23 @@
 ---
 name: glean-cost-tuning
-description: |
-  Optimize Glean costs by managing indexed content volume, datasource efficiency,
+description: 'Optimize Glean costs by managing indexed content volume, datasource
+  efficiency,
+
   and connector resource usage.
+
   Trigger: "glean costs", "glean optimization", "reduce glean indexing".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, enterprise-search, glean]
-compatible-with: claude-code
+tags:
+- saas
+- enterprise-search
+- glean
+compatibility: Designed for Claude Code
 ---
-
 # Glean Cost Tuning
 
 ## Overview

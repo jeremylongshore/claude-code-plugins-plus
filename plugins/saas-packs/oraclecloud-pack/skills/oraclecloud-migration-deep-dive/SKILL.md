@@ -1,17 +1,21 @@
 ---
 name: oraclecloud-migration-deep-dive
-description: |
-  Migrate workloads from AWS or Azure to OCI — IAM translation, networking mapping, compute image import, and data migration.
-  Use when planning an AWS-to-OCI or Azure-to-OCI migration, translating cloud concepts, or importing custom images.
-  Trigger with "oraclecloud migration", "aws to oci", "azure to oci", "oci migration deep dive".
-allowed-tools: Read, Write, Edit, Bash(oci:*), Bash(python3:*), Bash(terraform:*), Grep
+description: "Migrate workloads from AWS or Azure to OCI \u2014 IAM translation, networking\
+  \ mapping, compute image import, and data migration.\nUse when planning an AWS-to-OCI\
+  \ or Azure-to-OCI migration, translating cloud concepts, or importing custom images.\n\
+  Trigger with \"oraclecloud migration\", \"aws to oci\", \"azure to oci\", \"oci\
+  \ migration deep dive\".\n"
+allowed-tools: Read, Write, Edit, Bash(oci:*), Bash(python3:*), Bash(terraform:*),
+  Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, oraclecloud, oci]
-compatible-with: claude-code
+tags:
+- saas
+- oraclecloud
+- oci
+compatibility: Designed for Claude Code
 ---
-
 # Oracle Cloud Migration Deep Dive
 
 ## Overview

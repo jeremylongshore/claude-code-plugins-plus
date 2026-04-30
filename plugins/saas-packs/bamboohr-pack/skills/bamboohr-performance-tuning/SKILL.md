@@ -1,19 +1,28 @@
 ---
 name: bamboohr-performance-tuning
-description: |
-  Optimize BambooHR API performance with caching, batch reports, incremental sync,
+description: 'Optimize BambooHR API performance with caching, batch reports, incremental
+  sync,
+
   and connection pooling. Use when experiencing slow API responses,
+
   implementing caching, or optimizing sync throughput.
+
   Trigger with phrases like "bamboohr performance", "optimize bamboohr",
+
   "bamboohr latency", "bamboohr caching", "bamboohr slow", "bamboohr batch".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hr, bamboohr, performance]
-compatible-with: claude-code
+tags:
+- saas
+- hr
+- bamboohr
+- performance
+compatibility: Designed for Claude Code
 ---
-
 # BambooHR Performance Tuning
 
 ## Overview

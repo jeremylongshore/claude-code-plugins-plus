@@ -1,19 +1,30 @@
 ---
 name: sentry-upgrade-migration
-description: |
-  Upgrade Sentry SDK versions and migrate breaking API changes.
+description: 'Upgrade Sentry SDK versions and migrate breaking API changes.
+
   Use when upgrading from Sentry v7 to v8, migrating Python SDK v1 to v2,
+
   replacing deprecated Hub/Transaction APIs, or running the migr8 codemod.
+
   Trigger: "upgrade sentry", "sentry migration", "sentry breaking changes",
+
   "migrate sentry v7 to v8", "update sentry sdk".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(pip:*), Bash(node:*), Grep, Glob
+
+  '
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(pip:*), Bash(node:*),
+  Grep, Glob
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, sentry, migration, upgrade, sdk, breaking-changes]
+tags:
+- saas
+- sentry
+- migration
+- upgrade
+- sdk
+- breaking-changes
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Sentry Upgrade Migration
 
 Detect installed Sentry SDK versions, identify breaking API changes, apply automated codemods, and verify the upgrade succeeds with test events and traces.

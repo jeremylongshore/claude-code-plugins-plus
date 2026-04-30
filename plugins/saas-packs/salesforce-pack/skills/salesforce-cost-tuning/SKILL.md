@@ -1,19 +1,28 @@
 ---
 name: salesforce-cost-tuning
-description: |
-  Optimize Salesforce costs through API call reduction, edition selection, and license management.
+description: 'Optimize Salesforce costs through API call reduction, edition selection,
+  and license management.
+
   Use when analyzing Salesforce costs, reducing API consumption,
+
   or choosing the right Salesforce edition for your integration needs.
+
   Trigger with phrases like "salesforce cost", "salesforce pricing",
-  "reduce salesforce costs", "salesforce license", "salesforce API usage", "salesforce budget".
+
+  "reduce salesforce costs", "salesforce license", "salesforce API usage", "salesforce
+  budget".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, salesforce]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- salesforce
+compatibility: Designed for Claude Code
 ---
-
 # Salesforce Cost Tuning
 
 ## Overview

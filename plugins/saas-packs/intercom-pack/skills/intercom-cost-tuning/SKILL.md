@@ -1,19 +1,28 @@
 ---
 name: intercom-cost-tuning
-description: |
-  Optimize Intercom API costs through caching, request reduction, and usage monitoring.
+description: 'Optimize Intercom API costs through caching, request reduction, and
+  usage monitoring.
+
   Use when analyzing Intercom API usage, reducing unnecessary requests,
+
   or implementing usage tracking and budget awareness.
+
   Trigger with phrases like "intercom cost", "intercom billing",
+
   "reduce intercom requests", "intercom pricing", "intercom usage", "intercom budget".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, support, messaging, intercom]
-compatible-with: claude-code
+tags:
+- saas
+- support
+- messaging
+- intercom
+compatibility: Designed for Claude Code
 ---
-
 # Intercom Cost Tuning
 
 ## Overview

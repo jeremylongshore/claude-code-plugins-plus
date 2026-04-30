@@ -1,16 +1,24 @@
 ---
 name: scanning-api-security
-description: |
-  Detect API security vulnerabilities including injection, broken auth, and data exposure.
+description: 'Detect API security vulnerabilities including injection, broken auth,
+  and data exposure.
+
   Use when scanning APIs for security vulnerabilities.
-  Trigger with phrases like "scan API security", "check for vulnerabilities", or "audit API security".
-  
+
+  Trigger with phrases like "scan API security", "check for vulnerabilities", or "audit
+  API security".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:security-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [api, security, authentication, audit]
+tags:
+- api
+- security
+- authentication
+- audit
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Scanning API Security
 

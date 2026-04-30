@@ -1,16 +1,21 @@
 ---
 name: guidewire-local-dev-loop
-description: |
-  Configure Guidewire Studio local development with Gosu debugging, hot reload, and test data.
+description: 'Configure Guidewire Studio local development with Gosu debugging, hot
+  reload, and test data.
+
   Trigger: "guidewire local dev loop", "local-dev-loop".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(gradle:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, insurance, guidewire]
-compatible-with: claude-code
+tags:
+- saas
+- insurance
+- guidewire
+compatibility: Designed for Claude Code
 ---
-
 # Guidewire Local Dev Loop
 
 ## Overview

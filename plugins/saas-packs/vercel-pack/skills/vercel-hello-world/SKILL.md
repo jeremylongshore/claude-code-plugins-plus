@@ -1,17 +1,27 @@
 ---
 name: vercel-hello-world
-description: |
-  Create a minimal working Vercel deployment with a serverless API route.
+description: 'Create a minimal working Vercel deployment with a serverless API route.
+
   Use when starting a new Vercel project, testing your setup,
+
   or learning basic Vercel deployment and API route patterns.
+
   Trigger with phrases like "vercel hello world", "vercel example",
+
   "vercel quick start", "simple vercel project", "first vercel deploy".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(npm:*), Bash(npx:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vercel, api, quickstart, deployment]
+tags:
+- saas
+- vercel
+- api
+- quickstart
+- deployment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vercel Hello World
 

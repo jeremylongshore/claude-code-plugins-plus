@@ -1,18 +1,20 @@
 ---
 name: miro-security-basics
-description: |
-  Apply Miro REST API v2 security best practices — OAuth scope minimization,
-  token storage, webhook signature validation, and secret rotation.
-  Trigger with phrases like "miro security", "miro secrets",
-  "secure miro", "miro token security", "miro webhook signature".
+description: "Apply Miro REST API v2 security best practices \u2014 OAuth scope minimization,\n\
+  token storage, webhook signature validation, and secret rotation.\nTrigger with\
+  \ phrases like \"miro security\", \"miro secrets\",\n\"secure miro\", \"miro token\
+  \ security\", \"miro webhook signature\".\n"
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, miro, security, oauth]
-compatible-with: claude-code
+tags:
+- saas
+- miro
+- security
+- oauth
+compatibility: Designed for Claude Code
 ---
-
 # Miro Security Basics
 
 ## Overview

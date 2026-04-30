@@ -1,19 +1,27 @@
 ---
 name: webflow-debug-bundle
-description: |
-  Collect Webflow debug evidence for support tickets and troubleshooting.
+description: 'Collect Webflow debug evidence for support tickets and troubleshooting.
+
   Gathers SDK version, token validation, rate limit status, site connectivity,
+
   CMS health, and error logs into a single diagnostic bundle.
+
   Trigger with phrases like "webflow debug", "webflow support bundle",
+
   "collect webflow logs", "webflow diagnostic", "webflow troubleshoot".
+
+  '
 allowed-tools: Read, Bash(npm:*), Bash(npx:*), Bash(curl:*), Bash(tar:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, no-code, webflow]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- no-code
+- webflow
+compatibility: Designed for Claude Code
 ---
-
 # Webflow Debug Bundle
 
 ## Overview

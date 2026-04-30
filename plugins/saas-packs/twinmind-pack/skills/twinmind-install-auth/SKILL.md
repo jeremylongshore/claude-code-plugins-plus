@@ -1,17 +1,28 @@
 ---
 name: twinmind-install-auth
-description: |
-  Install and configure TwinMind Chrome extension, mobile app, and API access.
+description: 'Install and configure TwinMind Chrome extension, mobile app, and API
+  access.
+
   Use when setting up TwinMind for meeting transcription, configuring calendar
+
   integration, or initializing TwinMind in your workflow.
+
   Trigger with phrases like "install twinmind", "setup twinmind",
+
   "twinmind auth", "configure twinmind", "twinmind chrome extension".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, twinmind, api, authentication, transcription]
+tags:
+- saas
+- twinmind
+- api
+- authentication
+- transcription
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # TwinMind Install & Auth
 

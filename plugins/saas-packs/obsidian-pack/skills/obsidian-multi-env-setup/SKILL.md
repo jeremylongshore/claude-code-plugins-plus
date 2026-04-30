@@ -1,17 +1,27 @@
 ---
 name: obsidian-multi-env-setup
-description: |
-  Configure multiple Obsidian environments for development, testing, and production.
+description: 'Configure multiple Obsidian environments for development, testing, and
+  production.
+
   Use when managing separate vaults, testing plugin versions,
+
   or establishing a proper development workflow with isolated environments.
+
   Trigger with phrases like "obsidian environments", "obsidian dev vault",
+
   "obsidian testing setup", "multiple obsidian vaults".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(mkdir:*), Bash(ln:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, obsidian, testing, workflow]
+tags:
+- saas
+- obsidian
+- testing
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Obsidian Multi-Environment Setup
 

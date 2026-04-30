@@ -1,17 +1,27 @@
 ---
 name: langfuse-ci-integration
-description: |
-  Configure Langfuse CI/CD integration with GitHub Actions and automated testing.
+description: 'Configure Langfuse CI/CD integration with GitHub Actions and automated
+  testing.
+
   Use when setting up automated testing, configuring CI pipelines,
+
   or integrating Langfuse tests into your build process.
+
   Trigger with phrases like "langfuse CI", "langfuse GitHub Actions",
+
   "langfuse automated tests", "CI langfuse", "langfuse pipeline".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langfuse, testing, ci-cd]
+tags:
+- saas
+- langfuse
+- testing
+- ci-cd
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Langfuse CI Integration
 

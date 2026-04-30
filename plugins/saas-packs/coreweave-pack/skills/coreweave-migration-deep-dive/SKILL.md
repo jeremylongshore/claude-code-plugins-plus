@@ -1,19 +1,28 @@
 ---
 name: coreweave-migration-deep-dive
-description: |
-  Migrate ML workloads from AWS/GCP/Azure to CoreWeave GPU cloud.
+description: 'Migrate ML workloads from AWS/GCP/Azure to CoreWeave GPU cloud.
+
   Use when moving inference services from hyperscaler GPU instances,
+
   migrating training pipelines, or evaluating CoreWeave vs cloud GPU costs.
+
   Trigger with phrases like "migrate to coreweave", "coreweave migration",
+
   "move from aws to coreweave", "coreweave vs aws gpu".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(kubectl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, gpu-cloud, kubernetes, inference, coreweave]
-compatible-with: claude-code
+tags:
+- saas
+- gpu-cloud
+- kubernetes
+- inference
+- coreweave
+compatibility: Designed for Claude Code
 ---
-
 # CoreWeave Migration Deep Dive
 
 ## Cost Comparison

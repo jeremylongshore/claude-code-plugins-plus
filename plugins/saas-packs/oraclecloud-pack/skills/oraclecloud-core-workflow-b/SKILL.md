@@ -1,17 +1,19 @@
 ---
 name: oraclecloud-core-workflow-b
-description: |
-  Build OCI networking from scratch — VCN, subnets, gateways, and security rules.
-  Use when creating a new VCN, debugging connectivity issues, or setting up security lists and NSGs.
-  Trigger with "oci networking", "vcn setup", "security list", "nsg rules", "oci subnet".
+description: "Build OCI networking from scratch \u2014 VCN, subnets, gateways, and\
+  \ security rules.\nUse when creating a new VCN, debugging connectivity issues, or\
+  \ setting up security lists and NSGs.\nTrigger with \"oci networking\", \"vcn setup\"\
+  , \"security list\", \"nsg rules\", \"oci subnet\".\n"
 allowed-tools: Read, Write, Edit, Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, oraclecloud, oci]
-compatible-with: claude-code
+tags:
+- saas
+- oraclecloud
+- oci
+compatibility: Designed for Claude Code
 ---
-
 # OCI Networking — VCN, Subnets & Security Rules
 
 ## Overview

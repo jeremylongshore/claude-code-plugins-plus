@@ -1,17 +1,26 @@
 ---
 name: mistral-reference-architecture
-description: |
-  Implement Mistral AI reference architecture with best-practice project layout.
+description: 'Implement Mistral AI reference architecture with best-practice project
+  layout.
+
   Use when designing new Mistral AI integrations, reviewing project structure,
+
   or establishing architecture standards for Mistral AI applications.
+
   Trigger with phrases like "mistral architecture", "mistral best practices",
+
   "mistral project structure", "how to organize mistral".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, mistral, mistral-reference]
+tags:
+- saas
+- mistral
+- mistral-reference
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Mistral AI Reference Architecture
 

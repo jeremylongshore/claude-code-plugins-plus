@@ -1,17 +1,27 @@
 ---
 name: customerio-local-dev-loop
-description: |
-  Configure Customer.io local development workflow.
+description: 'Configure Customer.io local development workflow.
+
   Use when setting up local testing, dev/staging isolation,
+
   or mocking Customer.io for unit tests.
+
   Trigger: "customer.io local dev", "test customer.io locally",
+
   "customer.io dev environment", "customer.io sandbox", "mock customer.io".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Glob, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, customer-io, testing, development, workflow]
+tags:
+- saas
+- customer-io
+- testing
+- development
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Customer.io Local Dev Loop
 

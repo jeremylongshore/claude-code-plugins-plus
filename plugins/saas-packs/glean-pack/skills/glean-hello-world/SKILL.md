@@ -1,18 +1,25 @@
 ---
 name: glean-hello-world
-description: |
-  Index documents into Glean and search them back using the Indexing and Client APIs.
+description: 'Index documents into Glean and search them back using the Indexing and
+  Client APIs.
+
   Use when starting a new Glean custom connector, testing search quality,
+
   or learning the index/search pattern.
+
   Trigger: "glean hello world", "glean example", "glean index document", "glean search".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, enterprise-search, glean]
-compatible-with: claude-code
+tags:
+- saas
+- enterprise-search
+- glean
+compatibility: Designed for Claude Code
 ---
-
 # Glean Hello World
 
 ## Overview

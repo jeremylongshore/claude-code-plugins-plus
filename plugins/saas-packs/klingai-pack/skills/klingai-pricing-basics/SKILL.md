@@ -1,15 +1,23 @@
 ---
 name: klingai-pricing-basics
-description: |
-  Understand Kling AI pricing, credits, and cost optimization strategies. Use when budgeting
-  or estimating costs. Trigger with phrases like 'kling ai pricing', 'klingai credits',
-  'kling ai cost', 'klingai budget'.
+description: 'Understand Kling AI pricing, credits, and cost optimization strategies.
+  Use when budgeting
+
+  or estimating costs. Trigger with phrases like ''kling ai pricing'', ''klingai credits'',
+
+  ''kling ai cost'', ''klingai budget''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, kling-ai, pricing, cost-optimization]
+tags:
+- saas
+- kling-ai
+- pricing
+- cost-optimization
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Kling AI Pricing Basics
 

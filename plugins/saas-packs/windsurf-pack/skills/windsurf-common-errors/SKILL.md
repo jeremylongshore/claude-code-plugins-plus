@@ -1,17 +1,26 @@
 ---
 name: windsurf-common-errors
-description: |
-  Diagnose and fix common Windsurf IDE and Cascade errors.
+description: 'Diagnose and fix common Windsurf IDE and Cascade errors.
+
   Use when Cascade stops working, Supercomplete fails, indexing hangs,
+
   or encountering Windsurf-specific issues.
+
   Trigger with phrases like "windsurf error", "fix windsurf",
+
   "windsurf not working", "cascade broken", "windsurf slow".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, debugging, troubleshooting]
+tags:
+- saas
+- windsurf
+- debugging
+- troubleshooting
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Windsurf Common Errors
 

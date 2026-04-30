@@ -1,16 +1,23 @@
 ---
 name: scanning-accessibility
-description: |
-  Validate WCAG compliance and accessibility standards (ARIA, keyboard navigation).
-  Use when auditing WCAG compliance or screen reader compatibility.
-  Trigger with phrases like "scan accessibility", "check WCAG compliance", or "validate screen readers".
+description: 'Validate WCAG compliance and accessibility standards (ARIA, keyboard
+  navigation).
 
+  Use when auditing WCAG compliance or screen reader compatibility.
+
+  Trigger with phrases like "scan accessibility", "check WCAG compliance", or "validate
+  screen readers".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:a11y-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [testing, compliance, audit]
+tags:
+- testing
+- compliance
+- audit
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Accessibility Test Scanner
 

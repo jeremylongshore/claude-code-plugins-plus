@@ -1,17 +1,28 @@
 ---
 name: replit-hello-world
-description: |
-  Create a minimal working Replit app with database, object storage, and auth.
+description: 'Create a minimal working Replit app with database, object storage, and
+  auth.
+
   Use when starting a new Replit project, testing your setup,
-  or learning Replit's built-in services (DB, Auth, Object Storage).
+
+  or learning Replit''s built-in services (DB, Auth, Object Storage).
+
   Trigger with phrases like "replit hello world", "replit starter",
+
   "replit quick start", "first replit app", "replit example".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, replit, starter, database, api]
+tags:
+- saas
+- replit
+- starter
+- database
+- api
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Replit Hello World
 

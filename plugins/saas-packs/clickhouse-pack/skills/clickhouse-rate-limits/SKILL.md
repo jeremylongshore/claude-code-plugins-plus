@@ -1,19 +1,29 @@
 ---
 name: clickhouse-rate-limits
-description: |
-  Configure ClickHouse query concurrency, memory quotas, and connection limits.
+description: 'Configure ClickHouse query concurrency, memory quotas, and connection
+  limits.
+
   Use when hitting "too many simultaneous queries", managing concurrent users,
+
   or tuning server-side resource limits.
+
   Trigger: "clickhouse rate limit", "clickhouse concurrency", "clickhouse quota",
+
   "too many simultaneous queries", "clickhouse connection limit".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, database, analytics, clickhouse, olap]
-compatible-with: claude-code
+tags:
+- saas
+- database
+- analytics
+- clickhouse
+- olap
+compatibility: Designed for Claude Code
 ---
-
 # ClickHouse Rate Limits & Concurrency
 
 ## Overview

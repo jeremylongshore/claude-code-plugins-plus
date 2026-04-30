@@ -1,16 +1,21 @@
 ---
 name: appfolio-rate-limits
-description: |
-  Handle AppFolio API rate limits with throttling and backoff.
+description: 'Handle AppFolio API rate limits with throttling and backoff.
+
   Trigger: "appfolio rate limit".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, property-management, appfolio, real-estate]
-compatible-with: claude-code
+tags:
+- saas
+- property-management
+- appfolio
+- real-estate
+compatibility: Designed for Claude Code
 ---
-
 # AppFolio Rate Limits
 
 ## Overview

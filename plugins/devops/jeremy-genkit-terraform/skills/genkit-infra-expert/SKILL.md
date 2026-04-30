@@ -1,13 +1,22 @@
 ---
 name: genkit-infra-expert
-description: |
-  Execute use when deploying Genkit applications to production with Terraform. Trigger with phrases like "deploy genkit terraform", "provision genkit infrastructure", "firebase functions terraform", "cloud run deployment", or "genkit production infrastructure". Provisions Firebase Functions, Cloud Run services, GKE clusters, monitoring dashboards, and CI/CD for AI workflows.
+description: 'Execute use when deploying Genkit applications to production with Terraform.
+  Trigger with phrases like "deploy genkit terraform", "provision genkit infrastructure",
+  "firebase functions terraform", "cloud run deployment", or "genkit production infrastructure".
+  Provisions Firebase Functions, Cloud Run services, GKE clusters, monitoring dashboards,
+  and CI/CD for AI workflows.
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(terraform:*), Bash(gcloud:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [devops, deployment, terraform, monitoring]
+tags:
+- devops
+- deployment
+- terraform
+- monitoring
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Genkit Infra Expert
 

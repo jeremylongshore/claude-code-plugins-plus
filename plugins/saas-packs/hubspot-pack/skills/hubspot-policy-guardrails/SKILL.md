@@ -1,19 +1,27 @@
 ---
 name: hubspot-policy-guardrails
-description: |
-  Implement HubSpot lint rules, secret scanning, and CI policy checks.
+description: 'Implement HubSpot lint rules, secret scanning, and CI policy checks.
+
   Use when setting up code quality rules for HubSpot integrations,
+
   preventing token leaks, or configuring CI guardrails.
+
   Trigger with phrases like "hubspot policy", "hubspot lint",
+
   "hubspot guardrails", "hubspot security check", "hubspot eslint rules".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npx:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, marketing, hubspot]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- marketing
+- hubspot
+compatibility: Designed for Claude Code
 ---
-
 # HubSpot Policy & Guardrails
 
 ## Overview

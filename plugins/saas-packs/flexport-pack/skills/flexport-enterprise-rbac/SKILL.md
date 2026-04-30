@@ -1,17 +1,24 @@
 ---
 name: flexport-enterprise-rbac
-description: |
-  Configure role-based access control for Flexport integrations with scoped API keys,
+description: 'Configure role-based access control for Flexport integrations with scoped
+  API keys,
+
   multi-tenant patterns, and organization-level permission management.
-  Trigger: "flexport RBAC", "flexport permissions", "flexport multi-tenant", "flexport access control".
+
+  Trigger: "flexport RBAC", "flexport permissions", "flexport multi-tenant", "flexport
+  access control".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, logistics, flexport]
-compatible-with: claude-code
+tags:
+- saas
+- logistics
+- flexport
+compatibility: Designed for Claude Code
 ---
-
 # Flexport Enterprise RBAC
 
 ## Overview

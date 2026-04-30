@@ -1,17 +1,25 @@
 ---
 name: mistral-migration-deep-dive
-description: |
-  Execute migration to Mistral AI from OpenAI, Anthropic, or other providers.
+description: 'Execute migration to Mistral AI from OpenAI, Anthropic, or other providers.
+
   Use when migrating to Mistral AI from another provider, performing major refactoring,
+
   or re-platforming existing AI integrations to Mistral AI.
+
   Trigger with phrases like "migrate to mistral", "mistral migration",
+
   "switch to mistral", "openai to mistral", "anthropic to mistral".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, mistral, migration]
+tags:
+- saas
+- mistral
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Mistral AI Migration Deep Dive
 

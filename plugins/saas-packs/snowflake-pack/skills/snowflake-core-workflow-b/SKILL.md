@@ -1,20 +1,30 @@
 ---
 name: snowflake-core-workflow-b
-description: |
-  Execute Snowflake data transformation with streams, tasks, and dynamic tables.
+description: 'Execute Snowflake data transformation with streams, tasks, and dynamic
+  tables.
+
   Use when building ELT pipelines, scheduling transformations,
+
   or implementing change data capture with Snowflake streams.
+
   Trigger with phrases like "snowflake transform", "snowflake ELT",
+
   "snowflake stream", "snowflake task", "snowflake pipeline",
+
   "snowflake dynamic table", "snowflake CDC".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, data-warehouse, analytics, snowflake]
-compatible-with: claude-code
+tags:
+- saas
+- data-warehouse
+- analytics
+- snowflake
+compatibility: Designed for Claude Code
 ---
-
 # Snowflake Core Workflow B — Data Transformation
 
 ## Overview

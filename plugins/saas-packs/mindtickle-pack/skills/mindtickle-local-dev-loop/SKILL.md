@@ -1,16 +1,20 @@
 ---
 name: mindtickle-local-dev-loop
-description: |
-  Local Dev Loop for MindTickle.
+description: 'Local Dev Loop for MindTickle.
+
   Trigger: "mindtickle local dev loop".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, mindtickle, sales]
-compatible-with: claude-code
+tags:
+- saas
+- mindtickle
+- sales
+compatibility: Designed for Claude Code
 ---
-
 # MindTickle Local Dev Loop
 
 ## Overview

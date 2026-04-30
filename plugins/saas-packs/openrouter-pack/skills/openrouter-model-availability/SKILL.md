@@ -1,13 +1,20 @@
 ---
 name: openrouter-model-availability
-description: |
-  Monitor OpenRouter model availability and implement health checks. Use when building systems that depend on specific models being online. Triggers: 'openrouter model status', 'is model available', 'openrouter health check', 'model availability'.
+description: 'Monitor OpenRouter model availability and implement health checks. Use
+  when building systems that depend on specific models being online. Triggers: ''openrouter
+  model status'', ''is model available'', ''openrouter health check'', ''model availability''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash, Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, openrouter, monitoring, availability]
+tags:
+- saas
+- openrouter
+- monitoring
+- availability
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # OpenRouter Model Availability
 

@@ -1,19 +1,26 @@
 ---
 name: canva-debug-bundle
-description: |
-  Collect Canva Connect API debug evidence for troubleshooting and support.
+description: 'Collect Canva Connect API debug evidence for troubleshooting and support.
+
   Use when encountering persistent issues, preparing support tickets,
+
   or collecting diagnostic information for Canva API problems.
+
   Trigger with phrases like "canva debug", "canva support bundle",
+
   "collect canva logs", "canva diagnostic".
+
+  '
 allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, canva]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- canva
+compatibility: Designed for Claude Code
 ---
-
 # Canva Debug Bundle
 
 ## Overview

@@ -1,18 +1,24 @@
 ---
 name: posthog-webhooks-events
-description: |
-  Implement PostHog webhook destinations, Action-triggered notifications,
+description: 'Implement PostHog webhook destinations, Action-triggered notifications,
+
   and event querying via the Events API and HogQL.
+
   Trigger: "posthog webhook", "posthog events API", "posthog actions",
+
   "posthog notifications", "posthog event query", "posthog HogQL".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, posthog, webhooks]
+tags:
+- saas
+- posthog
+- webhooks
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # PostHog Webhooks & Events
 
 ## Overview

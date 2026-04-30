@@ -1,17 +1,26 @@
 ---
 name: clay-policy-guardrails
-description: |
-  Implement credit spending limits, data privacy enforcement, and input validation guardrails for Clay pipelines.
+description: 'Implement credit spending limits, data privacy enforcement, and input
+  validation guardrails for Clay pipelines.
+
   Use when enforcing spending caps, blocking PII enrichment,
+
   or adding pre-enrichment validation rules.
+
   Trigger with phrases like "clay policy", "clay guardrails", "clay spending limit",
+
   "clay data privacy rules", "clay validation", "clay controls".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clay, clay-policy]
+tags:
+- saas
+- clay
+- clay-policy
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clay Policy Guardrails
 

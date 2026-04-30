@@ -1,16 +1,22 @@
 ---
 name: analyzing-options-flow
-description: |
-  Track crypto options flow to identify institutional positioning and market sentiment.
+description: 'Track crypto options flow to identify institutional positioning and
+  market sentiment.
+
   Use when tracking institutional options flow.
-  Trigger with phrases like "track options flow", "analyze derivatives", or "check institutional".
-  
+
+  Trigger with phrases like "track options flow", "analyze derivatives", or "check
+  institutional".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:options-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [crypto, analyzing-options]
+tags:
+- crypto
+- analyzing-options
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Analyzing Options Flow
 

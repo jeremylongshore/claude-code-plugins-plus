@@ -1,17 +1,26 @@
 ---
 name: perplexity-reference-architecture
-description: |
-  Implement Perplexity reference architecture with model routing, citation pipeline,
+description: 'Implement Perplexity reference architecture with model routing, citation
+  pipeline,
+
   and research automation. Use when designing new Perplexity integrations,
+
   reviewing project structure, or establishing architecture for search-augmented apps.
+
   Trigger with phrases like "perplexity architecture", "perplexity project structure",
+
   "how to organize perplexity", "perplexity design patterns".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, perplexity, perplexity-reference]
+tags:
+- saas
+- perplexity
+- perplexity-reference
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Perplexity Reference Architecture
 

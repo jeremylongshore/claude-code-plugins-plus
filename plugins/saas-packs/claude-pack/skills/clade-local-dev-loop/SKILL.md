@@ -1,19 +1,21 @@
 ---
 name: clade-local-dev-loop
-description: |
-  Set up a fast local development loop for building with the Anthropic API —
-  Use when working with local-dev-loop patterns.
-  hot reload, cost-saving tips, and test patterns.
-  Trigger with "anthropic dev setup", "claude local development",
-  "anthropic test locally", "claude dev workflow".
+description: "Set up a fast local development loop for building with the Anthropic\
+  \ API \u2014\nUse when working with local-dev-loop patterns.\nhot reload, cost-saving\
+  \ tips, and test patterns.\nTrigger with \"anthropic dev setup\", \"claude local\
+  \ development\",\n\"anthropic test locally\", \"claude dev workflow\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code
-tags: [saas, anthropic, claude, development, testing]
+tags:
+- saas
+- anthropic
+- claude
+- development
+- testing
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Local Dev Loop
 
 ## Overview

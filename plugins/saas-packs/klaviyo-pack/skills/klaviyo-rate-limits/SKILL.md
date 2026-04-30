@@ -1,19 +1,27 @@
 ---
 name: klaviyo-rate-limits
-description: |
-  Implement Klaviyo rate limiting, backoff, and request queuing patterns.
+description: 'Implement Klaviyo rate limiting, backoff, and request queuing patterns.
+
   Use when handling 429 errors, implementing retry logic,
+
   or optimizing API request throughput for Klaviyo.
+
   Trigger with phrases like "klaviyo rate limit", "klaviyo throttling",
+
   "klaviyo 429", "klaviyo retry", "klaviyo backoff", "klaviyo Retry-After".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, klaviyo, email-marketing, cdp]
-compatible-with: claude-code
+tags:
+- saas
+- klaviyo
+- email-marketing
+- cdp
+compatibility: Designed for Claude Code
 ---
-
 # Klaviyo Rate Limits
 
 ## Overview

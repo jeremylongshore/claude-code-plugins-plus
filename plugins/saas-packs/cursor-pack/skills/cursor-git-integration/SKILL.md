@@ -1,15 +1,24 @@
 ---
-name: "cursor-git-integration"
-description: |
-  Integrate Git workflows with Cursor IDE: AI commit messages, @Git context, diff review, and conflict
-  resolution. Triggers on "cursor git", "git in cursor", "cursor version control", "cursor commit",
+name: cursor-git-integration
+description: 'Integrate Git workflows with Cursor IDE: AI commit messages, @Git context,
+  diff review, and conflict
+
+  resolution. Triggers on "cursor git", "git in cursor", "cursor version control",
+  "cursor commit",
+
   "cursor branch", "@Git".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, cursor, git, workflow]
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- cursor
+- git
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Cursor Git Integration
 

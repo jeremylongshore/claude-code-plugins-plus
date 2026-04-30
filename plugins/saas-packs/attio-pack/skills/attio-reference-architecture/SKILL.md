@@ -1,18 +1,24 @@
 ---
 name: attio-reference-architecture
-description: |
-  Production reference architecture for Attio CRM integrations -- layered
+description: 'Production reference architecture for Attio CRM integrations -- layered
+
   project structure, sync patterns, webhook processing, and multi-environment setup.
+
   Trigger: "attio architecture", "attio best practices", "attio project structure",
+
   "how to organize attio", "attio integration design".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, attio]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- attio
+compatibility: Designed for Claude Code
 ---
-
 # Attio Reference Architecture
 
 ## Overview

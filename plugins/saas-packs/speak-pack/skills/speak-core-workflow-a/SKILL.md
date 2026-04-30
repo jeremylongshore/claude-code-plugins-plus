@@ -1,17 +1,26 @@
 ---
 name: speak-core-workflow-a
-description: |
-  Execute Speak primary workflow: AI Conversation Practice with real-time feedback.
+description: 'Execute Speak primary workflow: AI Conversation Practice with real-time
+  feedback.
+
   Use when implementing conversation practice features, building AI tutor interactions,
+
   or core language learning dialogue systems.
+
   Trigger with phrases like "speak conversation practice",
+
   "speak AI tutor", "speak dialogue", "primary speak workflow".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, speak, workflow]
+tags:
+- saas
+- speak
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Speak Core Workflow A: AI Conversation Practice
 

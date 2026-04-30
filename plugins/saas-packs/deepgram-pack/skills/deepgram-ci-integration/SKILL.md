@@ -1,17 +1,27 @@
 ---
 name: deepgram-ci-integration
-description: |
-  Configure Deepgram CI/CD integration for automated testing and deployment.
+description: 'Configure Deepgram CI/CD integration for automated testing and deployment.
+
   Use when setting up continuous integration pipelines, automated testing,
+
   or deployment workflows for Deepgram integrations.
+
   Trigger: "deepgram CI", "deepgram CD", "deepgram pipeline",
+
   "deepgram github actions", "deepgram automated testing".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, deepgram, deployment, testing, ci-cd]
+tags:
+- saas
+- deepgram
+- deployment
+- testing
+- ci-cd
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Deepgram CI Integration
 

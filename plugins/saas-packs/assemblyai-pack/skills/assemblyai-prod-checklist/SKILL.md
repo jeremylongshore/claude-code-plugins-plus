@@ -1,19 +1,29 @@
 ---
 name: assemblyai-prod-checklist
-description: |
-  Execute AssemblyAI production deployment checklist and rollback procedures.
+description: 'Execute AssemblyAI production deployment checklist and rollback procedures.
+
   Use when deploying AssemblyAI integrations to production, preparing for launch,
+
   or implementing go-live procedures for transcription services.
+
   Trigger with phrases like "assemblyai production", "deploy assemblyai",
+
   "assemblyai go-live", "assemblyai launch checklist".
+
+  '
 allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, speech-to-text, assemblyai, transcription, production]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- speech-to-text
+- assemblyai
+- transcription
+- production
+compatibility: Designed for Claude Code
 ---
-
 # AssemblyAI Production Checklist
 
 ## Overview

@@ -1,16 +1,21 @@
 ---
 name: appfolio-core-workflow-a
-description: |
-  Build property management dashboard with AppFolio API data.
+description: 'Build property management dashboard with AppFolio API data.
+
   Trigger: "appfolio property dashboard".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, property-management, appfolio, real-estate]
-compatible-with: claude-code
+tags:
+- saas
+- property-management
+- appfolio
+- real-estate
+compatibility: Designed for Claude Code
 ---
-
 # AppFolio — Property & Tenant Management
 
 ## Overview

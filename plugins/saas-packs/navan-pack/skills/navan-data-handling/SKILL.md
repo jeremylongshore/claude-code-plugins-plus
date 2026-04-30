@@ -1,17 +1,24 @@
 ---
 name: navan-data-handling
-description: |
-  Extract and transform Navan booking and transaction data using pagination, filtering, and data pipeline connectors.
-  Use when building data warehouses, analytics dashboards, or debugging data quality issues with Navan data.
+description: 'Extract and transform Navan booking and transaction data using pagination,
+  filtering, and data pipeline connectors.
+
+  Use when building data warehouses, analytics dashboards, or debugging data quality
+  issues with Navan data.
+
   Trigger with "navan data handling", "navan data extraction", "navan pagination".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, navan, travel]
-compatible-with: claude-code
+tags:
+- saas
+- navan
+- travel
+compatibility: Designed for Claude Code
 ---
-
 # Navan Data Handling
 
 ## Overview

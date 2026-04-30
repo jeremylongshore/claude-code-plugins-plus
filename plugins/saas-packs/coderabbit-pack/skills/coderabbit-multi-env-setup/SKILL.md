@@ -1,17 +1,29 @@
 ---
 name: coderabbit-multi-env-setup
-description: |
-  Configure CodeRabbit review behavior per branch and environment using path instructions and base branches.
-  Use when setting different review profiles per branch, configuring stricter reviews for release branches,
+description: 'Configure CodeRabbit review behavior per branch and environment using
+  path instructions and base branches.
+
+  Use when setting different review profiles per branch, configuring stricter reviews
+  for release branches,
+
   or customizing CodeRabbit behavior across dev/staging/prod workflows.
+
   Trigger with phrases like "coderabbit environments", "coderabbit staging",
-  "coderabbit per-branch config", "coderabbit release review", "coderabbit environment setup".
+
+  "coderabbit per-branch config", "coderabbit release review", "coderabbit environment
+  setup".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, coderabbit, environments, branching]
+tags:
+- saas
+- coderabbit
+- environments
+- branching
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # CodeRabbit Multi-Environment Setup
 

@@ -1,17 +1,27 @@
 ---
 name: perplexity-multi-env-setup
-description: |
-  Configure Perplexity Sonar API across development, staging, and production environments.
+description: 'Configure Perplexity Sonar API across development, staging, and production
+  environments.
+
   Use when setting up multi-environment search integrations, managing API keys
+
   per environment, or controlling cost through model routing by env.
+
   Trigger with phrases like "perplexity environments", "perplexity staging",
+
   "perplexity dev prod", "perplexity environment config".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, perplexity, api, cost-optimization]
+tags:
+- saas
+- perplexity
+- api
+- cost-optimization
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Perplexity Multi-Environment Setup
 

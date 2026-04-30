@@ -1,17 +1,27 @@
 ---
 name: exa-install-auth
-description: |
-  Install the exa-js SDK and configure API key authentication.
+description: 'Install the exa-js SDK and configure API key authentication.
+
   Use when setting up a new Exa integration, configuring API keys,
+
   or initializing Exa in a Node.js/Python project.
+
   Trigger with phrases like "install exa", "setup exa",
+
   "exa auth", "configure exa API key", "exa-js".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, exa, api, authentication, setup]
+tags:
+- saas
+- exa
+- api
+- authentication
+- setup
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Exa Install & Auth
 

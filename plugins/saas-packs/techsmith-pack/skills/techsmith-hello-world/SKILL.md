@@ -1,18 +1,25 @@
 ---
 name: techsmith-hello-world
-description: |
-  Capture a screenshot with Snagit COM API and produce a Camtasia video.
+description: 'Capture a screenshot with Snagit COM API and produce a Camtasia video.
+
   Use when automating screen captures, batch-processing recordings,
+
   or building documentation pipelines with TechSmith tools.
+
   Trigger: "techsmith hello world, snagit capture, camtasia render".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(powershell:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, screen-capture, video, techsmith]
-compatible-with: claude-code
+tags:
+- saas
+- screen-capture
+- video
+- techsmith
+compatibility: Designed for Claude Code
 ---
-
 # TechSmith Hello World
 
 ## Overview

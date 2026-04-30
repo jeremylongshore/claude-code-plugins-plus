@@ -1,19 +1,28 @@
 ---
 name: alchemy-webhooks-events
-description: |
-  Implement Alchemy Notify webhooks for real-time blockchain event notifications.
+description: 'Implement Alchemy Notify webhooks for real-time blockchain event notifications.
+
   Use when tracking wallet activity, monitoring mined transactions,
+
   watching smart contract events, or building real-time dApp features.
+
   Trigger: "alchemy webhook", "alchemy notify", "alchemy events",
+
   "alchemy address activity", "alchemy real-time notifications".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, blockchain, web3, alchemy, webhooks]
-compatible-with: claude-code
+tags:
+- saas
+- blockchain
+- web3
+- alchemy
+- webhooks
+compatibility: Designed for Claude Code
 ---
-
 # Alchemy Webhooks & Events (Notify API)
 
 ## Overview

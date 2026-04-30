@@ -1,19 +1,25 @@
 ---
 name: framer-hello-world
-description: |
-  Create a minimal working Framer example.
+description: 'Create a minimal working Framer example.
+
   Use when starting a new Framer integration, testing your setup,
+
   or learning basic Framer API patterns.
+
   Trigger with phrases like "framer hello world", "framer example",
+
   "framer quick start", "simple framer code".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, framer]
-compatible-with: claude-code
+tags:
+- saas
+- framer
+compatibility: Designed for Claude Code
 ---
-
 # Framer Hello World
 
 ## Overview

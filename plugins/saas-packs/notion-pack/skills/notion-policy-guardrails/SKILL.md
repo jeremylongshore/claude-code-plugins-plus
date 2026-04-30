@@ -1,19 +1,26 @@
 ---
 name: notion-policy-guardrails
-description: |
-  Governance for Notion integrations: integration naming standards, page
+description: 'Governance for Notion integrations: integration naming standards, page
+
   sharing policies, property naming conventions, database schema standards,
+
   and access audit scripts.
+
   Trigger with phrases like "notion governance", "notion policy",
+
   "notion naming convention", "notion access audit", "notion schema standard".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npx:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notion]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- notion
+compatibility: Designed for Claude Code
 ---
-
 # Notion Policy & Guardrails
 
 ## Overview

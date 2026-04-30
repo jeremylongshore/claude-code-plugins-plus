@@ -1,16 +1,21 @@
 ---
 name: fathom-security-basics
-description: |
-  Secure Fathom API keys and handle meeting data privacy.
+description: 'Secure Fathom API keys and handle meeting data privacy.
+
   Trigger with phrases like "fathom security", "fathom api key safety", "fathom privacy".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, meeting-intelligence, ai-notes, fathom]
-compatible-with: claude-code
+tags:
+- saas
+- meeting-intelligence
+- ai-notes
+- fathom
+compatibility: Designed for Claude Code
 ---
-
 # Fathom Security Basics
 
 ## Overview

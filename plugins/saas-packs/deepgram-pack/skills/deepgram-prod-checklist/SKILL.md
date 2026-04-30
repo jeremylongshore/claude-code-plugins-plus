@@ -1,17 +1,26 @@
 ---
 name: deepgram-prod-checklist
-description: |
-  Execute Deepgram production deployment checklist.
+description: 'Execute Deepgram production deployment checklist.
+
   Use when preparing for production launch, auditing production readiness,
+
   or verifying deployment configurations.
+
   Trigger: "deepgram production", "deploy deepgram", "deepgram prod checklist",
+
   "deepgram go-live", "production ready deepgram".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, deepgram, deployment, production]
+tags:
+- saas
+- deepgram
+- deployment
+- production
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Deepgram Production Checklist
 

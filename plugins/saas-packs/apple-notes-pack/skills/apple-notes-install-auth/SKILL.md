@@ -1,18 +1,27 @@
 ---
 name: apple-notes-install-auth
-description: |
-  Set up macOS automation access for Apple Notes via AppleScript, JXA, and Shortcuts.
+description: 'Set up macOS automation access for Apple Notes via AppleScript, JXA,
+  and Shortcuts.
+
   Use when configuring accessibility permissions, setting up osascript access,
+
   or initializing Apple Notes automation on macOS.
+
   Trigger: "setup apple notes", "apple notes automation", "apple notes permissions".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(osascript:*), Bash(defaults:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, macos, apple-notes, automation, applescript]
-compatible-with: claude-code
+tags:
+- saas
+- macos
+- apple-notes
+- automation
+- applescript
+compatibility: Designed for Claude Code
 ---
-
 # Apple Notes Install & Auth
 
 ## Overview

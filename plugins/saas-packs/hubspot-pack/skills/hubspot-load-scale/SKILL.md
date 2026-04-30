@@ -1,19 +1,27 @@
 ---
 name: hubspot-load-scale
-description: |
-  Load test HubSpot integrations and plan capacity around API rate limits.
+description: 'Load test HubSpot integrations and plan capacity around API rate limits.
+
   Use when running performance tests, planning for traffic growth,
+
   or sizing your HubSpot integration for production load.
+
   Trigger with phrases like "hubspot load test", "hubspot scale",
+
   "hubspot capacity", "hubspot benchmark", "hubspot traffic planning".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(k6:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, marketing, hubspot]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- marketing
+- hubspot
+compatibility: Designed for Claude Code
 ---
-
 # HubSpot Load & Scale
 
 ## Overview

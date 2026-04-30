@@ -1,18 +1,26 @@
 ---
 name: posthog-ci-integration
-description: |
-  Configure PostHog CI/CD with GitHub Actions: unit tests with mocked PostHog,
+description: 'Configure PostHog CI/CD with GitHub Actions: unit tests with mocked
+  PostHog,
+
   integration tests against a dev project, and deployment annotations.
+
   Trigger: "posthog CI", "posthog GitHub Actions", "posthog automated tests",
+
   "CI posthog", "posthog pipeline".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, posthog, testing, ci-cd]
+tags:
+- saas
+- posthog
+- testing
+- ci-cd
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # PostHog CI Integration
 
 ## Overview

@@ -1,17 +1,27 @@
 ---
 name: maintainx-data-handling
-description: |
-  Data synchronization, ETL patterns, and data management for MaintainX.
+description: 'Data synchronization, ETL patterns, and data management for MaintainX.
+
   Use when syncing data between MaintainX and other systems,
+
   building ETL pipelines, or managing data consistency.
+
   Trigger with phrases like "maintainx data sync", "maintainx etl",
+
   "maintainx export", "maintainx data migration", "maintainx data pipeline".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, maintainx, migration, data-pipeline, etl]
+tags:
+- saas
+- maintainx
+- migration
+- data-pipeline
+- etl
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # MaintainX Data Handling
 

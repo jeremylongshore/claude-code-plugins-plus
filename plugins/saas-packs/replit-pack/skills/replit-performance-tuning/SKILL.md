@@ -1,17 +1,27 @@
 ---
 name: replit-performance-tuning
-description: |
-  Optimize Replit app performance: cold start, memory, Nix caching, and deployment speed.
+description: 'Optimize Replit app performance: cold start, memory, Nix caching, and
+  deployment speed.
+
   Use when experiencing slow startup, high memory usage, deployment timeouts,
+
   or optimizing Replit container resource usage.
+
   Trigger with phrases like "replit performance", "optimize replit",
+
   "replit slow", "replit cold start", "replit memory", "replit startup time".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, replit, performance, optimization]
+tags:
+- saas
+- replit
+- performance
+- optimization
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Replit Performance Tuning
 

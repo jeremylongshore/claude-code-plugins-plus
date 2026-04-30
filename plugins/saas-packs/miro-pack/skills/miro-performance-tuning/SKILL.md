@@ -1,18 +1,25 @@
 ---
 name: miro-performance-tuning
-description: |
-  Optimize Miro REST API v2 performance with caching, cursor pagination,
+description: 'Optimize Miro REST API v2 performance with caching, cursor pagination,
+
   request batching, and connection pooling for high-throughput integrations.
+
   Trigger with phrases like "miro performance", "optimize miro",
+
   "miro latency", "miro caching", "miro slow", "miro batch".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, miro, performance, caching]
-compatible-with: claude-code
+tags:
+- saas
+- miro
+- performance
+- caching
+compatibility: Designed for Claude Code
 ---
-
 # Miro Performance Tuning
 
 ## Overview

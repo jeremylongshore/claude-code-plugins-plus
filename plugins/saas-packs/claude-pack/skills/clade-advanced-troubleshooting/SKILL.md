@@ -1,19 +1,21 @@
 ---
 name: clade-advanced-troubleshooting
-description: |
-  Debug complex Claude issues — inconsistent outputs, tool use failures,
-  Use when working with advanced-troubleshooting patterns.
-  streaming problems, and edge cases.
-  Trigger with "claude inconsistent", "anthropic advanced debug",
-  "claude tool use broken", "anthropic streaming issues".
+description: "Debug complex Claude issues \u2014 inconsistent outputs, tool use failures,\n\
+  Use when working with advanced-troubleshooting patterns.\nstreaming problems, and\
+  \ edge cases.\nTrigger with \"claude inconsistent\", \"anthropic advanced debug\"\
+  ,\n\"claude tool use broken\", \"anthropic streaming issues\".\n"
 allowed-tools: Read, Write, Edit, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code
-tags: [saas, anthropic, claude, debugging, advanced]
+tags:
+- saas
+- anthropic
+- claude
+- debugging
+- advanced
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Advanced Troubleshooting
 
 ## Overview

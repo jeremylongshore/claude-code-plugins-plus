@@ -1,19 +1,25 @@
 ---
 name: framer-sdk-patterns
-description: |
-  Apply production-ready Framer SDK patterns for TypeScript and Python.
+description: 'Apply production-ready Framer SDK patterns for TypeScript and Python.
+
   Use when implementing Framer integrations, refactoring SDK usage,
+
   or establishing team coding standards for Framer.
+
   Trigger with phrases like "framer SDK patterns", "framer best practices",
+
   "framer code patterns", "idiomatic framer".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, framer]
-compatible-with: claude-code
+tags:
+- saas
+- framer
+compatibility: Designed for Claude Code
 ---
-
 # Framer SDK Patterns
 
 ## Overview

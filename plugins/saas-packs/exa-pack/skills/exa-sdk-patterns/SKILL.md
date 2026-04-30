@@ -1,17 +1,27 @@
 ---
 name: exa-sdk-patterns
-description: |
-  Apply production-ready exa-js SDK patterns with type safety, singletons, and wrappers.
+description: 'Apply production-ready exa-js SDK patterns with type safety, singletons,
+  and wrappers.
+
   Use when implementing Exa integrations, refactoring SDK usage,
+
   or establishing team coding standards for Exa.
+
   Trigger with phrases like "exa SDK patterns", "exa best practices",
+
   "exa code patterns", "idiomatic exa", "exa wrapper".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, exa, typescript, patterns]
+tags:
+- saas
+- exa
+- typescript
+- patterns
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Exa SDK Patterns
 

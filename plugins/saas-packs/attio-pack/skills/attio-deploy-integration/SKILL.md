@@ -1,18 +1,24 @@
 ---
 name: attio-deploy-integration
-description: |
-  Deploy Attio integrations to Vercel, Fly.io, Railway, and Cloud Run
+description: 'Deploy Attio integrations to Vercel, Fly.io, Railway, and Cloud Run
+
   with proper secrets, health checks, and webhook endpoint configuration.
+
   Trigger: "deploy attio", "attio Vercel", "attio production deploy",
+
   "attio Cloud Run", "attio Fly.io", "attio Railway".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*), Bash(railway:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, attio]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- attio
+compatibility: Designed for Claude Code
 ---
-
 # Attio Deploy Integration
 
 ## Overview

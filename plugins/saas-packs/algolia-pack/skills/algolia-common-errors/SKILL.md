@@ -1,18 +1,24 @@
 ---
 name: algolia-common-errors
-description: |
-  Diagnose and fix the top Algolia API errors: 400, 403, 404, 429, ApiError,
+description: 'Diagnose and fix the top Algolia API errors: 400, 403, 404, 429, ApiError,
+
   RetryError, and indexing failures.
+
   Trigger: "algolia error", "fix algolia", "algolia not working",
+
   "debug algolia", "algolia 429", "algolia 403".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*), Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, algolia]
-compatible-with: claude-code
+tags:
+- saas
+- search
+- algolia
+compatibility: Designed for Claude Code
 ---
-
 # Algolia Common Errors
 
 ## Overview

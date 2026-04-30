@@ -1,19 +1,27 @@
 ---
 name: hubspot-rate-limits
-description: |
-  Implement HubSpot rate limiting, backoff, and request queuing patterns.
+description: 'Implement HubSpot rate limiting, backoff, and request queuing patterns.
+
   Use when handling 429 errors, implementing retry logic,
+
   or optimizing API throughput against HubSpot rate limits.
+
   Trigger with phrases like "hubspot rate limit", "hubspot throttling",
+
   "hubspot 429", "hubspot retry", "hubspot backoff", "hubspot quota".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, marketing, hubspot]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- marketing
+- hubspot
+compatibility: Designed for Claude Code
 ---
-
 # HubSpot Rate Limits
 
 ## Overview

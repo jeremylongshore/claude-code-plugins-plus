@@ -1,19 +1,21 @@
 ---
 name: clade-performance-tuning
-description: |
-  Optimize Anthropic API latency — streaming, prompt caching, model selection,
-  Use when working with performance-tuning patterns.
-  connection reuse, and parallel requests.
-  Trigger with "anthropic slow", "claude latency", "speed up anthropic",
-  "anthropic performance", "claude response time".
+description: "Optimize Anthropic API latency \u2014 streaming, prompt caching, model\
+  \ selection,\nUse when working with performance-tuning patterns.\nconnection reuse,\
+  \ and parallel requests.\nTrigger with \"anthropic slow\", \"claude latency\", \"\
+  speed up anthropic\",\n\"anthropic performance\", \"claude response time\".\n"
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code
-tags: [saas, anthropic, claude, performance, latency]
+tags:
+- saas
+- anthropic
+- claude
+- performance
+- latency
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Performance Tuning
 
 ## Overview

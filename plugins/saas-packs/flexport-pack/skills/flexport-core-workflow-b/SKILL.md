@@ -1,18 +1,25 @@
 ---
 name: flexport-core-workflow-b
-description: |
-  Execute Flexport secondary workflow: commercial invoices, products catalog, and freight invoices.
+description: 'Execute Flexport secondary workflow: commercial invoices, products catalog,
+  and freight invoices.
+
   Use when managing commercial invoices for customs, maintaining product catalogs,
+
   or handling freight billing through the Flexport API.
+
   Trigger: "flexport invoice", "flexport products", "flexport customs documents".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, logistics, flexport]
-compatible-with: claude-code
+tags:
+- saas
+- logistics
+- flexport
+compatibility: Designed for Claude Code
 ---
-
 # Flexport Core Workflow B: Invoices & Products
 
 ## Overview

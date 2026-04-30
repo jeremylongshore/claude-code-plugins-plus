@@ -1,16 +1,24 @@
 ---
 name: twinmind-security-basics
-description: |
-  Security best practices for TwinMind: on-device audio processing, encrypted cloud backups, microphone permissions, and data privacy controls.
+description: 'Security best practices for TwinMind: on-device audio processing, encrypted
+  cloud backups, microphone permissions, and data privacy controls.
+
   Use when implementing security basics,
+
   or managing TwinMind meeting AI operations.
+
   Trigger with phrases like "twinmind security basics", "twinmind security basics".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: ['saas', 'twinmind', 'security']
+tags:
+- saas
+- twinmind
+- security
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # TwinMind Security Basics
 

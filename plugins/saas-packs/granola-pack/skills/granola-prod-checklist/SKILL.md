@@ -1,17 +1,26 @@
 ---
 name: granola-prod-checklist
-description: |
-  Production readiness checklist for Granola team and enterprise deployment.
+description: 'Production readiness checklist for Granola team and enterprise deployment.
+
   Use when rolling out Granola to a team, planning enterprise deployment,
+
   or verifying all configuration is production-ready.
+
   Trigger: "granola production", "granola rollout", "granola deployment",
+
   "granola checklist", "granola go-live".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, granola, deployment, enterprise]
+tags:
+- saas
+- granola
+- deployment
+- enterprise
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Granola Production Checklist
 

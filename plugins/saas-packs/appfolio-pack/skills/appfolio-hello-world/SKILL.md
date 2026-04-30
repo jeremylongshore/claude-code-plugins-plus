@@ -1,16 +1,21 @@
 ---
 name: appfolio-hello-world
-description: |
-  Query AppFolio properties, units, and tenants via REST API.
+description: 'Query AppFolio properties, units, and tenants via REST API.
+
   Trigger: "appfolio hello world".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, property-management, appfolio, real-estate]
-compatible-with: claude-code
+tags:
+- saas
+- property-management
+- appfolio
+- real-estate
+compatibility: Designed for Claude Code
 ---
-
 # AppFolio Hello World
 
 ## Overview

@@ -1,19 +1,21 @@
 ---
 name: clade-reliability-patterns
-description: |
-  Build fault-tolerant Claude integrations — retries, circuit breakers,
-  Use when working with reliability-patterns patterns.
-  fallbacks, timeouts, and graceful degradation.
-  Trigger with "anthropic reliability", "claude fault tolerance",
-  "anthropic circuit breaker", "claude fallback".
+description: "Build fault-tolerant Claude integrations \u2014 retries, circuit breakers,\n\
+  Use when working with reliability-patterns patterns.\nfallbacks, timeouts, and graceful\
+  \ degradation.\nTrigger with \"anthropic reliability\", \"claude fault tolerance\"\
+  ,\n\"anthropic circuit breaker\", \"claude fallback\".\n"
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code
-tags: [saas, anthropic, claude, reliability, resilience]
+tags:
+- saas
+- anthropic
+- claude
+- reliability
+- resilience
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Reliability Patterns
 
 ## Overview

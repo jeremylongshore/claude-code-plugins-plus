@@ -1,15 +1,24 @@
 ---
 name: klingai-batch-processing
-description: |
-  Process multiple video generation requests efficiently with Kling AI. Use when generating
-  batches of videos or building content pipelines. Trigger with phrases like 'klingai batch',
-  'kling ai bulk', 'multiple videos klingai', 'klingai parallel generation'.
+description: 'Process multiple video generation requests efficiently with Kling AI.
+  Use when generating
+
+  batches of videos or building content pipelines. Trigger with phrases like ''klingai
+  batch'',
+
+  ''kling ai bulk'', ''multiple videos klingai'', ''klingai parallel generation''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, kling-ai, batch, pipelines]
+tags:
+- saas
+- kling-ai
+- batch
+- pipelines
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Kling AI Batch Processing
 

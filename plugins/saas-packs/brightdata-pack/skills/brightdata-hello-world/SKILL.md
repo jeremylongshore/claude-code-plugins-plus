@@ -1,19 +1,27 @@
 ---
 name: brightdata-hello-world
-description: |
-  Create a minimal working Bright Data example.
+description: 'Create a minimal working Bright Data example.
+
   Use when starting a new Bright Data integration, testing your setup,
+
   or learning basic Bright Data API patterns.
+
   Trigger with phrases like "brightdata hello world", "brightdata example",
+
   "brightdata quick start", "simple brightdata code".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, scraping, data, brightdata]
-compatible-with: claude-code
+tags:
+- saas
+- scraping
+- data
+- brightdata
+compatibility: Designed for Claude Code
 ---
-
 # Bright Data Hello World
 
 ## Overview

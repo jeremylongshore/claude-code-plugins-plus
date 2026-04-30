@@ -1,13 +1,21 @@
 ---
 name: openrouter-caching-strategy
-description: |
-  Implement caching for OpenRouter API responses to reduce cost and latency. Use when optimizing repeat queries, building RAG systems, or reducing API spend. Triggers: 'openrouter cache', 'cache llm responses', 'openrouter caching', 'reduce openrouter cost'.
+description: 'Implement caching for OpenRouter API responses to reduce cost and latency.
+  Use when optimizing repeat queries, building RAG systems, or reducing API spend.
+  Triggers: ''openrouter cache'', ''cache llm responses'', ''openrouter caching'',
+  ''reduce openrouter cost''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash, Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, openrouter, caching, cost-optimization]
+tags:
+- saas
+- openrouter
+- caching
+- cost-optimization
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # OpenRouter Caching Strategy
 

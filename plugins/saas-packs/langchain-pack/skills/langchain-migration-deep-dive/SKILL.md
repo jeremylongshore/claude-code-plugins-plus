@@ -1,17 +1,27 @@
 ---
 name: langchain-migration-deep-dive
-description: |
-  Migrate to LangChain from raw OpenAI SDK, LlamaIndex, or custom LLM code.
+description: 'Migrate to LangChain from raw OpenAI SDK, LlamaIndex, or custom LLM
+  code.
+
   Covers codebase assessment, side-by-side validation, RAG migration,
+
   agent migration, and feature-flagged gradual rollout.
+
   Trigger: "migrate to langchain", "langchain refactor", "legacy LLM migration",
+
   "replace openai SDK with langchain", "llamaindex to langchain".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(node:*), Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langchain, llm, migration]
+tags:
+- saas
+- langchain
+- llm
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # LangChain Migration Deep Dive
 

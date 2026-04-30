@@ -1,19 +1,28 @@
 ---
 name: abridge-debug-bundle
-description: |
-  Collect Abridge debug evidence for support tickets and troubleshooting.
+description: 'Collect Abridge debug evidence for support tickets and troubleshooting.
+
   Use when filing Abridge support tickets, collecting diagnostic data,
+
   or preparing evidence for escalation to Abridge engineering.
+
   Trigger: "abridge debug bundle", "abridge support ticket",
+
   "abridge diagnostics", "collect abridge evidence".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(node:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, healthcare, ai, abridge, debugging]
-compatible-with: claude-code
+tags:
+- saas
+- healthcare
+- ai
+- abridge
+- debugging
+compatibility: Designed for Claude Code
 ---
-
 # Abridge Debug Bundle
 
 ## Overview

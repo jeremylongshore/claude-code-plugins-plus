@@ -1,18 +1,25 @@
 ---
 name: miro-deploy-integration
-description: |
-  Deploy Miro REST API v2 integrations to Vercel, Fly.io, and Cloud Run
+description: 'Deploy Miro REST API v2 integrations to Vercel, Fly.io, and Cloud Run
+
   with proper OAuth token management and webhook configuration.
+
   Trigger with phrases like "deploy miro", "miro Vercel",
+
   "miro production deploy", "miro Cloud Run", "miro Fly.io".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, miro, deployment, cloud]
-compatible-with: claude-code
+tags:
+- saas
+- miro
+- deployment
+- cloud
+compatibility: Designed for Claude Code
 ---
-
 # Miro Deploy Integration
 
 ## Overview

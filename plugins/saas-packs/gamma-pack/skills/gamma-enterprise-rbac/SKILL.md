@@ -1,17 +1,26 @@
 ---
 name: gamma-enterprise-rbac
-description: |
-  Implement enterprise role-based access control for Gamma integrations.
+description: 'Implement enterprise role-based access control for Gamma integrations.
+
   Use when configuring team permissions, multi-tenant access,
+
   or enterprise authorization patterns.
+
   Trigger with phrases like "gamma RBAC", "gamma permissions",
+
   "gamma access control", "gamma enterprise", "gamma roles".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, gamma, authentication, rbac]
+tags:
+- saas
+- gamma
+- authentication
+- rbac
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Gamma Enterprise RBAC
 

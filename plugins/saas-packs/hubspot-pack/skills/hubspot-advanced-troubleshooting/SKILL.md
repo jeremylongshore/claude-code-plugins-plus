@@ -1,19 +1,28 @@
 ---
 name: hubspot-advanced-troubleshooting
-description: |
-  Debug complex HubSpot API issues with systematic isolation and evidence collection.
+description: 'Debug complex HubSpot API issues with systematic isolation and evidence
+  collection.
+
   Use when standard troubleshooting fails, investigating intermittent CRM errors,
+
   or preparing evidence bundles for HubSpot support escalation.
+
   Trigger with phrases like "hubspot hard bug", "hubspot mystery error",
+
   "hubspot intermittent failure", "hubspot deep debug", "hubspot support ticket".
+
+  '
 allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*), Bash(tcpdump:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, marketing, hubspot]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- marketing
+- hubspot
+compatibility: Designed for Claude Code
 ---
-
 # HubSpot Advanced Troubleshooting
 
 ## Overview

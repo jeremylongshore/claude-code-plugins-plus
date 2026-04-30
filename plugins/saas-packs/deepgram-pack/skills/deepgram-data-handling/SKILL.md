@@ -1,17 +1,27 @@
 ---
 name: deepgram-data-handling
-description: |
-  Implement audio data handling best practices for Deepgram integrations.
+description: 'Implement audio data handling best practices for Deepgram integrations.
+
   Use when managing audio file storage, implementing data retention,
+
   or ensuring GDPR/HIPAA compliance for transcription data.
+
   Trigger: "deepgram data", "audio storage", "transcription data",
+
   "deepgram GDPR", "deepgram HIPAA", "deepgram privacy", "PII redaction".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, deepgram, data, compliance, privacy]
+tags:
+- saas
+- deepgram
+- data
+- compliance
+- privacy
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Deepgram Data Handling
 

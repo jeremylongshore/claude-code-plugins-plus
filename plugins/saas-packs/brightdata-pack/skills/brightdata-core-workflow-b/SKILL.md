@@ -1,19 +1,27 @@
 ---
 name: brightdata-core-workflow-b
-description: |
-  Execute Bright Data secondary workflow: Core Workflow B.
+description: 'Execute Bright Data secondary workflow: Core Workflow B.
+
   Use when implementing secondary use case,
+
   or complementing primary workflow.
+
   Trigger with phrases like "brightdata secondary workflow",
+
   "secondary task with brightdata".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, scraping, data, brightdata]
-compatible-with: claude-code
+tags:
+- saas
+- scraping
+- data
+- brightdata
+compatibility: Designed for Claude Code
 ---
-
 # Bright Data SERP API & Web Scraper API
 
 ## Overview

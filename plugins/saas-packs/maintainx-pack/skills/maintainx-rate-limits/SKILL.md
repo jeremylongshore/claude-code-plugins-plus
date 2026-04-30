@@ -1,17 +1,25 @@
 ---
 name: maintainx-rate-limits
-description: |
-  Implement MaintainX API rate limiting, pagination, and backoff patterns.
+description: 'Implement MaintainX API rate limiting, pagination, and backoff patterns.
+
   Use when handling rate limit errors, implementing retry logic,
+
   or optimizing API request throughput for MaintainX.
+
   Trigger with phrases like "maintainx rate limit", "maintainx throttling",
+
   "maintainx 429", "maintainx retry", "maintainx backoff", "maintainx pagination".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, maintainx, api]
+tags:
+- saas
+- maintainx
+- api
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # MaintainX Rate Limits
 

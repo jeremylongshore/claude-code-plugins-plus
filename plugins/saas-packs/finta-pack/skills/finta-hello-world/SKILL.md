@@ -1,19 +1,28 @@
 ---
 name: finta-hello-world
-description: |
-  Set up your first fundraise pipeline in Finta with investors and deal stages.
+description: 'Set up your first fundraise pipeline in Finta with investors and deal
+  stages.
+
   Use when starting a new fundraise, importing investor lists,
-  or learning Finta's pipeline management features.
+
+  or learning Finta''s pipeline management features.
+
   Trigger with phrases like "finta hello world", "finta first pipeline",
+
   "start fundraise in finta", "finta quick start".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, fundraising-crm, investor-management, finta]
-compatible-with: claude-code
+tags:
+- saas
+- fundraising-crm
+- investor-management
+- finta
+compatibility: Designed for Claude Code
 ---
-
 # Finta Hello World
 
 ## Overview

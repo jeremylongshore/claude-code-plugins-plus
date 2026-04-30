@@ -1,19 +1,28 @@
 ---
 name: abridge-common-errors
-description: |
-  Diagnose and fix common Abridge clinical AI integration errors.
+description: 'Diagnose and fix common Abridge clinical AI integration errors.
+
   Use when encountering EHR connectivity failures, note generation errors,
+
   audio streaming issues, or FHIR validation problems with Abridge.
+
   Trigger: "abridge error", "abridge not working", "abridge debug",
+
   "fix abridge issue", "abridge troubleshoot".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, healthcare, ai, abridge, troubleshooting]
-compatible-with: claude-code
+tags:
+- saas
+- healthcare
+- ai
+- abridge
+- troubleshooting
+compatibility: Designed for Claude Code
 ---
-
 # Abridge Common Errors
 
 ## Overview

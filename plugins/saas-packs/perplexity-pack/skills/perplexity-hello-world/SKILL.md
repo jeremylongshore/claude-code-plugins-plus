@@ -1,17 +1,26 @@
 ---
 name: perplexity-hello-world
-description: |
-  Create a minimal working Perplexity Sonar search example with citations.
+description: 'Create a minimal working Perplexity Sonar search example with citations.
+
   Use when starting a new Perplexity integration, testing your setup,
+
   or learning basic search-with-citations patterns.
+
   Trigger with phrases like "perplexity hello world", "perplexity example",
+
   "perplexity quick start", "simple perplexity search".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, perplexity, api, testing]
+tags:
+- saas
+- perplexity
+- api
+- testing
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Perplexity Hello World
 

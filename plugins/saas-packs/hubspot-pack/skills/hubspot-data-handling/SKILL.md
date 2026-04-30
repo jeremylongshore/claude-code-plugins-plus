@@ -1,19 +1,28 @@
 ---
 name: hubspot-data-handling
-description: |
-  Implement HubSpot GDPR compliance, data export, and contact privacy operations.
+description: 'Implement HubSpot GDPR compliance, data export, and contact privacy
+  operations.
+
   Use when handling GDPR/CCPA data subject requests, implementing data export,
+
   contact deletion, or privacy-compliant HubSpot integrations.
+
   Trigger with phrases like "hubspot GDPR", "hubspot data export",
+
   "hubspot delete contact", "hubspot privacy", "hubspot CCPA", "hubspot PII".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, marketing, hubspot]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- marketing
+- hubspot
+compatibility: Designed for Claude Code
 ---
-
 # HubSpot Data Handling
 
 ## Overview

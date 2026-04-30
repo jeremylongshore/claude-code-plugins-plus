@@ -1,18 +1,25 @@
 ---
 name: apify-install-auth
-description: |
-  Install and configure Apify SDK, CLI, and API client authentication.
+description: 'Install and configure Apify SDK, CLI, and API client authentication.
+
   Use when setting up a new Apify project, configuring API tokens,
+
   or initializing apify-client / Apify SDK in your codebase.
+
   Trigger: "install apify", "setup apify", "apify auth", "configure apify token".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(apify:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, scraping, automation, apify]
-compatible-with: claude-code
+tags:
+- saas
+- scraping
+- automation
+- apify
+compatibility: Designed for Claude Code
 ---
-
 # Apify Install & Auth
 
 ## Overview

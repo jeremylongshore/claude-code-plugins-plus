@@ -1,13 +1,20 @@
 ---
 name: managing-network-policies
-description: |
-  Execute use when managing Kubernetes network policies and firewall rules. Trigger with phrases like "create network policy", "configure firewall rules", "restrict pod communication", or "setup ingress/egress rules". Generates Kubernetes NetworkPolicy manifests following least privilege and zero-trust principles.
+description: 'Execute use when managing Kubernetes network policies and firewall rules.
+  Trigger with phrases like "create network policy", "configure firewall rules", "restrict
+  pod communication", or "setup ingress/egress rules". Generates Kubernetes NetworkPolicy
+  manifests following least privilege and zero-trust principles.
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(kubectl:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [devops, kubernetes, network-policies]
+tags:
+- devops
+- kubernetes
+- network-policies
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Managing Network Policies
 

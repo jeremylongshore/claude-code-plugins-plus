@@ -1,17 +1,27 @@
 ---
 name: groq-security-basics
-description: |
-  Apply Groq security best practices for API key management and data protection.
+description: 'Apply Groq security best practices for API key management and data protection.
+
   Use when securing API keys, implementing least privilege access,
+
   or auditing Groq security configuration.
+
   Trigger with phrases like "groq security", "groq secrets",
+
   "secure groq", "groq API key security".
+
+  '
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, groq, api, security, audit]
+tags:
+- saas
+- groq
+- api
+- security
+- audit
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Groq Security Basics
 

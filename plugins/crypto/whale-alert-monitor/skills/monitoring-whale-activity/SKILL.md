@@ -1,16 +1,23 @@
 ---
 name: monitoring-whale-activity
-description: |
-  Track large cryptocurrency transactions and whale wallet movements in real-time.
-  Use when tracking large holder movements, exchange flows, or wallet activity.
-  Trigger with phrases like "track whales", "monitor large transfers", "check whale activity", "exchange inflows", or "watch wallet".
+description: 'Track large cryptocurrency transactions and whale wallet movements in
+  real-time.
 
+  Use when tracking large holder movements, exchange flows, or wallet activity.
+
+  Trigger with phrases like "track whales", "monitor large transfers", "check whale
+  activity", "exchange inflows", or "watch wallet".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(python:*whale*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [crypto, monitoring, monitoring-whale]
+tags:
+- crypto
+- monitoring
+- monitoring-whale
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Monitoring Whale Activity
 

@@ -1,17 +1,26 @@
 ---
 name: evernote-security-basics
-description: |
-  Implement security best practices for Evernote integrations.
+description: 'Implement security best practices for Evernote integrations.
+
   Use when securing API credentials, implementing OAuth securely,
+
   or hardening Evernote integrations.
+
   Trigger with phrases like "evernote security", "secure evernote",
+
   "evernote credentials", "evernote oauth security".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, evernote, api, security]
+tags:
+- saas
+- evernote
+- api
+- security
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Evernote Security Basics
 

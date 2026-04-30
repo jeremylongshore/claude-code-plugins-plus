@@ -1,19 +1,26 @@
 ---
 name: hootsuite-common-errors
-description: |
-  Diagnose and fix Hootsuite common errors and exceptions.
+description: 'Diagnose and fix Hootsuite common errors and exceptions.
+
   Use when encountering Hootsuite errors, debugging failed requests,
+
   or troubleshooting integration issues.
+
   Trigger with phrases like "hootsuite error", "fix hootsuite",
+
   "hootsuite not working", "debug hootsuite".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hootsuite, social-media]
-compatible-with: claude-code
+tags:
+- saas
+- hootsuite
+- social-media
+compatibility: Designed for Claude Code
 ---
-
 # Hootsuite Common Errors
 
 ## Error Reference

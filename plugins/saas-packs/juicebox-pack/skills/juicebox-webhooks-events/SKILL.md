@@ -1,16 +1,20 @@
 ---
 name: juicebox-webhooks-events
-description: |
-  Handle Juicebox webhooks and events.
+description: 'Handle Juicebox webhooks and events.
+
   Trigger: "juicebox webhooks", "juicebox events".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, recruiting, juicebox]
-compatible-with: claude-code
+tags:
+- saas
+- recruiting
+- juicebox
+compatibility: Designed for Claude Code
 ---
-
 # Juicebox Webhooks & Events
 
 ## Overview

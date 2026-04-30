@@ -1,16 +1,21 @@
 ---
 name: appfolio-webhooks-events
-description: |
-  Handle AppFolio webhook events for property management notifications.
+description: 'Handle AppFolio webhook events for property management notifications.
+
   Trigger: "appfolio webhook".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, property-management, appfolio, real-estate]
-compatible-with: claude-code
+tags:
+- saas
+- property-management
+- appfolio
+- real-estate
+compatibility: Designed for Claude Code
 ---
-
 # AppFolio Webhooks & Events
 
 ## Overview

@@ -1,16 +1,21 @@
 ---
 name: guidewire-deploy-integration
-description: |
-  Deploy Guidewire integrations to Cloud Platform with configuration packages and release management.
+description: 'Deploy Guidewire integrations to Cloud Platform with configuration packages
+  and release management.
+
   Trigger: "guidewire deploy integration", "deploy-integration".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(gradle:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, insurance, guidewire]
-compatible-with: claude-code
+tags:
+- saas
+- insurance
+- guidewire
+compatibility: Designed for Claude Code
 ---
-
 # Guidewire Deploy Integration
 
 ## Overview

@@ -1,19 +1,28 @@
 ---
 name: hubspot-security-basics
-description: |
-  Apply HubSpot security best practices for tokens, scopes, and webhook verification.
+description: 'Apply HubSpot security best practices for tokens, scopes, and webhook
+  verification.
+
   Use when securing private app tokens, implementing least privilege scopes,
+
   or validating HubSpot webhook signatures.
+
   Trigger with phrases like "hubspot security", "hubspot token rotation",
+
   "secure hubspot", "hubspot scopes", "hubspot webhook verify".
+
+  '
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, marketing, hubspot]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- marketing
+- hubspot
+compatibility: Designed for Claude Code
 ---
-
 # HubSpot Security Basics
 
 ## Overview

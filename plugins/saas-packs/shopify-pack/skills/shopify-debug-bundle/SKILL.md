@@ -1,19 +1,27 @@
 ---
 name: shopify-debug-bundle
-description: |
-  Collect Shopify debug evidence including API versions, scopes, rate limit state, and request logs.
+description: 'Collect Shopify debug evidence including API versions, scopes, rate
+  limit state, and request logs.
+
   Use when encountering persistent issues, preparing support tickets,
+
   or collecting diagnostic information for Shopify problems.
+
   Trigger with phrases like "shopify debug", "shopify support bundle",
+
   "collect shopify logs", "shopify diagnostic".
+
+  '
 allowed-tools: Read, Bash(curl:*), Bash(tar:*), Bash(node:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ecommerce, shopify]
-compatible-with: claude-code
+tags:
+- saas
+- ecommerce
+- shopify
+compatibility: Designed for Claude Code
 ---
-
 # Shopify Debug Bundle
 
 ## Overview

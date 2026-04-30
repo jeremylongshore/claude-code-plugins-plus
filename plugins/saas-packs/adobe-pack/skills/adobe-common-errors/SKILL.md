@@ -1,20 +1,29 @@
 ---
 name: adobe-common-errors
-description: |
-  Diagnose and fix common Adobe API errors across Firefly Services, PDF Services,
+description: 'Diagnose and fix common Adobe API errors across Firefly Services, PDF
+  Services,
+
   Photoshop API, and Adobe I/O Events.
+
   Use when encountering Adobe errors, debugging failed requests,
+
   or troubleshooting integration issues.
+
   Trigger with phrases like "adobe error", "fix adobe",
+
   "adobe not working", "debug adobe", "adobe 403", "adobe 429".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, adobe]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- adobe
+compatibility: Designed for Claude Code
 ---
-
 # Adobe Common Errors
 
 ## Overview

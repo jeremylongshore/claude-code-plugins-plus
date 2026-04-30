@@ -1,17 +1,26 @@
 ---
 name: customerio-debug-bundle
-description: |
-  Collect Customer.io debug evidence for support tickets.
+description: 'Collect Customer.io debug evidence for support tickets.
+
   Use when creating support requests, investigating delivery
+
   failures, or documenting integration issues.
+
   Trigger: "customer.io debug", "customer.io support ticket",
+
   "collect customer.io logs", "customer.io diagnostics".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*), Bash(npx:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, customer-io, debugging, support]
+tags:
+- saas
+- customer-io
+- debugging
+- support
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Customer.io Debug Bundle
 

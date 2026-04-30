@@ -1,16 +1,21 @@
 ---
 name: grammarly-prod-checklist
-description: |
-  Production readiness checklist for Grammarly API integrations. Use when preparing
+description: 'Production readiness checklist for Grammarly API integrations. Use when
+  preparing
+
   a Grammarly integration for production deployment.
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, grammarly, writing]
-compatible-with: claude-code
+tags:
+- saas
+- grammarly
+- writing
+compatibility: Designed for Claude Code
 ---
-
 # Grammarly Production Checklist
 
 ## Overview

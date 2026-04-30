@@ -1,19 +1,28 @@
 ---
 name: castai-sdk-patterns
-description: |
-  Production-ready CAST AI REST API wrapper patterns in TypeScript and Python.
+description: 'Production-ready CAST AI REST API wrapper patterns in TypeScript and
+  Python.
+
   Use when building reusable CAST AI clients, implementing retry logic,
+
   or wrapping the CAST AI API for team use.
+
   Trigger with phrases like "cast ai API patterns", "cast ai client wrapper",
+
   "cast ai TypeScript", "cast ai Python client".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, kubernetes, cost-optimization, castai]
-compatible-with: claude-code
+tags:
+- saas
+- kubernetes
+- cost-optimization
+- castai
+compatibility: Designed for Claude Code
 ---
-
 # CAST AI SDK Patterns
 
 ## Overview

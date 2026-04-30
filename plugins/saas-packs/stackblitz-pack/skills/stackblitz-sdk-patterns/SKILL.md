@@ -1,18 +1,27 @@
 ---
 name: stackblitz-sdk-patterns
-description: |
-  Production patterns for WebContainer API: file system operations, process management, and jsh shell.
+description: 'Production patterns for WebContainer API: file system operations, process
+  management, and jsh shell.
+
   Use when building browser IDEs, managing WebContainer lifecycle,
+
   or implementing terminal emulation with jsh.
-  Trigger: "webcontainer patterns", "stackblitz best practices", "webcontainer file system".
+
+  Trigger: "webcontainer patterns", "stackblitz best practices", "webcontainer file
+  system".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ide, webcontainers, stackblitz]
-compatible-with: claude-code
+tags:
+- saas
+- ide
+- webcontainers
+- stackblitz
+compatibility: Designed for Claude Code
 ---
-
 # StackBlitz SDK Patterns
 
 ## Overview

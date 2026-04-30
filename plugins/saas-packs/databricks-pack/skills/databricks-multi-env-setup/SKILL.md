@@ -1,17 +1,25 @@
 ---
 name: databricks-multi-env-setup
-description: |
-  Configure Databricks across development, staging, and production environments.
+description: 'Configure Databricks across development, staging, and production environments.
+
   Use when setting up multi-environment deployments, configuring per-environment secrets,
+
   or implementing environment-specific Databricks configurations.
+
   Trigger with phrases like "databricks environments", "databricks staging",
+
   "databricks dev prod", "databricks environment setup", "databricks config by env".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(databricks:*), Bash(terraform:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, databricks, deployment]
+tags:
+- saas
+- databricks
+- deployment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Databricks Multi-Environment Setup
 

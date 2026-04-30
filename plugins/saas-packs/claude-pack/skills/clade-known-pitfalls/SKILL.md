@@ -1,18 +1,27 @@
 ---
 name: clade-known-pitfalls
-description: |
-  Common mistakes when building with the Anthropic API and how to avoid them.
+description: 'Common mistakes when building with the Anthropic API and how to avoid
+  them.
+
   Use when working with known-pitfalls patterns.
+
   Trigger with "anthropic mistakes", "claude pitfalls", "anthropic gotchas",
+
   "common claude errors", "anthropic anti-patterns".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code
-tags: [saas, anthropic, claude, pitfalls, best-practices]
+tags:
+- saas
+- anthropic
+- claude
+- pitfalls
+- best-practices
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Known Pitfalls
 
 ## Overview

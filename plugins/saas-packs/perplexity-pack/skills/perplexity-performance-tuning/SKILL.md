@@ -1,17 +1,27 @@
 ---
 name: perplexity-performance-tuning
-description: |
-  Optimize Perplexity Sonar API performance with caching, streaming, model routing, and batching.
+description: 'Optimize Perplexity Sonar API performance with caching, streaming, model
+  routing, and batching.
+
   Use when experiencing slow API responses, implementing caching strategies,
+
   or optimizing request throughput for Perplexity integrations.
+
   Trigger with phrases like "perplexity performance", "optimize perplexity",
+
   "perplexity latency", "perplexity caching", "perplexity slow".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, perplexity, api, performance]
+tags:
+- saas
+- perplexity
+- api
+- performance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Perplexity Performance Tuning
 

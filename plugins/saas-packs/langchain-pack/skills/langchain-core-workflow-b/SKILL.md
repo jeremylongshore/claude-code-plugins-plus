@@ -1,17 +1,25 @@
 ---
 name: langchain-core-workflow-b
-description: |
-  Build LangChain agents with tool calling for autonomous task execution.
+description: 'Build LangChain agents with tool calling for autonomous task execution.
+
   Use when creating AI agents, implementing tool/function calling,
+
   binding tools to models, or building autonomous multi-step workflows.
+
   Trigger: "langchain agents", "langchain tools", "tool calling",
+
   "create agent", "function calling", "createToolCallingAgent".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langchain, workflow]
+tags:
+- saas
+- langchain
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # LangChain Core Workflow B: Agents & Tools
 

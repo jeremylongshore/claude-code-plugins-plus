@@ -1,17 +1,28 @@
 ---
 name: vercel-reliability-patterns
-description: |
-  Implement reliability patterns for Vercel deployments including circuit breakers, retry logic, and graceful degradation.
+description: 'Implement reliability patterns for Vercel deployments including circuit
+  breakers, retry logic, and graceful degradation.
+
   Use when building fault-tolerant serverless functions, implementing retry strategies,
+
   or adding resilience to production Vercel services.
+
   Trigger with phrases like "vercel reliability", "vercel circuit breaker",
+
   "vercel resilience", "vercel fallback", "vercel graceful degradation".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vercel, reliability, resilience, patterns]
+tags:
+- saas
+- vercel
+- reliability
+- resilience
+- patterns
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vercel Reliability Patterns
 

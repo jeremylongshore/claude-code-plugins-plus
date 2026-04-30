@@ -1,13 +1,21 @@
 ---
 name: detecting-infrastructure-drift
-description: |
-  Execute use when detecting infrastructure drift from desired state. Trigger with phrases like "check for drift", "infrastructure drift detection", "compare actual vs desired state", or "detect configuration changes". Identifies discrepancies between current infrastructure and IaC definitions using terraform plan, cloudformation drift detection, or manual comparison.
+description: 'Execute use when detecting infrastructure drift from desired state.
+  Trigger with phrases like "check for drift", "infrastructure drift detection", "compare
+  actual vs desired state", or "detect configuration changes". Identifies discrepancies
+  between current infrastructure and IaC definitions using terraform plan, cloudformation
+  drift detection, or manual comparison.
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(terraform:*), Bash(aws:*), Bash(gcloud:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [devops, terraform, detecting-infrastructure]
+tags:
+- devops
+- terraform
+- detecting-infrastructure
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Detecting Infrastructure Drift
 

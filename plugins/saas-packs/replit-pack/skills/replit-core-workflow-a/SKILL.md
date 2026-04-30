@@ -1,17 +1,27 @@
 ---
 name: replit-core-workflow-a
-description: |
-  Build a full-stack web app on Replit with Express/Flask, PostgreSQL, Auth, and deployment.
+description: 'Build a full-stack web app on Replit with Express/Flask, PostgreSQL,
+  Auth, and deployment.
+
   Use when creating a new production app on Replit from scratch,
+
   building the primary user-facing workflow, or following Replit best practices.
+
   Trigger with phrases like "build replit app", "replit full stack",
+
   "replit web app", "create replit project", "replit express flask".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, replit, workflow, full-stack]
+tags:
+- saas
+- replit
+- workflow
+- full-stack
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Replit Core Workflow A — Full-Stack App
 

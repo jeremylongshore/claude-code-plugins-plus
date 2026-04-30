@@ -1,15 +1,22 @@
 ---
 name: groq-enterprise-rbac
-description: |
-  Configure Groq organization management, API key scoping, spending controls, and team access patterns.
+description: 'Configure Groq organization management, API key scoping, spending controls,
+  and team access patterns.
+
   Trigger with phrases like "groq organization", "groq RBAC",
+
   "groq enterprise", "groq team access", "groq spending limits", "groq multi-team".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, groq, rbac]
+tags:
+- saas
+- groq
+- rbac
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Groq Enterprise Access Management
 

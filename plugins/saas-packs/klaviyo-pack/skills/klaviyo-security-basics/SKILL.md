@@ -1,19 +1,28 @@
 ---
 name: klaviyo-security-basics
-description: |
-  Apply Klaviyo security best practices for API key management and access control.
+description: 'Apply Klaviyo security best practices for API key management and access
+  control.
+
   Use when securing API keys, configuring OAuth scopes, implementing webhook
+
   signature verification, or auditing Klaviyo security configuration.
+
   Trigger with phrases like "klaviyo security", "klaviyo secrets",
+
   "secure klaviyo", "klaviyo API key security", "klaviyo OAuth".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, klaviyo, email-marketing, cdp]
-compatible-with: claude-code
+tags:
+- saas
+- klaviyo
+- email-marketing
+- cdp
+compatibility: Designed for Claude Code
 ---
-
 # Klaviyo Security Basics
 
 ## Overview

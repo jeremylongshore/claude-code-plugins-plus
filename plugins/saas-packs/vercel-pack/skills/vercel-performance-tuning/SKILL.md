@@ -1,17 +1,28 @@
 ---
 name: vercel-performance-tuning
-description: |
-  Optimize Vercel deployment performance with caching, bundle optimization, and cold start reduction.
+description: 'Optimize Vercel deployment performance with caching, bundle optimization,
+  and cold start reduction.
+
   Use when experiencing slow page loads, optimizing Core Web Vitals,
+
   or reducing serverless function cold start times.
+
   Trigger with phrases like "vercel performance", "optimize vercel",
+
   "vercel latency", "vercel caching", "vercel slow", "vercel cold start".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(npx:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vercel, performance, caching, optimization]
+tags:
+- saas
+- vercel
+- performance
+- caching
+- optimization
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vercel Performance Tuning
 

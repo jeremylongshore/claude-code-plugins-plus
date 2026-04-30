@@ -1,13 +1,20 @@
 ---
 name: optimizing-deep-learning-models
-description: |
-  Optimize deep learning models using Adam, SGD, and learning rate scheduling to improve accuracy and reduce training time. Use when asked to "optimize deep learning model" or "improve model performance". Trigger with phrases like 'optimize', 'performance', or 'speed up'.
+description: 'Optimize deep learning models using Adam, SGD, and learning rate scheduling
+  to improve accuracy and reduce training time. Use when asked to "optimize deep learning
+  model" or "improve model performance". Trigger with phrases like ''optimize'', ''performance'',
+  or ''speed up''.
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [ai, performance, optimizing-deep]
+tags:
+- ai
+- performance
+- optimizing-deep
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Deep Learning Optimizer
 

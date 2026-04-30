@@ -1,16 +1,21 @@
 ---
 name: fathom-upgrade-migration
-description: |
-  Handle Fathom API changes and version migrations.
+description: 'Handle Fathom API changes and version migrations.
+
   Trigger with phrases like "upgrade fathom", "fathom api changes", "fathom migration".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, meeting-intelligence, ai-notes, fathom]
-compatible-with: claude-code
+tags:
+- saas
+- meeting-intelligence
+- ai-notes
+- fathom
+compatibility: Designed for Claude Code
 ---
-
 # Fathom Upgrade & Migration
 
 ## Overview

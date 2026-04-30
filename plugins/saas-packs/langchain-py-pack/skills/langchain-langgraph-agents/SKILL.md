@@ -1,20 +1,25 @@
 ---
 name: langchain-langgraph-agents
-description: |
-  Build a correct LangGraph 1.0 ReAct agent with `create_react_agent` — typed tools,
-  error propagation, recursion caps, and stop conditions that actually stop. Use when
-  writing your first tool-calling agent, migrating from `AgentExecutor` / `initialize_agent`,
-  or diagnosing an agent that loops on vague prompts.
-  Trigger with "langgraph agent", "create_react_agent", "langgraph tool calling",
-  "AgentExecutor migration", "agent loop cost".
+description: "Build a correct LangGraph 1.0 ReAct agent with `create_react_agent`\
+  \ \u2014 typed tools,\nerror propagation, recursion caps, and stop conditions that\
+  \ actually stop. Use when\nwriting your first tool-calling agent, migrating from\
+  \ `AgentExecutor` / `initialize_agent`,\nor diagnosing an agent that loops on vague\
+  \ prompts.\nTrigger with \"langgraph agent\", \"create_react_agent\", \"langgraph\
+  \ tool calling\",\n\"AgentExecutor migration\", \"agent loop cost\".\n"
 allowed-tools: Read, Write, Edit, Bash(python:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, langchain, langgraph, python, langchain-1.0, agents, tool-calling]
-compatible-with: claude-code, codex
+tags:
+- saas
+- langchain
+- langgraph
+- python
+- langchain-1.0
+- agents
+- tool-calling
+compatibility: Designed for Claude Code, also compatible with Codex
 ---
-
 # LangChain LangGraph Agents (Python)
 
 ## Overview

@@ -1,19 +1,26 @@
 ---
 name: grammarly-incident-runbook
-description: |
-  Follow Grammarly incident response runbook for API outages.
+description: 'Follow Grammarly incident response runbook for API outages.
+
   Use when Grammarly API is down, experiencing errors,
+
   or when investigating service degradation.
+
   Trigger with phrases like "grammarly down", "grammarly outage",
+
   "grammarly incident", "grammarly not responding".
+
+  '
 allowed-tools: Read, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, grammarly, writing]
-compatible-with: claude-code
+tags:
+- saas
+- grammarly
+- writing
+compatibility: Designed for Claude Code
 ---
-
 # Grammarly Incident Runbook
 
 ## Overview

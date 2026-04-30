@@ -1,15 +1,20 @@
 ---
 name: product-brief
-description: Structured product brief and PRD creation assistant. Use when the user needs to write a product brief, PRD, feature spec, or any document that defines what to build and why. Triggers include "product brief", "PRD", "spec", "feature doc", "write a brief", "define this feature", or when scoping work for engineering.
+description: Structured product brief and PRD creation assistant. Use when the user
+  needs to write a product brief, PRD, feature spec, or any document that defines
+  what to build and why. Triggers include "product brief", "PRD", "spec", "feature
+  doc", "write a brief", "define this feature", or when scoping work for engineering.
 version: 1.0.0
 author: Ahmed Khaled Mohamed <ahmd.khaled.a.mohamed@gmail.com>
 license: MIT
 allowed-tools: Read, Glob, Grep
-argument-hint: [feature name]
-compatible-with: claude-code
-tags: [productivity, product-brief]
+argument-hint:
+- feature name
+tags:
+- productivity
+- product-brief
+compatibility: Designed for Claude Code
 ---
-
 # Product Brief Skill
 
 ## Instructions

@@ -1,19 +1,28 @@
 ---
 name: snowflake-sdk-patterns
-description: |
-  Apply production-ready Snowflake SDK patterns for snowflake-sdk and snowflake-connector-python.
+description: 'Apply production-ready Snowflake SDK patterns for snowflake-sdk and
+  snowflake-connector-python.
+
   Use when implementing connection pooling, async execute wrappers, streaming results,
+
   or establishing team coding standards for Snowflake.
+
   Trigger with phrases like "snowflake SDK patterns", "snowflake best practices",
+
   "snowflake code patterns", "idiomatic snowflake", "snowflake connection pool".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, data-warehouse, analytics, snowflake]
-compatible-with: claude-code
+tags:
+- saas
+- data-warehouse
+- analytics
+- snowflake
+compatibility: Designed for Claude Code
 ---
-
 # Snowflake SDK Patterns
 
 ## Overview

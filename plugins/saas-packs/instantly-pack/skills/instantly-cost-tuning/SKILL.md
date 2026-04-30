@@ -1,17 +1,27 @@
 ---
 name: instantly-cost-tuning
-description: |
-  Optimize Instantly.ai costs through plan selection, account management, and usage monitoring.
+description: 'Optimize Instantly.ai costs through plan selection, account management,
+  and usage monitoring.
+
   Use when analyzing Instantly billing, reducing per-campaign costs,
+
   or choosing between Instantly pricing tiers.
+
   Trigger with phrases like "instantly cost", "instantly pricing",
+
   "instantly billing", "reduce instantly cost", "instantly plan comparison".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, instantly, cost-optimization, pricing]
+tags:
+- saas
+- instantly
+- cost-optimization
+- pricing
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Instantly Cost Tuning
 

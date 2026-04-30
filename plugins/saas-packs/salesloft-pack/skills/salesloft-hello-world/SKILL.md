@@ -1,18 +1,20 @@
 ---
 name: salesloft-hello-world
-description: |
-  Create a minimal working SalesLoft example — list people and create a person.
-  Use when starting a new SalesLoft integration, testing your setup,
-  or learning the People and Cadences API patterns.
-  Trigger: "salesloft hello world", "salesloft example", "salesloft quick start".
+description: "Create a minimal working SalesLoft example \u2014 list people and create\
+  \ a person.\nUse when starting a new SalesLoft integration, testing your setup,\n\
+  or learning the People and Cadences API patterns.\nTrigger: \"salesloft hello world\"\
+  , \"salesloft example\", \"salesloft quick start\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, sales, outreach, salesloft]
-compatible-with: claude-code
+tags:
+- saas
+- sales
+- outreach
+- salesloft
+compatibility: Designed for Claude Code
 ---
-
 # SalesLoft Hello World
 
 ## Overview

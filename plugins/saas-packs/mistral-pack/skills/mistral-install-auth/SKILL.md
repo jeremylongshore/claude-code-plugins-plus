@@ -1,17 +1,26 @@
 ---
 name: mistral-install-auth
-description: |
-  Install and configure the Mistral AI SDK with authentication.
+description: 'Install and configure the Mistral AI SDK with authentication.
+
   Use when setting up a new Mistral integration, configuring API keys,
+
   or initializing Mistral AI in your project.
+
   Trigger with phrases like "install mistral", "setup mistral",
+
   "mistral auth", "configure mistral API key".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, mistral, api, authentication]
+tags:
+- saas
+- mistral
+- api
+- authentication
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Mistral AI Install & Auth
 

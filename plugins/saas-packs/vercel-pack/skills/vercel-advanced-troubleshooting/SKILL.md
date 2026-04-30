@@ -1,17 +1,28 @@
 ---
 name: vercel-advanced-troubleshooting
-description: |
-  Advanced debugging for hard-to-diagnose Vercel issues including cold starts, edge errors, and function tracing.
+description: 'Advanced debugging for hard-to-diagnose Vercel issues including cold
+  starts, edge errors, and function tracing.
+
   Use when standard troubleshooting fails, investigating intermittent failures,
+
   or preparing evidence for Vercel support escalation.
+
   Trigger with phrases like "vercel hard bug", "vercel mystery error",
+
   "vercel intermittent failure", "difficult vercel issue", "vercel deep debug".
+
+  '
 allowed-tools: Read, Grep, Bash(vercel:*), Bash(curl:*), Bash(jq:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vercel, debugging, advanced, troubleshooting]
+tags:
+- saas
+- vercel
+- debugging
+- advanced
+- troubleshooting
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vercel Advanced Troubleshooting
 

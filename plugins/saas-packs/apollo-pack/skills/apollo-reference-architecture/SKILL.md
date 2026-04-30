@@ -1,17 +1,25 @@
 ---
 name: apollo-reference-architecture
-description: |
-  Implement Apollo.io reference architecture.
+description: 'Implement Apollo.io reference architecture.
+
   Use when designing Apollo integrations, establishing patterns,
+
   or building production-grade sales intelligence systems.
+
   Trigger with phrases like "apollo architecture", "apollo system design",
+
   "apollo integration patterns", "apollo best practices architecture".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, apollo, apollo-reference]
+tags:
+- saas
+- apollo
+- apollo-reference
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Apollo Reference Architecture
 

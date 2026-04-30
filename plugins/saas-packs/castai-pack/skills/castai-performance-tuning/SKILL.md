@@ -1,19 +1,28 @@
 ---
 name: castai-performance-tuning
-description: |
-  Optimize CAST AI autoscaler performance, node provisioning speed, and API efficiency.
+description: 'Optimize CAST AI autoscaler performance, node provisioning speed, and
+  API efficiency.
+
   Use when nodes take too long to provision, autoscaler is not reacting fast enough,
+
   or optimizing API call patterns for multi-cluster dashboards.
+
   Trigger with phrases like "cast ai performance", "cast ai slow",
+
   "cast ai node provisioning", "cast ai autoscaler speed".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, kubernetes, cost-optimization, castai]
-compatible-with: claude-code
+tags:
+- saas
+- kubernetes
+- cost-optimization
+- castai
+compatibility: Designed for Claude Code
 ---
-
 # CAST AI Performance Tuning
 
 ## Overview

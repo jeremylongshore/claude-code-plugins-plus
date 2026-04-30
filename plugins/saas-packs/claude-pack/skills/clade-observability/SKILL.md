@@ -1,19 +1,21 @@
 ---
 name: clade-observability
-description: |
-  Monitor Claude API calls — log tokens, latency, costs, errors, and
-  Use when working with observability patterns.
-  set up alerts for production Claude integrations.
-  Trigger with "anthropic monitoring", "claude observability",
-  "track claude usage", "anthropic logging".
+description: "Monitor Claude API calls \u2014 log tokens, latency, costs, errors,\
+  \ and\nUse when working with observability patterns.\nset up alerts for production\
+  \ Claude integrations.\nTrigger with \"anthropic monitoring\", \"claude observability\"\
+  ,\n\"track claude usage\", \"anthropic logging\".\n"
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code
-tags: [saas, anthropic, claude, monitoring, observability]
+tags:
+- saas
+- anthropic
+- claude
+- monitoring
+- observability
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Observability
 
 ## Overview

@@ -1,17 +1,25 @@
 ---
 name: clay-data-handling
-description: |
-  Implement GDPR/CCPA-compliant data handling for Clay enrichment pipelines.
+description: 'Implement GDPR/CCPA-compliant data handling for Clay enrichment pipelines.
+
   Use when handling PII from enrichments, implementing data retention policies,
+
   or ensuring regulatory compliance for Clay-enriched lead data.
+
   Trigger with phrases like "clay data", "clay PII", "clay GDPR",
+
   "clay data retention", "clay privacy", "clay CCPA", "clay compliance".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clay, compliance]
+tags:
+- saas
+- clay
+- compliance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clay Data Handling
 

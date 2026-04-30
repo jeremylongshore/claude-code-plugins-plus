@@ -1,17 +1,20 @@
 ---
 name: oraclecloud-incident-runbook
-description: |
-  Self-service incident runbook for OCI outages — health probes, instance recovery, cross-AD/region failover.
-  Use when OCI instances go down, the status page is silent, or you need automated recovery without waiting for support.
-  Trigger with "oraclecloud incident", "oci outage runbook", "oci failover", "oci instance recovery".
+description: "Self-service incident runbook for OCI outages \u2014 health probes,\
+  \ instance recovery, cross-AD/region failover.\nUse when OCI instances go down,\
+  \ the status page is silent, or you need automated recovery without waiting for\
+  \ support.\nTrigger with \"oraclecloud incident\", \"oci outage runbook\", \"oci\
+  \ failover\", \"oci instance recovery\".\n"
 allowed-tools: Read, Write, Edit, Bash(oci:*), Bash(python3:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, oraclecloud, oci]
-compatible-with: claude-code
+tags:
+- saas
+- oraclecloud
+- oci
+compatibility: Designed for Claude Code
 ---
-
 # Oracle Cloud Incident Runbook
 
 ## Overview

@@ -1,19 +1,26 @@
 ---
 name: canva-advanced-troubleshooting
-description: |
-  Apply Canva Connect API advanced debugging for hard-to-diagnose issues.
+description: 'Apply Canva Connect API advanced debugging for hard-to-diagnose issues.
+
   Use when standard troubleshooting fails, investigating intermittent failures,
+
   or preparing evidence bundles for Canva developer support.
+
   Trigger with phrases like "canva hard bug", "canva mystery error",
+
   "canva impossible to debug", "difficult canva issue", "canva deep debug".
+
+  '
 allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*), Bash(tcpdump:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, canva]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- canva
+compatibility: Designed for Claude Code
 ---
-
 # Canva Advanced Troubleshooting
 
 ## Overview

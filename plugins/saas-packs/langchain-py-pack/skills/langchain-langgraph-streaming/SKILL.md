@@ -1,22 +1,38 @@
 ---
 name: langchain-langgraph-streaming
-description: |
-  Pick the correct LangGraph 1.0 stream_mode ("messages" vs "updates" vs "values"),
+description: 'Pick the correct LangGraph 1.0 stream_mode ("messages" vs "updates"
+  vs "values"),
+
   wire it into SSE or WebSocket without proxy-buffering gotchas, and filter
+
   astream_events(v2) server-side before forwarding to the browser. Use when
+
   building a live-token chat UI, a per-node progress bar, a debug/time-travel
+
   view, or diagnosing a LangGraph stream that hangs over a production proxy.
+
   Trigger with "langgraph streaming", "stream_mode messages", "stream_mode updates",
+
   "stream_mode values", "langgraph SSE", "langgraph astream_events", "SSE hangs
+
   behind nginx", "cloud run streaming".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(python:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, langchain, langgraph, python, langchain-1.0, streaming, sse, websocket]
-compatible-with: claude-code, codex
+tags:
+- saas
+- langchain
+- langgraph
+- python
+- langchain-1.0
+- streaming
+- sse
+- websocket
+compatibility: Designed for Claude Code, also compatible with Codex
 ---
-
 # LangGraph Streaming (Python)
 
 ## Overview

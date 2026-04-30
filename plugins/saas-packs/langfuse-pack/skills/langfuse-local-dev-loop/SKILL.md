@@ -1,17 +1,27 @@
 ---
 name: langfuse-local-dev-loop
-description: |
-  Set up Langfuse local development workflow with hot reload and debugging.
+description: 'Set up Langfuse local development workflow with hot reload and debugging.
+
   Use when developing LLM applications locally, debugging traces,
+
   or setting up a fast iteration loop with Langfuse.
+
   Trigger with phrases like "langfuse local dev", "langfuse development",
+
   "debug langfuse traces", "langfuse hot reload", "langfuse dev workflow".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(docker:*), Bash(pnpm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langfuse, llm, debugging, workflow]
+tags:
+- saas
+- langfuse
+- llm
+- debugging
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Langfuse Local Dev Loop
 

@@ -1,17 +1,26 @@
 ---
 name: lindy-ci-integration
-description: |
-  Configure CI/CD pipelines for testing Lindy AI agent integrations.
+description: 'Configure CI/CD pipelines for testing Lindy AI agent integrations.
+
   Use when setting up automated testing, configuring GitHub Actions
+
   for webhook receiver tests, or validating agent connectivity in CI.
+
   Trigger with phrases like "lindy CI", "lindy GitHub Actions",
+
   "lindy automated tests", "CI lindy pipeline".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lindy, testing, ci-cd]
+tags:
+- saas
+- lindy
+- testing
+- ci-cd
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lindy CI Integration
 

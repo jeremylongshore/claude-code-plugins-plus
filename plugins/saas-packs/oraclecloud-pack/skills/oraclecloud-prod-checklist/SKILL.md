@@ -1,17 +1,20 @@
 ---
 name: oraclecloud-prod-checklist
-description: |
-  Pre-production readiness checklist for OCI — backup policies, security audit, key rotation, encryption, and Cloud Guard.
-  Use when preparing an OCI environment for production workloads or auditing an existing deployment.
-  Trigger with "oraclecloud prod checklist", "oci production ready", "oci security audit", "oci well-architected".
+description: "Pre-production readiness checklist for OCI \u2014 backup policies, security\
+  \ audit, key rotation, encryption, and Cloud Guard.\nUse when preparing an OCI environment\
+  \ for production workloads or auditing an existing deployment.\nTrigger with \"\
+  oraclecloud prod checklist\", \"oci production ready\", \"oci security audit\",\
+  \ \"oci well-architected\".\n"
 allowed-tools: Read, Write, Edit, Bash(oci:*), Bash(python3:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, oraclecloud, oci]
-compatible-with: claude-code
+tags:
+- saas
+- oraclecloud
+- oci
+compatibility: Designed for Claude Code
 ---
-
 # Oracle Cloud Production Checklist
 
 ## Overview

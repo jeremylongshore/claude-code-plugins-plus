@@ -1,15 +1,24 @@
 ---
 name: klingai-content-policy
-description: |
-  Implement content policy compliance for Kling AI prompts and outputs. Use when filtering
-  user prompts or handling moderation. Trigger with phrases like 'klingai content policy',
-  'kling ai moderation', 'safe video generation', 'klingai content filter'.
+description: 'Implement content policy compliance for Kling AI prompts and outputs.
+  Use when filtering
+
+  user prompts or handling moderation. Trigger with phrases like ''klingai content
+  policy'',
+
+  ''kling ai moderation'', ''safe video generation'', ''klingai content filter''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, kling-ai, content-policy, moderation]
+tags:
+- saas
+- kling-ai
+- content-policy
+- moderation
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Kling AI Content Policy
 

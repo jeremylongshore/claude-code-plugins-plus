@@ -1,16 +1,21 @@
 ---
 name: generating-test-reports
-description: |
-  Generate comprehensive test reports with metrics, coverage, and visualizations.
-  Use when performing specialized testing.
-  Trigger with phrases like "generate test report", "create test documentation", or "show test metrics".
+description: 'Generate comprehensive test reports with metrics, coverage, and visualizations.
 
+  Use when performing specialized testing.
+
+  Trigger with phrases like "generate test report", "create test documentation", or
+  "show test metrics".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:report-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [testing, test-reports]
+tags:
+- testing
+- test-reports
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Test Report Generator
 

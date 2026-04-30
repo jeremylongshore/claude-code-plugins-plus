@@ -1,17 +1,27 @@
 ---
 name: windsurf-observability
-description: |
-  Monitor Windsurf AI adoption, feature usage, and team productivity metrics.
+description: 'Monitor Windsurf AI adoption, feature usage, and team productivity metrics.
+
   Use when tracking AI feature usage, measuring ROI, setting up dashboards,
+
   or analyzing Cascade effectiveness across your team.
+
   Trigger with phrases like "windsurf monitoring", "windsurf metrics",
+
   "windsurf analytics", "windsurf usage", "windsurf adoption".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, monitoring, analytics, team-management]
+tags:
+- saas
+- windsurf
+- monitoring
+- analytics
+- team-management
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Windsurf Observability
 

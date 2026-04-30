@@ -1,17 +1,25 @@
 ---
 name: firecrawl-known-pitfalls
-description: |
-  Identify and avoid Firecrawl anti-patterns and common integration mistakes.
+description: 'Identify and avoid Firecrawl anti-patterns and common integration mistakes.
+
   Use when reviewing Firecrawl code, onboarding new developers,
+
   or auditing existing integrations for best practices violations.
+
   Trigger with phrases like "firecrawl mistakes", "firecrawl anti-patterns",
+
   "firecrawl pitfalls", "firecrawl what not to do", "firecrawl code review".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, firecrawl, audit]
+tags:
+- saas
+- firecrawl
+- audit
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Firecrawl Known Pitfalls
 

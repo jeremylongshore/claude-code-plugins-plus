@@ -1,17 +1,25 @@
 ---
 name: vastai-multi-env-setup
-description: |
-  Configure Vast.ai GPU cloud across dev, staging, and production environments.
+description: 'Configure Vast.ai GPU cloud across dev, staging, and production environments.
+
   Use when isolating GPU pools per team, managing API key separation by env,
+
   or implementing spending controls per deployment tier.
+
   Trigger with phrases like "vastai environments", "vastai staging",
+
   "vastai dev prod", "vastai multi-env".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vastai:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vast-ai, deployment]
+tags:
+- saas
+- vast-ai
+- deployment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vast.ai Multi-Environment Setup
 

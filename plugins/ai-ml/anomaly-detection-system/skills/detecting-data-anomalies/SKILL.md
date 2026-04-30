@@ -1,16 +1,24 @@
 ---
 name: detecting-data-anomalies
-description: |
-  Process identify anomalies and outliers in datasets using machine learning algorithms.
-  Use when analyzing data for unusual patterns, outliers, or unexpected deviations from normal behavior.
-  Trigger with phrases like "detect anomalies", "find outliers", or "identify unusual patterns".
-  
+description: 'Process identify anomalies and outliers in datasets using machine learning
+  algorithms.
+
+  Use when analyzing data for unusual patterns, outliers, or unexpected deviations
+  from normal behavior.
+
+  Trigger with phrases like "detect anomalies", "find outliers", or "identify unusual
+  patterns".
+
+  '
 allowed-tools: Read, Bash(python:*), Grep, Glob
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [ai, ml, detecting-data]
+tags:
+- ai
+- ml
+- detecting-data
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Detecting Data Anomalies
 

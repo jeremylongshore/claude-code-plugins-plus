@@ -1,13 +1,21 @@
 ---
 name: openrouter-team-setup
-description: |
-  Configure OpenRouter for multi-user teams with per-user keys, budget controls, and usage attribution. Triggers: 'openrouter team', 'openrouter multi-user', 'openrouter organization', 'team api keys openrouter'.
+description: 'Configure OpenRouter for multi-user teams with per-user keys, budget
+  controls, and usage attribution. Triggers: ''openrouter team'', ''openrouter multi-user'',
+  ''openrouter organization'', ''team api keys openrouter''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash, Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, openrouter, team, organization, governance]
+tags:
+- saas
+- openrouter
+- team
+- organization
+- governance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # OpenRouter Team Setup
 

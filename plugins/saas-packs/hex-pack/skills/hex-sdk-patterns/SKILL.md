@@ -1,19 +1,27 @@
 ---
 name: hex-sdk-patterns
-description: |
-  Apply production-ready Hex SDK patterns for TypeScript and Python.
+description: 'Apply production-ready Hex SDK patterns for TypeScript and Python.
+
   Use when implementing Hex integrations, refactoring SDK usage,
+
   or establishing team coding standards for Hex.
+
   Trigger with phrases like "hex SDK patterns", "hex best practices",
+
   "hex code patterns", "idiomatic hex".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hex, data, analytics]
-compatible-with: claude-code
+tags:
+- saas
+- hex
+- data
+- analytics
+compatibility: Designed for Claude Code
 ---
-
 # Hex SDK Patterns
 
 ## Overview

@@ -1,20 +1,31 @@
 ---
 name: clickhouse-observability
-description: |
-  Monitor ClickHouse with Prometheus metrics, Grafana dashboards, system table queries,
+description: 'Monitor ClickHouse with Prometheus metrics, Grafana dashboards, system
+  table queries,
+
   and alerting for query performance, merge health, and resource usage.
+
   Use when setting up ClickHouse monitoring, building Grafana dashboards,
+
   or configuring alerts for production ClickHouse deployments.
+
   Trigger: "clickhouse monitoring", "clickhouse metrics", "clickhouse Grafana",
+
   "clickhouse observability", "monitor clickhouse", "clickhouse Prometheus".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, database, analytics, clickhouse, olap]
-compatible-with: claude-code
+tags:
+- saas
+- database
+- analytics
+- clickhouse
+- olap
+compatibility: Designed for Claude Code
 ---
-
 # ClickHouse Observability
 
 ## Overview

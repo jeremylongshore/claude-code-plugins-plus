@@ -1,17 +1,28 @@
 ---
 name: granola-debug-bundle
-description: |
-  Create diagnostic bundles for Granola support requests.
+description: 'Create diagnostic bundles for Granola support requests.
+
   Use when preparing support tickets, collecting system/audio/network info,
+
   or diagnosing complex issues that require Granola support team assistance.
+
   Trigger: "granola debug", "granola diagnostics", "granola support bundle",
+
   "granola logs", "granola system info".
-allowed-tools: Read, Write, Edit, Bash(system_profiler:*), Bash(sw_vers:*), Bash(defaults:*), Bash(curl:*), Bash(pgrep:*), Bash(ls:*), Bash(zip:*), Bash(mkdir:*), Bash(uname:*), Grep
+
+  '
+allowed-tools: Read, Write, Edit, Bash(system_profiler:*), Bash(sw_vers:*), Bash(defaults:*),
+  Bash(curl:*), Bash(pgrep:*), Bash(ls:*), Bash(zip:*), Bash(mkdir:*), Bash(uname:*),
+  Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, granola, debugging, support]
+tags:
+- saas
+- granola
+- debugging
+- support
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Granola Debug Bundle
 

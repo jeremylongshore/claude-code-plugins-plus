@@ -1,18 +1,25 @@
 ---
 name: algolia-prod-checklist
-description: |
-  Execute Algolia production readiness checklist: index settings, key security,
+description: 'Execute Algolia production readiness checklist: index settings, key
+  security,
+
   replica configuration, monitoring, and rollback procedures.
+
   Trigger: "algolia production", "deploy algolia", "algolia go-live",
+
   "algolia launch checklist", "algolia production ready".
+
+  '
 allowed-tools: Read, Bash(curl:*), Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, algolia]
-compatible-with: claude-code
+tags:
+- saas
+- search
+- algolia
+compatibility: Designed for Claude Code
 ---
-
 # Algolia Production Checklist
 
 ## Overview

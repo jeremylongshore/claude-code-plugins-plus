@@ -1,17 +1,27 @@
 ---
 name: firecrawl-upgrade-migration
-description: |
-  Upgrade Firecrawl SDK versions and migrate between API versions (v0 to v1/v2).
+description: 'Upgrade Firecrawl SDK versions and migrate between API versions (v0
+  to v1/v2).
+
   Use when upgrading the SDK, handling breaking changes between versions,
+
   or migrating from the old API to the current v2 API.
+
   Trigger with phrases like "upgrade firecrawl", "firecrawl migration",
+
   "firecrawl v2", "update firecrawl SDK", "firecrawl breaking changes".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, firecrawl, api, migration]
+tags:
+- saas
+- firecrawl
+- api
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Firecrawl Upgrade & Migration
 

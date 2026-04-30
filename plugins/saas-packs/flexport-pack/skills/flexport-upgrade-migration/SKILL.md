@@ -1,18 +1,24 @@
 ---
 name: flexport-upgrade-migration
-description: |
-  Migrate between Flexport API versions (v1 to v2, Logistics API versions).
+description: 'Migrate between Flexport API versions (v1 to v2, Logistics API versions).
+
   Use when upgrading API version headers, handling deprecated endpoints,
+
   or migrating from legacy Flexport API patterns.
+
   Trigger: "upgrade flexport", "flexport API version", "flexport migration".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, logistics, flexport]
-compatible-with: claude-code
+tags:
+- saas
+- logistics
+- flexport
+compatibility: Designed for Claude Code
 ---
-
 # Flexport Upgrade & Migration
 
 ## Overview

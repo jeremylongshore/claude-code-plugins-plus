@@ -1,15 +1,25 @@
 ---
 name: creating-kubernetes-deployments
-description: |
-  Deploy applications to Kubernetes with production-ready manifests.
-  Supports Deployments, Services, Ingress, HPA, ConfigMaps, Secrets, StatefulSets, and NetworkPolicies.
-  Includes health checks, resource limits, auto-scaling, and TLS termination. Use when working with creating kubernetes deployments. Trigger with 'creating', 'kubernetes', 'deployments'.
+description: 'Deploy applications to Kubernetes with production-ready manifests.
+
+  Supports Deployments, Services, Ingress, HPA, ConfigMaps, Secrets, StatefulSets,
+  and NetworkPolicies.
+
+  Includes health checks, resource limits, auto-scaling, and TLS termination. Use
+  when working with creating kubernetes deployments. Trigger with ''creating'', ''kubernetes'',
+  ''deployments''.
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(kubectl:*)
 version: 2.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [devops, deployment, kubernetes, scaling]
+tags:
+- devops
+- deployment
+- kubernetes
+- scaling
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Creating Kubernetes Deployments
 

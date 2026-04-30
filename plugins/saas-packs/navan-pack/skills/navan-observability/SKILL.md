@@ -1,16 +1,21 @@
 ---
 name: navan-observability
-description: |
-  Use when setting up monitoring, logging, and alerting for Navan API integrations in production environments.
+description: 'Use when setting up monitoring, logging, and alerting for Navan API
+  integrations in production environments.
+
   Trigger with "navan observability" or "navan monitoring" or "navan api dashboards".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep, Glob
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, navan, travel]
-compatible-with: claude-code
+tags:
+- saas
+- navan
+- travel
+compatibility: Designed for Claude Code
 ---
-
 # Navan Observability
 
 ## Overview

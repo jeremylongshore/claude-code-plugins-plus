@@ -1,17 +1,25 @@
 ---
 name: persona-debug-bundle
-description: |
-  Collect Persona diagnostic info: inquiry IDs, API responses, webhook logs.
+description: 'Collect Persona diagnostic info: inquiry IDs, API responses, webhook
+  logs.
+
   Use when working with Persona identity verification.
+
   Trigger with phrases like "persona debug-bundle", "persona debug-bundle".
+
+  '
 allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, persona, identity, kyc, verification]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- persona
+- identity
+- kyc
+- verification
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # persona debug bundle | sed 's/\b\(.\)/\u\1/g'
 
 ## Overview

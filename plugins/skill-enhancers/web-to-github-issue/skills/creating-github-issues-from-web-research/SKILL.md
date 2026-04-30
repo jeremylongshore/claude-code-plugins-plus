@@ -1,13 +1,20 @@
 ---
 name: creating-github-issues-from-web-research
-description: |
-  Execute this skill enhances AI assistant's ability to conduct web research and translate findings into actionable github issues. it automates the process of extracting key information from web search results and formatting it into a well-structured issue, ready... Use when managing version control. Trigger with phrases like 'commit', 'branch', or 'git'.
+description: 'Execute this skill enhances AI assistant''s ability to conduct web research
+  and translate findings into actionable github issues. it automates the process of
+  extracting key information from web search results and formatting it into a well-structured
+  issue, ready... Use when managing version control. Trigger with phrases like ''commit'',
+  ''branch'', or ''git''.
+
+  '
 allowed-tools: Read, WebFetch, WebSearch, Grep
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [skill-development, github-issues]
+tags:
+- skill-development
+- github-issues
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Web To Github Issue
 

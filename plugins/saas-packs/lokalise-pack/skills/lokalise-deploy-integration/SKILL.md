@@ -1,17 +1,26 @@
 ---
 name: lokalise-deploy-integration
-description: |
-  Deploy Lokalise integrations to Vercel, Netlify, and Cloud Run platforms.
+description: 'Deploy Lokalise integrations to Vercel, Netlify, and Cloud Run platforms.
+
   Use when deploying apps with Lokalise translations to production,
+
   configuring platform-specific secrets, or setting up deployment pipelines.
+
   Trigger with phrases like "deploy lokalise", "lokalise Vercel",
+
   "lokalise production deploy", "lokalise Netlify", "lokalise Cloud Run".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(netlify:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lokalise, deployment, etl]
+tags:
+- saas
+- lokalise
+- deployment
+- etl
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lokalise Deploy Integration
 

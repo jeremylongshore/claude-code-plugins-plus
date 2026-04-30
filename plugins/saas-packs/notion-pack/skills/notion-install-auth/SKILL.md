@@ -1,19 +1,29 @@
 ---
 name: notion-install-auth
-description: |
-  Install and configure the Notion API SDK with authentication.
+description: 'Install and configure the Notion API SDK with authentication.
+
   Use when setting up a new Notion integration, configuring API tokens,
+
   or initializing @notionhq/client in your project.
+
   Trigger with phrases like "install notion", "setup notion",
+
   "notion auth", "configure notion API", "notion integration setup".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notion, authentication, sdk, setup]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- productivity
+- notion
+- authentication
+- sdk
+- setup
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Notion Install & Auth
 
 ## Overview

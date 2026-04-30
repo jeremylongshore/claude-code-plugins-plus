@@ -1,17 +1,25 @@
 ---
 name: onenote-performance-tuning
-description: |
-  Optimize OneNote Graph API performance for large notebooks, image handling, and batch operations.
-  Use when dealing with slow API responses, large notebooks, image uploads, or HTTP 507 errors.
-  Trigger with "onenote performance", "onenote slow", "onenote large notebook", "onenote image upload".
+description: 'Optimize OneNote Graph API performance for large notebooks, image handling,
+  and batch operations.
+
+  Use when dealing with slow API responses, large notebooks, image uploads, or HTTP
+  507 errors.
+
+  Trigger with "onenote performance", "onenote slow", "onenote large notebook", "onenote
+  image upload".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, onenote, microsoft]
-compatible-with: claude-code
+tags:
+- saas
+- onenote
+- microsoft
+compatibility: Designed for Claude Code
 ---
-
 # OneNote — Performance Tuning & Optimization
 
 ## Overview

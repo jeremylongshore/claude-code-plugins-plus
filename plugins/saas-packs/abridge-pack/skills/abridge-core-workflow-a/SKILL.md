@@ -1,19 +1,28 @@
 ---
 name: abridge-core-workflow-a
-description: |
-  Implement Abridge ambient clinical documentation capture-to-note pipeline.
+description: 'Implement Abridge ambient clinical documentation capture-to-note pipeline.
+
   Use when building the primary encounter workflow: audio capture, real-time
+
   transcription, AI note generation, and EHR note insertion.
+
   Trigger: "abridge clinical workflow", "abridge encounter pipeline",
+
   "ambient documentation workflow", "abridge note generation".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, healthcare, ai, abridge, clinical-documentation]
-compatible-with: claude-code
+tags:
+- saas
+- healthcare
+- ai
+- abridge
+- clinical-documentation
+compatibility: Designed for Claude Code
 ---
-
 # Abridge Core Workflow A — Encounter-to-Note Pipeline
 
 ## Overview

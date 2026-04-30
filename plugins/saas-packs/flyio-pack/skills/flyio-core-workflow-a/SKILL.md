@@ -1,18 +1,25 @@
 ---
 name: flyio-core-workflow-a
-description: |
-  Execute Fly.io primary workflow: deploy, scale, and manage apps with flyctl and fly.toml.
+description: 'Execute Fly.io primary workflow: deploy, scale, and manage apps with
+  flyctl and fly.toml.
+
   Use when deploying applications, configuring regions, setting secrets,
+
   or managing the app lifecycle on Fly.io.
+
   Trigger: "fly deploy", "fly.io app management", "fly scale", "fly.io regions".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(fly:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, edge-compute, flyio]
-compatible-with: claude-code
+tags:
+- saas
+- edge-compute
+- flyio
+compatibility: Designed for Claude Code
 ---
-
 # Fly.io Core Workflow A: Deploy & Scale
 
 ## Overview

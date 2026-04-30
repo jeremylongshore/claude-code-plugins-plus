@@ -1,17 +1,28 @@
 ---
 name: clay-cost-tuning
-description: |
-  Optimize Clay credit spending with provider key management, waterfall tuning, and budget controls.
+description: 'Optimize Clay credit spending with provider key management, waterfall
+  tuning, and budget controls.
+
   Use when analyzing Clay costs, reducing credit consumption,
+
   or implementing spending alerts and caps.
+
   Trigger with phrases like "clay cost", "clay billing", "reduce clay costs",
+
   "clay pricing", "clay expensive", "clay budget", "clay credits".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clay, api, monitoring, cost-optimization]
+tags:
+- saas
+- clay
+- api
+- monitoring
+- cost-optimization
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clay Cost Tuning
 

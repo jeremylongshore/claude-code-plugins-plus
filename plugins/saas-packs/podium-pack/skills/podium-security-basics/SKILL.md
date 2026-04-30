@@ -1,17 +1,21 @@
 ---
 name: podium-security-basics
-description: |
-  Podium security basics — business messaging and communication platform integration.
-  Use when working with Podium API for messaging, reviews, or payments.
-  Trigger with phrases like "podium security basics", "podium-security-basics".
+description: "Podium security basics \u2014 business messaging and communication platform\
+  \ integration.\nUse when working with Podium API for messaging, reviews, or payments.\n\
+  Trigger with phrases like \"podium security basics\", \"podium-security-basics\"\
+  .\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, podium, messaging, reviews, payments]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- podium
+- messaging
+- reviews
+- payments
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Podium Security Basics
 
 ## Overview

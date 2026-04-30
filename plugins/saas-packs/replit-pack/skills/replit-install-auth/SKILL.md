@@ -1,17 +1,29 @@
 ---
 name: replit-install-auth
-description: |
-  Set up a Replit project with .replit + replit.nix configuration, Secrets, and Replit Auth.
+description: 'Set up a Replit project with .replit + replit.nix configuration, Secrets,
+  and Replit Auth.
+
   Use when creating a new Replit App, configuring Nix packages, managing secrets,
+
   or adding user authentication with Replit Auth.
+
   Trigger with phrases like "setup replit", "replit auth", "replit nix config",
+
   "replit secrets", "configure replit", "new replit project".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(nix:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, replit, authentication, nix, secrets, configuration]
+tags:
+- saas
+- replit
+- authentication
+- nix
+- secrets
+- configuration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Replit Install & Auth
 

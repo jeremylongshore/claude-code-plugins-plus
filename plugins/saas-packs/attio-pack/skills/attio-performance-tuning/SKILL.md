@@ -1,18 +1,24 @@
 ---
 name: attio-performance-tuning
-description: |
-  Optimize Attio API performance -- caching, batch queries, pagination
+description: 'Optimize Attio API performance -- caching, batch queries, pagination
+
   strategies, connection pooling, and latency reduction.
+
   Trigger: "attio performance", "optimize attio", "attio slow",
+
   "attio latency", "attio caching", "attio batch requests".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, attio]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- attio
+compatibility: Designed for Claude Code
 ---
-
 # Attio Performance Tuning
 
 ## Overview

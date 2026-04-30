@@ -1,17 +1,25 @@
 ---
 name: twinmind-upgrade-migration
-description: |
-  Upgrade between TwinMind plan tiers and migrate configurations.
+description: 'Upgrade between TwinMind plan tiers and migrate configurations.
+
   Use when upgrading from Free to Pro, Pro to Enterprise,
+
   or migrating between TwinMind environments.
+
   Trigger with phrases like "upgrade twinmind", "twinmind pro",
+
   "twinmind enterprise", "migrate twinmind", "twinmind tier change".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, twinmind, migration]
+tags:
+- saas
+- twinmind
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # TwinMind Upgrade & Migration
 

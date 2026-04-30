@@ -1,17 +1,26 @@
 ---
 name: twinmind-prod-checklist
-description: |
-  Complete production deployment checklist for TwinMind integrations.
+description: 'Complete production deployment checklist for TwinMind integrations.
+
   Use when preparing to deploy, auditing production readiness,
+
   or ensuring best practices are followed.
+
   Trigger with phrases like "twinmind production", "deploy twinmind",
+
   "twinmind go-live checklist", "twinmind production ready".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, twinmind, deployment, audit]
+tags:
+- saas
+- twinmind
+- deployment
+- audit
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # TwinMind Production Checklist
 

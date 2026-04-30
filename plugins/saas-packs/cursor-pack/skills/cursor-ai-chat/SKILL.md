@@ -1,14 +1,21 @@
 ---
-name: "cursor-ai-chat"
-description: |
-  Master Cursor AI Chat with @-mentions, inline edit, and conversation patterns. Triggers on "cursor chat",
-  "cursor ai chat", "ask cursor", "cursor conversation", "chat with cursor", "Cmd+L", "inline edit".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+name: cursor-ai-chat
+description: 'Master Cursor AI Chat with @-mentions, inline edit, and conversation
+  patterns. Triggers on "cursor chat",
+
+  "cursor ai chat", "ask cursor", "cursor conversation", "chat with cursor", "Cmd+L",
+  "inline edit".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, cursor, cursor-ai]
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- cursor
+- cursor-ai
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Cursor AI Chat
 

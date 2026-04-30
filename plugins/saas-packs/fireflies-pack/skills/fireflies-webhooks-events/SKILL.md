@@ -1,17 +1,26 @@
 ---
 name: fireflies-webhooks-events
-description: |
-  Implement Fireflies.ai webhook receiver with HMAC signature verification and event processing.
+description: 'Implement Fireflies.ai webhook receiver with HMAC signature verification
+  and event processing.
+
   Use when setting up webhook endpoints, handling transcript-ready notifications,
+
   or building real-time meeting intelligence pipelines.
+
   Trigger with phrases like "fireflies webhook", "fireflies events",
+
   "fireflies webhook signature", "handle fireflies events", "fireflies notifications".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, fireflies, webhooks]
+tags:
+- saas
+- fireflies
+- webhooks
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Fireflies.ai Webhooks & Events
 

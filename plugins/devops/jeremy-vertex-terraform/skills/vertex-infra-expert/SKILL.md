@@ -1,13 +1,22 @@
 ---
 name: vertex-infra-expert
-description: |
-  Execute use when provisioning Vertex AI infrastructure with Terraform. Trigger with phrases like "vertex ai terraform", "deploy gemini terraform", "model garden infrastructure", "vertex ai endpoints terraform", or "vector search terraform". Provisions Model Garden models, Gemini endpoints, vector search indices, ML pipelines, and production AI services with encryption and auto-scaling.
+description: 'Execute use when provisioning Vertex AI infrastructure with Terraform.
+  Trigger with phrases like "vertex ai terraform", "deploy gemini terraform", "model
+  garden infrastructure", "vertex ai endpoints terraform", or "vector search terraform".
+  Provisions Model Garden models, Gemini endpoints, vector search indices, ML pipelines,
+  and production AI services with encryption and auto-scaling.
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(terraform:*), Bash(gcloud:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [devops, deployment, terraform, ml]
+tags:
+- devops
+- deployment
+- terraform
+- ml
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vertex Infra Expert
 

@@ -1,17 +1,28 @@
 ---
 name: mistral-cost-tuning
-description: |
-  Optimize Mistral AI costs through model selection, token management, and usage monitoring.
+description: 'Optimize Mistral AI costs through model selection, token management,
+  and usage monitoring.
+
   Use when analyzing Mistral billing, reducing API costs,
+
   or implementing usage monitoring and budget alerts.
+
   Trigger with phrases like "mistral cost", "mistral billing",
+
   "reduce mistral costs", "mistral pricing", "mistral budget".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, mistral, api, monitoring, cost-optimization]
+tags:
+- saas
+- mistral
+- api
+- monitoring
+- cost-optimization
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Mistral AI Cost Tuning
 

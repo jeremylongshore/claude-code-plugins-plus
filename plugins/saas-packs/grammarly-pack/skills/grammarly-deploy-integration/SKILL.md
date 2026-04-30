@@ -1,19 +1,26 @@
 ---
 name: grammarly-deploy-integration
-description: |
-  Deploy Grammarly integrations to Vercel, Fly.io, and Cloud Run platforms.
+description: 'Deploy Grammarly integrations to Vercel, Fly.io, and Cloud Run platforms.
+
   Use when deploying Grammarly-powered applications to production,
+
   configuring platform-specific secrets, or setting up deployment pipelines.
+
   Trigger with phrases like "deploy grammarly", "grammarly Vercel",
+
   "grammarly production deploy", "grammarly Cloud Run", "grammarly Fly.io".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, grammarly, writing]
-compatible-with: claude-code
+tags:
+- saas
+- grammarly
+- writing
+compatibility: Designed for Claude Code
 ---
-
 # Grammarly Deploy Integration
 
 ## Overview

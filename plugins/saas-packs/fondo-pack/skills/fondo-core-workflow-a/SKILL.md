@@ -1,18 +1,25 @@
 ---
 name: fondo-core-workflow-a
-description: |
-  Execute Fondo primary workflow: monthly bookkeeping close and financial reporting.
+description: 'Execute Fondo primary workflow: monthly bookkeeping close and financial
+  reporting.
+
   Use when managing month-end close, reviewing financial statements,
+
   or preparing for board meetings and fundraising.
+
   Trigger: "fondo bookkeeping", "fondo month close", "fondo financial reports".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, accounting, fondo]
-compatible-with: claude-code
+tags:
+- saas
+- accounting
+- fondo
+compatibility: Designed for Claude Code
 ---
-
 # Fondo Core Workflow A: Monthly Bookkeeping
 
 ## Overview

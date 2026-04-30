@@ -1,17 +1,27 @@
 ---
 name: instantly-install-auth
-description: |
-  Set up Instantly.ai API v2 authentication and project configuration.
+description: 'Set up Instantly.ai API v2 authentication and project configuration.
+
   Use when creating a new Instantly integration, generating API keys,
+
   or configuring environment variables for the Instantly outreach platform.
+
   Trigger with phrases like "install instantly", "setup instantly",
+
   "instantly auth", "configure instantly API key", "instantly credentials".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, instantly, api, authentication, email-outreach]
+tags:
+- saas
+- instantly
+- api
+- authentication
+- email-outreach
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Instantly Install & Auth
 

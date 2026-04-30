@@ -1,17 +1,27 @@
 ---
 name: documenso-security-basics
-description: |
-  Implement security best practices for Documenso document signing integrations.
+description: 'Implement security best practices for Documenso document signing integrations.
+
   Use when securing API keys, configuring webhooks securely,
+
   or implementing document security measures.
+
   Trigger with phrases like "documenso security", "secure documenso",
+
   "documenso API key security", "documenso webhook security".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, documenso, api, security, webhooks]
+tags:
+- saas
+- documenso
+- api
+- security
+- webhooks
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Documenso Security Basics
 

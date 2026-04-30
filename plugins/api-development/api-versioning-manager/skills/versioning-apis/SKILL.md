@@ -1,16 +1,23 @@
 ---
 name: versioning-apis
-description: |
-  Implement API versioning with backward compatibility, deprecation notices, and migration paths.
+description: 'Implement API versioning with backward compatibility, deprecation notices,
+  and migration paths.
+
   Use when managing API versions and backward compatibility.
-  Trigger with phrases like "version the API", "manage API versions", or "handle API versioning".
-  
+
+  Trigger with phrases like "version the API", "manage API versions", or "handle API
+  versioning".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:version-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [api, migration, versioning-apis]
+tags:
+- api
+- migration
+- versioning-apis
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Versioning APIs
 

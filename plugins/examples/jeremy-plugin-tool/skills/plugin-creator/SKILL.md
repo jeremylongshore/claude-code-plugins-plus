@@ -1,13 +1,21 @@
 ---
 name: plugin-creator
-description: |
-  Create automatically creates new AI assistant code plugins with proper structure, validation, and marketplace integration when user mentions creating a plugin, new plugin, or plugin from template. specific to AI assistant-code-plugins repository workflow. Use when generating or creating new content. Trigger with phrases like 'generate', 'create', or 'scaffold'.
+description: 'Create automatically creates new AI assistant code plugins with proper
+  structure, validation, and marketplace integration when user mentions creating a
+  plugin, new plugin, or plugin from template. specific to AI assistant-code-plugins
+  repository workflow. Use when generating or creating new content. Trigger with phrases
+  like ''generate'', ''create'', or ''scaffold''.
+
+  '
 allowed-tools: Write, Read, Grep, Bash(cmd:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [example, workflow, plugin-creator]
+tags:
+- example
+- workflow
+- plugin-creator
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Plugin Creator
 

@@ -1,19 +1,28 @@
 ---
 name: assemblyai-debug-bundle
-description: |
-  Collect AssemblyAI debug evidence for support tickets and troubleshooting.
+description: 'Collect AssemblyAI debug evidence for support tickets and troubleshooting.
+
   Use when encountering persistent issues, preparing support tickets,
+
   or collecting diagnostic information for AssemblyAI problems.
+
   Trigger with phrases like "assemblyai debug", "assemblyai support bundle",
+
   "collect assemblyai logs", "assemblyai diagnostic".
+
+  '
 allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, speech-to-text, assemblyai, transcription]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- speech-to-text
+- assemblyai
+- transcription
+compatibility: Designed for Claude Code
 ---
-
 # AssemblyAI Debug Bundle
 
 ## Overview

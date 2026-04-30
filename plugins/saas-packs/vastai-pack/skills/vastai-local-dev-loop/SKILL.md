@@ -1,17 +1,26 @@
 ---
 name: vastai-local-dev-loop
-description: |
-  Configure Vast.ai local development with testing and fast iteration.
+description: 'Configure Vast.ai local development with testing and fast iteration.
+
   Use when setting up a development environment, testing instance provisioning,
+
   or building a fast iteration cycle for GPU workloads.
+
   Trigger with phrases like "vastai dev setup", "vastai local development",
+
   "vastai dev environment", "develop with vastai".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vastai:*), Bash(pip:*), Bash(docker:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vast-ai, testing, workflow]
+tags:
+- saas
+- vast-ai
+- testing
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vast.ai Local Dev Loop
 

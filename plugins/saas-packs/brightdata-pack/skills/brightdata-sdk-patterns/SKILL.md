@@ -1,19 +1,27 @@
 ---
 name: brightdata-sdk-patterns
-description: |
-  Apply production-ready Bright Data SDK patterns for TypeScript and Python.
+description: 'Apply production-ready Bright Data SDK patterns for TypeScript and Python.
+
   Use when implementing Bright Data integrations, refactoring SDK usage,
+
   or establishing team coding standards for Bright Data.
+
   Trigger with phrases like "brightdata SDK patterns", "brightdata best practices",
+
   "brightdata code patterns", "idiomatic brightdata".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, scraping, data, brightdata]
-compatible-with: claude-code
+tags:
+- saas
+- scraping
+- data
+- brightdata
+compatibility: Designed for Claude Code
 ---
-
 # Bright Data SDK Patterns
 
 ## Overview

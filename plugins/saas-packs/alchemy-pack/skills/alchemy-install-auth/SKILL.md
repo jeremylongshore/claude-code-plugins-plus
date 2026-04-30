@@ -1,18 +1,26 @@
 ---
 name: alchemy-install-auth
-description: |
-  Install the Alchemy SDK and configure API key authentication for Web3 development.
+description: 'Install the Alchemy SDK and configure API key authentication for Web3
+  development.
+
   Use when setting up blockchain API access, creating an Alchemy app,
+
   or configuring multi-chain RPC endpoints.
+
   Trigger: "install alchemy", "setup alchemy", "alchemy auth", "alchemy API key".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, blockchain, web3, alchemy]
-compatible-with: claude-code
+tags:
+- saas
+- blockchain
+- web3
+- alchemy
+compatibility: Designed for Claude Code
 ---
-
 # Alchemy Install & Auth
 
 ## Overview

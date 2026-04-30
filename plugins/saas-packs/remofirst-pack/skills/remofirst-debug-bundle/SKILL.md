@@ -1,17 +1,22 @@
 ---
 name: remofirst-debug-bundle
-description: |
-  RemoFirst debug bundle — global HR, EOR, and payroll platform integration.
-  Use when working with RemoFirst for global employment, payroll, or compliance.
-  Trigger with phrases like "remofirst debug bundle", "remofirst-debug-bundle", "global HR API".
+description: "RemoFirst debug bundle \u2014 global HR, EOR, and payroll platform integration.\n\
+  Use when working with RemoFirst for global employment, payroll, or compliance.\n\
+  Trigger with phrases like \"remofirst debug bundle\", \"remofirst-debug-bundle\"\
+  , \"global HR API\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, remofirst, hr, eor, payroll, global-employment]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- remofirst
+- hr
+- eor
+- payroll
+- global-employment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # RemoFirst Debug Bundle
 
 ## Overview

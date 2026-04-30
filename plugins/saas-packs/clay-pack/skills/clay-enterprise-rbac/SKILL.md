@@ -1,17 +1,26 @@
 ---
 name: clay-enterprise-rbac
-description: |
-  Configure Clay workspace roles, team access control, and credit budget allocation.
+description: 'Configure Clay workspace roles, team access control, and credit budget
+  allocation.
+
   Use when managing team access to Clay tables, setting per-user credit budgets,
+
   or configuring workspace-level permissions for Clay.
+
   Trigger with phrases like "clay SSO", "clay RBAC", "clay enterprise",
+
   "clay roles", "clay permissions", "clay team access", "clay workspace".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clay, rbac]
+tags:
+- saas
+- clay
+- rbac
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clay Enterprise RBAC
 

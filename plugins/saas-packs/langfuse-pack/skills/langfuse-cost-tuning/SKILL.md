@@ -1,17 +1,27 @@
 ---
 name: langfuse-cost-tuning
-description: |
-  Monitor and optimize LLM costs using Langfuse analytics and dashboards.
+description: 'Monitor and optimize LLM costs using Langfuse analytics and dashboards.
+
   Use when tracking LLM spending, identifying cost anomalies,
+
   or implementing cost controls for AI applications.
+
   Trigger with phrases like "langfuse costs", "LLM spending",
+
   "track AI costs", "langfuse token usage", "optimize LLM budget".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langfuse, monitoring, llm, analytics]
+tags:
+- saas
+- langfuse
+- monitoring
+- llm
+- analytics
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Langfuse Cost Tuning
 

@@ -1,19 +1,27 @@
 ---
 name: cohere-rate-limits
-description: |
-  Implement Cohere rate limiting, backoff, and request queuing patterns.
+description: 'Implement Cohere rate limiting, backoff, and request queuing patterns.
+
   Use when handling 429 errors, implementing retry logic,
+
   or optimizing API request throughput for Cohere.
+
   Trigger with phrases like "cohere rate limit", "cohere throttling",
+
   "cohere 429", "cohere retry", "cohere backoff".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, nlp, cohere]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- nlp
+- cohere
+compatibility: Designed for Claude Code
 ---
-
 # Cohere Rate Limits
 
 ## Overview

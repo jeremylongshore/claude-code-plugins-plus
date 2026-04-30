@@ -1,20 +1,32 @@
 ---
 name: elevenlabs-reference-architecture
-description: |
-  Implement ElevenLabs reference architecture for production TTS/voice applications.
+description: 'Implement ElevenLabs reference architecture for production TTS/voice
+  applications.
+
   Use when designing new ElevenLabs integrations, reviewing project structure,
+
   or building a scalable audio generation service.
+
   Trigger: "elevenlabs architecture", "elevenlabs project structure",
+
   "how to organize elevenlabs", "TTS service architecture",
+
   "elevenlabs design patterns", "voice API architecture".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, voice, ai, elevenlabs, architecture, patterns]
-compatible-with: claude-code
+tags:
+- saas
+- voice
+- ai
+- elevenlabs
+- architecture
+- patterns
+compatibility: Designed for Claude Code
 ---
-
 # ElevenLabs Reference Architecture
 
 ## Overview

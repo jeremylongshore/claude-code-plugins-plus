@@ -1,20 +1,30 @@
 ---
 name: webflow-cost-tuning
-description: |
-  Optimize Webflow costs through plan selection, CDN read optimization, bulk endpoint
+description: 'Optimize Webflow costs through plan selection, CDN read optimization,
+  bulk endpoint
+
   usage, and API usage monitoring with budget alerts.
+
   Use when analyzing Webflow billing, reducing API costs,
+
   or implementing usage monitoring for Webflow integrations.
+
   Trigger with phrases like "webflow cost", "webflow billing",
+
   "reduce webflow costs", "webflow pricing", "webflow budget".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, no-code, webflow]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- no-code
+- webflow
+compatibility: Designed for Claude Code
 ---
-
 # Webflow Cost Tuning
 
 ## Overview

@@ -1,17 +1,25 @@
 ---
 name: evernote-incident-runbook
-description: |
-  Manage incident response for Evernote integration issues.
+description: 'Manage incident response for Evernote integration issues.
+
   Use when troubleshooting production incidents, handling outages,
+
   or responding to Evernote service issues.
+
   Trigger with phrases like "evernote incident", "evernote outage",
+
   "evernote emergency", "troubleshoot evernote production".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, evernote, incident-response]
+tags:
+- saas
+- evernote
+- incident-response
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Evernote Incident Runbook
 

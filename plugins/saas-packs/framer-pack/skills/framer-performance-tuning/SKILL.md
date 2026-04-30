@@ -1,19 +1,26 @@
 ---
 name: framer-performance-tuning
-description: |
-  Optimize Framer API performance with caching, batching, and connection pooling.
+description: 'Optimize Framer API performance with caching, batching, and connection
+  pooling.
+
   Use when experiencing slow API responses, implementing caching strategies,
+
   or optimizing request throughput for Framer integrations.
+
   Trigger with phrases like "framer performance", "optimize framer",
+
   "framer latency", "framer caching", "framer slow", "framer batch".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, framer]
-compatible-with: claude-code
+tags:
+- saas
+- framer
+compatibility: Designed for Claude Code
 ---
-
 # Framer Performance Tuning
 
 ## Overview

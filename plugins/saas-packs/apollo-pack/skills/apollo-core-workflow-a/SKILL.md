@@ -1,17 +1,25 @@
 ---
 name: apollo-core-workflow-a
-description: |
-  Implement Apollo.io lead search and enrichment workflow.
+description: 'Implement Apollo.io lead search and enrichment workflow.
+
   Use when building lead generation features, searching for contacts,
+
   or enriching prospect data from Apollo.
+
   Trigger with phrases like "apollo lead search", "search apollo contacts",
+
   "find leads in apollo", "apollo people search", "enrich contacts apollo".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, apollo, workflow]
+tags:
+- saas
+- apollo
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Apollo Core Workflow A: Lead Search & Enrichment
 

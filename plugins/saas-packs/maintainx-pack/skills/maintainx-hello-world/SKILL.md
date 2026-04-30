@@ -1,17 +1,26 @@
 ---
 name: maintainx-hello-world
-description: |
-  Create a minimal working MaintainX example - your first work order.
+description: 'Create a minimal working MaintainX example - your first work order.
+
   Use when starting a new MaintainX integration, testing your setup,
+
   or learning basic MaintainX API patterns.
+
   Trigger with phrases like "maintainx hello world", "maintainx example",
+
   "maintainx quick start", "create first work order", "simple maintainx code".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(node:*), Bash(npx:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, maintainx, api, testing]
+tags:
+- saas
+- maintainx
+- api
+- testing
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # MaintainX Hello World
 

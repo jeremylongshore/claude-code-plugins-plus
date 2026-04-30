@@ -1,17 +1,28 @@
 ---
 name: fireflies-cost-tuning
-description: |
-  Optimize Fireflies.ai subscription costs through seat auditing, selective recording, and plan sizing.
+description: 'Optimize Fireflies.ai subscription costs through seat auditing, selective
+  recording, and plan sizing.
+
   Use when analyzing Fireflies.ai billing, reducing per-seat costs,
+
   or implementing usage monitoring and right-sizing.
+
   Trigger with phrases like "fireflies cost", "fireflies billing",
-  "reduce fireflies costs", "fireflies pricing", "fireflies expensive", "fireflies budget".
+
+  "reduce fireflies costs", "fireflies pricing", "fireflies expensive", "fireflies
+  budget".
+
+  '
 allowed-tools: Read, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, fireflies, api, cost-optimization]
+tags:
+- saas
+- fireflies
+- api
+- cost-optimization
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Fireflies.ai Cost Tuning
 

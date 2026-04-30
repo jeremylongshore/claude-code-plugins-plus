@@ -1,19 +1,27 @@
 ---
 name: salesforce-performance-tuning
-description: |
-  Optimize Salesforce API performance with SOQL tuning, Composite API batching, and caching.
+description: 'Optimize Salesforce API performance with SOQL tuning, Composite API
+  batching, and caching.
+
   Use when experiencing slow API responses, optimizing SOQL queries,
+
   or reducing API call count for Salesforce integrations.
+
   Trigger with phrases like "salesforce performance", "optimize salesforce",
+
   "salesforce latency", "salesforce caching", "salesforce slow", "SOQL optimization".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, salesforce]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- salesforce
+compatibility: Designed for Claude Code
 ---
-
 # Salesforce Performance Tuning
 
 ## Overview

@@ -1,17 +1,25 @@
 ---
 name: linear-rate-limits
-description: |
-  Handle Linear API rate limiting, complexity budgets, and quotas.
+description: 'Handle Linear API rate limiting, complexity budgets, and quotas.
+
   Use when dealing with 429 errors, implementing throttling,
+
   or optimizing request patterns to stay within limits.
+
   Trigger: "linear rate limit", "linear throttling", "linear 429",
+
   "linear API quota", "linear complexity", "linear request limits".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, linear, api]
+tags:
+- saas
+- linear
+- api
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Linear Rate Limits
 

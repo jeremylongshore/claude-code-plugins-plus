@@ -1,18 +1,25 @@
 ---
 name: miro-multi-env-setup
-description: |
-  Configure Miro REST API v2 across development, staging, and production
+description: 'Configure Miro REST API v2 across development, staging, and production
+
   with separate OAuth apps, isolated test boards, and secret management.
+
   Trigger with phrases like "miro environments", "miro staging",
+
   "miro dev prod", "miro environment setup", "miro multi env".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gcloud:*), Bash(aws:*), Bash(vault:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, miro, environments, configuration]
-compatible-with: claude-code
+tags:
+- saas
+- miro
+- environments
+- configuration
+compatibility: Designed for Claude Code
 ---
-
 # Miro Multi-Environment Setup
 
 ## Overview

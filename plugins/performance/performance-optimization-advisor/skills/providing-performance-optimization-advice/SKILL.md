@@ -1,12 +1,17 @@
 ---
 name: providing-performance-optimization-advice
-description: Provide comprehensive prioritized performance optimization recommendations for frontend, backend, and infrastructure. Use when analyzing bottlenecks or seeking improvement strategies. Trigger with phrases like "optimize performance", "improve speed", or "performance recommendations".
+description: Provide comprehensive prioritized performance optimization recommendations
+  for frontend, backend, and infrastructure. Use when analyzing bottlenecks or seeking
+  improvement strategies. Trigger with phrases like "optimize performance", "improve
+  speed", or "performance recommendations".
 version: 1.0.0
-allowed-tools: "Read, Write, Edit, Grep, Glob, Bash(profiling:*), Bash(analysis:*)"
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(profiling:*), Bash(analysis:*)
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [performance, providing-performance]
+tags:
+- performance
+- providing-performance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Performance Optimization Advisor
 

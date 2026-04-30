@@ -1,17 +1,30 @@
 ---
 name: sentry-local-dev-loop
-description: |
-  Configure Sentry for local development with environment-aware settings.
+description: 'Configure Sentry for local development with environment-aware settings.
+
   Use when setting up dev vs prod DSN routing, enabling debug mode,
+
   tuning sample rates for local work, or testing source maps locally.
+
   Trigger with phrases like "sentry local dev", "sentry development config",
+
   "debug sentry locally", "sentry dev environment", "sentry spotlight".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(npx:*), Bash(python:*), Grep, Glob
+
+  '
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(npx:*), Bash(python:*),
+  Grep, Glob
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, sentry, development, debugging, workflow, devtools, environment]
+tags:
+- saas
+- sentry
+- development
+- debugging
+- workflow
+- devtools
+- environment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Sentry Local Dev Loop
 

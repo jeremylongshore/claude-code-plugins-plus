@@ -1,19 +1,29 @@
 ---
 name: bamboohr-core-workflow-a
-description: |
-  Execute BambooHR primary workflows: employee CRUD, directory sync, and custom reports.
+description: 'Execute BambooHR primary workflows: employee CRUD, directory sync, and
+  custom reports.
+
   Use when managing employees, syncing employee data to external systems,
+
   or building HR data pipelines with BambooHR.
+
   Trigger with phrases like "bamboohr employees", "bamboohr employee management",
+
   "sync bamboohr directory", "bamboohr custom report", "add employee bamboohr".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hr, bamboohr, employees, reports]
-compatible-with: claude-code
+tags:
+- saas
+- hr
+- bamboohr
+- employees
+- reports
+compatibility: Designed for Claude Code
 ---
-
 # BambooHR Core Workflow A — Employee Management & Reports
 
 ## Overview

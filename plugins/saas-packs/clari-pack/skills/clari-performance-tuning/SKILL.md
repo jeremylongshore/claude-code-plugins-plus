@@ -1,19 +1,28 @@
 ---
 name: clari-performance-tuning
-description: |
-  Optimize Clari API performance with caching, batch exports, and data pipeline efficiency.
+description: 'Optimize Clari API performance with caching, batch exports, and data
+  pipeline efficiency.
+
   Use when exports take too long, optimizing data warehouse load times,
+
   or reducing API calls in multi-forecast environments.
+
   Trigger with phrases like "clari performance", "clari slow export",
+
   "optimize clari pipeline", "clari caching".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, revenue-intelligence, forecasting, clari]
-compatible-with: claude-code
+tags:
+- saas
+- revenue-intelligence
+- forecasting
+- clari
+compatibility: Designed for Claude Code
 ---
-
 # Clari Performance Tuning
 
 ## Overview

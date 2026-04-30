@@ -1,17 +1,23 @@
 ---
 name: flyio-performance-tuning
-description: |
-  Optimize Fly.io application performance with auto-stop/start tuning,
+description: 'Optimize Fly.io application performance with auto-stop/start tuning,
+
   VM sizing, multi-region latency optimization, and connection pooling.
-  Trigger: "fly.io performance", "fly.io cold start", "fly.io latency", "fly.io VM sizing".
+
+  Trigger: "fly.io performance", "fly.io cold start", "fly.io latency", "fly.io VM
+  sizing".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(fly:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, edge-compute, flyio]
-compatible-with: claude-code
+tags:
+- saas
+- edge-compute
+- flyio
+compatibility: Designed for Claude Code
 ---
-
 # Fly.io Performance Tuning
 
 ## Overview

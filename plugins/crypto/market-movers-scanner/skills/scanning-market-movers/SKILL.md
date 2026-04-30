@@ -1,17 +1,26 @@
 ---
 name: scanning-market-movers
-description: |
-  Detect significant price movements and unusual volume across crypto markets.
-  Calculates significance scores combining price change, volume ratio, and market cap.
+description: 'Detect significant price movements and unusual volume across crypto
+  markets.
+
+  Calculates significance scores combining price change, volume ratio, and market
+  cap.
+
   Use when tracking market movers, finding gainers/losers, or detecting volume spikes.
+
   Trigger with phrases like "scan market movers", "top gainers", "biggest losers",
-  "volume spikes", "what's moving", "find pumps", or "market scan".
+
+  "volume spikes", "what''s moving", "find pumps", or "market scan".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(python:*)
 version: 2.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [crypto, scanning-market]
+tags:
+- crypto
+- scanning-market
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Scanning Market Movers
 

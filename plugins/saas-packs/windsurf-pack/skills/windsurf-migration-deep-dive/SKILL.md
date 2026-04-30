@@ -1,17 +1,28 @@
 ---
 name: windsurf-migration-deep-dive
-description: |
-  Migrate to Windsurf from VS Code, Cursor, or other AI IDEs with full configuration transfer.
+description: 'Migrate to Windsurf from VS Code, Cursor, or other AI IDEs with full
+  configuration transfer.
+
   Use when migrating a team to Windsurf, transferring Cursor rules,
+
   or evaluating Windsurf against other AI editors.
+
   Trigger with phrases like "migrate to windsurf", "switch to windsurf",
+
   "windsurf from cursor", "windsurf from copilot", "windsurf evaluation".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, migration, cursor, vscode]
+tags:
+- saas
+- windsurf
+- migration
+- cursor
+- vscode
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Windsurf Migration Deep Dive
 

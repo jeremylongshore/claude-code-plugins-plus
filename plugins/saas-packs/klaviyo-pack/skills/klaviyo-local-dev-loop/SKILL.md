@@ -1,19 +1,27 @@
 ---
 name: klaviyo-local-dev-loop
-description: |
-  Configure Klaviyo local development with hot reload, mocking, and testing.
+description: 'Configure Klaviyo local development with hot reload, mocking, and testing.
+
   Use when setting up a development environment, configuring test workflows,
+
   or establishing a fast iteration cycle with the Klaviyo API.
+
   Trigger with phrases like "klaviyo dev setup", "klaviyo local development",
+
   "klaviyo dev environment", "develop with klaviyo", "klaviyo testing".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Bash(npx:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, klaviyo, email-marketing, cdp]
-compatible-with: claude-code
+tags:
+- saas
+- klaviyo
+- email-marketing
+- cdp
+compatibility: Designed for Claude Code
 ---
-
 # Klaviyo Local Dev Loop
 
 ## Overview

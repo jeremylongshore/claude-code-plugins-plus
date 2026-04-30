@@ -1,19 +1,28 @@
 ---
 name: hubspot-reliability-patterns
-description: |
-  Implement HubSpot reliability patterns: circuit breakers, retries, and graceful degradation.
+description: 'Implement HubSpot reliability patterns: circuit breakers, retries, and
+  graceful degradation.
+
   Use when building fault-tolerant HubSpot integrations, implementing retry strategies,
+
   or adding resilience to production CRM services.
+
   Trigger with phrases like "hubspot reliability", "hubspot circuit breaker",
+
   "hubspot resilience", "hubspot fallback", "hubspot fault tolerant".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, marketing, hubspot]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- marketing
+- hubspot
+compatibility: Designed for Claude Code
 ---
-
 # HubSpot Reliability Patterns
 
 ## Overview

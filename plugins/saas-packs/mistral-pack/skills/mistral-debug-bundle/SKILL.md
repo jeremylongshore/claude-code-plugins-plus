@@ -1,17 +1,25 @@
 ---
 name: mistral-debug-bundle
-description: |
-  Collect Mistral AI debug evidence for support tickets and troubleshooting.
+description: 'Collect Mistral AI debug evidence for support tickets and troubleshooting.
+
   Use when encountering persistent issues, preparing support tickets,
+
   or collecting diagnostic information for Mistral AI problems.
+
   Trigger with phrases like "mistral debug", "mistral support bundle",
+
   "collect mistral logs", "mistral diagnostic".
+
+  '
 allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, mistral, debugging]
+tags:
+- saas
+- mistral
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Mistral AI Debug Bundle
 

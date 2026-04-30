@@ -1,19 +1,27 @@
 ---
 name: brightdata-local-dev-loop
-description: |
-  Configure Bright Data local development with hot reload and testing.
+description: 'Configure Bright Data local development with hot reload and testing.
+
   Use when setting up a development environment, configuring test workflows,
+
   or establishing a fast iteration cycle with Bright Data.
+
   Trigger with phrases like "brightdata dev setup", "brightdata local development",
+
   "brightdata dev environment", "develop with brightdata".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, scraping, data, brightdata]
-compatible-with: claude-code
+tags:
+- saas
+- scraping
+- data
+- brightdata
+compatibility: Designed for Claude Code
 ---
-
 # Bright Data Local Dev Loop
 
 ## Overview

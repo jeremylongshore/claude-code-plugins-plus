@@ -1,17 +1,28 @@
 ---
 name: gamma-core-workflow-b
-description: |
-  Generate from templates, retrieve exports, and manage sharing via Gamma API.
+description: 'Generate from templates, retrieve exports, and manage sharing via Gamma
+  API.
+
   Use when creating content from template gammas, downloading PDF/PPTX/PNG exports,
+
   or configuring sharing and folder organization.
+
   Trigger: "gamma template", "gamma export", "gamma download PDF",
+
   "gamma PPTX", "gamma sharing", "gamma from template".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, gamma, workflow, export, templates]
+tags:
+- saas
+- gamma
+- workflow
+- export
+- templates
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Gamma Core Workflow B: Templates & Export
 

@@ -1,20 +1,31 @@
 ---
 name: skill-creator
-description: |
-  Create production-grade agent skills aligned with the 2026 AgentSkills.io spec and Anthropic
-  best practices (2026). Also validates existing skills against the Intent Solutions 100-point rubric.
+description: 'Create production-grade agent skills aligned with the 2026 AgentSkills.io
+  spec and Anthropic
+
+  best practices (2026). Also validates existing skills against the Intent Solutions
+  100-point rubric.
+
   Use when building, testing, validating, or optimizing Claude Code skills.
-  Trigger with "/skill-creator", "create a skill", "validate my skill", or "check skill quality".
-  Make sure to use this skill whenever creating a new skill, slash command, or agent capability.
-allowed-tools: "Read,Write,Edit,Glob,Grep,Bash(mkdir:*),Bash(chmod:*),Bash(python:*),Bash(claude:*),Task,AskUserQuestion"
+
+  Trigger with "/skill-creator", "create a skill", "validate my skill", or "check
+  skill quality".
+
+  Make sure to use this skill whenever creating a new skill, slash command, or agent
+  capability.
+
+  '
+allowed-tools: Read,Write,Edit,Glob,Grep,Bash(mkdir:*),Bash(chmod:*),Bash(python:*),Bash(claude:*),Task,AskUserQuestion
 version: 5.1.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [skill-creation, validation, meta-tooling]
+tags:
+- skill-creation
+- validation
+- meta-tooling
 model: inherit
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Skill Creator
 
 Creates complete, spec-compliant skill packages following AgentSkills.io and Anthropic standards.

@@ -1,17 +1,25 @@
 ---
 name: documenso-rate-limits
-description: |
-  Implement Documenso rate limiting, backoff, and request throttling patterns.
+description: 'Implement Documenso rate limiting, backoff, and request throttling patterns.
+
   Use when handling rate limit errors, implementing retry logic,
+
   or optimizing API request throughput for Documenso.
+
   Trigger with phrases like "documenso rate limit", "documenso throttling",
+
   "documenso 429", "documenso retry", "documenso backoff".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, documenso, api]
+tags:
+- saas
+- documenso
+- api
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Documenso Rate Limits
 

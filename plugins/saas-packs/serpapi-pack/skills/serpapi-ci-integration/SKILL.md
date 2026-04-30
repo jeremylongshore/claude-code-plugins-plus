@@ -1,18 +1,25 @@
 ---
 name: serpapi-ci-integration
-description: |
-  Set up CI/CD for SerpApi integrations with fixture-based testing.
+description: 'Set up CI/CD for SerpApi integrations with fixture-based testing.
+
   Use when automating SerpApi tests without consuming credits,
+
   or validating search result parsing in CI.
+
   Trigger: "serpapi CI", "serpapi GitHub Actions", "serpapi automated tests".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, seo, serpapi]
-compatible-with: claude-code
+tags:
+- saas
+- search
+- seo
+- serpapi
+compatibility: Designed for Claude Code
 ---
-
 # SerpApi CI Integration
 
 ## Overview

@@ -1,12 +1,19 @@
 ---
 name: validating-performance-budgets
-description: Validate application performance against defined budgets to identify regressions early. Use when checking page load times, bundle sizes, or API response times against thresholds. Trigger with phrases like "validate performance budget", "check performance metrics", or "detect performance regression".
+description: Validate application performance against defined budgets to identify
+  regressions early. Use when checking page load times, bundle sizes, or API response
+  times against thresholds. Trigger with phrases like "validate performance budget",
+  "check performance metrics", or "detect performance regression".
 version: 1.0.0
-allowed-tools: "Read, Write, Edit, Grep, Glob, Bash(lighthouse:*), Bash(webpack:*), Bash(performance:*)"
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(lighthouse:*), Bash(webpack:*),
+  Bash(performance:*)
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [performance, api, validating-performance]
+tags:
+- performance
+- api
+- validating-performance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Performance Budget Validator
 

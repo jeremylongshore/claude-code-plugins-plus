@@ -1,16 +1,24 @@
 ---
 name: twinmind-observability
-description: |
-  Monitor TwinMind transcription quality, meeting coverage, action item extraction rates, and memory vault health.
+description: 'Monitor TwinMind transcription quality, meeting coverage, action item
+  extraction rates, and memory vault health.
+
   Use when implementing observability,
+
   or managing TwinMind meeting AI operations.
+
   Trigger with phrases like "twinmind observability", "twinmind observability".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: ['saas', 'twinmind', 'monitoring']
+tags:
+- saas
+- twinmind
+- monitoring
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # TwinMind Observability
 

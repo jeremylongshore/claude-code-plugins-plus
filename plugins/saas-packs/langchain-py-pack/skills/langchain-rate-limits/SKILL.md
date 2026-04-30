@@ -1,22 +1,27 @@
 ---
 name: langchain-rate-limits
-description: |
-  Rate-limit LangChain 1.0 calls correctly across multi-worker deployments —
-  Redis-backed limiters, asyncio.Semaphore, narrow exception whitelists, and
-  provider-specific throttle handling. Use when hitting 429s in production,
-  scaling workers horizontally, or tuning throughput against Anthropic, OpenAI,
-  or Gemini tier limits.
-  Trigger with "langchain rate limit", "langchain 429", "langchain semaphore",
-  "langchain token bucket", "anthropic rpm", "openai rpm throttling",
-  "InMemoryRateLimiter", "redis rate limiter".
+description: "Rate-limit LangChain 1.0 calls correctly across multi-worker deployments\
+  \ \u2014\nRedis-backed limiters, asyncio.Semaphore, narrow exception whitelists,\
+  \ and\nprovider-specific throttle handling. Use when hitting 429s in production,\n\
+  scaling workers horizontally, or tuning throughput against Anthropic, OpenAI,\n\
+  or Gemini tier limits.\nTrigger with \"langchain rate limit\", \"langchain 429\"\
+  , \"langchain semaphore\",\n\"langchain token bucket\", \"anthropic rpm\", \"openai\
+  \ rpm throttling\",\n\"InMemoryRateLimiter\", \"redis rate limiter\".\n"
 allowed-tools: Read, Write, Edit, Bash(python:*), Bash(redis-cli:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, langchain, langgraph, python, langchain-1.0, rate-limits, throttling, concurrency]
-compatible-with: claude-code, codex
+tags:
+- saas
+- langchain
+- langgraph
+- python
+- langchain-1.0
+- rate-limits
+- throttling
+- concurrency
+compatibility: Designed for Claude Code, also compatible with Codex
 ---
-
 # LangChain Rate Limits (Python)
 
 ## Overview

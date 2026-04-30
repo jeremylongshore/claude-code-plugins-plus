@@ -1,17 +1,25 @@
 ---
 name: vastai-rate-limits
-description: |
-  Handle Vast.ai API rate limits with backoff and request optimization.
+description: 'Handle Vast.ai API rate limits with backoff and request optimization.
+
   Use when encountering 429 errors, implementing retry logic,
+
   or optimizing API request throughput.
+
   Trigger with phrases like "vastai rate limit", "vastai throttling",
+
   "vastai 429", "vastai retry", "vastai backoff".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vast-ai, api]
+tags:
+- saas
+- vast-ai
+- api
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vast.ai Rate Limits
 

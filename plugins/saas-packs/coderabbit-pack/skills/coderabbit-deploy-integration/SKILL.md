@@ -1,17 +1,27 @@
 ---
 name: coderabbit-deploy-integration
-description: |
-  Roll out CodeRabbit across an organization: multi-repo deployment, org-level config, and team onboarding.
+description: 'Roll out CodeRabbit across an organization: multi-repo deployment, org-level
+  config, and team onboarding.
+
   Use when deploying CodeRabbit org-wide, creating shared configurations,
+
   or onboarding development teams to AI code review.
+
   Trigger with phrases like "deploy coderabbit", "coderabbit org rollout",
+
   "coderabbit multi-repo", "coderabbit onboarding", "coderabbit team setup".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, coderabbit, deployment, onboarding]
+tags:
+- saas
+- coderabbit
+- deployment
+- onboarding
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # CodeRabbit Deploy Integration
 

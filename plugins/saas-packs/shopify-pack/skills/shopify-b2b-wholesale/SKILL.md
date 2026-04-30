@@ -1,19 +1,27 @@
 ---
 name: shopify-b2b-wholesale
-description: |
-  Build Shopify Plus B2B features with companies, catalogs, and wholesale pricing.
+description: 'Build Shopify Plus B2B features with companies, catalogs, and wholesale
+  pricing.
+
   Use when setting up wholesale accounts, creating price lists,
+
   or configuring B2B checkout with purchase orders.
+
   Trigger with phrases like "shopify b2b", "shopify wholesale",
+
   "shopify company api", "shopify price lists", "shopify catalog api".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ecommerce, shopify]
-compatible-with: claude-code
+tags:
+- saas
+- ecommerce
+- shopify
+compatibility: Designed for Claude Code
 ---
-
 # Shopify B2B & Wholesale
 
 ## Overview

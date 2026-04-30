@@ -1,19 +1,26 @@
 ---
 name: anth-common-errors
-description: |
-  Diagnose and fix Anthropic Claude API errors by HTTP status code.
+description: 'Diagnose and fix Anthropic Claude API errors by HTTP status code.
+
   Use when encountering API errors, debugging failed requests,
+
   or troubleshooting authentication, rate limiting, or input validation issues.
+
   Trigger with phrases like "anthropic error", "claude api error",
+
   "fix anthropic 429", "claude not working", "debug claude api".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, anthropic]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- anthropic
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Common Errors
 
 ## Overview

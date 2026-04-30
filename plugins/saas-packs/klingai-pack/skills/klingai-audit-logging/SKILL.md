@@ -1,15 +1,25 @@
 ---
 name: klingai-audit-logging
-description: |
-  Implement audit logging for Kling AI operations for compliance and security. Use when tracking
-  API usage or preparing for audits. Trigger with phrases like 'klingai audit', 'kling ai audit log',
-  'klingai compliance log', 'video generation audit trail'.
+description: 'Implement audit logging for Kling AI operations for compliance and security.
+  Use when tracking
+
+  API usage or preparing for audits. Trigger with phrases like ''klingai audit'',
+  ''kling ai audit log'',
+
+  ''klingai compliance log'', ''video generation audit trail''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, kling-ai, audit, compliance, logging]
+tags:
+- saas
+- kling-ai
+- audit
+- compliance
+- logging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Kling AI Audit Logging
 

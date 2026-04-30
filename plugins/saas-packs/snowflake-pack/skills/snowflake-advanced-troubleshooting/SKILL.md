@@ -1,20 +1,29 @@
 ---
 name: snowflake-advanced-troubleshooting
-description: |
-  Apply advanced Snowflake debugging with query profiling, spill analysis,
+description: 'Apply advanced Snowflake debugging with query profiling, spill analysis,
+
   lock contention, and performance deep-dives using ACCOUNT_USAGE views.
+
   Use when standard troubleshooting fails, investigating slow queries,
+
   or diagnosing warehouse performance issues.
+
   Trigger with phrases like "snowflake hard bug", "snowflake slow query debug",
+
   "snowflake query profile", "snowflake spilling", "snowflake deep debug".
+
+  '
 allowed-tools: Read, Grep, Bash(snowsql:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, data-warehouse, analytics, snowflake]
-compatible-with: claude-code
+tags:
+- saas
+- data-warehouse
+- analytics
+- snowflake
+compatibility: Designed for Claude Code
 ---
-
 # Snowflake Advanced Troubleshooting
 
 ## Overview

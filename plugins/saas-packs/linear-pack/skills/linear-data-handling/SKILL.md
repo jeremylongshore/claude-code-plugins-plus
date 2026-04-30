@@ -1,17 +1,25 @@
 ---
 name: linear-data-handling
-description: |
-  Data synchronization, backup, and consistency patterns for Linear.
+description: 'Data synchronization, backup, and consistency patterns for Linear.
+
   Use when implementing data sync, creating backups, exporting data,
+
   or ensuring data consistency between Linear and local state.
+
   Trigger: "linear data sync", "backup linear", "linear export",
+
   "linear data consistency", "sync linear issues".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, linear, backup]
+tags:
+- saas
+- linear
+- backup
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Linear Data Handling
 

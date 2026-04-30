@@ -1,17 +1,25 @@
 ---
 name: evernote-reference-architecture
-description: |
-  Reference architecture for Evernote integrations.
+description: 'Reference architecture for Evernote integrations.
+
   Use when designing system architecture, planning integrations,
+
   or building scalable Evernote applications.
+
   Trigger with phrases like "evernote architecture", "design evernote system",
+
   "evernote integration pattern", "evernote scale".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, evernote, scaling]
+tags:
+- saas
+- evernote
+- scaling
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Evernote Reference Architecture
 

@@ -1,18 +1,24 @@
 ---
 name: anth-enterprise-rbac
-description: |
-  Configure Anthropic enterprise organization management, Workspaces,
+description: 'Configure Anthropic enterprise organization management, Workspaces,
+
   and role-based access control for teams.
+
   Trigger with phrases like "anthropic enterprise", "claude rbac",
+
   "anthropic workspaces", "claude team access", "anthropic organization".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, anthropic]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- anthropic
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Enterprise RBAC
 
 ## Overview

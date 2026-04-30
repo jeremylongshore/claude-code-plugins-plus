@@ -1,12 +1,18 @@
 ---
 name: analyzing-network-latency
-description: Analyze network latency and optimize request patterns for faster communication. Use when diagnosing slow network performance or optimizing API calls. Trigger with phrases like "analyze network latency", "optimize API calls", or "reduce network delays".
+description: Analyze network latency and optimize request patterns for faster communication.
+  Use when diagnosing slow network performance or optimizing API calls. Trigger with
+  phrases like "analyze network latency", "optimize API calls", or "reduce network
+  delays".
 version: 1.0.0
-allowed-tools: "Read, Write, Bash(curl:*), Bash(ping:*), Bash(traceroute:*), Grep"
+allowed-tools: Read, Write, Bash(curl:*), Bash(ping:*), Bash(traceroute:*), Grep
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [performance, api, analyzing-network]
+tags:
+- performance
+- api
+- analyzing-network
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Network Latency Analyzer
 

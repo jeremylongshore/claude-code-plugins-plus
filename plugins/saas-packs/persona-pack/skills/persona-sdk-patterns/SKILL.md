@@ -1,17 +1,25 @@
 ---
 name: persona-sdk-patterns
-description: |
-  Production Persona API client wrapper with retry, pagination, typed responses.
+description: 'Production Persona API client wrapper with retry, pagination, typed
+  responses.
+
   Use when working with Persona identity verification.
+
   Trigger with phrases like "persona sdk-patterns", "persona sdk-patterns".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, persona, identity, kyc, verification]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- persona
+- identity
+- kyc
+- verification
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # persona sdk patterns | sed 's/\b\(.\)/\u\1/g'
 
 ## Overview

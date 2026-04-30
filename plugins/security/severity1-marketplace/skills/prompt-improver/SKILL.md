@@ -1,13 +1,19 @@
 ---
 name: prompt-improver
-description: |
-  Analyze and improve plugin prompts, skill definitions, and command instructions for clarity, safety, and effectiveness. Use when the user asks to "improve a prompt", "review a skill", "enhance instructions", "make this prompt better", "optimize this command", or "audit prompt quality".
+description: 'Analyze and improve plugin prompts, skill definitions, and command instructions
+  for clarity, safety, and effectiveness. Use when the user asks to "improve a prompt",
+  "review a skill", "enhance instructions", "make this prompt better", "optimize this
+  command", or "audit prompt quality".
+
+  '
 allowed-tools: Read, Write, Edit, Glob, Grep
 version: 1.0.0
 author: severity1 <severity1@intentsolutions.io>
 license: MIT
-tags: [security, compliance]
-compatible-with: claude-code
+tags:
+- security
+- compliance
+compatibility: Designed for Claude Code
 ---
 # Prompt Improver
 

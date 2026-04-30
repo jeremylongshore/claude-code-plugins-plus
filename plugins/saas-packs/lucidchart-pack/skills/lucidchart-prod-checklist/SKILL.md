@@ -1,16 +1,20 @@
 ---
 name: lucidchart-prod-checklist
-description: |
-  Prod Checklist for Lucidchart.
+description: 'Prod Checklist for Lucidchart.
+
   Trigger: "lucidchart prod checklist".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, lucidchart, diagramming]
-compatible-with: claude-code
+tags:
+- saas
+- lucidchart
+- diagramming
+compatibility: Designed for Claude Code
 ---
-
 # Lucidchart Production Checklist
 
 ## Overview

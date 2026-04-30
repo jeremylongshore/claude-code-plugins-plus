@@ -1,16 +1,24 @@
 ---
 name: aggregating-crypto-news
-description: |
-  Aggregate breaking cryptocurrency news from 50+ sources including CoinDesk, CoinTelegraph, The Block, and Decrypt.
-  Use when needing to monitor crypto market news, track announcements, or find coin-specific updates.
-  Trigger with phrases like "get crypto news", "latest Bitcoin headlines", "DeFi announcements", "scan for breaking news", or "check crypto updates".
+description: 'Aggregate breaking cryptocurrency news from 50+ sources including CoinDesk,
+  CoinTelegraph, The Block, and Decrypt.
 
+  Use when needing to monitor crypto market news, track announcements, or find coin-specific
+  updates.
+
+  Trigger with phrases like "get crypto news", "latest Bitcoin headlines", "DeFi announcements",
+  "scan for breaking news", or "check crypto updates".
+
+  '
 allowed-tools: Read, Bash(crypto:news-*)
 version: 2.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [crypto, monitoring, aggregating-crypto]
+tags:
+- crypto
+- monitoring
+- aggregating-crypto
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Aggregating Crypto News
 

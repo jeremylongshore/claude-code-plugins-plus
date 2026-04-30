@@ -1,17 +1,25 @@
 ---
 name: linear-webhooks-events
-description: |
-  Configure and handle Linear webhooks for real-time event processing.
+description: 'Configure and handle Linear webhooks for real-time event processing.
+
   Use when setting up webhooks, handling issue/project/cycle events,
+
   or building real-time integrations with Linear.
+
   Trigger: "linear webhooks", "linear events", "linear real-time",
+
   "handle linear webhook", "linear webhook setup", "linear webhook payload".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(ngrok:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, linear, webhooks]
+tags:
+- saas
+- linear
+- webhooks
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Linear Webhooks & Events
 

@@ -1,17 +1,22 @@
 ---
 name: fondo-local-dev-loop
-description: |
-  Configure local development workflows that integrate with Fondo for
+description: 'Configure local development workflows that integrate with Fondo for
+
   financial data, using Fondo exports with QuickBooks or accounting tools.
+
   Trigger: "fondo dev setup", "fondo export", "fondo QuickBooks", "fondo local data".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, accounting, fondo]
-compatible-with: claude-code
+tags:
+- saas
+- accounting
+- fondo
+compatibility: Designed for Claude Code
 ---
-
 # Fondo Local Dev Loop
 
 ## Overview

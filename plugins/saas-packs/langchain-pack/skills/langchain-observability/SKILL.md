@@ -1,16 +1,25 @@
 ---
 name: langchain-observability
-description: |
-  Set up comprehensive observability for LangChain applications
+description: 'Set up comprehensive observability for LangChain applications
+
   with LangSmith tracing, OpenTelemetry, Prometheus metrics, and alerts.
+
   Trigger: "langchain monitoring", "langchain metrics", "langchain observability",
+
   "langchain tracing", "LangSmith", "langchain alerts".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langchain, monitoring, observability, dashboard]
+tags:
+- saas
+- langchain
+- monitoring
+- observability
+- dashboard
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # LangChain Observability
 

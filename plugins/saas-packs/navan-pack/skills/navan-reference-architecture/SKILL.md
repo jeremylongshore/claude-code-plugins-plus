@@ -1,16 +1,19 @@
 ---
 name: navan-reference-architecture
-description: |
-  Use when designing a production Navan API integration architecture — API gateway, token management, data sync pipelines, ERP connectors, and monitoring stack.
-  Trigger with "navan reference architecture" or "navan integration architecture".
+description: "Use when designing a production Navan API integration architecture \u2014\
+  \ API gateway, token management, data sync pipelines, ERP connectors, and monitoring\
+  \ stack.\nTrigger with \"navan reference architecture\" or \"navan integration architecture\"\
+  .\n"
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(jq:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, navan, travel]
-compatible-with: claude-code
+tags:
+- saas
+- navan
+- travel
+compatibility: Designed for Claude Code
 ---
-
 # Navan Reference Architecture
 
 ## Overview

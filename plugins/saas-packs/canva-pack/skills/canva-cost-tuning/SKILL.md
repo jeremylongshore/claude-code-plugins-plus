@@ -1,19 +1,27 @@
 ---
 name: canva-cost-tuning
-description: |
-  Optimize Canva Connect API usage costs through efficient API patterns and monitoring.
+description: 'Optimize Canva Connect API usage costs through efficient API patterns
+  and monitoring.
+
   Use when analyzing Canva API usage, reducing unnecessary calls,
+
   or implementing usage monitoring and budget tracking.
+
   Trigger with phrases like "canva cost", "canva usage",
+
   "reduce canva calls", "canva API efficiency", "canva budget".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, canva]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- canva
+compatibility: Designed for Claude Code
 ---
-
 # Canva Cost Tuning
 
 ## Overview

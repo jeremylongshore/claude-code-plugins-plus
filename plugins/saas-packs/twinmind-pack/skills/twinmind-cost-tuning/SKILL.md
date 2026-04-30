@@ -1,16 +1,24 @@
 ---
 name: twinmind-cost-tuning
-description: |
-  Optimize TwinMind costs across Free, Pro ($10/mo), and Enterprise tiers with usage monitoring and tier selection guidance.
+description: 'Optimize TwinMind costs across Free, Pro ($10/mo), and Enterprise tiers
+  with usage monitoring and tier selection guidance.
+
   Use when implementing cost tuning,
+
   or managing TwinMind meeting AI operations.
+
   Trigger with phrases like "twinmind cost tuning", "twinmind cost tuning".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: ['saas', 'twinmind', 'cost-optimization']
+tags:
+- saas
+- twinmind
+- cost-optimization
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # TwinMind Cost Tuning
 

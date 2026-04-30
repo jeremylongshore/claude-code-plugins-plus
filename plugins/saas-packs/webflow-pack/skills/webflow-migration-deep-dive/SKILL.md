@@ -1,20 +1,22 @@
 ---
 name: webflow-migration-deep-dive
-description: |
-  Execute major Webflow migrations — from other CMS platforms to Webflow CMS,
-  between Webflow sites, or large-scale content re-architecture using the Data API v2
-  bulk endpoints, strangler fig pattern, and data validation.
-  Trigger with phrases like "migrate to webflow", "webflow migration",
-  "import into webflow", "webflow replatform", "move content to webflow",
-  "webflow bulk import", "wordpress to webflow".
+description: "Execute major Webflow migrations \u2014 from other CMS platforms to\
+  \ Webflow CMS,\nbetween Webflow sites, or large-scale content re-architecture using\
+  \ the Data API v2\nbulk endpoints, strangler fig pattern, and data validation.\n\
+  Trigger with phrases like \"migrate to webflow\", \"webflow migration\",\n\"import\
+  \ into webflow\", \"webflow replatform\", \"move content to webflow\",\n\"webflow\
+  \ bulk import\", \"wordpress to webflow\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, no-code, webflow]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- no-code
+- webflow
+compatibility: Designed for Claude Code
 ---
-
 # Webflow Migration Deep Dive
 
 ## Overview

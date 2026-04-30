@@ -1,17 +1,21 @@
 ---
 name: runway-reference-architecture
-description: |
-  Runway reference architecture — AI video generation and creative AI platform.
-  Use when working with Runway for video generation, image editing, or creative AI.
-  Trigger with phrases like "runway reference architecture", "runway-reference-architecture", "AI video generation".
+description: "Runway reference architecture \u2014 AI video generation and creative\
+  \ AI platform.\nUse when working with Runway for video generation, image editing,\
+  \ or creative AI.\nTrigger with phrases like \"runway reference architecture\",\
+  \ \"runway-reference-architecture\", \"AI video generation\".\n"
 allowed-tools: Read, Write, Edit, Bash(pip:*), Bash(npm:*), Bash(curl:*), Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, runway, ai, video-generation, creative]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- runway
+- ai
+- video-generation
+- creative
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Runway Reference Architecture
 
 ## Overview

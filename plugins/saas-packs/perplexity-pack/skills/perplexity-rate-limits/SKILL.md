@@ -1,17 +1,25 @@
 ---
 name: perplexity-rate-limits
-description: |
-  Implement Perplexity rate limiting, backoff, and request queuing.
+description: 'Implement Perplexity rate limiting, backoff, and request queuing.
+
   Use when handling 429 errors, implementing retry logic,
+
   or optimizing API request throughput for Perplexity Sonar.
+
   Trigger with phrases like "perplexity rate limit", "perplexity throttling",
+
   "perplexity 429", "perplexity retry", "perplexity backoff".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, perplexity, api]
+tags:
+- saas
+- perplexity
+- api
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Perplexity Rate Limits
 

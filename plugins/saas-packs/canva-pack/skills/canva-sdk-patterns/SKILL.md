@@ -1,19 +1,27 @@
 ---
 name: canva-sdk-patterns
-description: |
-  Apply production-ready Canva Connect API client patterns for TypeScript and Python.
+description: 'Apply production-ready Canva Connect API client patterns for TypeScript
+  and Python.
+
   Use when building a reusable API client, implementing token refresh,
+
   or establishing team coding standards for Canva integrations.
+
   Trigger with phrases like "canva client patterns", "canva best practices",
+
   "canva code patterns", "canva API wrapper", "canva TypeScript client".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, canva]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- canva
+compatibility: Designed for Claude Code
 ---
-
 # Canva SDK Patterns
 
 ## Overview

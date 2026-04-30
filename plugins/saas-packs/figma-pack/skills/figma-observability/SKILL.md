@@ -1,19 +1,25 @@
 ---
 name: figma-observability
-description: |
-  Set up monitoring, metrics, and alerting for Figma API integrations.
+description: 'Set up monitoring, metrics, and alerting for Figma API integrations.
+
   Use when implementing observability for Figma operations, tracking API health,
+
   or configuring alerts for rate limits and errors.
+
   Trigger with phrases like "figma monitoring", "figma metrics",
+
   "figma observability", "figma alerts", "figma dashboard".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, figma]
-compatible-with: claude-code
+tags:
+- saas
+- figma
+compatibility: Designed for Claude Code
 ---
-
 # Figma Observability
 
 ## Overview

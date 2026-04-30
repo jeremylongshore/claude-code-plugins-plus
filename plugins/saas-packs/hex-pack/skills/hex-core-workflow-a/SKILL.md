@@ -1,19 +1,27 @@
 ---
 name: hex-core-workflow-a
-description: |
-  Execute Hex primary workflow: Core Workflow A.
+description: 'Execute Hex primary workflow: Core Workflow A.
+
   Use when implementing primary use case,
+
   building main features, or core integration tasks.
+
   Trigger with phrases like "hex main workflow",
+
   "primary task with hex".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hex, data, orchestration]
-compatible-with: claude-code
+tags:
+- saas
+- hex
+- data
+- orchestration
+compatibility: Designed for Claude Code
 ---
-
 # Hex Project Orchestration
 
 ## Overview

@@ -1,20 +1,30 @@
 ---
 name: snowflake-data-handling
-description: |
-  Implement Snowflake data governance with masking policies, row access policies,
+description: 'Implement Snowflake data governance with masking policies, row access
+  policies,
+
   tagging, and GDPR/CCPA compliance patterns.
+
   Use when handling PII, implementing column masking, configuring data classification,
+
   or ensuring compliance with privacy regulations in Snowflake.
+
   Trigger with phrases like "snowflake data governance", "snowflake masking",
+
   "snowflake PII", "snowflake GDPR", "snowflake row access policy", "snowflake tags".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, data-warehouse, analytics, snowflake]
-compatible-with: claude-code
+tags:
+- saas
+- data-warehouse
+- analytics
+- snowflake
+compatibility: Designed for Claude Code
 ---
-
 # Snowflake Data Handling
 
 ## Overview

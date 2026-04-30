@@ -1,16 +1,23 @@
 ---
 name: migrating-apis
-description: |
-  Implement API migrations between versions, platforms, or frameworks with minimal downtime.
+description: 'Implement API migrations between versions, platforms, or frameworks
+  with minimal downtime.
+
   Use when upgrading APIs between versions.
-  Trigger with phrases like "migrate the API", "upgrade API version", or "migrate to new API".
-  
+
+  Trigger with phrases like "migrate the API", "upgrade API version", or "migrate
+  to new API".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:migrate-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [api, migration, migrating-apis]
+tags:
+- api
+- migration
+- migrating-apis
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Migrating APIs
 

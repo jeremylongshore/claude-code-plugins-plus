@@ -1,17 +1,23 @@
 ---
 name: flyio-core-workflow-b
-description: |
-  Execute Fly.io secondary workflow: Postgres clusters, persistent volumes, and private networking.
+description: 'Execute Fly.io secondary workflow: Postgres clusters, persistent volumes,
+  and private networking.
+
   Use when adding databases, persistent storage, or internal service communication.
+
   Trigger: "fly postgres", "fly volumes", "fly.io database", "fly.io persistent storage".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(fly:*), Bash(psql:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, edge-compute, flyio]
-compatible-with: claude-code
+tags:
+- saas
+- edge-compute
+- flyio
+compatibility: Designed for Claude Code
 ---
-
 # Fly.io Core Workflow B: Postgres, Volumes & Networking
 
 ## Overview

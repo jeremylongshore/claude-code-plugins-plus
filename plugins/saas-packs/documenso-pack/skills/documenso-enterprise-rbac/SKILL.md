@@ -1,17 +1,25 @@
 ---
 name: documenso-enterprise-rbac
-description: |
-  Configure Documenso enterprise role-based access control and team management.
+description: 'Configure Documenso enterprise role-based access control and team management.
+
   Use when implementing team permissions, configuring organizational roles,
+
   or setting up enterprise access controls.
+
   Trigger with phrases like "documenso RBAC", "documenso teams",
+
   "documenso permissions", "documenso enterprise", "documenso roles".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, documenso, rbac]
+tags:
+- saas
+- documenso
+- rbac
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Documenso Enterprise RBAC
 

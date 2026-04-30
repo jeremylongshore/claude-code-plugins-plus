@@ -1,16 +1,24 @@
 ---
 name: twinmind-deploy-integration
-description: |
-  Deploy TwinMind integrations to production environments with Chrome extension deployment, mobile app configuration, and API access setup.
+description: 'Deploy TwinMind integrations to production environments with Chrome
+  extension deployment, mobile app configuration, and API access setup.
+
   Use when implementing deploy integration,
+
   or managing TwinMind meeting AI operations.
+
   Trigger with phrases like "twinmind deploy integration", "twinmind deploy integration".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: ['saas', 'twinmind', 'deployment']
+tags:
+- saas
+- twinmind
+- deployment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # TwinMind Deploy Integration
 

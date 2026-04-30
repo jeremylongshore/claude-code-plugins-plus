@@ -1,17 +1,23 @@
 ---
 name: managing-database-recovery
-description: |
-  Process use when you need to work with database operations.
-  This skill provides database management and optimization with comprehensive guidance and automation.
+description: 'Process use when you need to work with database operations.
+
+  This skill provides database management and optimization with comprehensive guidance
+  and automation.
+
   Trigger with phrases like "manage database", "optimize database",
+
   or "configure database".
 
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(tar:*), Bash(rsync:*), Bash(aws:s3:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [database, database-recovery]
+tags:
+- database
+- database-recovery
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Database Recovery Manager
 

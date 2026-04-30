@@ -1,19 +1,27 @@
 ---
 name: shopify-core-workflow-a
-description: |
-  Manage Shopify products, variants, and collections using the GraphQL Admin API.
+description: 'Manage Shopify products, variants, and collections using the GraphQL
+  Admin API.
+
   Use when creating, updating, or querying products, managing inventory,
+
   or building product catalog integrations.
+
   Trigger with phrases like "shopify products", "create shopify product",
+
   "shopify variants", "shopify collections", "shopify inventory".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ecommerce, shopify]
-compatible-with: claude-code
+tags:
+- saas
+- ecommerce
+- shopify
+compatibility: Designed for Claude Code
 ---
-
 # Shopify Products & Catalog Management
 
 ## Overview

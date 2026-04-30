@@ -1,16 +1,21 @@
 ---
 name: apple-notes-ci-integration
-description: |
-  Run Apple Notes automation in CI on macOS runners.
+description: 'Run Apple Notes automation in CI on macOS runners.
+
   Trigger: "apple notes CI".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(osascript:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, macos, apple-notes, automation]
-compatible-with: claude-code
+tags:
+- saas
+- macos
+- apple-notes
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Apple Notes CI Integration
 
 ## Overview

@@ -1,17 +1,22 @@
 ---
 name: creating-ansible-playbooks
-description: |
-  Execute use when you need to work with Ansible automation.
+description: 'Execute use when you need to work with Ansible automation.
+
   This skill provides Ansible playbook creation with comprehensive guidance and automation.
+
   Trigger with phrases like "create Ansible playbook", "automate with Ansible",
+
   or "configure with Ansible".
 
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(ansible:*), Bash(terraform:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [devops, ansible-playbooks]
+tags:
+- devops
+- ansible-playbooks
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Creating Ansible Playbooks
 

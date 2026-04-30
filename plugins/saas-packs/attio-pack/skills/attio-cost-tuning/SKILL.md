@@ -1,18 +1,24 @@
 ---
 name: attio-cost-tuning
-description: |
-  Optimize Attio API usage costs -- reduce request volume, select the
+description: 'Optimize Attio API usage costs -- reduce request volume, select the
+
   right plan, monitor usage, and implement budget alerts.
+
   Trigger: "attio cost", "attio billing", "reduce attio costs",
+
   "attio pricing", "attio expensive", "attio budget", "attio usage".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, attio]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- attio
+compatibility: Designed for Claude Code
 ---
-
 # Attio Cost Tuning
 
 ## Overview

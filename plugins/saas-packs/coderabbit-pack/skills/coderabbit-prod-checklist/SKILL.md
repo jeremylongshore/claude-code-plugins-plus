@@ -1,17 +1,27 @@
 ---
 name: coderabbit-prod-checklist
-description: |
-  Execute CodeRabbit production readiness checklist for org-wide deployment.
+description: 'Execute CodeRabbit production readiness checklist for org-wide deployment.
+
   Use when preparing to enforce CodeRabbit reviews, going live with required checks,
+
   or auditing CodeRabbit configuration before making it a merge gate.
+
   Trigger with phrases like "coderabbit production", "coderabbit go-live",
+
   "coderabbit launch checklist", "coderabbit readiness", "coderabbit pre-launch".
+
+  '
 allowed-tools: Read, Bash(gh:*), Bash(git:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, coderabbit, deployment, production, checklist]
+tags:
+- saas
+- coderabbit
+- deployment
+- production
+- checklist
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # CodeRabbit Production Checklist
 

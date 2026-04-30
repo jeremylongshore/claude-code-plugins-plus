@@ -1,13 +1,20 @@
 ---
 name: openrouter-sdk-patterns
-description: |
-  Build reusable OpenRouter client wrappers with retries, typing, and middleware. Use when creating SDKs or client libraries. Triggers: 'openrouter sdk', 'openrouter client wrapper', 'openrouter patterns', 'openrouter library'.
+description: 'Build reusable OpenRouter client wrappers with retries, typing, and
+  middleware. Use when creating SDKs or client libraries. Triggers: ''openrouter sdk'',
+  ''openrouter client wrapper'', ''openrouter patterns'', ''openrouter library''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash, Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, openrouter, sdk, patterns]
+tags:
+- saas
+- openrouter
+- sdk
+- patterns
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # OpenRouter SDK Patterns
 

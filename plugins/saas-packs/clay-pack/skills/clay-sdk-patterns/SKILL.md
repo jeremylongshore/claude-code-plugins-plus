@@ -1,17 +1,27 @@
 ---
 name: clay-sdk-patterns
-description: |
-  Apply production-ready patterns for integrating with Clay via webhooks and HTTP API.
+description: 'Apply production-ready patterns for integrating with Clay via webhooks
+  and HTTP API.
+
   Use when building Clay integrations, implementing webhook handlers,
+
   or establishing team coding standards for Clay data pipelines.
+
   Trigger with phrases like "clay SDK patterns", "clay best practices",
+
   "clay code patterns", "clay integration patterns", "clay webhook patterns".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clay, python, typescript]
+tags:
+- saas
+- clay
+- python
+- typescript
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clay Integration Patterns
 

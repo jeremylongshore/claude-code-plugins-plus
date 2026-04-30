@@ -1,17 +1,26 @@
 ---
 name: perplexity-migration-deep-dive
-description: |
-  Migrate to Perplexity Sonar from other search/LLM APIs using the strangler fig pattern.
+description: 'Migrate to Perplexity Sonar from other search/LLM APIs using the strangler
+  fig pattern.
+
   Use when switching from Google Custom Search, Bing API, or other LLMs to Perplexity,
+
   or migrating from legacy pplx-api models.
+
   Trigger with phrases like "migrate to perplexity", "switch to perplexity",
+
   "replace search API with perplexity", "perplexity replatform".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, perplexity, migration]
+tags:
+- saas
+- perplexity
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Perplexity Migration Deep Dive
 

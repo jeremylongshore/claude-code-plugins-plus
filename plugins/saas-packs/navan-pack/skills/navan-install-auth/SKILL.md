@@ -1,17 +1,22 @@
 ---
 name: navan-install-auth
-description: |
-  Set up OAuth 2.0 authentication for the Navan REST API.
+description: 'Set up OAuth 2.0 authentication for the Navan REST API.
+
   Use when configuring a new Navan integration or rotating API credentials.
+
   Trigger with "install navan", "setup navan auth", "navan credentials", "navan oauth".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, navan, travel]
-compatible-with: claude-code
+tags:
+- saas
+- navan
+- travel
+compatibility: Designed for Claude Code
 ---
-
 # Navan Install & Auth
 
 ## Overview

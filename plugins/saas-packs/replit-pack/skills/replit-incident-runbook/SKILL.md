@@ -1,17 +1,27 @@
 ---
 name: replit-incident-runbook
-description: |
-  Execute Replit incident response: triage deployment failures, database issues, and platform outages.
+description: 'Execute Replit incident response: triage deployment failures, database
+  issues, and platform outages.
+
   Use when responding to Replit-related outages, investigating deployment crashes,
+
   or running post-incident reviews for Replit app failures.
+
   Trigger with phrases like "replit incident", "replit outage",
+
   "replit down", "replit emergency", "replit broken", "replit crash".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, replit, incident-response, debugging]
+tags:
+- saas
+- replit
+- incident-response
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Replit Incident Runbook
 

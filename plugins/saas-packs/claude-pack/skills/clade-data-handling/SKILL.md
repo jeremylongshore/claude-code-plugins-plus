@@ -1,19 +1,23 @@
 ---
 name: clade-data-handling
-description: |
-  Handle sensitive data with Claude — PII redaction, conversation management,
-  Use when working with data-handling patterns.
-  context window optimization, and data retention policies.
-  Trigger with "anthropic data privacy", "claude pii", "anthropic context window",
-  "manage claude conversations", "anthropic data retention".
+description: "Handle sensitive data with Claude \u2014 PII redaction, conversation\
+  \ management,\nUse when working with data-handling patterns.\ncontext window optimization,\
+  \ and data retention policies.\nTrigger with \"anthropic data privacy\", \"claude\
+  \ pii\", \"anthropic context window\",\n\"manage claude conversations\", \"anthropic\
+  \ data retention\".\n"
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code
-tags: [saas, anthropic, claude, data, privacy, context]
+tags:
+- saas
+- anthropic
+- claude
+- data
+- privacy
+- context
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Data Handling
 
 ## Overview

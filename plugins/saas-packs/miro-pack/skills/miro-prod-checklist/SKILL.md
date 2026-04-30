@@ -1,19 +1,28 @@
 ---
 name: miro-prod-checklist
-description: |
-  Execute Miro REST API v2 production deployment checklist and rollback procedures.
+description: 'Execute Miro REST API v2 production deployment checklist and rollback
+  procedures.
+
   Use when deploying Miro integrations to production, preparing for launch,
+
   or implementing go-live procedures for Miro apps.
+
   Trigger with phrases like "miro production", "deploy miro",
+
   "miro go-live", "miro launch checklist", "miro production ready".
+
+  '
 allowed-tools: Read, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, miro, production, deployment]
-compatible-with: claude-code
+tags:
+- saas
+- miro
+- production
+- deployment
+compatibility: Designed for Claude Code
 ---
-
 # Miro Production Checklist
 
 ## Overview

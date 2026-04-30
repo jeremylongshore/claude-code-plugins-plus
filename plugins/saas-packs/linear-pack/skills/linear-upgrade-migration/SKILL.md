@@ -1,17 +1,26 @@
 ---
 name: linear-upgrade-migration
-description: |
-  Upgrade Linear SDK versions and handle breaking changes safely.
+description: 'Upgrade Linear SDK versions and handle breaking changes safely.
+
   Use when updating to a new SDK version, handling deprecations,
+
   or migrating between API versions.
+
   Trigger: "upgrade linear SDK", "linear SDK migration",
+
   "update linear", "linear breaking changes", "linear deprecation".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, linear, api, migration]
+tags:
+- saas
+- linear
+- api
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Linear Upgrade Migration
 

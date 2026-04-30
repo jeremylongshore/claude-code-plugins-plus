@@ -1,18 +1,19 @@
 ---
 name: algolia-hello-world
-description: |
-  Create a minimal working Algolia example — index records and search them.
-  Use when starting a new Algolia integration, testing your setup,
-  or learning the saveObjects/searchSingleIndex pattern.
-  Trigger: "algolia hello world", "algolia example", "algolia quick start", "first algolia search".
+description: "Create a minimal working Algolia example \u2014 index records and search\
+  \ them.\nUse when starting a new Algolia integration, testing your setup,\nor learning\
+  \ the saveObjects/searchSingleIndex pattern.\nTrigger: \"algolia hello world\",\
+  \ \"algolia example\", \"algolia quick start\", \"first algolia search\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(npx:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, algolia]
-compatible-with: claude-code
+tags:
+- saas
+- search
+- algolia
+compatibility: Designed for Claude Code
 ---
-
 # Algolia Hello World
 
 ## Overview

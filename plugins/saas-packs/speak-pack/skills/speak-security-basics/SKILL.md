@@ -1,16 +1,24 @@
 ---
 name: speak-security-basics
-description: |
-  Security best practices for Speak API keys, audio data privacy, student data protection, and COPPA/FERPA compliance.
+description: 'Security best practices for Speak API keys, audio data privacy, student
+  data protection, and COPPA/FERPA compliance.
+
   Use when implementing security basics features,
+
   or troubleshooting Speak language learning integration issues.
+
   Trigger with phrases like "speak security basics", "speak security basics".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, speak, api]
+tags:
+- saas
+- speak
+- api
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Speak Security Basics
 

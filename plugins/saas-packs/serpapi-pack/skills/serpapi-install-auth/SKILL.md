@@ -1,18 +1,25 @@
 ---
 name: serpapi-install-auth
-description: |
-  Install SerpApi client and configure API key authentication.
+description: 'Install SerpApi client and configure API key authentication.
+
   Use when setting up SerpApi for search result scraping, configuring API keys,
+
   or initializing the serpapi Python/Node package.
+
   Trigger: "install serpapi", "setup serpapi", "serpapi auth", "serpapi API key".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, seo, serpapi]
-compatible-with: claude-code
+tags:
+- saas
+- search
+- seo
+- serpapi
+compatibility: Designed for Claude Code
 ---
-
 # SerpApi Install & Auth
 
 ## Overview

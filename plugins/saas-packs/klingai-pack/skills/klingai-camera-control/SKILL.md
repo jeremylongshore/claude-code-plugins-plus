@@ -1,15 +1,23 @@
 ---
 name: klingai-camera-control
-description: |
-  Control camera movements in Kling AI video generation. Use when creating cinematic shots,
-  pans, tilts, zooms, or dolly moves. Trigger with phrases like 'klingai camera',
-  'kling ai camera motion', 'klingai cinematic', 'klingai pan zoom'.
+description: 'Control camera movements in Kling AI video generation. Use when creating
+  cinematic shots,
+
+  pans, tilts, zooms, or dolly moves. Trigger with phrases like ''klingai camera'',
+
+  ''kling ai camera motion'', ''klingai cinematic'', ''klingai pan zoom''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, kling-ai, camera-control, cinematic]
+tags:
+- saas
+- kling-ai
+- camera-control
+- cinematic
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Kling AI Camera Control
 

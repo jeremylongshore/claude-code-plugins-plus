@@ -1,19 +1,27 @@
 ---
 name: cohere-data-handling
-description: |
-  Implement data privacy for Cohere API calls with PII redaction and compliance.
+description: 'Implement data privacy for Cohere API calls with PII redaction and compliance.
+
   Use when handling sensitive data, implementing PII redaction before API calls,
+
   or ensuring GDPR/CCPA compliance with Cohere integrations.
+
   Trigger with phrases like "cohere data", "cohere PII",
+
   "cohere GDPR", "cohere data retention", "cohere privacy", "cohere redact".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, nlp, cohere]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- nlp
+- cohere
+compatibility: Designed for Claude Code
 ---
-
 # Cohere Data Handling
 
 ## Overview

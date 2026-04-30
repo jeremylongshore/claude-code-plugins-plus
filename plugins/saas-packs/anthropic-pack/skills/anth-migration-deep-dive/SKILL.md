@@ -1,19 +1,26 @@
 ---
 name: anth-migration-deep-dive
-description: |
-  Migrate to Claude API from OpenAI, Gemini, or other LLM providers.
+description: 'Migrate to Claude API from OpenAI, Gemini, or other LLM providers.
+
   Use when switching from GPT-4 to Claude, migrating from Text Completions,
+
   or building a multi-provider abstraction layer.
+
   Trigger with phrases like "migrate to claude", "openai to anthropic",
+
   "switch from gpt to claude", "multi-provider llm".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, anthropic]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- anthropic
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Migration Deep Dive
 
 ## Overview

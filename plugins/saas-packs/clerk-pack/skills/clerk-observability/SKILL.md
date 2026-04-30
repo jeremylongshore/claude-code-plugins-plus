@@ -1,17 +1,27 @@
 ---
 name: clerk-observability
-description: |
-  Implement monitoring, logging, and observability for Clerk authentication.
+description: 'Implement monitoring, logging, and observability for Clerk authentication.
+
   Use when setting up monitoring, debugging auth issues in production,
+
   or implementing audit logging.
+
   Trigger with phrases like "clerk monitoring", "clerk logging",
+
   "clerk observability", "clerk metrics", "clerk audit log".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clerk, monitoring, observability, debugging]
+tags:
+- saas
+- clerk
+- monitoring
+- observability
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clerk Observability
 

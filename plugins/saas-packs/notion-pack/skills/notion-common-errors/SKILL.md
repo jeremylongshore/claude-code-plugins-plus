@@ -1,19 +1,26 @@
 ---
 name: notion-common-errors
-description: |
-  Diagnose and fix Notion API errors by HTTP status code and error code.
+description: 'Diagnose and fix Notion API errors by HTTP status code and error code.
+
   Use when encountering Notion errors, debugging failed requests,
+
   or troubleshooting integration access, rate limiting, or validation issues.
+
   Trigger with phrases like "notion error", "fix notion",
+
   "notion not working", "debug notion", "notion 400", "notion 429".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notion]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- notion
+compatibility: Designed for Claude Code
 ---
-
 # Notion Common Errors
 
 ## Overview

@@ -1,18 +1,26 @@
 ---
 name: alchemy-debug-bundle
-description: |
-  Collect Alchemy SDK debug evidence for troubleshooting and support tickets.
+description: 'Collect Alchemy SDK debug evidence for troubleshooting and support tickets.
+
   Use when encountering persistent issues, preparing support tickets,
+
   or debugging blockchain query failures.
+
   Trigger: "alchemy debug bundle", "alchemy support ticket", "alchemy diagnostics".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(node:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, blockchain, web3, alchemy, debugging]
-compatible-with: claude-code
+tags:
+- saas
+- blockchain
+- web3
+- alchemy
+- debugging
+compatibility: Designed for Claude Code
 ---
-
 # Alchemy Debug Bundle
 
 ## Overview

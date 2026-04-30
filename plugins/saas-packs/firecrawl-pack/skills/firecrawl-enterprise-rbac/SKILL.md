@@ -1,17 +1,26 @@
 ---
 name: firecrawl-enterprise-rbac
-description: |
-  Configure Firecrawl team access control with per-key credit limits and domain restrictions.
+description: 'Configure Firecrawl team access control with per-key credit limits and
+  domain restrictions.
+
   Use when managing multiple API keys per team, implementing credit budgets per consumer,
+
   or controlling which domains each team can scrape.
+
   Trigger with phrases like "firecrawl RBAC", "firecrawl teams",
+
   "firecrawl enterprise", "firecrawl access control", "firecrawl permissions".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, firecrawl, rbac]
+tags:
+- saas
+- firecrawl
+- rbac
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Firecrawl Enterprise RBAC
 

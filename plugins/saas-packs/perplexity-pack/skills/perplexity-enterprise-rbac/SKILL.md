@@ -1,16 +1,23 @@
 ---
 name: perplexity-enterprise-rbac
-description: |
-  Configure Perplexity API key scoping, per-team model access, cost controls,
+description: 'Configure Perplexity API key scoping, per-team model access, cost controls,
+
   and search domain restrictions for enterprise deployments.
+
   Trigger with phrases like "perplexity enterprise", "perplexity RBAC",
+
   "perplexity team access", "perplexity roles", "perplexity permissions".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, perplexity, rbac]
+tags:
+- saas
+- perplexity
+- rbac
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Perplexity Enterprise RBAC
 

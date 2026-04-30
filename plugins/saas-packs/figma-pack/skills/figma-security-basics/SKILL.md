@@ -1,19 +1,25 @@
 ---
 name: figma-security-basics
-description: |
-  Secure Figma API tokens, configure scopes, and validate webhook signatures.
+description: 'Secure Figma API tokens, configure scopes, and validate webhook signatures.
+
   Use when securing API keys, implementing least-privilege scopes,
+
   or auditing Figma security configuration.
+
   Trigger with phrases like "figma security", "figma secrets",
+
   "secure figma token", "figma scopes", "figma webhook verify".
+
+  '
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, figma]
-compatible-with: claude-code
+tags:
+- saas
+- figma
+compatibility: Designed for Claude Code
 ---
-
 # Figma Security Basics
 
 ## Overview

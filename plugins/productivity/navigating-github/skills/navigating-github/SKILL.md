@@ -1,23 +1,31 @@
 ---
 name: navigating-github
-description: |
-  First-time GitHub setup and interactive git learning. Walks users from
-  zero to a working GitHub repo, then teaches git through 9 hands-on
-  lessons on their actual project. Adapts language and depth to skill
-  level — inferred from environment, not questionnaires. Two modes:
-  Setup (guided onboarding) and Learn (progressive curriculum from
-  commits to CI/CD). Use when the user asks to set up GitHub, learn
-  git, or says "teach me github". Trigger with "set up my repo",
-  "help me with github", "teach me github", "learn git", "what are
-  branches", "teach me PRs", or "how do I use github".
-allowed-tools: Read, Write, Glob, Grep, Bash(git:*), Bash(gh:*), Bash(ssh:*), Bash(test:*), Bash(echo:*), AskUserQuestion
+description: "First-time GitHub setup and interactive git learning. Walks users from\n\
+  zero to a working GitHub repo, then teaches git through 9 hands-on\nlessons on their\
+  \ actual project. Adapts language and depth to skill\nlevel \u2014 inferred from\
+  \ environment, not questionnaires. Two modes:\nSetup (guided onboarding) and Learn\
+  \ (progressive curriculum from\ncommits to CI/CD). Use when the user asks to set\
+  \ up GitHub, learn\ngit, or says \"teach me github\". Trigger with \"set up my repo\"\
+  ,\n\"help me with github\", \"teach me github\", \"learn git\", \"what are\nbranches\"\
+  , \"teach me PRs\", or \"how do I use github\".\n"
+allowed-tools: Read, Write, Glob, Grep, Bash(git:*), Bash(gh:*), Bash(ssh:*), Bash(test:*),
+  Bash(echo:*), AskUserQuestion
 version: 2.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, cursor, windsurf, aider, continue
-tags: [github, git, beginner, intermediate, advanced, vibe-coding, version-control, learning, onboarding]
+tags:
+- github
+- git
+- beginner
+- intermediate
+- advanced
+- vibe-coding
+- version-control
+- learning
+- onboarding
+compatibility: Designed for Claude Code, also compatible with Cursor, Windsurf, Aider
+  and Continue
 ---
-
 # Navigating GitHub
 
 First-time GitHub setup and interactive git learning. Get set up, then learn by doing.

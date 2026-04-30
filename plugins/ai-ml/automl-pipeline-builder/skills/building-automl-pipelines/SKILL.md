@@ -1,16 +1,23 @@
 ---
 name: building-automl-pipelines
-description: |
-  Build automated machine learning pipelines with feature engineering, model selection, and hyperparameter tuning.
+description: 'Build automated machine learning pipelines with feature engineering,
+  model selection, and hyperparameter tuning.
+
   Use when automating ML workflows from data preparation through model deployment.
-  Trigger with phrases like "build automl pipeline", "automate ml workflow", or "create automated training pipeline".
-  
+
+  Trigger with phrases like "build automl pipeline", "automate ml workflow", or "create
+  automated training pipeline".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(python:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [ai, deployment, ml]
+tags:
+- ai
+- deployment
+- ml
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Building Automl Pipelines
 

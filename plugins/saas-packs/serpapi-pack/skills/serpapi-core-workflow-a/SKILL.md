@@ -1,18 +1,26 @@
 ---
 name: serpapi-core-workflow-a
-description: |
-  Google Search scraping with SerpApi -- organic results, knowledge graph, answer boxes.
+description: 'Google Search scraping with SerpApi -- organic results, knowledge graph,
+  answer boxes.
+
   Use when building search-powered features, SEO monitoring,
+
   or extracting structured data from Google results.
+
   Trigger: "serpapi google search", "scrape google", "serpapi organic results".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, seo, serpapi]
-compatible-with: claude-code
+tags:
+- saas
+- search
+- seo
+- serpapi
+compatibility: Designed for Claude Code
 ---
-
 # SerpApi Core Workflow A: Google Search
 
 ## Overview

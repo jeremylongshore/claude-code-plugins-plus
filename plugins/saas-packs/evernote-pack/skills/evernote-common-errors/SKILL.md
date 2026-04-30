@@ -1,17 +1,26 @@
 ---
 name: evernote-common-errors
-description: |
-  Diagnose and fix common Evernote API errors.
+description: 'Diagnose and fix common Evernote API errors.
+
   Use when encountering Evernote API exceptions, debugging failures,
+
   or troubleshooting integration issues.
+
   Trigger with phrases like "evernote error", "evernote exception",
+
   "fix evernote issue", "debug evernote", "evernote troubleshooting".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, evernote, api, debugging]
+tags:
+- saas
+- evernote
+- api
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Evernote Common Errors
 

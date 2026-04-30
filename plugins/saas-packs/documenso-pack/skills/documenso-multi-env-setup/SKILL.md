@@ -1,17 +1,26 @@
 ---
 name: documenso-multi-env-setup
-description: |
-  Configure Documenso across multiple environments (dev, staging, production).
+description: 'Configure Documenso across multiple environments (dev, staging, production).
+
   Use when setting up environment-specific configurations, managing API keys,
+
   or implementing environment promotion workflows.
+
   Trigger with phrases like "documenso environments", "documenso staging",
+
   "documenso dev setup", "multi-environment documenso".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, documenso, api, workflow]
+tags:
+- saas
+- documenso
+- api
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Documenso Multi-Environment Setup
 

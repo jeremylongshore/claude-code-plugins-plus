@@ -1,17 +1,26 @@
 ---
 name: clay-upgrade-migration
-description: |
-  Navigate Clay plan changes, pricing migrations, and feature upgrades.
+description: 'Navigate Clay plan changes, pricing migrations, and feature upgrades.
+
   Use when upgrading Clay plans, migrating to the 2026 pricing model,
+
   or adapting integrations to new Clay features.
+
   Trigger with phrases like "upgrade clay", "clay migration", "clay pricing change",
+
   "clay plan upgrade", "clay new pricing".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clay, api, migration]
+tags:
+- saas
+- clay
+- api
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clay Upgrade & Migration
 

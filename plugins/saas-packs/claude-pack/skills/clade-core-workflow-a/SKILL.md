@@ -1,18 +1,24 @@
 ---
 name: clade-core-workflow-a
-description: |
-  Redirect to claude-model-inference for Messages API streaming,
+description: 'Redirect to claude-model-inference for Messages API streaming,
+
   vision, and structured output patterns.
+
   Use when looking for the primary Anthropic workflow.
+
   Trigger with "anthropic workflow", "claude main workflow".
+
+  '
 allowed-tools: Read
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code
-tags: [saas, anthropic, claude]
+tags:
+- saas
+- anthropic
+- claude
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Core Workflow A → Model Inference
 
 ## Overview

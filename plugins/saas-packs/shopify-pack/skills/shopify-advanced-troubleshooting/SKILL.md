@@ -1,19 +1,27 @@
 ---
 name: shopify-advanced-troubleshooting
-description: |
-  Debug complex Shopify API issues using cost analysis, request tracing,
+description: 'Debug complex Shopify API issues using cost analysis, request tracing,
+
   webhook delivery inspection, and GraphQL introspection.
-  Use when encountering intermittent failures, throttling mysteries, or webhook delivery gaps.
+
+  Use when encountering intermittent failures, throttling mysteries, or webhook delivery
+  gaps.
+
   Trigger with phrases like "shopify hard bug", "shopify mystery error",
+
   "shopify deep debug", "difficult shopify issue", "shopify intermittent failure".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ecommerce, shopify]
-compatible-with: claude-code
+tags:
+- saas
+- ecommerce
+- shopify
+compatibility: Designed for Claude Code
 ---
-
 # Shopify Advanced Troubleshooting
 
 ## Overview

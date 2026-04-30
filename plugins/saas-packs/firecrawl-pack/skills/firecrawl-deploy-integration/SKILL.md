@@ -1,17 +1,25 @@
 ---
 name: firecrawl-deploy-integration
-description: |
-  Deploy Firecrawl integrations to Vercel, Cloud Run, and Docker platforms.
+description: 'Deploy Firecrawl integrations to Vercel, Cloud Run, and Docker platforms.
+
   Use when deploying Firecrawl-powered applications to production,
+
   configuring platform-specific secrets, or setting up self-hosted Firecrawl.
+
   Trigger with phrases like "deploy firecrawl", "firecrawl Vercel",
+
   "firecrawl production deploy", "firecrawl Cloud Run", "firecrawl Docker".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(docker:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, firecrawl, deployment]
+tags:
+- saas
+- firecrawl
+- deployment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Firecrawl Deploy Integration
 

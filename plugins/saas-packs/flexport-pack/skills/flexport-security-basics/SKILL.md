@@ -1,17 +1,24 @@
 ---
 name: flexport-security-basics
-description: |
-  Apply Flexport API security best practices including webhook signature verification,
+description: 'Apply Flexport API security best practices including webhook signature
+  verification,
+
   API key rotation, and least-privilege access patterns.
-  Trigger: "flexport security", "flexport webhook signature", "secure flexport API key".
+
+  Trigger: "flexport security", "flexport webhook signature", "secure flexport API
+  key".
+
+  '
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, logistics, flexport]
-compatible-with: claude-code
+tags:
+- saas
+- logistics
+- flexport
+compatibility: Designed for Claude Code
 ---
-
 # Flexport Security Basics
 
 ## Overview

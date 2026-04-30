@@ -1,16 +1,21 @@
 ---
 name: apple-notes-enterprise-rbac
-description: |
-  Implement access control for multi-user Apple Notes automation.
+description: 'Implement access control for multi-user Apple Notes automation.
+
   Trigger: "apple notes access control".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(osascript:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, macos, apple-notes, automation]
-compatible-with: claude-code
+tags:
+- saas
+- macos
+- apple-notes
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Apple Notes Enterprise RBAC
 
 ## Overview

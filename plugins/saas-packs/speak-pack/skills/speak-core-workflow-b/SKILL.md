@@ -1,17 +1,27 @@
 ---
 name: speak-core-workflow-b
-description: |
-  Execute Speak secondary workflow: Pronunciation Training with phoneme-level analysis.
+description: 'Execute Speak secondary workflow: Pronunciation Training with phoneme-level
+  analysis.
+
   Use when implementing pronunciation drills, speech scoring,
+
   or targeted pronunciation improvement features.
+
   Trigger with phrases like "speak pronunciation training",
+
   "speak speech scoring", "speak phoneme analysis".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, speak, voice-ai, workflow]
+tags:
+- saas
+- speak
+- voice-ai
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Speak Core Workflow B: Pronunciation Training
 

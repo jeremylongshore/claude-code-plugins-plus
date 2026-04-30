@@ -1,19 +1,28 @@
 ---
 name: sentry-incident-runbook
-description: |
-  Execute incident response procedures using Sentry error monitoring.
+description: 'Execute incident response procedures using Sentry error monitoring.
+
   Use when investigating production outages, triaging error spikes,
+
   classifying incident severity, or building postmortem reports from Sentry data.
+
   Trigger with phrases like "sentry incident", "sentry triage",
+
   "investigate sentry error", "sentry runbook", "production incident sentry".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Bash(curl:*), Bash(node:*), Bash(npx:*), Bash(python3:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code
-tags: [saas, sentry, incident-response, triage, observability]
+tags:
+- saas
+- sentry
+- incident-response
+- triage
+- observability
+compatibility: Designed for Claude Code
 ---
-
 # Sentry Incident Runbook
 
 ## Overview

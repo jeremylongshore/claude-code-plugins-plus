@@ -1,16 +1,23 @@
 ---
 name: langchain-upgrade-migration
-description: |
-  Upgrade LangChain SDK versions safely with import path migration,
+description: 'Upgrade LangChain SDK versions safely with import path migration,
+
   LCEL conversion from legacy chains, and agent API updates.
+
   Trigger: "upgrade langchain", "langchain migration", "langchain breaking changes",
+
   "update langchain version", "langchain 0.3", "langchain deprecation".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langchain, migration]
+tags:
+- saas
+- langchain
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # LangChain Upgrade Migration
 

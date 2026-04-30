@@ -1,16 +1,20 @@
 ---
 name: lucidchart-ci-integration
-description: |
-  Ci Integration for Lucidchart.
+description: 'Ci Integration for Lucidchart.
+
   Trigger: "lucidchart ci integration".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, lucidchart, diagramming]
-compatible-with: claude-code
+tags:
+- saas
+- lucidchart
+- diagramming
+compatibility: Designed for Claude Code
 ---
-
 # Lucidchart CI Integration
 
 ## Overview

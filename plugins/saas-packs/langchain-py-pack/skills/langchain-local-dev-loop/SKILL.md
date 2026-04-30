@@ -1,20 +1,26 @@
 ---
 name: langchain-local-dev-loop
-description: |
-  Build a fast, deterministic local test loop for LangChain 1.0 / LangGraph 1.0
-  — FakeListChatModel fixtures, pytest config, VCR cassettes with key redaction,
-  warning-filter policy. Use when adding tests to a new chain, fixing a flaky
-  test, or making integration tests reproducible.
-  Trigger with "langchain pytest", "FakeListChatModel", "VCR langchain",
-  "langchain test fixtures", "langchain integration test".
+description: "Build a fast, deterministic local test loop for LangChain 1.0 / LangGraph\
+  \ 1.0\n\u2014 FakeListChatModel fixtures, pytest config, VCR cassettes with key\
+  \ redaction,\nwarning-filter policy. Use when adding tests to a new chain, fixing\
+  \ a flaky\ntest, or making integration tests reproducible.\nTrigger with \"langchain\
+  \ pytest\", \"FakeListChatModel\", \"VCR langchain\",\n\"langchain test fixtures\"\
+  , \"langchain integration test\".\n"
 allowed-tools: Read, Write, Edit, Bash(pytest:*), Bash(python:*), Bash(pip:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, langchain, langgraph, python, langchain-1.0, testing, pytest, vcr]
-compatible-with: claude-code, codex
+tags:
+- saas
+- langchain
+- langgraph
+- python
+- langchain-1.0
+- testing
+- pytest
+- vcr
+compatibility: Designed for Claude Code, also compatible with Codex
 ---
-
 # LangChain Local Dev Loop (Python)
 
 ## Overview

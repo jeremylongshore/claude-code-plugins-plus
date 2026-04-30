@@ -1,19 +1,29 @@
 ---
 name: palantir-hello-world
-description: |
-  Create a minimal working Palantir Foundry example querying Ontology objects.
+description: 'Create a minimal working Palantir Foundry example querying Ontology
+  objects.
+
   Use when starting a new Foundry integration, testing your setup,
+
   or learning basic Foundry API and Ontology patterns.
+
   Trigger with phrases like "palantir hello world", "palantir example",
+
   "palantir quick start", "foundry first query".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(pip:*), Bash(npm:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, palantir, foundry, ontology, getting-started]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- palantir
+- foundry
+- ontology
+- getting-started
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Palantir Hello World
 
 ## Overview

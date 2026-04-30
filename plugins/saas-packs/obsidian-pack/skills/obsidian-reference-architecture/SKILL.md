@@ -1,17 +1,26 @@
 ---
 name: obsidian-reference-architecture
-description: |
-  Implement Obsidian reference architecture with best-practice project layout.
+description: 'Implement Obsidian reference architecture with best-practice project
+  layout.
+
   Use when designing new plugins, reviewing project structure,
+
   or establishing architecture standards for Obsidian development.
+
   Trigger with phrases like "obsidian architecture", "obsidian project structure",
+
   "obsidian best practices", "organize obsidian plugin".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, obsidian, obsidian-reference]
+tags:
+- saas
+- obsidian
+- obsidian-reference
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Obsidian Reference Architecture
 

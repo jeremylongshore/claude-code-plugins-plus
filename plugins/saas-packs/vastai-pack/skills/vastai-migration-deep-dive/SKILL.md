@@ -1,17 +1,25 @@
 ---
 name: vastai-migration-deep-dive
-description: |
-  Migrate GPU workloads to or from Vast.ai, or between GPU providers.
+description: 'Migrate GPU workloads to or from Vast.ai, or between GPU providers.
+
   Use when switching from AWS/GCP/Azure GPU instances to Vast.ai,
+
   migrating between GPU types, or re-platforming ML infrastructure.
+
   Trigger with phrases like "migrate to vastai", "vastai migration",
+
   "switch to vastai", "vastai from aws", "vastai from lambda".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vastai:*), Bash(docker:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vast-ai, migration]
+tags:
+- saas
+- vast-ai
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vast.ai Migration Deep Dive
 

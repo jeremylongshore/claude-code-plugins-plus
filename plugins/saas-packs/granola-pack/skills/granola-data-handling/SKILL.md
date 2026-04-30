@@ -1,16 +1,25 @@
 ---
 name: granola-data-handling
-description: |
-  Manage Granola data export, retention policies, GDPR/CCPA compliance,
+description: 'Manage Granola data export, retention policies, GDPR/CCPA compliance,
+
   and archival workflows. Handle Subject Access Requests and Right to Erasure.
+
   Trigger: "granola export", "granola data", "granola GDPR",
+
   "granola retention", "granola delete data", "granola compliance".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(python3:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, granola, compliance, data, gdpr]
+tags:
+- saas
+- granola
+- compliance
+- data
+- gdpr
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Granola Data Handling
 

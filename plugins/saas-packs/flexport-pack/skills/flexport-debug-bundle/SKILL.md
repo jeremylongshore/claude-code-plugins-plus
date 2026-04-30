@@ -1,18 +1,24 @@
 ---
 name: flexport-debug-bundle
-description: |
-  Collect Flexport API debug evidence for support tickets and troubleshooting.
+description: 'Collect Flexport API debug evidence for support tickets and troubleshooting.
+
   Use when encountering persistent API issues, preparing support tickets,
+
   or collecting diagnostic information for Flexport logistics problems.
+
   Trigger: "flexport debug", "flexport support bundle", "flexport diagnostic".
+
+  '
 allowed-tools: Read, Bash(curl:*), Bash(tar:*), Bash(jq:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, logistics, flexport]
-compatible-with: claude-code
+tags:
+- saas
+- logistics
+- flexport
+compatibility: Designed for Claude Code
 ---
-
 # Flexport Debug Bundle
 
 ## Overview

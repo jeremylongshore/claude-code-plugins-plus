@@ -1,17 +1,28 @@
 ---
 name: windsurf-cost-tuning
-description: |
-  Optimize Windsurf licensing costs through seat management, tier selection, and credit monitoring.
+description: 'Optimize Windsurf licensing costs through seat management, tier selection,
+  and credit monitoring.
+
   Use when analyzing Windsurf billing, reducing per-seat costs,
+
   or implementing usage monitoring and budget controls.
+
   Trigger with phrases like "windsurf cost", "windsurf billing",
+
   "reduce windsurf costs", "windsurf pricing", "windsurf budget".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, cost-optimization, licensing, teams]
+tags:
+- saas
+- windsurf
+- cost-optimization
+- licensing
+- teams
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Windsurf Cost Tuning
 

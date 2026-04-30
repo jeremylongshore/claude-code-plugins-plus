@@ -1,17 +1,26 @@
 ---
 name: perplexity-upgrade-migration
-description: |
-  Migrate between Perplexity model generations and API parameter changes.
+description: 'Migrate between Perplexity model generations and API parameter changes.
+
   Use when upgrading to new Sonar models, handling deprecated parameters,
+
   or migrating from legacy pplx-api models.
+
   Trigger with phrases like "upgrade perplexity", "perplexity migration",
+
   "perplexity model change", "update perplexity", "perplexity deprecated".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, perplexity, api, migration]
+tags:
+- saas
+- perplexity
+- api
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Perplexity Upgrade & Migration
 

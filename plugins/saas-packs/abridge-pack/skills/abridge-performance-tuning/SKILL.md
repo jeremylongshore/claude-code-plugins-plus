@@ -1,19 +1,29 @@
 ---
 name: abridge-performance-tuning
-description: |
-  Optimize Abridge clinical AI integration performance for high-volume deployments.
+description: 'Optimize Abridge clinical AI integration performance for high-volume
+  deployments.
+
   Use when reducing note generation latency, optimizing audio streaming throughput,
+
   improving FHIR push performance, or scaling for multi-site health systems.
+
   Trigger: "abridge performance", "abridge latency", "abridge optimization",
+
   "abridge slow", "abridge scale".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, healthcare, ai, abridge, performance]
-compatible-with: claude-code
+tags:
+- saas
+- healthcare
+- ai
+- abridge
+- performance
+compatibility: Designed for Claude Code
 ---
-
 # Abridge Performance Tuning
 
 ## Overview

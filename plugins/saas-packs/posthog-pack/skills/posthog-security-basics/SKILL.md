@@ -1,18 +1,27 @@
 ---
 name: posthog-security-basics
-description: |
-  Secure PostHog integration: API key management, project key vs personal key
+description: 'Secure PostHog integration: API key management, project key vs personal
+  key
+
   separation, secret rotation, scoped keys, and git-leak prevention.
+
   Trigger: "posthog security", "posthog secrets", "secure posthog",
+
   "posthog API key security", "posthog key rotation".
+
+  '
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, posthog, api, security, audit]
+tags:
+- saas
+- posthog
+- api
+- security
+- audit
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # PostHog Security Basics
 
 ## Overview

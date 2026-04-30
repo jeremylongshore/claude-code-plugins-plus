@@ -1,17 +1,27 @@
 ---
 name: fireflies-security-basics
-description: |
-  Apply Fireflies.ai security best practices for API keys and webhook verification.
+description: 'Apply Fireflies.ai security best practices for API keys and webhook
+  verification.
+
   Use when securing API keys, verifying webhook signatures,
+
   or auditing Fireflies.ai security configuration.
+
   Trigger with phrases like "fireflies security", "fireflies secrets",
+
   "secure fireflies", "fireflies webhook signature", "fireflies HMAC".
+
+  '
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, fireflies, api, security]
+tags:
+- saas
+- fireflies
+- api
+- security
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Fireflies.ai Security Basics
 

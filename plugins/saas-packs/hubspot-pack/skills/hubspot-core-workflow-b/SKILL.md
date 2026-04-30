@@ -1,19 +1,27 @@
 ---
 name: hubspot-core-workflow-b
-description: |
-  Build HubSpot marketing automation with emails, forms, lists, and tickets.
+description: 'Build HubSpot marketing automation with emails, forms, lists, and tickets.
+
   Use when implementing marketing email campaigns, form submissions,
+
   contact list management, or support ticket workflows.
+
   Trigger with phrases like "hubspot marketing", "hubspot email campaign",
+
   "hubspot forms", "hubspot lists", "hubspot tickets", "hubspot automation".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, marketing, hubspot]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- marketing
+- hubspot
+compatibility: Designed for Claude Code
 ---
-
 # HubSpot Core Workflow B: Marketing & Tickets
 
 ## Overview

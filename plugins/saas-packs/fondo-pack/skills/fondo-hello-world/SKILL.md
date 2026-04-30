@@ -1,17 +1,22 @@
 ---
 name: fondo-hello-world
-description: |
-  Verify Fondo setup by checking financial data sync, reviewing categorized
+description: 'Verify Fondo setup by checking financial data sync, reviewing categorized
+
   transactions, and confirming R&D tax credit eligibility.
+
   Trigger: "fondo first sync", "fondo verify", "fondo hello world", "fondo test".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, accounting, fondo]
-compatible-with: claude-code
+tags:
+- saas
+- accounting
+- fondo
+compatibility: Designed for Claude Code
 ---
-
 # Fondo Hello World
 
 ## Overview

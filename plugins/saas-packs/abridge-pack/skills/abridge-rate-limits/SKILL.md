@@ -1,19 +1,28 @@
 ---
 name: abridge-rate-limits
-description: |
-  Implement Abridge rate limiting, backoff, and session throttling patterns.
+description: 'Implement Abridge rate limiting, backoff, and session throttling patterns.
+
   Use when handling 429 errors, managing concurrent encounter sessions,
+
   or optimizing API throughput for high-volume clinical deployments.
+
   Trigger: "abridge rate limit", "abridge 429", "abridge throttling",
+
   "abridge concurrent sessions".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, healthcare, ai, abridge, rate-limiting]
-compatible-with: claude-code
+tags:
+- saas
+- healthcare
+- ai
+- abridge
+- rate-limiting
+compatibility: Designed for Claude Code
 ---
-
 # Abridge Rate Limits
 
 ## Overview

@@ -1,19 +1,26 @@
 ---
 name: grammarly-debug-bundle
-description: |
-  Collect Grammarly debug evidence for support tickets and troubleshooting.
+description: 'Collect Grammarly debug evidence for support tickets and troubleshooting.
+
   Use when encountering persistent issues, preparing support tickets,
+
   or collecting diagnostic information for Grammarly problems.
+
   Trigger with phrases like "grammarly debug", "grammarly support bundle",
+
   "collect grammarly logs", "grammarly diagnostic".
+
+  '
 allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, grammarly, writing]
-compatible-with: claude-code
+tags:
+- saas
+- grammarly
+- writing
+compatibility: Designed for Claude Code
 ---
-
 # Grammarly Debug Bundle
 
 ## Overview

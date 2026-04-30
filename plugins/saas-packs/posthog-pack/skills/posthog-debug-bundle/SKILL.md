@@ -1,19 +1,26 @@
 ---
 name: posthog-debug-bundle
-description: |
-  Collect PostHog debug evidence for support tickets and troubleshooting.
+description: 'Collect PostHog debug evidence for support tickets and troubleshooting.
+
   Gathers SDK versions, API connectivity, event flow status, flag definitions,
+
   and redacted configuration into a support-ready archive.
+
   Trigger: "posthog debug", "posthog support bundle", "collect posthog logs",
+
   "posthog diagnostic", "posthog not working debug".
+
+  '
 allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, posthog, debugging]
+tags:
+- saas
+- posthog
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # PostHog Debug Bundle
 
 ## Current State

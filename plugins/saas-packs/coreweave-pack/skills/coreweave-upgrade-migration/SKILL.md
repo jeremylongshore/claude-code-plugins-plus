@@ -1,19 +1,28 @@
 ---
 name: coreweave-upgrade-migration
-description: |
-  Upgrade CoreWeave deployments and migrate between GPU types.
+description: 'Upgrade CoreWeave deployments and migrate between GPU types.
+
   Use when migrating from A100 to H100, upgrading CUDA versions,
+
   or updating inference server versions.
+
   Trigger with phrases like "upgrade coreweave", "coreweave gpu migration",
+
   "coreweave cuda upgrade", "migrate coreweave".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(kubectl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, gpu-cloud, kubernetes, inference, coreweave]
-compatible-with: claude-code
+tags:
+- saas
+- gpu-cloud
+- kubernetes
+- inference
+- coreweave
+compatibility: Designed for Claude Code
 ---
-
 # CoreWeave Upgrade & Migration
 
 ## Overview

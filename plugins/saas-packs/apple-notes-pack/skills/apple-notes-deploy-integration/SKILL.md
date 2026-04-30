@@ -1,16 +1,21 @@
 ---
 name: apple-notes-deploy-integration
-description: |
-  Deploy Apple Notes automation as a local macOS service.
+description: 'Deploy Apple Notes automation as a local macOS service.
+
   Trigger: "apple notes deploy".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(osascript:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, macos, apple-notes, automation]
-compatible-with: claude-code
+tags:
+- saas
+- macos
+- apple-notes
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Apple Notes Deploy Integration
 
 ## Overview

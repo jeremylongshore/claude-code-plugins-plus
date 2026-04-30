@@ -1,19 +1,28 @@
 ---
 name: anima-reference-architecture
-description: |
-  Implement reference architecture for Anima design-to-code automation.
+description: 'Implement reference architecture for Anima design-to-code automation.
+
   Use when designing a design system automation pipeline, structuring
+
   a Figma-to-React project, or planning team-scale design handoff.
+
   Trigger: "anima architecture", "design-to-code architecture",
+
   "anima project structure", "figma automation architecture".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, figma, anima, architecture]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- figma
+- anima
+- architecture
+compatibility: Designed for Claude Code
 ---
-
 # Anima Reference Architecture
 
 ## System Architecture

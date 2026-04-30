@@ -1,19 +1,28 @@
 ---
 name: clickhouse-core-workflow-b
-description: |
-  Insert, query, and aggregate data in ClickHouse with real SQL patterns.
+description: 'Insert, query, and aggregate data in ClickHouse with real SQL patterns.
+
   Use when writing analytical queries, inserting data at scale,
+
   building dashboards, or implementing materialized views.
+
   Trigger: "clickhouse query", "clickhouse insert", "clickhouse aggregate",
+
   "clickhouse materialized view", "clickhouse SQL".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, database, analytics, clickhouse, olap]
-compatible-with: claude-code
+tags:
+- saas
+- database
+- analytics
+- clickhouse
+- olap
+compatibility: Designed for Claude Code
 ---
-
 # ClickHouse Insert & Query (Core Workflow B)
 
 ## Overview

@@ -1,20 +1,34 @@
 ---
 name: sentry-performance-tuning
-description: |
-  Optimize Sentry performance monitoring for lower overhead and higher signal.
+description: 'Optimize Sentry performance monitoring for lower overhead and higher
+  signal.
+
   Use when tuning tracesSampleRate vs tracesSampler, configuring continuous profiling,
+
   fixing high-cardinality transaction names, adding custom span measurements,
+
   reducing SDK overhead, or setting Web Vitals thresholds.
+
   Trigger: "sentry performance optimize", "tune sentry sampling",
+
   "reduce sentry overhead", "sentry web vitals", "sentry profiling setup".
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash(npm:*), Bash(npx:*), Bash(node:*), Bash(sentry-cli:*)
+
+  '
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(npm:*), Bash(npx:*), Bash(node:*),
+  Bash(sentry-cli:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, sentry, monitoring, performance, optimization, profiling, web-vitals]
+tags:
+- saas
+- sentry
+- monitoring
+- performance
+- optimization
+- profiling
+- web-vitals
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Sentry Performance Tuning
 
 ## Overview

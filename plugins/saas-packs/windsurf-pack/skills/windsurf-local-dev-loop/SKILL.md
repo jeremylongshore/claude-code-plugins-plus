@@ -1,17 +1,28 @@
 ---
 name: windsurf-local-dev-loop
-description: |
-  Configure Windsurf local development workflow with Cascade, Previews, and terminal integration.
+description: 'Configure Windsurf local development workflow with Cascade, Previews,
+  and terminal integration.
+
   Use when setting up a development environment, configuring Turbo mode,
+
   or establishing a fast iteration cycle with Windsurf AI.
+
   Trigger with phrases like "windsurf dev setup", "windsurf local development",
+
   "windsurf dev environment", "windsurf workflow", "develop with windsurf".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, workflow, development, turbo-mode]
+tags:
+- saas
+- windsurf
+- workflow
+- development
+- turbo-mode
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Windsurf Local Dev Loop
 

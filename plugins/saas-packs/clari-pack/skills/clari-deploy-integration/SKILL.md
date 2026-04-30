@@ -1,19 +1,28 @@
 ---
 name: clari-deploy-integration
-description: |
-  Deploy Clari export pipelines to production with Airflow, Cloud Functions, or Lambda.
+description: 'Deploy Clari export pipelines to production with Airflow, Cloud Functions,
+  or Lambda.
+
   Use when scheduling automated exports, deploying to cloud platforms,
+
   or setting up serverless Clari sync.
+
   Trigger with phrases like "deploy clari", "clari airflow",
+
   "clari lambda", "clari cloud function", "clari scheduled export".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gcloud:*), Bash(aws:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, revenue-intelligence, forecasting, clari]
-compatible-with: claude-code
+tags:
+- saas
+- revenue-intelligence
+- forecasting
+- clari
+compatibility: Designed for Claude Code
 ---
-
 # Clari Deploy Integration
 
 ## Overview

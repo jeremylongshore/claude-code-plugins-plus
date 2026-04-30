@@ -1,17 +1,25 @@
 ---
 name: exa-debug-bundle
-description: |
-  Collect Exa debug evidence for support tickets and troubleshooting.
+description: 'Collect Exa debug evidence for support tickets and troubleshooting.
+
   Use when encountering persistent issues, preparing support tickets,
+
   or collecting diagnostic information for Exa problems.
+
   Trigger with phrases like "exa debug", "exa support bundle",
+
   "collect exa logs", "exa diagnostic".
+
+  '
 allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Bash(node:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, exa, debugging]
+tags:
+- saas
+- exa
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Exa Debug Bundle
 

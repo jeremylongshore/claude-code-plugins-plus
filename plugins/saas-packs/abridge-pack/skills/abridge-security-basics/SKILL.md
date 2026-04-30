@@ -1,19 +1,29 @@
 ---
 name: abridge-security-basics
-description: |
-  Apply HIPAA-compliant security practices for Abridge clinical AI integrations.
+description: 'Apply HIPAA-compliant security practices for Abridge clinical AI integrations.
+
   Use when securing PHI in transit/at rest, configuring access controls,
+
   implementing audit logging, or preparing for HIPAA security audits.
+
   Trigger: "abridge security", "abridge HIPAA", "abridge PHI protection",
+
   "abridge access control", "abridge audit logging".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(openssl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, healthcare, ai, abridge, security, hipaa]
-compatible-with: claude-code
+tags:
+- saas
+- healthcare
+- ai
+- abridge
+- security
+- hipaa
+compatibility: Designed for Claude Code
 ---
-
 # Abridge Security Basics
 
 ## Overview

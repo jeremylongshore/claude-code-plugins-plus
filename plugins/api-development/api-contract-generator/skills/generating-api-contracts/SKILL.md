@@ -1,16 +1,22 @@
 ---
 name: generating-api-contracts
-description: |
-  Generate API contracts and OpenAPI specifications from code or design documents.
+description: 'Generate API contracts and OpenAPI specifications from code or design
+  documents.
+
   Use when documenting API contracts and specifications.
-  Trigger with phrases like "generate API contract", "create OpenAPI spec", or "document API contract".
-  
+
+  Trigger with phrases like "generate API contract", "create OpenAPI spec", or "document
+  API contract".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:contract-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [api, api-contracts]
+tags:
+- api
+- api-contracts
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Generating API Contracts
 

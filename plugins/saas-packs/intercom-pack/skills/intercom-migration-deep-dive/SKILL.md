@@ -1,20 +1,29 @@
 ---
 name: intercom-migration-deep-dive
-description: |
-  Execute major Intercom data migrations and re-platforming with the contacts,
+description: 'Execute major Intercom data migrations and re-platforming with the contacts,
+
   conversations, and articles APIs. Use when migrating from Zendesk/Freshdesk to
+
   Intercom, bulk-importing contacts, or re-platforming to Intercom.
+
   Trigger with phrases like "migrate to intercom", "intercom migration",
+
   "import contacts to intercom", "switch to intercom", "zendesk to intercom",
+
   "intercom data import".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, support, messaging, intercom]
-compatible-with: claude-code
+tags:
+- saas
+- support
+- messaging
+- intercom
+compatibility: Designed for Claude Code
 ---
-
 # Intercom Migration Deep Dive
 
 ## Overview

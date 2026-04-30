@@ -1,16 +1,29 @@
 ---
 name: compliance-audit
-description: |
-  Performs regulatory gap analysis across 7 compliance frameworks with a scored
+description: 'Performs regulatory gap analysis across 7 compliance frameworks with
+  a scored
+
   report card and prioritized remediation roadmap. Use when assessing a website
+
   or application for GDPR, CCPA, ADA, PCI-DSS, CAN-SPAM, COPPA, or SOC 2 compliance.
+
   Trigger with "/compliance-audit" or "audit my website for regulatory compliance".
+
+  '
 allowed-tools: Read, Glob, Grep, WebFetch
 version: 1.0.0
 author: Intent Solutions <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [legal, compliance, gdpr, ccpa, ada, pci-dss, audit, regulatory]
+tags:
+- legal
+- compliance
+- gdpr
+- ccpa
+- ada
+- pci-dss
+- audit
+- regulatory
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Regulatory Compliance Audit
 

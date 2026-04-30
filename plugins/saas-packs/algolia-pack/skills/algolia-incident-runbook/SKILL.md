@@ -1,18 +1,24 @@
 ---
 name: algolia-incident-runbook
-description: |
-  Execute Algolia incident response: triage search failures, distinguish
+description: 'Execute Algolia incident response: triage search failures, distinguish
+
   Algolia-side vs your-side issues, apply fallbacks, and run postmortems.
+
   Trigger: "algolia incident", "algolia outage", "algolia down",
+
   "algolia on-call", "algolia emergency", "algolia broken", "search is down".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*), Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, algolia]
-compatible-with: claude-code
+tags:
+- saas
+- search
+- algolia
+compatibility: Designed for Claude Code
 ---
-
 # Algolia Incident Runbook
 
 ## Overview

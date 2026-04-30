@@ -1,17 +1,22 @@
 ---
 name: flyio-webhooks-events
-description: |
-  Implement Fly.io machine events, health check monitoring, and log-based
+description: 'Implement Fly.io machine events, health check monitoring, and log-based
+
   event processing for deployment automation and alerting.
+
   Trigger: "fly.io events", "fly.io machine status", "fly.io health monitoring".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(fly:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, edge-compute, flyio]
-compatible-with: claude-code
+tags:
+- saas
+- edge-compute
+- flyio
+compatibility: Designed for Claude Code
 ---
-
 # Fly.io Events & Monitoring
 
 ## Overview

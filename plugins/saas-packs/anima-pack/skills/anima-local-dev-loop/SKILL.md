@@ -1,18 +1,26 @@
 ---
 name: anima-local-dev-loop
-description: |
-  Set up iterative design-to-code development loop with Anima SDK.
+description: 'Set up iterative design-to-code development loop with Anima SDK.
+
   Use when rapidly iterating on Figma-to-code output, comparing framework outputs,
+
   or building a local preview server for generated components.
+
   Trigger: "anima local dev", "anima dev loop", "anima preview", "anima iteration".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, figma, anima, development]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- figma
+- anima
+- development
+compatibility: Designed for Claude Code
 ---
-
 # Anima Local Dev Loop
 
 ## Overview

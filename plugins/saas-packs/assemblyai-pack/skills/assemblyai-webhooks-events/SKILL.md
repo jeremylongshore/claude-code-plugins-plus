@@ -1,19 +1,29 @@
 ---
 name: assemblyai-webhooks-events
-description: |
-  Implement AssemblyAI webhook handling for transcription completion events.
+description: 'Implement AssemblyAI webhook handling for transcription completion events.
+
   Use when setting up webhook endpoints, handling transcription callbacks,
+
   or processing async transcription results via webhooks.
+
   Trigger with phrases like "assemblyai webhook", "assemblyai events",
+
   "assemblyai transcription callback", "handle assemblyai webhook".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, speech-to-text, assemblyai, transcription, webhooks]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- speech-to-text
+- assemblyai
+- transcription
+- webhooks
+compatibility: Designed for Claude Code
 ---
-
 # AssemblyAI Webhooks & Events
 
 ## Overview

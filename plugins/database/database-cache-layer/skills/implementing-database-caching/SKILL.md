@@ -1,17 +1,24 @@
 ---
 name: implementing-database-caching
-description: |
-  Process use when you need to implement multi-tier caching to improve database performance.
+description: 'Process use when you need to implement multi-tier caching to improve
+  database performance.
+
   This skill sets up Redis, in-memory caching, and CDN layers to reduce database load.
+
   Trigger with phrases like "implement database caching", "add Redis cache layer",
+
   "improve query performance with caching", or "reduce database load".
 
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(redis-cli:*), Bash(docker:redis:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [database, redis, performance]
+tags:
+- database
+- redis
+- performance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Database Cache Layer
 

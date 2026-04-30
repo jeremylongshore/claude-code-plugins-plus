@@ -1,19 +1,27 @@
 ---
 name: hootsuite-upgrade-migration
-description: |
-  Analyze, plan, and execute Hootsuite SDK upgrades with breaking change detection.
+description: 'Analyze, plan, and execute Hootsuite SDK upgrades with breaking change
+  detection.
+
   Use when upgrading Hootsuite SDK versions, detecting deprecations,
+
   or migrating to new API versions.
+
   Trigger with phrases like "upgrade hootsuite", "hootsuite migration",
+
   "hootsuite breaking changes", "update hootsuite SDK", "analyze hootsuite version".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hootsuite, social-media]
-compatible-with: claude-code
+tags:
+- saas
+- hootsuite
+- social-media
+compatibility: Designed for Claude Code
 ---
-
 # Hootsuite Upgrade & Migration
 
 ## Overview

@@ -1,17 +1,27 @@
 ---
 name: ideogram-cost-tuning
-description: |
-  Optimize Ideogram costs through model selection, caching, and usage monitoring.
+description: 'Optimize Ideogram costs through model selection, caching, and usage
+  monitoring.
+
   Use when analyzing Ideogram billing, reducing API costs,
+
   or implementing budget alerts and usage tracking.
+
   Trigger with phrases like "ideogram cost", "ideogram billing",
+
   "reduce ideogram costs", "ideogram pricing", "ideogram budget", "ideogram credits".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, ideogram, api, cost-optimization]
+tags:
+- saas
+- ideogram
+- api
+- cost-optimization
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Ideogram Cost Tuning
 

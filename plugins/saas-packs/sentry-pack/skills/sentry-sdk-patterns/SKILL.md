@@ -1,20 +1,31 @@
 ---
 name: sentry-sdk-patterns
-description: |
-  Best practices for using Sentry SDK in TypeScript and Python.
+description: 'Best practices for using Sentry SDK in TypeScript and Python.
+
   Use when implementing structured error context with scopes, breadcrumb
+
   strategies, beforeSend/beforeBreadcrumb filtering, custom fingerprinting,
+
   user context, or performance span creation.
+
   Trigger: "sentry best practices", "sentry patterns", "sentry sdk usage",
+
   "sentry scope", "sentry breadcrumbs", "sentry beforeSend", "sentry fingerprint".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, sentry, python, typescript, best-practices, error-handling]
+tags:
+- saas
+- sentry
+- python
+- typescript
+- best-practices
+- error-handling
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Sentry SDK Patterns
 
 ## Overview

@@ -1,19 +1,27 @@
 ---
 name: adobe-deploy-integration
-description: |
-  Deploy Adobe-powered applications to Vercel, Cloud Run, and Adobe App Builder
+description: 'Deploy Adobe-powered applications to Vercel, Cloud Run, and Adobe App
+  Builder
+
   with proper credential injection and health monitoring.
+
   Use when deploying Adobe API integrations to production platforms.
+
   Trigger with phrases like "deploy adobe", "adobe Vercel",
+
   "adobe Cloud Run", "adobe App Builder deploy", "adobe production deploy".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(gcloud:*), Bash(aio:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, adobe]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- adobe
+compatibility: Designed for Claude Code
 ---
-
 # Adobe Deploy Integration
 
 ## Overview

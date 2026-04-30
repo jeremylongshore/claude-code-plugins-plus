@@ -1,17 +1,25 @@
 ---
 name: evernote-webhooks-events
-description: |
-  Implement Evernote webhook notifications and sync events.
+description: 'Implement Evernote webhook notifications and sync events.
+
   Use when handling note changes, implementing real-time sync,
+
   or processing Evernote notifications.
+
   Trigger with phrases like "evernote webhook", "evernote events",
+
   "evernote sync", "evernote notifications".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, evernote, webhooks]
+tags:
+- saas
+- evernote
+- webhooks
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Evernote Webhooks & Events
 

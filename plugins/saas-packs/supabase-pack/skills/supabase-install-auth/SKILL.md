@@ -1,19 +1,29 @@
 ---
 name: supabase-install-auth
-description: |
-  Install and configure Supabase SDK, CLI, and project authentication.
+description: 'Install and configure Supabase SDK, CLI, and project authentication.
+
   Use when setting up a new Supabase project, installing @supabase/supabase-js,
+
   configuring environment variables, or initializing the Supabase client.
+
   Trigger with "install supabase", "setup supabase", "supabase auth config",
+
   "configure supabase", "supabase init", "add supabase to project".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(pnpm:*), Bash(pip:*), Bash(supabase:*), Grep, Glob
+
+  '
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(pnpm:*), Bash(pip:*),
+  Bash(supabase:*), Grep, Glob
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, supabase, setup, authentication, sdk]
+tags:
+- saas
+- supabase
+- setup
+- authentication
+- sdk
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Supabase Install & Auth
 
 ## Overview

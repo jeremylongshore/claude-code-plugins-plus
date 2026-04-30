@@ -1,19 +1,26 @@
 ---
 name: shopify-theme-performance
-description: |
-  Optimize Shopify theme performance for Core Web Vitals (LCP, CLS, INP).
+description: 'Optimize Shopify theme performance for Core Web Vitals (LCP, CLS, INP).
+
   Use when diagnosing slow page loads, fixing lazy-loaded hero images,
+
   profiling Liquid render times, or optimizing image delivery.
+
   Trigger with phrases like "shopify theme performance", "shopify core web vitals",
+
   "shopify lcp", "shopify liquid profiler", "shopify image optimization".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ecommerce, shopify]
-compatible-with: claude-code
+tags:
+- saas
+- ecommerce
+- shopify
+compatibility: Designed for Claude Code
 ---
-
 # Shopify Theme Performance
 
 ## Overview

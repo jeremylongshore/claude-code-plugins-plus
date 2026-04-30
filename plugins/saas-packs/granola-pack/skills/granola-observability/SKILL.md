@@ -1,17 +1,27 @@
 ---
 name: granola-observability
-description: |
-  Monitor Granola adoption, meeting analytics, and build custom dashboards.
+description: 'Monitor Granola adoption, meeting analytics, and build custom dashboards.
+
   Use when tracking team meeting patterns, measuring adoption,
+
   building analytics pipelines, or creating executive reports.
+
   Trigger: "granola analytics", "granola metrics", "granola monitoring",
+
   "granola adoption", "meeting insights".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(python3:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, granola, monitoring, analytics, observability]
+tags:
+- saas
+- granola
+- monitoring
+- analytics
+- observability
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Granola Observability
 

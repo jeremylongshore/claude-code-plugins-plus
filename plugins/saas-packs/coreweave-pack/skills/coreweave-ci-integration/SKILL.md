@@ -1,19 +1,28 @@
 ---
 name: coreweave-ci-integration
-description: |
-  Integrate CoreWeave deployments into CI/CD pipelines with GitHub Actions.
+description: 'Integrate CoreWeave deployments into CI/CD pipelines with GitHub Actions.
+
   Use when automating container builds, deploying inference services from CI,
+
   or validating GPU manifests in pull requests.
+
   Trigger with phrases like "coreweave CI", "coreweave github actions",
+
   "coreweave pipeline", "automate coreweave deploy".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, gpu-cloud, kubernetes, inference, coreweave]
-compatible-with: claude-code
+tags:
+- saas
+- gpu-cloud
+- kubernetes
+- inference
+- coreweave
+compatibility: Designed for Claude Code
 ---
-
 # CoreWeave CI Integration
 
 ## Overview

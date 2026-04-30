@@ -1,20 +1,22 @@
 ---
 name: webflow-security-basics
-description: |
-  Apply Webflow API security best practices — token management, scope least privilege,
-  OAuth 2.0 secret rotation, webhook signature verification, and audit logging.
-  Use when securing API tokens, implementing least privilege access,
-  or auditing Webflow security configuration.
-  Trigger with phrases like "webflow security", "webflow secrets",
-  "secure webflow", "webflow API key security", "webflow token rotation".
+description: "Apply Webflow API security best practices \u2014 token management, scope\
+  \ least privilege,\nOAuth 2.0 secret rotation, webhook signature verification, and\
+  \ audit logging.\nUse when securing API tokens, implementing least privilege access,\n\
+  or auditing Webflow security configuration.\nTrigger with phrases like \"webflow\
+  \ security\", \"webflow secrets\",\n\"secure webflow\", \"webflow API key security\"\
+  , \"webflow token rotation\".\n"
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, no-code, webflow]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- no-code
+- webflow
+compatibility: Designed for Claude Code
 ---
-
 # Webflow Security Basics
 
 ## Overview

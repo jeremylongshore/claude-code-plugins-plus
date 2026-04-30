@@ -1,17 +1,28 @@
 ---
 name: replit-upgrade-migration
-description: |
-  Upgrade Replit Nix channels, migrate between database types, and update deployment targets.
+description: 'Upgrade Replit Nix channels, migrate between database types, and update
+  deployment targets.
+
   Use when upgrading Nix channel versions, migrating from Replit DB to PostgreSQL,
+
   switching deployment types, or updating system dependencies.
+
   Trigger with phrases like "upgrade replit", "replit nix upgrade",
+
   "migrate replit database", "replit version update", "replit channel update".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, replit, migration, nix, upgrade]
+tags:
+- saas
+- replit
+- migration
+- nix
+- upgrade
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Replit Upgrade & Migration
 

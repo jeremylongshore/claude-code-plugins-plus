@@ -1,17 +1,26 @@
 ---
 name: customerio-cost-tuning
-description: |
-  Optimize Customer.io costs and usage efficiency.
+description: 'Optimize Customer.io costs and usage efficiency.
+
   Use when reducing profile count, cleaning inactive users,
+
   deduplicating events, or right-sizing your plan.
+
   Trigger: "customer.io cost", "reduce customer.io spend",
+
   "customer.io billing", "customer.io pricing", "customer.io cleanup".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Glob, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, customer-io, cost-optimization, billing]
+tags:
+- saas
+- customer-io
+- cost-optimization
+- billing
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Customer.io Cost Tuning
 

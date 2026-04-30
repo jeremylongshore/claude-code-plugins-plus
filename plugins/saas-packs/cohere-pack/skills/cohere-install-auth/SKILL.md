@@ -1,19 +1,27 @@
 ---
 name: cohere-install-auth
-description: |
-  Install and configure Cohere SDK authentication with API v2.
+description: 'Install and configure Cohere SDK authentication with API v2.
+
   Use when setting up a new Cohere integration, configuring API keys,
+
   or initializing the CohereClientV2 in your project.
+
   Trigger with phrases like "install cohere", "setup cohere",
+
   "cohere auth", "configure cohere API key".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, nlp, cohere]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- nlp
+- cohere
+compatibility: Designed for Claude Code
 ---
-
 # Cohere Install & Auth
 
 ## Overview

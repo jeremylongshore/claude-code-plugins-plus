@@ -1,17 +1,25 @@
 ---
 name: databricks-upgrade-migration
-description: |
-  Upgrade Databricks runtime versions and migrate between features.
+description: 'Upgrade Databricks runtime versions and migrate between features.
+
   Use when upgrading DBR versions, migrating to Unity Catalog,
+
   or updating deprecated APIs and features.
+
   Trigger with phrases like "databricks upgrade", "DBR upgrade",
+
   "databricks migration", "unity catalog migration", "hive to unity".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(databricks:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, databricks, migration]
+tags:
+- saas
+- databricks
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Databricks Upgrade & Migration
 

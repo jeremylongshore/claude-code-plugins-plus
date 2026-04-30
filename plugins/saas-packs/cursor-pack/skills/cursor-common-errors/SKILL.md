@@ -1,15 +1,23 @@
 ---
-name: "cursor-common-errors"
-description: |
-  Troubleshoot common Cursor IDE errors: authentication, completion, indexing, API, and performance
-  issues. Triggers on "cursor error", "cursor not working", "cursor issue", "cursor problem",
+name: cursor-common-errors
+description: 'Troubleshoot common Cursor IDE errors: authentication, completion, indexing,
+  API, and performance
+
+  issues. Triggers on "cursor error", "cursor not working", "cursor issue", "cursor
+  problem",
+
   "fix cursor", "cursor crash".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, cursor, cursor-common]
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- cursor
+- cursor-common
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Cursor Common Errors
 

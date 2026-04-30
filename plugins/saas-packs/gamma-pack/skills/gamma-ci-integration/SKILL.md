@@ -1,17 +1,26 @@
 ---
 name: gamma-ci-integration
-description: |
-  Configure Gamma CI/CD integration with GitHub Actions and testing.
+description: 'Configure Gamma CI/CD integration with GitHub Actions and testing.
+
   Use when setting up automated testing, configuring CI pipelines,
+
   or integrating Gamma tests into your build process.
+
   Trigger with phrases like "gamma CI", "gamma GitHub Actions",
+
   "gamma automated tests", "CI gamma", "gamma pipeline".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, gamma, testing, ci-cd]
+tags:
+- saas
+- gamma
+- testing
+- ci-cd
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Gamma CI Integration
 

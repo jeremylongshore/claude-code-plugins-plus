@@ -1,17 +1,27 @@
 ---
 name: databricks-local-dev-loop
-description: |
-  Configure Databricks local development with Databricks Connect, Asset Bundles, and IDE.
+description: 'Configure Databricks local development with Databricks Connect, Asset
+  Bundles, and IDE.
+
   Use when setting up a local dev environment, configuring test workflows,
+
   or establishing a fast iteration cycle with Databricks.
+
   Trigger with phrases like "databricks dev setup", "databricks local",
+
   "databricks IDE", "develop with databricks", "databricks connect".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(pip:*), Bash(databricks:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, databricks, testing, workflow]
+tags:
+- saas
+- databricks
+- testing
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Databricks Local Dev Loop
 

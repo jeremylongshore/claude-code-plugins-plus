@@ -1,20 +1,30 @@
 ---
 name: bamboohr-core-workflow-b
-description: |
-  Execute BambooHR secondary workflows: time off requests, PTO balances,
+description: 'Execute BambooHR secondary workflows: time off requests, PTO balances,
+
   benefits administration, and employee files/photos.
+
   Use when managing time off, checking PTO balances, handling benefits data,
+
   or working with employee documents in BambooHR.
+
   Trigger with phrases like "bamboohr time off", "bamboohr PTO", "bamboohr benefits",
+
   "bamboohr vacation", "bamboohr files", "bamboohr leave request".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hr, bamboohr, timeoff, benefits]
-compatible-with: claude-code
+tags:
+- saas
+- hr
+- bamboohr
+- timeoff
+- benefits
+compatibility: Designed for Claude Code
 ---
-
 # BambooHR Core Workflow B — Time Off, Benefits & Files
 
 ## Overview

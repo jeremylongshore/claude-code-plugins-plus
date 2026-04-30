@@ -1,20 +1,30 @@
 ---
 name: obsidian-core-workflow-b
-description: |
-  Build advanced Obsidian plugin features: custom views (ItemView), modals,
+description: 'Build advanced Obsidian plugin features: custom views (ItemView), modals,
+
   editor commands with selection manipulation, status bar, context menus,
+
   and Vault API file creation/modification. Use when adding UI components
+
   to a plugin, building sidebar views, or creating modal dialogs.
+
   Trigger with "obsidian modal", "obsidian custom view", "obsidian sidebar",
+
   "obsidian context menu", "obsidian editor command", "obsidian UI".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [obsidian, ui-components, views, modals, editor]
+tags:
+- obsidian
+- ui-components
+- views
+- modals
+- editor
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Obsidian Core Workflow B: Advanced Plugin Features
 
 ## Overview

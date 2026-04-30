@@ -1,19 +1,27 @@
 ---
 name: shopify-common-errors
-description: |
-  Diagnose and fix common Shopify API errors including 401, 403, 422, 429, and GraphQL errors.
+description: 'Diagnose and fix common Shopify API errors including 401, 403, 422,
+  429, and GraphQL errors.
+
   Use when encountering Shopify errors, debugging failed requests,
+
   or troubleshooting integration issues.
+
   Trigger with phrases like "shopify error", "fix shopify",
+
   "shopify not working", "debug shopify", "shopify 422".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ecommerce, shopify]
-compatible-with: claude-code
+tags:
+- saas
+- ecommerce
+- shopify
+compatibility: Designed for Claude Code
 ---
-
 # Shopify Common Errors
 
 ## Overview

@@ -1,15 +1,24 @@
 ---
 name: klingai-reference-architecture
-description: |
-  Production reference architecture for Kling AI video generation platforms. Use when designing
-  scalable systems. Trigger with phrases like 'klingai architecture', 'kling ai system design',
-  'video platform architecture', 'klingai production setup'.
+description: 'Production reference architecture for Kling AI video generation platforms.
+  Use when designing
+
+  scalable systems. Trigger with phrases like ''klingai architecture'', ''kling ai
+  system design'',
+
+  ''video platform architecture'', ''klingai production setup''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, kling-ai, architecture, scaling]
+tags:
+- saas
+- kling-ai
+- architecture
+- scaling
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Kling AI Reference Architecture
 

@@ -1,20 +1,21 @@
 ---
 name: webflow-enterprise-rbac
-description: |
-  Configure Webflow enterprise access control — OAuth 2.0 app authorization,
-  scope-based RBAC, per-site token isolation, workspace member management,
-  and audit logging for compliance.
-  Trigger with phrases like "webflow RBAC", "webflow enterprise",
-  "webflow roles", "webflow permissions", "webflow OAuth scopes",
-  "webflow access control", "webflow workspace members".
+description: "Configure Webflow enterprise access control \u2014 OAuth 2.0 app authorization,\n\
+  scope-based RBAC, per-site token isolation, workspace member management,\nand audit\
+  \ logging for compliance.\nTrigger with phrases like \"webflow RBAC\", \"webflow\
+  \ enterprise\",\n\"webflow roles\", \"webflow permissions\", \"webflow OAuth scopes\"\
+  ,\n\"webflow access control\", \"webflow workspace members\".\n"
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, no-code, webflow]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- no-code
+- webflow
+compatibility: Designed for Claude Code
 ---
-
 # Webflow Enterprise RBAC
 
 ## Overview

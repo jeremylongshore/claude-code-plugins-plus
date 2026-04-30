@@ -1,19 +1,28 @@
 ---
 name: hubspot-performance-tuning
-description: |
-  Optimize HubSpot API performance with caching, batching, and search optimization.
+description: 'Optimize HubSpot API performance with caching, batching, and search
+  optimization.
+
   Use when experiencing slow API responses, implementing caching strategies,
+
   or optimizing request throughput for HubSpot CRM operations.
+
   Trigger with phrases like "hubspot performance", "optimize hubspot",
+
   "hubspot slow", "hubspot caching", "hubspot batch", "hubspot latency".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, marketing, hubspot]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- marketing
+- hubspot
+compatibility: Designed for Claude Code
 ---
-
 # HubSpot Performance Tuning
 
 ## Overview

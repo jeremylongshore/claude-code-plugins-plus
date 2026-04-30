@@ -1,19 +1,26 @@
 ---
 name: hootsuite-rate-limits
-description: |
-  Implement Hootsuite rate limiting, backoff, and idempotency patterns.
+description: 'Implement Hootsuite rate limiting, backoff, and idempotency patterns.
+
   Use when handling rate limit errors, implementing retry logic,
+
   or optimizing API request throughput for Hootsuite.
+
   Trigger with phrases like "hootsuite rate limit", "hootsuite throttling",
+
   "hootsuite 429", "hootsuite retry", "hootsuite backoff".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hootsuite, social-media]
-compatible-with: claude-code
+tags:
+- saas
+- hootsuite
+- social-media
+compatibility: Designed for Claude Code
 ---
-
 # Hootsuite Rate Limits
 
 ## Overview

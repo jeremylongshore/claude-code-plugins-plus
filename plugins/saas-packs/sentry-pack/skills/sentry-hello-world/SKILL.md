@@ -1,19 +1,29 @@
 ---
 name: sentry-hello-world
-description: |
-  Capture your first test error with Sentry and verify it appears in the dashboard.
+description: 'Capture your first test error with Sentry and verify it appears in the
+  dashboard.
+
   Use when testing a new Sentry integration, verifying error capture works after
+
   install-auth, or learning how to enrich events with user context, tags, and breadcrumbs.
+
   Trigger with phrases like "test sentry", "sentry hello world",
+
   "verify sentry", "first sentry error", "sentry capture test".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(node:*), Bash(python:*), Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, sentry, testing, dashboard, quickstart]
+tags:
+- saas
+- sentry
+- testing
+- dashboard
+- quickstart
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Sentry Hello World
 
 ## Overview

@@ -1,16 +1,24 @@
 ---
 name: twinmind-data-handling
-description: |
-  Handle TwinMind meeting data with GDPR compliance: transcript storage, memory vault management, data export, and deletion policies.
+description: 'Handle TwinMind meeting data with GDPR compliance: transcript storage,
+  memory vault management, data export, and deletion policies.
+
   Use when implementing data handling,
+
   or managing TwinMind meeting AI operations.
+
   Trigger with phrases like "twinmind data handling", "twinmind data handling".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: ['saas', 'twinmind', 'compliance']
+tags:
+- saas
+- twinmind
+- compliance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # TwinMind Data Handling
 

@@ -1,17 +1,22 @@
 ---
 name: flyio-upgrade-migration
-description: |
-  Migrate between Fly.io platform versions including Apps v1 to v2 (Machines),
+description: 'Migrate between Fly.io platform versions including Apps v1 to v2 (Machines),
+
   flyctl upgrades, and Postgres major version upgrades.
+
   Trigger: "fly.io upgrade", "fly.io migration", "fly apps v2", "fly postgres upgrade".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(fly:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, edge-compute, flyio]
-compatible-with: claude-code
+tags:
+- saas
+- edge-compute
+- flyio
+compatibility: Designed for Claude Code
 ---
-
 # Fly.io Upgrade & Migration
 
 ## Overview

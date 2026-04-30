@@ -1,19 +1,28 @@
 ---
 name: klaviyo-observability
-description: |
-  Set up observability for Klaviyo integrations with metrics, traces, and alerts.
+description: 'Set up observability for Klaviyo integrations with metrics, traces,
+  and alerts.
+
   Use when implementing monitoring for Klaviyo API operations, setting up dashboards,
+
   or configuring alerting for Klaviyo integration health.
+
   Trigger with phrases like "klaviyo monitoring", "klaviyo metrics",
+
   "klaviyo observability", "monitor klaviyo", "klaviyo alerts", "klaviyo tracing".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, klaviyo, email-marketing, cdp]
-compatible-with: claude-code
+tags:
+- saas
+- klaviyo
+- email-marketing
+- cdp
+compatibility: Designed for Claude Code
 ---
-
 # Klaviyo Observability
 
 ## Overview

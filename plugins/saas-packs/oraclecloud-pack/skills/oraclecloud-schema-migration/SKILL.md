@@ -1,17 +1,19 @@
 ---
 name: oraclecloud-schema-migration
-description: |
-  Migrate to OCI Autonomous Database — wallet setup, mTLS, Data Pump, and python-oracledb.
-  Use when provisioning Autonomous DB, downloading wallets, or migrating data with Data Pump.
-  Trigger with "autonomous database", "oci adb", "wallet download", "data pump oci", "mtls oracle".
+description: "Migrate to OCI Autonomous Database \u2014 wallet setup, mTLS, Data Pump,\
+  \ and python-oracledb.\nUse when provisioning Autonomous DB, downloading wallets,\
+  \ or migrating data with Data Pump.\nTrigger with \"autonomous database\", \"oci\
+  \ adb\", \"wallet download\", \"data pump oci\", \"mtls oracle\".\n"
 allowed-tools: Read, Write, Edit, Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, oraclecloud, oci]
-compatible-with: claude-code
+tags:
+- saas
+- oraclecloud
+- oci
+compatibility: Designed for Claude Code
 ---
-
 # OCI Autonomous Database — Migration & Connection
 
 ## Overview

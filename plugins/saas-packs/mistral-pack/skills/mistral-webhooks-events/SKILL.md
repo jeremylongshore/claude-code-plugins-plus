@@ -1,17 +1,27 @@
 ---
 name: mistral-webhooks-events
-description: |
-  Implement Mistral AI async patterns, batch API, agents, and event-driven workflows.
+description: 'Implement Mistral AI async patterns, batch API, agents, and event-driven
+  workflows.
+
   Use when building async workflows, using the Agents API, batch inference,
+
   or handling long-running Mistral AI operations.
+
   Trigger with phrases like "mistral events", "mistral async", "mistral agents",
+
   "mistral batch", "mistral queue", "mistral background jobs".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, mistral, webhooks, workflow]
+tags:
+- saas
+- mistral
+- webhooks
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Mistral AI Events, Agents & Async Patterns
 

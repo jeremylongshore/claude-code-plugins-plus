@@ -1,12 +1,19 @@
 ---
 name: executive-digest
-description: "Generate the daily executive digest — a single WhatsApp summary of everything needing attention: stalled scheduling, pending intros, unanswered emails, promised follow-ups, open Todoist tasks, and upcoming calendar events. Use when running the daily digest cron, or when user asks for a status digest, daily summary, \"what's pending\", or \"catch me up\"."
+description: "Generate the daily executive digest \u2014 a single WhatsApp summary\
+  \ of everything needing attention: stalled scheduling, pending intros, unanswered\
+  \ emails, promised follow-ups, open Todoist tasks, and upcoming calendar events.\
+  \ Use when running the daily digest cron, or when user asks for a status digest,\
+  \ daily summary, \"what's pending\", or \"catch me up\"."
 version: 1.0.0
 license: MIT
-author: "Martin Gontovnikas <martin@hypergrowthpartners.com>"
-compatible-with: claude-code
-tags: [business, executive-digest]
-allowed-tools: Read, Bash(gog:*), Bash(mcporter:*), Bash(todoist-cli:*), Bash(python3:*), Bash(source:*), Bash(curl:*), Glob, Grep, Write
+author: Martin Gontovnikas <martin@hypergrowthpartners.com>
+tags:
+- business
+- executive-digest
+allowed-tools: Read, Bash(gog:*), Bash(mcporter:*), Bash(todoist-cli:*), Bash(python3:*),
+  Bash(source:*), Bash(curl:*), Glob, Grep, Write
+compatibility: Designed for Claude Code
 ---
 # Daily Executive Digest
 

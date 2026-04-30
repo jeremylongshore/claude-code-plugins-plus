@@ -1,17 +1,25 @@
 ---
 name: documenso-webhooks-events
-description: |
-  Implement Documenso webhook configuration and event handling.
+description: 'Implement Documenso webhook configuration and event handling.
+
   Use when setting up webhook endpoints, handling document events,
+
   or implementing real-time notifications for document signing.
+
   Trigger with phrases like "documenso webhook", "documenso events",
+
   "document completed webhook", "signing notification".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(ngrok:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, documenso, webhooks]
+tags:
+- saas
+- documenso
+- webhooks
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Documenso Webhooks & Events
 

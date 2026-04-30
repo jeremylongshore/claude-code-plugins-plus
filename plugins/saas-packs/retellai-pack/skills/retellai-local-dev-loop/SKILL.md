@@ -1,17 +1,21 @@
 ---
 name: retellai-local-dev-loop
-description: |
-  Retell AI local dev loop — AI voice agent and phone call automation.
-  Use when working with Retell AI for voice agents, phone calls, or telephony.
-  Trigger with phrases like "retell local dev loop", "retellai-local-dev-loop", "voice agent".
+description: "Retell AI local dev loop \u2014 AI voice agent and phone call automation.\n\
+  Use when working with Retell AI for voice agents, phone calls, or telephony.\nTrigger\
+  \ with phrases like \"retell local dev loop\", \"retellai-local-dev-loop\", \"voice\
+  \ agent\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, retellai, voice, telephony, ai-agents]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- retellai
+- voice
+- telephony
+- ai-agents
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Retell AI Local Dev Loop
 
 ## Overview

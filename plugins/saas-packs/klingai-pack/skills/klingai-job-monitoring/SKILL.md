@@ -1,15 +1,24 @@
 ---
 name: klingai-job-monitoring
-description: |
-  Track and monitor Kling AI video generation task status. Use when building dashboards,
-  tracking batch jobs, or debugging stuck tasks. Trigger with phrases like 'klingai job status',
-  'kling ai monitor', 'track klingai task', 'klingai progress'.
+description: 'Track and monitor Kling AI video generation task status. Use when building
+  dashboards,
+
+  tracking batch jobs, or debugging stuck tasks. Trigger with phrases like ''klingai
+  job status'',
+
+  ''kling ai monitor'', ''track klingai task'', ''klingai progress''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, kling-ai, monitoring, jobs]
+tags:
+- saas
+- kling-ai
+- monitoring
+- jobs
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Kling AI Job Monitoring
 

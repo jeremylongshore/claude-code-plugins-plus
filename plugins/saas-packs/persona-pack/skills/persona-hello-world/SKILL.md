@@ -1,19 +1,29 @@
 ---
 name: persona-hello-world
-description: |
-  Create your first Persona identity verification inquiry and check its status.
+description: 'Create your first Persona identity verification inquiry and check its
+  status.
+
   Use when learning Persona API basics, testing inquiry creation,
+
   or building a simple verification flow.
+
   Trigger with phrases like "persona hello world", "first persona inquiry",
+
   "persona quick start", "test identity verification".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, persona, identity, kyc, getting-started]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- persona
+- identity
+- kyc
+- getting-started
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Persona Hello World
 
 ## Overview

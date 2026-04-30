@@ -1,22 +1,36 @@
 ---
 name: supabase-webhooks-events
-description: |
-  Implement Supabase database webhooks, pg_net async HTTP, LISTEN/NOTIFY,
+description: 'Implement Supabase database webhooks, pg_net async HTTP, LISTEN/NOTIFY,
+
   and Edge Function event handlers with signature verification.
+
   Use when setting up database webhooks for INSERT/UPDATE/DELETE events,
+
   sending HTTP requests from PostgreSQL triggers, handling Realtime
+
   postgres_changes as an event source, or building event-driven architectures.
+
   Trigger with phrases like "supabase webhook", "database events",
+
   "pg_net trigger", "supabase LISTEN NOTIFY", "webhook signature verify",
+
   "supabase event-driven", "supabase_functions.http_request".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(supabase:*), Bash(curl:*), Bash(psql:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, supabase, webhooks, events, triggers, pg_net, realtime]
+tags:
+- saas
+- supabase
+- webhooks
+- events
+- triggers
+- pg_net
+- realtime
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Supabase Webhooks & Database Events
 
 ## Overview

@@ -1,20 +1,31 @@
 ---
 name: sentry-deploy-integration
-description: |
-  Track deployments and release health in Sentry.
+description: 'Track deployments and release health in Sentry.
+
   Use when configuring deployment tracking, release health monitoring,
+
   or connecting CI/CD deploys to error data in Sentry.
+
   Trigger with phrases like "sentry deploy tracking", "sentry release health",
+
   "track deployments sentry", "sentry deployment notification",
+
   "sentry suspect commits", "compare sentry releases".
-allowed-tools: Read, Write, Edit, Bash(sentry-cli:*), Bash(curl:*), Bash(node:*), Bash(npx:*), Grep
+
+  '
+allowed-tools: Read, Write, Edit, Bash(sentry-cli:*), Bash(curl:*), Bash(node:*),
+  Bash(npx:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code
-tags: [saas, sentry, deployment, release-health, cicd]
+tags:
+- saas
+- sentry
+- deployment
+- release-health
+- cicd
+compatibility: Designed for Claude Code
 ---
-
 # Sentry Deploy Integration
 
 ## Overview

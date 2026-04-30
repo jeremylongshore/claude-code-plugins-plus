@@ -1,19 +1,27 @@
 ---
 name: apify-hello-world
-description: |
-  Run your first Apify Actor and retrieve results via apify-client.
+description: 'Run your first Apify Actor and retrieve results via apify-client.
+
   Use when starting a new Apify integration, testing connectivity,
+
   or learning the Actor call/dataset retrieval pattern.
+
   Trigger: "apify hello world", "apify example", "run an apify actor",
+
   "apify quick start", "first apify scrape".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, scraping, automation, apify]
-compatible-with: claude-code
+tags:
+- saas
+- scraping
+- automation
+- apify
+compatibility: Designed for Claude Code
 ---
-
 # Apify Hello World
 
 ## Overview

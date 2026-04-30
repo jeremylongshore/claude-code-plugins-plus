@@ -1,19 +1,27 @@
 ---
 name: clari-prod-checklist
-description: |
-  Production readiness checklist for Clari API integrations.
+description: 'Production readiness checklist for Clari API integrations.
+
   Use when launching a Clari data pipeline, validating export automation,
+
   or preparing for production forecast sync.
+
   Trigger with phrases like "clari production", "clari go-live",
+
   "clari checklist", "clari launch".
+
+  '
 allowed-tools: Read, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, revenue-intelligence, forecasting, clari]
-compatible-with: claude-code
+tags:
+- saas
+- revenue-intelligence
+- forecasting
+- clari
+compatibility: Designed for Claude Code
 ---
-
 # Clari Production Checklist
 
 ## Overview

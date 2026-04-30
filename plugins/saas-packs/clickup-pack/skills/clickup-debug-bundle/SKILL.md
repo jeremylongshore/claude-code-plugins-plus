@@ -1,19 +1,26 @@
 ---
 name: clickup-debug-bundle
-description: |
-  Collect ClickUp API diagnostic information for troubleshooting and support.
+description: 'Collect ClickUp API diagnostic information for troubleshooting and support.
+
   Use when encountering persistent issues, preparing support tickets,
+
   or collecting API connectivity and rate limit diagnostics.
+
   Trigger: "clickup debug", "clickup diagnostics", "clickup support bundle",
+
   "collect clickup logs", "clickup health check".
+
+  '
 allowed-tools: Read, Bash(curl:*), Bash(tar:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, clickup]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- clickup
+compatibility: Designed for Claude Code
 ---
-
 # ClickUp Debug Bundle
 
 ## Overview

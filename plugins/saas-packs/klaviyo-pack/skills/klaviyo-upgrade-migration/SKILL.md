@@ -1,19 +1,27 @@
 ---
 name: klaviyo-upgrade-migration
-description: |
-  Upgrade Klaviyo SDK versions and migrate between API revisions.
+description: 'Upgrade Klaviyo SDK versions and migrate between API revisions.
+
   Use when upgrading the klaviyo-api package, migrating from v1/v2 legacy APIs
+
   to the current REST API, or handling breaking changes between revisions.
+
   Trigger with phrases like "upgrade klaviyo", "klaviyo migration",
+
   "klaviyo breaking changes", "update klaviyo SDK", "klaviyo API revision".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, klaviyo, email-marketing, cdp]
-compatible-with: claude-code
+tags:
+- saas
+- klaviyo
+- email-marketing
+- cdp
+compatibility: Designed for Claude Code
 ---
-
 # Klaviyo Upgrade & Migration
 
 ## Overview

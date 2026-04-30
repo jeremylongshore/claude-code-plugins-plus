@@ -1,19 +1,27 @@
 ---
 name: finta-core-workflow-b
-description: |
-  Manage ongoing investor relations and updates with Finta.
+description: 'Manage ongoing investor relations and updates with Finta.
+
   Use when sending investor updates, tracking cap table changes,
+
   or maintaining LP relationships post-close.
+
   Trigger with phrases like "finta investor updates", "finta LP management",
+
   "finta post-close", "finta investor relations".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, fundraising-crm, investor-management, finta]
-compatible-with: claude-code
+tags:
+- saas
+- fundraising-crm
+- investor-management
+- finta
+compatibility: Designed for Claude Code
 ---
-
 # Finta Core Workflow: Investor Relations
 
 ## Overview

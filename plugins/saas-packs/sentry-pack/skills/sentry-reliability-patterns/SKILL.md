@@ -1,19 +1,32 @@
 ---
 name: sentry-reliability-patterns
-description: |
-  Build reliable Sentry integrations with graceful degradation, circuit breakers, and offline queuing.
-  Use when implementing fault-tolerant error tracking, handling SDK initialization failures,
+description: 'Build reliable Sentry integrations with graceful degradation, circuit
+  breakers, and offline queuing.
+
+  Use when implementing fault-tolerant error tracking, handling SDK initialization
+  failures,
+
   building retry logic for Sentry transports, or ensuring apps survive Sentry outages.
+
   Trigger with "sentry reliability", "sentry circuit breaker", "sentry offline queue",
+
   "sentry graceful degradation", "sentry failover", or "resilient sentry setup".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Bash(node:*), Bash(pip:*), Bash(python*:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, sentry, reliability, resilience, circuit-breaker, offline-queue, graceful-degradation]
+tags:
+- saas
+- sentry
+- reliability
+- resilience
+- circuit-breaker
+- offline-queue
+- graceful-degradation
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Sentry Reliability Patterns
 
 ## Overview

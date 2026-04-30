@@ -1,18 +1,25 @@
 ---
 name: algolia-core-workflow-b
-description: |
-  Implement Algolia indexing pipeline: data sync, partial updates, synonyms, and rules.
+description: 'Implement Algolia indexing pipeline: data sync, partial updates, synonyms,
+  and rules.
+
   The secondary money-path workflow: keep your index in sync with source data.
+
   Trigger: "algolia indexing", "sync data to algolia", "algolia synonyms",
+
   "algolia rules", "algolia partial update", "algolia reindex".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, algolia]
-compatible-with: claude-code
+tags:
+- saas
+- search
+- algolia
+compatibility: Designed for Claude Code
 ---
-
 # Algolia Core Workflow B — Indexing & Data Sync
 
 ## Overview

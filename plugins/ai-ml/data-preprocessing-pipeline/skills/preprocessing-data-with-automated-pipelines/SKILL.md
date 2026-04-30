@@ -1,13 +1,19 @@
 ---
 name: preprocessing-data-with-automated-pipelines
-description: |
-  Process automate data cleaning, transformation, and validation for ML tasks. Use when requesting "preprocess data", "clean data", "ETL pipeline", or "data transformation". Trigger with relevant phrases based on skill purpose.
+description: 'Process automate data cleaning, transformation, and validation for ML
+  tasks. Use when requesting "preprocess data", "clean data", "ETL pipeline", or "data
+  transformation". Trigger with relevant phrases based on skill purpose.
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [ai, ml, etl]
+tags:
+- ai
+- ml
+- etl
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Data Preprocessing Pipeline
 

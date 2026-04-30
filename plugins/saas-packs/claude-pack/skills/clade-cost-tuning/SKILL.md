@@ -1,19 +1,21 @@
 ---
 name: clade-cost-tuning
-description: |
-  Optimize Anthropic API costs — model selection, prompt caching, batches,
-  Use when working with cost-tuning patterns.
-  token reduction, and usage monitoring.
-  Trigger with "anthropic pricing", "claude cost", "reduce anthropic spend",
-  "anthropic billing", "claude cheaper".
+description: "Optimize Anthropic API costs \u2014 model selection, prompt caching,\
+  \ batches,\nUse when working with cost-tuning patterns.\ntoken reduction, and usage\
+  \ monitoring.\nTrigger with \"anthropic pricing\", \"claude cost\", \"reduce anthropic\
+  \ spend\",\n\"anthropic billing\", \"claude cheaper\".\n"
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code
-tags: [saas, anthropic, claude, cost, pricing]
+tags:
+- saas
+- anthropic
+- claude
+- cost
+- pricing
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Cost Tuning
 
 ## Overview

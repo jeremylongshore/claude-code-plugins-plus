@@ -1,17 +1,28 @@
 ---
 name: mistral-security-basics
-description: |
-  Apply Mistral AI security best practices for secrets, prompt injection, and access control.
+description: 'Apply Mistral AI security best practices for secrets, prompt injection,
+  and access control.
+
   Use when securing API keys, defending against prompt injection,
+
   or auditing Mistral AI security configuration.
+
   Trigger with phrases like "mistral security", "mistral secrets",
+
   "secure mistral", "mistral prompt injection".
+
+  '
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, mistral, api, security, audit]
+tags:
+- saas
+- mistral
+- api
+- security
+- audit
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Mistral Security Basics
 

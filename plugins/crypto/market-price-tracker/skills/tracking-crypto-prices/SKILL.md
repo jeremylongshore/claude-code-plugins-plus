@@ -1,17 +1,27 @@
 ---
 name: tracking-crypto-prices
-description: |
-  Track real-time cryptocurrency prices across exchanges with historical data and alerts.
+description: 'Track real-time cryptocurrency prices across exchanges with historical
+  data and alerts.
+
   Provides price data infrastructure for dependent skills (portfolio, tax, DeFi, arbitrage).
-  Use when checking crypto prices, monitoring markets, or fetching historical price data.
+
+  Use when checking crypto prices, monitoring markets, or fetching historical price
+  data.
+
   Trigger with phrases like "check price", "BTC price", "crypto prices", "price history",
-  "get quote for", "what's ETH trading at", "show me top coins", or "track my watchlist".
+
+  "get quote for", "what''s ETH trading at", "show me top coins", or "track my watchlist".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(python:*)
 version: 2.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [crypto, monitoring, tracking-crypto]
+tags:
+- crypto
+- monitoring
+- tracking-crypto
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Tracking Crypto Prices
 

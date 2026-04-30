@@ -1,17 +1,26 @@
 ---
 name: lokalise-core-workflow-a
-description: |
-  Execute Lokalise primary workflow: Upload source files and manage translation keys.
+description: 'Execute Lokalise primary workflow: Upload source files and manage translation
+  keys.
+
   Use when uploading translation files, creating/updating keys,
+
   or managing source strings in Lokalise projects.
+
   Trigger with phrases like "lokalise upload", "lokalise push keys",
+
   "lokalise source strings", "add translations to lokalise".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(lokalise2:*), Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lokalise, workflow]
+tags:
+- saas
+- lokalise
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lokalise Core Workflow A
 

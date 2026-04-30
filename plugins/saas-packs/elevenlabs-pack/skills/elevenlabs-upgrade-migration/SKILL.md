@@ -1,20 +1,31 @@
 ---
 name: elevenlabs-upgrade-migration
-description: |
-  Upgrade ElevenLabs SDK versions and migrate between API model generations.
+description: 'Upgrade ElevenLabs SDK versions and migrate between API model generations.
+
   Use when upgrading the elevenlabs-js or elevenlabs Python SDK,
+
   migrating from v1 to v2 models, or handling deprecations.
+
   Trigger: "upgrade elevenlabs", "elevenlabs migration",
+
   "elevenlabs breaking changes", "update elevenlabs SDK",
+
   "migrate elevenlabs model", "eleven_v3 migration".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, voice, ai, elevenlabs, migration, upgrade]
-compatible-with: claude-code
+tags:
+- saas
+- voice
+- ai
+- elevenlabs
+- migration
+- upgrade
+compatibility: Designed for Claude Code
 ---
-
 # ElevenLabs Upgrade & Migration
 
 ## Overview

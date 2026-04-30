@@ -1,19 +1,28 @@
 ---
 name: clade-enterprise-rbac
-description: |
-  Manage Anthropic workspaces, API keys, team access, and spending limits
+description: 'Manage Anthropic workspaces, API keys, team access, and spending limits
+
   Use when working with enterprise-rbac patterns.
+
   for enterprise Claude deployments.
+
   Trigger with "anthropic workspace", "anthropic team management",
+
   "claude enterprise", "anthropic api key management".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code
-tags: [saas, anthropic, claude, enterprise, rbac]
+tags:
+- saas
+- anthropic
+- claude
+- enterprise
+- rbac
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Enterprise & Access Management
 
 ## Overview

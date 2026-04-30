@@ -1,17 +1,25 @@
 ---
 name: lindy-deploy-integration
-description: |
-  Deploy applications that integrate with Lindy AI agents.
+description: 'Deploy applications that integrate with Lindy AI agents.
+
   Use when deploying webhook receivers, callback handlers,
+
   or applications connected to Lindy agents.
+
   Trigger with phrases like "deploy lindy", "lindy deployment",
+
   "lindy production deploy", "release lindy integration".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(docker:*), Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lindy, deployment]
+tags:
+- saas
+- lindy
+- deployment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lindy Deploy Integration
 

@@ -1,18 +1,26 @@
 ---
 name: anima-common-errors
-description: |
-  Diagnose and fix common Anima SDK design-to-code errors.
+description: 'Diagnose and fix common Anima SDK design-to-code errors.
+
   Use when encountering Figma token errors, code generation failures,
+
   node not found issues, or output quality problems.
+
   Trigger: "anima error", "anima not working", "anima debug", "figma to code error".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, figma, anima, troubleshooting]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- figma
+- anima
+- troubleshooting
+compatibility: Designed for Claude Code
 ---
-
 # Anima Common Errors
 
 ## Error Reference

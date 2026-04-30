@@ -1,18 +1,24 @@
 ---
 name: clickup-incident-runbook
-description: |
-  Execute ClickUp API incident response: triage, diagnosis, mitigation,
+description: 'Execute ClickUp API incident response: triage, diagnosis, mitigation,
+
   and postmortem for API failures and integration outages.
+
   Trigger: "clickup incident", "clickup outage", "clickup down",
+
   "clickup on-call", "clickup emergency", "clickup API broken".
+
+  '
 allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, clickup]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- clickup
+compatibility: Designed for Claude Code
 ---
-
 # ClickUp Incident Runbook
 
 ## Overview

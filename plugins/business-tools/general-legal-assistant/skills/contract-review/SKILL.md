@@ -1,19 +1,29 @@
 ---
 name: contract-review
-description: |
-  Orchestrates a comprehensive multi-agent contract review that analyzes
+description: 'Orchestrates a comprehensive multi-agent contract review that analyzes
+
   risk, plain-English translation, missing protections, and compliance
+
   in parallel. Use when a user shares a contract and wants a full review,
+
   safety score, or executive summary. Trigger with "/contract-review" or
+
   "review this contract".
+
+  '
 allowed-tools: Read, Glob, Grep, Task
 version: 1.0.0
 author: Intent Solutions <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [legal, contracts, review, risk, orchestration, multi-agent]
+tags:
+- legal
+- contracts
+- review
+- risk
+- orchestration
+- multi-agent
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Contract Review — Multi-Agent Orchestrator
 
 Flagship contract review skill that spawns five parallel analysis agents, then

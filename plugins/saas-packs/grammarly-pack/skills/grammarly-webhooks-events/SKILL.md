@@ -1,19 +1,26 @@
 ---
 name: grammarly-webhooks-events
-description: |
-  Implement Grammarly webhook signature validation and event handling.
+description: 'Implement Grammarly webhook signature validation and event handling.
+
   Use when setting up webhook endpoints, implementing signature verification,
+
   or handling Grammarly event notifications securely.
+
   Trigger with phrases like "grammarly webhook", "grammarly events",
+
   "grammarly webhook signature", "handle grammarly events", "grammarly notifications".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, grammarly, writing]
-compatible-with: claude-code
+tags:
+- saas
+- grammarly
+- writing
+compatibility: Designed for Claude Code
 ---
-
 # Grammarly Webhooks & Events
 
 ## Overview

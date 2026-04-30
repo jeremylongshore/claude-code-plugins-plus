@@ -1,20 +1,29 @@
 ---
 name: intercom-core-workflow-a
-description: |
-  Manage Intercom contacts: create, search, update, merge leads into users.
+description: 'Manage Intercom contacts: create, search, update, merge leads into users.
+
   Use when building contact management features, syncing user data,
+
   or implementing contact search and segmentation.
+
   Trigger with phrases like "intercom contacts", "intercom users",
+
   "intercom leads", "create intercom contact", "search intercom contacts",
+
   "merge intercom lead".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, support, messaging, intercom]
-compatible-with: claude-code
+tags:
+- saas
+- support
+- messaging
+- intercom
+compatibility: Designed for Claude Code
 ---
-
 # Intercom Contacts & Contact Management
 
 ## Overview

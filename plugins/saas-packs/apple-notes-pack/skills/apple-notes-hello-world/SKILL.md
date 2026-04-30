@@ -1,19 +1,28 @@
 ---
 name: apple-notes-hello-world
-description: |
-  Create, read, and list Apple Notes using JXA and AppleScript.
+description: 'Create, read, and list Apple Notes using JXA and AppleScript.
+
   Use when learning Notes automation, creating your first automated note,
+
   or testing read/write access to Apple Notes from scripts.
+
   Trigger: "apple notes hello world", "create apple note", "read apple notes",
+
   "apple notes example", "osascript notes".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(osascript:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, macos, apple-notes, automation, jxa]
-compatible-with: claude-code
+tags:
+- saas
+- macos
+- apple-notes
+- automation
+- jxa
+compatibility: Designed for Claude Code
 ---
-
 # Apple Notes Hello World
 
 ## Overview

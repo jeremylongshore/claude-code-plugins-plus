@@ -1,19 +1,26 @@
 ---
 name: anth-incident-runbook
-description: |
-  Execute incident response procedures for Claude API outages and degradation.
+description: 'Execute incident response procedures for Claude API outages and degradation.
+
   Use when Claude API is returning errors, experiencing high latency,
+
   or showing degraded performance in production.
+
   Trigger with phrases like "anthropic incident", "claude api down",
+
   "anthropic outage", "claude degraded", "anthropic runbook".
+
+  '
 allowed-tools: Read, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, anthropic]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- anthropic
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Incident Runbook
 
 ## Severity Classification

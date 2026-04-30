@@ -1,18 +1,25 @@
 ---
 name: together-install-auth
-description: |
-  Install Together AI SDK and configure API key for inference and fine-tuning.
+description: 'Install Together AI SDK and configure API key for inference and fine-tuning.
+
   Use when setting up Together AI, configuring the OpenAI-compatible API,
+
   or initializing the together Python package.
+
   Trigger: "install together, setup together ai, together API key".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, inference, together]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- inference
+- together
+compatibility: Designed for Claude Code
 ---
-
 # Together AI Install & Auth
 
 ## Overview

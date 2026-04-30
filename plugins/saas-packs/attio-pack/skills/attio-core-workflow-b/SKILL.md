@@ -1,19 +1,26 @@
 ---
 name: attio-core-workflow-b
-description: |
-  Manage Attio lists, entries, notes, and tasks via the REST API.
+description: 'Manage Attio lists, entries, notes, and tasks via the REST API.
+
   Use when working with sales pipelines, kanban boards, CRM notes,
+
   or task assignments in Attio.
+
   Trigger: "attio lists", "attio entries", "attio pipeline",
+
   "attio notes", "attio tasks", "add to attio list".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, attio]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- attio
+compatibility: Designed for Claude Code
 ---
-
 # Attio Lists, Notes & Tasks (Core Workflow B)
 
 ## Overview

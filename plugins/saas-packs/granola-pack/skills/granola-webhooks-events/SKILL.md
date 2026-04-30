@@ -1,17 +1,26 @@
 ---
 name: granola-webhooks-events
-description: |
-  Build event-driven automations with Granola's Zapier webhook triggers.
+description: 'Build event-driven automations with Granola''s Zapier webhook triggers.
+
   Use when creating real-time notification systems, processing meeting events,
+
   or building custom integrations that react to Granola note creation.
+
   Trigger: "granola webhooks", "granola events", "granola triggers",
+
   "granola real-time", "granola event-driven".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(node:*), Bash(python3:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, granola, webhooks, automation]
+tags:
+- saas
+- granola
+- webhooks
+- automation
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Granola Webhooks & Events
 

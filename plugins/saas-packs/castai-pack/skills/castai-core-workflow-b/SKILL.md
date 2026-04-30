@@ -1,19 +1,28 @@
 ---
 name: castai-core-workflow-b
-description: |
-  Configure CAST AI Workload Autoscaler for pod-level right-sizing and VPA.
+description: 'Configure CAST AI Workload Autoscaler for pod-level right-sizing and
+  VPA.
+
   Use when enabling workload autoscaling, configuring resource recommendations,
+
   or tuning pod CPU and memory requests with CAST AI.
+
   Trigger with phrases like "cast ai workload autoscaler", "cast ai pod sizing",
+
   "cast ai resource recommendations", "cast ai VPA".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(kubectl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, kubernetes, cost-optimization, castai]
-compatible-with: claude-code
+tags:
+- saas
+- kubernetes
+- cost-optimization
+- castai
+compatibility: Designed for Claude Code
 ---
-
 # CAST AI Core Workflow: Workload Autoscaler
 
 ## Overview

@@ -1,19 +1,29 @@
 ---
 name: freelancer-review
-description: |
-  Reviews contracts from a freelancer's perspective across 14 evaluation
+description: 'Reviews contracts from a freelancer''s perspective across 14 evaluation
+
   lenses including misclassification risk, IP ownership, payment terms,
+
   kill fees, and non-compete scope. Use when a freelancer or independent
+
   contractor needs to evaluate a client agreement. Trigger with
+
   "/freelancer-review" or "review this contract as a freelancer".
+
+  '
 allowed-tools: Read, Glob, Grep
 version: 1.0.0
 author: Intent Solutions <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [legal, contracts, freelancer, contractor, misclassification, gig-economy]
+tags:
+- legal
+- contracts
+- freelancer
+- contractor
+- misclassification
+- gig-economy
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Freelancer Review — Independent Contractor Contract Analysis
 
 Specialized contract review that evaluates agreements through 14 freelancer-

@@ -1,19 +1,21 @@
 ---
 name: webflow-incident-runbook
-description: |
-  Execute Webflow incident response — triage by HTTP status (401/403/429/500),
-  circuit breaker activation, cached fallback, Webflow status page checks,
-  communication templates, and postmortem process.
-  Trigger with phrases like "webflow incident", "webflow outage",
-  "webflow down", "webflow on-call", "webflow emergency", "webflow broken".
+description: "Execute Webflow incident response \u2014 triage by HTTP status (401/403/429/500),\n\
+  circuit breaker activation, cached fallback, Webflow status page checks,\ncommunication\
+  \ templates, and postmortem process.\nTrigger with phrases like \"webflow incident\"\
+  , \"webflow outage\",\n\"webflow down\", \"webflow on-call\", \"webflow emergency\"\
+  , \"webflow broken\".\n"
 allowed-tools: Read, Grep, Bash(curl:*), Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, no-code, webflow]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- no-code
+- webflow
+compatibility: Designed for Claude Code
 ---
-
 # Webflow Incident Runbook
 
 ## Overview

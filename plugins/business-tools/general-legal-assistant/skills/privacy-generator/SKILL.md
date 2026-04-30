@@ -1,16 +1,28 @@
 ---
 name: privacy-generator
-description: |
-  Generates comprehensive privacy policies by scanning websites for data collection
+description: 'Generates comprehensive privacy policies by scanning websites for data
+  collection
+
   signals including cookies, forms, payment processors, and third-party scripts.
-  Use when launching a website or app that collects user data and needs GDPR/CCPA compliance.
+
+  Use when launching a website or app that collects user data and needs GDPR/CCPA
+  compliance.
+
   Trigger with "/privacy-generator" or "create a privacy policy for my website".
+
+  '
 allowed-tools: Read, Write, Glob, Grep, WebFetch
 version: 1.0.0
 author: Intent Solutions <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [legal, privacy-policy, gdpr, ccpa, data-protection, cookies]
+tags:
+- legal
+- privacy-policy
+- gdpr
+- ccpa
+- data-protection
+- cookies
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Privacy Policy Generator
 

@@ -1,15 +1,23 @@
 ---
-name: "cursor-keybindings"
-description: |
-  Master Cursor keyboard shortcuts and customize keybindings for AI features and editor commands.
-  Triggers on "cursor shortcuts", "cursor keybindings", "cursor keyboard", "cursor hotkeys",
+name: cursor-keybindings
+description: 'Master Cursor keyboard shortcuts and customize keybindings for AI features
+  and editor commands.
+
+  Triggers on "cursor shortcuts", "cursor keybindings", "cursor keyboard", "cursor
+  hotkeys",
+
   "cursor commands", "Cmd+K", "Cmd+L", "Cmd+I".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, cursor, cursor-keybindings]
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- cursor
+- cursor-keybindings
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Cursor Keybindings
 

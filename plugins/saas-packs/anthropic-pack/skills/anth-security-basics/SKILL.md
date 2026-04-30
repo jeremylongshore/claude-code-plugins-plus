@@ -1,20 +1,28 @@
 ---
 name: anth-security-basics
-description: |
-  Apply Anthropic Claude API security best practices for key management,
+description: 'Apply Anthropic Claude API security best practices for key management,
+
   input validation, and prompt injection defense.
+
   Use when securing API keys, validating user inputs before sending to Claude,
+
   or implementing content safety guardrails.
+
   Trigger with phrases like "anthropic security", "claude api key security",
+
   "secure anthropic", "prompt injection defense".
+
+  '
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, anthropic]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- anthropic
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Security Basics
 
 ## Overview

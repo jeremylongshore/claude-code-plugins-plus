@@ -1,17 +1,23 @@
 ---
 name: managing-environment-configurations
-description: |
-  Implement environment and configuration management with comprehensive guidance and automation.
+description: 'Implement environment and configuration management with comprehensive
+  guidance and automation.
+
   Use when you need to work with environment configuration.
+
   Trigger with phrases like "manage environments", "configure environments",
+
   or "sync configurations".
 
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [devops, environment-configurations]
+tags:
+- devops
+- environment-configurations
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Managing Environment Configurations
 

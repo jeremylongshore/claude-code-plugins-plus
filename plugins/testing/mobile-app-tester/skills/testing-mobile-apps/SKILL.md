@@ -1,16 +1,21 @@
 ---
 name: testing-mobile-apps
-description: |
-  Execute mobile app testing on iOS and Android devices/simulators.
-  Use when performing specialized testing.
-  Trigger with phrases like "test mobile app", "run iOS tests", or "validate Android functionality".
+description: 'Execute mobile app testing on iOS and Android devices/simulators.
 
+  Use when performing specialized testing.
+
+  Trigger with phrases like "test mobile app", "run iOS tests", or "validate Android
+  functionality".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:mobile-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [testing, testing-mobile]
+tags:
+- testing
+- testing-mobile
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Mobile App Tester
 

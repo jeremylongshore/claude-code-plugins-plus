@@ -1,19 +1,27 @@
 ---
 name: castai-reference-architecture
-description: |
-  CAST AI reference architecture for multi-cluster Kubernetes cost optimization.
+description: 'CAST AI reference architecture for multi-cluster Kubernetes cost optimization.
+
   Use when designing CAST AI deployment across environments, planning
+
   Terraform module structure, or establishing team standards.
+
   Trigger with phrases like "cast ai architecture", "cast ai best practices",
+
   "cast ai multi-cluster", "cast ai terraform structure".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, kubernetes, cost-optimization, castai]
-compatible-with: claude-code
+tags:
+- saas
+- kubernetes
+- cost-optimization
+- castai
+compatibility: Designed for Claude Code
 ---
-
 # CAST AI Reference Architecture
 
 ## Overview

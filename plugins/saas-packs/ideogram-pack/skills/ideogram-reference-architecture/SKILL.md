@@ -1,17 +1,27 @@
 ---
 name: ideogram-reference-architecture
-description: |
-  Implement Ideogram reference architecture with prompt templates, asset pipelines, and CDN delivery.
+description: 'Implement Ideogram reference architecture with prompt templates, asset
+  pipelines, and CDN delivery.
+
   Use when designing new Ideogram integrations, building brand asset systems,
+
   or establishing architecture for image generation at scale.
+
   Trigger with phrases like "ideogram architecture", "ideogram project structure",
+
   "ideogram brand assets", "ideogram pipeline design", "ideogram at scale".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, ideogram, architecture, reference]
+tags:
+- saas
+- ideogram
+- architecture
+- reference
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Ideogram Reference Architecture
 

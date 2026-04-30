@@ -1,17 +1,25 @@
 ---
 name: evernote-multi-env-setup
-description: |
-  Configure multi-environment setup for Evernote integrations.
+description: 'Configure multi-environment setup for Evernote integrations.
+
   Use when setting up dev, staging, and production environments,
+
   or managing environment-specific configurations.
+
   Trigger with phrases like "evernote environments", "evernote staging",
+
   "evernote dev setup", "multiple environments evernote".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, evernote, evernote-multi]
+tags:
+- saas
+- evernote
+- evernote-multi
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Evernote Multi-Environment Setup
 

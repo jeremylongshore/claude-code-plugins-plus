@@ -1,12 +1,17 @@
 ---
 name: analyzing-dependencies
-description: Analyze dependencies for known security vulnerabilities and outdated versions. Use when auditing third-party libraries. Trigger with 'check dependencies', 'scan for vulnerabilities', or 'audit packages'.
+description: Analyze dependencies for known security vulnerabilities and outdated
+  versions. Use when auditing third-party libraries. Trigger with 'check dependencies',
+  'scan for vulnerabilities', or 'audit packages'.
 version: 1.0.0
-allowed-tools: "Read, Write, Edit, Grep, Glob, Bash(security:*), Bash(scan:*), Bash(audit:*)"
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(security:*), Bash(scan:*), Bash(audit:*)
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [security, audit, analyzing-dependencies]
+tags:
+- security
+- audit
+- analyzing-dependencies
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Analyzing Dependencies
 

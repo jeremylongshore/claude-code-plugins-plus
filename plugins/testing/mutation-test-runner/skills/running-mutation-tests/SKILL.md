@@ -1,16 +1,21 @@
 ---
 name: running-mutation-tests
-description: |
-  Execute mutation testing to evaluate test suite effectiveness.
-  Use when performing specialized testing.
-  Trigger with phrases like "run mutation tests", "test the tests", or "validate test effectiveness".
+description: 'Execute mutation testing to evaluate test suite effectiveness.
 
+  Use when performing specialized testing.
+
+  Trigger with phrases like "run mutation tests", "test the tests", or "validate test
+  effectiveness".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:mutation-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [testing, mutation-tests]
+tags:
+- testing
+- mutation-tests
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Mutation Test Runner
 

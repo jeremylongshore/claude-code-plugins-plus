@@ -1,17 +1,27 @@
 ---
 name: customerio-security-basics
-description: |
-  Apply Customer.io security best practices.
+description: 'Apply Customer.io security best practices.
+
   Use when implementing secure credential storage, PII handling,
+
   webhook signature verification, or GDPR/CCPA compliance.
+
   Trigger: "customer.io security", "customer.io pii",
+
   "secure customer.io", "customer.io gdpr", "customer.io webhook verify".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Glob, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, customer-io, security, gdpr, compliance]
+tags:
+- saas
+- customer-io
+- security
+- gdpr
+- compliance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Customer.io Security Basics
 

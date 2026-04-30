@@ -1,19 +1,29 @@
 ---
 name: coreweave-install-auth
-description: |
-  Configure CoreWeave Kubernetes Service (CKS) access with kubeconfig and API tokens.
+description: 'Configure CoreWeave Kubernetes Service (CKS) access with kubeconfig
+  and API tokens.
+
   Use when setting up kubectl access to CoreWeave, configuring CKS clusters,
+
   or authenticating with CoreWeave cloud services.
+
   Trigger with phrases like "install coreweave", "setup coreweave",
+
   "coreweave kubeconfig", "coreweave auth", "connect to coreweave".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(kubectl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, gpu-cloud, kubernetes, inference, coreweave]
-compatible-with: claude-code
+tags:
+- saas
+- gpu-cloud
+- kubernetes
+- inference
+- coreweave
+compatibility: Designed for Claude Code
 ---
-
 # CoreWeave Install & Auth
 
 ## Overview

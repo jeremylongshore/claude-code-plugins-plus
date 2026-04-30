@@ -1,19 +1,27 @@
 ---
 name: hubspot-debug-bundle
-description: |
-  Collect HubSpot debug evidence for support tickets and troubleshooting.
+description: 'Collect HubSpot debug evidence for support tickets and troubleshooting.
+
   Use when encountering persistent issues, preparing support tickets,
+
   or collecting diagnostic information for HubSpot API problems.
+
   Trigger with phrases like "hubspot debug", "hubspot support bundle",
+
   "collect hubspot logs", "hubspot diagnostic", "hubspot correlation id".
+
+  '
 allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, marketing, hubspot]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- marketing
+- hubspot
+compatibility: Designed for Claude Code
 ---
-
 # HubSpot Debug Bundle
 
 ## Overview

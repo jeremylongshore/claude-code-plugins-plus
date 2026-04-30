@@ -1,17 +1,25 @@
 ---
 name: apollo-sdk-patterns
-description: |
-  Apply production-ready Apollo.io SDK patterns.
+description: 'Apply production-ready Apollo.io SDK patterns.
+
   Use when implementing Apollo integrations, refactoring API usage,
+
   or establishing team coding standards.
+
   Trigger with phrases like "apollo sdk patterns", "apollo best practices",
+
   "apollo code patterns", "idiomatic apollo", "apollo client wrapper".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, apollo, api]
+tags:
+- saas
+- apollo
+- api
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Apollo SDK Patterns
 

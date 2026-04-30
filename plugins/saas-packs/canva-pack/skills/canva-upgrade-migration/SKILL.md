@@ -1,19 +1,27 @@
 ---
 name: canva-upgrade-migration
-description: |
-  Plan and execute Canva Connect API version upgrades and breaking change detection.
+description: 'Plan and execute Canva Connect API version upgrades and breaking change
+  detection.
+
   Use when Canva releases API changes, migrating brand template IDs,
+
   or adapting to endpoint deprecations.
+
   Trigger with phrases like "upgrade canva", "canva API changes",
+
   "canva breaking changes", "canva deprecation", "canva changelog".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, canva]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- canva
+compatibility: Designed for Claude Code
 ---
-
 # Canva Upgrade & Migration
 
 ## Overview

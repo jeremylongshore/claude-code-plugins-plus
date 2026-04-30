@@ -1,18 +1,25 @@
 ---
 name: salesloft-rate-limits
-description: |
-  Handle SalesLoft cost-based rate limiting with backoff and request budgeting.
+description: 'Handle SalesLoft cost-based rate limiting with backoff and request budgeting.
+
   Use when hitting 429 errors, optimizing API throughput,
+
   or implementing pagination-aware rate limit strategies.
+
   Trigger: "salesloft rate limit", "salesloft 429", "salesloft throttling".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, sales, outreach, salesloft]
-compatible-with: claude-code
+tags:
+- saas
+- sales
+- outreach
+- salesloft
+compatibility: Designed for Claude Code
 ---
-
 # SalesLoft Rate Limits
 
 ## Overview

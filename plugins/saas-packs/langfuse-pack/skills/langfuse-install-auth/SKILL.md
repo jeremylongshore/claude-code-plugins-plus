@@ -1,17 +1,27 @@
 ---
 name: langfuse-install-auth
-description: |
-  Install and configure Langfuse SDK authentication for LLM observability.
+description: 'Install and configure Langfuse SDK authentication for LLM observability.
+
   Use when setting up a new Langfuse integration, configuring API keys,
+
   or initializing Langfuse tracing in your project.
+
   Trigger with phrases like "install langfuse", "setup langfuse",
+
   "langfuse auth", "configure langfuse API key", "langfuse tracing setup".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langfuse, api, observability, llm]
+tags:
+- saas
+- langfuse
+- api
+- observability
+- llm
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Langfuse Install & Auth
 

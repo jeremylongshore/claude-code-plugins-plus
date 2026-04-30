@@ -1,13 +1,22 @@
 ---
 name: openrouter-performance-tuning
-description: |
-  Optimize OpenRouter request latency and throughput. Use when building real-time applications, reducing TTFT, or scaling request volume. Triggers: 'openrouter performance', 'openrouter latency', 'openrouter speed', 'optimize openrouter throughput'.
+description: 'Optimize OpenRouter request latency and throughput. Use when building
+  real-time applications, reducing TTFT, or scaling request volume. Triggers: ''openrouter
+  performance'', ''openrouter latency'', ''openrouter speed'', ''optimize openrouter
+  throughput''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash, Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, openrouter, performance, latency, optimization]
+tags:
+- saas
+- openrouter
+- performance
+- latency
+- optimization
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # OpenRouter Performance Tuning
 

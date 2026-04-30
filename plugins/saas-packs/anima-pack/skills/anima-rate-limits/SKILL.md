@@ -1,18 +1,26 @@
 ---
 name: anima-rate-limits
-description: |
-  Implement rate limiting for Anima API code generation requests.
+description: 'Implement rate limiting for Anima API code generation requests.
+
   Use when batching component generation, handling rate limit errors,
+
   or optimizing API throughput for large design systems.
+
   Trigger: "anima rate limit", "anima throttling", "anima batch generation".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, figma, anima, rate-limiting]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- figma
+- anima
+- rate-limiting
+compatibility: Designed for Claude Code
 ---
-
 # Anima Rate Limits
 
 ## Overview

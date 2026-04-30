@@ -1,17 +1,28 @@
 ---
 name: windsurf-enterprise-rbac
-description: |
-  Configure Windsurf enterprise SSO, RBAC, and organization-level controls.
+description: 'Configure Windsurf enterprise SSO, RBAC, and organization-level controls.
+
   Use when implementing SSO/SAML, configuring role-based seat management,
+
   or setting up organization-wide Windsurf policies.
+
   Trigger with phrases like "windsurf SSO", "windsurf RBAC",
+
   "windsurf enterprise", "windsurf admin", "windsurf SAML", "windsurf team management".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, enterprise, sso, rbac, admin]
+tags:
+- saas
+- windsurf
+- enterprise
+- sso
+- rbac
+- admin
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Windsurf Enterprise RBAC
 

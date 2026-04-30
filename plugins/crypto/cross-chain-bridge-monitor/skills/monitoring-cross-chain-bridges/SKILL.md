@@ -1,17 +1,25 @@
 ---
 name: monitoring-cross-chain-bridges
-description: |
-  Monitor cross-chain bridge TVL, volume, fees, and transaction status across networks.
+description: 'Monitor cross-chain bridge TVL, volume, fees, and transaction status
+  across networks.
+
   Use when researching bridges, comparing routes, or tracking bridge transactions.
-  Trigger with phrases like "monitor bridges", "compare bridge fees", "track bridge tx",
+
+  Trigger with phrases like "monitor bridges", "compare bridge fees", "track bridge
+  tx",
+
   "bridge TVL", or "cross-chain transfer status".
 
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(python:*bridge_monitor*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [crypto, monitoring, monitoring-cross]
+tags:
+- crypto
+- monitoring
+- monitoring-cross
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Cross-Chain Bridge Monitor
 

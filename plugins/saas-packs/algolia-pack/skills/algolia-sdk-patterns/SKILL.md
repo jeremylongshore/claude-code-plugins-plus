@@ -1,19 +1,28 @@
 ---
 name: algolia-sdk-patterns
-description: |
-  Apply production-ready algoliasearch v5 patterns: singleton client, typed search,
+description: 'Apply production-ready algoliasearch v5 patterns: singleton client,
+  typed search,
+
   error handling, and batch operations.
+
   Use when implementing Algolia integrations, refactoring SDK usage,
+
   or establishing team coding standards.
-  Trigger: "algolia SDK patterns", "algolia best practices", "algolia code patterns", "idiomatic algolia".
+
+  Trigger: "algolia SDK patterns", "algolia best practices", "algolia code patterns",
+  "idiomatic algolia".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, algolia]
-compatible-with: claude-code
+tags:
+- saas
+- search
+- algolia
+compatibility: Designed for Claude Code
 ---
-
 # Algolia SDK Patterns
 
 ## Overview

@@ -1,17 +1,25 @@
 ---
 name: twinmind-rate-limits
-description: |
-  Implement TwinMind rate limiting, backoff, and optimization patterns.
+description: 'Implement TwinMind rate limiting, backoff, and optimization patterns.
+
   Use when handling rate limit errors, implementing retry logic,
+
   or optimizing API request throughput for TwinMind.
+
   Trigger with phrases like "twinmind rate limit", "twinmind throttling",
+
   "twinmind 429", "twinmind retry", "twinmind backoff".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, twinmind, api]
+tags:
+- saas
+- twinmind
+- api
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # TwinMind Rate Limits
 

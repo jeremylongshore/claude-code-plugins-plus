@@ -1,19 +1,29 @@
 ---
 name: clickhouse-security-basics
-description: |
-  Secure ClickHouse with user management, network restrictions, TLS, and audit logging.
+description: 'Secure ClickHouse with user management, network restrictions, TLS, and
+  audit logging.
+
   Use when hardening a ClickHouse deployment, creating restricted users,
+
   or configuring network-level access controls.
+
   Trigger: "clickhouse security", "clickhouse user management", "secure clickhouse",
+
   "clickhouse TLS", "clickhouse access control", "clickhouse firewall".
+
+  '
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, database, analytics, clickhouse, olap]
-compatible-with: claude-code
+tags:
+- saas
+- database
+- analytics
+- clickhouse
+- olap
+compatibility: Designed for Claude Code
 ---
-
 # ClickHouse Security Basics
 
 ## Overview

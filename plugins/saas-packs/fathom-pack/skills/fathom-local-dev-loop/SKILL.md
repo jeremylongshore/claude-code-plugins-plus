@@ -1,19 +1,28 @@
 ---
 name: fathom-local-dev-loop
-description: |
-  Set up local development for Fathom API integrations with mock meeting data.
+description: 'Set up local development for Fathom API integrations with mock meeting
+  data.
+
   Use when building meeting analytics tools, testing webhook handlers,
+
   or iterating on transcript processing pipelines.
+
   Trigger with phrases like "fathom dev setup", "fathom local testing",
+
   "develop with fathom", "fathom mock data".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(python3:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, meeting-intelligence, ai-notes, fathom]
-compatible-with: claude-code
+tags:
+- saas
+- meeting-intelligence
+- ai-notes
+- fathom
+compatibility: Designed for Claude Code
 ---
-
 # Fathom Local Dev Loop
 
 ## Project Structure

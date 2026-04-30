@@ -1,17 +1,26 @@
 ---
 name: langchain-core-workflow-a
-description: |
-  Build LangChain LCEL chains with prompts, parsers, and composition.
+description: 'Build LangChain LCEL chains with prompts, parsers, and composition.
+
   Use when creating prompt templates, building RunnableSequence pipelines,
+
   parallel/branching chains, or multi-step processing workflows.
+
   Trigger: "langchain chains", "langchain prompts", "LCEL workflow",
+
   "langchain pipeline", "prompt template", "RunnableSequence".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langchain, llm, workflow]
+tags:
+- saas
+- langchain
+- llm
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # LangChain Core Workflow A: Chains & Prompts
 

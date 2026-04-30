@@ -1,17 +1,26 @@
 ---
 name: ideogram-rate-limits
-description: |
-  Implement Ideogram rate limiting, backoff, and request queuing patterns.
+description: 'Implement Ideogram rate limiting, backoff, and request queuing patterns.
+
   Use when handling rate limit errors, implementing retry logic,
+
   or optimizing API request throughput for Ideogram.
+
   Trigger with phrases like "ideogram rate limit", "ideogram throttling",
+
   "ideogram 429", "ideogram retry", "ideogram backoff", "ideogram queue".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, ideogram, api, rate-limiting]
+tags:
+- saas
+- ideogram
+- api
+- rate-limiting
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Ideogram Rate Limits
 

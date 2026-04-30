@@ -1,20 +1,29 @@
 ---
 name: snowflake-known-pitfalls
-description: |
-  Identify and avoid Snowflake anti-patterns and common mistakes in SQL,
+description: 'Identify and avoid Snowflake anti-patterns and common mistakes in SQL,
+
   warehouse management, data loading, and access control.
+
   Use when reviewing Snowflake configurations, onboarding new users,
+
   or auditing existing Snowflake deployments for best practices.
+
   Trigger with phrases like "snowflake mistakes", "snowflake anti-patterns",
+
   "snowflake pitfalls", "snowflake what not to do", "snowflake code review".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, data-warehouse, analytics, snowflake]
-compatible-with: claude-code
+tags:
+- saas
+- data-warehouse
+- analytics
+- snowflake
+compatibility: Designed for Claude Code
 ---
-
 # Snowflake Known Pitfalls
 
 ## Overview

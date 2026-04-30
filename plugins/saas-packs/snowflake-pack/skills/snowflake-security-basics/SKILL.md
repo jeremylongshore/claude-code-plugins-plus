@@ -1,20 +1,29 @@
 ---
 name: snowflake-security-basics
-description: |
-  Apply Snowflake security best practices: network policies, key rotation,
+description: 'Apply Snowflake security best practices: network policies, key rotation,
+
   MFA, encryption, and least-privilege access.
+
   Use when securing Snowflake access, implementing network policies,
+
   or auditing security configuration.
+
   Trigger with phrases like "snowflake security", "snowflake network policy",
+
   "secure snowflake", "snowflake MFA", "snowflake encryption".
+
+  '
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, data-warehouse, analytics, snowflake]
-compatible-with: claude-code
+tags:
+- saas
+- data-warehouse
+- analytics
+- snowflake
+compatibility: Designed for Claude Code
 ---
-
 # Snowflake Security Basics
 
 ## Overview

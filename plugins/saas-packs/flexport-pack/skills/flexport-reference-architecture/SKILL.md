@@ -1,17 +1,23 @@
 ---
 name: flexport-reference-architecture
-description: |
-  Implement Flexport reference architecture for supply chain integrations
+description: 'Implement Flexport reference architecture for supply chain integrations
+
   with best-practice project layout, service boundaries, and data flow.
-  Trigger: "flexport architecture", "flexport project structure", "flexport system design".
+
+  Trigger: "flexport architecture", "flexport project structure", "flexport system
+  design".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, logistics, flexport]
-compatible-with: claude-code
+tags:
+- saas
+- logistics
+- flexport
+compatibility: Designed for Claude Code
 ---
-
 # Flexport Reference Architecture
 
 ## Overview

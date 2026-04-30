@@ -1,17 +1,26 @@
 ---
 name: clerk-deploy-integration
-description: |
-  Configure Clerk for deployment on various platforms.
+description: 'Configure Clerk for deployment on various platforms.
+
   Use when deploying to Vercel, Netlify, Railway, or other platforms,
+
   or when setting up production environment.
+
   Trigger with phrases like "deploy clerk", "clerk Vercel",
+
   "clerk Netlify", "clerk production deploy", "clerk Railway".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(netlify:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clerk, deployment, etl]
+tags:
+- saas
+- clerk
+- deployment
+- etl
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clerk Deploy Integration
 

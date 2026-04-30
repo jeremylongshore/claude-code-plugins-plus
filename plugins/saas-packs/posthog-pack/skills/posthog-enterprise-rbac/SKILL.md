@@ -1,18 +1,25 @@
 ---
 name: posthog-enterprise-rbac
-description: |
-  PostHog enterprise access control: organization/project hierarchy, member roles,
+description: 'PostHog enterprise access control: organization/project hierarchy, member
+  roles,
+
   scoped API keys, SSO/SAML configuration, and activity audit logging.
+
   Trigger: "posthog SSO", "posthog RBAC", "posthog enterprise",
+
   "posthog roles", "posthog permissions", "posthog SAML", "posthog access".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, posthog, rbac]
+tags:
+- saas
+- posthog
+- rbac
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # PostHog Enterprise RBAC
 
 ## Overview

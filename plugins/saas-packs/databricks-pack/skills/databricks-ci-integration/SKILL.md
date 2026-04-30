@@ -1,17 +1,28 @@
 ---
 name: databricks-ci-integration
-description: |
-  Configure Databricks CI/CD integration with GitHub Actions and Asset Bundles.
+description: 'Configure Databricks CI/CD integration with GitHub Actions and Asset
+  Bundles.
+
   Use when setting up automated testing, configuring CI pipelines,
+
   or integrating Databricks deployments into your build process.
+
   Trigger with phrases like "databricks CI", "databricks GitHub Actions",
+
   "databricks automated tests", "CI databricks", "databricks pipeline".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(databricks:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, databricks, deployment, testing, ci-cd]
+tags:
+- saas
+- databricks
+- deployment
+- testing
+- ci-cd
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Databricks CI Integration
 

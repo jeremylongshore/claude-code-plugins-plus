@@ -1,19 +1,28 @@
 ---
 name: klaviyo-cost-tuning
-description: |
-  Optimize Klaviyo costs through plan selection, contact management, and usage monitoring.
+description: 'Optimize Klaviyo costs through plan selection, contact management, and
+  usage monitoring.
+
   Use when analyzing Klaviyo billing, reducing active profile costs,
+
   or implementing usage monitoring and budget alerts.
+
   Trigger with phrases like "klaviyo cost", "klaviyo billing",
+
   "reduce klaviyo costs", "klaviyo pricing", "klaviyo expensive", "klaviyo budget".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, klaviyo, email-marketing, cdp]
-compatible-with: claude-code
+tags:
+- saas
+- klaviyo
+- email-marketing
+- cdp
+compatibility: Designed for Claude Code
 ---
-
 # Klaviyo Cost Tuning
 
 ## Overview

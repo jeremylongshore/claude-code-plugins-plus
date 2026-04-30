@@ -1,19 +1,28 @@
 ---
 name: intercom-performance-tuning
-description: |
-  Optimize Intercom API performance with caching, search optimization, and pagination.
+description: 'Optimize Intercom API performance with caching, search optimization,
+  and pagination.
+
   Use when experiencing slow API responses, implementing caching strategies,
+
   or optimizing request throughput for Intercom integrations.
+
   Trigger with phrases like "intercom performance", "optimize intercom",
+
   "intercom latency", "intercom caching", "intercom slow", "intercom pagination".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, support, messaging, intercom]
-compatible-with: claude-code
+tags:
+- saas
+- support
+- messaging
+- intercom
+compatibility: Designed for Claude Code
 ---
-
 # Intercom Performance Tuning
 
 ## Overview

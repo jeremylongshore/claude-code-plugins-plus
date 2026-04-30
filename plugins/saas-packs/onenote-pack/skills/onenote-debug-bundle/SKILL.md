@@ -1,17 +1,25 @@
 ---
 name: onenote-debug-bundle
-description: |
-  Generate comprehensive diagnostic bundles for OneNote Graph API issues with request tracing and token analysis.
-  Use when debugging OneNote API failures, filing Microsoft support tickets, or analyzing permission issues.
-  Trigger with "onenote debug", "onenote diagnostic", "onenote support ticket", "graph api troubleshoot onenote".
+description: 'Generate comprehensive diagnostic bundles for OneNote Graph API issues
+  with request tracing and token analysis.
+
+  Use when debugging OneNote API failures, filing Microsoft support tickets, or analyzing
+  permission issues.
+
+  Trigger with "onenote debug", "onenote diagnostic", "onenote support ticket", "graph
+  api troubleshoot onenote".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, onenote, microsoft]
-compatible-with: claude-code
+tags:
+- saas
+- onenote
+- microsoft
+compatibility: Designed for Claude Code
 ---
-
 # OneNote Debug Bundle
 
 ## Overview

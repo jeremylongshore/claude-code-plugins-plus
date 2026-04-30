@@ -1,19 +1,25 @@
 ---
 name: framer-cost-tuning
-description: |
-  Optimize Framer costs through tier selection, sampling, and usage monitoring.
+description: 'Optimize Framer costs through tier selection, sampling, and usage monitoring.
+
   Use when analyzing Framer billing, reducing API costs,
+
   or implementing usage monitoring and budget alerts.
+
   Trigger with phrases like "framer cost", "framer billing",
+
   "reduce framer costs", "framer pricing", "framer expensive", "framer budget".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, framer]
-compatible-with: claude-code
+tags:
+- saas
+- framer
+compatibility: Designed for Claude Code
 ---
-
 # Framer Cost Tuning
 
 ## Overview

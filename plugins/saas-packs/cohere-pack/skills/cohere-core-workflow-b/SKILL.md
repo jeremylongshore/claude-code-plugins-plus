@@ -1,19 +1,27 @@
 ---
 name: cohere-core-workflow-b
-description: |
-  Build tool-use agents and function calling with Cohere API v2.
+description: 'Build tool-use agents and function calling with Cohere API v2.
+
   Use when implementing multi-step agents, function calling,
+
   or building autonomous tool-using workflows with Cohere.
+
   Trigger with phrases like "cohere tool use", "cohere agents",
+
   "cohere function calling", "cohere multi-step".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, nlp, cohere]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- nlp
+- cohere
+compatibility: Designed for Claude Code
 ---
-
 # Cohere Tool Use & Agents (Core Workflow B)
 
 ## Overview

@@ -1,19 +1,27 @@
 ---
 name: sentry-install-auth
-description: |
-  Install and configure Sentry SDK authentication with DSN setup.
+description: 'Install and configure Sentry SDK authentication with DSN setup.
+
   Use when setting up Sentry error tracking, configuring DSN,
+
   or initializing Sentry in a Node.js or Python project.
+
   Trigger with "install sentry", "setup sentry", "sentry auth",
+
   "configure sentry DSN".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code
-tags: [saas, sentry, monitoring, error-tracking]
+tags:
+- saas
+- sentry
+- monitoring
+- error-tracking
+compatibility: Designed for Claude Code
 ---
-
 # Sentry Install & Auth
 
 ## Overview

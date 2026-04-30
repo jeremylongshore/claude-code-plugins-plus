@@ -1,18 +1,29 @@
 ---
 name: replit-policy-guardrails
-description: |
-  Enforce security and resource policies for Replit-hosted apps: secrets exposure prevention,
+description: 'Enforce security and resource policies for Replit-hosted apps: secrets
+  exposure prevention,
+
   resource limits, deployment visibility, and database access controls.
+
   Use when hardening a Replit app for production, auditing security posture,
+
   or setting up guardrails for team development.
+
   Trigger with phrases like "replit policy", "replit guardrails",
+
   "replit security audit", "replit hardening", "replit best practices check".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npx:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, replit, security, policy]
+tags:
+- saas
+- replit
+- security
+- policy
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Replit Policy Guardrails
 

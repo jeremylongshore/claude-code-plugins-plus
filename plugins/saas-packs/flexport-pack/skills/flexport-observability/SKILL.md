@@ -1,17 +1,23 @@
 ---
 name: flexport-observability
-description: |
-  Set up observability for Flexport logistics integrations with metrics,
+description: 'Set up observability for Flexport logistics integrations with metrics,
+
   structured logging, distributed tracing, and alerting dashboards.
-  Trigger: "flexport monitoring", "flexport observability", "flexport metrics", "flexport alerts".
+
+  Trigger: "flexport monitoring", "flexport observability", "flexport metrics", "flexport
+  alerts".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, logistics, flexport]
-compatible-with: claude-code
+tags:
+- saas
+- logistics
+- flexport
+compatibility: Designed for Claude Code
 ---
-
 # Flexport Observability
 
 ## Overview

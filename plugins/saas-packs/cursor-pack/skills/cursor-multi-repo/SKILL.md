@@ -1,15 +1,23 @@
 ---
-name: "cursor-multi-repo"
-description: |
-  Work with multiple repositories in Cursor: multi-root workspaces, monorepo patterns, selective indexing,
-  and cross-project context. Triggers on "cursor multi repo", "cursor multiple projects", "cursor monorepo",
+name: cursor-multi-repo
+description: 'Work with multiple repositories in Cursor: multi-root workspaces, monorepo
+  patterns, selective indexing,
+
+  and cross-project context. Triggers on "cursor multi repo", "cursor multiple projects",
+  "cursor monorepo",
+
   "cursor workspace", "multi-root workspace".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, cursor, cursor-multi]
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- cursor
+- cursor-multi
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Cursor Multi-Repo
 

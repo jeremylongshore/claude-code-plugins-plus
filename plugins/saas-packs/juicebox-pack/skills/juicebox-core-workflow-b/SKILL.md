@@ -1,16 +1,20 @@
 ---
 name: juicebox-core-workflow-b
-description: |
-  Execute Juicebox enrichment and outreach workflow.
+description: 'Execute Juicebox enrichment and outreach workflow.
+
   Trigger: "juicebox enrich", "candidate enrichment", "talent pool".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, recruiting, juicebox]
-compatible-with: claude-code
+tags:
+- saas
+- recruiting
+- juicebox
+compatibility: Designed for Claude Code
 ---
-
 # Juicebox — Advanced Analysis
 
 ## Overview

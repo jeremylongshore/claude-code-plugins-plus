@@ -1,17 +1,27 @@
 ---
 name: replit-advanced-troubleshooting
-description: |
-  Debug hard Replit issues: container lifecycle, Nix build failures, deployment crashes, and memory leaks.
+description: 'Debug hard Replit issues: container lifecycle, Nix build failures, deployment
+  crashes, and memory leaks.
+
   Use when standard troubleshooting fails, investigating intermittent failures,
+
   or diagnosing complex Replit platform behavior.
+
   Trigger with phrases like "replit hard bug", "replit mystery error",
+
   "replit impossible to debug", "replit intermittent", "replit deep debug".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*), Bash(node:*), Bash(python3:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, replit, debugging, advanced]
+tags:
+- saas
+- replit
+- debugging
+- advanced
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Replit Advanced Troubleshooting
 

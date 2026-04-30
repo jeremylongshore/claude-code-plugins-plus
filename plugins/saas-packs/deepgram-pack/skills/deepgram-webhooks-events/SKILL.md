@@ -1,17 +1,27 @@
 ---
 name: deepgram-webhooks-events
-description: |
-  Implement Deepgram callback and webhook handling for async transcription.
+description: 'Implement Deepgram callback and webhook handling for async transcription.
+
   Use when implementing callback URLs, processing async transcription results,
+
   or handling Deepgram event notifications.
+
   Trigger: "deepgram callback", "deepgram webhook", "async transcription",
+
   "deepgram events", "deepgram notifications", "deepgram async".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, deepgram, webhooks, transcription, async]
+tags:
+- saas
+- deepgram
+- webhooks
+- transcription
+- async
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Deepgram Webhooks & Callbacks
 

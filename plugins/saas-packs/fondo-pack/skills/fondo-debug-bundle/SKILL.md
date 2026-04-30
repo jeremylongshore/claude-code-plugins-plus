@@ -1,17 +1,23 @@
 ---
 name: fondo-debug-bundle
-description: |
-  Collect diagnostic information for Fondo support including integration status,
+description: 'Collect diagnostic information for Fondo support including integration
+  status,
+
   transaction discrepancies, and financial data reconciliation issues.
+
   Trigger: "fondo debug", "fondo support", "fondo diagnostic", "fondo reconciliation".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, accounting, fondo]
-compatible-with: claude-code
+tags:
+- saas
+- accounting
+- fondo
+compatibility: Designed for Claude Code
 ---
-
 # Fondo Debug Bundle
 
 ## Overview

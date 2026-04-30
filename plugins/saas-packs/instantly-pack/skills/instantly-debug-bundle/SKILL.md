@@ -1,17 +1,26 @@
 ---
 name: instantly-debug-bundle
-description: |
-  Collect Instantly.ai debug evidence for support tickets and troubleshooting.
+description: 'Collect Instantly.ai debug evidence for support tickets and troubleshooting.
+
   Use when encountering persistent issues, preparing support tickets,
+
   or auditing campaign/account state.
+
   Trigger with phrases like "instantly debug", "instantly support ticket",
+
   "instantly diagnostic", "instantly audit", "collect instantly evidence".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, instantly, debugging, support]
+tags:
+- saas
+- instantly
+- debugging
+- support
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Instantly Debug Bundle
 

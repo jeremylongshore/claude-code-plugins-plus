@@ -1,20 +1,32 @@
 ---
 name: research-to-deploy
-description: |
-  Researches infrastructure best practices and generates deployment-ready
+description: 'Researches infrastructure best practices and generates deployment-ready
+
   configurations, Terraform modules, Dockerfiles, and CI/CD pipelines. Use
+
   when the user needs to deploy services, set up infrastructure, or create
+
   cloud configurations based on current best practices. Trigger with phrases
+
   like "research and deploy", "set up Cloud Run", "create Terraform for",
+
   "deploy this to AWS", or "generate infrastructure configs".
-allowed-tools: Read, Write, Edit, Bash(terraform:*), Bash(docker:*), Bash(kubectl:*), Bash(git:*), Bash(npm:*), Glob, Grep, WebSearch, WebFetch
+
+  '
+allowed-tools: Read, Write, Edit, Bash(terraform:*), Bash(docker:*), Bash(kubectl:*),
+  Bash(git:*), Bash(npm:*), Glob, Grep, WebSearch, WebFetch
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex
-tags: [deployment, infrastructure, automation, devops, terraform, cloud]
+tags:
+- deployment
+- infrastructure
+- automation
+- devops
+- terraform
+- cloud
+compatibility: Designed for Claude Code, also compatible with Codex
 ---
-
 # Research to Deploy
 
 Research infrastructure best practices and generate deployment-ready cloud configurations.

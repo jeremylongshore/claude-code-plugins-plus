@@ -1,17 +1,28 @@
 ---
 name: firecrawl-cost-tuning
-description: |
-  Optimize Firecrawl costs through crawl limits, format selection, caching, and credit monitoring.
+description: 'Optimize Firecrawl costs through crawl limits, format selection, caching,
+  and credit monitoring.
+
   Use when analyzing Firecrawl billing, reducing API costs,
+
   or implementing credit budget alerts.
+
   Trigger with phrases like "firecrawl cost", "firecrawl billing",
+
   "reduce firecrawl costs", "firecrawl pricing", "firecrawl credits", "firecrawl budget".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, firecrawl, api, monitoring, cost-optimization]
+tags:
+- saas
+- firecrawl
+- api
+- monitoring
+- cost-optimization
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Firecrawl Cost Tuning
 

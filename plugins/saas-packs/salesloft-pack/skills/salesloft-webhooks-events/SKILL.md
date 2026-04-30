@@ -1,18 +1,26 @@
 ---
 name: salesloft-webhooks-events
-description: |
-  Implement SalesLoft webhook handling with signature verification and event routing.
+description: 'Implement SalesLoft webhook handling with signature verification and
+  event routing.
+
   Use when setting up webhook endpoints, handling activity notifications,
+
   or syncing SalesLoft data to external systems in real-time.
+
   Trigger: "salesloft webhook", "salesloft events", "salesloft notifications".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, sales, outreach, salesloft]
-compatible-with: claude-code
+tags:
+- saas
+- sales
+- outreach
+- salesloft
+compatibility: Designed for Claude Code
 ---
-
 # SalesLoft Webhooks & Events
 
 ## Overview

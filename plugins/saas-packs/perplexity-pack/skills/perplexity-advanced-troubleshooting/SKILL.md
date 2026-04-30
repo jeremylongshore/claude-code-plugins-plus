@@ -1,17 +1,28 @@
 ---
 name: perplexity-advanced-troubleshooting
-description: |
-  Apply advanced debugging techniques for hard-to-diagnose Perplexity Sonar API issues.
+description: 'Apply advanced debugging techniques for hard-to-diagnose Perplexity
+  Sonar API issues.
+
   Use when standard troubleshooting fails, investigating inconsistent citations,
+
   or preparing evidence for support escalation.
+
   Trigger with phrases like "perplexity hard bug", "perplexity mystery error",
-  "perplexity inconsistent results", "difficult perplexity issue", "perplexity deep debug".
+
+  "perplexity inconsistent results", "difficult perplexity issue", "perplexity deep
+  debug".
+
+  '
 allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*), Bash(tcpdump:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, perplexity, debugging, scaling]
+tags:
+- saas
+- perplexity
+- debugging
+- scaling
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Perplexity Advanced Troubleshooting
 

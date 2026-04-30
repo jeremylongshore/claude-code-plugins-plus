@@ -1,17 +1,28 @@
 ---
 name: replit-deploy-integration
-description: |
-  Deploy Replit apps with Autoscale, Reserved VM, and Static deployment types.
+description: 'Deploy Replit apps with Autoscale, Reserved VM, and Static deployment
+  types.
+
   Use when deploying to production, configuring deployment settings, setting up
+
   custom domains, or managing deployment secrets and health checks.
+
   Trigger with phrases like "deploy replit", "replit deployment",
-  "replit autoscale", "replit reserved VM", "replit static deploy", "replit custom domain".
+
+  "replit autoscale", "replit reserved VM", "replit static deploy", "replit custom
+  domain".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, replit, deployment, hosting]
+tags:
+- saas
+- replit
+- deployment
+- hosting
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Replit Deploy Integration
 

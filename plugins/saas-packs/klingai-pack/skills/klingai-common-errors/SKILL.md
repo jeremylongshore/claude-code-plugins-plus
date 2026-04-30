@@ -1,15 +1,24 @@
 ---
 name: klingai-common-errors
-description: |
-  Diagnose and fix common Kling AI API errors. Use when troubleshooting failed video generation
-  or API issues. Trigger with phrases like 'kling ai error', 'klingai not working', 'fix klingai',
-  'klingai failed'.
+description: 'Diagnose and fix common Kling AI API errors. Use when troubleshooting
+  failed video generation
+
+  or API issues. Trigger with phrases like ''kling ai error'', ''klingai not working'',
+  ''fix klingai'',
+
+  ''klingai failed''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, kling-ai, debugging, errors]
+tags:
+- saas
+- kling-ai
+- debugging
+- errors
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Kling AI Common Errors
 

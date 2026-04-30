@@ -1,17 +1,23 @@
 ---
 name: stackblitz-performance-tuning
-description: |
-  Optimize WebContainer boot time, file system mounts, and process spawning.
+description: 'Optimize WebContainer boot time, file system mounts, and process spawning.
+
   Use when working with WebContainers or StackBlitz SDK.
+
   Trigger: "stackblitz performance".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ide, webcontainers, stackblitz]
-compatible-with: claude-code
+tags:
+- saas
+- ide
+- webcontainers
+- stackblitz
+compatibility: Designed for Claude Code
 ---
-
 # StackBlitz Performance Tuning
 
 ## Overview

@@ -1,19 +1,26 @@
 ---
 name: hootsuite-security-basics
-description: |
-  Apply Hootsuite security best practices for secrets and access control.
+description: 'Apply Hootsuite security best practices for secrets and access control.
+
   Use when securing API keys, implementing least privilege access,
+
   or auditing Hootsuite security configuration.
+
   Trigger with phrases like "hootsuite security", "hootsuite secrets",
+
   "secure hootsuite", "hootsuite API key security".
+
+  '
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hootsuite, social-media]
-compatible-with: claude-code
+tags:
+- saas
+- hootsuite
+- social-media
+compatibility: Designed for Claude Code
 ---
-
 # Hootsuite Security Basics
 
 ## Credential Inventory

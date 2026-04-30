@@ -1,12 +1,18 @@
 ---
 name: analyzing-logs
-description: Analyze application logs for performance insights and issue detection including slow requests, error patterns, and resource usage. Use when troubleshooting performance issues or debugging errors. Trigger with phrases like "analyze logs", "find slow requests", or "detect error patterns".
+description: Analyze application logs for performance insights and issue detection
+  including slow requests, error patterns, and resource usage. Use when troubleshooting
+  performance issues or debugging errors. Trigger with phrases like "analyze logs",
+  "find slow requests", or "detect error patterns".
 version: 1.0.0
-allowed-tools: "Read, Write, Bash(logs:*), Bash(grep:*), Bash(awk:*), Grep"
+allowed-tools: Read, Write, Bash(logs:*), Bash(grep:*), Bash(awk:*), Grep
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [performance, debugging, analyzing-logs]
+tags:
+- performance
+- debugging
+- analyzing-logs
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Log Analysis Tool
 

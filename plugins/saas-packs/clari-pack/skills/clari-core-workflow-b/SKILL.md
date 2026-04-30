@@ -1,20 +1,29 @@
 ---
 name: clari-core-workflow-b
-description: |
-  Build Clari revenue analytics: pipeline coverage, forecast accuracy,
+description: 'Build Clari revenue analytics: pipeline coverage, forecast accuracy,
+
   and rep performance dashboards from exported data.
+
   Use when analyzing forecast accuracy, building attainment reports,
+
   or creating executive revenue dashboards.
+
   Trigger with phrases like "clari analytics", "clari dashboard",
+
   "clari forecast accuracy", "clari pipeline coverage".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(python3:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, revenue-intelligence, forecasting, clari]
-compatible-with: claude-code
+tags:
+- saas
+- revenue-intelligence
+- forecasting
+- clari
+compatibility: Designed for Claude Code
 ---
-
 # Clari Core Workflow: Revenue Analytics
 
 ## Overview

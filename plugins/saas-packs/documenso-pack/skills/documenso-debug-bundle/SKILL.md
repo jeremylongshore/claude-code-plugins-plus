@@ -1,17 +1,25 @@
 ---
 name: documenso-debug-bundle
-description: |
-  Comprehensive debugging toolkit for Documenso integrations.
+description: 'Comprehensive debugging toolkit for Documenso integrations.
+
   Use when troubleshooting complex issues, gathering diagnostic information,
+
   or creating support tickets for Documenso problems.
+
   Trigger with phrases like "debug documenso", "documenso diagnostics",
+
   "troubleshoot documenso", "documenso support ticket".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(node:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, documenso, debugging]
+tags:
+- saas
+- documenso
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Documenso Debug Bundle
 

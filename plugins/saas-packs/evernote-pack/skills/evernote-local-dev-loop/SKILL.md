@@ -1,17 +1,26 @@
 ---
 name: evernote-local-dev-loop
-description: |
-  Set up efficient local development workflow for Evernote integrations.
+description: 'Set up efficient local development workflow for Evernote integrations.
+
   Use when configuring dev environment, setting up sandbox testing,
+
   or optimizing development iteration speed.
+
   Trigger with phrases like "evernote dev setup", "evernote local development",
+
   "evernote sandbox", "test evernote locally".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, evernote, testing, workflow]
+tags:
+- saas
+- evernote
+- testing
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Evernote Local Dev Loop
 

@@ -34,6 +34,7 @@
     "@commitlint/cli": "^20.5.2",
     "@commitlint/config-conventional": "^20.5.0",
     "@eslint/js": "^9.39.2",
+    "@intentsolutions/audit-harness": "^0.1.0",
     "@types/node": "^20.19.27",
     "archiver": "^7.0.1",
     "eslint": "^9.39.2",

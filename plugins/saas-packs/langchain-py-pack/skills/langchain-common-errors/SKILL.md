@@ -1,22 +1,29 @@
 ---
 name: langchain-common-errors
-description: |
-  Paste-match catalog of 14 real LangChain 1.0 / LangGraph 1.0 exceptions with named
-  causes and named fixes, plus a triage decision tree. Use when you have a traceback
-  and want the specific fix, not speculative documentation. Covers ImportError (0.2/0.3 → 1.0
-  migration), AttributeError on AIMessage.content, KeyError in LCEL and prompts,
-  GraphRecursionError, silent thread_id memory loss, JSON-serialization crashes,
-  and graphs that halt without reaching END. Trigger with "langchain error",
-  "langgraph traceback", "OutputParserException", "GraphRecursionError",
-  "ImportError langchain", "AttributeError AIMessage content".
+description: "Paste-match catalog of 14 real LangChain 1.0 / LangGraph 1.0 exceptions\
+  \ with named\ncauses and named fixes, plus a triage decision tree. Use when you\
+  \ have a traceback\nand want the specific fix, not speculative documentation. Covers\
+  \ ImportError (0.2/0.3 \u2192 1.0\nmigration), AttributeError on AIMessage.content,\
+  \ KeyError in LCEL and prompts,\nGraphRecursionError, silent thread_id memory loss,\
+  \ JSON-serialization crashes,\nand graphs that halt without reaching END. Trigger\
+  \ with \"langchain error\",\n\"langgraph traceback\", \"OutputParserException\"\
+  , \"GraphRecursionError\",\n\"ImportError langchain\", \"AttributeError AIMessage\
+  \ content\".\n"
 allowed-tools: Read, Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, langchain, langgraph, python, langchain-1.0, errors, troubleshooting, debugging]
-compatible-with: claude-code, codex
+tags:
+- saas
+- langchain
+- langgraph
+- python
+- langchain-1.0
+- errors
+- troubleshooting
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex
 ---
-
 # LangChain Common Errors (Python)
 
 ## Overview

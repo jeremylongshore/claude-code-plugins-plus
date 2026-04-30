@@ -1,13 +1,21 @@
 ---
 name: generating-smart-commits
-description: |
-  Execute use when generating conventional commit messages from staged git changes. Trigger with phrases like "create commit message", "generate smart commit", "/commit-smart", or "/gc". Automatically analyzes changes to determine commit type (feat, fix, docs), identifies breaking changes, and formats according to conventional commit standards.
+description: 'Execute use when generating conventional commit messages from staged
+  git changes. Trigger with phrases like "create commit message", "generate smart
+  commit", "/commit-smart", or "/gc". Automatically analyzes changes to determine
+  commit type (feat, fix, docs), identifies breaking changes, and formats according
+  to conventional commit standards.
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(git:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [devops, git, smart-commits]
+tags:
+- devops
+- git
+- smart-commits
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Generating Smart Commits
 

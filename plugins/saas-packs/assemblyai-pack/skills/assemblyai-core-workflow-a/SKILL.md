@@ -1,19 +1,29 @@
 ---
 name: assemblyai-core-workflow-a
-description: |
-  Execute AssemblyAI primary workflow: async transcription with audio intelligence.
+description: 'Execute AssemblyAI primary workflow: async transcription with audio
+  intelligence.
+
   Use when transcribing audio/video files, enabling speaker diarization,
+
   sentiment analysis, entity detection, PII redaction, or content moderation.
+
   Trigger with phrases like "assemblyai transcribe", "assemblyai transcription",
+
   "transcribe audio", "speaker diarization assemblyai".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, speech-to-text, assemblyai, transcription]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- speech-to-text
+- assemblyai
+- transcription
+compatibility: Designed for Claude Code
 ---
-
 # AssemblyAI Core Workflow A — Async Transcription
 
 ## Overview

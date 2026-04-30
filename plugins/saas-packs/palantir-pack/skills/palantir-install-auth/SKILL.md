@@ -1,19 +1,29 @@
 ---
 name: palantir-install-auth
-description: |
-  Install and configure Palantir Foundry SDK authentication with OAuth2 or token auth.
+description: 'Install and configure Palantir Foundry SDK authentication with OAuth2
+  or token auth.
+
   Use when setting up a new Foundry integration, configuring API credentials,
+
   or initializing the foundry-platform-sdk in your project.
+
   Trigger with phrases like "install palantir", "setup palantir",
+
   "palantir auth", "configure palantir API key", "foundry SDK setup".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, palantir, foundry, authentication, setup]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- palantir
+- foundry
+- authentication
+- setup
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Palantir Install & Auth
 
 ## Overview

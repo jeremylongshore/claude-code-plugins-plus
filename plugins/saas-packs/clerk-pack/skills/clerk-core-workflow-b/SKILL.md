@@ -1,17 +1,27 @@
 ---
 name: clerk-core-workflow-b
-description: |
-  Implement session management and middleware with Clerk.
+description: 'Implement session management and middleware with Clerk.
+
   Use when managing user sessions, configuring route protection,
+
   or implementing token refresh and custom JWT templates.
+
   Trigger with phrases like "clerk session", "clerk middleware",
+
   "clerk route protection", "clerk token", "clerk JWT".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clerk, clerk-core, sessions, middleware]
+tags:
+- saas
+- clerk
+- clerk-core
+- sessions
+- middleware
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clerk Core Workflow B: Session & Middleware
 

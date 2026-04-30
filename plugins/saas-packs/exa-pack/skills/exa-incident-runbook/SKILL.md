@@ -1,17 +1,26 @@
 ---
 name: exa-incident-runbook
-description: |
-  Execute Exa incident response with triage, mitigation, and postmortem procedures.
+description: 'Execute Exa incident response with triage, mitigation, and postmortem
+  procedures.
+
   Use when responding to Exa-related outages, investigating errors,
+
   or running post-incident reviews for Exa integration failures.
+
   Trigger with phrases like "exa incident", "exa outage",
+
   "exa down", "exa on-call", "exa emergency", "exa broken".
+
+  '
 allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, exa, incident-response]
+tags:
+- saas
+- exa
+- incident-response
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Exa Incident Runbook
 

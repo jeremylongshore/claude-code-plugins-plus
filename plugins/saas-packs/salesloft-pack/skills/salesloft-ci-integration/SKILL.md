@@ -1,18 +1,25 @@
 ---
 name: salesloft-ci-integration
-description: |
-  Set up CI/CD pipelines for SalesLoft integrations with GitHub Actions.
+description: 'Set up CI/CD pipelines for SalesLoft integrations with GitHub Actions.
+
   Use when automating SalesLoft integration tests, validating OAuth tokens,
+
   or running cadence sync validation in CI.
+
   Trigger: "salesloft CI", "salesloft GitHub Actions", "salesloft automated tests".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, sales, outreach, salesloft]
-compatible-with: claude-code
+tags:
+- saas
+- sales
+- outreach
+- salesloft
+compatibility: Designed for Claude Code
 ---
-
 # SalesLoft CI Integration
 
 ## Overview

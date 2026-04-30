@@ -1,17 +1,27 @@
 ---
 name: langfuse-core-workflow-a
-description: |
-  Execute Langfuse primary workflow: Tracing LLM calls and spans.
+description: 'Execute Langfuse primary workflow: Tracing LLM calls and spans.
+
   Use when implementing LLM tracing, building traced AI features,
+
   or adding observability to existing LLM applications.
+
   Trigger with phrases like "langfuse tracing", "trace LLM calls",
+
   "add langfuse to openai", "langfuse spans", "track llm requests".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langfuse, observability, llm, workflow]
+tags:
+- saas
+- langfuse
+- observability
+- llm
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Langfuse Core Workflow A: Tracing LLM Calls
 

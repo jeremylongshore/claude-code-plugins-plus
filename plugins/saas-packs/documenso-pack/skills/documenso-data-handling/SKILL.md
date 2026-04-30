@@ -1,17 +1,25 @@
 ---
 name: documenso-data-handling
-description: |
-  Handle document data, signatures, and PII in Documenso integrations.
+description: 'Handle document data, signatures, and PII in Documenso integrations.
+
   Use when managing document lifecycle, handling signed PDFs,
+
   or implementing data retention policies.
+
   Trigger with phrases like "documenso data", "signed document",
+
   "document retention", "documenso PII", "download signed pdf".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, documenso, documenso-data]
+tags:
+- saas
+- documenso
+- documenso-data
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Documenso Data Handling
 

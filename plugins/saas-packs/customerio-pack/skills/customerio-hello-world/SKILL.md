@@ -1,17 +1,26 @@
 ---
 name: customerio-hello-world
-description: |
-  Create a minimal working Customer.io example.
+description: 'Create a minimal working Customer.io example.
+
   Use when learning Customer.io basics, testing SDK setup,
+
   or creating your first identify + track integration.
+
   Trigger: "customer.io hello world", "first customer.io message",
+
   "test customer.io", "customer.io example", "customer.io quickstart".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Glob, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, customer-io, quickstart, testing]
+tags:
+- saas
+- customer-io
+- quickstart
+- testing
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Customer.io Hello World
 

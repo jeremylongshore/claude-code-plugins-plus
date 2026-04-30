@@ -1,17 +1,28 @@
 ---
 name: deepgram-performance-tuning
-description: |
-  Optimize Deepgram API performance for faster transcription and lower latency.
+description: 'Optimize Deepgram API performance for faster transcription and lower
+  latency.
+
   Use when improving transcription speed, reducing latency,
+
   or optimizing audio processing pipelines.
+
   Trigger: "deepgram performance", "speed up deepgram", "optimize transcription",
+
   "deepgram latency", "deepgram faster", "deepgram throughput".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(ffmpeg:*), Bash(ffprobe:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, deepgram, api, performance, optimization]
+tags:
+- saas
+- deepgram
+- api
+- performance
+- optimization
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Deepgram Performance Tuning
 

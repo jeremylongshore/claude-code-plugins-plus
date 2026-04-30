@@ -1,19 +1,28 @@
 ---
 name: miro-local-dev-loop
-description: |
-  Configure Miro local development with hot reload, testing, and ngrok tunneling.
+description: 'Configure Miro local development with hot reload, testing, and ngrok
+  tunneling.
+
   Use when setting up a development environment, configuring test workflows,
+
   or establishing a fast iteration cycle with the Miro REST API v2.
+
   Trigger with phrases like "miro dev setup", "miro local development",
+
   "miro dev environment", "develop with miro", "miro testing".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, miro, development, testing]
-compatible-with: claude-code
+tags:
+- saas
+- miro
+- development
+- testing
+compatibility: Designed for Claude Code
 ---
-
 # Miro Local Dev Loop
 
 ## Overview

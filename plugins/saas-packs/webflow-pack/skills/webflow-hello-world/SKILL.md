@@ -1,19 +1,21 @@
 ---
 name: webflow-hello-world
-description: |
-  Create a minimal working Webflow Data API v2 example.
-  Use when starting a new Webflow integration, testing your setup,
-  or learning basic Webflow API patterns — list sites, read CMS collections, create items.
-  Trigger with phrases like "webflow hello world", "webflow example",
-  "webflow quick start", "simple webflow code", "first webflow API call".
+description: "Create a minimal working Webflow Data API v2 example.\nUse when starting\
+  \ a new Webflow integration, testing your setup,\nor learning basic Webflow API\
+  \ patterns \u2014 list sites, read CMS collections, create items.\nTrigger with\
+  \ phrases like \"webflow hello world\", \"webflow example\",\n\"webflow quick start\"\
+  , \"simple webflow code\", \"first webflow API call\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, no-code, webflow]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- no-code
+- webflow
+compatibility: Designed for Claude Code
 ---
-
 # Webflow Hello World
 
 ## Overview

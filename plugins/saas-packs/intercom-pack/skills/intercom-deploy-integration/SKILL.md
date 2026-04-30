@@ -1,19 +1,28 @@
 ---
 name: intercom-deploy-integration
-description: |
-  Deploy Intercom integrations to Vercel, Fly.io, and Cloud Run with proper secrets.
+description: 'Deploy Intercom integrations to Vercel, Fly.io, and Cloud Run with proper
+  secrets.
+
   Use when deploying Intercom-powered applications to production,
+
   configuring platform-specific secrets, or setting up webhook endpoints.
+
   Trigger with phrases like "deploy intercom", "intercom Vercel",
+
   "intercom production deploy", "intercom Cloud Run", "intercom Fly.io".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, support, messaging, intercom]
-compatible-with: claude-code
+tags:
+- saas
+- support
+- messaging
+- intercom
+compatibility: Designed for Claude Code
 ---
-
 # Intercom Deploy Integration
 
 ## Overview

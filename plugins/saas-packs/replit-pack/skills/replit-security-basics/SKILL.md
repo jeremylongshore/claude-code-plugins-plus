@@ -1,17 +1,28 @@
 ---
 name: replit-security-basics
-description: |
-  Apply Replit security best practices: Secrets management, REPL_IDENTITY tokens, Auth headers, and public Repl safety.
+description: 'Apply Replit security best practices: Secrets management, REPL_IDENTITY
+  tokens, Auth headers, and public Repl safety.
+
   Use when securing API keys, validating request identity,
+
   or auditing Replit security configuration.
+
   Trigger with phrases like "replit security", "replit secrets",
+
   "secure replit", "replit public safety", "replit identity token".
+
+  '
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, replit, security, secrets, audit]
+tags:
+- saas
+- replit
+- security
+- secrets
+- audit
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Replit Security Basics
 

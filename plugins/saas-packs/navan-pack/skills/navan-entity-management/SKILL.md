@@ -1,17 +1,24 @@
 ---
 name: navan-entity-management
-description: |
-  Manage Navan users, departments, cost centers, and approval chains via API and SCIM provisioning.
-  Use when onboarding departments, integrating identity providers, or auditing user access.
+description: 'Manage Navan users, departments, cost centers, and approval chains via
+  API and SCIM provisioning.
+
+  Use when onboarding departments, integrating identity providers, or auditing user
+  access.
+
   Trigger with "navan entity management", "navan user management", "navan SCIM setup".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, navan, travel]
-compatible-with: claude-code
+tags:
+- saas
+- navan
+- travel
+compatibility: Designed for Claude Code
 ---
-
 # Navan — Entity Management
 
 ## Overview

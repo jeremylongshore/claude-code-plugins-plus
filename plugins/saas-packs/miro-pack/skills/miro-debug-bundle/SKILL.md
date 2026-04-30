@@ -1,19 +1,27 @@
 ---
 name: miro-debug-bundle
-description: |
-  Collect Miro REST API v2 diagnostic evidence for support tickets.
+description: 'Collect Miro REST API v2 diagnostic evidence for support tickets.
+
   Use when encountering persistent issues, preparing support tickets,
+
   or collecting diagnostic information for Miro integration problems.
+
   Trigger with phrases like "miro debug", "miro support bundle",
+
   "collect miro logs", "miro diagnostic", "miro support ticket".
+
+  '
 allowed-tools: Read, Bash(curl:*), Bash(tar:*), Bash(jq:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, miro, debugging, diagnostics]
-compatible-with: claude-code
+tags:
+- saas
+- miro
+- debugging
+- diagnostics
+compatibility: Designed for Claude Code
 ---
-
 # Miro Debug Bundle
 
 ## Overview

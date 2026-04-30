@@ -1,18 +1,26 @@
 ---
 name: miro-observability
-description: |
-  Set up observability for Miro REST API v2 integrations with Prometheus metrics,
+description: 'Set up observability for Miro REST API v2 integrations with Prometheus
+  metrics,
+
   OpenTelemetry traces, structured logging, and Grafana dashboards.
+
   Trigger with phrases like "miro monitoring", "miro metrics",
+
   "miro observability", "monitor miro", "miro alerts", "miro tracing".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, miro, observability, monitoring]
-compatible-with: claude-code
+tags:
+- saas
+- miro
+- observability
+- monitoring
+compatibility: Designed for Claude Code
 ---
-
 # Miro Observability
 
 ## Overview

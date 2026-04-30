@@ -1,19 +1,26 @@
 ---
 name: posthog-migration-deep-dive
-description: |
-  Migrate to PostHog from Google Analytics, Mixpanel, Amplitude, or Segment.
+description: 'Migrate to PostHog from Google Analytics, Mixpanel, Amplitude, or Segment.
+
   Covers dual-write strategy, historical data import, event name mapping,
+
   identity resolution, and feature flag based traffic shifting.
+
   Trigger: "migrate posthog", "posthog migration", "switch to posthog",
+
   "posthog from mixpanel", "posthog from GA", "posthog replatform".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, posthog, migration]
+tags:
+- saas
+- posthog
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # PostHog Migration Deep Dive
 
 ## Current State

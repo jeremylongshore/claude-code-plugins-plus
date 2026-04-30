@@ -1,16 +1,24 @@
 ---
 name: langchain-incident-runbook
-description: |
-  Incident response procedures for LangChain production issues:
+description: 'Incident response procedures for LangChain production issues:
+
   provider outages, high error rates, latency spikes, and cost overruns.
+
   Trigger: "langchain incident", "langchain outage", "langchain production issue",
+
   "langchain emergency", "langchain down", "LLM provider outage".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langchain, llm, incident-response]
+tags:
+- saas
+- langchain
+- llm
+- incident-response
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # LangChain Incident Runbook
 

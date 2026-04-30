@@ -1,13 +1,20 @@
 ---
 name: 000-jeremy-content-consistency-validator
-description: |
-  Validate messaging consistency across website, GitHub repos, and local documentation generating read-only discrepancy reports. Use when checking content alignment or finding mixed messaging. Trigger with phrases like "check consistency", "validate documentation", or "audit messaging".
+description: 'Validate messaging consistency across website, GitHub repos, and local
+  documentation generating read-only discrepancy reports. Use when checking content
+  alignment or finding mixed messaging. Trigger with phrases like "check consistency",
+  "validate documentation", or "audit messaging".
+
+  '
 allowed-tools: Read, WebFetch, WebSearch, Grep, Bash(diff:*), Bash(grep:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [productivity, audit, 000-jeremy]
+tags:
+- productivity
+- audit
+- 000-jeremy
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Content Consistency Validator
 

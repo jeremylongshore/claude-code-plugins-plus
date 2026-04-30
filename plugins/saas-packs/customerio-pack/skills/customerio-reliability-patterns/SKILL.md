@@ -1,17 +1,27 @@
 ---
 name: customerio-reliability-patterns
-description: |
-  Implement Customer.io reliability and fault-tolerance patterns.
+description: 'Implement Customer.io reliability and fault-tolerance patterns.
+
   Use when building circuit breakers, fallback queues, idempotency,
+
   or graceful degradation for Customer.io integrations.
+
   Trigger: "customer.io reliability", "customer.io resilience",
+
   "customer.io circuit breaker", "customer.io fault tolerance".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Glob, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, customer-io, reliability, circuit-breaker, resilience]
+tags:
+- saas
+- customer-io
+- reliability
+- circuit-breaker
+- resilience
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Customer.io Reliability Patterns
 

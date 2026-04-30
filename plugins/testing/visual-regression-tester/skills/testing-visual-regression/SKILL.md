@@ -1,16 +1,21 @@
 ---
 name: testing-visual-regression
-description: |
-  Detect visual changes in UI components using screenshot comparison.
-  Use when detecting unintended UI changes or pixel differences.
-  Trigger with phrases like "test visual changes", "compare screenshots", or "detect UI regressions".
+description: 'Detect visual changes in UI components using screenshot comparison.
 
+  Use when detecting unintended UI changes or pixel differences.
+
+  Trigger with phrases like "test visual changes", "compare screenshots", or "detect
+  UI regressions".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:visual-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [testing, testing-visual]
+tags:
+- testing
+- testing-visual
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Visual Regression Tester
 

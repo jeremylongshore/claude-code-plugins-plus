@@ -1,17 +1,25 @@
 ---
 name: vastai-prod-checklist
-description: |
-  Execute Vast.ai production deployment checklist for GPU workloads.
+description: 'Execute Vast.ai production deployment checklist for GPU workloads.
+
   Use when deploying training pipelines to production, preparing for
+
   large-scale GPU jobs, or auditing production readiness.
+
   Trigger with phrases like "vastai production", "deploy vastai",
+
   "vastai go-live", "vastai launch checklist".
+
+  '
 allowed-tools: Read, Bash(vastai:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vast-ai, deployment]
+tags:
+- saas
+- vast-ai
+- deployment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vast.ai Production Checklist
 

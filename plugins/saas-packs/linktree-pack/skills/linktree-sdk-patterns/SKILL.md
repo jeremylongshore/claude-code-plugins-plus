@@ -1,16 +1,20 @@
 ---
 name: linktree-sdk-patterns
-description: |
-  Sdk Patterns for Linktree.
+description: 'Sdk Patterns for Linktree.
+
   Trigger: "linktree sdk patterns".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, linktree, social]
-compatible-with: claude-code
+tags:
+- saas
+- linktree
+- social
+compatibility: Designed for Claude Code
 ---
-
 # Linktree SDK Patterns
 
 ## Overview

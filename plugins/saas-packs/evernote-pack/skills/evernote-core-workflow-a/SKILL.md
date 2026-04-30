@@ -1,17 +1,25 @@
 ---
 name: evernote-core-workflow-a
-description: |
-  Execute Evernote primary workflow: Note Creation and Management.
+description: 'Execute Evernote primary workflow: Note Creation and Management.
+
   Use when creating notes, organizing content, managing notebooks,
+
   or implementing note-taking features.
+
   Trigger with phrases like "create evernote note", "evernote note workflow",
+
   "manage evernote notes", "evernote content".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, evernote, workflow]
+tags:
+- saas
+- evernote
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Evernote Core Workflow A: Note Creation & Management
 

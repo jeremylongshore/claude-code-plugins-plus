@@ -1,17 +1,25 @@
 ---
 name: obsidian-webhooks-events
-description: |
-  Handle Obsidian events and workspace callbacks for plugin development.
+description: 'Handle Obsidian events and workspace callbacks for plugin development.
+
   Use when implementing reactive features, handling file changes,
+
   or responding to user interactions in your plugin.
+
   Trigger with phrases like "obsidian events", "obsidian callbacks",
+
   "obsidian file change", "obsidian workspace events".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, obsidian, react]
+tags:
+- saas
+- obsidian
+- react
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Obsidian Webhooks & Events
 

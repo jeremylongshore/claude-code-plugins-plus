@@ -1,18 +1,26 @@
 ---
 name: stackblitz-install-auth
-description: |
-  Install the WebContainer API and configure StackBlitz SDK for browser-based Node.js.
+description: 'Install the WebContainer API and configure StackBlitz SDK for browser-based
+  Node.js.
+
   Use when setting up WebContainers, embedding StackBlitz projects,
+
   or initializing the @stackblitz/sdk package.
+
   Trigger: "install stackblitz", "setup webcontainers", "stackblitz SDK".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ide, webcontainers, stackblitz]
-compatible-with: claude-code
+tags:
+- saas
+- ide
+- webcontainers
+- stackblitz
+compatibility: Designed for Claude Code
 ---
-
 # StackBlitz Install & Auth
 
 ## Overview

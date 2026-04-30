@@ -1,17 +1,26 @@
 ---
 name: firecrawl-migration-deep-dive
-description: |
-  Migrate to Firecrawl from Puppeteer, Playwright, Cheerio, or other scraping tools.
+description: 'Migrate to Firecrawl from Puppeteer, Playwright, Cheerio, or other scraping
+  tools.
+
   Use when replacing custom scraping code with Firecrawl, migrating between
+
   scraping APIs, or re-platforming content ingestion pipelines.
+
   Trigger with phrases like "migrate to firecrawl", "replace puppeteer with firecrawl",
+
   "switch to firecrawl", "firecrawl vs puppeteer", "firecrawl migration".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, firecrawl, migration]
+tags:
+- saas
+- firecrawl
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Firecrawl Migration Deep Dive
 

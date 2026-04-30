@@ -1,17 +1,25 @@
 ---
 name: maintainx-core-workflow-a
-description: |
-  Execute MaintainX primary workflow: Work Order lifecycle management.
+description: 'Execute MaintainX primary workflow: Work Order lifecycle management.
+
   Use when creating, updating, and managing work orders through their full lifecycle,
+
   from creation to completion with all status transitions.
+
   Trigger with phrases like "maintainx work order", "create work order",
+
   "work order lifecycle", "maintenance task", "manage work orders".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, maintainx, workflow]
+tags:
+- saas
+- maintainx
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # MaintainX Core Workflow A: Work Order Lifecycle
 

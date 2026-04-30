@@ -1,19 +1,27 @@
 ---
 name: hubspot-incident-runbook
-description: |
-  Execute HubSpot incident response with triage, mitigation, and postmortem.
+description: 'Execute HubSpot incident response with triage, mitigation, and postmortem.
+
   Use when responding to HubSpot API outages, investigating CRM errors,
+
   or running post-incident reviews for HubSpot integration failures.
+
   Trigger with phrases like "hubspot incident", "hubspot outage",
+
   "hubspot down", "hubspot on-call", "hubspot emergency", "hubspot broken".
+
+  '
 allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, marketing, hubspot]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- marketing
+- hubspot
+compatibility: Designed for Claude Code
 ---
-
 # HubSpot Incident Runbook
 
 ## Overview

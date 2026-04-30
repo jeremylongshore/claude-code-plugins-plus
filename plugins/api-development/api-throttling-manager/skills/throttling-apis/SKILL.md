@@ -1,16 +1,20 @@
 ---
 name: throttling-apis
-description: |
-  Implement API throttling policies to protect backend services from overload.
+description: 'Implement API throttling policies to protect backend services from overload.
+
   Use when controlling API request rates.
+
   Trigger with phrases like "throttle API", "control request rate", or "add throttling".
-  
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:throttle-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [api, throttling-apis]
+tags:
+- api
+- throttling-apis
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Throttling APIs
 

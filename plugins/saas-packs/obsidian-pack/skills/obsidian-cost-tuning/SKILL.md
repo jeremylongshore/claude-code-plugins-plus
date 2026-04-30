@@ -1,18 +1,29 @@
 ---
 name: obsidian-cost-tuning
-description: |
-  Optimize Obsidian resource usage, sync storage, Publish hosting, and
+description: 'Optimize Obsidian resource usage, sync storage, Publish hosting, and
+
   third-party plugin API costs. Use when managing vault size, reducing
+
   Sync bandwidth, controlling Publish costs, or optimizing external API
+
   consumption from community plugins.
+
   Trigger with phrases like "obsidian costs", "obsidian sync storage",
+
   "optimize obsidian", "reduce obsidian costs", "obsidian publish costs".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(du:*), Bash(find:*), Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [obsidian, cost-optimization, sync, publish, storage]
+tags:
+- obsidian
+- cost-optimization
+- sync
+- publish
+- storage
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Obsidian Cost Tuning
 

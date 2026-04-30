@@ -1,17 +1,23 @@
 ---
 name: stackblitz-reference-architecture
-description: |
-  Production architecture for WebContainer-powered browser IDEs and playgrounds.
+description: 'Production architecture for WebContainer-powered browser IDEs and playgrounds.
+
   Use when working with WebContainers or StackBlitz SDK.
+
   Trigger: "stackblitz architecture".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ide, webcontainers, stackblitz]
-compatible-with: claude-code
+tags:
+- saas
+- ide
+- webcontainers
+- stackblitz
+compatibility: Designed for Claude Code
 ---
-
 # StackBlitz Reference Architecture
 
 ## Overview

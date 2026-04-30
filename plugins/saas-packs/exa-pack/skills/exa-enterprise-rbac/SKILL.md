@@ -1,17 +1,26 @@
 ---
 name: exa-enterprise-rbac
-description: |
-  Manage Exa API key scoping, team access controls, and domain restrictions.
+description: 'Manage Exa API key scoping, team access controls, and domain restrictions.
+
   Use when implementing multi-key access control, configuring per-team search limits,
+
   or setting up organization-level Exa governance.
+
   Trigger with phrases like "exa access control", "exa RBAC",
+
   "exa enterprise", "exa team keys", "exa permissions".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, exa, rbac, enterprise]
+tags:
+- saas
+- exa
+- rbac
+- enterprise
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Exa Enterprise RBAC
 

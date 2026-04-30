@@ -1,19 +1,27 @@
 ---
 name: brightdata-prod-checklist
-description: |
-  Execute Bright Data production deployment checklist and rollback procedures.
+description: 'Execute Bright Data production deployment checklist and rollback procedures.
+
   Use when deploying Bright Data integrations to production, preparing for launch,
+
   or implementing go-live procedures.
+
   Trigger with phrases like "brightdata production", "deploy brightdata",
+
   "brightdata go-live", "brightdata launch checklist".
+
+  '
 allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, scraping, data, brightdata]
-compatible-with: claude-code
+tags:
+- saas
+- scraping
+- data
+- brightdata
+compatibility: Designed for Claude Code
 ---
-
 # Bright Data Production Checklist
 
 ## Overview

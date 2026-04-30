@@ -1,17 +1,27 @@
 ---
 name: langfuse-core-workflow-b
-description: |
-  Execute Langfuse secondary workflow: Evaluation, scoring, and datasets.
+description: 'Execute Langfuse secondary workflow: Evaluation, scoring, and datasets.
+
   Use when implementing LLM evaluation, adding user feedback,
+
   or setting up automated quality scoring and experiment datasets.
+
   Trigger with phrases like "langfuse evaluation", "langfuse scoring",
+
   "rate llm outputs", "langfuse feedback", "langfuse datasets", "langfuse experiments".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langfuse, llm, workflow, evaluation]
+tags:
+- saas
+- langfuse
+- llm
+- workflow
+- evaluation
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Langfuse Core Workflow B: Evaluation, Scoring & Datasets
 

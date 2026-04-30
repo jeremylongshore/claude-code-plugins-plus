@@ -1,17 +1,27 @@
 ---
 name: deepgram-upgrade-migration
-description: |
-  Plan and execute Deepgram SDK upgrades and model migrations.
+description: 'Plan and execute Deepgram SDK upgrades and model migrations.
+
   Use when upgrading SDK versions (v3 to v4 to v5), migrating models
+
   (Nova-2 to Nova-3), or planning API version transitions.
+
   Trigger: "upgrade deepgram", "deepgram migration", "update deepgram SDK",
+
   "deepgram version upgrade", "nova-3 migration".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Bash(npm:*), Bash(pip:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, deepgram, api, migration, upgrade]
+tags:
+- saas
+- deepgram
+- api
+- migration
+- upgrade
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Deepgram Upgrade Migration
 

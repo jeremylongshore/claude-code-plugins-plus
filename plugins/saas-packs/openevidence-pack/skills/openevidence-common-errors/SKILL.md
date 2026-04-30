@@ -1,16 +1,20 @@
 ---
 name: openevidence-common-errors
-description: |
-  Diagnose and fix OpenEvidence common errors.
+description: 'Diagnose and fix OpenEvidence common errors.
+
   Trigger: "openevidence error", "fix openevidence", "debug openevidence".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, openevidence, healthcare]
-compatible-with: claude-code
+tags:
+- saas
+- openevidence
+- healthcare
+compatibility: Designed for Claude Code
 ---
-
 # OpenEvidence Common Errors
 
 ## Overview

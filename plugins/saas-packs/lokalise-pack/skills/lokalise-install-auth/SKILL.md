@@ -1,17 +1,26 @@
 ---
 name: lokalise-install-auth
-description: |
-  Install and configure Lokalise SDK/CLI authentication.
+description: 'Install and configure Lokalise SDK/CLI authentication.
+
   Use when setting up a new Lokalise integration, configuring API tokens,
+
   or initializing Lokalise in your project.
+
   Trigger with phrases like "install lokalise", "setup lokalise",
+
   "lokalise auth", "configure lokalise API token".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(lokalise2:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lokalise, api, authentication]
+tags:
+- saas
+- lokalise
+- api
+- authentication
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lokalise Install & Auth
 

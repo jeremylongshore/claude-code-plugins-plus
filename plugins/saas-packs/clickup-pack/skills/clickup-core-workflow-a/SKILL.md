@@ -1,18 +1,25 @@
 ---
 name: clickup-core-workflow-a
-description: |
-  Manage ClickUp tasks via API v2: create, read, update, delete tasks with
+description: 'Manage ClickUp tasks via API v2: create, read, update, delete tasks
+  with
+
   assignees, priorities, due dates, subtasks, and statuses.
+
   Trigger: "clickup task", "create clickup task", "update task status",
+
   "manage clickup tasks", "clickup CRUD", "clickup task management".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, clickup]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- clickup
+compatibility: Designed for Claude Code
 ---
-
 # ClickUp Core Workflow A — Task Management
 
 ## Overview

@@ -1,17 +1,26 @@
 ---
 name: langchain-local-dev-loop
-description: |
-  Configure LangChain local development workflow with testing and mocks.
+description: 'Configure LangChain local development workflow with testing and mocks.
+
   Use when setting up dev environment, creating test fixtures with mocked LLMs,
+
   or establishing a rapid iteration workflow for LangChain apps.
+
   Trigger: "langchain dev setup", "langchain local development",
+
   "langchain testing", "langchain mock", "test langchain chains".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(pytest:*), Bash(python:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langchain, testing, workflow]
+tags:
+- saas
+- langchain
+- testing
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # LangChain Local Dev Loop
 

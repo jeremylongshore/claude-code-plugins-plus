@@ -1,19 +1,27 @@
 ---
 name: hubspot-sdk-patterns
-description: |
-  Apply production-ready @hubspot/api-client SDK patterns for TypeScript.
+description: 'Apply production-ready @hubspot/api-client SDK patterns for TypeScript.
+
   Use when implementing HubSpot integrations, building typed wrappers,
+
   or establishing team standards for HubSpot CRM operations.
+
   Trigger with phrases like "hubspot SDK patterns", "hubspot best practices",
+
   "hubspot typed client", "hubspot api-client wrapper", "idiomatic hubspot".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, marketing, hubspot]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- marketing
+- hubspot
+compatibility: Designed for Claude Code
 ---
-
 # HubSpot SDK Patterns
 
 ## Overview

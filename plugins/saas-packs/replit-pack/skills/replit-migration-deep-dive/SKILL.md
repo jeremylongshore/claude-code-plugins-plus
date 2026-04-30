@@ -1,17 +1,28 @@
 ---
 name: replit-migration-deep-dive
-description: |
-  Migrate to Replit from Heroku, Railway, Vercel, or local development environments.
+description: 'Migrate to Replit from Heroku, Railway, Vercel, or local development
+  environments.
+
   Use when moving an existing app to Replit, migrating databases,
-  or converting Docker/buildpack apps to Replit's Nix-based system.
+
+  or converting Docker/buildpack apps to Replit''s Nix-based system.
+
   Trigger with phrases like "migrate to replit", "heroku to replit",
+
   "move to replit", "replit migration", "railway to replit", "convert to replit".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, replit, migration, heroku, railway]
+tags:
+- saas
+- replit
+- migration
+- heroku
+- railway
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Replit Migration Deep Dive
 

@@ -1,19 +1,27 @@
 ---
 name: canva-observability
-description: |
-  Set up observability for Canva Connect API integrations with metrics, traces, and alerts.
+description: 'Set up observability for Canva Connect API integrations with metrics,
+  traces, and alerts.
+
   Use when implementing monitoring for Canva API operations, setting up dashboards,
+
   or configuring alerting for Canva integration health.
+
   Trigger with phrases like "canva monitoring", "canva metrics",
+
   "canva observability", "monitor canva", "canva alerts", "canva tracing".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, canva]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- canva
+compatibility: Designed for Claude Code
 ---
-
 # Canva Observability
 
 ## Overview

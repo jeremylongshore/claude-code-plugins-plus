@@ -1,17 +1,26 @@
 ---
 name: deepgram-incident-runbook
-description: |
-  Execute Deepgram incident response procedures for production issues.
+description: 'Execute Deepgram incident response procedures for production issues.
+
   Use when handling Deepgram outages, debugging production failures,
+
   or responding to service degradation.
+
   Trigger: "deepgram incident", "deepgram outage", "deepgram production issue",
+
   "deepgram down", "deepgram emergency", "deepgram 500 errors".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, deepgram, debugging, incident-response]
+tags:
+- saas
+- deepgram
+- debugging
+- incident-response
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Deepgram Incident Runbook
 

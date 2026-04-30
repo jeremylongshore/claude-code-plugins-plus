@@ -1,17 +1,23 @@
 ---
 name: managing-database-sharding
-description: |
-  Process use when you need to work with database sharding.
-  This skill provides horizontal sharding strategies with comprehensive guidance and automation.
+description: 'Process use when you need to work with database sharding.
+
+  This skill provides horizontal sharding strategies with comprehensive guidance and
+  automation.
+
   Trigger with phrases like "implement sharding", "shard database",
+
   or "distribute data".
 
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*), Bash(mongosh:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [database, database-sharding]
+tags:
+- database
+- database-sharding
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Database Sharding Manager
 

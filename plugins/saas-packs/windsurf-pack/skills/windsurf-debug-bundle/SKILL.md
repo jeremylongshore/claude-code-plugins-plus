@@ -1,17 +1,27 @@
 ---
 name: windsurf-debug-bundle
-description: |
-  Collect Windsurf diagnostic information for troubleshooting and support tickets.
+description: 'Collect Windsurf diagnostic information for troubleshooting and support
+  tickets.
+
   Use when encountering persistent issues, preparing support tickets,
+
   or collecting diagnostic data for Windsurf problems.
+
   Trigger with phrases like "windsurf debug", "windsurf support",
+
   "windsurf diagnostic", "windsurf logs", "windsurf not working".
+
+  '
 allowed-tools: Read, Bash(grep:*), Bash(ls:*), Bash(tar:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, debugging, support]
+tags:
+- saas
+- windsurf
+- debugging
+- support
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Windsurf Debug Bundle
 

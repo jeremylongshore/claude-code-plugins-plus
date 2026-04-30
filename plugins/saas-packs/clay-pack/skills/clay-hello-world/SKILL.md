@@ -1,17 +1,26 @@
 ---
 name: clay-hello-world
-description: |
-  Send your first record to Clay and get enriched data back.
+description: 'Send your first record to Clay and get enriched data back.
+
   Use when starting a new Clay integration, testing webhook setup,
+
   or verifying that enrichment columns are working.
+
   Trigger with phrases like "clay hello world", "clay example",
+
   "clay quick start", "first clay enrichment", "test clay webhook".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clay, api, testing]
+tags:
+- saas
+- clay
+- api
+- testing
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clay Hello World
 

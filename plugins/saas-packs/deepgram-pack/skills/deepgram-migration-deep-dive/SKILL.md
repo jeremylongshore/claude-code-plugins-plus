@@ -1,17 +1,26 @@
 ---
 name: deepgram-migration-deep-dive
-description: |
-  Deep dive into migrating to Deepgram from other transcription providers.
+description: 'Deep dive into migrating to Deepgram from other transcription providers.
+
   Use when migrating from AWS Transcribe, Google Cloud STT, Azure Speech,
+
   OpenAI Whisper, AssemblyAI, or Rev.ai to Deepgram.
+
   Trigger: "deepgram migration", "switch to deepgram", "migrate transcription",
+
   "deepgram from AWS", "deepgram from Google", "replace whisper with deepgram".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, deepgram, migration, transcription]
+tags:
+- saas
+- deepgram
+- migration
+- transcription
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Deepgram Migration Deep Dive
 

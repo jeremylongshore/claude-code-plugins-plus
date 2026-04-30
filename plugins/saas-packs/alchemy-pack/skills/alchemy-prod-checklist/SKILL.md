@@ -1,19 +1,28 @@
 ---
 name: alchemy-prod-checklist
-description: |
-  Execute production readiness checklist for Alchemy-powered dApps.
+description: 'Execute production readiness checklist for Alchemy-powered dApps.
+
   Use when deploying Web3 applications, preparing for mainnet launch,
+
   or validating blockchain integration before go-live.
+
   Trigger: "alchemy production", "alchemy go-live", "alchemy mainnet checklist",
+
   "dApp production readiness".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, blockchain, web3, alchemy, production]
-compatible-with: claude-code
+tags:
+- saas
+- blockchain
+- web3
+- alchemy
+- production
+compatibility: Designed for Claude Code
 ---
-
 # Alchemy Production Checklist
 
 ## Pre-Launch Checklist

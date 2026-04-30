@@ -1,19 +1,28 @@
 ---
 name: hubspot-architecture-variants
-description: |
-  Choose and implement HubSpot integration architecture for different scales.
+description: 'Choose and implement HubSpot integration architecture for different
+  scales.
+
   Use when designing new HubSpot integrations, choosing between embedded/service/gateway
+
   patterns, or planning architecture for HubSpot CRM applications.
+
   Trigger with phrases like "hubspot architecture", "hubspot design pattern",
+
   "how to structure hubspot", "hubspot integration pattern", "hubspot microservice".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, marketing, hubspot]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- marketing
+- hubspot
+compatibility: Designed for Claude Code
 ---
-
 # HubSpot Architecture Variants
 
 ## Overview

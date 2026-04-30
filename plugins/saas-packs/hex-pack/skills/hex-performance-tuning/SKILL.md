@@ -1,19 +1,28 @@
 ---
 name: hex-performance-tuning
-description: |
-  Optimize Hex API performance with caching, batching, and connection pooling.
+description: 'Optimize Hex API performance with caching, batching, and connection
+  pooling.
+
   Use when experiencing slow API responses, implementing caching strategies,
+
   or optimizing request throughput for Hex integrations.
+
   Trigger with phrases like "hex performance", "optimize hex",
+
   "hex latency", "hex caching", "hex slow", "hex batch".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hex, data, analytics]
-compatible-with: claude-code
+tags:
+- saas
+- hex
+- data
+- analytics
+compatibility: Designed for Claude Code
 ---
-
 # Hex Performance Tuning
 
 ## Latency Benchmarks

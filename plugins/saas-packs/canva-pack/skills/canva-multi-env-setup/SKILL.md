@@ -1,19 +1,28 @@
 ---
 name: canva-multi-env-setup
-description: |
-  Configure Canva Connect API across development, staging, and production environments.
-  Use when setting up multi-environment deployments, managing OAuth credentials per environment,
+description: 'Configure Canva Connect API across development, staging, and production
+  environments.
+
+  Use when setting up multi-environment deployments, managing OAuth credentials per
+  environment,
+
   or implementing environment-specific Canva configurations.
+
   Trigger with phrases like "canva environments", "canva staging",
+
   "canva dev prod", "canva environment setup", "canva config by env".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, canva]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- canva
+compatibility: Designed for Claude Code
 ---
-
 # Canva Multi-Environment Setup
 
 ## Overview

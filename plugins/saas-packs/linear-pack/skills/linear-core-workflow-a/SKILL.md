@@ -1,17 +1,25 @@
 ---
 name: linear-core-workflow-a
-description: |
-  Issue lifecycle management with Linear: create, update, transition,
+description: 'Issue lifecycle management with Linear: create, update, transition,
+
   relate, comment, and organize issues through the SDK and GraphQL API.
+
   Trigger: "linear issue workflow", "linear issue lifecycle",
+
   "create linear issues", "update linear issue", "linear state transition",
+
   "linear sub-issues", "linear comments".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, linear, workflow]
+tags:
+- saas
+- linear
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Linear Core Workflow A: Issue Lifecycle
 

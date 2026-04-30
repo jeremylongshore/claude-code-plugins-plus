@@ -1,17 +1,26 @@
 ---
 name: evernote-upgrade-migration
-description: |
-  Upgrade Evernote SDK versions and migrate between API versions.
+description: 'Upgrade Evernote SDK versions and migrate between API versions.
+
   Use when upgrading SDK, handling breaking changes,
+
   or migrating to newer API patterns.
+
   Trigger with phrases like "upgrade evernote sdk", "evernote migration",
+
   "update evernote", "evernote breaking changes".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, evernote, api, migration]
+tags:
+- saas
+- evernote
+- api
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Evernote Upgrade & Migration
 

@@ -1,20 +1,32 @@
 ---
 name: elevenlabs-rate-limits
-description: |
-  Implement ElevenLabs rate limiting, concurrency queuing, and backoff patterns.
+description: 'Implement ElevenLabs rate limiting, concurrency queuing, and backoff
+  patterns.
+
   Use when handling 429 errors, implementing retry logic,
+
   or managing concurrent TTS request throughput.
+
   Trigger: "elevenlabs rate limit", "elevenlabs throttling",
+
   "elevenlabs 429", "elevenlabs retry", "elevenlabs backoff",
+
   "elevenlabs concurrent requests".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, voice, ai, elevenlabs, rate-limits, reliability]
-compatible-with: claude-code
+tags:
+- saas
+- voice
+- ai
+- elevenlabs
+- rate-limits
+- reliability
+compatibility: Designed for Claude Code
 ---
-
 # ElevenLabs Rate Limits
 
 ## Overview

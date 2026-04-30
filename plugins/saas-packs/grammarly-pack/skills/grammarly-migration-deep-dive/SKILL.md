@@ -1,18 +1,24 @@
 ---
 name: grammarly-migration-deep-dive
-description: |
-  Deep dive into Grammarly API migration patterns.
+description: 'Deep dive into Grammarly API migration patterns.
+
   Use when migrating between API versions or from deprecated endpoints.
+
   Trigger with phrases like "grammarly migration deep dive",
+
   "grammarly api migration", "grammarly version change".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, grammarly, writing]
-compatible-with: claude-code
+tags:
+- saas
+- grammarly
+- writing
+compatibility: Designed for Claude Code
 ---
-
 # Grammarly Migration Deep Dive
 
 ## Overview

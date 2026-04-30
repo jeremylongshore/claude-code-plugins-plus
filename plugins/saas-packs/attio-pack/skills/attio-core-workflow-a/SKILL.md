@@ -1,18 +1,24 @@
 ---
 name: attio-core-workflow-a
-description: |
-  Full CRUD on Attio records -- create, read, update, delete, and search
+description: 'Full CRUD on Attio records -- create, read, update, delete, and search
+
   across people, companies, deals, and custom objects.
+
   Trigger: "attio records", "attio CRUD", "create attio record",
+
   "update attio person", "search attio companies", "attio objects".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, attio]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- attio
+compatibility: Designed for Claude Code
 ---
-
 # Attio Records CRUD (Core Workflow A)
 
 ## Overview

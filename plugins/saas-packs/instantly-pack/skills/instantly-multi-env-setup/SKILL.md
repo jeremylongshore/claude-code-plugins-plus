@@ -1,17 +1,26 @@
 ---
 name: instantly-multi-env-setup
-description: |
-  Configure Instantly.ai across development, staging, and production environments.
+description: 'Configure Instantly.ai across development, staging, and production environments.
+
   Use when setting up multi-workspace deployments, isolating test from production,
+
   or managing per-environment API keys and webhook endpoints.
+
   Trigger with phrases like "instantly environments", "instantly staging",
+
   "instantly dev prod", "instantly multi-env", "instantly workspace isolation".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, instantly, multi-environment, configuration]
+tags:
+- saas
+- instantly
+- multi-environment
+- configuration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Instantly Multi-Environment Setup
 

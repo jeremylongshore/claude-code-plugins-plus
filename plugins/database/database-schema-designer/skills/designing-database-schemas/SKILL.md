@@ -1,17 +1,24 @@
 ---
 name: designing-database-schemas
-description: |
-  Process use when you need to work with database schema design.
-  This skill provides schema design and migrations with comprehensive guidance and automation.
+description: 'Process use when you need to work with database schema design.
+
+  This skill provides schema design and migrations with comprehensive guidance and
+  automation.
+
   Trigger with phrases like "design schema", "create migration",
+
   or "model database".
 
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*), Bash(mongosh:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [database, migration, designing-database]
+tags:
+- database
+- migration
+- designing-database
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Database Schema Designer
 

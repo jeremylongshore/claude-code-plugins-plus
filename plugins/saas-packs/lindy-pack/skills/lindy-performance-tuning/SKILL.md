@@ -1,17 +1,25 @@
 ---
 name: lindy-performance-tuning
-description: |
-  Optimize Lindy AI agent execution speed, reliability, and cost efficiency.
+description: 'Optimize Lindy AI agent execution speed, reliability, and cost efficiency.
+
   Use when agents are slow, consuming too many credits,
+
   or producing inconsistent results.
+
   Trigger with phrases like "lindy performance", "lindy slow",
+
   "optimize lindy", "lindy latency", "lindy speed".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lindy, performance]
+tags:
+- saas
+- lindy
+- performance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lindy Performance Tuning
 

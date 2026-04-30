@@ -1,17 +1,26 @@
 ---
 name: clay-reference-architecture
-description: |
-  Design production Clay enrichment pipelines with table schemas, waterfall patterns, and CRM sync.
+description: 'Design production Clay enrichment pipelines with table schemas, waterfall
+  patterns, and CRM sync.
+
   Use when architecting new Clay integrations, reviewing data flow design,
+
   or establishing enrichment pipeline standards.
+
   Trigger with phrases like "clay architecture", "clay best practices",
+
   "clay pipeline design", "clay reference", "clay data flow".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clay, clay-reference]
+tags:
+- saas
+- clay
+- clay-reference
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clay Reference Architecture
 

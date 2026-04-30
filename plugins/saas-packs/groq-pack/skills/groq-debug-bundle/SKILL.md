@@ -1,17 +1,25 @@
 ---
 name: groq-debug-bundle
-description: |
-  Collect Groq debug evidence for support tickets and troubleshooting.
+description: 'Collect Groq debug evidence for support tickets and troubleshooting.
+
   Use when encountering persistent issues, preparing support tickets,
+
   or collecting diagnostic information for Groq problems.
+
   Trigger with phrases like "groq debug", "groq support bundle",
+
   "collect groq logs", "groq diagnostic".
+
+  '
 allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, groq, debugging]
+tags:
+- saas
+- groq
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Groq Debug Bundle
 

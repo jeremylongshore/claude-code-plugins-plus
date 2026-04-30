@@ -1,17 +1,25 @@
 ---
 name: firecrawl-debug-bundle
-description: |
-  Collect Firecrawl debug evidence for support tickets and troubleshooting.
+description: 'Collect Firecrawl debug evidence for support tickets and troubleshooting.
+
   Use when encountering persistent issues, preparing support tickets,
+
   or collecting diagnostic information for Firecrawl problems.
+
   Trigger with phrases like "firecrawl debug", "firecrawl support bundle",
+
   "collect firecrawl logs", "firecrawl diagnostic".
+
+  '
 allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, firecrawl, debugging]
+tags:
+- saas
+- firecrawl
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Firecrawl Debug Bundle
 

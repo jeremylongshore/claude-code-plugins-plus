@@ -1,17 +1,25 @@
 ---
 name: maintainx-incident-runbook
-description: |
-  Manage incident response for MaintainX integration failures.
+description: 'Manage incident response for MaintainX integration failures.
+
   Use when experiencing outages, investigating issues,
+
   or responding to MaintainX integration incidents.
+
   Trigger with phrases like "maintainx incident", "maintainx outage",
+
   "maintainx down", "maintainx emergency", "maintainx runbook".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, maintainx, incident-response]
+tags:
+- saas
+- maintainx
+- incident-response
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # MaintainX Incident Runbook
 

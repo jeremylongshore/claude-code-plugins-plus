@@ -1,19 +1,29 @@
 ---
 name: coreweave-sdk-patterns
-description: |
-  Production-ready patterns for CoreWeave GPU workload management with kubectl and Python.
+description: 'Production-ready patterns for CoreWeave GPU workload management with
+  kubectl and Python.
+
   Use when building inference clients, managing GPU deployments programmatically,
+
   or creating reusable CoreWeave deployment templates.
+
   Trigger with phrases like "coreweave patterns", "coreweave client",
+
   "coreweave Python", "coreweave deployment template".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, gpu-cloud, kubernetes, inference, coreweave]
-compatible-with: claude-code
+tags:
+- saas
+- gpu-cloud
+- kubernetes
+- inference
+- coreweave
+compatibility: Designed for Claude Code
 ---
-
 # CoreWeave SDK Patterns
 
 ## Overview

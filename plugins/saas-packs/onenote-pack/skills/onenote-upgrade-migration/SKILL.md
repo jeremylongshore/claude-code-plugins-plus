@@ -1,17 +1,25 @@
 ---
 name: onenote-upgrade-migration
-description: |
-  Migrate OneNote integrations across Graph SDK versions, auth deprecations, and API changes.
-  Use when upgrading Graph SDK, migrating from app-only to delegated auth, or handling deprecated endpoints.
-  Trigger with "onenote upgrade", "onenote migration", "graph sdk upgrade", "onenote breaking changes".
+description: 'Migrate OneNote integrations across Graph SDK versions, auth deprecations,
+  and API changes.
+
+  Use when upgrading Graph SDK, migrating from app-only to delegated auth, or handling
+  deprecated endpoints.
+
+  Trigger with "onenote upgrade", "onenote migration", "graph sdk upgrade", "onenote
+  breaking changes".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, onenote, microsoft]
-compatible-with: claude-code
+tags:
+- saas
+- onenote
+- microsoft
+compatibility: Designed for Claude Code
 ---
-
 # OneNote Upgrade & Migration
 
 ## Overview

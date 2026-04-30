@@ -1,15 +1,23 @@
 ---
-name: "cursor-advanced-composer"
-description: |
-  Advanced Cursor Composer techniques: agent mode, parallel agents, complex refactoring, and multi-step
-  orchestration. Triggers on "advanced composer", "composer patterns", "multi-file generation",
+name: cursor-advanced-composer
+description: 'Advanced Cursor Composer techniques: agent mode, parallel agents, complex
+  refactoring, and multi-step
+
+  orchestration. Triggers on "advanced composer", "composer patterns", "multi-file
+  generation",
+
   "composer refactoring", "agent mode", "parallel agents".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, cursor, cursor-advanced]
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- cursor
+- cursor-advanced
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Cursor Advanced Composer
 

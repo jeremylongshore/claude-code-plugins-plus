@@ -1,17 +1,28 @@
 ---
 name: firecrawl-load-scale
-description: |
-  Load test and scale Firecrawl scraping pipelines with concurrency control and batching.
+description: 'Load test and scale Firecrawl scraping pipelines with concurrency control
+  and batching.
+
   Use when testing scraping throughput, planning capacity for large crawl jobs,
+
   or optimizing concurrent scrape performance.
+
   Trigger with phrases like "firecrawl load test", "firecrawl scale",
+
   "firecrawl throughput", "firecrawl capacity", "firecrawl concurrent".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(node:*), Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, firecrawl, testing, performance, scaling]
+tags:
+- saas
+- firecrawl
+- testing
+- performance
+- scaling
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Firecrawl Load & Scale
 

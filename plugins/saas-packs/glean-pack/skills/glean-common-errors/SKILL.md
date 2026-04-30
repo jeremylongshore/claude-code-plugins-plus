@@ -1,16 +1,21 @@
 ---
 name: glean-common-errors
-description: |
-  Diagnose and fix common Glean API errors including indexing failures, search issues, and permission problems.
+description: 'Diagnose and fix common Glean API errors including indexing failures,
+  search issues, and permission problems.
+
   Trigger: "glean error", "glean not indexing", "glean search empty", "debug glean".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, enterprise-search, glean]
-compatible-with: claude-code
+tags:
+- saas
+- enterprise-search
+- glean
+compatibility: Designed for Claude Code
 ---
-
 # Glean Common Errors
 
 ## Overview

@@ -1,17 +1,27 @@
 ---
 name: customerio-observability
-description: |
-  Set up Customer.io monitoring and observability.
+description: 'Set up Customer.io monitoring and observability.
+
   Use when implementing metrics, structured logging, alerting,
+
   or Grafana dashboards for Customer.io integrations.
+
   Trigger: "customer.io monitoring", "customer.io metrics",
+
   "customer.io dashboard", "customer.io alerts", "customer.io observability".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Glob, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, customer-io, monitoring, observability, prometheus]
+tags:
+- saas
+- customer-io
+- monitoring
+- observability
+- prometheus
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Customer.io Observability
 

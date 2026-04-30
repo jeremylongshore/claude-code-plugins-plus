@@ -1,19 +1,30 @@
 ---
 name: contract-compare
-description: |
-  Compares two contract versions side-by-side to detect added, removed, and
+description: 'Compares two contract versions side-by-side to detect added, removed,
+  and
+
   modified clauses with favorability analysis. Use when a user receives a
+
   revised contract or redline and needs to understand what changed and who
+
   each change favors. Trigger with "/contract-compare" or "compare these
+
   two contracts".
+
+  '
 allowed-tools: Read, Glob, Grep
 version: 1.0.0
 author: Intent Solutions <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [legal, contracts, comparison, redline, negotiation, diff]
+tags:
+- legal
+- contracts
+- comparison
+- redline
+- negotiation
+- diff
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Contract Compare — Version Comparison and Favorability Analysis
 
 Side-by-side contract comparison skill that identifies every change between two

@@ -1,17 +1,27 @@
 ---
 name: customerio-ci-integration
-description: |
-  Configure Customer.io CI/CD integration with automated testing.
+description: 'Configure Customer.io CI/CD integration with automated testing.
+
   Use when setting up GitHub Actions, integration test suites,
+
   or pre-commit validation for Customer.io code.
+
   Trigger: "customer.io ci", "customer.io github actions",
+
   "customer.io pipeline", "customer.io automated testing".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(gh:*), Glob, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, customer-io, ci-cd, testing, github-actions]
+tags:
+- saas
+- customer-io
+- ci-cd
+- testing
+- github-actions
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Customer.io CI Integration
 

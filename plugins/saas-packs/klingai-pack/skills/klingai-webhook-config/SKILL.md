@@ -1,15 +1,24 @@
 ---
 name: klingai-webhook-config
-description: |
-  Configure webhook callbacks for Kling AI task completion. Use when building event-driven
-  pipelines or replacing polling. Trigger with phrases like 'klingai webhook', 'kling ai callback',
-  'klingai notifications', 'video completion webhook'.
+description: 'Configure webhook callbacks for Kling AI task completion. Use when building
+  event-driven
+
+  pipelines or replacing polling. Trigger with phrases like ''klingai webhook'', ''kling
+  ai callback'',
+
+  ''klingai notifications'', ''video completion webhook''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, kling-ai, webhooks, callbacks]
+tags:
+- saas
+- kling-ai
+- webhooks
+- callbacks
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Kling AI Webhook Configuration
 

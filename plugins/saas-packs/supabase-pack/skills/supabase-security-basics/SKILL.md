@@ -1,19 +1,32 @@
 ---
 name: supabase-security-basics
-description: |
-  Apply Supabase security best practices: anon vs service_role key separation,
+description: 'Apply Supabase security best practices: anon vs service_role key separation,
+
   RLS enforcement, policy patterns, JWT verification, and API hardening.
+
   Use when securing a Supabase project, auditing API key usage,
+
   implementing Row Level Security, or running a production security checklist.
+
   Trigger with phrases like "supabase security", "supabase RLS",
+
   "secure supabase", "supabase API key", "supabase hardening",
+
   "row level security", "service role key".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Bash(supabase:*), Bash(npx supabase:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, supabase, security, rls, jwt, api-keys]
+tags:
+- saas
+- supabase
+- security
+- rls
+- jwt
+- api-keys
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Supabase Security Basics
 

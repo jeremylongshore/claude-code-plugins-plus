@@ -1,19 +1,28 @@
 ---
 name: snowflake-performance-tuning
-description: |
-  Optimize Snowflake query performance with clustering, materialized views, caching, and query profiling.
+description: 'Optimize Snowflake query performance with clustering, materialized views,
+  caching, and query profiling.
+
   Use when queries are slow, analyzing QUERY_HISTORY for bottlenecks,
+
   or optimizing warehouse utilization and data scanning.
+
   Trigger with phrases like "snowflake performance", "optimize snowflake",
+
   "snowflake slow query", "snowflake clustering", "snowflake query profile".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, data-warehouse, analytics, snowflake]
-compatible-with: claude-code
+tags:
+- saas
+- data-warehouse
+- analytics
+- snowflake
+compatibility: Designed for Claude Code
 ---
-
 # Snowflake Performance Tuning
 
 ## Overview

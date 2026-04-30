@@ -1,17 +1,26 @@
 ---
 name: instantly-upgrade-migration
-description: |
-  Migrate Instantly.ai integrations from API v1 to v2.
+description: 'Migrate Instantly.ai integrations from API v1 to v2.
+
   Use when upgrading from deprecated v1 endpoints, updating authentication,
+
   or migrating endpoint paths and request formats.
+
   Trigger with phrases like "instantly v1 to v2", "instantly api migration",
+
   "instantly upgrade", "instantly deprecated", "migrate instantly api".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, instantly, migration, upgrade]
+tags:
+- saas
+- instantly
+- migration
+- upgrade
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Instantly Upgrade Migration: API v1 to v2
 

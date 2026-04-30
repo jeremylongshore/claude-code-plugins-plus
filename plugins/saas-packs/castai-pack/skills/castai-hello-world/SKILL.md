@@ -1,19 +1,27 @@
 ---
 name: castai-hello-world
-description: |
-  Query CAST AI cluster savings report and node inventory.
+description: 'Query CAST AI cluster savings report and node inventory.
+
   Use when verifying CAST AI connectivity, viewing cluster cost savings,
+
   or listing managed nodes after onboarding.
+
   Trigger with phrases like "cast ai hello world", "cast ai savings",
+
   "cast ai cluster status", "test cast ai connection".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, kubernetes, cost-optimization, castai]
-compatible-with: claude-code
+tags:
+- saas
+- kubernetes
+- cost-optimization
+- castai
+compatibility: Designed for Claude Code
 ---
-
 # CAST AI Hello World
 
 ## Overview

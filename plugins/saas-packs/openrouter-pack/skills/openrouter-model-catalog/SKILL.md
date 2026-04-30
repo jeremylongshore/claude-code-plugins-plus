@@ -1,13 +1,20 @@
 ---
 name: openrouter-model-catalog
-description: |
-  Query, filter, and select from OpenRouter's 400+ model catalog. Use when choosing models, comparing pricing, or checking capabilities. Triggers: 'openrouter models', 'list models', 'model catalog', 'compare models', 'available models'.
+description: 'Query, filter, and select from OpenRouter''s 400+ model catalog. Use
+  when choosing models, comparing pricing, or checking capabilities. Triggers: ''openrouter
+  models'', ''list models'', ''model catalog'', ''compare models'', ''available models''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash, Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, openrouter, models, catalog]
+tags:
+- saas
+- openrouter
+- models
+- catalog
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # OpenRouter Model Catalog
 

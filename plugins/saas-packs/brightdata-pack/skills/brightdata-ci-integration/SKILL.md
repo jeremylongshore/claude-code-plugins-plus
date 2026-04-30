@@ -1,19 +1,27 @@
 ---
 name: brightdata-ci-integration
-description: |
-  Configure Bright Data CI/CD integration with GitHub Actions and testing.
+description: 'Configure Bright Data CI/CD integration with GitHub Actions and testing.
+
   Use when setting up automated testing, configuring CI pipelines,
+
   or integrating Bright Data tests into your build process.
+
   Trigger with phrases like "brightdata CI", "brightdata GitHub Actions",
+
   "brightdata automated tests", "CI brightdata".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, scraping, data, brightdata]
-compatible-with: claude-code
+tags:
+- saas
+- scraping
+- data
+- brightdata
+compatibility: Designed for Claude Code
 ---
-
 # Bright Data CI Integration
 
 ## Overview

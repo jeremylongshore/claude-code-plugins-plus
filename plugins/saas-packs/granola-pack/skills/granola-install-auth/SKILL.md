@@ -1,16 +1,25 @@
 ---
 name: granola-install-auth
-description: |
-  Install and configure Granola AI meeting notes with calendar and audio permissions.
+description: 'Install and configure Granola AI meeting notes with calendar and audio
+  permissions.
+
   Use when setting up Granola for the first time, connecting Google/Outlook calendars,
+
   granting macOS Screen Recording permission, or configuring Windows audio capture.
+
   Trigger: "install granola", "setup granola", "granola calendar", "granola permissions".
-allowed-tools: Read, Write, Edit, Bash(brew:*), Bash(open:*), Bash(pgrep:*), Bash(defaults:*), Bash(ls:*)
+
+  '
+allowed-tools: Read, Write, Edit, Bash(brew:*), Bash(open:*), Bash(pgrep:*), Bash(defaults:*),
+  Bash(ls:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, granola, granola-install]
+tags:
+- saas
+- granola
+- granola-install
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Granola Install & Auth
 

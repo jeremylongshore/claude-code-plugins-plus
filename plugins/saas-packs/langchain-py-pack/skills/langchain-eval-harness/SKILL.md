@@ -1,21 +1,29 @@
 ---
 name: langchain-eval-harness
-description: |
-  Build reproducible evaluation pipelines for LangChain 1.0 chains and LangGraph 1.0
-  agents — golden datasets, LangSmith evaluate(), ragas RAG metrics, deepeval
-  LLM-as-judge, agent trajectory analysis, and CI gating on quality regressions.
-  Use when setting up quality measurement for a new chain, diagnosing regression
-  after a model switch, or building an evaluation gate for a pull request.
-  Trigger with "langchain eval", "langsmith evaluate", "ragas", "llm-as-judge",
-  "agent trajectory eval", "eval regression gate".
+description: "Build reproducible evaluation pipelines for LangChain 1.0 chains and\
+  \ LangGraph 1.0\nagents \u2014 golden datasets, LangSmith evaluate(), ragas RAG\
+  \ metrics, deepeval\nLLM-as-judge, agent trajectory analysis, and CI gating on quality\
+  \ regressions.\nUse when setting up quality measurement for a new chain, diagnosing\
+  \ regression\nafter a model switch, or building an evaluation gate for a pull request.\n\
+  Trigger with \"langchain eval\", \"langsmith evaluate\", \"ragas\", \"llm-as-judge\"\
+  ,\n\"agent trajectory eval\", \"eval regression gate\".\n"
 allowed-tools: Read, Write, Edit, Bash(python:*), Bash(pip:*), Bash(pytest:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, langchain, langgraph, python, langchain-1.0, evaluation, langsmith, ragas, deepeval, research]
-compatible-with: claude-code, codex
+tags:
+- saas
+- langchain
+- langgraph
+- python
+- langchain-1.0
+- evaluation
+- langsmith
+- ragas
+- deepeval
+- research
+compatibility: Designed for Claude Code, also compatible with Codex
 ---
-
 # LangChain Eval Harness (Python)
 
 ## Overview

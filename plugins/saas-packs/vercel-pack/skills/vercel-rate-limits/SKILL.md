@@ -1,17 +1,28 @@
 ---
 name: vercel-rate-limits
-description: |
-  Handle Vercel API rate limits, implement retry logic, and configure WAF rate limiting.
+description: 'Handle Vercel API rate limits, implement retry logic, and configure
+  WAF rate limiting.
+
   Use when hitting 429 errors, implementing retry logic,
+
   or setting up rate limiting for your Vercel-deployed API endpoints.
+
   Trigger with phrases like "vercel rate limit", "vercel throttling",
+
   "vercel 429", "vercel retry", "vercel backoff", "vercel WAF rate limit".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vercel, api, rate-limiting, security]
+tags:
+- saas
+- vercel
+- api
+- rate-limiting
+- security
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vercel Rate Limits
 

@@ -1,17 +1,29 @@
 ---
 name: vercel-multi-env-setup
-description: |
-  Configure Vercel across development, preview, and production environments with scoped secrets.
-  Use when setting up per-environment configuration, managing environment-specific variables,
+description: 'Configure Vercel across development, preview, and production environments
+  with scoped secrets.
+
+  Use when setting up per-environment configuration, managing environment-specific
+  variables,
+
   or implementing environment isolation on Vercel.
+
   Trigger with phrases like "vercel environments", "vercel staging",
+
   "vercel dev prod", "vercel environment setup", "vercel env scoping".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vercel, deployment, environments, configuration]
+tags:
+- saas
+- vercel
+- deployment
+- environments
+- configuration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vercel Multi-Env Setup
 

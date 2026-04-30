@@ -1,17 +1,26 @@
 ---
 name: documenso-sdk-patterns
-description: |
-  Apply production-ready Documenso SDK patterns for TypeScript and Python.
+description: 'Apply production-ready Documenso SDK patterns for TypeScript and Python.
+
   Use when implementing Documenso integrations, refactoring SDK usage,
+
   or establishing team coding standards for Documenso.
+
   Trigger with phrases like "documenso SDK patterns", "documenso best practices",
+
   "documenso code patterns", "idiomatic documenso".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, documenso, python, typescript]
+tags:
+- saas
+- documenso
+- python
+- typescript
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Documenso SDK Patterns
 

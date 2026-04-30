@@ -1,19 +1,28 @@
 ---
 name: klaviyo-migration-deep-dive
-description: |
-  Execute major Klaviyo migration strategies: from legacy v1/v2 APIs, from competitors,
+description: 'Execute major Klaviyo migration strategies: from legacy v1/v2 APIs,
+  from competitors,
+
   or full re-platforming to Klaviyo with the strangler fig pattern.
+
   Trigger with phrases like "migrate to klaviyo", "klaviyo migration",
+
   "switch to klaviyo", "klaviyo replatform", "mailchimp to klaviyo",
+
   "legacy to klaviyo", "v1 to v2 klaviyo".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, klaviyo, email-marketing, cdp]
-compatible-with: claude-code
+tags:
+- saas
+- klaviyo
+- email-marketing
+- cdp
+compatibility: Designed for Claude Code
 ---
-
 # Klaviyo Migration Deep Dive
 
 ## Overview

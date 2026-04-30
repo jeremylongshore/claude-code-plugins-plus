@@ -1,17 +1,26 @@
 ---
 name: coderabbit-common-errors
-description: |
-  Diagnose and fix CodeRabbit common errors and configuration issues.
+description: 'Diagnose and fix CodeRabbit common errors and configuration issues.
+
   Use when CodeRabbit is not reviewing PRs, posting duplicate comments,
+
   ignoring configuration, or behaving unexpectedly.
+
   Trigger with phrases like "coderabbit error", "fix coderabbit",
+
   "coderabbit not working", "debug coderabbit", "coderabbit broken".
+
+  '
 allowed-tools: Read, Grep, Bash(gh:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, coderabbit, debugging, troubleshooting]
+tags:
+- saas
+- coderabbit
+- debugging
+- troubleshooting
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # CodeRabbit Common Errors
 

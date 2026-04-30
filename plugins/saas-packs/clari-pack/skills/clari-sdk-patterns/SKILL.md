@@ -1,19 +1,27 @@
 ---
 name: clari-sdk-patterns
-description: |
-  Production-ready Clari API client patterns in Python and TypeScript.
+description: 'Production-ready Clari API client patterns in Python and TypeScript.
+
   Use when building reusable Clari clients, implementing export pipelines,
+
   or wrapping the Clari v4 API for team use.
+
   Trigger with phrases like "clari API patterns", "clari client wrapper",
+
   "clari Python client", "clari TypeScript client".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, revenue-intelligence, forecasting, clari]
-compatible-with: claude-code
+tags:
+- saas
+- revenue-intelligence
+- forecasting
+- clari
+compatibility: Designed for Claude Code
 ---
-
 # Clari SDK Patterns
 
 ## Overview

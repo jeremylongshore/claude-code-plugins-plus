@@ -1,17 +1,25 @@
 ---
 name: lindy-incident-runbook
-description: |
-  Incident response procedures for Lindy AI agent failures and outages.
+description: 'Incident response procedures for Lindy AI agent failures and outages.
+
   Use when responding to incidents, troubleshooting agent outages,
+
   or creating on-call procedures for Lindy-powered systems.
+
   Trigger with phrases like "lindy incident", "lindy outage",
+
   "lindy on-call", "lindy runbook", "lindy down".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lindy, incident-response]
+tags:
+- saas
+- lindy
+- incident-response
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lindy Incident Runbook
 

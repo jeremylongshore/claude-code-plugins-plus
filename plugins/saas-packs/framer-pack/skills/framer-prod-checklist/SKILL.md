@@ -1,19 +1,25 @@
 ---
 name: framer-prod-checklist
-description: |
-  Execute Framer production deployment checklist and rollback procedures.
+description: 'Execute Framer production deployment checklist and rollback procedures.
+
   Use when deploying Framer integrations to production, preparing for launch,
+
   or implementing go-live procedures.
+
   Trigger with phrases like "framer production", "deploy framer",
+
   "framer go-live", "framer launch checklist".
+
+  '
 allowed-tools: Read, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, framer]
-compatible-with: claude-code
+tags:
+- saas
+- framer
+compatibility: Designed for Claude Code
 ---
-
 # Framer Production Checklist
 
 ## Overview

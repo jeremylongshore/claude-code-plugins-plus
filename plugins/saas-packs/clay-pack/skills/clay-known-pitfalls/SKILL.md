@@ -1,17 +1,26 @@
 ---
 name: clay-known-pitfalls
-description: |
-  Identify and avoid the top Clay anti-patterns, gotchas, and integration mistakes.
+description: 'Identify and avoid the top Clay anti-patterns, gotchas, and integration
+  mistakes.
+
   Use when reviewing Clay integrations for issues, onboarding new team members,
+
   or auditing existing Clay table configurations.
+
   Trigger with phrases like "clay mistakes", "clay anti-patterns",
+
   "clay pitfalls", "clay what not to do", "clay gotchas", "clay code review".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clay, audit]
+tags:
+- saas
+- clay
+- audit
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clay Known Pitfalls
 

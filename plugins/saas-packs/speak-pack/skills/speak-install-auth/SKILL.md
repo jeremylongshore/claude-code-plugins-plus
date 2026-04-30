@@ -1,17 +1,26 @@
 ---
 name: speak-install-auth
-description: |
-  Set up Speak language learning API integration and authentication.
+description: 'Set up Speak language learning API integration and authentication.
+
   Use when configuring Speak API access, setting up OAuth with OpenAI
+
   Realtime API for speech, or initializing a language tutoring application.
+
   Trigger with phrases like "install speak", "setup speak",
+
   "speak auth", "configure speak API", "speak language learning setup".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, speak, api, authentication]
+tags:
+- saas
+- speak
+- api
+- authentication
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Speak Install & Auth
 

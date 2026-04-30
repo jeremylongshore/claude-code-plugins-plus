@@ -1,17 +1,29 @@
 ---
 name: clay-observability
-description: |
-  Monitor Clay enrichment pipeline health, credit consumption, and data quality metrics.
-  Use when setting up dashboards for Clay operations, configuring alerts for credit burn,
+description: 'Monitor Clay enrichment pipeline health, credit consumption, and data
+  quality metrics.
+
+  Use when setting up dashboards for Clay operations, configuring alerts for credit
+  burn,
+
   or tracking enrichment success rates.
+
   Trigger with phrases like "clay monitoring", "clay metrics", "clay observability",
+
   "monitor clay", "clay alerts", "clay dashboard", "clay credit tracking".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clay, monitoring, observability, dashboard]
+tags:
+- saas
+- clay
+- monitoring
+- observability
+- dashboard
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clay Observability
 

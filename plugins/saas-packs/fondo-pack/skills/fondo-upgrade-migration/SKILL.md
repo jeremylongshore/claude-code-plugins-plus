@@ -1,17 +1,23 @@
 ---
 name: fondo-upgrade-migration
-description: |
-  Migrate to Fondo from other bookkeeping services, switch between Fondo plans,
+description: 'Migrate to Fondo from other bookkeeping services, switch between Fondo
+  plans,
+
   or transition accountants while maintaining financial continuity.
+
   Trigger: "migrate to fondo", "switch to fondo", "fondo migration", "change accountant".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, accounting, fondo]
-compatible-with: claude-code
+tags:
+- saas
+- accounting
+- fondo
+compatibility: Designed for Claude Code
 ---
-
 # Fondo Upgrade & Migration
 
 ## Overview

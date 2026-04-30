@@ -1,19 +1,25 @@
 ---
 name: framer-local-dev-loop
-description: |
-  Configure Framer local development with hot reload and testing.
+description: 'Configure Framer local development with hot reload and testing.
+
   Use when setting up a development environment, configuring test workflows,
+
   or establishing a fast iteration cycle with Framer.
+
   Trigger with phrases like "framer dev setup", "framer local development",
+
   "framer dev environment", "develop with framer".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, framer]
-compatible-with: claude-code
+tags:
+- saas
+- framer
+compatibility: Designed for Claude Code
 ---
-
 # Framer Local Dev Loop
 
 ## Overview

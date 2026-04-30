@@ -1,15 +1,23 @@
 ---
-name: "cursor-upgrade-migration"
-description: |
-  Upgrade Cursor versions, migrate from VS Code, and transfer settings between machines. Triggers on
-  "upgrade cursor", "update cursor", "cursor migration", "cursor new version", "vs code to cursor",
+name: cursor-upgrade-migration
+description: 'Upgrade Cursor versions, migrate from VS Code, and transfer settings
+  between machines. Triggers on
+
+  "upgrade cursor", "update cursor", "cursor migration", "cursor new version", "vs
+  code to cursor",
+
   "cursor changelog".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, cursor, migration]
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- cursor
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Cursor Upgrade & Migration
 

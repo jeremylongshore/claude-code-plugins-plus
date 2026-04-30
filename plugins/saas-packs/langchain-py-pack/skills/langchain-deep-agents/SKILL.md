@@ -1,20 +1,26 @@
 ---
 name: langchain-deep-agents
-description: |
-  Build a LangGraph 1.0 Deep Agent — planner + subagents + virtual filesystem +
-  reflection loop — without the state-growth and prompt-inheritance traps. Use
-  when building a long-horizon agent that must plan, delegate subtasks, work
-  against a scratchpad filesystem, and reflect on progress.
-  Trigger with "langchain deep agent", "planner subagent", "virtual filesystem
-  agent", "reflection loop", "langgraph deep agent".
+description: "Build a LangGraph 1.0 Deep Agent \u2014 planner + subagents + virtual\
+  \ filesystem +\nreflection loop \u2014 without the state-growth and prompt-inheritance\
+  \ traps. Use\nwhen building a long-horizon agent that must plan, delegate subtasks,\
+  \ work\nagainst a scratchpad filesystem, and reflect on progress.\nTrigger with\
+  \ \"langchain deep agent\", \"planner subagent\", \"virtual filesystem\nagent\"\
+  , \"reflection loop\", \"langgraph deep agent\".\n"
 allowed-tools: Read, Write, Edit, Bash(python:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, langchain, langgraph, python, langchain-1.0, agents, deep-agents, research]
-compatible-with: claude-code, codex
+tags:
+- saas
+- langchain
+- langgraph
+- python
+- langchain-1.0
+- agents
+- deep-agents
+- research
+compatibility: Designed for Claude Code, also compatible with Codex
 ---
-
 # LangChain Deep Agents (Python)
 
 ## Overview

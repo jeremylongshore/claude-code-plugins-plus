@@ -1,17 +1,23 @@
 ---
 name: navan-webhooks-events
-description: |
-  Set up webhook listeners for real-time Navan event notifications.
-  Use when you need to receive booking, expense, or travel disruption events from Navan.
+description: 'Set up webhook listeners for real-time Navan event notifications.
+
+  Use when you need to receive booking, expense, or travel disruption events from
+  Navan.
+
   Trigger with "navan webhooks", "navan events", "navan webhook setup".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, navan, travel]
-compatible-with: claude-code
+tags:
+- saas
+- navan
+- travel
+compatibility: Designed for Claude Code
 ---
-
 # Navan Webhooks & Events
 
 ## Overview

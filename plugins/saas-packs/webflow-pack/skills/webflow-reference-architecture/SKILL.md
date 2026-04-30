@@ -1,18 +1,21 @@
 ---
 name: webflow-reference-architecture
-description: |
-  Implement Webflow reference architecture — layered project structure, client wrapper,
-  CMS sync service, webhook handlers, and caching layer for production integrations.
-  Trigger with phrases like "webflow architecture", "webflow project structure",
-  "how to organize webflow", "webflow integration design", "webflow best practices".
+description: "Implement Webflow reference architecture \u2014 layered project structure,\
+  \ client wrapper,\nCMS sync service, webhook handlers, and caching layer for production\
+  \ integrations.\nTrigger with phrases like \"webflow architecture\", \"webflow project\
+  \ structure\",\n\"how to organize webflow\", \"webflow integration design\", \"\
+  webflow best practices\".\n"
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, no-code, webflow]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- no-code
+- webflow
+compatibility: Designed for Claude Code
 ---
-
 # Webflow Reference Architecture
 
 ## Overview

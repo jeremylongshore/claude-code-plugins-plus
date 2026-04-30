@@ -1,17 +1,24 @@
 ---
 name: generating-docker-compose-files
-description: |
-  Execute use when you need to work with Docker Compose.
-  This skill provides Docker Compose file generation with comprehensive guidance and automation.
+description: 'Execute use when you need to work with Docker Compose.
+
+  This skill provides Docker Compose file generation with comprehensive guidance and
+  automation.
+
   Trigger with phrases like "generate docker-compose", "create compose file",
+
   or "configure multi-container app".
 
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(docker:*), Bash(kubectl:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [devops, docker, docker-compose]
+tags:
+- devops
+- docker
+- docker-compose
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Generating Docker Compose Files
 

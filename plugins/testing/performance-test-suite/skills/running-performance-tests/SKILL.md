@@ -1,16 +1,22 @@
 ---
 name: running-performance-tests
-description: |
-  Execute load testing, stress testing, and performance benchmarking.
-  Use when performing specialized testing.
-  Trigger with phrases like "run load tests", "test performance", or "benchmark the system".
+description: 'Execute load testing, stress testing, and performance benchmarking.
 
+  Use when performing specialized testing.
+
+  Trigger with phrases like "run load tests", "test performance", or "benchmark the
+  system".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:perf-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [testing, performance, performance-tests]
+tags:
+- testing
+- performance
+- performance-tests
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Performance Test Suite
 

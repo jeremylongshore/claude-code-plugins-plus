@@ -1,17 +1,25 @@
 ---
 name: fireflies-debug-bundle
-description: |
-  Collect Fireflies.ai debug evidence for support tickets and troubleshooting.
+description: 'Collect Fireflies.ai debug evidence for support tickets and troubleshooting.
+
   Use when encountering persistent issues, preparing support tickets,
+
   or collecting diagnostic information for Fireflies.ai problems.
+
   Trigger with phrases like "fireflies debug", "fireflies support bundle",
+
   "collect fireflies logs", "fireflies diagnostic".
+
+  '
 allowed-tools: Read, Bash(curl:*), Bash(tar:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, fireflies, debugging]
+tags:
+- saas
+- fireflies
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Fireflies.ai Debug Bundle
 

@@ -1,17 +1,26 @@
 ---
 name: clerk-sdk-patterns
-description: |
-  Common Clerk SDK patterns and best practices.
+description: 'Common Clerk SDK patterns and best practices.
+
   Use when implementing authentication flows, accessing user data,
+
   or integrating Clerk SDK methods in your application.
+
   Trigger with phrases like "clerk SDK", "clerk patterns",
+
   "clerk best practices", "clerk API usage".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clerk, api, authentication]
+tags:
+- saas
+- clerk
+- api
+- authentication
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clerk SDK Patterns
 

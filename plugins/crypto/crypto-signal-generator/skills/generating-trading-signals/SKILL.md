@@ -1,17 +1,26 @@
 ---
 name: generating-trading-signals
-description: |
-  Generate trading signals using technical indicators (RSI, MACD, Bollinger Bands, etc.).
+description: 'Generate trading signals using technical indicators (RSI, MACD, Bollinger
+  Bands, etc.).
+
   Combines multiple indicators into composite signals with confidence scores.
+
   Use when analyzing assets for trading opportunities or checking technical indicators.
-  Trigger with phrases like "get trading signals", "check indicators", "analyze for entry",
+
+  Trigger with phrases like "get trading signals", "check indicators", "analyze for
+  entry",
+
   "scan for opportunities", "generate buy/sell signals", or "technical analysis".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(python:*)
 version: 2.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [crypto, trading-signals]
+tags:
+- crypto
+- trading-signals
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Generating Trading Signals
 

@@ -1,19 +1,28 @@
 ---
 name: castai-webhooks-events
-description: |
-  Configure CAST AI webhook notifications for cluster events and audit logs.
+description: 'Configure CAST AI webhook notifications for cluster events and audit
+  logs.
+
   Use when setting up alerts for node scaling, cost threshold events,
+
   or integrating CAST AI events with Slack, PagerDuty, or custom endpoints.
+
   Trigger with phrases like "cast ai webhooks", "cast ai notifications",
+
   "cast ai slack alerts", "cast ai events".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, kubernetes, cost-optimization, castai]
-compatible-with: claude-code
+tags:
+- saas
+- kubernetes
+- cost-optimization
+- castai
+compatibility: Designed for Claude Code
 ---
-
 # CAST AI Webhooks & Events
 
 ## Overview

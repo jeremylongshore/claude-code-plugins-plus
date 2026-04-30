@@ -1,16 +1,20 @@
 ---
 name: openevidence-multi-env-setup
-description: |
-  Multi Env Setup for OpenEvidence.
+description: 'Multi Env Setup for OpenEvidence.
+
   Trigger: "openevidence multi env setup".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, openevidence, healthcare]
-compatible-with: claude-code
+tags:
+- saas
+- openevidence
+- healthcare
+compatibility: Designed for Claude Code
 ---
-
 # OpenEvidence Multi-Environment Setup
 
 ## Overview

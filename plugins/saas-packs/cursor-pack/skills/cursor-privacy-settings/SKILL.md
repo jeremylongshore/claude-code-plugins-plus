@@ -1,15 +1,22 @@
 ---
-name: "cursor-privacy-settings"
-description: |
-  Configure Cursor privacy mode, data handling, telemetry, and sensitive file exclusion. Triggers on
+name: cursor-privacy-settings
+description: 'Configure Cursor privacy mode, data handling, telemetry, and sensitive
+  file exclusion. Triggers on
+
   "cursor privacy", "cursor data", "cursor security", "privacy mode", "cursor telemetry",
+
   "cursor data retention".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, cursor, security]
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- cursor
+- security
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Cursor Privacy Settings
 

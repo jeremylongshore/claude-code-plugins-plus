@@ -1,20 +1,29 @@
 ---
 name: shopify-sdk-patterns
-description: |
-  Apply production-ready patterns for @shopify/shopify-api including typed GraphQL clients,
+description: 'Apply production-ready patterns for @shopify/shopify-api including typed
+  GraphQL clients,
+
   session management, and retry logic.
+
   Use when implementing Shopify integrations, refactoring SDK usage,
+
   or establishing team coding standards for Shopify.
+
   Trigger with phrases like "shopify SDK patterns", "shopify best practices",
+
   "shopify code patterns", "idiomatic shopify", "shopify client wrapper".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ecommerce, shopify]
-compatible-with: claude-code
+tags:
+- saas
+- ecommerce
+- shopify
+compatibility: Designed for Claude Code
 ---
-
 # Shopify SDK Patterns
 
 ## Overview

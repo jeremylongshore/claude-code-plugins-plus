@@ -1,17 +1,25 @@
 ---
 name: evernote-deploy-integration
-description: |
-  Deploy Evernote integrations to production environments.
+description: 'Deploy Evernote integrations to production environments.
+
   Use when deploying to cloud platforms, configuring production,
+
   or setting up deployment pipelines.
+
   Trigger with phrases like "deploy evernote", "evernote production deploy",
+
   "release evernote", "evernote cloud deployment".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, evernote, deployment]
+tags:
+- saas
+- evernote
+- deployment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Evernote Deploy Integration
 

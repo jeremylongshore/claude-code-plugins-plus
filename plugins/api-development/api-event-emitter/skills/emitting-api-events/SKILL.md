@@ -1,16 +1,23 @@
 ---
 name: emitting-api-events
-description: |
-  Build event-driven APIs with webhooks, Server-Sent Events, and real-time notifications.
+description: 'Build event-driven APIs with webhooks, Server-Sent Events, and real-time
+  notifications.
+
   Use when building event-driven API architectures.
-  Trigger with phrases like "add webhooks", "implement events", or "create event-driven API".
-  
+
+  Trigger with phrases like "add webhooks", "implement events", or "create event-driven
+  API".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:events-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [api, webhooks, emitting-api]
+tags:
+- api
+- webhooks
+- emitting-api
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Emitting API Events
 

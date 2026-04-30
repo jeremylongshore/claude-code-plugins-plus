@@ -1,16 +1,23 @@
 ---
 name: auditing-wallet-security
-description: |
-  Audit wallet security by analyzing token approvals, permissions, and transaction patterns.
-  Use when checking wallet security, reviewing approvals, or assessing risk exposure.
-  Trigger with phrases like "audit wallet", "check approvals", "security scan", or "revoke tokens".
+description: 'Audit wallet security by analyzing token approvals, permissions, and
+  transaction patterns.
 
+  Use when checking wallet security, reviewing approvals, or assessing risk exposure.
+
+  Trigger with phrases like "audit wallet", "check approvals", "security scan", or
+  "revoke tokens".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:wallet-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [crypto, security, audit]
+tags:
+- crypto
+- security
+- audit
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Wallet Security Auditor
 

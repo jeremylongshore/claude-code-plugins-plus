@@ -1,18 +1,26 @@
 ---
 name: anima-prod-checklist
-description: |
-  Production readiness checklist for Anima design-to-code pipelines.
+description: 'Production readiness checklist for Anima design-to-code pipelines.
+
   Use when deploying automated design-to-code services, preparing CI/CD
+
   Figma-to-code automation, or validating output quality before production.
+
   Trigger: "anima production", "anima go-live", "anima prod checklist".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, figma, anima, production]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- figma
+- anima
+- production
+compatibility: Designed for Claude Code
 ---
-
 # Anima Production Checklist
 
 ## Overview

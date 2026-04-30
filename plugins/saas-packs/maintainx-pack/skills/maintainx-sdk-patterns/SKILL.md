@@ -1,17 +1,26 @@
 ---
 name: maintainx-sdk-patterns
-description: |
-  Learn MaintainX REST API patterns, pagination, filtering, and client architecture.
+description: 'Learn MaintainX REST API patterns, pagination, filtering, and client
+  architecture.
+
   Use when building robust API integrations, implementing pagination,
+
   or creating reusable SDK patterns for MaintainX.
+
   Trigger with phrases like "maintainx sdk", "maintainx api patterns",
+
   "maintainx pagination", "maintainx filtering", "maintainx client design".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, maintainx, api]
+tags:
+- saas
+- maintainx
+- api
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # MaintainX SDK Patterns
 

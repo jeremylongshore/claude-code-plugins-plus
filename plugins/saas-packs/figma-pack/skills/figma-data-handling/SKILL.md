@@ -1,19 +1,26 @@
 ---
 name: figma-data-handling
-description: |
-  Handle Figma API data correctly: comments, versions, user data, and privacy compliance.
+description: 'Handle Figma API data correctly: comments, versions, user data, and
+  privacy compliance.
+
   Use when working with Figma comments API, version history,
+
   or ensuring GDPR compliance for Figma user data.
+
   Trigger with phrases like "figma data", "figma comments",
+
   "figma versions", "figma GDPR", "figma user data".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, figma]
-compatible-with: claude-code
+tags:
+- saas
+- figma
+compatibility: Designed for Claude Code
 ---
-
 # Figma Data Handling
 
 ## Overview

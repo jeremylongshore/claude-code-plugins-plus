@@ -1,17 +1,22 @@
 ---
 name: linktree-install-auth
-description: |
-  Install and configure Linktree SDK/API authentication.
+description: 'Install and configure Linktree SDK/API authentication.
+
   Use when setting up a new Linktree integration.
+
   Trigger: "install linktree", "setup linktree", "linktree auth".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, linktree, social]
-compatible-with: claude-code
+tags:
+- saas
+- linktree
+- social
+compatibility: Designed for Claude Code
 ---
-
 # Linktree Install & Auth
 
 ## Overview

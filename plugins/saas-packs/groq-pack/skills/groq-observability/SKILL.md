@@ -1,16 +1,26 @@
 ---
 name: groq-observability
-description: |
-  Set up observability for Groq integrations: latency histograms, token throughput,
+description: 'Set up observability for Groq integrations: latency histograms, token
+  throughput,
+
   rate limit gauges, cost tracking, and Prometheus alerts.
+
   Trigger with phrases like "groq monitoring", "groq metrics",
+
   "groq observability", "monitor groq", "groq alerts", "groq dashboard".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, groq, monitoring, observability, dashboard]
+tags:
+- saas
+- groq
+- monitoring
+- observability
+- dashboard
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Groq Observability
 

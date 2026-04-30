@@ -1,18 +1,26 @@
 ---
 name: algolia-upgrade-migration
-description: |
-  Upgrade algoliasearch from v4 to v5 with breaking change detection and codemod.
-  Use when upgrading SDK versions, detecting deprecations, or migrating initIndex patterns.
+description: 'Upgrade algoliasearch from v4 to v5 with breaking change detection and
+  codemod.
+
+  Use when upgrading SDK versions, detecting deprecations, or migrating initIndex
+  patterns.
+
   Trigger: "upgrade algolia", "algolia migration v5", "algolia breaking changes",
+
   "update algolia SDK", "algolia v4 to v5".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*), Bash(npx:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, algolia]
-compatible-with: claude-code
+tags:
+- saas
+- search
+- algolia
+compatibility: Designed for Claude Code
 ---
-
 # Algolia Upgrade & Migration (v4 to v5)
 
 ## Overview

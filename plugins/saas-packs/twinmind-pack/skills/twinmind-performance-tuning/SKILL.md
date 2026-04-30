@@ -1,16 +1,24 @@
 ---
 name: twinmind-performance-tuning
-description: |
-  Optimize TwinMind transcription accuracy and speed with Ear-3 model configuration, audio quality tuning, and caching strategies.
+description: 'Optimize TwinMind transcription accuracy and speed with Ear-3 model
+  configuration, audio quality tuning, and caching strategies.
+
   Use when implementing performance tuning,
+
   or managing TwinMind meeting AI operations.
+
   Trigger with phrases like "twinmind performance tuning", "twinmind performance tuning".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: ['saas', 'twinmind', 'performance']
+tags:
+- saas
+- twinmind
+- performance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # TwinMind Performance Tuning
 

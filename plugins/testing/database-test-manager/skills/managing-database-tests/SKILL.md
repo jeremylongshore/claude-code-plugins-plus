@@ -1,16 +1,23 @@
 ---
 name: managing-database-tests
-description: |
-  Test database testing including fixtures, transactions, and rollback management.
-  Use when performing specialized testing.
-  Trigger with phrases like "test the database", "run database tests", or "validate data integrity".
+description: 'Test database testing including fixtures, transactions, and rollback
+  management.
 
+  Use when performing specialized testing.
+
+  Trigger with phrases like "test the database", "run database tests", or "validate
+  data integrity".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:db-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [testing, database, database-tests]
+tags:
+- testing
+- database
+- database-tests
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Database Test Manager
 

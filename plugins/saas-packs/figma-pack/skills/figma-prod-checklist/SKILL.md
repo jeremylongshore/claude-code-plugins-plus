@@ -1,19 +1,25 @@
 ---
 name: figma-prod-checklist
-description: |
-  Production readiness checklist for Figma REST API integrations.
+description: 'Production readiness checklist for Figma REST API integrations.
+
   Use when deploying Figma integrations to production, preparing for launch,
+
   or auditing an existing integration for production fitness.
+
   Trigger with phrases like "figma production", "deploy figma",
+
   "figma go-live", "figma launch checklist".
+
+  '
 allowed-tools: Read, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, figma]
-compatible-with: claude-code
+tags:
+- saas
+- figma
+compatibility: Designed for Claude Code
 ---
-
 # Figma Production Checklist
 
 ## Overview

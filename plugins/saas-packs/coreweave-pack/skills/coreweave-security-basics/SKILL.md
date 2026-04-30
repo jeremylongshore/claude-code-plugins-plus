@@ -1,19 +1,29 @@
 ---
 name: coreweave-security-basics
-description: |
-  Secure CoreWeave deployments with RBAC, network policies, and secrets management.
+description: 'Secure CoreWeave deployments with RBAC, network policies, and secrets
+  management.
+
   Use when hardening GPU workloads, managing model access,
+
   or configuring namespace isolation.
+
   Trigger with phrases like "coreweave security", "coreweave rbac",
+
   "secure coreweave", "coreweave secrets".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(kubectl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, gpu-cloud, kubernetes, inference, coreweave]
-compatible-with: claude-code
+tags:
+- saas
+- gpu-cloud
+- kubernetes
+- inference
+- coreweave
+compatibility: Designed for Claude Code
 ---
-
 # CoreWeave Security Basics
 
 ## Overview

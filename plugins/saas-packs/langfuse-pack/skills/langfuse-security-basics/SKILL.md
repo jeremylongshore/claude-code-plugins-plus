@@ -1,17 +1,27 @@
 ---
 name: langfuse-security-basics
-description: |
-  Implement Langfuse security best practices for API keys and data privacy.
+description: 'Implement Langfuse security best practices for API keys and data privacy.
+
   Use when securing Langfuse integration, protecting API keys,
+
   or implementing data privacy controls for LLM observability.
+
   Trigger with phrases like "langfuse security", "langfuse API key security",
+
   "langfuse data privacy", "secure langfuse", "langfuse PII".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langfuse, api, security, observability]
+tags:
+- saas
+- langfuse
+- api
+- security
+- observability
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Langfuse Security Basics
 

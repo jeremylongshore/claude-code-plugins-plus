@@ -1,17 +1,26 @@
 ---
 name: lindy-security-basics
-description: |
-  Implement security best practices for Lindy AI agents and integrations.
+description: 'Implement security best practices for Lindy AI agents and integrations.
+
   Use when securing API keys, configuring agent permissions,
+
   verifying webhooks, or auditing agent access.
+
   Trigger with phrases like "lindy security", "secure lindy",
+
   "lindy API key security", "lindy permissions", "lindy audit".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lindy, api, security]
+tags:
+- saas
+- lindy
+- api
+- security
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lindy Security Basics
 

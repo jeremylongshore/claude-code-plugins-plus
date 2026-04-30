@@ -1,19 +1,27 @@
 ---
 name: intercom-common-errors
-description: |
-  Diagnose and fix Intercom API errors by HTTP status code and error type.
+description: 'Diagnose and fix Intercom API errors by HTTP status code and error type.
+
   Use when encountering Intercom errors, debugging failed API requests,
+
   or troubleshooting integration issues.
+
   Trigger with phrases like "intercom error", "fix intercom",
+
   "intercom not working", "debug intercom", "intercom 401", "intercom 429".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, support, messaging, intercom]
-compatible-with: claude-code
+tags:
+- saas
+- support
+- messaging
+- intercom
+compatibility: Designed for Claude Code
 ---
-
 # Intercom Common Errors
 
 ## Overview

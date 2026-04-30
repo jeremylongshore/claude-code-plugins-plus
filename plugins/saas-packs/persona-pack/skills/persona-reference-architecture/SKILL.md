@@ -1,17 +1,24 @@
 ---
 name: persona-reference-architecture
-description: |
-  KYC service architecture with Persona as verification provider.
+description: 'KYC service architecture with Persona as verification provider.
+
   Use when working with Persona identity verification.
+
   Trigger with phrases like "persona reference-architecture", "persona reference-architecture".
+
+  '
 allowed-tools: Read, Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, persona, identity, kyc, verification]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- persona
+- identity
+- kyc
+- verification
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # persona reference architecture | sed 's/\b\(.\)/\u\1/g'
 
 ## Overview

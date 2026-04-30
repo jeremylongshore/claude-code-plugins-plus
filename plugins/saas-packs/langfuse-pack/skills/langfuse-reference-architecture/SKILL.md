@@ -1,17 +1,27 @@
 ---
 name: langfuse-reference-architecture
-description: |
-  Production-grade Langfuse architecture patterns and best practices.
+description: 'Production-grade Langfuse architecture patterns and best practices.
+
   Use when designing LLM observability infrastructure, planning Langfuse deployment,
+
   or implementing enterprise-grade tracing architecture.
+
   Trigger with phrases like "langfuse architecture", "langfuse design",
+
   "langfuse infrastructure", "langfuse enterprise", "langfuse at scale".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langfuse, deployment, observability, llm]
+tags:
+- saas
+- langfuse
+- deployment
+- observability
+- llm
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Langfuse Reference Architecture
 

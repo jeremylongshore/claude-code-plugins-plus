@@ -1,19 +1,27 @@
 ---
 name: snowflake-hello-world
-description: |
-  Create a minimal working Snowflake example with real SQL queries.
+description: 'Create a minimal working Snowflake example with real SQL queries.
+
   Use when testing your Snowflake setup, running first queries,
+
   or learning basic snowflake-sdk and snowflake-connector-python patterns.
+
   Trigger with phrases like "snowflake hello world", "snowflake example",
+
   "snowflake quick start", "first snowflake query".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, data-warehouse, analytics, snowflake]
-compatible-with: claude-code
+tags:
+- saas
+- data-warehouse
+- analytics
+- snowflake
+compatibility: Designed for Claude Code
 ---
-
 # Snowflake Hello World
 
 ## Overview

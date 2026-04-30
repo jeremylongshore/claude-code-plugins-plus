@@ -1,19 +1,29 @@
 ---
 name: shopify-architecture-variants
-description: |
-  Choose between Shopify app architectures: embedded Remix app, headless storefront with
+description: 'Choose between Shopify app architectures: embedded Remix app, headless
+  storefront with
+
   Hydrogen, standalone integration, or theme app extension.
-  Use when starting a new Shopify project and deciding which architecture pattern to follow.
-  Trigger with phrases like "shopify architecture decision", "shopify embedded vs headless",
+
+  Use when starting a new Shopify project and deciding which architecture pattern
+  to follow.
+
+  Trigger with phrases like "shopify architecture decision", "shopify embedded vs
+  headless",
+
   "shopify Hydrogen", "shopify app types", "which shopify architecture".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ecommerce, shopify]
-compatible-with: claude-code
+tags:
+- saas
+- ecommerce
+- shopify
+compatibility: Designed for Claude Code
 ---
-
 # Shopify Architecture Variants
 
 ## Overview

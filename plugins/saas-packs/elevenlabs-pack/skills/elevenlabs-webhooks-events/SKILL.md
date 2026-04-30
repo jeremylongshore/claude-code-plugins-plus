@@ -1,20 +1,31 @@
 ---
 name: elevenlabs-webhooks-events
-description: |
-  Implement ElevenLabs webhook HMAC signature verification and event handling.
+description: 'Implement ElevenLabs webhook HMAC signature verification and event handling.
+
   Use when setting up webhook endpoints for transcription completion,
+
   call recording, or agent conversation events from ElevenLabs.
+
   Trigger: "elevenlabs webhook", "elevenlabs events",
+
   "elevenlabs webhook signature", "handle elevenlabs notifications",
+
   "elevenlabs post-call webhook", "elevenlabs transcription webhook".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, voice, ai, elevenlabs, webhooks, events]
-compatible-with: claude-code
+tags:
+- saas
+- voice
+- ai
+- elevenlabs
+- webhooks
+- events
+compatibility: Designed for Claude Code
 ---
-
 # ElevenLabs Webhooks & Events
 
 ## Overview

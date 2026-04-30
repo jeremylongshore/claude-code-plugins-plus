@@ -1,19 +1,29 @@
 ---
 name: sentry-cost-tuning
-description: |
-  Optimize Sentry costs, reduce event volume, and manage quota spend.
+description: 'Optimize Sentry costs, reduce event volume, and manage quota spend.
+
   Use when analyzing Sentry billing, reducing error/transaction volume,
+
   configuring sampling rates, or preventing overage charges.
+
   Trigger: "reduce sentry costs", "sentry billing optimization",
+
   "sentry quota management", "optimize sentry spend", "sentry sampling".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(curl:*), Bash(node:*), Bash(npx:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, sentry, cost-optimization, billing, quotas, sampling]
+tags:
+- saas
+- sentry
+- cost-optimization
+- billing
+- quotas
+- sampling
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Sentry Cost Tuning
 
 Reduce Sentry spend by 60-95% through SDK-level sampling, server-side inbound filters, `beforeSend` event dropping, and quota management — without losing visibility into production errors that matter.

@@ -1,16 +1,20 @@
 ---
 name: glean-incident-runbook
-description: |
-  Triage: Is search returning results? Check Glean status page.
+description: 'Triage: Is search returning results? Check Glean status page.
+
   Trigger: "glean incident runbook", "incident-runbook".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, enterprise-search, glean]
-compatible-with: claude-code
+tags:
+- saas
+- enterprise-search
+- glean
+compatibility: Designed for Claude Code
 ---
-
 # Glean Incident Runbook
 
 ## Overview

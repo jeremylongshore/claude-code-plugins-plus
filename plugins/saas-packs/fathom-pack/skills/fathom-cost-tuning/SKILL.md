@@ -1,16 +1,21 @@
 ---
 name: fathom-cost-tuning
-description: |
-  Optimize Fathom API usage and plan selection.
+description: 'Optimize Fathom API usage and plan selection.
+
   Trigger with phrases like "fathom cost", "fathom pricing", "fathom plan".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, meeting-intelligence, ai-notes, fathom]
-compatible-with: claude-code
+tags:
+- saas
+- meeting-intelligence
+- ai-notes
+- fathom
+compatibility: Designed for Claude Code
 ---
-
 # Fathom Cost Tuning
 
 ## Overview

@@ -1,17 +1,28 @@
 ---
 name: ideogram-core-workflow-a
-description: |
-  Execute Ideogram primary workflow: text-to-image generation with text rendering.
+description: 'Execute Ideogram primary workflow: text-to-image generation with text
+  rendering.
+
   Use when generating images from text prompts, creating designs with embedded text,
+
   or building the main image generation pipeline.
+
   Trigger with phrases like "ideogram generate image", "ideogram text to image",
+
   "create image with ideogram", "ideogram primary workflow".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, ideogram, workflow, image-generation, text-rendering]
+tags:
+- saas
+- ideogram
+- workflow
+- image-generation
+- text-rendering
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Ideogram Core Workflow A -- Text-to-Image Generation
 

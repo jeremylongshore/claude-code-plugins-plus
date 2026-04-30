@@ -1,17 +1,28 @@
 ---
 name: windsurf-incident-runbook
-description: |
-  Execute Windsurf incident response when AI features fail or cause production issues.
+description: 'Execute Windsurf incident response when AI features fail or cause production
+  issues.
+
   Use when Cascade breaks code, Windsurf service is down, AI-generated code causes
+
   production incidents, or team needs emergency Windsurf troubleshooting.
+
   Trigger with phrases like "windsurf incident", "windsurf outage",
+
   "windsurf broke production", "cascade caused bug", "windsurf emergency".
+
+  '
 allowed-tools: Read, Grep, Bash(git:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, incident-response, runbook, troubleshooting]
+tags:
+- saas
+- windsurf
+- incident-response
+- runbook
+- troubleshooting
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Windsurf Incident Runbook
 

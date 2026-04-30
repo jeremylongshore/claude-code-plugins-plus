@@ -1,17 +1,26 @@
 ---
 name: evernote-cost-tuning
-description: |
-  Optimize Evernote integration costs and resource usage.
+description: 'Optimize Evernote integration costs and resource usage.
+
   Use when managing API quotas, reducing storage usage,
+
   or optimizing upload limits.
+
   Trigger with phrases like "evernote cost", "evernote quota",
+
   "evernote limits", "evernote upload".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, evernote, api, cost-optimization]
+tags:
+- saas
+- evernote
+- api
+- cost-optimization
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Evernote Cost Tuning
 

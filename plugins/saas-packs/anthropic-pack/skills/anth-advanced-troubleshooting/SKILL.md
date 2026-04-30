@@ -1,18 +1,24 @@
 ---
 name: anth-advanced-troubleshooting
-description: |
-  Debug complex Claude API issues including context window overflow,
+description: 'Debug complex Claude API issues including context window overflow,
+
   tool use failures, streaming corruption, and response quality problems.
+
   Trigger with phrases like "anthropic advanced debug", "claude complex issue",
+
   "claude tool use failing", "claude context overflow".
+
+  '
 allowed-tools: Read, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, anthropic]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- anthropic
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Advanced Troubleshooting
 
 ## Issue: Context Window Overflow

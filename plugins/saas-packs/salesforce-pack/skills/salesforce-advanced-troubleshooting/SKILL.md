@@ -1,19 +1,28 @@
 ---
 name: salesforce-advanced-troubleshooting
-description: |
-  Apply Salesforce advanced debugging with debug logs, SOQL query plans, and EventLogFile analysis.
+description: 'Apply Salesforce advanced debugging with debug logs, SOQL query plans,
+  and EventLogFile analysis.
+
   Use when standard troubleshooting fails, investigating SOQL performance issues,
+
   or analyzing Apex governor limit violations.
+
   Trigger with phrases like "salesforce hard bug", "salesforce debug log",
-  "salesforce governor limit", "salesforce query plan", "salesforce deep debug", "SOQL slow".
+
+  "salesforce governor limit", "salesforce query plan", "salesforce deep debug", "SOQL
+  slow".
+
+  '
 allowed-tools: Read, Grep, Bash(sf:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, salesforce]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- salesforce
+compatibility: Designed for Claude Code
 ---
-
 # Salesforce Advanced Troubleshooting
 
 ## Overview

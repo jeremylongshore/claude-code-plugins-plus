@@ -1,17 +1,25 @@
 ---
 name: maintainx-reference-architecture
-description: |
-  Production-grade architecture patterns for MaintainX integrations.
+description: 'Production-grade architecture patterns for MaintainX integrations.
+
   Use when designing system architecture, planning integrations,
+
   or building enterprise-scale MaintainX solutions.
+
   Trigger with phrases like "maintainx architecture", "maintainx design",
+
   "maintainx system design", "maintainx enterprise", "maintainx patterns".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, maintainx, scaling]
+tags:
+- saas
+- maintainx
+- scaling
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # MaintainX Reference Architecture
 

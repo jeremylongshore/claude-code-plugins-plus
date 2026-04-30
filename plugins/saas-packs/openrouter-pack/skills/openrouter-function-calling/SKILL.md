@@ -1,13 +1,22 @@
 ---
 name: openrouter-function-calling
-description: |
-  Implement function/tool calling with OpenRouter models. Use when building agents, structured output, or tool-augmented LLM workflows. Triggers: 'openrouter function calling', 'openrouter tools', 'openrouter agent tools', 'tool use openrouter'.
+description: 'Implement function/tool calling with OpenRouter models. Use when building
+  agents, structured output, or tool-augmented LLM workflows. Triggers: ''openrouter
+  function calling'', ''openrouter tools'', ''openrouter agent tools'', ''tool use
+  openrouter''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash, Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, openrouter, function-calling, agents, tools]
+tags:
+- saas
+- openrouter
+- function-calling
+- agents
+- tools
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # OpenRouter Function Calling
 

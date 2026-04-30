@@ -1,14 +1,21 @@
 ---
-name: "cursor-rules-config"
-description: |
-  Configure Cursor project rules using .cursor/rules/*.mdc files and legacy .cursorrules. Triggers on "cursorrules",
-  ".cursorrules", "cursor rules", "cursor config", "cursor project settings", ".mdc rules", "project rules".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+name: cursor-rules-config
+description: 'Configure Cursor project rules using .cursor/rules/*.mdc files and legacy
+  .cursorrules. Triggers on "cursorrules",
+
+  ".cursorrules", "cursor rules", "cursor config", "cursor project settings", ".mdc
+  rules", "project rules".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, cursor, cursor-rules]
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- cursor
+- cursor-rules
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Cursor Rules Config
 

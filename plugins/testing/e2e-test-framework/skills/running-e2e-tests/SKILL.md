@@ -1,16 +1,23 @@
 ---
 name: running-e2e-tests
-description: |
-  Execute end-to-end tests covering full user workflows across frontend and backend.
-  Use when performing specialized testing.
-  Trigger with phrases like "run end-to-end tests", "test user flows", or "execute E2E suite".
+description: 'Execute end-to-end tests covering full user workflows across frontend
+  and backend.
 
+  Use when performing specialized testing.
+
+  Trigger with phrases like "run end-to-end tests", "test user flows", or "execute
+  E2E suite".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:e2e-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [testing, workflow, e2e-tests]
+tags:
+- testing
+- workflow
+- e2e-tests
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # E2E Test Framework
 

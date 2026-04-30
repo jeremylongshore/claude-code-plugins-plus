@@ -1,19 +1,29 @@
 ---
 name: elevenlabs-deploy-integration
-description: |
-  Deploy ElevenLabs TTS applications to Vercel, Fly.io, and Cloud Run.
+description: 'Deploy ElevenLabs TTS applications to Vercel, Fly.io, and Cloud Run.
+
   Use when deploying ElevenLabs-powered apps to production,
+
   configuring platform-specific secrets, or setting up serverless TTS.
+
   Trigger: "deploy elevenlabs", "elevenlabs Vercel", "elevenlabs Cloud Run",
+
   "elevenlabs Fly.io", "elevenlabs serverless", "host TTS API".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, voice, ai, elevenlabs, deployment, serverless]
-compatible-with: claude-code
+tags:
+- saas
+- voice
+- ai
+- elevenlabs
+- deployment
+- serverless
+compatibility: Designed for Claude Code
 ---
-
 # ElevenLabs Deploy Integration
 
 ## Overview

@@ -1,16 +1,26 @@
 ---
 name: testing-browser-compatibility
-description: |
-  Test across multiple browsers and devices for cross-browser compatibility.
-  Use when ensuring cross-browser or device compatibility with BrowserStack, Sauce Labs, LambdaTest, or Kobiton.
-  Trigger with phrases like "test browser compatibility", "check cross-browser", "validate on browsers", "test on real devices", "kobiton test".
+description: 'Test across multiple browsers and devices for cross-browser compatibility.
 
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash(npx playwright:*), Bash(npm:*), Bash(curl:*)
+  Use when ensuring cross-browser or device compatibility with BrowserStack, Sauce
+  Labs, LambdaTest, or Kobiton.
+
+  Trigger with phrases like "test browser compatibility", "check cross-browser", "validate
+  on browsers", "test on real devices", "kobiton test".
+
+  '
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(npx playwright:*), Bash(npm:*),
+  Bash(curl:*)
 version: 2.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [testing, cross-browser, mobile-testing, real-device, cloud-testing]
+tags:
+- testing
+- cross-browser
+- mobile-testing
+- real-device
+- cloud-testing
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Browser Compatibility Tester
 

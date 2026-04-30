@@ -1,13 +1,22 @@
 ---
 name: openrouter-install-auth
-description: |
-  Set up OpenRouter API authentication and configure API keys. Use when starting a new OpenRouter integration, rotating keys, or troubleshooting auth issues. Triggers: 'openrouter setup', 'openrouter api key', 'configure openrouter auth', 'sk-or key'.
+description: 'Set up OpenRouter API authentication and configure API keys. Use when
+  starting a new OpenRouter integration, rotating keys, or troubleshooting auth issues.
+  Triggers: ''openrouter setup'', ''openrouter api key'', ''configure openrouter auth'',
+  ''sk-or key''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash, Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, openrouter, api, authentication, setup]
+tags:
+- saas
+- openrouter
+- api
+- authentication
+- setup
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # OpenRouter Install & Auth
 

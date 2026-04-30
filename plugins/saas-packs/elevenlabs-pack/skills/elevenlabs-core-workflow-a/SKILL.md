@@ -1,19 +1,29 @@
 ---
 name: elevenlabs-core-workflow-a
-description: |
-  Implement ElevenLabs text-to-speech and voice cloning workflows.
+description: 'Implement ElevenLabs text-to-speech and voice cloning workflows.
+
   Use when building TTS features, cloning voices from audio samples,
+
   or implementing the primary ElevenLabs money-path: voice generation.
+
   Trigger: "elevenlabs TTS", "text to speech", "voice cloning elevenlabs",
+
   "clone a voice", "generate speech", "elevenlabs voice".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, voice, ai, elevenlabs, tts, voice-cloning]
-compatible-with: claude-code
+tags:
+- saas
+- voice
+- ai
+- elevenlabs
+- tts
+- voice-cloning
+compatibility: Designed for Claude Code
 ---
-
 # ElevenLabs Core Workflow A — TTS & Voice Cloning
 
 ## Overview

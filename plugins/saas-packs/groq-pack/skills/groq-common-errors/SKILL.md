@@ -1,17 +1,25 @@
 ---
 name: groq-common-errors
-description: |
-  Diagnose and fix Groq API errors with real error codes and solutions.
+description: 'Diagnose and fix Groq API errors with real error codes and solutions.
+
   Use when encountering Groq errors, debugging failed requests,
+
   or troubleshooting integration issues.
+
   Trigger with phrases like "groq error", "fix groq",
+
   "groq not working", "debug groq", "groq 429".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, groq, debugging]
+tags:
+- saas
+- groq
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Groq Common Errors
 

@@ -1,16 +1,21 @@
 ---
 name: apple-notes-observability
-description: |
-  Monitor Apple Notes automation health and performance metrics.
+description: 'Monitor Apple Notes automation health and performance metrics.
+
   Trigger: "apple notes monitoring".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(osascript:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, macos, apple-notes, automation]
-compatible-with: claude-code
+tags:
+- saas
+- macos
+- apple-notes
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Apple Notes Observability
 
 ## Overview

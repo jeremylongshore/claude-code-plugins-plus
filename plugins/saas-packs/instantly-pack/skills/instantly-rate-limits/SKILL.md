@@ -1,17 +1,27 @@
 ---
 name: instantly-rate-limits
-description: |
-  Implement Instantly.ai rate limiting, backoff, and request throttling patterns.
+description: 'Implement Instantly.ai rate limiting, backoff, and request throttling
+  patterns.
+
   Use when handling 429 errors, implementing retry logic,
+
   or building high-throughput Instantly integrations.
+
   Trigger with phrases like "instantly rate limit", "instantly 429",
+
   "instantly throttle", "instantly backoff", "instantly retry".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, instantly, rate-limits, reliability]
+tags:
+- saas
+- instantly
+- rate-limits
+- reliability
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Instantly Rate Limits
 

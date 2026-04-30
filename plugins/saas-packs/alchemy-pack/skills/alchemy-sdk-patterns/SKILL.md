@@ -1,18 +1,26 @@
 ---
 name: alchemy-sdk-patterns
-description: |
-  Apply production-ready Alchemy SDK patterns for Web3 applications.
+description: 'Apply production-ready Alchemy SDK patterns for Web3 applications.
+
   Use when building reusable blockchain clients, implementing caching,
+
   multi-chain abstractions, or type-safe contract interactions.
+
   Trigger: "alchemy SDK patterns", "alchemy best practices", "alchemy code patterns".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, blockchain, web3, alchemy, patterns]
-compatible-with: claude-code
+tags:
+- saas
+- blockchain
+- web3
+- alchemy
+- patterns
+compatibility: Designed for Claude Code
 ---
-
 # Alchemy SDK Patterns
 
 ## Overview

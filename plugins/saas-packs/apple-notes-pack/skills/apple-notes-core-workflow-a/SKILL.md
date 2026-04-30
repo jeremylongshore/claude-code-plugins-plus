@@ -1,19 +1,28 @@
 ---
 name: apple-notes-core-workflow-a
-description: |
-  Build automated note management workflows with Apple Notes JXA scripts.
+description: 'Build automated note management workflows with Apple Notes JXA scripts.
+
   Use when batch-creating notes, syncing content from external sources,
+
   organizing notes into folder hierarchies, or building note templates.
+
   Trigger: "apple notes workflow", "batch notes", "note templates",
+
   "organize apple notes", "sync notes".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(osascript:*), Bash(node:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, macos, apple-notes, automation, workflow]
-compatible-with: claude-code
+tags:
+- saas
+- macos
+- apple-notes
+- automation
+- workflow
+compatibility: Designed for Claude Code
 ---
-
 # Apple Notes Core Workflow A — Note Management Automation
 
 ## Overview

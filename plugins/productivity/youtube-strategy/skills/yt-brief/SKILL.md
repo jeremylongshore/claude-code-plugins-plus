@@ -1,16 +1,26 @@
 ---
 name: yt-brief
-description: |
-  Refine a YouTube video idea into a structured production brief with angle, key points, value proposition,
-  CTA asset, and audience segment. Use this skill whenever the user says "create a brief", "brief this idea",
-  "develop this idea", "write a video brief", "production brief", or has selected a video idea from ideation
-  and wants to define the angle and structure before packaging and outlining. Use when working with yt brief. Trigger with 'yt', 'brief'.
+description: 'Refine a YouTube video idea into a structured production brief with
+  angle, key points, value proposition,
+
+  CTA asset, and audience segment. Use this skill whenever the user says "create a
+  brief", "brief this idea",
+
+  "develop this idea", "write a video brief", "production brief", or has selected
+  a video idea from ideation
+
+  and wants to define the angle and structure before packaging and outlining. Use
+  when working with yt brief. Trigger with ''yt'', ''brief''.
+
+  '
 allowed-tools: WebSearch, Read, Write
 version: 1.0.0
 author: Claude Code Plugins <plugins@claudecodeplugins.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [productivity, yt-brief]
+tags:
+- productivity
+- yt-brief
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # YouTube Brief
 

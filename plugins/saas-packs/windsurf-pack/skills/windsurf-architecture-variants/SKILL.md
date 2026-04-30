@@ -1,17 +1,27 @@
 ---
 name: windsurf-architecture-variants
-description: |
-  Choose workspace architectures for different project scales in Windsurf.
+description: 'Choose workspace architectures for different project scales in Windsurf.
+
   Use when deciding how to structure Windsurf workspaces for monorepos,
+
   multi-service setups, or polyglot codebases.
+
   Trigger with phrases like "windsurf workspace strategy", "windsurf monorepo",
+
   "windsurf project layout", "windsurf multi-service", "windsurf workspace size".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, architecture, workspace, monorepo]
+tags:
+- saas
+- windsurf
+- architecture
+- workspace
+- monorepo
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Windsurf Architecture Variants
 

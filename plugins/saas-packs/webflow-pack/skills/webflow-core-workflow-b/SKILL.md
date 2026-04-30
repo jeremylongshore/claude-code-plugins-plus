@@ -1,20 +1,22 @@
 ---
 name: webflow-core-workflow-b
-description: |
-  Execute Webflow secondary workflows — Sites management, Pages API, Forms submissions,
-  Ecommerce (products/orders/inventory), and Custom Code via the Data API v2.
-  Use when managing sites, reading pages, handling form data, or working with
-  Webflow Ecommerce products and orders.
-  Trigger with phrases like "webflow sites", "webflow pages", "webflow forms",
-  "webflow ecommerce", "webflow products", "webflow orders".
+description: "Execute Webflow secondary workflows \u2014 Sites management, Pages API,\
+  \ Forms submissions,\nEcommerce (products/orders/inventory), and Custom Code via\
+  \ the Data API v2.\nUse when managing sites, reading pages, handling form data,\
+  \ or working with\nWebflow Ecommerce products and orders.\nTrigger with phrases\
+  \ like \"webflow sites\", \"webflow pages\", \"webflow forms\",\n\"webflow ecommerce\"\
+  , \"webflow products\", \"webflow orders\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, no-code, webflow]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- no-code
+- webflow
+compatibility: Designed for Claude Code
 ---
-
 # Webflow Core Workflow B — Sites, Pages, Forms & Ecommerce
 
 ## Overview

@@ -1,17 +1,26 @@
 ---
 name: fireflies-data-handling
-description: |
-  Handle Fireflies.ai transcript data: export formats, PII redaction, retention policies, and compliance.
+description: 'Handle Fireflies.ai transcript data: export formats, PII redaction,
+  retention policies, and compliance.
+
   Use when exporting transcripts, implementing data redaction,
+
   configuring retention, or ensuring GDPR/CCPA compliance.
+
   Trigger with phrases like "fireflies data", "fireflies PII",
+
   "fireflies GDPR", "fireflies data retention", "fireflies privacy", "fireflies export".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, fireflies, compliance]
+tags:
+- saas
+- fireflies
+- compliance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Fireflies.ai Data Handling
 

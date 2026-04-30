@@ -1,19 +1,25 @@
 ---
 name: figma-incident-runbook
-description: |
-  Respond to Figma API outages, auth failures, and rate limit incidents.
+description: 'Respond to Figma API outages, auth failures, and rate limit incidents.
+
   Use when Figma integration is down, experiencing errors,
+
   or running post-incident reviews for Figma-related failures.
+
   Trigger with phrases like "figma incident", "figma outage",
+
   "figma down", "figma broken", "figma emergency".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, figma]
-compatible-with: claude-code
+tags:
+- saas
+- figma
+compatibility: Designed for Claude Code
 ---
-
 # Figma Incident Runbook
 
 ## Overview

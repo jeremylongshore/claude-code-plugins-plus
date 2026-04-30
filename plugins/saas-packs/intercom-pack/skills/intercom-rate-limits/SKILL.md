@@ -1,19 +1,27 @@
 ---
 name: intercom-rate-limits
-description: |
-  Handle Intercom API rate limits with backoff, queuing, and header monitoring.
+description: 'Handle Intercom API rate limits with backoff, queuing, and header monitoring.
+
   Use when handling 429 errors, implementing retry logic,
+
   or optimizing API request throughput for Intercom.
+
   Trigger with phrases like "intercom rate limit", "intercom throttling",
+
   "intercom 429", "intercom retry", "intercom backoff", "intercom request limit".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, support, messaging, intercom]
-compatible-with: claude-code
+tags:
+- saas
+- support
+- messaging
+- intercom
+compatibility: Designed for Claude Code
 ---
-
 # Intercom Rate Limits
 
 ## Overview

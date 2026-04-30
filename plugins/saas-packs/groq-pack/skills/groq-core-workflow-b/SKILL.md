@@ -1,16 +1,25 @@
 ---
 name: groq-core-workflow-b
-description: |
-  Execute Groq secondary workflows: audio transcription (Whisper), vision,
+description: 'Execute Groq secondary workflows: audio transcription (Whisper), vision,
+
   text-to-speech, and batch model evaluation.
+
   Trigger with phrases like "groq whisper", "groq transcription",
+
   "groq audio", "groq vision", "groq TTS", "groq speech".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, groq, workflow, audio, vision]
+tags:
+- saas
+- groq
+- workflow
+- audio
+- vision
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Groq Core Workflow B: Audio, Vision & Speech
 

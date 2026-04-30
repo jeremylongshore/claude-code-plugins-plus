@@ -1,17 +1,26 @@
 ---
 name: fireflies-observability
-description: |
-  Monitor Fireflies.ai integration health with metrics, alerts, and dashboards.
+description: 'Monitor Fireflies.ai integration health with metrics, alerts, and dashboards.
+
   Use when implementing monitoring, setting up alerting,
+
   or tracking transcript processing reliability.
+
   Trigger with phrases like "fireflies monitoring", "fireflies metrics",
+
   "fireflies observability", "monitor fireflies", "fireflies alerts".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, fireflies, monitoring, observability]
+tags:
+- saas
+- fireflies
+- monitoring
+- observability
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Fireflies.ai Observability
 

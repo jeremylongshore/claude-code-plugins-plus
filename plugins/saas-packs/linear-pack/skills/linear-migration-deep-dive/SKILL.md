@@ -1,17 +1,26 @@
 ---
 name: linear-migration-deep-dive
-description: |
-  Migrate from Jira, Asana, GitHub Issues, or other tools to Linear.
+description: 'Migrate from Jira, Asana, GitHub Issues, or other tools to Linear.
+
   Use when planning a migration, executing data transfer,
+
   or mapping workflows between issue tracking tools.
+
   Trigger: "migrate to linear", "jira to linear", "asana to linear",
+
   "import to linear", "linear migration", "github issues to linear".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(node:*), Bash(npx:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, linear, migration, workflow]
+tags:
+- saas
+- linear
+- migration
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Linear Migration Deep Dive
 

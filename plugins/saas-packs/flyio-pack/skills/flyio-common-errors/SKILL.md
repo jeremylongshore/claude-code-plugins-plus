@@ -1,17 +1,24 @@
 ---
 name: flyio-common-errors
-description: |
-  Diagnose and fix common Fly.io errors including deployment failures, health check
+description: 'Diagnose and fix common Fly.io errors including deployment failures,
+  health check
+
   failures, machine issues, and networking problems.
-  Trigger: "fly.io error", "fly deploy failed", "fly.io not working", "fly health check".
+
+  Trigger: "fly.io error", "fly deploy failed", "fly.io not working", "fly health
+  check".
+
+  '
 allowed-tools: Read, Bash(fly:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, edge-compute, flyio]
-compatible-with: claude-code
+tags:
+- saas
+- edge-compute
+- flyio
+compatibility: Designed for Claude Code
 ---
-
 # Fly.io Common Errors
 
 ## Overview

@@ -1,16 +1,26 @@
 ---
 name: yt-ideation
-description: |
-  Generate and validate YouTube video ideas aligned with content pillars, audience strategy,
-  and priority tiers. Use this skill whenever the user says "generate ideas", "brainstorm videos",
-  "what should I make next", "video ideas", "content ideas", "ideation", "what topics should I cover",
-  or wants to come up with new video concepts. Use when working with yt ideation. Trigger with 'yt', 'ideation'.
+description: 'Generate and validate YouTube video ideas aligned with content pillars,
+  audience strategy,
+
+  and priority tiers. Use this skill whenever the user says "generate ideas", "brainstorm
+  videos",
+
+  "what should I make next", "video ideas", "content ideas", "ideation", "what topics
+  should I cover",
+
+  or wants to come up with new video concepts. Use when working with yt ideation.
+  Trigger with ''yt'', ''ideation''.
+
+  '
 allowed-tools: WebSearch, Read, Write, Task
 version: 1.0.0
 author: Claude Code Plugins <plugins@claudecodeplugins.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [productivity, yt-ideation]
+tags:
+- productivity
+- yt-ideation
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # YouTube Ideation
 

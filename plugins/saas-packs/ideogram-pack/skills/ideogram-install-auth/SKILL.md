@@ -1,17 +1,27 @@
 ---
 name: ideogram-install-auth
-description: |
-  Install and configure Ideogram API authentication.
+description: 'Install and configure Ideogram API authentication.
+
   Use when setting up a new Ideogram integration, configuring API keys,
+
   or initializing Ideogram in your project.
+
   Trigger with phrases like "install ideogram", "setup ideogram",
+
   "ideogram auth", "configure ideogram API key".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, ideogram, api, authentication, image-generation]
+tags:
+- saas
+- ideogram
+- api
+- authentication
+- image-generation
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Ideogram Install & Auth
 

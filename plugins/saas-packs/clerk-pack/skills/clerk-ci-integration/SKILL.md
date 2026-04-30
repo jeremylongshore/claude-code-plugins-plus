@@ -1,17 +1,26 @@
 ---
 name: clerk-ci-integration
-description: |
-  Configure Clerk CI/CD integration with GitHub Actions and testing.
+description: 'Configure Clerk CI/CD integration with GitHub Actions and testing.
+
   Use when setting up automated testing, configuring CI pipelines,
+
   or integrating Clerk tests into your build process.
+
   Trigger with phrases like "clerk CI", "clerk GitHub Actions",
+
   "clerk automated tests", "CI clerk", "clerk pipeline".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clerk, testing, ci-cd]
+tags:
+- saas
+- clerk
+- testing
+- ci-cd
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clerk CI Integration
 

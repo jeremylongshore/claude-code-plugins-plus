@@ -1,19 +1,29 @@
 ---
 name: persona-core-workflow-a
-description: |
-  Build a complete KYC verification flow with Persona inquiries and embedded UI.
+description: 'Build a complete KYC verification flow with Persona inquiries and embedded
+  UI.
+
   Use when implementing identity verification, building KYC onboarding,
-  or integrating Persona's hosted flow into your application.
+
+  or integrating Persona''s hosted flow into your application.
+
   Trigger with phrases like "persona KYC flow", "identity verification",
+
   "persona inquiry workflow", "onboarding verification".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, persona, kyc, verification, onboarding]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- persona
+- kyc
+- verification
+- onboarding
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Persona Core Workflow A — KYC Inquiry Flow
 
 ## Overview

@@ -1,18 +1,25 @@
 ---
 name: posthog-core-workflow-a
-description: |
-  Implement PostHog product analytics: event capture, user identification,
+description: 'Implement PostHog product analytics: event capture, user identification,
+
   group analytics, and property management using posthog-js and posthog-node.
+
   Trigger: "posthog analytics", "capture events", "track users posthog",
+
   "posthog identify", "posthog group analytics", "product analytics".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, posthog, workflow, analytics]
+tags:
+- saas
+- posthog
+- workflow
+- analytics
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # PostHog Core Workflow A — Product Analytics
 
 ## Overview

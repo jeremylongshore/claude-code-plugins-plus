@@ -1,20 +1,23 @@
 ---
 name: clickhouse-migration-deep-dive
-description: |
-  Execute ClickHouse schema migrations — ALTER TABLE operations, data migration
-  between engines, versioned migration runners, and zero-downtime schema changes.
-  Use when modifying ClickHouse schemas, migrating data between tables,
-  or implementing versioned migration workflows.
-  Trigger: "clickhouse migration", "clickhouse ALTER TABLE", "clickhouse schema change",
-  "migrate clickhouse", "clickhouse add column", "clickhouse schema migration".
+description: "Execute ClickHouse schema migrations \u2014 ALTER TABLE operations,\
+  \ data migration\nbetween engines, versioned migration runners, and zero-downtime\
+  \ schema changes.\nUse when modifying ClickHouse schemas, migrating data between\
+  \ tables,\nor implementing versioned migration workflows.\nTrigger: \"clickhouse\
+  \ migration\", \"clickhouse ALTER TABLE\", \"clickhouse schema change\",\n\"migrate\
+  \ clickhouse\", \"clickhouse add column\", \"clickhouse schema migration\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, database, analytics, clickhouse, olap]
-compatible-with: claude-code
+tags:
+- saas
+- database
+- analytics
+- clickhouse
+- olap
+compatibility: Designed for Claude Code
 ---
-
 # ClickHouse Migration Deep Dive
 
 ## Overview
