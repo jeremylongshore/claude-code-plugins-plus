@@ -89,6 +89,10 @@ Validate your skills with:
 python3 scripts/validate-skills-schema.py --skills-only
 ```
 
+### Modifying the validator itself
+
+If your PR changes `scripts/validate-skills-schema.py`, the master spec at `000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md`, or the SKILL.md frontmatter rules in this doc, **read [`000-docs/SCHEMA_CHANGELOG.md`](000-docs/SCHEMA_CHANGELOG.md) first** — the NON-NEGOTIABLES section at the top documents which directions of change are out of bounds without explicit pre-approval (see issue #612 for the postmortem). Bug fixes that bring the validator into spec compliance are fine to apply directly; architectural changes (required-field set, tier model, error vs. warning semantics) need approval before the change lands.
+
 ## Validation Requirements
 
 CI runs the following checks on every PR:

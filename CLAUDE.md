@@ -204,7 +204,7 @@ plugins/mcp/[plugin-name]/
 
 `plugin.json` only allows these fields: `name`, `version`, `description`, `author`, `repository`, `homepage`, `license`, `keywords`. CI rejects any others.
 
-### SKILL.md Frontmatter (IS Enterprise Standard, Schema v3.3.0)
+### SKILL.md Frontmatter (IS Enterprise Standard, Schema v3.3.1)
 
 **Required at marketplace tier — all 8 fields must be present:**
 

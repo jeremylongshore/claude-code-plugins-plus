@@ -246,6 +246,16 @@ jobs:
         if: matrix.test-type == 'mcp-plugins'
         uses: pnpm/action-setup@v4
 
+      # plugins/mcp/slack-channel uses `bun test` as its test runner.
+      # Other MCP plugins use vitest. Installing bun lets the per-plugin
+      # test loop run slack-channel's bun-native tests without forcing a
+      # framework migration. (See issue #615.)
+      - name: Setup Bun
+        if: matrix.test-type == 'mcp-plugins'
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
       - name: Install dependencies
         if: matrix.test-type == 'mcp-plugins'
         run: pnpm install --frozen-lockfile
