@@ -1,19 +1,31 @@
 ---
 name: gh-dash
-description: |
-  Provides a GitHub pull request dashboard directly in the terminal. Use when
+description: 'Provides a GitHub pull request dashboard directly in the terminal. Use
+  when
+
   the user wants to view PR status, check CI/CD progress, review bot comments,
+
   or merge pull requests without leaving Claude Code. Trigger with phrases like
+
   "show PR dashboard", "PR status", "check CI progress", "merge this PR",
+
   or "review pull request".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(git:*), Glob, Grep
 version: 1.0.0
 author: Jake Kozloski <jakozloski@gmail.com>
 license: MIT
-compatible-with: claude-code
-tags: [github, pull-request, ci-cd, dashboard, devops, merge, code-review]
+tags:
+- github
+- pull-request
+- ci-cd
+- dashboard
+- devops
+- merge
+- code-review
+compatibility: Designed for Claude Code
 ---
-
 # gh-dash
 
 ## Current State

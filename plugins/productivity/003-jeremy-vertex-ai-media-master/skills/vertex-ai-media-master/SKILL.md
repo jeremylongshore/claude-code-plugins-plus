@@ -1,13 +1,18 @@
 ---
 name: vertex-ai-media-master
-description: |
-  Execute automatic activation for all google vertex ai multimodal operations operations. Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
+description: 'Execute automatic activation for all google vertex ai multimodal operations
+  operations. Use when appropriate context detected. Trigger with relevant phrases
+  based on skill purpose.
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(general:*), Bash(util:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [productivity, vertex-ai]
+tags:
+- productivity
+- vertex-ai
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vertex AI Media Master
 

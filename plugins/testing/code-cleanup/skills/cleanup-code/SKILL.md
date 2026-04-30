@@ -1,21 +1,37 @@
 ---
 name: cleanup-code
-description: |
-  Comprehensive codebase cleanup across 11 quality dimensions: dead code, duplication,
+description: 'Comprehensive codebase cleanup across 11 quality dimensions: dead code,
+  duplication,
+
   weak types, circular deps, defensive cruft, legacy code, AI slop, type consolidation,
-  security, performance, and async patterns. Analyzes code with confidence scoring and
+
+  security, performance, and async patterns. Analyzes code with confidence scoring
+  and
+
   verifies changes with build/test gates. Use when codebase has accumulated tech debt,
+
   after major feature work, before releases, or when code quality metrics are declining.
-  Trigger with "/cleanup-code-code", "clean up the codebase", "remove dead code", "fix code quality".
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash(git:*), Bash(npm:*), Bash(npx:*), Bash(pnpm:*), Bash(python3:*), Bash(tsc:*), Bash(wc:*), Bash(ls:*), AskUserQuestion
+
+  Trigger with "/cleanup-code-code", "clean up the codebase", "remove dead code",
+  "fix code quality".
+
+  '
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash(git:*), Bash(npm:*), Bash(npx:*),
+  Bash(pnpm:*), Bash(python3:*), Bash(tsc:*), Bash(wc:*), Bash(ls:*), AskUserQuestion
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [code-quality, cleanup, refactoring, dead-code, deduplication, type-safety, security]
-argument-hint: "[scope] [--dimensions d1,d2,...] [--changed]"
+tags:
+- code-quality
+- cleanup
+- refactoring
+- dead-code
+- deduplication
+- type-safety
+- security
+argument-hint: '[scope] [--dimensions d1,d2,...] [--changed]'
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Codebase Cleanup
 
 Systematic code cleanup across 11 quality dimensions, ordered by risk. Each finding includes

@@ -1,20 +1,33 @@
 ---
 name: agent-creator
-description: |
-  Create production-grade agent .md files aligned with the Anthropic 2026 spec (16-field schema).
-  Also validates existing agents against the marketplace compliance rules. Use when building custom
-  subagents, reviewing agent quality, or creating parallel agent architectures for orchestrator skills.
-  Trigger with "/agent-creator", "create an agent", "build a subagent", or "validate my agent".
-  Make sure to use this skill whenever creating agents/*.md files for plugins or standalone use.
-allowed-tools: "Read,Write,Edit,Glob,Grep,Bash(python:*),AskUserQuestion"
+description: 'Create production-grade agent .md files aligned with the Anthropic 2026
+  spec (16-field schema).
+
+  Also validates existing agents against the marketplace compliance rules. Use when
+  building custom
+
+  subagents, reviewing agent quality, or creating parallel agent architectures for
+  orchestrator skills.
+
+  Trigger with "/agent-creator", "create an agent", "build a subagent", or "validate
+  my agent".
+
+  Make sure to use this skill whenever creating agents/*.md files for plugins or standalone
+  use.
+
+  '
+allowed-tools: Read,Write,Edit,Glob,Grep,Bash(python:*),AskUserQuestion
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [agent-creation, validation, meta-tooling, subagents]
+tags:
+- agent-creation
+- validation
+- meta-tooling
+- subagents
 model: inherit
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Agent Creator
 
 Creates spec-compliant agent .md files following the Anthropic 2026 16-field schema. Supports

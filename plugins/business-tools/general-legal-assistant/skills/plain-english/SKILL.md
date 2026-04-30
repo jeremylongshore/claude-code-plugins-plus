@@ -1,19 +1,29 @@
 ---
 name: plain-english
-description: |
-  Translates every clause of a contract into plain language at an 8th-grade
+description: 'Translates every clause of a contract into plain language at an 8th-grade
+
   reading level and flags deliberately confusing language patterns. Use when
+
   a user says "explain this contract", "what does this mean", or needs a
+
   non-lawyer to understand an agreement. Trigger with "/plain-english" or
+
   "translate this contract to plain English".
+
+  '
 allowed-tools: Read, Glob, Grep
 version: 1.0.0
 author: Intent Solutions <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [legal, contracts, plain-language, readability, translation, accessibility]
+tags:
+- legal
+- contracts
+- plain-language
+- readability
+- translation
+- accessibility
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Plain English — Legalese to Plain Language Translator
 
 Translates every material clause in a contract into clear, jargon-free language

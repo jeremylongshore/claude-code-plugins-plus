@@ -1,19 +1,29 @@
 ---
 name: search-to-slack
-description: |
-  Takes web search results and formats them as polished Slack messages, digests,
+description: 'Takes web search results and formats them as polished Slack messages,
+  digests,
+
   or thread summaries ready to post to channels. Use when the user wants to
+
   research a topic and share findings on Slack. Trigger with phrases like
+
   "research and post to Slack", "create a Slack digest", "summarize and share
+
   in #channel", or "format search results for Slack".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Glob, Grep, WebSearch, WebFetch
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex
-tags: [slack, web-search, automation, team-communication, digest]
+tags:
+- slack
+- web-search
+- automation
+- team-communication
+- digest
+compatibility: Designed for Claude Code, also compatible with Codex
 ---
-
 # Search to Slack
 
 Research topics and format findings as Slack-ready messages, digests, and threaded summaries.

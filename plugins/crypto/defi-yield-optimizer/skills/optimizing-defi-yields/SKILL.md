@@ -1,16 +1,23 @@
 ---
 name: optimizing-defi-yields
-description: |
-  Find and compare DeFi yield opportunities across protocols with APY calculations, risk assessment, and optimization recommendations.
-  Use when searching for yield farming opportunities, comparing DeFi protocols, or analyzing APY/APR rates.
-  Trigger with phrases like "find DeFi yields", "compare APY", "best yield farming", "optimize DeFi returns", "stablecoin yields", or "liquidity pool rates".
+description: 'Find and compare DeFi yield opportunities across protocols with APY
+  calculations, risk assessment, and optimization recommendations.
 
+  Use when searching for yield farming opportunities, comparing DeFi protocols, or
+  analyzing APY/APR rates.
+
+  Trigger with phrases like "find DeFi yields", "compare APY", "best yield farming",
+  "optimize DeFi returns", "stablecoin yields", or "liquidity pool rates".
+
+  '
 allowed-tools: Read, Write, Bash(crypto:yield-*)
 version: 2.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [crypto, optimizing-defi]
+tags:
+- crypto
+- optimizing-defi
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Optimizing DeFi Yields
 

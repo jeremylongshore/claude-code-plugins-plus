@@ -1,22 +1,31 @@
 ---
 name: validate-plugin
-description: |
-  Validate a Claude Code plugin directory against the official Anthropic spec
+description: 'Validate a Claude Code plugin directory against the official Anthropic
+  spec
+
   and Intent Solutions enterprise standard. Runs structural validation (plugin.json
+
   fields, file references, permissions) and content validation (SKILL.md grading,
+
   command/agent frontmatter). Use when building a new plugin, preparing for
+
   marketplace submission, or auditing existing plugins. Trigger with "validate
+
   this plugin", "check plugin structure", "grade my plugin", "/validate-plugin".
+
+  '
 allowed-tools: Read, Bash(python3:*), Bash(jq:*), Bash(chmod:*), Glob, Grep
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 user-invocable: true
-argument-hint: "<plugin-directory-path>"
-compatible-with: claude-code
-tags: [skill-development, audit, validate-plugin]
+argument-hint: <plugin-directory-path>
+tags:
+- skill-development
+- audit
+- validate-plugin
+compatibility: Designed for Claude Code
 ---
-
 # Validate Plugin
 
 Full plugin directory validator combining structural checks and content grading.

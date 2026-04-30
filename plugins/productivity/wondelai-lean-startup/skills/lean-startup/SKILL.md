@@ -1,13 +1,21 @@
 ---
 name: lean-startup
-description: |
-  Design MVPs, validated learning experiments, and pivot-or-persevere decisions using Build-Measure-Learn. Use when the user mentions "MVP scope", "validated learning", "pivot or persevere", "vanity metrics", or "test assumptions". Covers innovation accounting and actionable metrics. For 5-day prototype testing, see design-sprint. For customer motivation analysis, see jobs-to-be-done. Trigger with 'lean', 'startup'.
+description: 'Design MVPs, validated learning experiments, and pivot-or-persevere
+  decisions using Build-Measure-Learn. Use when the user mentions "MVP scope", "validated
+  learning", "pivot or persevere", "vanity metrics", or "test assumptions". Covers
+  innovation accounting and actionable metrics. For 5-day prototype testing, see design-sprint.
+  For customer motivation analysis, see jobs-to-be-done. Trigger with ''lean'', ''startup''.
+
+  '
 allowed-tools: Read, Glob, Grep
 license: MIT
 author: Wondelai <hello@wondelai.com>
 version: 1.0.1
-compatible-with: claude-code, codex, openclaw
-tags: [productivity, testing, lean-startup]
+tags:
+- productivity
+- testing
+- lean-startup
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lean Startup Methodology
 

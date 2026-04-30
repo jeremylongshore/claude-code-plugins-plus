@@ -1,12 +1,18 @@
 ---
 name: monitoring-error-rates
-description: Monitor and analyze application error rates to improve reliability. Use when tracking errors in applications including HTTP errors, exceptions, and database issues. Trigger with phrases like "monitor error rates", "track application errors", or "analyze error patterns".
+description: Monitor and analyze application error rates to improve reliability. Use
+  when tracking errors in applications including HTTP errors, exceptions, and database
+  issues. Trigger with phrases like "monitor error rates", "track application errors",
+  or "analyze error patterns".
 version: 1.0.0
-allowed-tools: "Read, Bash(monitoring:*), Bash(metrics:*), Bash(logs:*), Grep, Glob"
+allowed-tools: Read, Bash(monitoring:*), Bash(metrics:*), Bash(logs:*), Grep, Glob
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [performance, database, monitoring]
+tags:
+- performance
+- database
+- monitoring
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Error Rate Monitor
 

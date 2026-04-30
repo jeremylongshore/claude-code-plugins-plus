@@ -1,16 +1,20 @@
 ---
 name: generating-test-doubles
-description: |
-  Generate mocks, stubs, spies, and fakes for dependency isolation.
+description: 'Generate mocks, stubs, spies, and fakes for dependency isolation.
+
   Use when creating mocks, stubs, or test isolation fixtures.
+
   Trigger with phrases like "generate mocks", "create test doubles", or "setup stubs".
 
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:doubles-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [testing, test-doubles]
+tags:
+- testing
+- test-doubles
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Test Doubles Generator
 

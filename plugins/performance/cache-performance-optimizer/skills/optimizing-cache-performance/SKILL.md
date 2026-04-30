@@ -1,13 +1,20 @@
 ---
 name: optimizing-cache-performance
-description: |
-  Execute this skill enables AI assistant to analyze and improve application caching strategies. it optimizes cache hit rates, ttl configurations, cache key design, and invalidation strategies. use this skill when the user requests to "optimize cache performance"... Use when optimizing performance. Trigger with phrases like 'optimize', 'performance', or 'speed up'.
+description: 'Execute this skill enables AI assistant to analyze and improve application
+  caching strategies. it optimizes cache hit rates, ttl configurations, cache key
+  design, and invalidation strategies. use this skill when the user requests to "optimize
+  cache performance"... Use when optimizing performance. Trigger with phrases like
+  ''optimize'', ''performance'', or ''speed up''.
+
+  '
 allowed-tools: Read, Write, Bash(cmd:*), Grep
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [performance, optimizing-cache]
+tags:
+- performance
+- optimizing-cache
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Cache Performance Optimizer
 

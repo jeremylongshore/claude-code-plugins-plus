@@ -1,13 +1,20 @@
 ---
 name: generating-conventional-commits
-description: |
-  Execute generates conventional commit messages using AI. It analyzes code changes and suggests a commit message adhering to the conventional commits specification. Use this skill when you need help writing clear, standardized commit messages, especially a... Use when managing version control. Trigger with phrases like 'commit', 'branch', or 'git'.
+description: 'Execute generates conventional commit messages using AI. It analyzes
+  code changes and suggests a commit message adhering to the conventional commits
+  specification. Use this skill when you need help writing clear, standardized commit
+  messages, especially a... Use when managing version control. Trigger with phrases
+  like ''commit'', ''branch'', or ''git''.
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [packages, conventional-commits]
+tags:
+- packages
+- conventional-commits
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Devops Automation Pack
 

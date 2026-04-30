@@ -1,15 +1,20 @@
 ---
 name: agent-context-loader
-description: |
-  Execute proactive auto-loading: automatically detects and loads agents.md files.
-  Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
-  
+description: 'Execute proactive auto-loading: automatically detects and loads agents.md
+  files.
+
+  Use when appropriate context detected. Trigger with relevant phrases based on skill
+  purpose.
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(general:*), Bash(util:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [productivity, agent-context]
+tags:
+- productivity
+- agent-context
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Agent Context Loader
 

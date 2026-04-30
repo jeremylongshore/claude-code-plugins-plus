@@ -1,15 +1,21 @@
 ---
 name: excel-lbo-modeler
-description: |
-  Build leveraged buyout (LBO) models in Excel with debt schedules and IRR analysis.
+description: 'Build leveraged buyout (LBO) models in Excel with debt schedules and
+  IRR analysis.
+
   Use when structuring LBO transactions or analyzing PE returns.
-  Trigger with phrases like 'excel lbo', 'build lbo model', 'calculate pe returns'.
+
+  Trigger with phrases like ''excel lbo'', ''build lbo model'', ''calculate pe returns''.
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [business, excel-lbo]
+tags:
+- business
+- excel-lbo
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Excel LBO Modeler
 

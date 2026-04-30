@@ -1,13 +1,21 @@
 ---
 name: one-page-marketing
-description: |
-  Build a complete marketing plan covering the full customer journey from stranger to raving fan. Use when the user mentions "marketing plan", "target market", "USP", "lead nurture", "customer lifetime value", or "referral program". Covers the PVP Index, channel selection, and advocacy systems. For brand messaging, see storybrand-messaging. For conversion optimization, see cro-methodology. Trigger with 'one', 'page', 'marketing'.
+description: 'Build a complete marketing plan covering the full customer journey from
+  stranger to raving fan. Use when the user mentions "marketing plan", "target market",
+  "USP", "lead nurture", "customer lifetime value", or "referral program". Covers
+  the PVP Index, channel selection, and advocacy systems. For brand messaging, see
+  storybrand-messaging. For conversion optimization, see cro-methodology. Trigger
+  with ''one'', ''page'', ''marketing''.
+
+  '
 allowed-tools: Read, Glob, Grep
 license: MIT
 author: Wondelai <hello@wondelai.com>
 version: 1.0.1
-compatible-with: claude-code, codex, openclaw
-tags: [business, one-page]
+tags:
+- business
+- one-page
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # The 1-Page Marketing Plan Framework
 

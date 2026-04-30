@@ -1,16 +1,22 @@
 ---
 name: generating-test-data
-description: |
-  Generate realistic test data including edge cases and boundary conditions.
-  Use when creating realistic fixtures or edge case test data.
-  Trigger with phrases like "generate test data", "create fixtures", or "setup test database".
+description: 'Generate realistic test data including edge cases and boundary conditions.
 
+  Use when creating realistic fixtures or edge case test data.
+
+  Trigger with phrases like "generate test data", "create fixtures", or "setup test
+  database".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:data-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [testing, database, test-data]
+tags:
+- testing
+- database
+- test-data
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Test Data Generator
 

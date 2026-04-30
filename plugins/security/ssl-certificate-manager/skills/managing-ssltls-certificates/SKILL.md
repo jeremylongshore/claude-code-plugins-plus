@@ -1,13 +1,21 @@
 ---
 name: managing-ssltls-certificates
-description: |
-  Execute this skill enables AI assistant to manage and monitor ssl/tls certificates using the ssl-certificate-manager plugin. it is activated when the user requests actions related to ssl certificates, such as checking certificate expiry, renewing certificates, ... Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
+description: 'Execute this skill enables AI assistant to manage and monitor ssl/tls
+  certificates using the ssl-certificate-manager plugin. it is activated when the
+  user requests actions related to ssl certificates, such as checking certificate
+  expiry, renewing certificates, ... Use when appropriate context detected. Trigger
+  with relevant phrases based on skill purpose.
+
+  '
 allowed-tools: Read, Bash(cmd:*), Grep, Glob
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [security, monitoring, ssltls-certificates]
+tags:
+- security
+- monitoring
+- ssltls-certificates
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Ssl Certificate Manager
 

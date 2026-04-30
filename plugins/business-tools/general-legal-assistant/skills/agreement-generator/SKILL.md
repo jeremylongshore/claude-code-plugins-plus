@@ -1,16 +1,26 @@
 ---
 name: agreement-generator
-description: |
-  Generates customized business agreements for 10 common relationship types with
+description: 'Generates customized business agreements for 10 common relationship
+  types with
+
   plain English annotations. Use when formalizing a business relationship, creating
+
   a partnership agreement, or drafting a service contract from scratch.
+
   Trigger with "/agreement-generator" or "create a freelancer agreement".
+
+  '
 allowed-tools: Read, Write, Glob, Grep
 version: 1.0.0
 author: Intent Solutions <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [legal, agreements, contracts, business, document-generation]
+tags:
+- legal
+- agreements
+- contracts
+- business
+- document-generation
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Business Agreement Generator
 

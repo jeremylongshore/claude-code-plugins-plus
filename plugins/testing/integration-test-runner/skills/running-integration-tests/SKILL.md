@@ -1,16 +1,22 @@
 ---
 name: running-integration-tests
-description: |
-  Execute integration tests validating component interactions and system integration.
-  Use when performing specialized testing.
-  Trigger with phrases like "run integration tests", "test integration", or "validate component interactions".
+description: 'Execute integration tests validating component interactions and system
+  integration.
 
+  Use when performing specialized testing.
+
+  Trigger with phrases like "run integration tests", "test integration", or "validate
+  component interactions".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:integration-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [testing, integration-tests]
+tags:
+- testing
+- integration-tests
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Integration Test Runner
 

@@ -1,12 +1,17 @@
 ---
 name: scanning-for-secrets
-description: Detect exposed secrets, API keys, and credentials in code. Use when auditing for secret leaks. Trigger with 'scan for secrets', 'find exposed keys', or 'check credentials'.
+description: Detect exposed secrets, API keys, and credentials in code. Use when auditing
+  for secret leaks. Trigger with 'scan for secrets', 'find exposed keys', or 'check
+  credentials'.
 version: 1.0.0
-allowed-tools: "Read, Write, Edit, Grep, Glob, Bash(security:*), Bash(scan:*), Bash(audit:*)"
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(security:*), Bash(scan:*), Bash(audit:*)
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [security, api, audit]
+tags:
+- security
+- api
+- audit
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Secret Scanner
 

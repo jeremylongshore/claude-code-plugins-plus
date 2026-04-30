@@ -1,15 +1,22 @@
 ---
 name: website-generator
-description: |
-  Use when the user asks to create a website, build a site, generate a landing page,
+description: 'Use when the user asks to create a website, build a site, generate a
+  landing page,
+
   or mentions B12. Trigger phrases: "create a website", "build me a site",
-  "website for my business", "generate a landing page", "B12 website". Trigger with 'website', 'generator'.
+
+  "website for my business", "generate a landing page", "B12 website". Trigger with
+  ''website'', ''generator''.
+
+  '
 allowed-tools: AskUserQuestion
 version: 1.0.0
 author: B12.io <support@b12.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [community, website-generator]
+tags:
+- community
+- website-generator
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Website Generator Skill
 

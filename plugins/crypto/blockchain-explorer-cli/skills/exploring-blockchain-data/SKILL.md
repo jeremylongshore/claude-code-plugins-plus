@@ -1,16 +1,22 @@
 ---
 name: exploring-blockchain-data
-description: |
-  Process query and analyze blockchain data including blocks, transactions, and smart contracts.
+description: 'Process query and analyze blockchain data including blocks, transactions,
+  and smart contracts.
+
   Use when querying blockchain data and transactions.
-  Trigger with phrases like "explore blockchain", "query transactions", or "check on-chain data".
-  
+
+  Trigger with phrases like "explore blockchain", "query transactions", or "check
+  on-chain data".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:explorer-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [crypto, exploring-blockchain]
+tags:
+- crypto
+- exploring-blockchain
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Exploring Blockchain Data
 

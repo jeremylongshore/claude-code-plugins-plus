@@ -1,16 +1,21 @@
 ---
 name: managing-snapshot-tests
-description: |
-  Create and validate component snapshots for UI regression testing.
-  Use when performing specialized testing.
-  Trigger with phrases like "update snapshots", "test UI snapshots", or "validate component snapshots".
+description: 'Create and validate component snapshots for UI regression testing.
 
+  Use when performing specialized testing.
+
+  Trigger with phrases like "update snapshots", "test UI snapshots", or "validate
+  component snapshots".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:snapshot-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [testing, snapshot-tests]
+tags:
+- testing
+- snapshot-tests
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Snapshot Test Manager
 

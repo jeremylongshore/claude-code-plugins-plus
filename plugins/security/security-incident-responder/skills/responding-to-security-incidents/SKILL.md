@@ -1,16 +1,25 @@
 ---
 name: responding-to-security-incidents
-description: |
-  Analyze and guide security incident response, investigation, and remediation processes.
-  Use when you need to handle security breaches, classify incidents, develop response playbooks, gather forensic evidence, or coordinate remediation efforts.
-  Trigger with phrases like "security incident response", "ransomware attack response", "data breach investigation", "incident playbook", or "security forensics".
-  
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash(log-analysis:*), Bash(forensics:*), Bash(network-trace:*)
+description: 'Analyze and guide security incident response, investigation, and remediation
+  processes.
+
+  Use when you need to handle security breaches, classify incidents, develop response
+  playbooks, gather forensic evidence, or coordinate remediation efforts.
+
+  Trigger with phrases like "security incident response", "ransomware attack response",
+  "data breach investigation", "incident playbook", or "security forensics".
+
+  '
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(log-analysis:*), Bash(forensics:*),
+  Bash(network-trace:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [security, incident-response, responding-security]
+tags:
+- security
+- incident-response
+- responding-security
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Responding To Security Incidents
 

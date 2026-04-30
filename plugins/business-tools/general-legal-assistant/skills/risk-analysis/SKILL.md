@@ -1,18 +1,27 @@
 ---
 name: risk-analysis
-description: |
-  Performs deep clause-by-clause risk scoring across 10 categories with
+description: 'Performs deep clause-by-clause risk scoring across 10 categories with
+
   poison pill detection and financial exposure estimation. Use when a user
+
   needs to understand the specific risks in a contract before signing.
+
   Trigger with "/risk-analysis" or "what are the risks in this contract".
+
+  '
 allowed-tools: Read, Glob, Grep
 version: 1.0.0
 author: Intent Solutions <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [legal, contracts, risk, analysis, due-diligence, compliance]
+tags:
+- legal
+- contracts
+- risk
+- analysis
+- due-diligence
+- compliance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Risk Analysis — Clause-by-Clause Risk Scoring
 
 Standalone deep-dive skill that scores every material clause in a contract

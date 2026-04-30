@@ -1,17 +1,27 @@
 ---
 name: performing-penetration-testing
-description: |
-  Perform security testing on web applications, APIs, and codebases. Use when
+description: 'Perform security testing on web applications, APIs, and codebases. Use
+  when
+
   the user asks to "run a security scan", "check for vulnerabilities", "audit
+
   dependencies", "check security headers", "find security issues", "pentest",
+
   "security audit", or "scan for secrets". Trigger with "pentest", "security scan",
+
   "vulnerability check", "audit dependencies", "check headers", "find secrets".
+
+  '
 version: 2.0.0
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash(python3:*), Bash(pip:*), Bash(npm:*), Bash(bandit:*)
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(python3:*), Bash(pip:*), Bash(npm:*),
+  Bash(bandit:*)
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [security, testing, audit]
+tags:
+- security
+- testing
+- audit
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Penetration Testing Skill
 

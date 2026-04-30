@@ -1,16 +1,22 @@
 ---
 name: building-websocket-server
-description: |
-  Build scalable WebSocket servers for real-time bidirectional communication.
+description: 'Build scalable WebSocket servers for real-time bidirectional communication.
+
   Use when enabling real-time bidirectional communication.
-  Trigger with phrases like "build WebSocket server", "add real-time API", or "implement WebSocket".
-  
+
+  Trigger with phrases like "build WebSocket server", "add real-time API", or "implement
+  WebSocket".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:websocket-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [api, scaling, websocket-server]
+tags:
+- api
+- scaling
+- websocket-server
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Building WebSocket Server
 

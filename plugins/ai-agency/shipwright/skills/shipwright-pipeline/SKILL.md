@@ -1,12 +1,21 @@
 ---
 name: shipwright-pipeline
-description: Autonomous app builder that converts plain-English descriptions into fully built, tested applications. Use when the user wants to build a new app, scaffold a project, generate a full-stack application, or create an app from a description. Trigger with "build me an app", "create a new app", "shipwright build", "scaffold a project", "generate an application".
-allowed-tools: "Read, Write, Edit, Grep, Glob, Bash(pip:*), Bash(python:*), Bash(npm:*), Bash(npx:*), Bash(git:*)"
-version: "1.0.0"
-author: "Nate Nelson <nate@blacksheephq.ai>"
-license: "MIT"
-compatible-with: claude-code
-tags: [ai-agency, app-builder, code-generator, autonomous-agent]
+description: Autonomous app builder that converts plain-English descriptions into
+  fully built, tested applications. Use when the user wants to build a new app, scaffold
+  a project, generate a full-stack application, or create an app from a description.
+  Trigger with "build me an app", "create a new app", "shipwright build", "scaffold
+  a project", "generate an application".
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(pip:*), Bash(python:*), Bash(npm:*),
+  Bash(npx:*), Bash(git:*)
+version: 1.0.0
+author: Nate Nelson <nate@blacksheephq.ai>
+license: MIT
+tags:
+- ai-agency
+- app-builder
+- code-generator
+- autonomous-agent
+compatibility: Designed for Claude Code
 ---
 # Shipwright Pipeline
 

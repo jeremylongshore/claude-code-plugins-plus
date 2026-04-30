@@ -1,12 +1,18 @@
 ---
 name: meeting-prep
-description: Prepare briefings for today's meetings — attendee research, email history, past meeting notes, LinkedIn, and company context. Use when running the daily meeting prep cron, or when user asks to prepare for meetings, review who they're meeting with, or get context on upcoming calls.
+description: "Prepare briefings for today's meetings \u2014 attendee research, email\
+  \ history, past meeting notes, LinkedIn, and company context. Use when running the\
+  \ daily meeting prep cron, or when user asks to prepare for meetings, review who\
+  \ they're meeting with, or get context on upcoming calls."
 version: 1.0.0
 license: MIT
-author: "Martin Gontovnikas <martin@hypergrowthpartners.com>"
-compatible-with: claude-code
-tags: [business, meeting-prep]
-allowed-tools: Read, Bash(gog:*), Bash(mcporter:*), Bash(python3:*), Bash(openclaw:*), Bash(curl:*), Glob, Grep, Write, WebSearch
+author: Martin Gontovnikas <martin@hypergrowthpartners.com>
+tags:
+- business
+- meeting-prep
+allowed-tools: Read, Bash(gog:*), Bash(mcporter:*), Bash(python3:*), Bash(openclaw:*),
+  Bash(curl:*), Glob, Grep, Write, WebSearch
+compatibility: Designed for Claude Code
 ---
 # Daily Meeting Prep
 

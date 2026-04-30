@@ -1,12 +1,17 @@
 ---
 name: checking-owasp-compliance
-description: Check compliance with OWASP Top 10 security risks and best practices. Use when performing comprehensive security audits. Trigger with 'check OWASP compliance', 'audit web security', or 'validate OWASP'.
+description: Check compliance with OWASP Top 10 security risks and best practices.
+  Use when performing comprehensive security audits. Trigger with 'check OWASP compliance',
+  'audit web security', or 'validate OWASP'.
 version: 1.0.0
-allowed-tools: "Read, Write, Edit, Grep, Glob, Bash(security:*), Bash(scan:*), Bash(audit:*)"
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(security:*), Bash(scan:*), Bash(audit:*)
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [security, compliance, audit]
+tags:
+- security
+- compliance
+- audit
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Owasp Compliance Checker
 

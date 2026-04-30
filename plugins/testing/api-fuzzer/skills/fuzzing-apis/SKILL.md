@@ -1,16 +1,23 @@
 ---
 name: fuzzing-apis
-description: |
-  Configure perform API fuzzing to discover edge cases, crashes, and security vulnerabilities.
-  Use when performing specialized testing.
-  Trigger with phrases like "fuzz the API", "run fuzzing tests", or "discover edge cases".
+description: 'Configure perform API fuzzing to discover edge cases, crashes, and security
+  vulnerabilities.
 
+  Use when performing specialized testing.
+
+  Trigger with phrases like "fuzz the API", "run fuzzing tests", or "discover edge
+  cases".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:fuzz-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [testing, api, security]
+tags:
+- testing
+- api
+- security
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # API Fuzzer
 

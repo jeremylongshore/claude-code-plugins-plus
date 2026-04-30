@@ -1,17 +1,24 @@
 ---
 name: optimizing-cloud-costs
-description: |
-  Execute use when you need to work with cloud cost optimization.
-  This skill provides cost analysis and optimization with comprehensive guidance and automation.
+description: 'Execute use when you need to work with cloud cost optimization.
+
+  This skill provides cost analysis and optimization with comprehensive guidance and
+  automation.
+
   Trigger with phrases like "optimize costs", "analyze spending",
+
   or "reduce costs".
 
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(aws:*), Bash(gcloud:*), Bash(az:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [devops, cost-optimization, optimizing-cloud]
+tags:
+- devops
+- cost-optimization
+- optimizing-cloud
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Optimizing Cloud Costs
 

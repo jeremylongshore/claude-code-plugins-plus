@@ -1,17 +1,23 @@
 ---
 name: generating-orm-code
-description: |
-  Execute use when you need to work with ORM code generation.
-  This skill provides ORM model and code generation with comprehensive guidance and automation.
+description: 'Execute use when you need to work with ORM code generation.
+
+  This skill provides ORM model and code generation with comprehensive guidance and
+  automation.
+
   Trigger with phrases like "generate ORM models", "create entity classes",
+
   or "scaffold database models".
 
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*), Bash(mongosh:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [database, orm-code]
+tags:
+- database
+- orm-code
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # ORM Code Generator
 

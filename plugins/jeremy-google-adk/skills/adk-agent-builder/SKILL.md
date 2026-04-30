@@ -1,13 +1,20 @@
 ---
 name: adk-agent-builder
-description: |
-  Build production-ready AI agents using Google's Agent Development Kit with AI assistant integration, React patterns, multi-agent orchestration, and comprehensive tool libraries. Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
+description: 'Build production-ready AI agents using Google''s Agent Development Kit
+  with AI assistant integration, React patterns, multi-agent orchestration, and comprehensive
+  tool libraries. Use when appropriate context detected. Trigger with relevant phrases
+  based on skill purpose.
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Bash(cmd:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [google-adk, react, adk-agent]
+tags:
+- google-adk
+- react
+- adk-agent
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # ADK Agent Builder
 

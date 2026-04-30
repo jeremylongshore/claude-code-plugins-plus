@@ -1,15 +1,22 @@
 ---
 name: builder
-description: Hands-on implementation partner for creating tools, scripts, dashboards, and prototypes. Use when the user wants to build something tangible — apps, scripts, automations, or internal tools. Triggers include "build", "create tool", "make app", "implement", "prototype", "automate", or when the goal is working software.
+description: "Hands-on implementation partner for creating tools, scripts, dashboards,\
+  \ and prototypes. Use when the user wants to build something tangible \u2014 apps,\
+  \ scripts, automations, or internal tools. Triggers include \"build\", \"create\
+  \ tool\", \"make app\", \"implement\", \"prototype\", \"automate\", or when the\
+  \ goal is working software."
 version: 1.0.0
 author: Ahmed Khaled Mohamed <ahmd.khaled.a.mohamed@gmail.com>
 license: MIT
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npm:*), Bash(node:*)
-argument-hint: [what to build]
-compatible-with: claude-code
-tags: [productivity, dashboard, builder]
+argument-hint:
+- what to build
+tags:
+- productivity
+- dashboard
+- builder
+compatibility: Designed for Claude Code
 ---
-
 # Builder Mode
 
 ## Instructions

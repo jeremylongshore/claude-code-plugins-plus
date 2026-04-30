@@ -1,12 +1,19 @@
 ---
 name: aggregating-performance-metrics
-description: Aggregate and centralize performance metrics from applications, systems, databases, caches, and services. Use when consolidating monitoring data from multiple sources. Trigger with phrases like "aggregate metrics", "centralize monitoring", or "collect performance data".
+description: Aggregate and centralize performance metrics from applications, systems,
+  databases, caches, and services. Use when consolidating monitoring data from multiple
+  sources. Trigger with phrases like "aggregate metrics", "centralize monitoring",
+  or "collect performance data".
 version: 1.0.0
-allowed-tools: "Read, Write, Bash(prometheus:*), Bash(metrics:*), Bash(monitoring:*), Grep"
+allowed-tools: Read, Write, Bash(prometheus:*), Bash(metrics:*), Bash(monitoring:*),
+  Grep
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [performance, database, monitoring]
+tags:
+- performance
+- database
+- monitoring
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Metrics Aggregator
 

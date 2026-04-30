@@ -1,12 +1,17 @@
 ---
 name: checking-hipaa-compliance
-description: Check HIPAA compliance for healthcare data security requirements. Use when auditing healthcare applications. Trigger with 'check HIPAA compliance', 'validate health data security', or 'audit PHI protection'.
+description: Check HIPAA compliance for healthcare data security requirements. Use
+  when auditing healthcare applications. Trigger with 'check HIPAA compliance', 'validate
+  health data security', or 'audit PHI protection'.
 version: 1.0.0
-allowed-tools: "Read, Write, Edit, Grep, Glob, Bash(security:*), Bash(scan:*), Bash(audit:*)"
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(security:*), Bash(scan:*), Bash(audit:*)
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [security, compliance, audit]
+tags:
+- security
+- compliance
+- audit
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Hipaa Compliance Checker
 

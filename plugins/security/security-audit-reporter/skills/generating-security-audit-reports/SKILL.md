@@ -1,16 +1,23 @@
 ---
 name: generating-security-audit-reports
-description: |
-  Generate comprehensive security audit reports for applications and systems.
-  Use when you need to assess security posture, identify vulnerabilities, evaluate compliance status, or create formal security documentation.
-  Trigger with phrases like "create security audit report", "generate security assessment", "audit security posture", or "PCI-DSS compliance report".
-  
+description: 'Generate comprehensive security audit reports for applications and systems.
+
+  Use when you need to assess security posture, identify vulnerabilities, evaluate
+  compliance status, or create formal security documentation.
+
+  Trigger with phrases like "create security audit report", "generate security assessment",
+  "audit security posture", or "PCI-DSS compliance report".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(security-scan:*), Bash(report-gen:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [security, compliance, audit]
+tags:
+- security
+- compliance
+- audit
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Generating Security Audit Reports
 

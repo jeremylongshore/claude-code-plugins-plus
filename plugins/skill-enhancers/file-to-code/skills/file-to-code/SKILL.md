@@ -1,19 +1,29 @@
 ---
 name: file-to-code
-description: |
-  Generates production-ready code from file specifications such as CSV files,
+description: 'Generates production-ready code from file specifications such as CSV
+  files,
+
   JSON schemas, SQL DDL, protobuf definitions, or requirements documents. Use
+
   when the user wants to convert a data file or specification into working code.
+
   Trigger with phrases like "generate code from this CSV", "create an API from
+
   this schema", "build a parser for this file", or "turn this spec into code".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(node:*), Bash(python3:*), Glob, Grep
+
+  '
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(node:*), Bash(python3:*),
+  Glob, Grep
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex
-tags: [code-generation, requirements, automation, api-design]
+tags:
+- code-generation
+- requirements
+- automation
+- api-design
+compatibility: Designed for Claude Code, also compatible with Codex
 ---
-
 # File to Code
 
 Generate production-ready code from file specifications, data schemas, and requirements documents.

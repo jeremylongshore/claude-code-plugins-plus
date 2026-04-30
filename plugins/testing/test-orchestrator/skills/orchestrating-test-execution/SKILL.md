@@ -1,16 +1,22 @@
 ---
 name: orchestrating-test-execution
-description: |
-  Test coordinate parallel test execution across multiple environments and frameworks.
-  Use when performing specialized testing.
-  Trigger with phrases like "orchestrate tests", "run parallel tests", or "coordinate test execution".
+description: 'Test coordinate parallel test execution across multiple environments
+  and frameworks.
 
+  Use when performing specialized testing.
+
+  Trigger with phrases like "orchestrate tests", "run parallel tests", or "coordinate
+  test execution".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:orchestrate-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [testing, orchestrating-test]
+tags:
+- testing
+- orchestrating-test
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Test Orchestrator
 

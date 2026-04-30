@@ -1,16 +1,22 @@
 ---
 name: handling-api-errors
-description: |
-  Implement standardized error handling with proper HTTP status codes and error responses.
+description: 'Implement standardized error handling with proper HTTP status codes
+  and error responses.
+
   Use when implementing standardized error handling.
-  Trigger with phrases like "add error handling", "standardize errors", or "implement error responses".
-  
+
+  Trigger with phrases like "add error handling", "standardize errors", or "implement
+  error responses".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:error-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [api, handling-api]
+tags:
+- api
+- handling-api
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Handling API Errors
 

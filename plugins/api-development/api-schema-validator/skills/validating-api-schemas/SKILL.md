@@ -1,16 +1,22 @@
 ---
 name: validating-api-schemas
-description: |
-  Validate API schemas against OpenAPI, JSON Schema, and GraphQL specifications.
+description: 'Validate API schemas against OpenAPI, JSON Schema, and GraphQL specifications.
+
   Use when validating API schemas and contracts.
-  Trigger with phrases like "validate API schema", "check OpenAPI spec", or "verify schema".
-  
+
+  Trigger with phrases like "validate API schema", "check OpenAPI spec", or "verify
+  schema".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:schema-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [api, graphql, validating-api]
+tags:
+- api
+- graphql
+- validating-api
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Validating API Schemas
 

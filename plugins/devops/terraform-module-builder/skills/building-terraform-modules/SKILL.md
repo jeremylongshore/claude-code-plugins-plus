@@ -1,13 +1,21 @@
 ---
 name: building-terraform-modules
-description: |
-  Execute this skill empowers AI assistant to build reusable terraform modules based on user specifications. it leverages the terraform-module-builder plugin to generate production-ready, well-documented terraform module code, incorporating best practices for sec... Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
+description: 'Execute this skill empowers AI assistant to build reusable terraform
+  modules based on user specifications. it leverages the terraform-module-builder
+  plugin to generate production-ready, well-documented terraform module code, incorporating
+  best practices for sec... Use when appropriate context detected. Trigger with relevant
+  phrases based on skill purpose.
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [devops, terraform, terraform-modules]
+tags:
+- devops
+- terraform
+- terraform-modules
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Building Terraform Modules
 

@@ -1,16 +1,24 @@
 ---
 name: calculating-crypto-taxes
-description: |
-  Calculate cryptocurrency tax obligations with cost basis tracking, capital gains computation, and Form 8949 generation.
-  Use when calculating crypto taxes, generating tax reports, comparing cost basis methods, or identifying taxable events.
-  Trigger with phrases like "calculate crypto taxes", "generate tax report", "cost basis FIFO", "capital gains", "Form 8949", or "crypto taxable events".
+description: 'Calculate cryptocurrency tax obligations with cost basis tracking, capital
+  gains computation, and Form 8949 generation.
 
+  Use when calculating crypto taxes, generating tax reports, comparing cost basis
+  methods, or identifying taxable events.
+
+  Trigger with phrases like "calculate crypto taxes", "generate tax report", "cost
+  basis FIFO", "capital gains", "Form 8949", or "crypto taxable events".
+
+  '
 allowed-tools: Read, Write, Bash(crypto:tax-*)
 version: 2.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [crypto, cost-optimization, calculating-crypto]
+tags:
+- crypto
+- cost-optimization
+- calculating-crypto
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Calculating Crypto Taxes
 

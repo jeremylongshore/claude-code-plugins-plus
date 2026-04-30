@@ -1,16 +1,23 @@
 ---
 name: simulating-flash-loans
-description: |
-  Simulate flash loan strategies with profitability calculations and risk assessment across Aave, dYdX, and Balancer.
-  Use when simulating flash loans, analyzing arbitrage profitability, evaluating liquidation opportunities, or comparing flash loan providers.
-  Trigger with phrases like "simulate flash loan", "flash loan arbitrage", "liquidation profit", "compare Aave dYdX", "flash loan strategy", or "DeFi arbitrage simulation".
+description: 'Simulate flash loan strategies with profitability calculations and risk
+  assessment across Aave, dYdX, and Balancer.
 
+  Use when simulating flash loans, analyzing arbitrage profitability, evaluating liquidation
+  opportunities, or comparing flash loan providers.
+
+  Trigger with phrases like "simulate flash loan", "flash loan arbitrage", "liquidation
+  profit", "compare Aave dYdX", "flash loan strategy", or "DeFi arbitrage simulation".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:flashloan-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [crypto, simulating-flash]
+tags:
+- crypto
+- simulating-flash
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Simulating Flash Loans
 

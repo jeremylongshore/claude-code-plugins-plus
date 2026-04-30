@@ -1,16 +1,24 @@
 ---
 name: load-testing-apis
-description: |
-  Execute comprehensive load and stress testing to validate API performance and scalability.
+description: 'Execute comprehensive load and stress testing to validate API performance
+  and scalability.
+
   Use when validating API performance under load.
-  Trigger with phrases like "load test the API", "stress test API", or "benchmark API performance".
-  
+
+  Trigger with phrases like "load test the API", "stress test API", or "benchmark
+  API performance".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:load-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [api, testing, performance, scaling]
+tags:
+- api
+- testing
+- performance
+- scaling
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Load Testing APIs
 

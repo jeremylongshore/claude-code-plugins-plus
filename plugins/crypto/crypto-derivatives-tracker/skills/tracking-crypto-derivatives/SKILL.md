@@ -1,15 +1,25 @@
 ---
 name: tracking-crypto-derivatives
-description: |
-  Track cryptocurrency futures, options, and perpetual swaps with funding rates, open interest, liquidations, and comprehensive derivatives market analysis.
-  Use when monitoring derivatives markets, analyzing funding rates, tracking open interest, finding liquidation levels, or researching options flow.
-  Trigger with phrases like "funding rate", "open interest", "perpetual swap", "futures basis", "liquidation levels", "options flow", "put call ratio", "derivatives analysis", or "BTC perps".
+description: 'Track cryptocurrency futures, options, and perpetual swaps with funding
+  rates, open interest, liquidations, and comprehensive derivatives market analysis.
+
+  Use when monitoring derivatives markets, analyzing funding rates, tracking open
+  interest, finding liquidation levels, or researching options flow.
+
+  Trigger with phrases like "funding rate", "open interest", "perpetual swap", "futures
+  basis", "liquidation levels", "options flow", "put call ratio", "derivatives analysis",
+  or "BTC perps".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:derivatives-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [crypto, monitoring, tracking-crypto]
+tags:
+- crypto
+- monitoring
+- tracking-crypto
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Tracking Crypto Derivatives
 

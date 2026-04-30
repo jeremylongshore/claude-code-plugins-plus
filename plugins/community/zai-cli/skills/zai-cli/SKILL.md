@@ -1,17 +1,26 @@
 ---
 name: zai-cli
-description: |
-  Execute z.AI CLI providing vision, search, reader, and GitHub exploration via CLI and MCP.
+description: 'Execute z.AI CLI providing vision, search, reader, and GitHub exploration
+  via CLI and MCP.
+
   Use when user needs image/video analysis, OCR, UI-to-code conversion, error diagnosis,
+
   real-time web search, web page to markdown extraction, or GitHub code exploration.
-  Trigger with phrases like "analyze this image", "search the web for", "read this page",
+
+  Trigger with phrases like "analyze this image", "search the web for", "read this
+  page",
+
   "explore this repo", or "use zai". Requires Z_AI_API_KEY.
+
+  '
 allowed-tools: Read, Write, Edit, Bash(cmd:*), WebFetch
 version: 1.0.0
 license: Apache-2.0
 author: Numman Ali <numman.ali@gmail.com>
-compatible-with: claude-code, codex, openclaw
-tags: [community, zai-cli]
+tags:
+- community
+- zai-cli
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Zai Cli
 

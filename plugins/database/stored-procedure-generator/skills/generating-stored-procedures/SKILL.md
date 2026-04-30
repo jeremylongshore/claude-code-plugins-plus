@@ -1,17 +1,28 @@
 ---
 name: generating-stored-procedures
-description: |
-  Use when you need to generate, validate, or deploy stored procedures for PostgreSQL, MySQL, or SQL Server.
-  Creates database functions, triggers, and procedures with proper error handling and transaction management.
-  Trigger with phrases like "generate stored procedure", "create database function", "write SQL procedure",
+description: 'Use when you need to generate, validate, or deploy stored procedures
+  for PostgreSQL, MySQL, or SQL Server.
+
+  Creates database functions, triggers, and procedures with proper error handling
+  and transaction management.
+
+  Trigger with phrases like "generate stored procedure", "create database function",
+  "write SQL procedure",
+
   "add trigger to table", or "create CRUD procedures".
 
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*), Bash(sqlcmd:*), Bash(python3:*)
+  '
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*), Bash(sqlcmd:*),
+  Bash(python3:*)
 version: 2.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [database, deployment, postgresql, mysql]
+tags:
+- database
+- deployment
+- postgresql
+- mysql
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Stored Procedure Generator
 

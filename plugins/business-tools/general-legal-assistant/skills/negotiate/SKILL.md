@@ -1,16 +1,24 @@
 ---
 name: negotiate
-description: |
-  Analyzes contracts for unfavorable or risky clauses and generates prioritized
+description: 'Analyzes contracts for unfavorable or risky clauses and generates prioritized
+
   counter-proposals with replacement language. Use when reviewing a contract before
+
   signing, preparing for a negotiation, or responding to unfavorable terms.
+
   Trigger with "/negotiate" or "generate counter-proposals for this contract".
+
+  '
 allowed-tools: Read, Glob, Grep
 version: 1.0.0
 author: Intent Solutions <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [legal, negotiation, contracts, counter-proposal]
+tags:
+- legal
+- negotiation
+- contracts
+- counter-proposal
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Contract Negotiation Strategy Generator
 

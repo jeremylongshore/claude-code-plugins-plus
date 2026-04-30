@@ -1,15 +1,22 @@
 ---
 name: strategic-clarity
-description: Guided workflow for establishing team identity, boundaries, and strategic clarity. Use when starting a new role, inheriting ambiguity, when a team lacks clear identity, or when you need to define "what we own" vs "what we don't". Triggers include "strategic clarity", "team identity", "new role", "inherited ambiguity", "what does my team own", or "define our boundaries".
+description: Guided workflow for establishing team identity, boundaries, and strategic
+  clarity. Use when starting a new role, inheriting ambiguity, when a team lacks clear
+  identity, or when you need to define "what we own" vs "what we don't". Triggers
+  include "strategic clarity", "team identity", "new role", "inherited ambiguity",
+  "what does my team own", or "define our boundaries".
 version: 1.0.0
 author: Ahmed Khaled Mohamed <ahmd.khaled.a.mohamed@gmail.com>
 license: MIT
 allowed-tools: Read, Glob, Grep
-argument-hint: [phase: absorb/audit/articulate/align]
-compatible-with: claude-code
-tags: [productivity, workflow, strategic-clarity]
+argument-hint:
+- phase: absorb/audit/articulate/align
+tags:
+- productivity
+- workflow
+- strategic-clarity
+compatibility: Designed for Claude Code
 ---
-
 # Strategic Clarity Workflow
 
 ## Overview

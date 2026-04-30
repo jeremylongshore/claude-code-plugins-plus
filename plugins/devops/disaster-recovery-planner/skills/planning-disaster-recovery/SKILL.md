@@ -1,17 +1,24 @@
 ---
 name: planning-disaster-recovery
-description: |
-  Execute use when you need to work with backup and recovery.
-  This skill provides backup automation and disaster recovery with comprehensive guidance and automation.
+description: 'Execute use when you need to work with backup and recovery.
+
+  This skill provides backup automation and disaster recovery with comprehensive guidance
+  and automation.
+
   Trigger with phrases like "create backups", "automate backups",
+
   or "implement disaster recovery".
 
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(tar:*), Bash(rsync:*), Bash(aws:s3:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [devops, backup, disaster-recovery]
+tags:
+- devops
+- backup
+- disaster-recovery
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Planning Disaster Recovery
 

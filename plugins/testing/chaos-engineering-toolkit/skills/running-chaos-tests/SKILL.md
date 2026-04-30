@@ -1,16 +1,20 @@
 ---
 name: running-chaos-tests
-description: |
-  Execute chaos engineering experiments to test system resilience.
+description: 'Execute chaos engineering experiments to test system resilience.
+
   Use when performing specialized testing.
+
   Trigger with phrases like "run chaos tests", "test resilience", or "inject failures".
 
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:chaos-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [testing, chaos-tests]
+tags:
+- testing
+- chaos-tests
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Chaos Engineering Toolkit
 

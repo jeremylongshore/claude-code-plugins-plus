@@ -1,16 +1,23 @@
 ---
 name: mocking-apis
-description: |
-  Generate mock API servers for testing and development with realistic response data.
+description: 'Generate mock API servers for testing and development with realistic
+  response data.
+
   Use when creating mock APIs for development and testing.
-  Trigger with phrases like "create mock API", "generate API mock", or "setup mock server".
-  
+
+  Trigger with phrases like "create mock API", "generate API mock", or "setup mock
+  server".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:mock-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [api, testing, mocking-apis]
+tags:
+- api
+- testing
+- mocking-apis
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Mocking APIs
 

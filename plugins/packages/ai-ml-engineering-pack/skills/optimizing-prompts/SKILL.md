@@ -1,13 +1,22 @@
 ---
 name: optimizing-prompts
-description: |
-  Execute this skill optimizes prompts for large language models (llms) to reduce token usage, lower costs, and improve performance. it analyzes the prompt, identifies areas for simplification and redundancy removal, and rewrites the prompt to be more conci... Use when optimizing performance. Trigger with phrases like 'optimize', 'performance', or 'speed up'.
+description: 'Execute this skill optimizes prompts for large language models (llms)
+  to reduce token usage, lower costs, and improve performance. it analyzes the prompt,
+  identifies areas for simplification and redundancy removal, and rewrites the prompt
+  to be more conci... Use when optimizing performance. Trigger with phrases like ''optimize'',
+  ''performance'', or ''speed up''.
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [packages, llm, performance, cost-optimization]
+tags:
+- packages
+- llm
+- performance
+- cost-optimization
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Ai Ml Engineering Pack
 

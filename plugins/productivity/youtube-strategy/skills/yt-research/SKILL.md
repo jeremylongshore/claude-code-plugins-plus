@@ -1,16 +1,26 @@
 ---
 name: yt-research
-description: |
-  Research competitor YouTube channels, niches, and trending topics for your content strategy.
-  Use this skill whenever the user says "research channels", "analyze competitors", "find trending topics",
-  "niche analysis", "competitive research", "what are other creators doing", "scrape YouTube channels",
-  or wants to understand the competitive landscape for a specific tool or topic area. Use when working with yt research. Trigger with 'yt', 'research'.
+description: 'Research competitor YouTube channels, niches, and trending topics for
+  your content strategy.
+
+  Use this skill whenever the user says "research channels", "analyze competitors",
+  "find trending topics",
+
+  "niche analysis", "competitive research", "what are other creators doing", "scrape
+  YouTube channels",
+
+  or wants to understand the competitive landscape for a specific tool or topic area.
+  Use when working with yt research. Trigger with ''yt'', ''research''.
+
+  '
 allowed-tools: WebSearch, Read, Write, Task
 version: 1.0.0
 author: Claude Code Plugins <plugins@claudecodeplugins.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [productivity, yt-research]
+tags:
+- productivity
+- yt-research
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # YouTube Research
 

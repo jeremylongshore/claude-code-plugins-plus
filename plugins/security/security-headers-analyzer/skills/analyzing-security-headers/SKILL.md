@@ -1,16 +1,24 @@
 ---
 name: analyzing-security-headers
-description: |
-  Analyze HTTP security headers of web domains to identify vulnerabilities and misconfigurations.
-  Use when you need to audit website security headers, assess header compliance, or get security recommendations for web applications.
-  Trigger with phrases like "analyze security headers", "check HTTP headers", "audit website security headers", or "evaluate CSP and HSTS configuration".
-  
+description: 'Analyze HTTP security headers of web domains to identify vulnerabilities
+  and misconfigurations.
+
+  Use when you need to audit website security headers, assess header compliance, or
+  get security recommendations for web applications.
+
+  Trigger with phrases like "analyze security headers", "check HTTP headers", "audit
+  website security headers", or "evaluate CSP and HSTS configuration".
+
+  '
 allowed-tools: Read, WebFetch, WebSearch, Grep
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [security, compliance, audit]
+tags:
+- security
+- compliance
+- audit
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Analyzing Security Headers
 

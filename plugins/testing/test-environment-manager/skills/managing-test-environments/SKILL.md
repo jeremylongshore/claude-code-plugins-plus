@@ -1,16 +1,22 @@
 ---
 name: managing-test-environments
-description: |
-  Test provision and manage isolated test environments with configuration and data.
-  Use when performing specialized testing.
-  Trigger with phrases like "manage test environment", "provision test env", or "setup test infrastructure".
+description: 'Test provision and manage isolated test environments with configuration
+  and data.
 
+  Use when performing specialized testing.
+
+  Trigger with phrases like "manage test environment", "provision test env", or "setup
+  test infrastructure".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:env-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [testing, test-environments]
+tags:
+- testing
+- test-environments
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Test Environment Manager
 

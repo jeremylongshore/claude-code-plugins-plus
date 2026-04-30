@@ -1,16 +1,23 @@
 ---
 name: analyzing-market-sentiment
-description: |
-  Analyze cryptocurrency market sentiment using Fear & Greed Index, news analysis, and market momentum.
-  Use when gauging overall market mood, checking if markets are fearful or greedy, or analyzing sentiment for specific coins.
-  Trigger with phrases like "analyze crypto sentiment", "check market mood", "is the market fearful", "sentiment for Bitcoin", or "Fear and Greed index".
+description: 'Analyze cryptocurrency market sentiment using Fear & Greed Index, news
+  analysis, and market momentum.
 
+  Use when gauging overall market mood, checking if markets are fearful or greedy,
+  or analyzing sentiment for specific coins.
+
+  Trigger with phrases like "analyze crypto sentiment", "check market mood", "is the
+  market fearful", "sentiment for Bitcoin", or "Fear and Greed index".
+
+  '
 allowed-tools: Read, Bash(crypto:sentiment-*)
 version: 2.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [crypto, analyzing-market]
+tags:
+- crypto
+- analyzing-market
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Analyzing Market Sentiment
 

@@ -1,16 +1,21 @@
 ---
 name: processing-api-batches
-description: |
-  Optimize bulk API requests with batching, throttling, and parallel execution.
+description: 'Optimize bulk API requests with batching, throttling, and parallel execution.
+
   Use when processing bulk API operations efficiently.
-  Trigger with phrases like "process bulk requests", "batch API calls", or "handle batch operations".
-  
+
+  Trigger with phrases like "process bulk requests", "batch API calls", or "handle
+  batch operations".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:batch-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [api, processing-api]
+tags:
+- api
+- processing-api
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Processing API Batches
 

@@ -1,16 +1,21 @@
 ---
 name: analyzing-test-coverage
-description: |
-  Analyze code coverage metrics and identify untested code paths.
-  Use when analyzing untested code or coverage gaps.
-  Trigger with phrases like "analyze coverage", "check test coverage", or "find untested code".
+description: 'Analyze code coverage metrics and identify untested code paths.
 
+  Use when analyzing untested code or coverage gaps.
+
+  Trigger with phrases like "analyze coverage", "check test coverage", or "find untested
+  code".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:coverage-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [testing, analyzing-test]
+tags:
+- testing
+- analyzing-test
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Test Coverage Analyzer
 

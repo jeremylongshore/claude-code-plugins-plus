@@ -1,16 +1,23 @@
 ---
 name: tracking-crypto-portfolio
-description: |
-  Track cryptocurrency portfolio with real-time valuations, allocation analysis, and P&L tracking.
-  Use when checking portfolio value, viewing holdings breakdown, analyzing allocations, or exporting portfolio data.
-  Trigger with phrases like "show my portfolio", "check crypto holdings", "portfolio allocation", "track my crypto", or "export portfolio".
+description: 'Track cryptocurrency portfolio with real-time valuations, allocation
+  analysis, and P&L tracking.
 
+  Use when checking portfolio value, viewing holdings breakdown, analyzing allocations,
+  or exporting portfolio data.
+
+  Trigger with phrases like "show my portfolio", "check crypto holdings", "portfolio
+  allocation", "track my crypto", or "export portfolio".
+
+  '
 allowed-tools: Read, Write, Bash(crypto:portfolio-*)
 version: 2.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [crypto, tracking-crypto]
+tags:
+- crypto
+- tracking-crypto
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Tracking Crypto Portfolio
 

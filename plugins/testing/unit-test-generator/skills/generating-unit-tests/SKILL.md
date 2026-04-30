@@ -1,16 +1,22 @@
 ---
 name: generating-unit-tests
-description: |
-  Test automatically generate comprehensive unit tests from source code covering happy paths, edge cases, and error conditions.
-  Use when creating test coverage for functions, classes, or modules.
-  Trigger with phrases like "generate unit tests", "create tests for", or "add test coverage".
+description: 'Test automatically generate comprehensive unit tests from source code
+  covering happy paths, edge cases, and error conditions.
 
+  Use when creating test coverage for functions, classes, or modules.
+
+  Trigger with phrases like "generate unit tests", "create tests for", or "add test
+  coverage".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:unit-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [testing, unit-tests]
+tags:
+- testing
+- unit-tests
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Unit Test Generator
 

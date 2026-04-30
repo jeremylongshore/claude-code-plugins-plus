@@ -1,18 +1,29 @@
 ---
 name: gastown
-description: |
-  Manage multi-agent orchestrator for Claude Code. Use when user mentions gastown, gas town,
+description: 'Manage multi-agent orchestrator for Claude Code. Use when user mentions
+  gastown, gas town,
+
   gt commands, bd commands, convoys, polecats, crew, rigs, slinging work, multi-agent
+
   coordination, beads, hooks, molecules, workflows, the witness, the mayor, the refinery,
+
   the deacon, dogs, escalation, or wants to run multiple AI agents on projects simultaneously.
+
   Handles installation, workspace setup, work tracking, agent lifecycle, crash recovery,
-  and all gt/bd CLI operations. Trigger with phrases like "gas town", "gt sling", "fire up the engine".
+
+  and all gt/bd CLI operations. Trigger with phrases like "gas town", "gt sling",
+  "fire up the engine".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(cmd:*), Grep, Glob, WebFetch
 version: 1.0.0
 license: Apache-2.0
 author: Numman Ali <numman.ali@gmail.com>
-compatible-with: claude-code, codex, openclaw
-tags: [community, scaling, workflow]
+tags:
+- community
+- scaling
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Gastown
 

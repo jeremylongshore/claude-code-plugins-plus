@@ -1,13 +1,22 @@
 ---
 name: adk-infra-expert
-description: |
-  Execute use when provisioning Vertex AI ADK infrastructure with Terraform. Trigger with phrases like "deploy ADK terraform", "agent engine infrastructure", "provision ADK agent", "vertex AI agent terraform", or "code execution sandbox terraform". Provisions Agent Engine runtime, 14-day code execution sandbox, Memory Bank, VPC Service Controls, IAM roles, and secure multi-agent infrastructure.
+description: 'Execute use when provisioning Vertex AI ADK infrastructure with Terraform.
+  Trigger with phrases like "deploy ADK terraform", "agent engine infrastructure",
+  "provision ADK agent", "vertex AI agent terraform", or "code execution sandbox terraform".
+  Provisions Agent Engine runtime, 14-day code execution sandbox, Memory Bank, VPC
+  Service Controls, IAM roles, and secure multi-agent infrastructure.
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(terraform:*), Bash(gcloud:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [devops, deployment, terraform, iam]
+tags:
+- devops
+- deployment
+- terraform
+- iam
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Adk Infra Expert
 

@@ -1,16 +1,23 @@
 ---
 name: analyzing-liquidity-pools
-description: |
-  Analyze DEX liquidity pools for TVL, volume, fees, impermanent loss, and LP profitability.
-  Use when analyzing liquidity pools, calculating impermanent loss, or comparing DEX pools.
-  Trigger with phrases like "analyze liquidity pool", "calculate impermanent loss", "LP returns", "pool TVL", "DEX pool metrics", or "compare pools".
+description: 'Analyze DEX liquidity pools for TVL, volume, fees, impermanent loss,
+  and LP profitability.
 
+  Use when analyzing liquidity pools, calculating impermanent loss, or comparing DEX
+  pools.
+
+  Trigger with phrases like "analyze liquidity pool", "calculate impermanent loss",
+  "LP returns", "pool TVL", "DEX pool metrics", or "compare pools".
+
+  '
 allowed-tools: Read, Write, Bash(crypto:liquidity-*)
 version: 2.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [crypto, analyzing-liquidity]
+tags:
+- crypto
+- analyzing-liquidity
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Analyzing Liquidity Pools
 

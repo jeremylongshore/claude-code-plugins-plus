@@ -1,19 +1,29 @@
 ---
 name: calendar-to-workflow
-description: |
-  Converts calendar events and schedules into Claude Code workflows, meeting prep
+description: 'Converts calendar events and schedules into Claude Code workflows, meeting
+  prep
+
   documents, and standup notes. Use when the user mentions calendar events, meeting
+
   prep, standup generation, or scheduling workflows. Trigger with phrases like
+
   "prep for my meetings", "generate standup notes", "create workflow from calendar",
-  or "summarize today's schedule".
+
+  or "summarize today''s schedule".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(git:*), Bash(gh:*), Bash(chmod:*), Glob, Grep
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex
-tags: [calendar, automation, meetings, productivity, workflow]
+tags:
+- calendar
+- automation
+- meetings
+- productivity
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex
 ---
-
 # Calendar to Workflow
 
 Automate meeting preparation, standup generation, and workflow creation from calendar data.

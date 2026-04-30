@@ -1,17 +1,23 @@
 ---
 name: analyzing-query-performance
-description: |
-  Execute use when you need to work with query optimization.
+description: 'Execute use when you need to work with query optimization.
+
   This skill provides query performance analysis with comprehensive guidance and automation.
+
   Trigger with phrases like "optimize queries", "analyze performance",
+
   or "improve query speed".
 
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*), Bash(mongosh:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [database, performance, analyzing-query]
+tags:
+- database
+- performance
+- analyzing-query
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Query Performance Analyzer
 

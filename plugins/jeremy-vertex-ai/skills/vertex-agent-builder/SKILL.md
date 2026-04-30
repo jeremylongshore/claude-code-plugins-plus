@@ -1,13 +1,20 @@
 ---
 name: vertex-agent-builder
-description: |
-  Build and deploy production-ready generative AI agents using Vertex AI, Gemini models, and Google Cloud infrastructure with RAG, function calling, and multi-modal capabilities. Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
+description: 'Build and deploy production-ready generative AI agents using Vertex
+  AI, Gemini models, and Google Cloud infrastructure with RAG, function calling, and
+  multi-modal capabilities. Use when appropriate context detected. Trigger with relevant
+  phrases based on skill purpose.
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Bash(cmd:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [vertex-ai, deployment, gcp]
+tags:
+- vertex-ai
+- deployment
+- gcp
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vertex AI Agent Builder
 

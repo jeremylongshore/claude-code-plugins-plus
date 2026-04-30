@@ -1,16 +1,24 @@
 ---
 name: nda-generator
-description: |
-  Generates custom non-disclosure agreements with plain English annotations.
+description: 'Generates custom non-disclosure agreements with plain English annotations.
+
   Use when creating an NDA for business discussions, hiring, vendor relationships,
+
   or partnerships. Supports mutual, one-way, employee, and vendor variants.
+
   Trigger with "/nda-generator" or "create an NDA for our partnership".
+
+  '
 allowed-tools: Read, Write, Glob, Grep
 version: 1.0.0
 author: Intent Solutions <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [legal, nda, confidentiality, document-generation]
+tags:
+- legal
+- nda
+- confidentiality
+- document-generation
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # NDA Generator
 

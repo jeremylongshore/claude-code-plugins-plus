@@ -1,13 +1,21 @@
 ---
 name: creating-alerting-rules
-description: |
-  Execute this skill enables AI assistant to create intelligent alerting rules for proactive performance monitoring. it is triggered when the user requests to "create alerts", "define monitoring rules", or "set up alerting". the skill helps define thresholds, rou... Use when generating or creating new content. Trigger with phrases like 'generate', 'create', or 'scaffold'.
+description: 'Execute this skill enables AI assistant to create intelligent alerting
+  rules for proactive performance monitoring. it is triggered when the user requests
+  to "create alerts", "define monitoring rules", or "set up alerting". the skill helps
+  define thresholds, rou... Use when generating or creating new content. Trigger with
+  phrases like ''generate'', ''create'', or ''scaffold''.
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [performance, monitoring, alerting-rules]
+tags:
+- performance
+- monitoring
+- alerting-rules
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Alerting Rule Creator
 

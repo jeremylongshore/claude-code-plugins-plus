@@ -1,16 +1,24 @@
 ---
 name: checking-session-security
-description: |
-  Analyze session management implementations to identify security vulnerabilities in web applications.
-  Use when you need to audit session handling, check for session fixation risks, review session timeout configurations, or validate session ID generation security.
-  Trigger with phrases like "check session security", "audit session management", "review session handling", or "session fixation vulnerability".
-  
+description: 'Analyze session management implementations to identify security vulnerabilities
+  in web applications.
+
+  Use when you need to audit session handling, check for session fixation risks, review
+  session timeout configurations, or validate session ID generation security.
+
+  Trigger with phrases like "check session security", "audit session management",
+  "review session handling", or "session fixation vulnerability".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(code-scan:*), Bash(security-check:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [security, audit, checking-session]
+tags:
+- security
+- audit
+- checking-session
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Checking Session Security
 

@@ -1,13 +1,21 @@
 ---
 name: made-to-stick
-description: |
-  Create messages that are understood, remembered, and drive action using the SUCCESs checklist (Simple, Unexpected, Concrete, Credible, Emotional, Stories). Use when the user mentions "make it memorable", "sticky messaging", "tagline", "value proposition", or "why the message isn't landing". For narrative brand frameworks, see storybrand-messaging. For viral sharing, see contagious. Trigger with 'made', 'to', 'stick'.
+description: 'Create messages that are understood, remembered, and drive action using
+  the SUCCESs checklist (Simple, Unexpected, Concrete, Credible, Emotional, Stories).
+  Use when the user mentions "make it memorable", "sticky messaging", "tagline", "value
+  proposition", or "why the message isn''t landing". For narrative brand frameworks,
+  see storybrand-messaging. For viral sharing, see contagious. Trigger with ''made'',
+  ''to'', ''stick''.
+
+  '
 allowed-tools: Read, Glob, Grep
 license: MIT
 author: Wondelai <hello@wondelai.com>
 version: 1.0.1
-compatible-with: claude-code, codex, openclaw
-tags: [business, made-stick]
+tags:
+- business
+- made-stick
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Made to Stick Framework
 

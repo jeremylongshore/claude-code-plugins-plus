@@ -1,12 +1,16 @@
 ---
 name: validating-csrf-protection
-description: Validate CSRF protection implementations for security gaps. Use when reviewing form security or state-changing operations. Trigger with 'validate CSRF', 'check CSRF protection', or 'review token security'.
+description: Validate CSRF protection implementations for security gaps. Use when
+  reviewing form security or state-changing operations. Trigger with 'validate CSRF',
+  'check CSRF protection', or 'review token security'.
 version: 1.0.0
-allowed-tools: "Read, Write, Edit, Grep, Glob, Bash(security:*), Bash(scan:*), Bash(audit:*)"
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(security:*), Bash(scan:*), Bash(audit:*)
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [security, validating-csrf]
+tags:
+- security
+- validating-csrf
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Validating CSRF Protection
 

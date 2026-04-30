@@ -1,17 +1,25 @@
 ---
 name: scanning-container-security
-description: |
-  Execute use when you need to work with security and compliance.
-  This skill provides security scanning and vulnerability detection with comprehensive guidance and automation.
+description: 'Execute use when you need to work with security and compliance.
+
+  This skill provides security scanning and vulnerability detection with comprehensive
+  guidance and automation.
+
   Trigger with phrases like "scan for vulnerabilities", "implement security controls",
+
   or "audit security".
 
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(docker:*), Bash(kubectl:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [devops, security, compliance, audit]
+tags:
+- devops
+- security
+- compliance
+- audit
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Scanning Container Security
 

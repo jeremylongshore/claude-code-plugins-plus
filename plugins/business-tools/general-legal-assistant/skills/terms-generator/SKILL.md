@@ -1,16 +1,25 @@
 ---
 name: terms-generator
-description: |
-  Generates comprehensive terms of service by analyzing a website or application
+description: 'Generates comprehensive terms of service by analyzing a website or application
+
   to detect business type, data collection, and user interactions. Use when launching
+
   a website, app, or SaaS product that needs terms of service with GDPR/CCPA compliance.
+
   Trigger with "/terms-generator" or "create terms of service for my website".
+
+  '
 allowed-tools: Read, Write, Glob, Grep, WebFetch
 version: 1.0.0
 author: Intent Solutions <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [legal, terms-of-service, compliance, gdpr, ccpa]
+tags:
+- legal
+- terms-of-service
+- compliance
+- gdpr
+- ccpa
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Terms of Service Generator
 

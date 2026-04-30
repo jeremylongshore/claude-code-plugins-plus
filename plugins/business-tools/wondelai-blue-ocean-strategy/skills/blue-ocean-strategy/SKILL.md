@@ -1,13 +1,22 @@
 ---
 name: blue-ocean-strategy
-description: |
-  Create uncontested market space using value innovation instead of competing head-to-head. Use when the user mentions "blue ocean", "red ocean", "strategy canvas", "ERRC framework", "value innovation", or "non-customers". Covers the Four Actions Framework, buyer utility map, and value-cost trade-offs. For tech adoption strategy, see crossing-the-chasm. For product positioning, see obviously-awesome. Trigger with 'blue', 'ocean', 'strategy'.
+description: 'Create uncontested market space using value innovation instead of competing
+  head-to-head. Use when the user mentions "blue ocean", "red ocean", "strategy canvas",
+  "ERRC framework", "value innovation", or "non-customers". Covers the Four Actions
+  Framework, buyer utility map, and value-cost trade-offs. For tech adoption strategy,
+  see crossing-the-chasm. For product positioning, see obviously-awesome. Trigger
+  with ''blue'', ''ocean'', ''strategy''.
+
+  '
 allowed-tools: Read, Glob, Grep
 license: MIT
 author: Wondelai <hello@wondelai.com>
 version: 1.0.1
-compatible-with: claude-code, codex, openclaw
-tags: [business, cost-optimization, blue-ocean]
+tags:
+- business
+- cost-optimization
+- blue-ocean
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Blue Ocean Strategy Framework
 

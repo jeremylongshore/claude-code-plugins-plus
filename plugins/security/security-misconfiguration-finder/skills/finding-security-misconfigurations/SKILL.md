@@ -1,16 +1,26 @@
 ---
 name: finding-security-misconfigurations
-description: |
-  Configure identify security misconfigurations in infrastructure-as-code, application settings, and system configurations.
-  Use when you need to audit Terraform/CloudFormation templates, check application config files, validate system security settings, or ensure compliance with security best practices.
-  Trigger with phrases like "find security misconfigurations", "audit infrastructure security", "check config security", or "scan for misconfigured settings".
-  
+description: 'Configure identify security misconfigurations in infrastructure-as-code,
+  application settings, and system configurations.
+
+  Use when you need to audit Terraform/CloudFormation templates, check application
+  config files, validate system security settings, or ensure compliance with security
+  best practices.
+
+  Trigger with phrases like "find security misconfigurations", "audit infrastructure
+  security", "check config security", or "scan for misconfigured settings".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(config-scan:*), Bash(iac-check:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [security, terraform, compliance, audit]
+tags:
+- security
+- terraform
+- compliance
+- audit
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Finding Security Misconfigurations
 

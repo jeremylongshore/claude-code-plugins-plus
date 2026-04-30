@@ -1,13 +1,21 @@
 ---
 name: traction-eos
-description: |
-  Implement the Entrepreneurial Operating System (EOS) to align vision and execution across a company. Use when the user mentions "EOS", "V/TO", "quarterly rocks", "Level 10 meetings", "accountability chart", or "IDS process". Covers the six EOS components: Vision, People, Data, Issues, Process, Traction. For team motivation design, see drive-motivation. For lean experimentation, see lean-startup. Trigger with 'traction', 'eos'.
+description: 'Implement the Entrepreneurial Operating System (EOS) to align vision
+  and execution across a company. Use when the user mentions "EOS", "V/TO", "quarterly
+  rocks", "Level 10 meetings", "accountability chart", or "IDS process". Covers the
+  six EOS components: Vision, People, Data, Issues, Process, Traction. For team motivation
+  design, see drive-motivation. For lean experimentation, see lean-startup. Trigger
+  with ''traction'', ''eos''.
+
+  '
 allowed-tools: Read, Glob, Grep
 license: MIT
 author: Wondelai <hello@wondelai.com>
 version: 1.0.1
-compatible-with: claude-code, codex, openclaw
-tags: [business, traction-eos]
+tags:
+- business
+- traction-eos
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Entrepreneurial Operating System (EOS)
 

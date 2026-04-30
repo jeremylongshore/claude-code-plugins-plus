@@ -1,13 +1,21 @@
 ---
 name: creating-apm-dashboards
-description: |
-  Execute this skill enables AI assistant to create application performance monitoring (apm) dashboards. it is triggered when the user requests the creation of a new apm dashboard, monitoring dashboard, or a dashboard for application performance. the skill helps ... Use when generating or creating new content. Trigger with phrases like 'generate', 'create', or 'scaffold'.
+description: 'Execute this skill enables AI assistant to create application performance
+  monitoring (apm) dashboards. it is triggered when the user requests the creation
+  of a new apm dashboard, monitoring dashboard, or a dashboard for application performance.
+  the skill helps ... Use when generating or creating new content. Trigger with phrases
+  like ''generate'', ''create'', or ''scaffold''.
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [performance, monitoring, dashboard]
+tags:
+- performance
+- monitoring
+- dashboard
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Apm Dashboard Creator
 

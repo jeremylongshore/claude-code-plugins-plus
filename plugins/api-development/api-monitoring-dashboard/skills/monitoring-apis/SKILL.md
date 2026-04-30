@@ -1,16 +1,23 @@
 ---
 name: monitoring-apis
-description: |
-  Build real-time API monitoring dashboards with metrics, alerts, and health checks.
+description: 'Build real-time API monitoring dashboards with metrics, alerts, and
+  health checks.
+
   Use when tracking API health and performance metrics.
+
   Trigger with phrases like "monitor the API", "add API metrics", or "setup API monitoring".
-  
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:monitor-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [api, monitoring, performance, dashboard]
+tags:
+- api
+- monitoring
+- performance
+- dashboard
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Monitoring APIs
 

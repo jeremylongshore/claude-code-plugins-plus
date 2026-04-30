@@ -1,17 +1,24 @@
 ---
 name: managing-container-registries
-description: |
-  Execute use when you need to work with containerization.
-  This skill provides container management and orchestration with comprehensive guidance and automation.
+description: 'Execute use when you need to work with containerization.
+
+  This skill provides container management and orchestration with comprehensive guidance
+  and automation.
+
   Trigger with phrases like "containerize app", "manage containers",
+
   or "orchestrate deployment".
 
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(docker:*), Bash(kubectl:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [devops, deployment, container-registries]
+tags:
+- devops
+- deployment
+- container-registries
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Managing Container Registries
 

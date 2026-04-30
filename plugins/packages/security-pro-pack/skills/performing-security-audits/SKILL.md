@@ -1,13 +1,22 @@
 ---
 name: performing-security-audits
-description: |
-  Analyze code, infrastructure, and configurations by conducting comprehensive security audits. It leverages tools within the security-pro-pack plugin, including vulnerability scanning, compliance checking, and cryptography review. Use when assessing security or running audits. Trigger with phrases like 'security scan', 'audit', or 'vulnerability'.
+description: 'Analyze code, infrastructure, and configurations by conducting comprehensive
+  security audits. It leverages tools within the security-pro-pack plugin, including
+  vulnerability scanning, compliance checking, and cryptography review. Use when assessing
+  security or running audits. Trigger with phrases like ''security scan'', ''audit'',
+  or ''vulnerability''.
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [packages, security, compliance, audit]
+tags:
+- packages
+- security
+- compliance
+- audit
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Security Pro Pack
 

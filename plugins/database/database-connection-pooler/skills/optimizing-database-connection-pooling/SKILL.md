@@ -1,17 +1,23 @@
 ---
 name: optimizing-database-connection-pooling
-description: |
-  Process use when you need to work with connection management.
-  This skill provides connection pooling and management with comprehensive guidance and automation.
+description: 'Process use when you need to work with connection management.
+
+  This skill provides connection pooling and management with comprehensive guidance
+  and automation.
+
   Trigger with phrases like "manage connections", "configure pooling",
+
   or "optimize connection usage".
 
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*), Bash(mongosh:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [database, optimizing-database]
+tags:
+- database
+- optimizing-database
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Database Connection Pooler
 

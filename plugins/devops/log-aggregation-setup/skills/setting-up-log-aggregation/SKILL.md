@@ -1,13 +1,22 @@
 ---
 name: setting-up-log-aggregation
-description: |
-  Execute use when setting up log aggregation solutions using ELK, Loki, or Splunk. Trigger with phrases like "setup log aggregation", "deploy ELK stack", "configure Loki", or "install Splunk". Generates production-ready configurations for data ingestion, processing, storage, and visualization with proper security and scalability.
+description: 'Execute use when setting up log aggregation solutions using ELK, Loki,
+  or Splunk. Trigger with phrases like "setup log aggregation", "deploy ELK stack",
+  "configure Loki", or "install Splunk". Generates production-ready configurations
+  for data ingestion, processing, storage, and visualization with proper security
+  and scalability.
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(docker:*), Bash(kubectl:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [devops, deployment, security, scaling]
+tags:
+- devops
+- deployment
+- security
+- scaling
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Setting Up Log Aggregation
 

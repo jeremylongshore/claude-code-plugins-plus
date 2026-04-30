@@ -1,17 +1,20 @@
 ---
 name: doctor
-description: |
-  Diagnose Promptbook setup — check config, hooks, API key, and session tracking health.
-  Use when Promptbook seems broken or the user wants to verify their setup.
-  Trigger with "/doctor" or "check promptbook health".
+description: "Diagnose Promptbook setup \u2014 check config, hooks, API key, and session\
+  \ tracking health.\nUse when Promptbook seems broken or the user wants to verify\
+  \ their setup.\nTrigger with \"/doctor\" or \"check promptbook health\".\n"
 version: 1.4.0
 author: Promptbook <contact@promptbook.gg>
 license: MIT
-allowed-tools: Bash(node:*), Bash(curl:*), Bash(ls:*), Bash(stat:*), Bash(cat:*), Read
-compatible-with: claude-code
-tags: [analytics, telemetry, diagnostics, health-check]
+allowed-tools: Bash(node:*), Bash(curl:*), Bash(ls:*), Bash(stat:*), Bash(cat:*),
+  Read
+tags:
+- analytics
+- telemetry
+- diagnostics
+- health-check
+compatibility: Designed for Claude Code
 ---
-
 # Promptbook Doctor
 
 ## Overview

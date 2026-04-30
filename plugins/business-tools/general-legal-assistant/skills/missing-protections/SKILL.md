@@ -1,19 +1,29 @@
 ---
 name: missing-protections
-description: |
-  Audits a contract against type-specific protection checklists to find
+description: 'Audits a contract against type-specific protection checklists to find
+
   gaps, then provides ready-to-insert clause language for each missing
+
   protection. Use when a user wants to know what protections are absent
+
   from their contract. Trigger with "/missing-protections" or "what
+
   protections is this contract missing".
+
+  '
 allowed-tools: Read, Glob, Grep
 version: 1.0.0
 author: Intent Solutions <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [legal, contracts, gap-analysis, protections, compliance, checklist]
+tags:
+- legal
+- contracts
+- gap-analysis
+- protections
+- compliance
+- checklist
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Missing Protections — Contract Gap Finder
 
 Audits a contract against a comprehensive checklist of protections that should

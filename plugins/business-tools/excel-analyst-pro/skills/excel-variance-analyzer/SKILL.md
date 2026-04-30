@@ -1,15 +1,22 @@
 ---
 name: excel-variance-analyzer
-description: |
-  Analyze budget vs actual variances in Excel with drill-down and root cause analysis.
+description: 'Analyze budget vs actual variances in Excel with drill-down and root
+  cause analysis.
+
   Use when performing variance analysis or explaining budget differences.
-  Trigger with phrases like 'excel variance', 'analyze budget variance', 'actual vs budget'.
+
+  Trigger with phrases like ''excel variance'', ''analyze budget variance'', ''actual
+  vs budget''.
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [business, excel-variance]
+tags:
+- business
+- excel-variance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Excel Variance Analyzer
 

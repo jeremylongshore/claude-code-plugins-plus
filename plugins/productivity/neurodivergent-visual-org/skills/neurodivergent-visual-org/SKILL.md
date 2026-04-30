@@ -1,17 +1,25 @@
 ---
 name: neurodivergent-visual-org
-description: |
-  Creates ADHD-friendly visual organizational tools using Mermaid diagrams
+description: 'Creates ADHD-friendly visual organizational tools using Mermaid diagrams
+
   optimized for neurodivergent thinking patterns. Auto-detects overwhelm,
+
   provides compassionate task breakdowns with realistic time estimates.
+
   Use when creating visual task breakdowns, decision trees, or organizational
-  diagrams for neurodivergent users or accessibility-focused projects. Trigger with 'neurodivergent', 'visual', 'org'.
+
+  diagrams for neurodivergent users or accessibility-focused projects. Trigger with
+  ''neurodivergent'', ''visual'', ''org''.
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 3.1.1
 author: Jack Reis <hello@jack.digital>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [productivity, neurodivergent-visual]
+tags:
+- productivity
+- neurodivergent-visual
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 ## Mode System (v3.1.1)
 

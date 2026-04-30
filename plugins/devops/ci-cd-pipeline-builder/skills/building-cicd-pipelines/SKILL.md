@@ -1,17 +1,24 @@
 ---
 name: building-cicd-pipelines
-description: |
-  Execute use when you need to work with deployment and CI/CD.
-  This skill provides deployment automation and pipeline orchestration with comprehensive guidance and automation.
+description: 'Execute use when you need to work with deployment and CI/CD.
+
+  This skill provides deployment automation and pipeline orchestration with comprehensive
+  guidance and automation.
+
   Trigger with phrases like "deploy application", "create pipeline",
+
   or "automate deployment".
 
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(git:*), Bash(docker:*), Bash(kubectl:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [devops, deployment, ci-cd]
+tags:
+- devops
+- deployment
+- ci-cd
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Building CI/CD Pipelines
 

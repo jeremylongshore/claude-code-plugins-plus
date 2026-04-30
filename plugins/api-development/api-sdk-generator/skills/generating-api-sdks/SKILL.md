@@ -1,16 +1,21 @@
 ---
 name: generating-api-sdks
-description: |
-  Generate client SDKs in multiple languages from OpenAPI specifications.
+description: 'Generate client SDKs in multiple languages from OpenAPI specifications.
+
   Use when generating client libraries for API consumption.
-  Trigger with phrases like "generate SDK", "create client library", or "build API SDK".
-  
+
+  Trigger with phrases like "generate SDK", "create client library", or "build API
+  SDK".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:sdk-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [api, api-sdks]
+tags:
+- api
+- api-sdks
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Generating API SDKs
 

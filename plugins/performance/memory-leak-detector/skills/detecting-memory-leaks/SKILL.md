@@ -1,12 +1,17 @@
 ---
 name: detecting-memory-leaks
-description: Detect potential memory leaks and analyze memory usage patterns in code. Use when troubleshooting performance issues related to memory growth or identifying leak sources. Trigger with phrases like "detect memory leaks", "analyze memory usage", or "find memory issues".
+description: Detect potential memory leaks and analyze memory usage patterns in code.
+  Use when troubleshooting performance issues related to memory growth or identifying
+  leak sources. Trigger with phrases like "detect memory leaks", "analyze memory usage",
+  or "find memory issues".
 version: 1.0.0
-allowed-tools: "Read, Write, Edit, Grep, Glob, Bash(profiling:*), Bash(memory:*)"
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(profiling:*), Bash(memory:*)
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [performance, detecting-memory]
+tags:
+- performance
+- detecting-memory
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Memory Leak Detector
 

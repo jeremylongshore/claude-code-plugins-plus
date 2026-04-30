@@ -1,17 +1,23 @@
 ---
 name: database-documentation-gen
-description: |
-  Process use when you need to work with database documentation.
-  This skill provides automated documentation generation with comprehensive guidance and automation.
+description: 'Process use when you need to work with database documentation.
+
+  This skill provides automated documentation generation with comprehensive guidance
+  and automation.
+
   Trigger with phrases like "generate docs", "document schema",
+
   or "create database documentation".
 
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*), Bash(mongosh:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [database, database-documentation]
+tags:
+- database
+- database-documentation
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Database Documentation Generator
 

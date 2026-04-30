@@ -1,18 +1,30 @@
 ---
 name: backtesting-trading-strategies
-description: |
-  Backtest crypto and traditional trading strategies against historical data.
-  Calculates performance metrics (Sharpe, Sortino, max drawdown), generates equity curves,
+description: 'Backtest crypto and traditional trading strategies against historical
+  data.
+
+  Calculates performance metrics (Sharpe, Sortino, max drawdown), generates equity
+  curves,
+
   and optimizes strategy parameters. Use when user wants to test a trading strategy,
+
   validate signals, or compare approaches.
-  Trigger with phrases like "backtest strategy", "test trading strategy", "historical performance",
+
+  Trigger with phrases like "backtest strategy", "test trading strategy", "historical
+  performance",
+
   "simulate trades", "optimize parameters", or "validate signals".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(python:*)
 version: 2.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [crypto, testing, performance]
+tags:
+- crypto
+- testing
+- performance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Backtesting Trading Strategies
 

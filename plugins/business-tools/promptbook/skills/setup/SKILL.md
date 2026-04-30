@@ -1,17 +1,20 @@
 ---
 name: setup
-description: |
-  Set up Promptbook — connect your account to start tracking builds.
-  Use when the user wants to enable session analytics on promptbook.gg.
-  Trigger with "/setup" or "set up promptbook".
+description: "Set up Promptbook \u2014 connect your account to start tracking builds.\n\
+  Use when the user wants to enable session analytics on promptbook.gg.\nTrigger with\
+  \ \"/setup\" or \"set up promptbook\".\n"
 version: 1.4.0
 author: Promptbook <contact@promptbook.gg>
 license: MIT
-allowed-tools: Bash(curl:*), Bash(open:*), Bash(xdg-open:*), Bash(mkdir:*), Bash(cat:*), Bash(chmod:*), Bash(node:*), Bash(nohup:*), Bash(find:*), Bash(wc:*), Read
-compatible-with: claude-code
-tags: [analytics, telemetry, setup, onboarding]
+allowed-tools: Bash(curl:*), Bash(open:*), Bash(xdg-open:*), Bash(mkdir:*), Bash(cat:*),
+  Bash(chmod:*), Bash(node:*), Bash(nohup:*), Bash(find:*), Bash(wc:*), Read
+tags:
+- analytics
+- telemetry
+- setup
+- onboarding
+compatibility: Designed for Claude Code
 ---
-
 # Promptbook Setup
 
 ## Overview

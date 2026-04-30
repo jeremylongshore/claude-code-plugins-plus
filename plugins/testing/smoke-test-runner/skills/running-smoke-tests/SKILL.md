@@ -1,16 +1,22 @@
 ---
 name: running-smoke-tests
-description: |
-  Execute fast smoke tests validating critical functionality after deployment.
-  Use when performing specialized testing.
-  Trigger with phrases like "run smoke tests", "quick validation", or "test critical paths".
+description: 'Execute fast smoke tests validating critical functionality after deployment.
 
+  Use when performing specialized testing.
+
+  Trigger with phrases like "run smoke tests", "quick validation", or "test critical
+  paths".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:smoke-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [testing, deployment, smoke-tests]
+tags:
+- testing
+- deployment
+- smoke-tests
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Smoke Test Runner
 

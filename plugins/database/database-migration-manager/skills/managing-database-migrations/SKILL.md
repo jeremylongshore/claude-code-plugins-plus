@@ -1,17 +1,24 @@
 ---
 name: managing-database-migrations
-description: |
-  Process use when you need to work with database migrations.
-  This skill provides schema migration management with comprehensive guidance and automation.
+description: 'Process use when you need to work with database migrations.
+
+  This skill provides schema migration management with comprehensive guidance and
+  automation.
+
   Trigger with phrases like "create migration", "run migrations",
+
   or "manage schema versions".
 
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*), Bash(mongosh:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [database, migration, database-migrations]
+tags:
+- database
+- migration
+- database-migrations
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Database Migration Manager
 

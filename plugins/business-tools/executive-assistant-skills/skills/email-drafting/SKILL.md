@@ -1,12 +1,18 @@
 ---
 name: email-drafting
-description: Draft email replies for Gonto's Gmail accounts (m@gon.to, gonto@hypergrowthpartners.com). Handles intro acceptances, scheduling intent, thanks/ack, and positive short replies. Use when user asks to draft or reply to an email, or when Gmail webhook triggers arrive for auto-draft classification. Draft-only mode — never sends automatically.
+description: "Draft email replies for Gonto's Gmail accounts (m@gon.to, gonto@hypergrowthpartners.com).\
+  \ Handles intro acceptances, scheduling intent, thanks/ack, and positive short replies.\
+  \ Use when user asks to draft or reply to an email, or when Gmail webhook triggers\
+  \ arrive for auto-draft classification. Draft-only mode \u2014 never sends automatically."
 version: 1.0.0
 license: MIT
-author: "Martin Gontovnikas <martin@hypergrowthpartners.com>"
-compatible-with: claude-code
-tags: [business, webhooks, email-drafting]
+author: Martin Gontovnikas <martin@hypergrowthpartners.com>
+tags:
+- business
+- webhooks
+- email-drafting
 allowed-tools: Read, Bash(gog:*), Bash(mcporter:*), Bash(python3:*), Glob, Grep, Write
+compatibility: Designed for Claude Code
 ---
 # Email Drafting Skill
 
