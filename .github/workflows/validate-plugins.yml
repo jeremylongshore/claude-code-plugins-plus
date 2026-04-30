@@ -12,6 +12,13 @@ on:
       - '.claude/**'
       - 'workspace/**'
       - '.github/workflows/validate-plugins.yml'
+      - 'eslint.config.mjs'
+      - '.prettierrc.json'
+      - '.prettierignore'
+      - '.lintstagedrc.json'
+      - 'commitlint.config.js'
+      - '.husky/**'
+      - 'package.json'
   push:
     branches: [ main ]
 
@@ -20,6 +27,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Install dependencies (root)
+        run: pnpm install --frozen-lockfile
+
+      # TODO(cleanup-pr-followup): These run in reporting mode (|| true) until the
+      # ~5 pre-existing ESLint errors and ~36 prettier formatting deltas are
+      # cleaned up in a follow-up PR. Once clean, drop the `|| true` so CI blocks
+      # on style regressions. Tracking: see #582 / #584 / Phase 5 PR2.
+      - name: Lint (root ESLint, reporting mode)
+        run: pnpm run lint:root || true
+
+      - name: Format check (root Prettier, reporting mode)
+        run: pnpm run format:check || true
 
       - name: Sync CLI marketplace catalog
         run: |

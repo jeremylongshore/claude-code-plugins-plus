@@ -13,7 +13,10 @@
     "sync-marketplace": "node scripts/sync-marketplace.cjs",
     "build-cowork": "node scripts/build-cowork-zips.mjs",
     "update-metrics": "node scripts/update-metrics.mjs",
-    "verify": "node scripts/run-verification-pipeline.mjs"
+    "verify": "node scripts/run-verification-pipeline.mjs",
+    "lint:root": "eslint .",
+    "format:check": "prettier --check 'scripts/**/*.{js,mjs,cjs,ts}' '*.{js,mjs,cjs,ts,json,md,yml,yaml}' 'packages/cli/src/**/*.{ts,json}'",
+    "prepare": "husky"
   },
   "keywords": [
     "claude-code",
@@ -28,13 +31,18 @@
     "pnpm": ">=9.0.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "^20.5.2",
+    "@commitlint/config-conventional": "^20.5.0",
+    "@eslint/js": "^9.39.2",
     "@types/node": "^20.19.27",
     "archiver": "^7.0.1",
     "eslint": "^9.39.2",
     "husky": "^9.1.7",
     "js-yaml": "^4.1.1",
+    "lint-staged": "^16.4.0",
     "prettier": "^3.7.4",
     "typescript": "^5.5.0",
+    "typescript-eslint": "^8.59.1",
     "vitest": "^2.0.0"
   }
 }

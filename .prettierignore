@@ -1,0 +1,55 @@
+# Dependency / build output
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+.astro/
+**/.astro/
+coverage/
+**/coverage/
+
+# Lockfiles + archives
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+*.lock
+*.tgz
+
+# Excluded trees (per .gitignore intent)
+backups/
+archive/
+_PRESERVE_MIGRATION/
+.firebase/
+.beads/
+.husky/_/
+.venv/
+workspace/
+redirects/
+planned-skills/
+claudes-docs/
+
+# Auto-generated catalogs (never hand-edit, never reformat)
+.claude-plugin/marketplace.json
+marketplace/src/data/catalog.json
+marketplace/src/data/skills-catalog.json
+marketplace/src/data/unified-search-index.json
+marketplace/src/data/cowork-manifest.json
+marketplace/src/data/npm-stats.json
+
+# Out-of-scope subtrees (own formatters / large surface area — handle in follow-up PRs)
+marketplace/
+plugins/
+freshie/
+functions/
+packages/analytics-daemon/
+packages/analytics-dashboard/
+packages/plugin-validator/
+tests/e2e/
+
+# Python
+*.py
+**/*.py
+
+# Misc generated
+*.log
+asset_generation*.log
