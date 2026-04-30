@@ -1,18 +1,25 @@
 ---
 name: appfolio-install-auth
-description: |
-  Configure AppFolio Stack API authentication with OAuth 2.0.
+description: 'Configure AppFolio Stack API authentication with OAuth 2.0.
+
   Use when setting up property management API access, registering as an
+
   AppFolio Stack partner, or configuring client credentials for API calls.
+
   Trigger: "install appfolio", "setup appfolio", "appfolio auth", "appfolio API key".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, property-management, appfolio, real-estate]
-compatible-with: claude-code
+tags:
+- saas
+- property-management
+- appfolio
+- real-estate
+compatibility: Designed for Claude Code
 ---
-
 # AppFolio Install & Auth
 
 ## Overview

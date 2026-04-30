@@ -1,19 +1,28 @@
 ---
 name: alchemy-common-errors
-description: |
-  Diagnose and fix common Alchemy SDK and Web3 API errors.
+description: 'Diagnose and fix common Alchemy SDK and Web3 API errors.
+
   Use when encountering rate limits, RPC failures, invalid parameters,
+
   or blockchain query errors with the Alchemy SDK.
+
   Trigger: "alchemy error", "alchemy not working", "alchemy 429",
+
   "alchemy debug", "fix alchemy issue".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, blockchain, web3, alchemy, troubleshooting]
-compatible-with: claude-code
+tags:
+- saas
+- blockchain
+- web3
+- alchemy
+- troubleshooting
+compatibility: Designed for Claude Code
 ---
-
 # Alchemy Common Errors
 
 ## Overview

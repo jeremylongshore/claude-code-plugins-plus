@@ -1,17 +1,26 @@
 ---
 name: clay-deploy-integration
-description: |
-  Deploy Clay-powered applications to Vercel, Cloud Run, or Docker with proper secrets management.
+description: 'Deploy Clay-powered applications to Vercel, Cloud Run, or Docker with
+  proper secrets management.
+
   Use when deploying Clay webhook receivers, enrichment pipelines,
+
   or CRM sync services to production infrastructure.
+
   Trigger with phrases like "deploy clay", "clay Vercel", "clay production deploy",
+
   "clay Cloud Run", "clay Docker", "host clay integration".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(gcloud:*), Bash(docker:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clay, deployment]
+tags:
+- saas
+- clay
+- deployment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clay Deploy Integration
 

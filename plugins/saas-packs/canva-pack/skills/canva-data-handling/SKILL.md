@@ -1,19 +1,27 @@
 ---
 name: canva-data-handling
-description: |
-  Implement Canva Connect API data handling, PII protection, and GDPR/CCPA compliance.
+description: 'Implement Canva Connect API data handling, PII protection, and GDPR/CCPA
+  compliance.
+
   Use when handling user design data, implementing data retention policies,
+
   or ensuring privacy compliance for Canva integrations.
+
   Trigger with phrases like "canva data", "canva PII",
+
   "canva GDPR", "canva data retention", "canva privacy", "canva CCPA".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, canva]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- canva
+compatibility: Designed for Claude Code
 ---
-
 # Canva Data Handling
 
 ## Overview

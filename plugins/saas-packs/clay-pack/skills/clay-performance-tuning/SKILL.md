@@ -1,17 +1,27 @@
 ---
 name: clay-performance-tuning
-description: |
-  Optimize Clay table enrichment throughput, reduce processing time, and improve hit rates.
+description: 'Optimize Clay table enrichment throughput, reduce processing time, and
+  improve hit rates.
+
   Use when experiencing slow enrichment, poor email find rates,
+
   or needing to process large tables efficiently.
+
   Trigger with phrases like "clay performance", "optimize clay", "clay slow",
+
   "clay throughput", "clay fast enrichment", "clay batch optimization".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clay, api, performance]
+tags:
+- saas
+- clay
+- api
+- performance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clay Performance Tuning
 

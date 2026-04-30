@@ -1,19 +1,26 @@
 ---
 name: adobe-multi-env-setup
-description: |
-  Configure Adobe OAuth credentials and API access across development,
+description: 'Configure Adobe OAuth credentials and API access across development,
+
   staging, and production environments with separate Developer Console
+
   projects, secret managers, and environment-specific scoping.
+
   Trigger with phrases like "adobe environments", "adobe staging",
+
   "adobe dev prod", "adobe environment setup", "adobe config by env".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, adobe]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- adobe
+compatibility: Designed for Claude Code
 ---
-
 # Adobe Multi-Environment Setup
 
 ## Overview

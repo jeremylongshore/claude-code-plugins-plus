@@ -1,19 +1,27 @@
 ---
 name: apify-prod-checklist
-description: |
-  Production readiness checklist for Apify Actor deployments.
+description: 'Production readiness checklist for Apify Actor deployments.
+
   Use when deploying Actors to production, preparing for launch,
+
   or validating Actor configuration before going live.
+
   Trigger: "apify production", "deploy actor to prod",
+
   "apify go-live", "apify launch checklist", "actor production ready".
+
+  '
 allowed-tools: Read, Bash(apify:*), Bash(curl:*), Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, scraping, automation, apify]
-compatible-with: claude-code
+tags:
+- saas
+- scraping
+- automation
+- apify
+compatibility: Designed for Claude Code
 ---
-
 # Apify Production Checklist
 
 ## Overview

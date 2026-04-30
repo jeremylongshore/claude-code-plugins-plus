@@ -1,19 +1,26 @@
 ---
 name: adobe-architecture-variants
-description: |
-  Choose and implement Adobe architecture blueprints: standalone SDK integration,
+description: 'Choose and implement Adobe architecture blueprints: standalone SDK integration,
+
   Adobe App Builder serverless, and dedicated microservice with event-driven
+
   Firefly/PDF pipelines. Decision matrix based on team size and throughput.
+
   Trigger with phrases like "adobe architecture", "adobe blueprint",
+
   "adobe app builder vs standalone", "adobe microservice".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, adobe]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- adobe
+compatibility: Designed for Claude Code
 ---
-
 # Adobe Architecture Variants
 
 ## Overview

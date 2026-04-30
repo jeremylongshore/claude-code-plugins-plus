@@ -1,19 +1,22 @@
 ---
 name: clade-policy-guardrails
-description: |
-  Implement content safety guardrails for Claude — input filtering,
-  Use when working with policy-guardrails patterns.
-  output validation, usage policies, and prompt injection defense.
-  Trigger with "anthropic content policy", "claude safety", "claude guardrails",
-  "anthropic prompt injection", "claude content filtering".
+description: "Implement content safety guardrails for Claude \u2014 input filtering,\n\
+  Use when working with policy-guardrails patterns.\noutput validation, usage policies,\
+  \ and prompt injection defense.\nTrigger with \"anthropic content policy\", \"claude\
+  \ safety\", \"claude guardrails\",\n\"anthropic prompt injection\", \"claude content\
+  \ filtering\".\n"
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code
-tags: [saas, anthropic, claude, safety, guardrails]
+tags:
+- saas
+- anthropic
+- claude
+- safety
+- guardrails
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Policy & Guardrails
 
 ## Overview

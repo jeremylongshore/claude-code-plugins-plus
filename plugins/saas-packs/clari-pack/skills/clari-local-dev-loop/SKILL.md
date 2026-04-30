@@ -1,19 +1,27 @@
 ---
 name: clari-local-dev-loop
-description: |
-  Set up local development for Clari API integrations with mock data.
+description: 'Set up local development for Clari API integrations with mock data.
+
   Use when building forecast dashboards, testing export pipelines,
+
   or iterating on Clari data transformations locally.
+
   Trigger with phrases like "clari dev setup", "clari local testing",
+
   "develop with clari", "clari mock data".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(python3:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, revenue-intelligence, forecasting, clari]
-compatible-with: claude-code
+tags:
+- saas
+- revenue-intelligence
+- forecasting
+- clari
+compatibility: Designed for Claude Code
 ---
-
 # Clari Local Dev Loop
 
 ## Overview

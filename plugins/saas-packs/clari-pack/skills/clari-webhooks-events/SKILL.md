@@ -1,19 +1,27 @@
 ---
 name: clari-webhooks-events
-description: |
-  Monitor Clari forecast changes using export job polling and change detection.
+description: 'Monitor Clari forecast changes using export job polling and change detection.
+
   Use when tracking forecast submission changes, building alerts
+
   for significant forecast movements, or syncing Clari data in near-real-time.
+
   Trigger with phrases like "clari webhooks", "clari notifications",
+
   "clari forecast alerts", "clari change detection".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(python3:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, revenue-intelligence, forecasting, clari]
-compatible-with: claude-code
+tags:
+- saas
+- revenue-intelligence
+- forecasting
+- clari
+compatibility: Designed for Claude Code
 ---
-
 # Clari Webhooks & Events
 
 ## Overview

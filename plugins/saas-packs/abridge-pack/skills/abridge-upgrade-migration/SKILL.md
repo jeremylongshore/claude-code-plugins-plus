@@ -1,19 +1,28 @@
 ---
 name: abridge-upgrade-migration
-description: |
-  Plan and execute Abridge integration upgrades and EHR migration procedures.
+description: 'Plan and execute Abridge integration upgrades and EHR migration procedures.
+
   Use when upgrading Abridge API versions, migrating between EHR systems,
+
   or handling breaking changes in clinical documentation workflows.
+
   Trigger: "abridge upgrade", "abridge migration", "abridge version update",
+
   "migrate abridge EHR", "abridge breaking changes".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, healthcare, ai, abridge, migration]
-compatible-with: claude-code
+tags:
+- saas
+- healthcare
+- ai
+- abridge
+- migration
+compatibility: Designed for Claude Code
 ---
-
 # Abridge Upgrade & Migration
 
 ## Overview

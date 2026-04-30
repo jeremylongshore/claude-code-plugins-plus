@@ -1,19 +1,28 @@
 ---
 name: abridge-webhooks-events
-description: |
-  Implement Abridge webhook handling for clinical documentation events.
+description: 'Implement Abridge webhook handling for clinical documentation events.
+
   Use when receiving note completion notifications, encounter status changes,
+
   provider enrollment events, or quality alert callbacks from Abridge.
+
   Trigger: "abridge webhook", "abridge events", "abridge notifications",
+
   "abridge note completed event", "abridge encounter event".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, healthcare, ai, abridge, webhooks]
-compatible-with: claude-code
+tags:
+- saas
+- healthcare
+- ai
+- abridge
+- webhooks
+compatibility: Designed for Claude Code
 ---
-
 # Abridge Webhooks & Events
 
 ## Overview

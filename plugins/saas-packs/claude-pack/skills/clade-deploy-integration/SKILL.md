@@ -1,19 +1,28 @@
 ---
 name: clade-deploy-integration
-description: |
-  Deploy Claude-powered applications to Vercel, Fly.io, and Cloud Run
+description: 'Deploy Claude-powered applications to Vercel, Fly.io, and Cloud Run
+
   Use when working with deploy-integration patterns.
+
   with proper secrets management and streaming support.
+
   Trigger with "deploy anthropic", "claude production deploy",
+
   "anthropic vercel", "deploy claude app".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code
-tags: [saas, anthropic, claude, deploy, production]
+tags:
+- saas
+- anthropic
+- claude
+- deploy
+- production
+compatibility: Designed for Claude Code
 ---
-
 # Deploy Anthropic Integration
 
 ## Overview

@@ -1,16 +1,21 @@
 ---
 name: appfolio-reference-architecture
-description: |
-  Reference architecture for AppFolio property management integration.
+description: 'Reference architecture for AppFolio property management integration.
+
   Trigger: "appfolio architecture".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, property-management, appfolio, real-estate]
-compatible-with: claude-code
+tags:
+- saas
+- property-management
+- appfolio
+- real-estate
+compatibility: Designed for Claude Code
 ---
-
 # AppFolio Reference Architecture
 
 ## Overview

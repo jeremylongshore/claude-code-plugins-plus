@@ -1,19 +1,26 @@
 ---
 name: adobe-advanced-troubleshooting
-description: |
-  Apply advanced debugging techniques for Adobe API issues: IMS token
+description: 'Apply advanced debugging techniques for Adobe API issues: IMS token
+
   introspection, Firefly job failure analysis, PDF Services error
+
   codes, and network-layer diagnostics for Adobe endpoints.
+
   Trigger with phrases like "adobe hard bug", "adobe mystery error",
+
   "adobe impossible to debug", "difficult adobe issue", "adobe deep debug".
+
+  '
 allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*), Bash(tcpdump:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, adobe]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- adobe
+compatibility: Designed for Claude Code
 ---
-
 # Adobe Advanced Troubleshooting
 
 ## Overview

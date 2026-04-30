@@ -1,19 +1,26 @@
 ---
 name: anth-local-dev-loop
-description: |
-  Configure a local development workflow for Anthropic Claude API projects.
+description: 'Configure a local development workflow for Anthropic Claude API projects.
+
   Use when setting up dev environment, configuring hot reload,
+
   or establishing a fast iteration cycle with the Messages API.
+
   Trigger with phrases like "anthropic local dev", "claude dev setup",
+
   "anthropic development workflow", "test claude locally".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, anthropic]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- anthropic
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Local Dev Loop
 
 ## Overview

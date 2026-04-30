@@ -1,19 +1,28 @@
 ---
 name: apify-webhooks-events
-description: |
-  Implement Apify webhooks for Actor run notifications and event-driven pipelines.
+description: 'Implement Apify webhooks for Actor run notifications and event-driven
+  pipelines.
+
   Use when setting up run completion alerts, building event-driven scraping pipelines,
+
   or configuring ad-hoc webhooks for individual runs.
+
   Trigger: "apify webhook", "apify events", "actor run notification",
+
   "apify run succeeded webhook", "apify ad-hoc webhook".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, scraping, automation, apify]
-compatible-with: claude-code
+tags:
+- saas
+- scraping
+- automation
+- apify
+compatibility: Designed for Claude Code
 ---
-
 # Apify Webhooks & Events
 
 ## Overview

@@ -1,19 +1,29 @@
 ---
 name: clade-embeddings-search
-description: |
-  Implement tool use (function calling) with Claude to let it execute actions,
+description: 'Implement tool use (function calling) with Claude to let it execute
+  actions,
+
   Use when working with embeddings-search patterns.
+
   query databases, call APIs, and interact with external systems.
+
   Trigger with "anthropic tool use", "claude function calling", "claude tools",
+
   "anthropic structured output with tools".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code
-tags: [saas, anthropic, claude, tool-use, function-calling]
+tags:
+- saas
+- anthropic
+- claude
+- tool-use
+- function-calling
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Tool Use (Function Calling)
 
 ## Overview

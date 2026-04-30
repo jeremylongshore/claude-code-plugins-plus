@@ -1,19 +1,27 @@
 ---
 name: apify-local-dev-loop
-description: |
-  Set up local Apify Actor development with Apify CLI and Crawlee.
+description: 'Set up local Apify Actor development with Apify CLI and Crawlee.
+
   Use when creating Actors locally, testing with apify run,
+
   or establishing a fast develop-test-deploy cycle.
+
   Trigger: "apify dev setup", "apify local development",
+
   "develop actor locally", "apify run local".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(apify:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, scraping, automation, apify]
-compatible-with: claude-code
+tags:
+- saas
+- scraping
+- automation
+- apify
+compatibility: Designed for Claude Code
 ---
-
 # Apify Local Dev Loop
 
 ## Overview

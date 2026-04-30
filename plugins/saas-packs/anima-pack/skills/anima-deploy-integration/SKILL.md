@@ -1,18 +1,26 @@
 ---
 name: anima-deploy-integration
-description: |
-  Deploy Anima design-to-code service as a backend API endpoint.
+description: 'Deploy Anima design-to-code service as a backend API endpoint.
+
   Use when building a design-to-code microservice, deploying Anima SDK
+
   as a serverless function, or creating an internal design tool API.
+
   Trigger: "deploy anima", "anima service deploy", "anima serverless".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(gcloud:*), Bash(docker:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, figma, anima, deployment]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- figma
+- anima
+- deployment
+compatibility: Designed for Claude Code
 ---
-
 # Anima Deploy Integration
 
 ## Overview

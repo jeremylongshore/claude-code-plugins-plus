@@ -1,19 +1,27 @@
 ---
 name: canva-reference-architecture
-description: |
-  Implement Canva Connect API reference architecture with best-practice project layout.
+description: 'Implement Canva Connect API reference architecture with best-practice
+  project layout.
+
   Use when designing new Canva integrations, reviewing project structure,
+
   or establishing architecture standards for Canva applications.
+
   Trigger with phrases like "canva architecture", "canva project structure",
+
   "how to organize canva", "canva layout", "canva reference".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, canva]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- canva
+compatibility: Designed for Claude Code
 ---
-
 # Canva Reference Architecture
 
 ## Overview

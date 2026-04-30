@@ -1,19 +1,28 @@
 ---
 name: assemblyai-rate-limits
-description: |
-  Implement AssemblyAI rate limiting, backoff, and queue-based throttling.
+description: 'Implement AssemblyAI rate limiting, backoff, and queue-based throttling.
+
   Use when handling rate limit errors, implementing retry logic,
+
   or managing concurrent transcription throughput.
+
   Trigger with phrases like "assemblyai rate limit", "assemblyai throttling",
+
   "assemblyai 429", "assemblyai retry", "assemblyai backoff".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, speech-to-text, assemblyai, transcription]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- speech-to-text
+- assemblyai
+- transcription
+compatibility: Designed for Claude Code
 ---
-
 # AssemblyAI Rate Limits
 
 ## Overview

@@ -1,19 +1,27 @@
 ---
 name: canva-architecture-variants
-description: |
-  Choose and implement Canva Connect API architecture blueprints for different scales.
+description: 'Choose and implement Canva Connect API architecture blueprints for different
+  scales.
+
   Use when designing new Canva integrations, choosing between monolith/service/microservice
+
   architectures, or planning migration paths.
+
   Trigger with phrases like "canva architecture", "canva blueprint",
+
   "how to structure canva", "canva project layout", "canva microservice".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, canva]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- canva
+compatibility: Designed for Claude Code
 ---
-
 # Canva Architecture Variants
 
 ## Overview

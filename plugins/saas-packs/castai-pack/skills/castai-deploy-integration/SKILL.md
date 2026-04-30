@@ -1,19 +1,28 @@
 ---
 name: castai-deploy-integration
-description: |
-  Deploy CAST AI across multi-cloud Kubernetes clusters with Terraform modules.
+description: 'Deploy CAST AI across multi-cloud Kubernetes clusters with Terraform
+  modules.
+
   Use when onboarding EKS, GKE, or AKS clusters to CAST AI using
+
   infrastructure-as-code patterns.
+
   Trigger with phrases like "deploy cast ai", "cast ai eks",
+
   "cast ai gke", "cast ai aks", "cast ai terraform module".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(terraform:*), Bash(helm:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, kubernetes, cost-optimization, castai]
-compatible-with: claude-code
+tags:
+- saas
+- kubernetes
+- cost-optimization
+- castai
+compatibility: Designed for Claude Code
 ---
-
 # CAST AI Deploy Integration
 
 ## Overview

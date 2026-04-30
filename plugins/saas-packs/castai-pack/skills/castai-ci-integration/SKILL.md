@@ -1,19 +1,27 @@
 ---
 name: castai-ci-integration
-description: |
-  Integrate CAST AI policy validation and cost checks into CI/CD pipelines.
+description: 'Integrate CAST AI policy validation and cost checks into CI/CD pipelines.
+
   Use when adding CAST AI savings verification to GitHub Actions,
+
   validating Terraform plans, or gating deployments on cost thresholds.
+
   Trigger with phrases like "cast ai CI", "cast ai github actions",
+
   "cast ai terraform CI", "cast ai pipeline".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, kubernetes, cost-optimization, castai]
-compatible-with: claude-code
+tags:
+- saas
+- kubernetes
+- cost-optimization
+- castai
+compatibility: Designed for Claude Code
 ---
-
 # CAST AI CI Integration
 
 ## Overview

@@ -1,19 +1,26 @@
 ---
 name: algolia-migration-deep-dive
-description: |
-  Migrate to Algolia from Elasticsearch, Typesense, or Meilisearch.
+description: 'Migrate to Algolia from Elasticsearch, Typesense, or Meilisearch.
+
   Covers data migration, query translation, replaceAllObjects zero-downtime swap,
+
   and strangler fig traffic shifting.
+
   Trigger: "migrate to algolia", "switch to algolia", "algolia migration",
+
   "elasticsearch to algolia", "replace search engine", "algolia replatform".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, algolia]
-compatible-with: claude-code
+tags:
+- saas
+- search
+- algolia
+compatibility: Designed for Claude Code
 ---
-
 # Algolia Migration Deep Dive
 
 ## Overview

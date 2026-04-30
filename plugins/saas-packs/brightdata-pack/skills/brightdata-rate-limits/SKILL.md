@@ -1,19 +1,27 @@
 ---
 name: brightdata-rate-limits
-description: |
-  Implement Bright Data rate limiting, backoff, and idempotency patterns.
+description: 'Implement Bright Data rate limiting, backoff, and idempotency patterns.
+
   Use when handling rate limit errors, implementing retry logic,
+
   or optimizing API request throughput for Bright Data.
+
   Trigger with phrases like "brightdata rate limit", "brightdata throttling",
+
   "brightdata 429", "brightdata retry", "brightdata backoff".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, scraping, data, brightdata]
-compatible-with: claude-code
+tags:
+- saas
+- scraping
+- data
+- brightdata
+compatibility: Designed for Claude Code
 ---
-
 # Bright Data Rate Limits
 
 ## Overview

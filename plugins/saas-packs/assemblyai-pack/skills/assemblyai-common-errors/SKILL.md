@@ -1,19 +1,28 @@
 ---
 name: assemblyai-common-errors
-description: |
-  Diagnose and fix AssemblyAI common errors and exceptions.
+description: 'Diagnose and fix AssemblyAI common errors and exceptions.
+
   Use when encountering AssemblyAI errors, debugging failed transcriptions,
+
   or troubleshooting streaming and LeMUR issues.
+
   Trigger with phrases like "assemblyai error", "fix assemblyai",
+
   "assemblyai not working", "debug assemblyai", "transcription failed".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, speech-to-text, assemblyai, transcription]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- speech-to-text
+- assemblyai
+- transcription
+compatibility: Designed for Claude Code
 ---
-
 # AssemblyAI Common Errors
 
 ## Overview

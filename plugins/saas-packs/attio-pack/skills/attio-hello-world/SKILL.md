@@ -1,19 +1,26 @@
 ---
 name: attio-hello-world
-description: |
-  Make your first Attio API calls -- list objects, create a person,
+description: 'Make your first Attio API calls -- list objects, create a person,
+
   query companies, and read attributes.
+
   Use when starting a new Attio integration or learning the API.
+
   Trigger: "attio hello world", "attio example", "first attio call",
+
   "attio quick start", "try attio API".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(npx:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, attio]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- attio
+compatibility: Designed for Claude Code
 ---
-
 # Attio Hello World
 
 ## Overview

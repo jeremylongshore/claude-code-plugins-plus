@@ -1,19 +1,28 @@
 ---
 name: apify-cost-tuning
-description: |
-  Optimize Apify platform costs through memory tuning, compute unit management, and proxy budgeting.
+description: 'Optimize Apify platform costs through memory tuning, compute unit management,
+  and proxy budgeting.
+
   Use when analyzing Apify billing, reducing Actor run costs,
+
   or implementing usage monitoring and budget alerts.
+
   Trigger: "apify cost", "apify billing", "reduce apify costs",
+
   "apify pricing", "apify expensive", "apify budget", "compute units".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, scraping, automation, apify]
-compatible-with: claude-code
+tags:
+- saas
+- scraping
+- automation
+- apify
+compatibility: Designed for Claude Code
 ---
-
 # Apify Cost Tuning
 
 ## Overview

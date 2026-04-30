@@ -1,19 +1,26 @@
 ---
 name: adobe-webhooks-events
-description: |
-  Implement Adobe I/O Events webhook registration, RSA-SHA256 signature
+description: 'Implement Adobe I/O Events webhook registration, RSA-SHA256 signature
+
   verification, challenge handshake, and event-driven architectures
+
   with Creative Cloud, Experience Platform, and Firefly Services events.
+
   Trigger with phrases like "adobe webhook", "adobe events",
+
   "adobe I/O events", "adobe event registration", "adobe notifications".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, adobe]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- adobe
+compatibility: Designed for Claude Code
 ---
-
 # Adobe Webhooks & Events
 
 ## Overview

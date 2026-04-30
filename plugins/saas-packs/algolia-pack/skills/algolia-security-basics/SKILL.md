@@ -1,18 +1,25 @@
 ---
 name: algolia-security-basics
-description: |
-  Apply Algolia security best practices: API key scoping, secured API keys,
+description: 'Apply Algolia security best practices: API key scoping, secured API
+  keys,
+
   frontend vs backend key separation, and key rotation.
+
   Trigger: "algolia security", "algolia API key security", "secure algolia",
+
   "algolia secrets", "algolia key rotation", "algolia secured key".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, algolia]
-compatible-with: claude-code
+tags:
+- saas
+- search
+- algolia
+compatibility: Designed for Claude Code
 ---
-
 # Algolia Security Basics
 
 ## Overview

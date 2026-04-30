@@ -1,19 +1,26 @@
 ---
 name: adobe-observability
-description: |
-  Set up comprehensive observability for Adobe API integrations with
+description: 'Set up comprehensive observability for Adobe API integrations with
+
   Prometheus metrics, OpenTelemetry traces, structured logging, and
+
   alert rules covering Firefly, PDF Services, and Photoshop APIs.
+
   Trigger with phrases like "adobe monitoring", "adobe metrics",
+
   "adobe observability", "monitor adobe", "adobe alerts", "adobe tracing".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, adobe]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- adobe
+compatibility: Designed for Claude Code
 ---
-
 # Adobe Observability
 
 ## Overview

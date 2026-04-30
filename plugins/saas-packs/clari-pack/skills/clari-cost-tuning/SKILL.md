@@ -1,19 +1,27 @@
 ---
 name: clari-cost-tuning
-description: |
-  Optimize Clari API usage and integration costs.
+description: 'Optimize Clari API usage and integration costs.
+
   Use when reducing API call volume, optimizing export frequency,
+
   or evaluating Clari license utilization.
+
   Trigger with phrases like "clari cost", "clari api usage",
+
   "reduce clari calls", "clari optimization".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, revenue-intelligence, forecasting, clari]
-compatible-with: claude-code
+tags:
+- saas
+- revenue-intelligence
+- forecasting
+- clari
+compatibility: Designed for Claude Code
 ---
-
 # Clari Cost Tuning
 
 ## Overview

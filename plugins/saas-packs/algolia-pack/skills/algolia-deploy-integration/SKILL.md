@@ -1,18 +1,24 @@
 ---
 name: algolia-deploy-integration
-description: |
-  Deploy Algolia-powered apps to Vercel, Fly.io, and Cloud Run with proper
+description: 'Deploy Algolia-powered apps to Vercel, Fly.io, and Cloud Run with proper
+
   API key management and InstantSearch frontend integration.
+
   Trigger: "deploy algolia", "algolia Vercel", "algolia production deploy",
+
   "algolia Cloud Run", "algolia Fly.io", "algolia InstantSearch".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*), Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, algolia]
-compatible-with: claude-code
+tags:
+- saas
+- search
+- algolia
+compatibility: Designed for Claude Code
 ---
-
 # Algolia Deploy Integration
 
 ## Overview

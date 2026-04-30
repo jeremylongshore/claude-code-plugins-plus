@@ -1,17 +1,26 @@
 ---
 name: clay-reliability-patterns
-description: |
-  Build fault-tolerant Clay integrations with circuit breakers, dead letter queues, and graceful degradation.
+description: 'Build fault-tolerant Clay integrations with circuit breakers, dead letter
+  queues, and graceful degradation.
+
   Use when building production Clay pipelines that need resilience,
+
   implementing retry strategies, or adding fault tolerance to enrichment workflows.
+
   Trigger with phrases like "clay reliability", "clay circuit breaker", "clay resilience",
+
   "clay fallback", "clay fault tolerance", "clay dead letter queue".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clay, clay-reliability]
+tags:
+- saas
+- clay
+- clay-reliability
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clay Reliability Patterns
 

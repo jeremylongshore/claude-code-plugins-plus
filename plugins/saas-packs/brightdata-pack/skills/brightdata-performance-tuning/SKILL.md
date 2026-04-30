@@ -1,19 +1,28 @@
 ---
 name: brightdata-performance-tuning
-description: |
-  Optimize Bright Data API performance with caching, batching, and connection pooling.
+description: 'Optimize Bright Data API performance with caching, batching, and connection
+  pooling.
+
   Use when experiencing slow API responses, implementing caching strategies,
+
   or optimizing request throughput for Bright Data integrations.
+
   Trigger with phrases like "brightdata performance", "optimize brightdata",
+
   "brightdata latency", "brightdata caching", "brightdata slow", "brightdata batch".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, scraping, data, brightdata]
-compatible-with: claude-code
+tags:
+- saas
+- scraping
+- data
+- brightdata
+compatibility: Designed for Claude Code
 ---
-
 # Bright Data Performance Tuning
 
 ## Overview

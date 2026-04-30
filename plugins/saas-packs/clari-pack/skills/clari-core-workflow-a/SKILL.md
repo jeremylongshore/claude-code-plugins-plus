@@ -1,19 +1,27 @@
 ---
 name: clari-core-workflow-a
-description: |
-  Build a Clari forecast export pipeline to your data warehouse.
+description: 'Build a Clari forecast export pipeline to your data warehouse.
+
   Use when exporting forecast calls, quota data, and CRM totals
+
   from Clari to Snowflake, BigQuery, or a local database.
+
   Trigger with phrases like "clari forecast export", "clari data pipeline",
+
   "clari to snowflake", "clari to bigquery", "export clari data".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(python3:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, revenue-intelligence, forecasting, clari]
-compatible-with: claude-code
+tags:
+- saas
+- revenue-intelligence
+- forecasting
+- clari
+compatibility: Designed for Claude Code
 ---
-
 # Clari Core Workflow: Forecast Export Pipeline
 
 ## Overview

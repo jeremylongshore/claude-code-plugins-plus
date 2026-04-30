@@ -1,17 +1,28 @@
 ---
 name: clay-load-scale
-description: |
-  Scale Clay enrichment pipelines for high-volume processing (10K-100K+ leads/month).
+description: 'Scale Clay enrichment pipelines for high-volume processing (10K-100K+
+  leads/month).
+
   Use when planning capacity for large enrichment runs, optimizing batch processing,
+
   or designing high-volume Clay architectures.
+
   Trigger with phrases like "clay scale", "clay high volume", "clay large batch",
+
   "clay capacity planning", "clay 100k leads", "clay bulk enrichment".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clay, testing, performance, scaling]
+tags:
+- saas
+- clay
+- testing
+- performance
+- scaling
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clay Load & Scale
 

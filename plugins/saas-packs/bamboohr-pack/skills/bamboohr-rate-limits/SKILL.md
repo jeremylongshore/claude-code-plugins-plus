@@ -1,19 +1,27 @@
 ---
 name: bamboohr-rate-limits
-description: |
-  Implement BambooHR rate limiting, backoff, and request optimization.
+description: 'Implement BambooHR rate limiting, backoff, and request optimization.
+
   Use when handling 429/503 rate limit errors, implementing retry logic,
+
   or optimizing API request throughput for BambooHR.
+
   Trigger with phrases like "bamboohr rate limit", "bamboohr throttling",
+
   "bamboohr 429", "bamboohr 503", "bamboohr retry", "bamboohr backoff".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hr, bamboohr, rate-limiting]
-compatible-with: claude-code
+tags:
+- saas
+- hr
+- bamboohr
+- rate-limiting
+compatibility: Designed for Claude Code
 ---
-
 # BambooHR Rate Limits
 
 ## Overview

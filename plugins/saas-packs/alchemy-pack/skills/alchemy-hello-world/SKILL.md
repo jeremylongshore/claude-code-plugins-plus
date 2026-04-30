@@ -1,19 +1,29 @@
 ---
 name: alchemy-hello-world
-description: |
-  Create a minimal Alchemy Web3 example: get ETH balance, fetch NFTs, read token balances.
+description: 'Create a minimal Alchemy Web3 example: get ETH balance, fetch NFTs,
+  read token balances.
+
   Use when starting blockchain development, testing Alchemy setup,
+
   or learning basic blockchain query patterns.
+
   Trigger: "alchemy hello world", "alchemy example", "alchemy quick start",
+
   "get ETH balance", "fetch NFTs alchemy".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, blockchain, web3, alchemy, nft]
-compatible-with: claude-code
+tags:
+- saas
+- blockchain
+- web3
+- alchemy
+- nft
+compatibility: Designed for Claude Code
 ---
-
 # Alchemy Hello World
 
 ## Overview

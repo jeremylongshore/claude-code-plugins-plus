@@ -1,18 +1,25 @@
 ---
 name: algolia-reference-architecture
-description: |
-  Implement Algolia reference architecture: index design, multi-index strategy,
+description: 'Implement Algolia reference architecture: index design, multi-index
+  strategy,
+
   data pipeline, search service layer, and frontend/backend separation.
+
   Trigger: "algolia architecture", "algolia best practices", "algolia project structure",
+
   "how to organize algolia", "algolia index design".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, algolia]
-compatible-with: claude-code
+tags:
+- saas
+- search
+- algolia
+compatibility: Designed for Claude Code
 ---
-
 # Algolia Reference Architecture
 
 ## Overview

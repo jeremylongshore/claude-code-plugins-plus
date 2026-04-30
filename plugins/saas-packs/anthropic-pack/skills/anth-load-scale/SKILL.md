@@ -1,19 +1,27 @@
 ---
 name: anth-load-scale
-description: |
-  Implement load testing, auto-scaling, and capacity planning for Claude API.
+description: 'Implement load testing, auto-scaling, and capacity planning for Claude
+  API.
+
   Use when running performance benchmarks, planning for traffic spikes,
+
   or configuring horizontal scaling for Claude-powered services.
+
   Trigger with phrases like "anthropic load test", "claude scaling",
+
   "anthropic capacity planning", "scale claude api".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, anthropic]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- anthropic
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Load & Scale
 
 ## Overview

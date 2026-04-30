@@ -1,19 +1,26 @@
 ---
 name: adobe-ci-integration
-description: |
-  Configure CI/CD pipelines for Adobe integrations with GitHub Actions,
+description: 'Configure CI/CD pipelines for Adobe integrations with GitHub Actions,
+
   including OAuth credential injection, PDF Services testing, Firefly API
+
   smoke tests, and secret scanning for Adobe credential patterns.
+
   Trigger with phrases like "adobe CI", "adobe GitHub Actions",
+
   "adobe automated tests", "CI adobe", "adobe pipeline".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, adobe]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- adobe
+compatibility: Designed for Claude Code
 ---
-
 # Adobe CI Integration
 
 ## Overview

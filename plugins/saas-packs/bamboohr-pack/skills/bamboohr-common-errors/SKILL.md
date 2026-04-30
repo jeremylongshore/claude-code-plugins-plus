@@ -1,19 +1,27 @@
 ---
 name: bamboohr-common-errors
-description: |
-  Diagnose and fix BambooHR API errors and exceptions.
+description: 'Diagnose and fix BambooHR API errors and exceptions.
+
   Use when encountering BambooHR errors, debugging failed requests,
+
   or troubleshooting HTTP 400/401/403/404/429/500/503 responses.
+
   Trigger with phrases like "bamboohr error", "fix bamboohr",
+
   "bamboohr not working", "debug bamboohr", "bamboohr 401", "bamboohr 429".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hr, bamboohr, debugging]
-compatible-with: claude-code
+tags:
+- saas
+- hr
+- bamboohr
+- debugging
+compatibility: Designed for Claude Code
 ---
-
 # BambooHR Common Errors
 
 ## Overview

@@ -1,19 +1,26 @@
 ---
 name: canva-install-auth
-description: |
-  Set up Canva Connect API OAuth 2.0 PKCE authentication and project scaffolding.
+description: 'Set up Canva Connect API OAuth 2.0 PKCE authentication and project scaffolding.
+
   Use when creating a new Canva integration, setting up OAuth credentials,
+
   or initializing a Canva Connect API project.
+
   Trigger with phrases like "install canva", "setup canva",
+
   "canva auth", "configure canva API", "canva OAuth".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Bash(npx:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, canva]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- canva
+compatibility: Designed for Claude Code
 ---
-
 # Canva Connect API — Install & Auth
 
 ## Overview

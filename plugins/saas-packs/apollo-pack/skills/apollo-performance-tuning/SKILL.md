@@ -1,17 +1,26 @@
 ---
 name: apollo-performance-tuning
-description: |
-  Optimize Apollo.io API performance.
+description: 'Optimize Apollo.io API performance.
+
   Use when improving API response times, reducing latency,
+
   or optimizing bulk operations.
+
   Trigger with phrases like "apollo performance", "optimize apollo",
+
   "apollo slow", "apollo latency", "speed up apollo".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, apollo, api, performance]
+tags:
+- saas
+- apollo
+- api
+- performance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Apollo Performance Tuning
 

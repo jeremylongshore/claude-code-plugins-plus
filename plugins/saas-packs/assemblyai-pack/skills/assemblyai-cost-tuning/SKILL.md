@@ -1,19 +1,30 @@
 ---
 name: assemblyai-cost-tuning
-description: |
-  Optimize AssemblyAI costs through model selection, feature budgeting, and usage monitoring.
+description: 'Optimize AssemblyAI costs through model selection, feature budgeting,
+  and usage monitoring.
+
   Use when analyzing AssemblyAI billing, reducing transcription costs,
+
   or implementing usage monitoring and budget alerts.
+
   Trigger with phrases like "assemblyai cost", "assemblyai billing",
+
   "reduce assemblyai costs", "assemblyai pricing", "assemblyai budget".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, speech-to-text, assemblyai, transcription, cost]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- speech-to-text
+- assemblyai
+- transcription
+- cost
+compatibility: Designed for Claude Code
 ---
-
 # AssemblyAI Cost Tuning
 
 ## Overview

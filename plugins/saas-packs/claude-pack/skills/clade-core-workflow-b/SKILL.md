@@ -1,18 +1,24 @@
 ---
 name: clade-core-workflow-b
-description: |
-  Redirect to claude-embeddings-search for tool use (function calling)
+description: 'Redirect to claude-embeddings-search for tool use (function calling)
+
   and agentic loop patterns with Claude.
+
   Use when looking for the secondary Anthropic workflow.
+
   Trigger with "anthropic tools", "claude function calling".
+
+  '
 allowed-tools: Read
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code
-tags: [saas, anthropic, claude]
+tags:
+- saas
+- anthropic
+- claude
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Core Workflow B → Tool Use
 
 ## Overview

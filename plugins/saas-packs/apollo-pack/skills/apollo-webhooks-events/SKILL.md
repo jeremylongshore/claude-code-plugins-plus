@@ -1,17 +1,25 @@
 ---
 name: apollo-webhooks-events
-description: |
-  Implement Apollo.io webhook and event-driven integrations.
+description: 'Implement Apollo.io webhook and event-driven integrations.
+
   Use when receiving Apollo notifications, syncing data on changes,
+
   or building event-driven pipelines from Apollo activity.
+
   Trigger with phrases like "apollo webhooks", "apollo events",
+
   "apollo notifications", "apollo webhook handler", "apollo triggers".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, apollo, webhooks]
+tags:
+- saas
+- apollo
+- webhooks
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Apollo Webhooks & Events
 

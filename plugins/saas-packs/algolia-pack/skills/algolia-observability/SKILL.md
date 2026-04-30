@@ -1,18 +1,24 @@
 ---
 name: algolia-observability
-description: |
-  Set up observability for Algolia: Prometheus metrics for search latency/errors,
+description: 'Set up observability for Algolia: Prometheus metrics for search latency/errors,
+
   OpenTelemetry tracing, structured logging, and Grafana dashboards.
+
   Trigger: "algolia monitoring", "algolia metrics", "algolia observability",
+
   "monitor algolia", "algolia alerts", "algolia tracing", "algolia dashboard".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, algolia]
-compatible-with: claude-code
+tags:
+- saas
+- search
+- algolia
+compatibility: Designed for Claude Code
 ---
-
 # Algolia Observability
 
 ## Overview

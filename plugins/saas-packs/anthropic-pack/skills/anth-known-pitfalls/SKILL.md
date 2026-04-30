@@ -1,19 +1,26 @@
 ---
 name: anth-known-pitfalls
-description: |
-  Identify and avoid common Claude API anti-patterns and integration mistakes.
+description: 'Identify and avoid common Claude API anti-patterns and integration mistakes.
+
   Use when reviewing code, onboarding developers, or debugging subtle issues
+
   with Anthropic integrations.
+
   Trigger with phrases like "anthropic pitfalls", "claude anti-patterns",
+
   "claude mistakes", "anthropic common issues", "claude gotchas".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, anthropic]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- anthropic
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Known Pitfalls
 
 ## Pitfall 1: Wrong Import / Class Name

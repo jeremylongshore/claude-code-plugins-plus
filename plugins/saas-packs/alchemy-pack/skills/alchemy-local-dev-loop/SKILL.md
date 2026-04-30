@@ -1,18 +1,26 @@
 ---
 name: alchemy-local-dev-loop
-description: |
-  Set up local Web3 development workflow with Alchemy, Hardhat, and testnets.
+description: 'Set up local Web3 development workflow with Alchemy, Hardhat, and testnets.
+
   Use when configuring local blockchain dev, testing with Sepolia faucets,
+
   or setting up hot-reload for smart contract development.
+
   Trigger: "alchemy local dev", "alchemy hardhat", "alchemy testnet setup".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, blockchain, web3, alchemy, development]
-compatible-with: claude-code
+tags:
+- saas
+- blockchain
+- web3
+- alchemy
+- development
+compatibility: Designed for Claude Code
 ---
-
 # Alchemy Local Dev Loop
 
 ## Overview

@@ -1,19 +1,27 @@
 ---
 name: adobe-known-pitfalls
-description: |
-  Identify and avoid Adobe-specific anti-patterns: using deprecated JWT auth,
+description: 'Identify and avoid Adobe-specific anti-patterns: using deprecated JWT
+  auth,
+
   not caching IMS tokens, ignoring Firefly content policy, missing async job
+
   polling, and leaking p8_ secrets. Real code examples with fixes.
+
   Trigger with phrases like "adobe mistakes", "adobe anti-patterns",
+
   "adobe pitfalls", "adobe what not to do", "adobe code review".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, adobe]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- adobe
+compatibility: Designed for Claude Code
 ---
-
 # Adobe Known Pitfalls
 
 ## Overview

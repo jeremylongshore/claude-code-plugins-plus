@@ -1,19 +1,28 @@
 ---
 name: assemblyai-install-auth
-description: |
-  Install and configure AssemblyAI SDK authentication.
+description: 'Install and configure AssemblyAI SDK authentication.
+
   Use when setting up a new AssemblyAI integration, configuring API keys,
+
   or initializing the assemblyai npm package in your project.
+
   Trigger with phrases like "install assemblyai", "setup assemblyai",
+
   "assemblyai auth", "configure assemblyai API key".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, speech-to-text, assemblyai, transcription]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- speech-to-text
+- assemblyai
+- transcription
+compatibility: Designed for Claude Code
 ---
-
 # AssemblyAI Install & Auth
 
 ## Overview

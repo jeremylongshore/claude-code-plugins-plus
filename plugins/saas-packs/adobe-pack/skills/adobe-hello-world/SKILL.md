@@ -1,20 +1,28 @@
 ---
 name: adobe-hello-world
-description: |
-  Create minimal working examples for Adobe APIs: Firefly image generation,
+description: 'Create minimal working examples for Adobe APIs: Firefly image generation,
+
   PDF extraction, and Photoshop background removal.
+
   Use when starting a new Adobe integration, testing your setup,
+
   or learning basic Adobe API patterns.
+
   Trigger with phrases like "adobe hello world", "adobe example",
+
   "adobe quick start", "simple adobe code", "first adobe API call".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, adobe]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- adobe
+compatibility: Designed for Claude Code
 ---
-
 # Adobe Hello World
 
 ## Overview

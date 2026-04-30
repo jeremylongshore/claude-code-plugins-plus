@@ -1,18 +1,26 @@
 ---
 name: anima-upgrade-migration
-description: |
-  Upgrade @animaapp/anima-sdk versions and handle API changes.
+description: 'Upgrade @animaapp/anima-sdk versions and handle API changes.
+
   Use when upgrading SDK versions, migrating from the Figma plugin workflow
+
   to SDK-based automation, or adapting to new Anima API features.
+
   Trigger: "anima upgrade", "anima migration", "anima SDK update".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, figma, anima, migration]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- figma
+- anima
+- migration
+compatibility: Designed for Claude Code
 ---
-
 # Anima Upgrade & Migration
 
 ## Migration Paths

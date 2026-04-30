@@ -1,18 +1,25 @@
 ---
 name: algolia-ci-integration
-description: |
-  Configure Algolia CI/CD: GitHub Actions for index validation, automated reindexing
+description: 'Configure Algolia CI/CD: GitHub Actions for index validation, automated
+  reindexing
+
   on deploy, and integration testing against real Algolia indices.
+
   Trigger: "algolia CI", "algolia GitHub Actions", "algolia automated tests",
+
   "CI algolia", "algolia deploy pipeline".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, algolia]
-compatible-with: claude-code
+tags:
+- saas
+- search
+- algolia
+compatibility: Designed for Claude Code
 ---
-
 # Algolia CI Integration
 
 ## Overview

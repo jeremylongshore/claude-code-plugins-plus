@@ -1,19 +1,26 @@
 ---
 name: adobe-data-handling
-description: |
-  Implement data handling for Adobe APIs including PII redaction in logs,
+description: 'Implement data handling for Adobe APIs including PII redaction in logs,
+
   Firefly content policy compliance, PDF document data classification,
+
   and GDPR/CCPA data subject access requests via Adobe Privacy Service.
+
   Trigger with phrases like "adobe data", "adobe PII",
+
   "adobe GDPR", "adobe data retention", "adobe privacy", "adobe content policy".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, adobe]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- adobe
+compatibility: Designed for Claude Code
 ---
-
 # Adobe Data Handling
 
 ## Overview

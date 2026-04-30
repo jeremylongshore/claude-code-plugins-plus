@@ -1,19 +1,27 @@
 ---
 name: canva-core-workflow-b
-description: |
-  Execute Canva asset management, brand template autofill, and folder organization.
+description: 'Execute Canva asset management, brand template autofill, and folder
+  organization.
+
   Use when uploading assets, autofilling brand templates with dynamic data,
+
   or organizing designs into folders via the Connect API.
+
   Trigger with phrases like "canva assets", "canva brand template",
+
   "canva autofill", "canva folders", "canva upload image".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, canva]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- canva
+compatibility: Designed for Claude Code
 ---
-
 # Canva Core Workflow B — Assets, Autofill & Folders
 
 ## Overview

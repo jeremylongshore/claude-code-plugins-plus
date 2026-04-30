@@ -1,19 +1,27 @@
 ---
 name: anth-data-handling
-description: |
-  Implement data privacy, PII handling, and compliance patterns for Claude API.
+description: 'Implement data privacy, PII handling, and compliance patterns for Claude
+  API.
+
   Use when handling sensitive data, implementing PII redaction,
+
   or configuring data retention for GDPR/CCPA compliance with Claude.
+
   Trigger with phrases like "anthropic data privacy", "claude PII",
+
   "anthropic gdpr", "claude data handling", "redact data claude".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, anthropic]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- anthropic
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Data Handling
 
 ## Overview

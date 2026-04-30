@@ -1,17 +1,26 @@
 ---
 name: clay-core-workflow-a
-description: |
-  Build a complete lead enrichment pipeline using Clay tables, webhooks, and waterfall enrichment.
+description: 'Build a complete lead enrichment pipeline using Clay tables, webhooks,
+  and waterfall enrichment.
+
   Use when building lead generation features, enriching prospect lists,
+
   or creating automated data enrichment workflows.
+
   Trigger with phrases like "clay lead enrichment", "clay main workflow",
+
   "enrich contacts in clay", "clay prospect list", "clay enrichment pipeline".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(npm:*), Bash(node:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clay, workflow]
+tags:
+- saas
+- clay
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clay Core Workflow A: Lead Enrichment Pipeline
 

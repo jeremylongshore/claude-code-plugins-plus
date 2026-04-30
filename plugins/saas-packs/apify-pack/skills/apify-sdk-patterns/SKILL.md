@@ -1,19 +1,27 @@
 ---
 name: apify-sdk-patterns
-description: |
-  Production-ready patterns for Apify SDK and apify-client in TypeScript.
+description: 'Production-ready patterns for Apify SDK and apify-client in TypeScript.
+
   Use when building Actors with Crawlee, managing datasets/KV stores,
+
   or implementing robust client wrappers with retry and validation.
+
   Trigger: "apify SDK patterns", "apify best practices",
+
   "apify client wrapper", "crawlee patterns", "idiomatic apify".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, scraping, automation, apify]
-compatible-with: claude-code
+tags:
+- saas
+- scraping
+- automation
+- apify
+compatibility: Designed for Claude Code
 ---
-
 # Apify SDK Patterns
 
 ## Overview

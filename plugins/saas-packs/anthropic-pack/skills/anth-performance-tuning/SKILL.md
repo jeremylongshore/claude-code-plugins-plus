@@ -1,20 +1,28 @@
 ---
 name: anth-performance-tuning
-description: |
-  Optimize Claude API performance with prompt caching, model selection,
+description: 'Optimize Claude API performance with prompt caching, model selection,
+
   streaming, and latency reduction techniques.
+
   Use when experiencing slow responses, optimizing token usage,
+
   or reducing time-to-first-token in production.
+
   Trigger with phrases like "anthropic performance", "claude speed",
+
   "optimize claude latency", "anthropic caching", "faster claude responses".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, anthropic]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- anthropic
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Performance Tuning
 
 ## Overview

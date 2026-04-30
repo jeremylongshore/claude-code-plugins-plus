@@ -1,19 +1,29 @@
 ---
 name: assemblyai-ci-integration
-description: |
-  Configure AssemblyAI CI/CD integration with GitHub Actions and testing.
+description: 'Configure AssemblyAI CI/CD integration with GitHub Actions and testing.
+
   Use when setting up automated testing, configuring CI pipelines,
+
   or integrating AssemblyAI transcription tests into your build process.
+
   Trigger with phrases like "assemblyai CI", "assemblyai GitHub Actions",
+
   "assemblyai automated tests", "CI assemblyai".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, speech-to-text, assemblyai, transcription, ci]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- speech-to-text
+- assemblyai
+- transcription
+- ci
+compatibility: Designed for Claude Code
 ---
-
 # AssemblyAI CI Integration
 
 ## Overview

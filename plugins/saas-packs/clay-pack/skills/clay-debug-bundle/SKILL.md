@@ -1,17 +1,25 @@
 ---
 name: clay-debug-bundle
-description: |
-  Collect Clay debug evidence for support tickets and troubleshooting.
+description: 'Collect Clay debug evidence for support tickets and troubleshooting.
+
   Use when encountering persistent issues, preparing support tickets,
+
   or collecting diagnostic information for Clay integration problems.
+
   Trigger with phrases like "clay debug", "clay support bundle",
+
   "collect clay logs", "clay diagnostic", "clay support ticket".
+
+  '
 allowed-tools: Read, Bash(curl:*), Bash(tar:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clay, debugging]
+tags:
+- saas
+- clay
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clay Debug Bundle
 

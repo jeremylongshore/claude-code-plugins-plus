@@ -1,19 +1,26 @@
 ---
 name: anth-sdk-patterns
-description: |
-  Apply production-ready Anthropic SDK patterns for TypeScript and Python.
+description: 'Apply production-ready Anthropic SDK patterns for TypeScript and Python.
+
   Use when implementing Claude integrations, building reusable wrappers,
+
   or establishing team coding standards for the Messages API.
+
   Trigger with phrases like "anthropic SDK patterns", "claude best practices",
+
   "anthropic code patterns", "production claude code".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, anthropic]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- anthropic
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic SDK Patterns
 
 ## Overview

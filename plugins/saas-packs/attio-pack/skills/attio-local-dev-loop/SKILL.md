@@ -1,18 +1,24 @@
 ---
 name: attio-local-dev-loop
-description: |
-  Set up a fast local development loop for Attio integrations with
+description: 'Set up a fast local development loop for Attio integrations with
+
   hot reload, mock server, and integration tests.
+
   Trigger: "attio dev setup", "attio local development",
+
   "attio dev environment", "develop with attio", "attio project setup".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Bash(npx:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, attio]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- attio
+compatibility: Designed for Claude Code
 ---
-
 # Attio Local Dev Loop
 
 ## Overview

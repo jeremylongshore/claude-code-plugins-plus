@@ -1,19 +1,27 @@
 ---
 name: clari-security-basics
-description: |
-  Secure Clari API tokens and implement data handling best practices.
+description: 'Secure Clari API tokens and implement data handling best practices.
+
   Use when managing API tokens, restricting data access,
+
   or implementing PII handling for exported forecast data.
+
   Trigger with phrases like "clari security", "clari api key rotation",
+
   "secure clari", "clari pii handling".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, revenue-intelligence, forecasting, clari]
-compatible-with: claude-code
+tags:
+- saas
+- revenue-intelligence
+- forecasting
+- clari
+compatibility: Designed for Claude Code
 ---
-
 # Clari Security Basics
 
 ## Overview

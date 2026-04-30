@@ -1,18 +1,24 @@
 ---
 name: attio-upgrade-migration
-description: |
-  Migrate between Attio API versions, handle breaking changes in the
+description: 'Migrate between Attio API versions, handle breaking changes in the
+
   v1-to-v2 transition, and plan for future deprecations.
+
   Trigger: "upgrade attio", "attio migration", "attio v1 to v2",
+
   "attio breaking changes", "attio API version", "attio deprecation".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, attio]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- attio
+compatibility: Designed for Claude Code
 ---
-
 # Attio Upgrade & Migration
 
 ## Overview

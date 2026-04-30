@@ -1,17 +1,25 @@
 ---
 name: apollo-rate-limits
-description: |
-  Implement Apollo.io rate limiting and backoff.
+description: 'Implement Apollo.io rate limiting and backoff.
+
   Use when handling rate limits, implementing retry logic,
+
   or optimizing API request throughput.
+
   Trigger with phrases like "apollo rate limit", "apollo 429",
+
   "apollo throttling", "apollo backoff", "apollo request limits".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, apollo, api]
+tags:
+- saas
+- apollo
+- api
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Apollo Rate Limits
 

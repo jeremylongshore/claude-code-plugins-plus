@@ -1,19 +1,23 @@
 ---
 name: clade-reference-architecture
-description: |
-  Build Claude Code plugins — skills, agents, MCP servers, hooks, and slash commands.
-  Use when working with reference-architecture patterns.
-  The complete guide to extending Claude Code with the Anthropic plugin system.
-  Trigger with "claude code plugin", "build a skill", "create mcp server",
-  "anthropic plugin architecture", "claude code hooks".
+description: "Build Claude Code plugins \u2014 skills, agents, MCP servers, hooks,\
+  \ and slash commands.\nUse when working with reference-architecture patterns.\n\
+  The complete guide to extending Claude Code with the Anthropic plugin system.\n\
+  Trigger with \"claude code plugin\", \"build a skill\", \"create mcp server\",\n\
+  \"anthropic plugin architecture\", \"claude code hooks\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code
-tags: [saas, anthropic, claude-code, plugins, skills, mcp]
+tags:
+- saas
+- anthropic
+- claude-code
+- plugins
+- skills
+- mcp
+compatibility: Designed for Claude Code
 ---
-
 # Claude Code Plugin Architecture
 
 ## Overview

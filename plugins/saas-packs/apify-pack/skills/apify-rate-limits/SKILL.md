@@ -1,19 +1,27 @@
 ---
 name: apify-rate-limits
-description: |
-  Handle Apify API rate limits with proper backoff and request queuing.
+description: 'Handle Apify API rate limits with proper backoff and request queuing.
+
   Use when hitting 429 errors, optimizing API request throughput,
+
   or implementing rate-aware client wrappers.
+
   Trigger: "apify rate limit", "apify throttling", "apify 429",
+
   "apify retry", "apify backoff", "too many requests apify".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, scraping, automation, apify]
-compatible-with: claude-code
+tags:
+- saas
+- scraping
+- automation
+- apify
+compatibility: Designed for Claude Code
 ---
-
 # Apify Rate Limits
 
 ## Overview

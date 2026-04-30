@@ -1,18 +1,24 @@
 ---
 name: attio-ci-integration
-description: |
-  Configure CI/CD pipelines for Attio integrations with GitHub Actions,
+description: 'Configure CI/CD pipelines for Attio integrations with GitHub Actions,
+
   mock-based unit tests, and live API integration tests.
+
   Trigger: "attio CI", "attio GitHub Actions", "attio automated tests",
+
   "CI attio", "attio pipeline", "test attio in CI".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, attio]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- attio
+compatibility: Designed for Claude Code
 ---
-
 # Attio CI Integration
 
 ## Overview

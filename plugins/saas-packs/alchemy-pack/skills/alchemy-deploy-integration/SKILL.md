@@ -1,19 +1,28 @@
 ---
 name: alchemy-deploy-integration
-description: |
-  Deploy Alchemy-powered Web3 applications to Vercel, Cloud Run, and AWS.
+description: 'Deploy Alchemy-powered Web3 applications to Vercel, Cloud Run, and AWS.
+
   Use when deploying dApps with server-side Alchemy SDK access,
+
   configuring API key secrets, or setting up RPC proxy endpoints.
+
   Trigger: "deploy alchemy", "alchemy Vercel", "alchemy Cloud Run",
+
   "alchemy production deploy", "dApp deploy".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(gcloud:*), Bash(docker:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, blockchain, web3, alchemy, deployment]
-compatible-with: claude-code
+tags:
+- saas
+- blockchain
+- web3
+- alchemy
+- deployment
+compatibility: Designed for Claude Code
 ---
-
 # Alchemy Deploy Integration
 
 ## Overview

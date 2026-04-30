@@ -1,19 +1,21 @@
 ---
 name: canva-reliability-patterns
-description: |
-  Implement reliability patterns for Canva Connect API — circuit breakers, idempotency, graceful degradation.
-  Use when building fault-tolerant Canva integrations, implementing retry strategies,
-  or adding resilience to production Canva services.
-  Trigger with phrases like "canva reliability", "canva circuit breaker",
-  "canva resilience", "canva fallback", "canva fault tolerance".
+description: "Implement reliability patterns for Canva Connect API \u2014 circuit\
+  \ breakers, idempotency, graceful degradation.\nUse when building fault-tolerant\
+  \ Canva integrations, implementing retry strategies,\nor adding resilience to production\
+  \ Canva services.\nTrigger with phrases like \"canva reliability\", \"canva circuit\
+  \ breaker\",\n\"canva resilience\", \"canva fallback\", \"canva fault tolerance\"\
+  .\n"
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, canva]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- canva
+compatibility: Designed for Claude Code
 ---
-
 # Canva Reliability Patterns
 
 ## Overview

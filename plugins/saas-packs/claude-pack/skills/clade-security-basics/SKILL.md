@@ -1,19 +1,20 @@
 ---
 name: clade-security-basics
-description: |
-  Secure your Anthropic integration — API key management, input validation,
-  Use when working with security-basics patterns.
-  prompt injection defense, and data privacy.
-  Trigger with "anthropic security", "claude api key security",
-  "anthropic prompt injection", "secure claude integration".
+description: "Secure your Anthropic integration \u2014 API key management, input validation,\n\
+  Use when working with security-basics patterns.\nprompt injection defense, and data\
+  \ privacy.\nTrigger with \"anthropic security\", \"claude api key security\",\n\"\
+  anthropic prompt injection\", \"secure claude integration\".\n"
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code
-tags: [saas, anthropic, claude, security]
+tags:
+- saas
+- anthropic
+- claude
+- security
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Security Basics
 
 ## Overview

@@ -1,17 +1,26 @@
 ---
 name: clay-multi-env-setup
-description: |
-  Configure Clay integrations across development, staging, and production environments.
+description: 'Configure Clay integrations across development, staging, and production
+  environments.
+
   Use when setting up per-environment Clay tables, managing webhook URLs per environment,
+
   or implementing environment-specific enrichment configurations.
+
   Trigger with phrases like "clay environments", "clay staging", "clay dev prod",
+
   "clay environment setup", "clay config by env".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clay, deployment]
+tags:
+- saas
+- clay
+- deployment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clay Multi-Environment Setup
 

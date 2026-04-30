@@ -1,19 +1,29 @@
 ---
 name: abridge-ci-integration
-description: |
-  Configure CI/CD pipeline for Abridge clinical AI integrations with GitHub Actions.
+description: 'Configure CI/CD pipeline for Abridge clinical AI integrations with GitHub
+  Actions.
+
   Use when setting up automated testing, FHIR validation, HIPAA compliance checks,
+
   or deployment pipelines for healthcare AI applications.
+
   Trigger: "abridge CI", "abridge GitHub Actions", "abridge pipeline",
+
   "abridge automated testing", "abridge CI/CD".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, healthcare, ai, abridge, ci-cd]
-compatible-with: claude-code
+tags:
+- saas
+- healthcare
+- ai
+- abridge
+- ci-cd
+compatibility: Designed for Claude Code
 ---
-
 # Abridge CI Integration
 
 ## Overview

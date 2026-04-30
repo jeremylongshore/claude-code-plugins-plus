@@ -1,17 +1,25 @@
 ---
 name: apollo-deploy-integration
-description: |
-  Deploy Apollo.io integrations to production.
+description: 'Deploy Apollo.io integrations to production.
+
   Use when deploying Apollo integrations, configuring production environments,
+
   or setting up deployment pipelines.
+
   Trigger with phrases like "deploy apollo", "apollo production deploy",
+
   "apollo deployment pipeline", "apollo to production".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, apollo, deployment]
+tags:
+- saas
+- apollo
+- deployment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Apollo Deploy Integration
 

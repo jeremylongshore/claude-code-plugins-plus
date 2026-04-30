@@ -1,18 +1,27 @@
 ---
 name: apify-performance-tuning
-description: |
-  Optimize Apify Actor performance: crawl speed, memory usage, concurrency, and proxy rotation.
-  Use when Actors are slow, consuming too much memory, or being blocked by target sites.
+description: 'Optimize Apify Actor performance: crawl speed, memory usage, concurrency,
+  and proxy rotation.
+
+  Use when Actors are slow, consuming too much memory, or being blocked by target
+  sites.
+
   Trigger: "apify performance", "optimize apify actor", "apify slow",
+
   "crawlee concurrency", "apify memory tuning", "scraper performance".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, scraping, automation, apify]
-compatible-with: claude-code
+tags:
+- saas
+- scraping
+- automation
+- apify
+compatibility: Designed for Claude Code
 ---
-
 # Apify Performance Tuning
 
 ## Overview

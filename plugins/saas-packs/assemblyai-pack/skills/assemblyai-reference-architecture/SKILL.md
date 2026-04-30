@@ -1,19 +1,30 @@
 ---
 name: assemblyai-reference-architecture
-description: |
-  Implement AssemblyAI reference architecture with best-practice project layout.
+description: 'Implement AssemblyAI reference architecture with best-practice project
+  layout.
+
   Use when designing new AssemblyAI transcription services, reviewing project structure,
+
   or building production-grade speech-to-text applications.
+
   Trigger with phrases like "assemblyai architecture", "assemblyai best practices",
+
   "assemblyai project structure", "how to organize assemblyai", "assemblyai design".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, speech-to-text, assemblyai, transcription, architecture]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- speech-to-text
+- assemblyai
+- transcription
+- architecture
+compatibility: Designed for Claude Code
 ---
-
 # AssemblyAI Reference Architecture
 
 ## Overview

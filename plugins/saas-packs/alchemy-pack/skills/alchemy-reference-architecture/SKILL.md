@@ -1,19 +1,28 @@
 ---
 name: alchemy-reference-architecture
-description: |
-  Implement reference architecture for Alchemy-powered Web3 applications.
+description: 'Implement reference architecture for Alchemy-powered Web3 applications.
+
   Use when designing dApp infrastructure, planning multi-chain deployments,
+
   or structuring a production blockchain application.
+
   Trigger: "alchemy architecture", "dApp architecture", "alchemy project structure",
+
   "web3 system design", "alchemy multi-chain design".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, blockchain, web3, alchemy, architecture]
-compatible-with: claude-code
+tags:
+- saas
+- blockchain
+- web3
+- alchemy
+- architecture
+compatibility: Designed for Claude Code
 ---
-
 # Alchemy Reference Architecture
 
 ## System Architecture

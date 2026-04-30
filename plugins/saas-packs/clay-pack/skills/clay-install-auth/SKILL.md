@@ -1,17 +1,26 @@
 ---
 name: clay-install-auth
-description: |
-  Set up Clay account access, API keys, webhook URLs, and provider connections.
+description: 'Set up Clay account access, API keys, webhook URLs, and provider connections.
+
   Use when onboarding to Clay, connecting data providers, configuring API keys,
+
   or setting up webhook endpoints for programmatic data flow.
+
   Trigger with phrases like "install clay", "setup clay", "clay auth",
+
   "configure clay API key", "connect clay providers".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clay, api, authentication]
+tags:
+- saas
+- clay
+- api
+- authentication
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clay Install & Auth
 

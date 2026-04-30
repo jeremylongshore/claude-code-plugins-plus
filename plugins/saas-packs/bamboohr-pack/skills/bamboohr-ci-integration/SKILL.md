@@ -1,20 +1,29 @@
 ---
 name: bamboohr-ci-integration
-description: |
-  Configure CI/CD pipelines for BambooHR integrations with GitHub Actions,
+description: 'Configure CI/CD pipelines for BambooHR integrations with GitHub Actions,
+
   automated testing, and secret management.
+
   Use when setting up automated testing, configuring CI pipelines,
+
   or integrating BambooHR API tests into your build process.
+
   Trigger with phrases like "bamboohr CI", "bamboohr GitHub Actions",
+
   "bamboohr automated tests", "CI bamboohr", "bamboohr pipeline".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hr, bamboohr, ci-cd]
-compatible-with: claude-code
+tags:
+- saas
+- hr
+- bamboohr
+- ci-cd
+compatibility: Designed for Claude Code
 ---
-
 # BambooHR CI Integration
 
 ## Overview

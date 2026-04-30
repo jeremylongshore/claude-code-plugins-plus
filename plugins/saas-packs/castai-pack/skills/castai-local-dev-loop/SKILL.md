@@ -1,19 +1,28 @@
 ---
 name: castai-local-dev-loop
-description: |
-  Set up a local Kubernetes development loop with CAST AI cost monitoring.
+description: 'Set up a local Kubernetes development loop with CAST AI cost monitoring.
+
   Use when building cost-aware deployments, testing autoscaler policies,
+
   or iterating on Terraform CAST AI configurations locally.
+
   Trigger with phrases like "cast ai dev setup", "cast ai local testing",
+
   "develop with cast ai", "cast ai terraform dev".
-allowed-tools: Read, Write, Edit, Bash(kubectl:*), Bash(helm:*), Bash(terraform:*), Grep
+
+  '
+allowed-tools: Read, Write, Edit, Bash(kubectl:*), Bash(helm:*), Bash(terraform:*),
+  Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, kubernetes, cost-optimization, castai]
-compatible-with: claude-code
+tags:
+- saas
+- kubernetes
+- cost-optimization
+- castai
+compatibility: Designed for Claude Code
 ---
-
 # CAST AI Local Dev Loop
 
 ## Overview

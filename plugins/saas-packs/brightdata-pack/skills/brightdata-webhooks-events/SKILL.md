@@ -1,19 +1,27 @@
 ---
 name: brightdata-webhooks-events
-description: |
-  Implement Bright Data webhook signature validation and event handling.
+description: 'Implement Bright Data webhook signature validation and event handling.
+
   Use when setting up webhook endpoints, implementing signature verification,
+
   or handling Bright Data event notifications securely.
+
   Trigger with phrases like "brightdata webhook", "brightdata events",
+
   "brightdata webhook signature", "handle brightdata events", "brightdata notifications".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, scraping, data, brightdata]
-compatible-with: claude-code
+tags:
+- saas
+- scraping
+- data
+- brightdata
+compatibility: Designed for Claude Code
 ---
-
 # Bright Data Webhooks & Events
 
 ## Overview

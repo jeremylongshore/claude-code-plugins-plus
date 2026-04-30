@@ -1,19 +1,27 @@
 ---
 name: castai-debug-bundle
-description: |
-  Collect CAST AI diagnostic bundle for support tickets and troubleshooting.
+description: 'Collect CAST AI diagnostic bundle for support tickets and troubleshooting.
+
   Use when preparing a support case, collecting agent logs,
+
   or building a diagnostic snapshot of cluster state.
+
   Trigger with phrases like "cast ai debug", "cast ai support bundle",
+
   "collect cast ai diagnostics", "cast ai logs".
+
+  '
 allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Bash(tar:*), Bash(helm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, kubernetes, cost-optimization, castai]
-compatible-with: claude-code
+tags:
+- saas
+- kubernetes
+- cost-optimization
+- castai
+compatibility: Designed for Claude Code
 ---
-
 # CAST AI Debug Bundle
 
 ## Overview

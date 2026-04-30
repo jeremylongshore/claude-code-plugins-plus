@@ -1,19 +1,21 @@
 ---
 name: clade-incident-runbook
-description: |
-  Respond to Anthropic API incidents — outages, degraded performance,
-  Use when working with incident-runbook patterns.
-  error spikes, and rate limit issues in production.
-  Trigger with "anthropic down", "claude outage", "anthropic incident",
-  "claude not responding", "anthropic 529".
+description: "Respond to Anthropic API incidents \u2014 outages, degraded performance,\n\
+  Use when working with incident-runbook patterns.\nerror spikes, and rate limit issues\
+  \ in production.\nTrigger with \"anthropic down\", \"claude outage\", \"anthropic\
+  \ incident\",\n\"claude not responding\", \"anthropic 529\".\n"
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code
-tags: [saas, anthropic, claude, incident, runbook]
+tags:
+- saas
+- anthropic
+- claude
+- incident
+- runbook
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Incident Runbook
 
 ## Overview

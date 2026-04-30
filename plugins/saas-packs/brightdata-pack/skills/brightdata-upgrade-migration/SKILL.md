@@ -1,19 +1,28 @@
 ---
 name: brightdata-upgrade-migration
-description: |
-  Analyze, plan, and execute Bright Data SDK upgrades with breaking change detection.
+description: 'Analyze, plan, and execute Bright Data SDK upgrades with breaking change
+  detection.
+
   Use when upgrading Bright Data SDK versions, detecting deprecations,
+
   or migrating to new API versions.
+
   Trigger with phrases like "upgrade brightdata", "brightdata migration",
+
   "brightdata breaking changes", "update brightdata SDK", "analyze brightdata version".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, scraping, data, brightdata]
-compatible-with: claude-code
+tags:
+- saas
+- scraping
+- data
+- brightdata
+compatibility: Designed for Claude Code
 ---
-
 # Bright Data Upgrade & Migration
 
 ## Overview

@@ -1,19 +1,27 @@
 ---
 name: canva-known-pitfalls
-description: |
-  Identify and avoid Canva Connect API anti-patterns and common integration mistakes.
+description: 'Identify and avoid Canva Connect API anti-patterns and common integration
+  mistakes.
+
   Use when reviewing Canva code, onboarding developers,
+
   or auditing existing Canva integrations for best practices violations.
+
   Trigger with phrases like "canva mistakes", "canva anti-patterns",
+
   "canva pitfalls", "canva what not to do", "canva code review".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, canva]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- canva
+compatibility: Designed for Claude Code
 ---
-
 # Canva Known Pitfalls
 
 ## Overview

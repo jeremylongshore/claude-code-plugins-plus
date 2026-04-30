@@ -1,19 +1,28 @@
 ---
 name: alchemy-security-basics
-description: |
-  Apply Web3 security best practices for Alchemy-powered applications.
+description: 'Apply Web3 security best practices for Alchemy-powered applications.
+
   Use when securing API keys, validating blockchain inputs, preventing
+
   private key exposure, or hardening dApp infrastructure.
+
   Trigger: "alchemy security", "web3 security", "protect private key",
+
   "alchemy API key security", "dApp security".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, blockchain, web3, alchemy, security]
-compatible-with: claude-code
+tags:
+- saas
+- blockchain
+- web3
+- alchemy
+- security
+compatibility: Designed for Claude Code
 ---
-
 # Alchemy Security Basics
 
 ## Overview

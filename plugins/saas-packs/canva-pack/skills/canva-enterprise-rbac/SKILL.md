@@ -1,19 +1,26 @@
 ---
 name: canva-enterprise-rbac
-description: |
-  Configure Canva Enterprise organization access control and scope management.
+description: 'Configure Canva Enterprise organization access control and scope management.
+
   Use when implementing per-user scope control, managing Canva Enterprise features,
+
   or setting up organization-level Canva integration governance.
+
   Trigger with phrases like "canva enterprise", "canva RBAC",
+
   "canva roles", "canva permissions", "canva organization", "canva team".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, canva]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- canva
+compatibility: Designed for Claude Code
 ---
-
 # Canva Enterprise RBAC
 
 ## Overview

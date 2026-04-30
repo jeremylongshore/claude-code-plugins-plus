@@ -1,19 +1,27 @@
 ---
 name: bamboohr-debug-bundle
-description: |
-  Collect BambooHR debug evidence for support tickets and troubleshooting.
+description: 'Collect BambooHR debug evidence for support tickets and troubleshooting.
+
   Use when encountering persistent issues, preparing support tickets,
+
   or collecting diagnostic information for BambooHR API problems.
+
   Trigger with phrases like "bamboohr debug", "bamboohr support bundle",
+
   "collect bamboohr logs", "bamboohr diagnostic", "bamboohr troubleshoot".
+
+  '
 allowed-tools: Read, Bash(curl:*), Bash(tar:*), Bash(node:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hr, bamboohr, debugging]
-compatible-with: claude-code
+tags:
+- saas
+- hr
+- bamboohr
+- debugging
+compatibility: Designed for Claude Code
 ---
-
 # BambooHR Debug Bundle
 
 ## Overview

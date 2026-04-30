@@ -1,19 +1,26 @@
 ---
 name: canva-deploy-integration
-description: |
-  Deploy Canva Connect API integrations to Vercel, Fly.io, and Cloud Run.
+description: 'Deploy Canva Connect API integrations to Vercel, Fly.io, and Cloud Run.
+
   Use when deploying Canva-powered applications to production,
+
   configuring platform-specific secrets, or setting up deployment pipelines.
+
   Trigger with phrases like "deploy canva", "canva Vercel",
+
   "canva production deploy", "canva Cloud Run", "canva Fly.io".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, canva]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- canva
+compatibility: Designed for Claude Code
 ---
-
 # Canva Deploy Integration
 
 ## Overview

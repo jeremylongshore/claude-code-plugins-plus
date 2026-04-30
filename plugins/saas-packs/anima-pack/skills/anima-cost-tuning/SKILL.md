@@ -1,18 +1,27 @@
 ---
 name: anima-cost-tuning
-description: |
-  Optimize Anima API costs through caching, incremental generation, and tier selection.
+description: 'Optimize Anima API costs through caching, incremental generation, and
+  tier selection.
+
   Use when managing Anima API usage, reducing unnecessary code generations,
+
   or right-sizing your Anima plan for team size.
+
   Trigger: "anima cost", "anima pricing", "anima budget", "anima API usage".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, figma, anima, cost-optimization]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- figma
+- anima
+- cost-optimization
+compatibility: Designed for Claude Code
 ---
-
 # Anima Cost Tuning
 
 ## Pricing Context

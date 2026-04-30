@@ -1,18 +1,26 @@
 ---
 name: clade-upgrade-migration
-description: |
-  Upgrade Anthropic SDK versions and migrate between Claude model generations.
+description: 'Upgrade Anthropic SDK versions and migrate between Claude model generations.
+
   Use when working with upgrade-migration patterns.
+
   Trigger with "upgrade anthropic sdk", "migrate claude model",
+
   "anthropic breaking changes", "new claude model".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code
-tags: [saas, anthropic, claude, migration, upgrade]
+tags:
+- saas
+- anthropic
+- claude
+- migration
+- upgrade
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Upgrade & Migration
 
 ## Overview

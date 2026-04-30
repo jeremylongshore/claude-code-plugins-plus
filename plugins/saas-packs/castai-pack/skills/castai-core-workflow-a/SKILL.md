@@ -1,19 +1,27 @@
 ---
 name: castai-core-workflow-a
-description: |
-  Configure CAST AI autoscaler policies and node templates for cost optimization.
+description: 'Configure CAST AI autoscaler policies and node templates for cost optimization.
+
   Use when enabling Phase 2 automation, setting spot instance policies,
+
   or configuring node downscaler and evictor settings.
+
   Trigger with phrases like "cast ai autoscaler", "cast ai policies",
+
   "cast ai spot instances", "cast ai node optimization".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(kubectl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, kubernetes, cost-optimization, castai]
-compatible-with: claude-code
+tags:
+- saas
+- kubernetes
+- cost-optimization
+- castai
+compatibility: Designed for Claude Code
 ---
-
 # CAST AI Core Workflow: Autoscaler & Policies
 
 ## Overview

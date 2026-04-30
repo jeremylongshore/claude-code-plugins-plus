@@ -1,19 +1,27 @@
 ---
 name: canva-performance-tuning
-description: |
-  Optimize Canva Connect API performance with caching, pagination, and connection pooling.
+description: 'Optimize Canva Connect API performance with caching, pagination, and
+  connection pooling.
+
   Use when experiencing slow API responses, implementing caching strategies,
+
   or optimizing request throughput for Canva integrations.
+
   Trigger with phrases like "canva performance", "optimize canva",
+
   "canva latency", "canva caching", "canva slow", "canva pagination".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, canva]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- canva
+compatibility: Designed for Claude Code
 ---
-
 # Canva Performance Tuning
 
 ## Overview

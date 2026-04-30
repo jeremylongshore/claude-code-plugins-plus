@@ -1,19 +1,28 @@
 ---
 name: alchemy-cost-tuning
-description: |
-  Optimize Alchemy API costs through CU budgeting, caching, and plan selection.
+description: 'Optimize Alchemy API costs through CU budgeting, caching, and plan selection.
+
   Use when analyzing Alchemy billing, reducing Compute Unit consumption,
+
   or choosing the right plan for your dApp traffic.
+
   Trigger: "alchemy cost", "alchemy pricing", "alchemy CU budget",
+
   "alchemy billing optimization", "alchemy free tier limits".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, blockchain, web3, alchemy, cost-optimization]
-compatible-with: claude-code
+tags:
+- saas
+- blockchain
+- web3
+- alchemy
+- cost-optimization
+compatibility: Designed for Claude Code
 ---
-
 # Alchemy Cost Tuning
 
 ## Overview

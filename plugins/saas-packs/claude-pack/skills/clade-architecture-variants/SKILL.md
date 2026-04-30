@@ -1,19 +1,23 @@
 ---
 name: clade-architecture-variants
-description: |
-  Build different types of Claude-powered applications — chatbots, RAG systems,
-  Use when working with architecture-variants patterns.
-  agents, content pipelines, and code generation tools.
-  Trigger with "claude architecture", "anthropic rag", "build with claude",
-  "claude agent pattern", "anthropic app design".
+description: "Build different types of Claude-powered applications \u2014 chatbots,\
+  \ RAG systems,\nUse when working with architecture-variants patterns.\nagents, content\
+  \ pipelines, and code generation tools.\nTrigger with \"claude architecture\", \"\
+  anthropic rag\", \"build with claude\",\n\"claude agent pattern\", \"anthropic app\
+  \ design\".\n"
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code
-tags: [saas, anthropic, claude, architecture, rag, agents]
+tags:
+- saas
+- anthropic
+- claude
+- architecture
+- rag
+- agents
+compatibility: Designed for Claude Code
 ---
-
 # Claude Architecture Variants
 
 ## Overview

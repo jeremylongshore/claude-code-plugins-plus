@@ -1,19 +1,27 @@
 ---
 name: canva-load-scale
-description: |
-  Implement Canva Connect API load testing, auto-scaling, and capacity planning.
+description: 'Implement Canva Connect API load testing, auto-scaling, and capacity
+  planning.
+
   Use when running performance tests, planning capacity around Canva rate limits,
+
   or scaling Canva integrations for production workloads.
+
   Trigger with phrases like "canva load test", "canva scale",
+
   "canva performance test", "canva capacity", "canva k6", "canva benchmark".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(k6:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, canva]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- canva
+compatibility: Designed for Claude Code
 ---
-
 # Canva Load & Scale
 
 ## Overview

@@ -1,19 +1,26 @@
 ---
 name: anth-hello-world
-description: |
-  Create a minimal working Anthropic Claude Messages API example.
+description: 'Create a minimal working Anthropic Claude Messages API example.
+
   Use when starting a new Claude integration, testing your setup,
+
   or learning basic Messages API patterns for text, vision, and streaming.
+
   Trigger with phrases like "anthropic hello world", "claude api example",
+
   "anthropic quick start", "simple claude code", "first messages api call".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, anthropic]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- anthropic
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Hello World
 
 ## Overview

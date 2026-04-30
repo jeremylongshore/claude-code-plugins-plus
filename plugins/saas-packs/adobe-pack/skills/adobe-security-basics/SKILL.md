@@ -1,20 +1,28 @@
 ---
 name: adobe-security-basics
-description: |
-  Apply Adobe security best practices for OAuth credentials, secret rotation,
+description: 'Apply Adobe security best practices for OAuth credentials, secret rotation,
+
   I/O Events webhook signature verification, and least-privilege scoping.
+
   Use when securing API credentials, implementing webhook validation,
+
   or auditing Adobe security configuration.
+
   Trigger with phrases like "adobe security", "adobe secrets",
+
   "secure adobe", "adobe credential rotation", "adobe webhook signature".
+
+  '
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, adobe]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- adobe
+compatibility: Designed for Claude Code
 ---
-
 # Adobe Security Basics
 
 ## Overview

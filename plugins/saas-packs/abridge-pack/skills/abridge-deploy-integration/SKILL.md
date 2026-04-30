@@ -1,19 +1,28 @@
 ---
 name: abridge-deploy-integration
-description: |
-  Deploy Abridge clinical AI integration to HIPAA-compliant cloud infrastructure.
+description: 'Deploy Abridge clinical AI integration to HIPAA-compliant cloud infrastructure.
+
   Use when deploying to GCP Cloud Run, AWS ECS, or Azure Container Apps
+
   with healthcare-grade secrets management and compliance controls.
+
   Trigger: "deploy abridge", "abridge production deploy", "abridge Cloud Run",
+
   "abridge AWS deploy", "abridge HIPAA infrastructure".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gcloud:*), Bash(docker:*), Bash(aws:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, healthcare, ai, abridge, deployment]
-compatible-with: claude-code
+tags:
+- saas
+- healthcare
+- ai
+- abridge
+- deployment
+compatibility: Designed for Claude Code
 ---
-
 # Abridge Deploy Integration
 
 ## Overview

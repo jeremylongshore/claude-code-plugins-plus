@@ -1,18 +1,26 @@
 ---
 name: alchemy-ci-integration
-description: |
-  Configure CI/CD pipeline for Alchemy-powered Web3 applications.
+description: 'Configure CI/CD pipeline for Alchemy-powered Web3 applications.
+
   Use when setting up automated testing with Hardhat forks,
+
   smart contract verification, or testnet deployment pipelines.
+
   Trigger: "alchemy CI", "alchemy GitHub Actions", "web3 CI/CD pipeline".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, blockchain, web3, alchemy, ci-cd]
-compatible-with: claude-code
+tags:
+- saas
+- blockchain
+- web3
+- alchemy
+- ci-cd
+compatibility: Designed for Claude Code
 ---
-
 # Alchemy CI Integration
 
 ## Overview

@@ -1,19 +1,26 @@
 ---
 name: adobe-prod-checklist
-description: |
-  Execute Adobe production deployment checklist covering credential management,
+description: 'Execute Adobe production deployment checklist covering credential management,
+
   API health checks, rate limit configuration, and rollback procedures
+
   for Firefly Services, PDF Services, and I/O Events integrations.
+
   Trigger with phrases like "adobe production", "deploy adobe",
+
   "adobe go-live", "adobe launch checklist".
+
+  '
 allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, adobe]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- adobe
+compatibility: Designed for Claude Code
 ---
-
 # Adobe Production Checklist
 
 ## Overview

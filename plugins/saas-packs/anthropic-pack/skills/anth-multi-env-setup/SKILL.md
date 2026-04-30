@@ -1,18 +1,24 @@
 ---
 name: anth-multi-env-setup
-description: |
-  Configure Claude API across dev, staging, and production environments
+description: 'Configure Claude API across dev, staging, and production environments
+
   with isolated keys, model routing, and spend controls per environment.
+
   Trigger with phrases like "anthropic environments", "claude multi-env",
+
   "anthropic staging setup", "claude dev vs prod config".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, anthropic]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- anthropic
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Multi-Environment Setup
 
 ## Overview

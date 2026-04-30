@@ -1,19 +1,27 @@
 ---
 name: castai-prod-checklist
-description: |
-  Production readiness checklist for CAST AI cluster onboarding.
+description: 'Production readiness checklist for CAST AI cluster onboarding.
+
   Use when going live with CAST AI autoscaling, validating Phase 2 setup,
+
   or preparing for production cost optimization.
+
   Trigger with phrases like "cast ai production", "cast ai go-live",
+
   "cast ai checklist", "cast ai launch".
+
+  '
 allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Bash(helm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, kubernetes, cost-optimization, castai]
-compatible-with: claude-code
+tags:
+- saas
+- kubernetes
+- cost-optimization
+- castai
+compatibility: Designed for Claude Code
 ---
-
 # CAST AI Production Checklist
 
 ## Overview

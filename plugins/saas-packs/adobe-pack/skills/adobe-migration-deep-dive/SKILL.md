@@ -1,19 +1,26 @@
 ---
 name: adobe-migration-deep-dive
-description: |
-  Execute major Adobe re-architecture: migrating from legacy Adobe APIs
+description: 'Execute major Adobe re-architecture: migrating from legacy Adobe APIs
+
   to Firefly Services, consolidating Creative Cloud integrations, and
+
   strangler-fig migration from competitor document/image APIs to Adobe.
+
   Trigger with phrases like "migrate adobe", "adobe migration",
+
   "switch to adobe", "adobe replatform", "replace with adobe".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, adobe]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- adobe
+compatibility: Designed for Claude Code
 ---
-
 # Adobe Migration Deep Dive
 
 ## Overview

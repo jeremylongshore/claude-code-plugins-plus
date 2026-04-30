@@ -1,17 +1,27 @@
 ---
 name: apollo-observability
-description: |
-  Set up Apollo.io monitoring and observability.
+description: 'Set up Apollo.io monitoring and observability.
+
   Use when implementing logging, metrics, tracing, and alerting
+
   for Apollo integrations.
+
   Trigger with phrases like "apollo monitoring", "apollo metrics",
+
   "apollo observability", "apollo logging", "apollo alerts".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(kubectl:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, apollo, monitoring, observability, logging]
+tags:
+- saas
+- apollo
+- monitoring
+- observability
+- logging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Apollo Observability
 

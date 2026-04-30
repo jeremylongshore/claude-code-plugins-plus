@@ -1,18 +1,27 @@
 ---
 name: algolia-install-auth
-description: |
-  Install and configure the Algolia JavaScript v5 client with proper API key management.
-  Use when setting up a new Algolia integration, configuring Application ID and API keys,
+description: 'Install and configure the Algolia JavaScript v5 client with proper API
+  key management.
+
+  Use when setting up a new Algolia integration, configuring Application ID and API
+  keys,
+
   or initializing the algoliasearch client in a Node.js/TypeScript project.
-  Trigger: "install algolia", "setup algolia", "algolia auth", "configure algolia keys".
+
+  Trigger: "install algolia", "setup algolia", "algolia auth", "configure algolia
+  keys".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Bash(npx:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, algolia]
-compatible-with: claude-code
+tags:
+- saas
+- search
+- algolia
+compatibility: Designed for Claude Code
 ---
-
 # Algolia Install & Auth
 
 ## Overview

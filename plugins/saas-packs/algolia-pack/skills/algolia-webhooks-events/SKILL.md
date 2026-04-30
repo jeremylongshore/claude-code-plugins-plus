@@ -1,18 +1,25 @@
 ---
 name: algolia-webhooks-events
-description: |
-  Implement Algolia Insights API for click/conversion tracking, search analytics,
+description: 'Implement Algolia Insights API for click/conversion tracking, search
+  analytics,
+
   and real-time event-driven index updates via database change listeners.
+
   Trigger: "algolia events", "algolia analytics", "algolia insights",
+
   "algolia click tracking", "algolia conversion", "algolia event tracking".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, algolia]
-compatible-with: claude-code
+tags:
+- saas
+- search
+- algolia
+compatibility: Designed for Claude Code
 ---
-
 # Algolia Events & Insights
 
 ## Overview

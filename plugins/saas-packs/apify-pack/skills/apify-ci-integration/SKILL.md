@@ -1,19 +1,27 @@
 ---
 name: apify-ci-integration
-description: |
-  Configure CI/CD pipelines for Apify Actor builds and deployments.
+description: 'Configure CI/CD pipelines for Apify Actor builds and deployments.
+
   Use when automating Actor deployment via GitHub Actions,
+
   running integration tests against Apify, or building CI/CD for scrapers.
+
   Trigger: "apify CI", "apify GitHub Actions", "apify automated deploy",
+
   "CI apify", "apify pipeline", "auto deploy actor".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, scraping, automation, apify]
-compatible-with: claude-code
+tags:
+- saas
+- scraping
+- automation
+- apify
+compatibility: Designed for Claude Code
 ---
-
 # Apify CI Integration
 
 ## Overview

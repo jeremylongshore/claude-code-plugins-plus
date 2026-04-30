@@ -1,17 +1,25 @@
 ---
 name: clay-prod-checklist
-description: |
-  Execute production readiness checklist for Clay integrations.
+description: 'Execute production readiness checklist for Clay integrations.
+
   Use when launching Clay-powered enrichment pipelines, preparing for go-live,
+
   or auditing production Clay configurations.
+
   Trigger with phrases like "clay production", "clay go-live", "clay launch checklist",
+
   "clay production readiness", "deploy clay pipeline".
+
+  '
 allowed-tools: Read, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clay, deployment]
+tags:
+- saas
+- clay
+- deployment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clay Production Checklist
 

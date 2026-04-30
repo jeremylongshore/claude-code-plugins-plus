@@ -1,19 +1,27 @@
 ---
 name: bamboohr-reference-architecture
-description: |
-  Implement BambooHR reference architecture for production HR data pipelines.
+description: 'Implement BambooHR reference architecture for production HR data pipelines.
+
   Use when designing new BambooHR integrations, building employee sync systems,
+
   or establishing architecture standards for BambooHR-powered applications.
+
   Trigger with phrases like "bamboohr architecture", "bamboohr design",
+
   "bamboohr project structure", "bamboohr system design", "bamboohr pipeline".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hr, bamboohr, architecture]
-compatible-with: claude-code
+tags:
+- saas
+- hr
+- bamboohr
+- architecture
+compatibility: Designed for Claude Code
 ---
-
 # BambooHR Reference Architecture
 
 ## Overview

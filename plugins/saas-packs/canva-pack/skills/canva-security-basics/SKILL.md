@@ -1,19 +1,27 @@
 ---
 name: canva-security-basics
-description: |
-  Apply Canva Connect API security best practices for OAuth tokens and access control.
+description: 'Apply Canva Connect API security best practices for OAuth tokens and
+  access control.
+
   Use when securing OAuth credentials, implementing least-privilege scopes,
+
   or auditing Canva integration security.
+
   Trigger with phrases like "canva security", "canva secrets",
+
   "secure canva", "canva token security", "canva OAuth security".
+
+  '
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, canva]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- canva
+compatibility: Designed for Claude Code
 ---
-
 # Canva Security Basics
 
 ## Overview

@@ -1,19 +1,22 @@
 ---
 name: clade-sdk-patterns
-description: |
-  Production-ready Anthropic SDK patterns — client config, retries, timeouts,
-  Use when working with sdk-patterns patterns.
-  error handling, TypeScript types, and async patterns.
-  Trigger with "anthropic sdk", "claude client setup", "anthropic typescript",
-  "anthropic python patterns".
+description: "Production-ready Anthropic SDK patterns \u2014 client config, retries,\
+  \ timeouts,\nUse when working with sdk-patterns patterns.\nerror handling, TypeScript\
+  \ types, and async patterns.\nTrigger with \"anthropic sdk\", \"claude client setup\"\
+  , \"anthropic typescript\",\n\"anthropic python patterns\".\n"
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code
-tags: [saas, anthropic, claude, sdk, typescript, python]
+tags:
+- saas
+- anthropic
+- claude
+- sdk
+- typescript
+- python
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic SDK Patterns
 
 ## Overview

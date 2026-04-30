@@ -1,16 +1,22 @@
 ---
 name: apple-notes-local-dev-loop
-description: |
-  Set up local development workflow for Apple Notes automation with JXA hot reload.
+description: 'Set up local development workflow for Apple Notes automation with JXA
+  hot reload.
+
   Trigger: "apple notes dev loop".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(osascript:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, macos, apple-notes, automation]
-compatible-with: claude-code
+tags:
+- saas
+- macos
+- apple-notes
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Apple Notes Local Dev Loop
 
 ## Overview

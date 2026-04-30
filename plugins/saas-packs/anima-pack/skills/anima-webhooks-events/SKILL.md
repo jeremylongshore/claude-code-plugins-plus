@@ -1,18 +1,27 @@
 ---
 name: anima-webhooks-events
-description: |
-  Use Figma webhooks to trigger automatic Anima code generation on design changes.
+description: 'Use Figma webhooks to trigger automatic Anima code generation on design
+  changes.
+
   Use when building event-driven design-to-code pipelines, auto-generating
+
   components when Figma files change, or integrating design updates into CI.
+
   Trigger: "anima webhook", "figma webhook", "anima auto-generate on change".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, figma, anima, webhooks]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- figma
+- anima
+- webhooks
+compatibility: Designed for Claude Code
 ---
-
 # Anima Webhooks & Events
 
 ## Overview

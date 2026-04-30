@@ -1,17 +1,26 @@
 ---
 name: apollo-security-basics
-description: |
-  Apply Apollo.io API security best practices.
+description: 'Apply Apollo.io API security best practices.
+
   Use when securing Apollo integrations, managing API keys,
+
   or implementing secure data handling.
+
   Trigger with phrases like "apollo security", "secure apollo api",
+
   "apollo api key security", "apollo data protection".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, apollo, api, security]
+tags:
+- saas
+- apollo
+- api
+- security
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Apollo Security Basics
 

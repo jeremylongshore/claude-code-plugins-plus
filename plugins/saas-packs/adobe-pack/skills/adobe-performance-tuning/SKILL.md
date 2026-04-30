@@ -1,19 +1,26 @@
 ---
 name: adobe-performance-tuning
-description: |
-  Optimize Adobe API performance with token caching, async job batching,
+description: 'Optimize Adobe API performance with token caching, async job batching,
+
   connection pooling, and response caching for Firefly, PDF Services,
+
   and Photoshop API workflows.
+
   Trigger with phrases like "adobe performance", "optimize adobe",
+
   "adobe latency", "adobe caching", "adobe slow", "adobe batch".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, adobe]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- adobe
+compatibility: Designed for Claude Code
 ---
-
 # Adobe Performance Tuning
 
 ## Overview

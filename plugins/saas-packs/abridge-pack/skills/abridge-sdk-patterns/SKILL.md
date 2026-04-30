@@ -1,18 +1,26 @@
 ---
 name: abridge-sdk-patterns
-description: |
-  Apply production-ready patterns for Abridge clinical AI integration.
+description: 'Apply production-ready patterns for Abridge clinical AI integration.
+
   Use when building reusable Abridge client wrappers, implementing HIPAA-compliant
+
   error handling, or establishing team coding standards for healthcare AI.
+
   Trigger: "abridge SDK patterns", "abridge best practices", "abridge code patterns".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, healthcare, ai, abridge, patterns]
-compatible-with: claude-code
+tags:
+- saas
+- healthcare
+- ai
+- abridge
+- patterns
+compatibility: Designed for Claude Code
 ---
-
 # Abridge SDK Patterns
 
 ## Overview

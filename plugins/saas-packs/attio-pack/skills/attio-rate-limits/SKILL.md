@@ -1,18 +1,24 @@
 ---
 name: attio-rate-limits
-description: |
-  Handle Attio API rate limits with exponential backoff, queue-based
+description: 'Handle Attio API rate limits with exponential backoff, queue-based
+
   throttling, and Retry-After header parsing.
+
   Trigger: "attio rate limit", "attio 429", "attio throttling",
+
   "attio retry", "attio backoff", "attio too many requests".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, attio]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- attio
+compatibility: Designed for Claude Code
 ---
-
 # Attio Rate Limits
 
 ## Overview

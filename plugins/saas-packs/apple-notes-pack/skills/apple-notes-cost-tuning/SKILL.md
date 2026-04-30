@@ -1,16 +1,18 @@
 ---
 name: apple-notes-cost-tuning
-description: |
-  Apple Notes cost optimization — it is free, focus on iCloud storage management.
-  Trigger: "apple notes cost".
+description: "Apple Notes cost optimization \u2014 it is free, focus on iCloud storage\
+  \ management.\nTrigger: \"apple notes cost\".\n"
 allowed-tools: Read, Write, Edit, Bash(osascript:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, macos, apple-notes, automation]
-compatible-with: claude-code
+tags:
+- saas
+- macos
+- apple-notes
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Apple Notes Cost Tuning
 
 ## Overview

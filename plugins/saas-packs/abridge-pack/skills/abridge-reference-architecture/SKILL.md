@@ -1,19 +1,28 @@
 ---
 name: abridge-reference-architecture
-description: |
-  Implement Abridge reference architecture for clinical AI integration.
+description: 'Implement Abridge reference architecture for clinical AI integration.
+
   Use when designing a new Abridge deployment, reviewing project structure,
+
   or planning multi-site health system rollouts with EHR integration.
+
   Trigger: "abridge architecture", "abridge project structure",
+
   "abridge system design", "abridge multi-site".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, healthcare, ai, abridge, architecture]
-compatible-with: claude-code
+tags:
+- saas
+- healthcare
+- ai
+- abridge
+- architecture
+compatibility: Designed for Claude Code
 ---
-
 # Abridge Reference Architecture
 
 ## Overview

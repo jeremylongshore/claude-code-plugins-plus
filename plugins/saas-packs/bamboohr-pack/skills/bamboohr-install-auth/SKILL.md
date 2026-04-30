@@ -1,19 +1,27 @@
 ---
 name: bamboohr-install-auth
-description: |
-  Install and configure BambooHR API authentication with HTTP Basic Auth.
+description: 'Install and configure BambooHR API authentication with HTTP Basic Auth.
+
   Use when setting up a new BambooHR integration, configuring API keys,
+
   or initializing BambooHR REST API access in your project.
+
   Trigger with phrases like "install bamboohr", "setup bamboohr",
+
   "bamboohr auth", "configure bamboohr API key", "bamboohr credentials".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hr, bamboohr, authentication]
-compatible-with: claude-code
+tags:
+- saas
+- hr
+- bamboohr
+- authentication
+compatibility: Designed for Claude Code
 ---
-
 # BambooHR Install & Auth
 
 ## Overview

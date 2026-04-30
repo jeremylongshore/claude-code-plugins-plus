@@ -1,17 +1,26 @@
 ---
 name: apollo-prod-checklist
-description: |
-  Execute Apollo.io production deployment checklist.
+description: 'Execute Apollo.io production deployment checklist.
+
   Use when preparing to deploy Apollo integrations to production,
+
   doing pre-launch verification, or auditing production readiness.
+
   Trigger with phrases like "apollo production checklist", "deploy apollo",
+
   "apollo go-live", "apollo production ready", "apollo launch checklist".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, apollo, deployment, audit]
+tags:
+- saas
+- apollo
+- deployment
+- audit
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Apollo Production Checklist
 

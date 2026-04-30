@@ -1,17 +1,26 @@
 ---
 name: clay-incident-runbook
-description: |
-  Execute Clay incident response procedures for enrichment failures, credit exhaustion, and data flow outages.
+description: 'Execute Clay incident response procedures for enrichment failures, credit
+  exhaustion, and data flow outages.
+
   Use when Clay enrichments stop working, webhook delivery fails,
+
   or CRM sync breaks in production.
+
   Trigger with phrases like "clay incident", "clay outage", "clay down",
+
   "clay emergency", "clay broken", "clay enrichment stopped".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clay, incident-response]
+tags:
+- saas
+- clay
+- incident-response
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clay Incident Runbook
 

@@ -1,18 +1,24 @@
 ---
 name: algolia-multi-env-setup
-description: |
-  Configure Algolia across dev/staging/production: index prefixing, per-environment
+description: 'Configure Algolia across dev/staging/production: index prefixing, per-environment
+
   API keys, settings-as-code, and environment isolation guards.
+
   Trigger: "algolia environments", "algolia staging", "algolia dev prod",
+
   "algolia environment setup", "algolia config by env".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(gcloud:*), Bash(vault:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, algolia]
-compatible-with: claude-code
+tags:
+- saas
+- search
+- algolia
+compatibility: Designed for Claude Code
 ---
-
 # Algolia Multi-Environment Setup
 
 ## Overview

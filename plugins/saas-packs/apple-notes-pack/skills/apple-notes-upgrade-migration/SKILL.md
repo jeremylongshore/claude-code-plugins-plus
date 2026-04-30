@@ -1,16 +1,21 @@
 ---
 name: apple-notes-upgrade-migration
-description: |
-  Migrate Apple Notes automation scripts between macOS versions.
+description: 'Migrate Apple Notes automation scripts between macOS versions.
+
   Trigger: "apple notes upgrade migration".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(osascript:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, macos, apple-notes, automation]
-compatible-with: claude-code
+tags:
+- saas
+- macos
+- apple-notes
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Apple Notes Upgrade & Migration
 
 ## Overview

@@ -1,19 +1,28 @@
 ---
 name: clari-common-errors
-description: |
-  Diagnose and fix Clari API errors including auth failures, export issues, and data mismatches.
+description: 'Diagnose and fix Clari API errors including auth failures, export issues,
+  and data mismatches.
+
   Use when Clari API calls fail, exports return empty data,
+
   or forecast numbers do not match the UI.
+
   Trigger with phrases like "clari error", "clari not working",
+
   "clari api failure", "fix clari", "debug clari".
+
+  '
 allowed-tools: Read, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, revenue-intelligence, forecasting, clari]
-compatible-with: claude-code
+tags:
+- saas
+- revenue-intelligence
+- forecasting
+- clari
+compatibility: Designed for Claude Code
 ---
-
 # Clari Common Errors
 
 ## Overview

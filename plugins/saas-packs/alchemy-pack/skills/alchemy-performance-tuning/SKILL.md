@@ -1,19 +1,29 @@
 ---
 name: alchemy-performance-tuning
-description: |
-  Optimize Alchemy SDK performance with caching, batching, and multi-chain parallelism.
+description: 'Optimize Alchemy SDK performance with caching, batching, and multi-chain
+  parallelism.
+
   Use when reducing latency for blockchain queries, optimizing CU consumption,
+
   or scaling dApps for high request volumes.
+
   Trigger: "alchemy performance", "alchemy slow", "alchemy optimization",
+
   "alchemy caching", "alchemy batch requests".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, blockchain, web3, alchemy, performance]
-compatible-with: claude-code
+tags:
+- saas
+- blockchain
+- web3
+- alchemy
+- performance
+compatibility: Designed for Claude Code
 ---
-
 # Alchemy Performance Tuning
 
 ## Performance Targets

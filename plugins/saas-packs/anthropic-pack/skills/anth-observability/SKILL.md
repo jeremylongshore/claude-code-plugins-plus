@@ -1,18 +1,24 @@
 ---
 name: anth-observability
-description: |
-  Set up observability for Claude API integrations with metrics, logging,
+description: 'Set up observability for Claude API integrations with metrics, logging,
+
   and alerting for latency, cost, errors, and token usage.
+
   Trigger with phrases like "anthropic monitoring", "claude observability",
+
   "anthropic metrics", "track claude usage", "claude dashboard".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, anthropic]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- anthropic
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Observability
 
 ## Overview

@@ -1,19 +1,26 @@
 ---
 name: canva-hello-world
-description: |
-  Create a minimal working Canva Connect API example.
+description: 'Create a minimal working Canva Connect API example.
+
   Use when starting a new Canva integration, testing your setup,
+
   or learning basic Canva REST API patterns.
+
   Trigger with phrases like "canva hello world", "canva example",
+
   "canva quick start", "simple canva code".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, canva]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- canva
+compatibility: Designed for Claude Code
 ---
-
 # Canva Hello World
 
 ## Overview

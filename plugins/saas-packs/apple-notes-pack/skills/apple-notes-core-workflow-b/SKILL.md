@@ -1,19 +1,28 @@
 ---
 name: apple-notes-core-workflow-b
-description: |
-  Export and convert Apple Notes to Markdown, JSON, HTML, and SQLite.
+description: 'Export and convert Apple Notes to Markdown, JSON, HTML, and SQLite.
+
   Use when backing up notes, exporting to other apps, converting HTML to Markdown,
+
   or building searchable note archives from Apple Notes.
+
   Trigger: "export apple notes", "apple notes to markdown", "backup apple notes",
+
   "apple notes to JSON", "convert apple notes".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(osascript:*), Bash(node:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, macos, apple-notes, automation, export]
-compatible-with: claude-code
+tags:
+- saas
+- macos
+- apple-notes
+- automation
+- export
+compatibility: Designed for Claude Code
 ---
-
 # Apple Notes Core Workflow B — Export & Conversion
 
 ## Overview

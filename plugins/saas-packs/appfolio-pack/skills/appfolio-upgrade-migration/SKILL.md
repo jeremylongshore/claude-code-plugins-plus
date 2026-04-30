@@ -1,16 +1,21 @@
 ---
 name: appfolio-upgrade-migration
-description: |
-  Migrate between AppFolio API versions and handle endpoint changes.
+description: 'Migrate between AppFolio API versions and handle endpoint changes.
+
   Trigger: "appfolio upgrade".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, property-management, appfolio, real-estate]
-compatible-with: claude-code
+tags:
+- saas
+- property-management
+- appfolio
+- real-estate
+compatibility: Designed for Claude Code
 ---
-
 # AppFolio Upgrade & Migration
 
 ## Overview

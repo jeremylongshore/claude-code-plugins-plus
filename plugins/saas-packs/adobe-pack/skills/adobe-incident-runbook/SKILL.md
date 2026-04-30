@@ -1,20 +1,28 @@
 ---
 name: adobe-incident-runbook
-description: |
-  Execute Adobe incident response procedures with triage, mitigation,
+description: 'Execute Adobe incident response procedures with triage, mitigation,
+
   and postmortem for Firefly Services, PDF Services, and I/O Events outages.
+
   Use when responding to Adobe-related incidents, investigating API failures,
+
   or running post-incident reviews.
+
   Trigger with phrases like "adobe incident", "adobe outage",
+
   "adobe down", "adobe on-call", "adobe emergency".
+
+  '
 allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, adobe]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- adobe
+compatibility: Designed for Claude Code
 ---
-
 # Adobe Incident Runbook
 
 ## Overview

@@ -1,19 +1,27 @@
 ---
 name: clari-debug-bundle
-description: |
-  Collect Clari API diagnostic info for support cases.
+description: 'Collect Clari API diagnostic info for support cases.
+
   Use when preparing a support ticket, collecting API response samples,
+
   or documenting integration issues.
+
   Trigger with phrases like "clari debug", "clari support bundle",
+
   "collect clari diagnostics", "clari troubleshoot".
+
+  '
 allowed-tools: Read, Bash(curl:*), Bash(python3:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, revenue-intelligence, forecasting, clari]
-compatible-with: claude-code
+tags:
+- saas
+- revenue-intelligence
+- forecasting
+- clari
+compatibility: Designed for Claude Code
 ---
-
 # Clari Debug Bundle
 
 ## Overview

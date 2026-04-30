@@ -1,19 +1,28 @@
 ---
 name: anima-core-workflow-b
-description: |
-  Clone websites to React/HTML code and customize Anima output with AI.
+description: 'Clone websites to React/HTML code and customize Anima output with AI.
+
   Use when converting live websites to code, customizing generated components,
+
   or building design-system-aware code from URL screenshots.
+
   Trigger: "anima website to code", "anima URL clone", "anima AI customization",
+
   "website to react", "clone website to code".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, figma, anima, website-cloning]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- figma
+- anima
+- website-cloning
+compatibility: Designed for Claude Code
 ---
-
 # Anima Core Workflow B — Website-to-Code & AI Customization
 
 ## Overview

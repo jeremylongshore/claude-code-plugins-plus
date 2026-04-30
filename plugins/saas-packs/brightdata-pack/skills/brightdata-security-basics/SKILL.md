@@ -1,19 +1,27 @@
 ---
 name: brightdata-security-basics
-description: |
-  Apply Bright Data security best practices for secrets and access control.
+description: 'Apply Bright Data security best practices for secrets and access control.
+
   Use when securing API keys, implementing least privilege access,
+
   or auditing Bright Data security configuration.
+
   Trigger with phrases like "brightdata security", "brightdata secrets",
+
   "secure brightdata", "brightdata API key security".
+
+  '
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, scraping, data, brightdata]
-compatible-with: claude-code
+tags:
+- saas
+- scraping
+- data
+- brightdata
+compatibility: Designed for Claude Code
 ---
-
 # Bright Data Security Basics
 
 ## Overview

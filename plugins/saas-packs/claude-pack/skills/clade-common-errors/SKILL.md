@@ -1,19 +1,21 @@
 ---
 name: clade-common-errors
-description: |
-  Diagnose and fix Anthropic API errors — authentication, rate limits,
-  Use when working with common-errors patterns.
-  overloaded, context length, and content policy issues.
-  Trigger with "anthropic error", "claude 429", "claude overloaded",
-  "anthropic not working", "debug claude api".
+description: "Diagnose and fix Anthropic API errors \u2014 authentication, rate limits,\n\
+  Use when working with common-errors patterns.\noverloaded, context length, and content\
+  \ policy issues.\nTrigger with \"anthropic error\", \"claude 429\", \"claude overloaded\"\
+  ,\n\"anthropic not working\", \"debug claude api\".\n"
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code
-tags: [saas, anthropic, claude, errors, debugging]
+tags:
+- saas
+- anthropic
+- claude
+- errors
+- debugging
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Common Errors
 
 ## Overview

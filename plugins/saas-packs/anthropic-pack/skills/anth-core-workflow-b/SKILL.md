@@ -1,19 +1,26 @@
 ---
 name: anth-core-workflow-b
-description: |
-  Build Claude streaming and Message Batches API workflows.
+description: 'Build Claude streaming and Message Batches API workflows.
+
   Use when implementing real-time streaming responses, SSE event handling,
+
   or processing bulk requests with the 50% cheaper Batches API.
+
   Trigger with phrases like "claude streaming", "anthropic batch",
+
   "message batches api", "SSE events anthropic", "stream claude response".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, anthropic]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- anthropic
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Core Workflow B — Streaming & Batches
 
 ## Overview

@@ -1,19 +1,29 @@
 ---
 name: anima-hello-world
-description: |
-  Generate React/Vue/HTML code from a Figma design using the Anima SDK.
-  Use when testing design-to-code conversion, learning Anima's code output format,
+description: 'Generate React/Vue/HTML code from a Figma design using the Anima SDK.
+
+  Use when testing design-to-code conversion, learning Anima''s code output format,
+
   or building your first automated design-to-code pipeline.
+
   Trigger: "anima hello world", "anima example", "figma to react",
+
   "figma to code", "anima generate code".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, figma, anima, react, code-generation]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- figma
+- anima
+- react
+- code-generation
+compatibility: Designed for Claude Code
 ---
-
 # Anima Hello World
 
 ## Overview

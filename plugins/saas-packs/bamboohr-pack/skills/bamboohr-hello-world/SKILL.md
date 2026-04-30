@@ -1,19 +1,21 @@
 ---
 name: bamboohr-hello-world
-description: |
-  Create a minimal working BambooHR example — fetch employee directory and single employee.
-  Use when starting a new BambooHR integration, testing your setup,
-  or learning basic BambooHR REST API patterns.
-  Trigger with phrases like "bamboohr hello world", "bamboohr example",
-  "bamboohr quick start", "simple bamboohr code", "first bamboohr call".
+description: "Create a minimal working BambooHR example \u2014 fetch employee directory\
+  \ and single employee.\nUse when starting a new BambooHR integration, testing your\
+  \ setup,\nor learning basic BambooHR REST API patterns.\nTrigger with phrases like\
+  \ \"bamboohr hello world\", \"bamboohr example\",\n\"bamboohr quick start\", \"\
+  simple bamboohr code\", \"first bamboohr call\".\n"
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hr, bamboohr, quickstart]
-compatible-with: claude-code
+tags:
+- saas
+- hr
+- bamboohr
+- quickstart
+compatibility: Designed for Claude Code
 ---
-
 # BambooHR Hello World
 
 ## Overview

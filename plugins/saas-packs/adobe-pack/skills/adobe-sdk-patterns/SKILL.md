@@ -1,20 +1,29 @@
 ---
 name: adobe-sdk-patterns
-description: |
-  Apply production-ready patterns for Adobe Firefly Services SDK, PDF Services SDK,
+description: 'Apply production-ready patterns for Adobe Firefly Services SDK, PDF
+  Services SDK,
+
   and raw REST API usage in TypeScript and Python.
+
   Use when implementing Adobe integrations, refactoring SDK usage,
+
   or establishing team coding standards for Adobe APIs.
+
   Trigger with phrases like "adobe SDK patterns", "adobe best practices",
+
   "adobe code patterns", "idiomatic adobe", "adobe typescript".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, adobe]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- adobe
+compatibility: Designed for Claude Code
 ---
-
 # Adobe SDK Patterns
 
 ## Overview

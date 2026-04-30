@@ -1,16 +1,21 @@
 ---
 name: appfolio-core-workflow-b
-description: |
-  Automate tenant management and lease operations with AppFolio.
+description: 'Automate tenant management and lease operations with AppFolio.
+
   Trigger: "appfolio tenant management".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, property-management, appfolio, real-estate]
-compatible-with: claude-code
+tags:
+- saas
+- property-management
+- appfolio
+- real-estate
+compatibility: Designed for Claude Code
 ---
-
 # AppFolio — Work Orders & Maintenance
 
 ## Overview

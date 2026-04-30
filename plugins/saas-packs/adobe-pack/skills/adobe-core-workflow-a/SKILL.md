@@ -1,20 +1,29 @@
 ---
 name: adobe-core-workflow-a
-description: |
-  Execute Adobe Firefly Services workflow: AI image generation, generative fill,
+description: 'Execute Adobe Firefly Services workflow: AI image generation, generative
+  fill,
+
   and expand image using the Firefly v3 API.
+
   Use when generating images from prompts, filling or expanding images with AI,
+
   or building creative automation pipelines.
+
   Trigger with phrases like "adobe firefly", "generate image adobe",
+
   "firefly text to image", "adobe AI image", "generative fill".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, adobe]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- adobe
+compatibility: Designed for Claude Code
 ---
-
 # Adobe Core Workflow A — Firefly Services
 
 ## Overview

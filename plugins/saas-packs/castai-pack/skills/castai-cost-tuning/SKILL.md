@@ -1,19 +1,27 @@
 ---
 name: castai-cost-tuning
-description: |
-  Maximize Kubernetes cost savings with CAST AI spot strategies and right-sizing.
+description: 'Maximize Kubernetes cost savings with CAST AI spot strategies and right-sizing.
+
   Use when analyzing cloud spend, optimizing spot-to-on-demand ratios,
+
   or configuring CAST AI for maximum savings.
+
   Trigger with phrases like "cast ai cost", "cast ai savings",
+
   "cast ai spot strategy", "reduce kubernetes cost", "cast ai budget".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, kubernetes, cost-optimization, castai]
-compatible-with: claude-code
+tags:
+- saas
+- kubernetes
+- cost-optimization
+- castai
+compatibility: Designed for Claude Code
 ---
-
 # CAST AI Cost Tuning
 
 ## Overview

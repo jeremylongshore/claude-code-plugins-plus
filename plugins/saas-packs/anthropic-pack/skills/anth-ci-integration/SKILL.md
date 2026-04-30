@@ -1,19 +1,26 @@
 ---
 name: anth-ci-integration
-description: |
-  Configure CI/CD pipelines for Anthropic Claude API integrations.
+description: 'Configure CI/CD pipelines for Anthropic Claude API integrations.
+
   Use when setting up automated testing, prompt regression tests,
+
   or CI validation for Claude-powered features.
+
   Trigger with phrases like "anthropic ci", "claude ci/cd",
+
   "test claude in pipeline", "anthropic github actions".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, anthropic]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- anthropic
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic CI Integration
 
 ## Overview

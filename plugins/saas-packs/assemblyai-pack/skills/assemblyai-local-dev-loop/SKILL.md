@@ -1,19 +1,28 @@
 ---
 name: assemblyai-local-dev-loop
-description: |
-  Configure AssemblyAI local development with hot reload and testing.
+description: 'Configure AssemblyAI local development with hot reload and testing.
+
   Use when setting up a development environment, configuring test workflows,
+
   or establishing a fast iteration cycle with AssemblyAI.
+
   Trigger with phrases like "assemblyai dev setup", "assemblyai local development",
+
   "assemblyai dev environment", "develop with assemblyai".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, speech-to-text, assemblyai, transcription]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- speech-to-text
+- assemblyai
+- transcription
+compatibility: Designed for Claude Code
 ---
-
 # AssemblyAI Local Dev Loop
 
 ## Overview

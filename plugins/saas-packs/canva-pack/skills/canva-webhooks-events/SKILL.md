@@ -1,19 +1,26 @@
 ---
 name: canva-webhooks-events
-description: |
-  Implement Canva Connect API webhook handling with JWK signature verification.
+description: 'Implement Canva Connect API webhook handling with JWK signature verification.
+
   Use when setting up webhook endpoints, handling Canva event notifications,
+
   or implementing real-time design collaboration features.
+
   Trigger with phrases like "canva webhook", "canva events",
+
   "canva notifications", "handle canva events", "canva JWK".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, canva]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- canva
+compatibility: Designed for Claude Code
 ---
-
 # Canva Webhooks & Events
 
 ## Overview

@@ -1,19 +1,21 @@
 ---
 name: clade-ci-integration
-description: |
-  Test and validate Claude integrations in CI/CD pipelines —
-  Use when working with ci-integration patterns.
-  GitHub Actions, mocking strategies, and cost control.
-  Trigger with "anthropic ci", "test claude in ci", "anthropic github actions",
-  "claude automated testing".
+description: "Test and validate Claude integrations in CI/CD pipelines \u2014\nUse\
+  \ when working with ci-integration patterns.\nGitHub Actions, mocking strategies,\
+  \ and cost control.\nTrigger with \"anthropic ci\", \"test claude in ci\", \"anthropic\
+  \ github actions\",\n\"claude automated testing\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code
-tags: [saas, anthropic, claude, ci, testing]
+tags:
+- saas
+- anthropic
+- claude
+- ci
+- testing
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic CI Integration
 
 ## Overview

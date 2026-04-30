@@ -1,19 +1,26 @@
 ---
 name: anth-prod-checklist
-description: |
-  Execute production deployment checklist for Claude API integrations.
+description: 'Execute production deployment checklist for Claude API integrations.
+
   Use when deploying Claude-powered features to production,
+
   preparing for launch, or implementing go-live validation.
+
   Trigger with phrases like "anthropic production", "deploy claude",
+
   "claude go-live", "anthropic launch checklist", "production ready claude".
+
+  '
 allowed-tools: Read, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, anthropic]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- anthropic
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Production Checklist
 
 ## Overview

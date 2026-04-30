@@ -1,17 +1,25 @@
 ---
 name: apollo-data-handling
-description: |
-  Apollo.io data management and compliance.
+description: 'Apollo.io data management and compliance.
+
   Use when handling contact data, implementing GDPR compliance,
+
   or managing data exports and retention.
+
   Trigger with phrases like "apollo data", "apollo gdpr", "apollo compliance",
+
   "apollo data export", "apollo data retention", "apollo pii".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(kubectl:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, apollo, compliance]
+tags:
+- saas
+- apollo
+- compliance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Apollo Data Handling
 

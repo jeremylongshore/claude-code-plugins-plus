@@ -1,19 +1,26 @@
 ---
 name: anth-webhooks-events
-description: |
-  Implement event-driven patterns with Claude API: streaming SSE events,
+description: 'Implement event-driven patterns with Claude API: streaming SSE events,
+
   Message Batches callbacks, and async processing architectures.
+
   Use when building real-time Claude integrations or processing batch results.
+
   Trigger with phrases like "anthropic events", "claude streaming events",
+
   "anthropic async processing", "claude batch callbacks".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, anthropic]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- anthropic
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Events & Async Processing
 
 ## Overview

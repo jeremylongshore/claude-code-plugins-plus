@@ -1,19 +1,26 @@
 ---
 name: canva-common-errors
-description: |
-  Diagnose and fix Canva Connect API errors and HTTP status codes.
+description: 'Diagnose and fix Canva Connect API errors and HTTP status codes.
+
   Use when encountering Canva errors, debugging failed requests,
+
   or troubleshooting integration issues.
+
   Trigger with phrases like "canva error", "fix canva",
+
   "canva not working", "debug canva", "canva 401", "canva 429".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, canva]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- canva
+compatibility: Designed for Claude Code
 ---
-
 # Canva Common Errors
 
 ## Overview

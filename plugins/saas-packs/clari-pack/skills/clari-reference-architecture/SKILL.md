@@ -1,19 +1,27 @@
 ---
 name: clari-reference-architecture
-description: |
-  Reference architecture for Clari revenue intelligence integrations.
+description: 'Reference architecture for Clari revenue intelligence integrations.
+
   Use when designing a forecast data platform, planning Clari integration
+
   architecture, or establishing team patterns for revenue analytics.
+
   Trigger with phrases like "clari architecture", "clari data platform",
+
   "clari integration design", "clari best practices".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, revenue-intelligence, forecasting, clari]
-compatible-with: claude-code
+tags:
+- saas
+- revenue-intelligence
+- forecasting
+- clari
+compatibility: Designed for Claude Code
 ---
-
 # Clari Reference Architecture
 
 ## Overview

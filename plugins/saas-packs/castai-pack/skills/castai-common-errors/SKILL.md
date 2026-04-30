@@ -1,19 +1,27 @@
 ---
 name: castai-common-errors
-description: |
-  Diagnose and fix CAST AI agent, API, and autoscaler errors.
+description: 'Diagnose and fix CAST AI agent, API, and autoscaler errors.
+
   Use when the CAST AI agent is offline, nodes are not scaling,
+
   or API calls return errors.
+
   Trigger with phrases like "cast ai error", "cast ai not working",
+
   "cast ai agent offline", "cast ai debug", "fix cast ai".
+
+  '
 allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, kubernetes, cost-optimization, castai]
-compatible-with: claude-code
+tags:
+- saas
+- kubernetes
+- cost-optimization
+- castai
+compatibility: Designed for Claude Code
 ---
-
 # CAST AI Common Errors
 
 ## Overview

@@ -1,19 +1,29 @@
 ---
 name: assemblyai-deploy-integration
-description: |
-  Deploy AssemblyAI integrations to Vercel, Cloud Run, and Fly.io platforms.
+description: 'Deploy AssemblyAI integrations to Vercel, Cloud Run, and Fly.io platforms.
+
   Use when deploying AssemblyAI-powered transcription services to production,
+
   configuring platform-specific secrets, or setting up webhook endpoints.
+
   Trigger with phrases like "deploy assemblyai", "assemblyai Vercel",
+
   "assemblyai production deploy", "assemblyai Cloud Run", "assemblyai Fly.io".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, speech-to-text, assemblyai, transcription, deploy]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- speech-to-text
+- assemblyai
+- transcription
+- deploy
+compatibility: Designed for Claude Code
 ---
-
 # AssemblyAI Deploy Integration
 
 ## Overview

@@ -1,16 +1,21 @@
 ---
 name: apple-notes-reference-architecture
-description: |
-  Reference architecture for Apple Notes automation systems.
+description: 'Reference architecture for Apple Notes automation systems.
+
   Trigger: "apple notes architecture".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(osascript:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, macos, apple-notes, automation]
-compatible-with: claude-code
+tags:
+- saas
+- macos
+- apple-notes
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Apple Notes Reference Architecture
 
 ## Overview

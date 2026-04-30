@@ -1,20 +1,28 @@
 ---
 name: adobe-rate-limits
-description: |
-  Implement Adobe API rate limiting, backoff, and quota management across
+description: 'Implement Adobe API rate limiting, backoff, and quota management across
+
   Firefly, PDF Services, Photoshop, and I/O Events APIs.
+
   Use when handling rate limit errors, implementing retry logic,
+
   or optimizing API request throughput for Adobe.
+
   Trigger with phrases like "adobe rate limit", "adobe throttling",
+
   "adobe 429", "adobe retry", "adobe backoff", "adobe quota".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, adobe]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- adobe
+compatibility: Designed for Claude Code
 ---
-
 # Adobe Rate Limits
 
 ## Overview

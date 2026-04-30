@@ -1,19 +1,27 @@
 ---
 name: brightdata-debug-bundle
-description: |
-  Collect Bright Data debug evidence for support tickets and troubleshooting.
+description: 'Collect Bright Data debug evidence for support tickets and troubleshooting.
+
   Use when encountering persistent issues, preparing support tickets,
+
   or collecting diagnostic information for Bright Data problems.
+
   Trigger with phrases like "brightdata debug", "brightdata support bundle",
+
   "collect brightdata logs", "brightdata diagnostic".
+
+  '
 allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, scraping, data, brightdata]
-compatible-with: claude-code
+tags:
+- saas
+- scraping
+- data
+- brightdata
+compatibility: Designed for Claude Code
 ---
-
 # Bright Data Debug Bundle
 
 ## Overview

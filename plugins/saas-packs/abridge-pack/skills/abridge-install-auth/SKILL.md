@@ -1,18 +1,28 @@
 ---
 name: abridge-install-auth
-description: |
-  Set up Abridge clinical AI platform authentication and EHR integration credentials.
+description: 'Set up Abridge clinical AI platform authentication and EHR integration
+  credentials.
+
   Use when onboarding a healthcare org to Abridge, configuring Epic/Athena integration,
+
   or setting up developer sandbox access for ambient AI documentation.
-  Trigger: "install abridge", "setup abridge", "abridge auth", "configure abridge credentials".
+
+  Trigger: "install abridge", "setup abridge", "abridge auth", "configure abridge
+  credentials".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, healthcare, ai, abridge, clinical-documentation]
-compatible-with: claude-code
+tags:
+- saas
+- healthcare
+- ai
+- abridge
+- clinical-documentation
+compatibility: Designed for Claude Code
 ---
-
 # Abridge Install & Auth
 
 ## Overview

@@ -1,19 +1,27 @@
 ---
 name: canva-policy-guardrails
-description: |
-  Implement Canva Connect API lint rules, policy enforcement, and automated guardrails.
+description: 'Implement Canva Connect API lint rules, policy enforcement, and automated
+  guardrails.
+
   Use when setting up code quality rules for Canva integrations, implementing
+
   pre-commit hooks, or configuring CI policy checks.
+
   Trigger with phrases like "canva policy", "canva lint",
+
   "canva guardrails", "canva best practices check", "canva eslint".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npx:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, canva]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- canva
+compatibility: Designed for Claude Code
 ---
-
 # Canva Policy & Guardrails
 
 ## Overview

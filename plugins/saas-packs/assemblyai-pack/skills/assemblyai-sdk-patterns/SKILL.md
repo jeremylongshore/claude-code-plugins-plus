@@ -1,19 +1,28 @@
 ---
 name: assemblyai-sdk-patterns
-description: |
-  Apply production-ready AssemblyAI SDK patterns for TypeScript and Python.
+description: 'Apply production-ready AssemblyAI SDK patterns for TypeScript and Python.
+
   Use when implementing AssemblyAI integrations, refactoring SDK usage,
+
   or establishing team coding standards for transcription workflows.
+
   Trigger with phrases like "assemblyai SDK patterns", "assemblyai best practices",
+
   "assemblyai code patterns", "idiomatic assemblyai".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, speech-to-text, assemblyai, transcription]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- speech-to-text
+- assemblyai
+- transcription
+compatibility: Designed for Claude Code
 ---
-
 # AssemblyAI SDK Patterns
 
 ## Overview

@@ -1,18 +1,26 @@
 ---
 name: anima-sdk-patterns
-description: |
-  Apply production-ready patterns for the Anima SDK design-to-code pipeline.
+description: 'Apply production-ready patterns for the Anima SDK design-to-code pipeline.
+
   Use when building reusable Anima client wrappers, implementing output caching,
+
   or establishing team standards for design-to-code automation.
+
   Trigger: "anima SDK patterns", "anima best practices", "anima code patterns".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, figma, anima, patterns]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- figma
+- anima
+- patterns
+compatibility: Designed for Claude Code
 ---
-
 # Anima SDK Patterns
 
 ## Overview

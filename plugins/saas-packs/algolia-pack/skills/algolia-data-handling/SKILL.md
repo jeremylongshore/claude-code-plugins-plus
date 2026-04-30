@@ -1,18 +1,26 @@
 ---
 name: algolia-data-handling
-description: |
-  Implement Algolia data handling: record transforms, PII filtering before indexing,
-  data retention, GDPR/CCPA compliance with Algolia's deleteByQuery and Insights deletion.
+description: 'Implement Algolia data handling: record transforms, PII filtering before
+  indexing,
+
+  data retention, GDPR/CCPA compliance with Algolia''s deleteByQuery and Insights
+  deletion.
+
   Trigger: "algolia data", "algolia PII", "algolia GDPR", "algolia data retention",
+
   "algolia privacy", "algolia CCPA", "algolia data sync".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, algolia]
-compatible-with: claude-code
+tags:
+- saas
+- search
+- algolia
+compatibility: Designed for Claude Code
 ---
-
 # Algolia Data Handling
 
 ## Overview

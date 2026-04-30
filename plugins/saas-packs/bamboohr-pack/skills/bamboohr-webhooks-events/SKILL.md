@@ -1,20 +1,29 @@
 ---
 name: bamboohr-webhooks-events
-description: |
-  Implement BambooHR webhook endpoints with HMAC signature validation
+description: 'Implement BambooHR webhook endpoints with HMAC signature validation
+
   and employee change event handling. Covers global and permissioned webhooks.
+
   Use when setting up real-time employee notifications, implementing sync triggers,
+
   or handling BambooHR webhook payloads.
+
   Trigger with phrases like "bamboohr webhook", "bamboohr events",
+
   "bamboohr real-time sync", "bamboohr notifications", "bamboohr employee changes".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hr, bamboohr, webhooks]
-compatible-with: claude-code
+tags:
+- saas
+- hr
+- bamboohr
+- webhooks
+compatibility: Designed for Claude Code
 ---
-
 # BambooHR Webhooks & Events
 
 ## Overview

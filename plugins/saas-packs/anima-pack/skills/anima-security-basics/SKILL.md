@@ -1,18 +1,26 @@
 ---
 name: anima-security-basics
-description: |
-  Secure Anima and Figma tokens for design-to-code pipelines.
+description: 'Secure Anima and Figma tokens for design-to-code pipelines.
+
   Use when protecting API credentials, restricting Figma access scope,
+
   or hardening CI/CD design automation pipelines.
+
   Trigger: "anima security", "anima token safety", "figma token security".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, figma, anima, security]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- figma
+- anima
+- security
+compatibility: Designed for Claude Code
 ---
-
 # Anima Security Basics
 
 ## Security Checklist

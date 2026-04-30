@@ -1,17 +1,25 @@
 ---
 name: clay-common-errors
-description: |
-  Diagnose and fix the most common Clay errors and integration issues.
+description: 'Diagnose and fix the most common Clay errors and integration issues.
+
   Use when encountering Clay errors, debugging failed enrichments,
+
   or troubleshooting webhook delivery problems.
+
   Trigger with phrases like "clay error", "fix clay", "clay not working",
+
   "debug clay", "clay enrichment failed", "clay webhook error".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clay, debugging]
+tags:
+- saas
+- clay
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clay Common Errors
 

@@ -1,19 +1,27 @@
 ---
 name: castai-rate-limits
-description: |
-  Handle CAST AI API rate limits with backoff and request queuing.
+description: 'Handle CAST AI API rate limits with backoff and request queuing.
+
   Use when hitting 429 errors, optimizing API call patterns,
+
   or implementing rate-aware batch operations.
+
   Trigger with phrases like "cast ai rate limit", "cast ai 429",
+
   "cast ai throttle", "cast ai API limits".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, kubernetes, cost-optimization, castai]
-compatible-with: claude-code
+tags:
+- saas
+- kubernetes
+- cost-optimization
+- castai
+compatibility: Designed for Claude Code
 ---
-
 # CAST AI Rate Limits
 
 ## Overview

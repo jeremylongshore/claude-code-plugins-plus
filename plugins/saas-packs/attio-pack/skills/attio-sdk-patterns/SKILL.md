@@ -1,18 +1,24 @@
 ---
 name: attio-sdk-patterns
-description: |
-  Production-ready patterns for the Attio REST API: typed client,
+description: 'Production-ready patterns for the Attio REST API: typed client,
+
   retry with backoff, pagination iterators, and multi-tenant factory.
+
   Trigger: "attio SDK patterns", "attio best practices",
+
   "attio client wrapper", "idiomatic attio", "attio TypeScript patterns".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, attio]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- attio
+compatibility: Designed for Claude Code
 ---
-
 # Attio SDK Patterns
 
 ## Overview

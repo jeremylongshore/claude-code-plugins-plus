@@ -1,17 +1,26 @@
 ---
 name: apollo-cost-tuning
-description: |
-  Optimize Apollo.io costs and credit usage.
+description: 'Optimize Apollo.io costs and credit usage.
+
   Use when managing Apollo credits, reducing API costs,
+
   or optimizing subscription usage.
+
   Trigger with phrases like "apollo cost", "apollo credits",
+
   "apollo billing", "reduce apollo costs", "apollo usage".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, apollo, api, cost-optimization]
+tags:
+- saas
+- apollo
+- api
+- cost-optimization
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Apollo Cost Tuning
 

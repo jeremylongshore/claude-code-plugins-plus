@@ -1,18 +1,24 @@
 ---
 name: attio-common-errors
-description: |
-  Diagnose and fix the top Attio REST API errors by HTTP status code.
+description: 'Diagnose and fix the top Attio REST API errors by HTTP status code.
+
   Real error response formats, actual error codes, and proven fixes.
+
   Trigger: "attio error", "fix attio", "attio not working",
+
   "attio 429", "attio 403", "attio 422", "debug attio".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, attio]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- attio
+compatibility: Designed for Claude Code
 ---
-
 # Attio Common Errors
 
 ## Overview

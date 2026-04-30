@@ -1,17 +1,26 @@
 ---
 name: apollo-common-errors
-description: |
-  Diagnose and fix common Apollo.io API errors.
+description: 'Diagnose and fix common Apollo.io API errors.
+
   Use when encountering Apollo API errors, debugging integration issues,
+
   or troubleshooting failed requests.
+
   Trigger with phrases like "apollo error", "apollo api error",
+
   "debug apollo", "apollo 401", "apollo 429", "apollo troubleshoot".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, apollo, api, debugging]
+tags:
+- saas
+- apollo
+- api
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Apollo Common Errors
 

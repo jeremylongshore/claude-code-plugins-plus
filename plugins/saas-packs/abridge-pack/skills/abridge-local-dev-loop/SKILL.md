@@ -1,18 +1,27 @@
 ---
 name: abridge-local-dev-loop
-description: |
-  Configure Abridge local development with FHIR server, synthetic data, and hot reload.
+description: 'Configure Abridge local development with FHIR server, synthetic data,
+  and hot reload.
+
   Use when setting up a development environment for clinical AI integration,
+
   testing encounter workflows locally, or iterating on EHR integration code.
+
   Trigger: "abridge local dev", "abridge dev setup", "abridge test locally".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(docker:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, healthcare, ai, abridge, development]
-compatible-with: claude-code
+tags:
+- saas
+- healthcare
+- ai
+- abridge
+- development
+compatibility: Designed for Claude Code
 ---
-
 # Abridge Local Dev Loop
 
 ## Overview

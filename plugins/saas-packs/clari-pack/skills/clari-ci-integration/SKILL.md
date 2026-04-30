@@ -1,19 +1,27 @@
 ---
 name: clari-ci-integration
-description: |
-  Integrate Clari export pipeline testing and validation into CI/CD.
+description: 'Integrate Clari export pipeline testing and validation into CI/CD.
+
   Use when adding automated tests for Clari integrations,
+
   validating export schemas in CI, or testing pipeline reliability.
+
   Trigger with phrases like "clari CI", "clari github actions",
+
   "clari automated tests", "test clari pipeline".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, revenue-intelligence, forecasting, clari]
-compatible-with: claude-code
+tags:
+- saas
+- revenue-intelligence
+- forecasting
+- clari
+compatibility: Designed for Claude Code
 ---
-
 # Clari CI Integration
 
 ## Overview

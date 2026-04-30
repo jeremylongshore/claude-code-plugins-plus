@@ -1,19 +1,27 @@
 ---
 name: brightdata-install-auth
-description: |
-  Install and configure Bright Data SDK/CLI authentication.
+description: 'Install and configure Bright Data SDK/CLI authentication.
+
   Use when setting up a new Bright Data integration, configuring API keys,
+
   or initializing Bright Data in your project.
+
   Trigger with phrases like "install brightdata", "setup brightdata",
+
   "brightdata auth", "configure brightdata API key".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, scraping, data, brightdata]
-compatible-with: claude-code
+tags:
+- saas
+- scraping
+- data
+- brightdata
+compatibility: Designed for Claude Code
 ---
-
 # Bright Data Install & Auth
 
 ## Overview

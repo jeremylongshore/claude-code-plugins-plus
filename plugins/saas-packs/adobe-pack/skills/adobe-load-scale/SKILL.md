@@ -1,19 +1,27 @@
 ---
 name: adobe-load-scale
-description: |
-  Implement load testing, auto-scaling, and capacity planning for Adobe API
+description: 'Implement load testing, auto-scaling, and capacity planning for Adobe
+  API
+
   integrations with k6 scripts targeting Firefly, PDF Services, and
+
   Photoshop APIs, plus Kubernetes HPA configuration.
+
   Trigger with phrases like "adobe load test", "adobe scale",
+
   "adobe performance test", "adobe capacity", "adobe benchmark".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(k6:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, adobe]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- adobe
+compatibility: Designed for Claude Code
 ---
-
 # Adobe Load & Scale
 
 ## Overview

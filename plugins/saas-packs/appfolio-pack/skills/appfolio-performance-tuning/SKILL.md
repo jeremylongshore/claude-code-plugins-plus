@@ -1,16 +1,21 @@
 ---
 name: appfolio-performance-tuning
-description: |
-  Optimize AppFolio API performance with caching and batch operations.
+description: 'Optimize AppFolio API performance with caching and batch operations.
+
   Trigger: "appfolio performance".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, property-management, appfolio, real-estate]
-compatible-with: claude-code
+tags:
+- saas
+- property-management
+- appfolio
+- real-estate
+compatibility: Designed for Claude Code
 ---
-
 # AppFolio Performance Tuning
 
 ## Overview

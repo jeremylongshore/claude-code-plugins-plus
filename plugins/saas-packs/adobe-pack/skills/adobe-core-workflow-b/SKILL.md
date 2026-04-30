@@ -1,20 +1,29 @@
 ---
 name: adobe-core-workflow-b
-description: |
-  Execute Adobe PDF Services workflow: create PDFs from HTML/DOCX, extract text/tables,
+description: 'Execute Adobe PDF Services workflow: create PDFs from HTML/DOCX, extract
+  text/tables,
+
   document generation from templates, and PDF-to-Markdown conversion.
+
   Use when building document automation, extracting content from PDFs,
+
   or generating dynamic reports.
+
   Trigger with phrases like "adobe pdf", "pdf services", "extract pdf",
+
   "create pdf", "document generation", "pdf to markdown".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, adobe]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- adobe
+compatibility: Designed for Claude Code
 ---
-
 # Adobe Core Workflow B — PDF Services
 
 ## Overview

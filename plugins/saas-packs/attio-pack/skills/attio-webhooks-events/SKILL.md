@@ -1,18 +1,24 @@
 ---
 name: attio-webhooks-events
-description: |
-  Implement Attio v2 webhooks -- subscribe to record/list/note/task events,
+description: 'Implement Attio v2 webhooks -- subscribe to record/list/note/task events,
+
   verify signatures, filter by object or attribute, and handle idempotently.
+
   Trigger: "attio webhook", "attio events", "attio webhook signature",
+
   "handle attio events", "attio notifications", "attio real-time".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, attio]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- attio
+compatibility: Designed for Claude Code
 ---
-
 # Attio Webhooks & Events
 
 ## Overview

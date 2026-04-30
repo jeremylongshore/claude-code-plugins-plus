@@ -1,17 +1,27 @@
 ---
 name: clay-migration-deep-dive
-description: |
-  Migrate to Clay from other enrichment tools or consolidate multiple data sources into Clay.
-  Use when migrating from ZoomInfo, Apollo, Clearbit, or custom enrichment scripts to Clay,
+description: 'Migrate to Clay from other enrichment tools or consolidate multiple
+  data sources into Clay.
+
+  Use when migrating from ZoomInfo, Apollo, Clearbit, or custom enrichment scripts
+  to Clay,
+
   or consolidating fragmented enrichment workflows.
+
   Trigger with phrases like "migrate to clay", "clay migration", "switch to clay",
+
   "replace zoominfo with clay", "consolidate enrichment tools".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(npm:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clay, migration]
+tags:
+- saas
+- clay
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clay Migration Deep Dive
 

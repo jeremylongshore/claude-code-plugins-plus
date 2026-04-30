@@ -1,19 +1,27 @@
 ---
 name: adobe-install-auth
-description: |
-  Install and configure Adobe Developer Console OAuth Server-to-Server credentials.
+description: 'Install and configure Adobe Developer Console OAuth Server-to-Server
+  credentials.
+
   Use when setting up a new Adobe integration, configuring API credentials,
+
   or initializing Adobe SDKs (Firefly Services, PDF Services, I/O Runtime).
+
   Trigger with phrases like "install adobe", "setup adobe",
+
   "adobe auth", "configure adobe credentials", "adobe developer console".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, adobe]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- adobe
+compatibility: Designed for Claude Code
 ---
-
 # Adobe Install & Auth
 
 ## Overview

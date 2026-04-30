@@ -1,19 +1,28 @@
 ---
 name: assemblyai-hello-world
-description: |
-  Create a minimal working AssemblyAI transcription example.
+description: 'Create a minimal working AssemblyAI transcription example.
+
   Use when starting a new AssemblyAI integration, testing your setup,
+
   or learning basic transcription patterns.
+
   Trigger with phrases like "assemblyai hello world", "assemblyai example",
+
   "assemblyai quick start", "simple assemblyai transcription".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, speech-to-text, assemblyai, transcription]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- speech-to-text
+- assemblyai
+- transcription
+compatibility: Designed for Claude Code
 ---
-
 # AssemblyAI Hello World
 
 ## Overview

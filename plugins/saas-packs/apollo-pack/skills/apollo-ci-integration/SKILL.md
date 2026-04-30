@@ -1,17 +1,27 @@
 ---
 name: apollo-ci-integration
-description: |
-  Configure Apollo.io CI/CD integration.
+description: 'Configure Apollo.io CI/CD integration.
+
   Use when setting up automated testing, continuous integration,
+
   or deployment pipelines for Apollo integrations.
+
   Trigger with phrases like "apollo ci", "apollo github actions",
+
   "apollo pipeline", "apollo ci/cd", "apollo automated tests".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, apollo, deployment, testing, ci-cd]
+tags:
+- saas
+- apollo
+- deployment
+- testing
+- ci-cd
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Apollo CI Integration
 

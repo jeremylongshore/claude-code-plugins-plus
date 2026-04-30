@@ -1,19 +1,30 @@
 ---
 name: assemblyai-performance-tuning
-description: |
-  Optimize AssemblyAI API performance with caching, parallel processing, and model selection.
+description: 'Optimize AssemblyAI API performance with caching, parallel processing,
+  and model selection.
+
   Use when experiencing slow transcriptions, implementing caching strategies,
+
   or optimizing throughput for batch transcription workloads.
+
   Trigger with phrases like "assemblyai performance", "optimize assemblyai",
+
   "assemblyai latency", "assemblyai caching", "assemblyai slow", "assemblyai batch".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, speech-to-text, assemblyai, transcription, performance]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- speech-to-text
+- assemblyai
+- transcription
+- performance
+compatibility: Designed for Claude Code
 ---
-
 # AssemblyAI Performance Tuning
 
 ## Overview

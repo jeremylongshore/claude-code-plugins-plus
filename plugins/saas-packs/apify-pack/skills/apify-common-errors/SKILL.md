@@ -1,19 +1,27 @@
 ---
 name: apify-common-errors
-description: |
-  Diagnose and fix common Apify Actor and API errors.
+description: 'Diagnose and fix common Apify Actor and API errors.
+
   Use when encountering run failures, API errors, proxy issues,
+
   or Actor crashes on the Apify platform.
+
   Trigger: "apify error", "fix apify", "actor failed",
+
   "apify not working", "debug apify", "apify 429".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*), Bash(apify:*), Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, scraping, automation, apify]
-compatible-with: claude-code
+tags:
+- saas
+- scraping
+- automation
+- apify
+compatibility: Designed for Claude Code
 ---
-
 # Apify Common Errors
 
 ## Overview

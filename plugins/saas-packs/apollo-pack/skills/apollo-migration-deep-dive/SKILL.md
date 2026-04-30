@@ -1,17 +1,26 @@
 ---
 name: apollo-migration-deep-dive
-description: |
-  Comprehensive Apollo.io migration strategies.
+description: 'Comprehensive Apollo.io migration strategies.
+
   Use when migrating from other CRMs to Apollo, consolidating data sources,
+
   or executing large-scale data migrations.
+
   Trigger with phrases like "apollo migration", "migrate to apollo",
+
   "apollo data import", "crm to apollo", "apollo migration strategy".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(kubectl:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, apollo, migration, scaling]
+tags:
+- saas
+- apollo
+- migration
+- scaling
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Apollo Migration Deep Dive
 

@@ -1,17 +1,26 @@
 ---
 name: clay-webhooks-events
-description: |
-  Implement Clay webhook receivers and HTTP API column callbacks for real-time data flow.
+description: 'Implement Clay webhook receivers and HTTP API column callbacks for real-time
+  data flow.
+
   Use when setting up webhook endpoints, handling enrichment callbacks from Clay,
+
   or building event-driven integrations with Clay tables.
+
   Trigger with phrases like "clay webhook", "clay events", "clay callback",
+
   "handle clay data", "clay notifications", "clay HTTP API column".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clay, webhooks]
+tags:
+- saas
+- clay
+- webhooks
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clay Webhooks & Events
 

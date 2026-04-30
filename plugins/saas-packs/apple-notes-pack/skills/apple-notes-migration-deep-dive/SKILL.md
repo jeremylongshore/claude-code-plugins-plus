@@ -1,16 +1,21 @@
 ---
 name: apple-notes-migration-deep-dive
-description: |
-  Migrate notes between Apple Notes, Obsidian, Notion, and other platforms.
+description: 'Migrate notes between Apple Notes, Obsidian, Notion, and other platforms.
+
   Trigger: "apple notes migration".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(osascript:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, macos, apple-notes, automation]
-compatible-with: claude-code
+tags:
+- saas
+- macos
+- apple-notes
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Apple Notes Migration Deep Dive
 
 ## Overview

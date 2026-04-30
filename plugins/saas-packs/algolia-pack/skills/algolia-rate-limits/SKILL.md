@@ -1,18 +1,25 @@
 ---
 name: algolia-rate-limits
-description: |
-  Handle Algolia rate limits and throttling: per-key limits, indexing queue limits,
+description: 'Handle Algolia rate limits and throttling: per-key limits, indexing
+  queue limits,
+
   429 responses, and backoff strategies.
+
   Trigger: "algolia rate limit", "algolia throttling", "algolia 429",
+
   "algolia retry", "algolia backoff", "algolia too many requests".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, algolia]
-compatible-with: claude-code
+tags:
+- saas
+- search
+- algolia
+compatibility: Designed for Claude Code
 ---
-
 # Algolia Rate Limits
 
 ## Overview

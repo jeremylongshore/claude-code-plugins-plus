@@ -1,19 +1,26 @@
 ---
 name: anth-rate-limits
-description: |
-  Implement Anthropic Claude API rate limiting, backoff, and quota management.
+description: 'Implement Anthropic Claude API rate limiting, backoff, and quota management.
+
   Use when handling 429 errors, optimizing request throughput,
+
   or managing RPM/TPM limits across usage tiers.
+
   Trigger with phrases like "anthropic rate limit", "claude 429",
+
   "anthropic throttling", "claude retry", "anthropic backoff".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, anthropic]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- anthropic
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Rate Limits
 
 ## Overview

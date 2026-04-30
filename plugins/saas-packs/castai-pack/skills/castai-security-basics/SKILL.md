@@ -1,19 +1,27 @@
 ---
 name: castai-security-basics
-description: |
-  Secure CAST AI API keys, RBAC configuration, and Kvisor security agent.
+description: 'Secure CAST AI API keys, RBAC configuration, and Kvisor security agent.
+
   Use when hardening CAST AI cluster access, configuring security scanning,
+
   or implementing API key rotation procedures.
+
   Trigger with phrases like "cast ai security", "cast ai api key rotation",
+
   "cast ai rbac", "cast ai kvisor", "secure cast ai".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(kubectl:*), Bash(helm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, kubernetes, cost-optimization, castai]
-compatible-with: claude-code
+tags:
+- saas
+- kubernetes
+- cost-optimization
+- castai
+compatibility: Designed for Claude Code
 ---
-
 # CAST AI Security Basics
 
 ## Overview

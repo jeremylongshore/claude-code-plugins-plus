@@ -1,18 +1,25 @@
 ---
 name: anth-architecture-variants
-description: |
-  Choose and implement Claude API architecture patterns for different scales:
+description: 'Choose and implement Claude API architecture patterns for different
+  scales:
+
   serverless, microservice, event-driven, and edge deployment.
+
   Trigger with phrases like "anthropic architecture", "claude serverless",
+
   "claude microservice design", "edge claude deployment".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, anthropic]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- anthropic
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Architecture Variants
 
 ## Overview

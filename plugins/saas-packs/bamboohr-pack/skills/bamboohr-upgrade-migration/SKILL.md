@@ -1,19 +1,27 @@
 ---
 name: bamboohr-upgrade-migration
-description: |
-  Plan and execute BambooHR API migration with breaking change detection.
+description: 'Plan and execute BambooHR API migration with breaking change detection.
+
   Use when BambooHR announces API changes, adapting to deprecated endpoints,
+
   or migrating from legacy API patterns to current best practices.
+
   Trigger with phrases like "upgrade bamboohr", "bamboohr migration",
+
   "bamboohr breaking changes", "bamboohr API update", "bamboohr deprecated".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hr, bamboohr, migration]
-compatible-with: claude-code
+tags:
+- saas
+- hr
+- bamboohr
+- migration
+compatibility: Designed for Claude Code
 ---
-
 # BambooHR Upgrade & Migration
 
 ## Overview

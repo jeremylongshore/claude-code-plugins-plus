@@ -1,19 +1,27 @@
 ---
 name: apify-deploy-integration
-description: |
-  Deploy Apify Actors and integrate scraping into external applications.
+description: 'Deploy Apify Actors and integrate scraping into external applications.
+
   Use when deploying Actors to the platform, integrating Actor results
+
   into web apps, or connecting Apify with external services.
+
   Trigger: "deploy apify actor", "apify Vercel integration",
+
   "apify production deploy", "integrate apify results", "apify API endpoint".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(apify:*), Bash(npm:*), Bash(vercel:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, scraping, automation, apify]
-compatible-with: claude-code
+tags:
+- saas
+- scraping
+- automation
+- apify
+compatibility: Designed for Claude Code
 ---
-
 # Apify Deploy Integration
 
 ## Overview

@@ -1,20 +1,28 @@
 ---
 name: anth-cost-tuning
-description: |
-  Optimize Anthropic Claude API costs with model routing, prompt caching,
+description: 'Optimize Anthropic Claude API costs with model routing, prompt caching,
+
   batching, and spend monitoring.
+
   Use when analyzing Claude API billing, reducing costs,
+
   or implementing cost controls and budget alerts.
+
   Trigger with phrases like "anthropic cost", "claude billing",
+
   "reduce claude spend", "anthropic budget", "claude pricing optimize".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, anthropic]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- anthropic
+compatibility: Designed for Claude Code
 ---
-
 # Anthropic Cost Tuning
 
 ## Overview

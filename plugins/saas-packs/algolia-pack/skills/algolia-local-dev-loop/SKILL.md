@@ -1,18 +1,26 @@
 ---
 name: algolia-local-dev-loop
-description: |
-  Configure Algolia local development with separate dev index, mocking, and testing.
+description: 'Configure Algolia local development with separate dev index, mocking,
+  and testing.
+
   Use when setting up a development environment, configuring test workflows,
+
   or establishing a fast iteration cycle with Algolia.
-  Trigger: "algolia dev setup", "algolia local development", "algolia dev environment", "test algolia locally".
+
+  Trigger: "algolia dev setup", "algolia local development", "algolia dev environment",
+  "test algolia locally".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Bash(npx:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, algolia]
-compatible-with: claude-code
+tags:
+- saas
+- search
+- algolia
+compatibility: Designed for Claude Code
 ---
-
 # Algolia Local Dev Loop
 
 ## Overview

@@ -1,19 +1,27 @@
 ---
 name: adobe-reliability-patterns
-description: |
-  Implement reliability patterns for Adobe APIs: circuit breakers for IMS/Firefly,
+description: 'Implement reliability patterns for Adobe APIs: circuit breakers for
+  IMS/Firefly,
+
   idempotency for PDF Services operations, graceful degradation when Adobe is down,
+
   and dead letter queues for failed async jobs.
+
   Trigger with phrases like "adobe reliability", "adobe circuit breaker",
+
   "adobe fallback", "adobe resilience", "adobe graceful degradation".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, adobe]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- adobe
+compatibility: Designed for Claude Code
 ---
-
 # Adobe Reliability Patterns
 
 ## Overview

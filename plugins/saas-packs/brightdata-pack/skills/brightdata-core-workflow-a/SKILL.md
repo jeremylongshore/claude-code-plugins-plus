@@ -1,18 +1,27 @@
 ---
 name: brightdata-core-workflow-a
-description: |
-  Scrape structured data with Bright Data Scraping Browser using Playwright/Puppeteer.
+description: 'Scrape structured data with Bright Data Scraping Browser using Playwright/Puppeteer.
+
   Use when scraping JavaScript-rendered pages, SPAs, or sites requiring browser interaction.
+
   Trigger with phrases like "brightdata scraping browser", "brightdata playwright",
+
   "brightdata puppeteer", "scrape SPA with brightdata", "browser scraping".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, scraping, data, brightdata, playwright, puppeteer]
-compatible-with: claude-code
+tags:
+- saas
+- scraping
+- data
+- brightdata
+- playwright
+- puppeteer
+compatibility: Designed for Claude Code
 ---
-
 # Bright Data Scraping Browser
 
 ## Overview

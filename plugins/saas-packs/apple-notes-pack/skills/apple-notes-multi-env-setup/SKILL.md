@@ -1,16 +1,21 @@
 ---
 name: apple-notes-multi-env-setup
-description: |
-  Configure Apple Notes automation for multiple accounts and environments.
+description: 'Configure Apple Notes automation for multiple accounts and environments.
+
   Trigger: "apple notes multi account".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(osascript:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, macos, apple-notes, automation]
-compatible-with: claude-code
+tags:
+- saas
+- macos
+- apple-notes
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Apple Notes Multi-Environment Setup
 
 ## Overview

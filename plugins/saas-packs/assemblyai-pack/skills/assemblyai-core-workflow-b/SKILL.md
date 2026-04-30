@@ -1,19 +1,29 @@
 ---
 name: assemblyai-core-workflow-b
-description: |
-  Execute AssemblyAI streaming transcription and LeMUR workflows.
+description: 'Execute AssemblyAI streaming transcription and LeMUR workflows.
+
   Use when implementing real-time speech-to-text, live captions,
+
   voice agents, or LLM-powered audio analysis with LeMUR.
+
   Trigger with phrases like "assemblyai streaming", "assemblyai real-time",
+
   "assemblyai live transcription", "assemblyai LeMUR", "assemblyai summarize audio".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, speech-to-text, assemblyai, streaming, lemur]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- speech-to-text
+- assemblyai
+- streaming
+- lemur
+compatibility: Designed for Claude Code
 ---
-
 # AssemblyAI Core Workflow B — Streaming & LeMUR
 
 ## Overview

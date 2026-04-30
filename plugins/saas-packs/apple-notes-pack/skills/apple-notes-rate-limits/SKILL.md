@@ -1,16 +1,21 @@
 ---
 name: apple-notes-rate-limits
-description: |
-  Handle Apple Notes automation rate limits and iCloud sync throttling.
+description: 'Handle Apple Notes automation rate limits and iCloud sync throttling.
+
   Trigger: "apple notes rate limit".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(osascript:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, macos, apple-notes, automation]
-compatible-with: claude-code
+tags:
+- saas
+- macos
+- apple-notes
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Apple Notes Rate Limits
 
 ## Overview

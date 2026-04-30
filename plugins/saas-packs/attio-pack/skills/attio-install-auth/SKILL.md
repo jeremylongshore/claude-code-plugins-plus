@@ -1,19 +1,26 @@
 ---
 name: attio-install-auth
-description: |
-  Set up Attio REST API authentication with access tokens or OAuth 2.0.
+description: 'Set up Attio REST API authentication with access tokens or OAuth 2.0.
+
   Use when configuring API keys, setting token scopes, initializing
+
   the Attio client, or connecting an app via OAuth.
+
   Trigger: "install attio", "setup attio", "attio auth", "attio API key",
+
   "attio OAuth", "attio access token".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, attio]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- attio
+compatibility: Designed for Claude Code
 ---
-
 # Attio Install & Auth
 
 ## Overview

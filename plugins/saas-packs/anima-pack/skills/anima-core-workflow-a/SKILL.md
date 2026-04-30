@@ -1,19 +1,29 @@
 ---
 name: anima-core-workflow-a
-description: |
-  Build automated Figma-to-React pipeline with the Anima SDK.
+description: 'Build automated Figma-to-React pipeline with the Anima SDK.
+
   Use when automating design handoff, building CI/CD design-to-code workflows,
+
   or creating a design system code generator from Figma components.
+
   Trigger: "anima design pipeline", "figma to react pipeline",
+
   "automated design handoff", "anima component generator".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, figma, anima, react, automation]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- figma
+- anima
+- react
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Anima Core Workflow A — Figma-to-React Pipeline
 
 ## Overview

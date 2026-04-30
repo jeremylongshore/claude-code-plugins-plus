@@ -1,16 +1,21 @@
 ---
 name: apple-notes-webhooks-events
-description: |
-  Monitor Apple Notes changes using file system events and Shortcuts triggers.
+description: 'Monitor Apple Notes changes using file system events and Shortcuts triggers.
+
   Trigger: "apple notes events".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(osascript:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, macos, apple-notes, automation]
-compatible-with: claude-code
+tags:
+- saas
+- macos
+- apple-notes
+- automation
+compatibility: Designed for Claude Code
 ---
-
 # Apple Notes Webhooks & Events
 
 ## Overview
