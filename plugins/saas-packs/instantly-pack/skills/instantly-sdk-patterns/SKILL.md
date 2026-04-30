@@ -1,17 +1,28 @@
 ---
 name: instantly-sdk-patterns
-description: |
-  Apply production-ready Instantly.ai API client patterns for TypeScript and Python.
+description: 'Apply production-ready Instantly.ai API client patterns for TypeScript
+  and Python.
+
   Use when building reusable API wrappers, implementing retry logic,
+
   or establishing coding standards for Instantly integrations.
+
   Trigger with phrases like "instantly SDK patterns", "instantly best practices",
+
   "instantly client wrapper", "instantly code patterns", "idiomatic instantly".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, instantly, patterns, typescript, python]
+tags:
+- saas
+- instantly
+- patterns
+- typescript
+- python
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Instantly SDK Patterns
 

@@ -1,17 +1,26 @@
 ---
 name: instantly-common-errors
-description: |
-  Diagnose and fix Instantly.ai API v2 common errors and exceptions.
+description: 'Diagnose and fix Instantly.ai API v2 common errors and exceptions.
+
   Use when encountering Instantly errors, debugging failed requests,
+
   or troubleshooting campaign/account/lead issues.
+
   Trigger with phrases like "instantly error", "instantly 401", "instantly 429",
+
   "instantly api failed", "instantly debug", "instantly troubleshoot".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, instantly, debugging, errors]
+tags:
+- saas
+- instantly
+- debugging
+- errors
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Instantly Common Errors
 

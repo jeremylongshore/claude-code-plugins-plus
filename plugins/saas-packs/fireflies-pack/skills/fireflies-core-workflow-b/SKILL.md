@@ -1,17 +1,28 @@
 ---
 name: fireflies-core-workflow-b
-description: |
-  Search across Fireflies.ai transcripts, use AskFred AI, and build meeting analytics.
+description: 'Search across Fireflies.ai transcripts, use AskFred AI, and build meeting
+  analytics.
+
   Use when searching meeting history, querying Fred AI assistant,
+
   or aggregating meeting data for reports.
+
   Trigger with phrases like "fireflies search", "ask fred", "fireflies analytics",
+
   "search meetings", "fireflies AskFred".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, fireflies, workflow, search, analytics]
+tags:
+- saas
+- fireflies
+- workflow
+- search
+- analytics
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Fireflies.ai Core Workflow B -- Search, AskFred & Analytics
 

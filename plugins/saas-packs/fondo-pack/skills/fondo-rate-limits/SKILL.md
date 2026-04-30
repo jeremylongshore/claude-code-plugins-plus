@@ -1,17 +1,22 @@
 ---
 name: fondo-rate-limits
-description: |
-  Manage rate limits for Fondo-connected services including Gusto API,
+description: 'Manage rate limits for Fondo-connected services including Gusto API,
+
   QuickBooks API, Plaid, and Stripe when building parallel integrations.
+
   Trigger: "fondo rate limit", "gusto API limits", "QuickBooks throttling".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, accounting, fondo]
-compatible-with: claude-code
+tags:
+- saas
+- accounting
+- fondo
+compatibility: Designed for Claude Code
 ---
-
 # Fondo Rate Limits
 
 ## Overview

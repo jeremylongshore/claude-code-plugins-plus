@@ -1,19 +1,27 @@
 ---
 name: grammarly-performance-tuning
-description: |
-  Optimize Grammarly API performance with caching, batching, and connection pooling.
+description: 'Optimize Grammarly API performance with caching, batching, and connection
+  pooling.
+
   Use when experiencing slow API responses, implementing caching strategies,
+
   or optimizing request throughput for Grammarly integrations.
+
   Trigger with phrases like "grammarly performance", "optimize grammarly",
+
   "grammarly latency", "grammarly caching", "grammarly slow", "grammarly batch".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, grammarly, writing]
-compatible-with: claude-code
+tags:
+- saas
+- grammarly
+- writing
+compatibility: Designed for Claude Code
 ---
-
 # Grammarly Performance Tuning
 
 ## Latency Benchmarks

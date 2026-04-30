@@ -1,19 +1,27 @@
 ---
 name: intercom-sdk-patterns
-description: |
-  Apply production-ready intercom-client SDK patterns for TypeScript.
+description: 'Apply production-ready intercom-client SDK patterns for TypeScript.
+
   Use when implementing Intercom integrations, refactoring SDK usage,
+
   or establishing team coding standards for Intercom API calls.
+
   Trigger with phrases like "intercom SDK patterns", "intercom best practices",
+
   "intercom code patterns", "idiomatic intercom", "intercom typescript".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, support, messaging, intercom]
-compatible-with: claude-code
+tags:
+- saas
+- support
+- messaging
+- intercom
+compatibility: Designed for Claude Code
 ---
-
 # Intercom SDK Patterns
 
 ## Overview

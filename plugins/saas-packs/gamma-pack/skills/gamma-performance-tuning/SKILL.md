@@ -1,17 +1,26 @@
 ---
 name: gamma-performance-tuning
-description: |
-  Optimize Gamma API performance and reduce latency.
+description: 'Optimize Gamma API performance and reduce latency.
+
   Use when experiencing slow response times, optimizing throughput,
+
   or improving user experience with Gamma integrations.
+
   Trigger with phrases like "gamma performance", "gamma slow",
+
   "gamma latency", "gamma optimization", "gamma speed".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, gamma, api, performance]
+tags:
+- saas
+- gamma
+- api
+- performance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Gamma Performance Tuning
 

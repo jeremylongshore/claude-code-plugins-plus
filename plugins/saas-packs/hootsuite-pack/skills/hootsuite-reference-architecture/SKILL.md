@@ -1,19 +1,27 @@
 ---
 name: hootsuite-reference-architecture
-description: |
-  Implement Hootsuite reference architecture with best-practice project layout.
+description: 'Implement Hootsuite reference architecture with best-practice project
+  layout.
+
   Use when designing new Hootsuite integrations, reviewing project structure,
+
   or establishing architecture standards for Hootsuite applications.
+
   Trigger with phrases like "hootsuite architecture", "hootsuite best practices",
+
   "hootsuite project structure", "how to organize hootsuite", "hootsuite layout".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hootsuite, social-media]
-compatible-with: claude-code
+tags:
+- saas
+- hootsuite
+- social-media
+compatibility: Designed for Claude Code
 ---
-
 # Hootsuite Reference Architecture
 
 ## Architecture

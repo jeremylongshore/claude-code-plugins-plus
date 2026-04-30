@@ -1,19 +1,28 @@
 ---
 name: hubspot-observability
-description: |
-  Set up observability for HubSpot integrations with metrics, traces, and alerts.
+description: 'Set up observability for HubSpot integrations with metrics, traces,
+  and alerts.
+
   Use when implementing monitoring for HubSpot API operations, setting up dashboards,
+
   or configuring alerting for CRM integration health.
+
   Trigger with phrases like "hubspot monitoring", "hubspot metrics",
+
   "hubspot observability", "monitor hubspot", "hubspot alerts", "hubspot dashboard".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, marketing, hubspot]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- marketing
+- hubspot
+compatibility: Designed for Claude Code
 ---
-
 # HubSpot Observability
 
 ## Overview

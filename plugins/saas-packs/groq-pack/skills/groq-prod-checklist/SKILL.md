@@ -1,17 +1,25 @@
 ---
 name: groq-prod-checklist
-description: |
-  Execute Groq production deployment checklist and go-live procedures.
+description: 'Execute Groq production deployment checklist and go-live procedures.
+
   Use when deploying Groq integrations to production, preparing for launch,
+
   or implementing go-live procedures.
+
   Trigger with phrases like "groq production", "deploy groq",
+
   "groq go-live", "groq launch checklist".
+
+  '
 allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, groq, deployment]
+tags:
+- saas
+- groq
+- deployment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Groq Production Checklist
 

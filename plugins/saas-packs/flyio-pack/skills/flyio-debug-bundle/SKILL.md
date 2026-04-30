@@ -1,17 +1,23 @@
 ---
 name: flyio-debug-bundle
-description: |
-  Collect Fly.io debug evidence for support tickets including machine status,
+description: 'Collect Fly.io debug evidence for support tickets including machine
+  status,
+
   logs, health checks, volume state, and networking diagnostics.
+
   Trigger: "fly.io debug", "fly.io support", "fly.io diagnostic", "fly doctor".
+
+  '
 allowed-tools: Read, Bash(fly:*), Bash(curl:*), Bash(tar:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, edge-compute, flyio]
-compatible-with: claude-code
+tags:
+- saas
+- edge-compute
+- flyio
+compatibility: Designed for Claude Code
 ---
-
 # Fly.io Debug Bundle
 
 ## Overview

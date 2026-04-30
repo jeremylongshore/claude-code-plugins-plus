@@ -1,19 +1,27 @@
 ---
 name: hex-webhooks-events
-description: |
-  Implement Hex webhook signature validation and event handling.
+description: 'Implement Hex webhook signature validation and event handling.
+
   Use when setting up webhook endpoints, implementing signature verification,
+
   or handling Hex event notifications securely.
+
   Trigger with phrases like "hex webhook", "hex events",
+
   "hex webhook signature", "handle hex events", "hex notifications".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hex, data, analytics]
-compatible-with: claude-code
+tags:
+- saas
+- hex
+- data
+- analytics
+compatibility: Designed for Claude Code
 ---
-
 # Hex Webhooks & Events
 
 ## Overview

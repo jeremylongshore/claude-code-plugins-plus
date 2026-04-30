@@ -1,16 +1,21 @@
 ---
 name: guidewire-sdk-patterns
-description: |
-  Master Guidewire SDK patterns: REST API Client, Jutro Digital SDK, and Gosu best practices.
+description: 'Master Guidewire SDK patterns: REST API Client, Jutro Digital SDK, and
+  Gosu best practices.
+
   Trigger: "guidewire sdk patterns", "sdk-patterns".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(gradle:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, insurance, guidewire]
-compatible-with: claude-code
+tags:
+- saas
+- insurance
+- guidewire
+compatibility: Designed for Claude Code
 ---
-
 # Guidewire SDK Patterns
 
 ## Overview

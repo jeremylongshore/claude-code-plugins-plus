@@ -1,17 +1,23 @@
 ---
 name: guidewire-hello-world
-description: |
-  Execute first API calls to Guidewire PolicyCenter, ClaimCenter, and BillingCenter.
+description: 'Execute first API calls to Guidewire PolicyCenter, ClaimCenter, and
+  BillingCenter.
+
   Use when testing connectivity, exploring Cloud API structure, or learning REST patterns.
+
   Trigger: "guidewire hello world", "first guidewire call", "test policycenter api".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, insurance, guidewire]
-compatible-with: claude-code
+tags:
+- saas
+- insurance
+- guidewire
+compatibility: Designed for Claude Code
 ---
-
 # Guidewire Hello World
 
 ## Overview

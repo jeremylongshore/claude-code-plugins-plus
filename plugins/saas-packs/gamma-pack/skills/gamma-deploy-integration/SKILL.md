@@ -1,17 +1,25 @@
 ---
 name: gamma-deploy-integration
-description: |
-  Deploy Gamma-integrated applications to production environments.
+description: 'Deploy Gamma-integrated applications to production environments.
+
   Use when deploying to Vercel, AWS, GCP, or other cloud platforms
+
   with proper secret management and configuration.
+
   Trigger with phrases like "gamma deploy", "gamma production",
+
   "gamma vercel", "gamma AWS", "gamma cloud deployment".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(aws:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, gamma, deployment]
+tags:
+- saas
+- gamma
+- deployment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Gamma Deploy Integration
 

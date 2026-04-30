@@ -1,19 +1,25 @@
 ---
 name: framer-ci-integration
-description: |
-  Configure Framer CI/CD integration with GitHub Actions and testing.
+description: 'Configure Framer CI/CD integration with GitHub Actions and testing.
+
   Use when setting up automated testing, configuring CI pipelines,
+
   or integrating Framer tests into your build process.
+
   Trigger with phrases like "framer CI", "framer GitHub Actions",
+
   "framer automated tests", "CI framer".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, framer]
-compatible-with: claude-code
+tags:
+- saas
+- framer
+compatibility: Designed for Claude Code
 ---
-
 # Framer CI Integration
 
 ## Overview

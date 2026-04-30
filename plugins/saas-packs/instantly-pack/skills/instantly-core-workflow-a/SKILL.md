@@ -1,17 +1,27 @@
 ---
 name: instantly-core-workflow-a
-description: |
-  Build and launch an Instantly.ai cold email campaign end-to-end.
+description: 'Build and launch an Instantly.ai cold email campaign end-to-end.
+
   Use when creating campaigns, adding leads, configuring sequences,
+
   and launching outreach via the Instantly API v2.
+
   Trigger with phrases like "instantly campaign", "launch instantly campaign",
+
   "create instantly outreach", "instantly cold email", "instantly send campaign".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, instantly, workflow, campaigns, cold-email]
+tags:
+- saas
+- instantly
+- workflow
+- campaigns
+- cold-email
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Instantly Core Workflow A: Campaign Launch Pipeline
 

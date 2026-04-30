@@ -1,19 +1,26 @@
 ---
 name: grammarly-local-dev-loop
-description: |
-  Configure Grammarly local development with hot reload and testing.
+description: 'Configure Grammarly local development with hot reload and testing.
+
   Use when setting up a development environment, configuring test workflows,
+
   or establishing a fast iteration cycle with Grammarly.
+
   Trigger with phrases like "grammarly dev setup", "grammarly local development",
+
   "grammarly dev environment", "develop with grammarly".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, grammarly, writing]
-compatible-with: claude-code
+tags:
+- saas
+- grammarly
+- writing
+compatibility: Designed for Claude Code
 ---
-
 # Grammarly Local Dev Loop
 
 ## Overview

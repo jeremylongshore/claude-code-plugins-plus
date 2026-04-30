@@ -1,16 +1,24 @@
 ---
 name: granola-hello-world
-description: |
-  Capture your first meeting with Granola and review AI-enhanced notes.
+description: 'Capture your first meeting with Granola and review AI-enhanced notes.
+
   Use when testing Granola setup, learning the notepad + transcript flow,
+
   or understanding how Enhance Notes and Granola Chat work.
-  Trigger: "granola hello world", "first granola meeting", "try granola", "granola test".
+
+  Trigger: "granola hello world", "first granola meeting", "try granola", "granola
+  test".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(pgrep:*), Bash(open:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, granola, getting-started]
+tags:
+- saas
+- granola
+- getting-started
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Granola Hello World
 

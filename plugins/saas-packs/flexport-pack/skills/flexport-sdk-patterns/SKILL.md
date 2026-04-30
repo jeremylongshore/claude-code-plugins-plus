@@ -1,18 +1,24 @@
 ---
 name: flexport-sdk-patterns
-description: |
-  Apply production-ready Flexport API patterns for TypeScript and Python.
+description: 'Apply production-ready Flexport API patterns for TypeScript and Python.
+
   Use when building typed HTTP clients, implementing pagination,
+
   or establishing team coding standards for Flexport logistics integration.
+
   Trigger: "flexport SDK patterns", "flexport best practices", "flexport client wrapper".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, logistics, flexport]
-compatible-with: claude-code
+tags:
+- saas
+- logistics
+- flexport
+compatibility: Designed for Claude Code
 ---
-
 # Flexport SDK Patterns
 
 ## Overview

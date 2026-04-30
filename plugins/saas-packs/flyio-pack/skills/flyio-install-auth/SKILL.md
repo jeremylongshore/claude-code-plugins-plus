@@ -1,18 +1,24 @@
 ---
 name: flyio-install-auth
-description: |
-  Install flyctl CLI and configure Fly.io authentication with API tokens.
+description: 'Install flyctl CLI and configure Fly.io authentication with API tokens.
+
   Use when setting up a new Fly.io project, configuring deploy tokens,
+
   or initializing the Machines API for edge compute deployments.
+
   Trigger: "install fly.io", "setup flyctl", "fly.io auth", "fly.io API token".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(fly:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, edge-compute, flyio]
-compatible-with: claude-code
+tags:
+- saas
+- edge-compute
+- flyio
+compatibility: Designed for Claude Code
 ---
-
 # Fly.io Install & Auth
 
 ## Overview

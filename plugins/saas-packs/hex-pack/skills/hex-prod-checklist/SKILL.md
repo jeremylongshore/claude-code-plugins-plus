@@ -1,19 +1,27 @@
 ---
 name: hex-prod-checklist
-description: |
-  Execute Hex production deployment checklist and rollback procedures.
+description: 'Execute Hex production deployment checklist and rollback procedures.
+
   Use when deploying Hex integrations to production, preparing for launch,
+
   or implementing go-live procedures.
+
   Trigger with phrases like "hex production", "deploy hex",
+
   "hex go-live", "hex launch checklist".
+
+  '
 allowed-tools: Read, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hex, data, analytics]
-compatible-with: claude-code
+tags:
+- saas
+- hex
+- data
+- analytics
+compatibility: Designed for Claude Code
 ---
-
 # Hex Production Checklist
 
 ## Overview

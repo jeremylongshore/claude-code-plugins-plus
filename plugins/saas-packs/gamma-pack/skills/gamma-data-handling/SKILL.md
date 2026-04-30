@@ -1,17 +1,26 @@
 ---
 name: gamma-data-handling
-description: |
-  Handle data privacy, retention, and compliance for Gamma integrations.
+description: 'Handle data privacy, retention, and compliance for Gamma integrations.
+
   Use when implementing GDPR compliance, data retention policies,
+
   or managing user data within Gamma workflows.
+
   Trigger with phrases like "gamma data", "gamma privacy",
+
   "gamma GDPR", "gamma data retention", "gamma compliance".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, gamma, workflow, compliance]
+tags:
+- saas
+- gamma
+- workflow
+- compliance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Gamma Data Handling
 

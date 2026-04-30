@@ -1,19 +1,28 @@
 ---
 name: intercom-hello-world
-description: |
-  Create a minimal working Intercom example with contacts, conversations, and messages.
+description: 'Create a minimal working Intercom example with contacts, conversations,
+  and messages.
+
   Use when starting a new Intercom integration, testing your setup,
+
   or learning the core Intercom API data model.
+
   Trigger with phrases like "intercom hello world", "intercom example",
+
   "intercom quick start", "simple intercom code", "first intercom API call".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, support, messaging, intercom]
-compatible-with: claude-code
+tags:
+- saas
+- support
+- messaging
+- intercom
+compatibility: Designed for Claude Code
 ---
-
 # Intercom Hello World
 
 ## Overview

@@ -1,17 +1,25 @@
 ---
 name: groq-incident-runbook
-description: |
-  Execute Groq incident response: triage, mitigation, fallback, and postmortem.
+description: 'Execute Groq incident response: triage, mitigation, fallback, and postmortem.
+
   Use when responding to Groq-related outages, investigating errors,
+
   or running post-incident reviews for Groq integration failures.
+
   Trigger with phrases like "groq incident", "groq outage",
+
   "groq down", "groq on-call", "groq emergency", "groq broken".
+
+  '
 allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, groq, incident-response]
+tags:
+- saas
+- groq
+- incident-response
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Groq Incident Runbook
 

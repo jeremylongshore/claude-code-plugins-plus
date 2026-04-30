@@ -1,19 +1,28 @@
 ---
 name: intercom-observability
-description: |
-  Set up observability for Intercom integrations with metrics, traces, and alerts.
+description: 'Set up observability for Intercom integrations with metrics, traces,
+  and alerts.
+
   Use when implementing monitoring for Intercom API operations, setting up dashboards,
+
   or configuring alerting for integration health.
+
   Trigger with phrases like "intercom monitoring", "intercom metrics",
+
   "intercom observability", "monitor intercom", "intercom alerts", "intercom tracing".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, support, messaging, intercom]
-compatible-with: claude-code
+tags:
+- saas
+- support
+- messaging
+- intercom
+compatibility: Designed for Claude Code
 ---
-
 # Intercom Observability
 
 ## Overview

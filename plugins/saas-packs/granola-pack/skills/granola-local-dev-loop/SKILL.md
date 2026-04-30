@@ -1,17 +1,26 @@
 ---
 name: granola-local-dev-loop
-description: |
-  Access Granola meeting data programmatically for developer workflows.
+description: 'Access Granola meeting data programmatically for developer workflows.
+
   Use when reading notes from the local cache, building MCP integrations,
+
   extracting action items into code, or syncing meeting outcomes to dev tools.
+
   Trigger: "granola dev workflow", "granola MCP", "granola local cache",
+
   "granola developer", "granola programmatic".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(jq:*), Bash(python3:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, granola, workflow, developer]
+tags:
+- saas
+- granola
+- workflow
+- developer
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Granola Local Dev Loop
 

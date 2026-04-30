@@ -1,19 +1,27 @@
 ---
 name: hubspot-deploy-integration
-description: |
-  Deploy HubSpot integrations to Vercel, Fly.io, and Cloud Run platforms.
+description: 'Deploy HubSpot integrations to Vercel, Fly.io, and Cloud Run platforms.
+
   Use when deploying HubSpot-powered applications, configuring platform secrets,
+
   or setting up deployment pipelines with HubSpot access tokens.
+
   Trigger with phrases like "deploy hubspot", "hubspot Vercel",
+
   "hubspot Cloud Run", "hubspot Fly.io", "hubspot production deploy".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, marketing, hubspot]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- marketing
+- hubspot
+compatibility: Designed for Claude Code
 ---
-
 # HubSpot Deploy Integration
 
 ## Overview

@@ -1,17 +1,24 @@
 ---
 name: flexport-data-handling
-description: |
-  Implement data handling for Flexport supply chain data including PII redaction,
+description: 'Implement data handling for Flexport supply chain data including PII
+  redaction,
+
   shipment data retention, GDPR compliance, and secure document management.
-  Trigger: "flexport data handling", "flexport PII", "flexport GDPR", "flexport data retention".
+
+  Trigger: "flexport data handling", "flexport PII", "flexport GDPR", "flexport data
+  retention".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, logistics, flexport]
-compatible-with: claude-code
+tags:
+- saas
+- logistics
+- flexport
+compatibility: Designed for Claude Code
 ---
-
 # Flexport Data Handling
 
 ## Overview

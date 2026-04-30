@@ -1,17 +1,22 @@
 ---
 name: flyio-prod-checklist
-description: |
-  Execute Fly.io production deployment checklist with health checks,
+description: 'Execute Fly.io production deployment checklist with health checks,
+
   auto-scaling, monitoring, and rollback procedures.
+
   Trigger: "fly.io production", "fly.io go-live", "fly.io prod checklist".
+
+  '
 allowed-tools: Read, Bash(fly:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, edge-compute, flyio]
-compatible-with: claude-code
+tags:
+- saas
+- edge-compute
+- flyio
+compatibility: Designed for Claude Code
 ---
-
 # Fly.io Production Checklist
 
 ## Overview

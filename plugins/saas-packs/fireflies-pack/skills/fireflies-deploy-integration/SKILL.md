@@ -1,17 +1,26 @@
 ---
 name: fireflies-deploy-integration
-description: |
-  Deploy Fireflies.ai webhook receivers and GraphQL clients to Vercel, Docker, and Cloud Run.
+description: 'Deploy Fireflies.ai webhook receivers and GraphQL clients to Vercel,
+  Docker, and Cloud Run.
+
   Use when deploying Fireflies.ai-powered applications to production,
+
   configuring platform-specific secrets, or hosting webhook endpoints.
+
   Trigger with phrases like "deploy fireflies", "fireflies Vercel",
+
   "fireflies production deploy", "fireflies Cloud Run", "fireflies Docker".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(docker:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, fireflies, deployment]
+tags:
+- saas
+- fireflies
+- deployment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Fireflies.ai Deploy Integration
 

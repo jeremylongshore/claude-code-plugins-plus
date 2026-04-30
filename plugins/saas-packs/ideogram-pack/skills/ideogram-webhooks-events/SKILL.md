@@ -1,17 +1,27 @@
 ---
 name: ideogram-webhooks-events
-description: |
-  Build event-driven workflows around Ideogram's synchronous API.
+description: 'Build event-driven workflows around Ideogram''s synchronous API.
+
   Use when implementing async generation queues, batch processing,
+
   callback patterns, or image processing pipelines.
+
   Trigger with phrases like "ideogram webhook", "ideogram events",
+
   "ideogram async", "ideogram queue", "ideogram batch pipeline".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, ideogram, webhooks, async, queue]
+tags:
+- saas
+- ideogram
+- webhooks
+- async
+- queue
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Ideogram Events & Async Patterns
 

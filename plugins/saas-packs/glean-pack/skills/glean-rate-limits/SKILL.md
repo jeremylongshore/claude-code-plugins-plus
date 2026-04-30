@@ -1,16 +1,20 @@
 ---
 name: glean-rate-limits
-description: |
-  Glean Indexing API: ~100 requests/min per token.
+description: 'Glean Indexing API: ~100 requests/min per token.
+
   Trigger: "glean rate limits", "rate-limits".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, enterprise-search, glean]
-compatible-with: claude-code
+tags:
+- saas
+- enterprise-search
+- glean
+compatibility: Designed for Claude Code
 ---
-
 # Glean Rate Limits
 
 ## Overview

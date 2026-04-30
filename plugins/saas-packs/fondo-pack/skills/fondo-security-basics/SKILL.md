@@ -1,17 +1,23 @@
 ---
 name: fondo-security-basics
-description: |
-  Apply security best practices for Fondo including OAuth token management,
+description: 'Apply security best practices for Fondo including OAuth token management,
+
   financial data protection, SOC 2 compliance, and access control.
-  Trigger: "fondo security", "fondo data protection", "fondo SOC 2", "fondo access control".
+
+  Trigger: "fondo security", "fondo data protection", "fondo SOC 2", "fondo access
+  control".
+
+  '
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, accounting, fondo]
-compatible-with: claude-code
+tags:
+- saas
+- accounting
+- fondo
+compatibility: Designed for Claude Code
 ---
-
 # Fondo Security Basics
 
 ## Overview

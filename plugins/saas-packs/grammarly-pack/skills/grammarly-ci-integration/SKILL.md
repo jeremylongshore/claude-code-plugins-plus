@@ -1,19 +1,26 @@
 ---
 name: grammarly-ci-integration
-description: |
-  Configure Grammarly CI/CD integration with GitHub Actions and testing.
+description: 'Configure Grammarly CI/CD integration with GitHub Actions and testing.
+
   Use when setting up automated testing, configuring CI pipelines,
+
   or integrating Grammarly tests into your build process.
+
   Trigger with phrases like "grammarly CI", "grammarly GitHub Actions",
+
   "grammarly automated tests", "CI grammarly".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, grammarly, writing]
-compatible-with: claude-code
+tags:
+- saas
+- grammarly
+- writing
+compatibility: Designed for Claude Code
 ---
-
 # Grammarly CI Integration
 
 ## Overview

@@ -1,17 +1,27 @@
 ---
 name: ideogram-performance-tuning
-description: |
-  Optimize Ideogram API performance with caching, model selection, and parallel generation.
+description: 'Optimize Ideogram API performance with caching, model selection, and
+  parallel generation.
+
   Use when experiencing slow generation, implementing caching strategies,
+
   or optimizing throughput for Ideogram integrations.
+
   Trigger with phrases like "ideogram performance", "optimize ideogram",
+
   "ideogram latency", "ideogram caching", "ideogram slow", "ideogram speed".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, ideogram, api, performance]
+tags:
+- saas
+- ideogram
+- api
+- performance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Ideogram Performance Tuning
 

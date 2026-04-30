@@ -1,19 +1,27 @@
 ---
 name: hubspot-webhooks-events
-description: |
-  Implement HubSpot webhook subscriptions and CRM event handling.
+description: 'Implement HubSpot webhook subscriptions and CRM event handling.
+
   Use when setting up webhook endpoints for CRM events, implementing
+
   signature verification, or handling contact/deal/company change notifications.
+
   Trigger with phrases like "hubspot webhook", "hubspot events",
+
   "hubspot subscription", "handle hubspot notifications", "hubspot CRM events".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, marketing, hubspot]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- marketing
+- hubspot
+compatibility: Designed for Claude Code
 ---
-
 # HubSpot Webhooks & Events
 
 ## Overview

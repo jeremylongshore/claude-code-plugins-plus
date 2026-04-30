@@ -1,19 +1,27 @@
 ---
 name: hootsuite-core-workflow-a
-description: |
-  Execute Hootsuite primary workflow: Core Workflow A.
+description: 'Execute Hootsuite primary workflow: Core Workflow A.
+
   Use when implementing primary use case,
+
   building main features, or core integration tasks.
+
   Trigger with phrases like "hootsuite main workflow",
+
   "primary task with hootsuite".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hootsuite, social-media, publishing]
-compatible-with: claude-code
+tags:
+- saas
+- hootsuite
+- social-media
+- publishing
+compatibility: Designed for Claude Code
 ---
-
 # Hootsuite Publishing — Schedule Posts with Media
 
 ## Overview

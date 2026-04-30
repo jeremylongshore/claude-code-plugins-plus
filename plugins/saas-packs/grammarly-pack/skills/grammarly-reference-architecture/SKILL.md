@@ -1,19 +1,27 @@
 ---
 name: grammarly-reference-architecture
-description: |
-  Implement Grammarly reference architecture with best-practice project layout.
+description: 'Implement Grammarly reference architecture with best-practice project
+  layout.
+
   Use when designing new Grammarly integrations, reviewing project structure,
+
   or establishing architecture standards for Grammarly applications.
+
   Trigger with phrases like "grammarly architecture", "grammarly best practices",
+
   "grammarly project structure", "how to organize grammarly", "grammarly layout".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, grammarly, writing]
-compatible-with: claude-code
+tags:
+- saas
+- grammarly
+- writing
+compatibility: Designed for Claude Code
 ---
-
 # Grammarly Reference Architecture
 
 ## Architecture

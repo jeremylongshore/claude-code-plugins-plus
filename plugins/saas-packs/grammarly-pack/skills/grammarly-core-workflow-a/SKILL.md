@@ -1,19 +1,27 @@
 ---
 name: grammarly-core-workflow-a
-description: |
-  Execute Grammarly primary workflow: Core Workflow A.
+description: 'Execute Grammarly primary workflow: Core Workflow A.
+
   Use when implementing primary use case,
+
   building main features, or core integration tasks.
+
   Trigger with phrases like "grammarly main workflow",
+
   "primary task with grammarly".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, grammarly, writing, scoring]
-compatible-with: claude-code
+tags:
+- saas
+- grammarly
+- writing
+- scoring
+compatibility: Designed for Claude Code
 ---
-
 # Grammarly Writing Score Integration
 
 ## Overview

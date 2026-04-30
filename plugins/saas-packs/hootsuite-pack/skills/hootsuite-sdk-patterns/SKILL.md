@@ -1,19 +1,26 @@
 ---
 name: hootsuite-sdk-patterns
-description: |
-  Apply production-ready Hootsuite SDK patterns for TypeScript and Python.
+description: 'Apply production-ready Hootsuite SDK patterns for TypeScript and Python.
+
   Use when implementing Hootsuite integrations, refactoring SDK usage,
+
   or establishing team coding standards for Hootsuite.
+
   Trigger with phrases like "hootsuite SDK patterns", "hootsuite best practices",
+
   "hootsuite code patterns", "idiomatic hootsuite".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hootsuite, social-media]
-compatible-with: claude-code
+tags:
+- saas
+- hootsuite
+- social-media
+compatibility: Designed for Claude Code
 ---
-
 # Hootsuite SDK Patterns
 
 ## Overview

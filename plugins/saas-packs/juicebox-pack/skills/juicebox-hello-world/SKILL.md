@@ -1,16 +1,20 @@
 ---
 name: juicebox-hello-world
-description: |
-  Create a minimal Juicebox people search example.
+description: 'Create a minimal Juicebox people search example.
+
   Trigger: "juicebox hello world", "first people search", "test juicebox".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, recruiting, juicebox]
-compatible-with: claude-code
+tags:
+- saas
+- recruiting
+- juicebox
+compatibility: Designed for Claude Code
 ---
-
 # Juicebox Hello World
 
 ## Overview

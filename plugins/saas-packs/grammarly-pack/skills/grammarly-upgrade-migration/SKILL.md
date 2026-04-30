@@ -1,16 +1,21 @@
 ---
 name: grammarly-upgrade-migration
-description: |
-  Upgrade and migration guidance for Grammarly API version changes. Use when migrating
+description: 'Upgrade and migration guidance for Grammarly API version changes. Use
+  when migrating
+
   between Grammarly API versions or updating endpoint references.
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, grammarly, writing]
-compatible-with: claude-code
+tags:
+- saas
+- grammarly
+- writing
+compatibility: Designed for Claude Code
 ---
-
 # Grammarly Upgrade & Migration
 
 ## Overview

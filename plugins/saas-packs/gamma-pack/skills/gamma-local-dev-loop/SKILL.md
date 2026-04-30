@@ -1,17 +1,26 @@
 ---
 name: gamma-local-dev-loop
-description: |
-  Set up local development workflow for Gamma API integration.
+description: 'Set up local development workflow for Gamma API integration.
+
   Use when building automation scripts, testing API calls locally,
+
   or configuring a dev environment with mock responses.
+
   Trigger: "gamma local dev", "gamma development setup",
+
   "gamma test locally", "gamma mock API", "gamma dev workflow".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(node:*), Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, gamma, development, testing]
+tags:
+- saas
+- gamma
+- development
+- testing
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Gamma Local Dev Loop
 

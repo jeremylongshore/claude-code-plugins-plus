@@ -1,17 +1,22 @@
 ---
 name: fondo-prod-checklist
-description: |
-  Execute Fondo production readiness checklist for year-end tax filing,
+description: 'Execute Fondo production readiness checklist for year-end tax filing,
+
   R&D credit claims, and board-ready financial reporting.
+
   Trigger: "fondo production", "fondo tax filing ready", "fondo year-end checklist".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, accounting, fondo]
-compatible-with: claude-code
+tags:
+- saas
+- accounting
+- fondo
+compatibility: Designed for Claude Code
 ---
-
 # Fondo Production Checklist
 
 ## Overview

@@ -1,16 +1,23 @@
 ---
 name: groq-data-handling
-description: |
-  Implement prompt sanitization, PII redaction, response filtering, and
+description: 'Implement prompt sanitization, PII redaction, response filtering, and
+
   usage tracking for Groq API integrations.
+
   Trigger with phrases like "groq data", "groq PII",
+
   "groq GDPR", "groq data retention", "groq privacy", "groq compliance".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, groq, compliance]
+tags:
+- saas
+- groq
+- compliance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Groq Data Handling
 

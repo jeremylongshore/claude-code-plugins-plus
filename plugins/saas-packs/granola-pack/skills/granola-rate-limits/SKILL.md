@@ -1,17 +1,26 @@
 ---
 name: granola-rate-limits
-description: |
-  Understand Granola plan limits, usage quotas, and API rate limiting.
+description: 'Understand Granola plan limits, usage quotas, and API rate limiting.
+
   Use when hitting meeting limits, choosing between plans,
+
   or managing Enterprise API rate limits.
+
   Trigger: "granola limits", "granola quota", "granola plan",
+
   "granola usage", "granola restrictions".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, granola, monitoring, plans]
+tags:
+- saas
+- granola
+- monitoring
+- plans
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Granola Rate Limits & Plan Quotas
 

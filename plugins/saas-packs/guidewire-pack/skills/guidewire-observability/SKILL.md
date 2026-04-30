@@ -1,16 +1,21 @@
 ---
 name: guidewire-observability
-description: |
-  Monitor Guidewire InsuranceSuite: logging, metrics, tracing, and alerting via GCC.
+description: 'Monitor Guidewire InsuranceSuite: logging, metrics, tracing, and alerting
+  via GCC.
+
   Trigger: "guidewire observability", "observability".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(gradle:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, insurance, guidewire]
-compatible-with: claude-code
+tags:
+- saas
+- insurance
+- guidewire
+compatibility: Designed for Claude Code
 ---
-
 # Guidewire Observability
 
 ## Overview

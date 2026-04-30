@@ -1,17 +1,24 @@
 ---
 name: glean-core-workflow-b
-description: |
-  Execute Glean secondary workflow: bulk document indexing, custom datasource connectors,
+description: 'Execute Glean secondary workflow: bulk document indexing, custom datasource
+  connectors,
+
   and content lifecycle management via the Indexing API.
-  Trigger: "glean bulk index", "glean custom connector", "glean datasource", "glean indexing".
+
+  Trigger: "glean bulk index", "glean custom connector", "glean datasource", "glean
+  indexing".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, enterprise-search, glean]
-compatible-with: claude-code
+tags:
+- saas
+- enterprise-search
+- glean
+compatibility: Designed for Claude Code
 ---
-
 # Glean Core Workflow B: Indexing & Connectors
 
 ## Overview

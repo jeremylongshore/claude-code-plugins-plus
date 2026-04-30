@@ -1,16 +1,20 @@
 ---
 name: juicebox-core-workflow-a
-description: |
-  Execute Juicebox people search with power filters and ATS export.
+description: 'Execute Juicebox people search with power filters and ATS export.
+
   Trigger: "find candidates", "people search", "juicebox search".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, recruiting, juicebox]
-compatible-with: claude-code
+tags:
+- saas
+- recruiting
+- juicebox
+compatibility: Designed for Claude Code
 ---
-
 # Juicebox People Search Workflow
 
 ## Overview

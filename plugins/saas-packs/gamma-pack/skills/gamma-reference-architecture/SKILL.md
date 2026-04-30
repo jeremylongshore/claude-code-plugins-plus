@@ -1,17 +1,25 @@
 ---
 name: gamma-reference-architecture
-description: |
-  Reference architecture for enterprise Gamma integrations.
+description: 'Reference architecture for enterprise Gamma integrations.
+
   Use when designing systems, planning integrations,
+
   or implementing best-practice Gamma architectures.
+
   Trigger with phrases like "gamma architecture", "gamma design",
+
   "gamma system design", "gamma integration pattern", "gamma enterprise".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, gamma, gamma-reference]
+tags:
+- saas
+- gamma
+- gamma-reference
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Gamma Reference Architecture
 

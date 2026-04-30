@@ -1,17 +1,22 @@
 ---
 name: glean-performance-tuning
-description: |
-  Optimize Glean search relevance and indexing throughput with batch sizing,
+description: 'Optimize Glean search relevance and indexing throughput with batch sizing,
+
   datasource configuration, and content quality improvements.
+
   Trigger: "glean performance", "glean search quality", "glean indexing speed".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, enterprise-search, glean]
-compatible-with: claude-code
+tags:
+- saas
+- enterprise-search
+- glean
+compatibility: Designed for Claude Code
 ---
-
 # Glean Performance Tuning
 
 ## Overview

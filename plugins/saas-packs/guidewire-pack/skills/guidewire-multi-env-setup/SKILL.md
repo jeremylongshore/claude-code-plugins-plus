@@ -1,16 +1,21 @@
 ---
 name: guidewire-multi-env-setup
-description: |
-  Configure Guidewire multi-environment: dev, staging, and production with configuration promotion.
+description: 'Configure Guidewire multi-environment: dev, staging, and production
+  with configuration promotion.
+
   Trigger: "guidewire multi env setup", "multi-env-setup".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(gradle:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, insurance, guidewire]
-compatible-with: claude-code
+tags:
+- saas
+- insurance
+- guidewire
+compatibility: Designed for Claude Code
 ---
-
 # Guidewire Multi Env Setup
 
 ## Overview

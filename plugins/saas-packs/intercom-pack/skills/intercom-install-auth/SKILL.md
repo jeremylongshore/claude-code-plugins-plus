@@ -1,19 +1,28 @@
 ---
 name: intercom-install-auth
-description: |
-  Install and configure Intercom API authentication with access tokens or OAuth.
+description: 'Install and configure Intercom API authentication with access tokens
+  or OAuth.
+
   Use when setting up a new Intercom integration, configuring API credentials,
+
   or initializing the intercom-client SDK in your project.
+
   Trigger with phrases like "install intercom", "setup intercom",
+
   "intercom auth", "configure intercom API key", "intercom access token".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, support, messaging, intercom]
-compatible-with: claude-code
+tags:
+- saas
+- support
+- messaging
+- intercom
+compatibility: Designed for Claude Code
 ---
-
 # Intercom Install & Auth
 
 ## Overview

@@ -1,17 +1,27 @@
 ---
 name: gamma-cost-tuning
-description: |
-  Optimize Gamma usage costs and manage API spending.
+description: 'Optimize Gamma usage costs and manage API spending.
+
   Use when reducing API costs, implementing usage quotas,
+
   or planning for scale with budget constraints.
+
   Trigger with phrases like "gamma cost", "gamma billing",
+
   "gamma budget", "gamma expensive", "gamma pricing".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, gamma, api, scaling, cost-optimization]
+tags:
+- saas
+- gamma
+- api
+- scaling
+- cost-optimization
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Gamma Cost Tuning
 

@@ -1,17 +1,26 @@
 ---
 name: granola-core-workflow-b
-description: |
-  Post-meeting note processing, sharing, and follow-up workflows in Granola.
+description: 'Post-meeting note processing, sharing, and follow-up workflows in Granola.
+
   Use when enhancing notes after meetings, sharing to Slack/Notion/CRM,
+
   drafting follow-up emails, or processing action items.
+
   Trigger: "granola post-meeting", "share granola notes", "granola follow-up",
+
   "granola enhance", "granola share".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, granola, workflow, sharing]
+tags:
+- saas
+- granola
+- workflow
+- sharing
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Granola Core Workflow B: Post-Meeting Processing & Sharing
 

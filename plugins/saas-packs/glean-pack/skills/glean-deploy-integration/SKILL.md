@@ -1,16 +1,21 @@
 ---
 name: glean-deploy-integration
-description: |
-  Deploy Glean custom connectors as scheduled jobs on Cloud Run, Lambda, or Fly.io.
+description: 'Deploy Glean custom connectors as scheduled jobs on Cloud Run, Lambda,
+  or Fly.io.
+
   Trigger: "deploy glean connector", "glean connector hosting", "schedule glean indexing".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(gcloud:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, enterprise-search, glean]
-compatible-with: claude-code
+tags:
+- saas
+- enterprise-search
+- glean
+compatibility: Designed for Claude Code
 ---
-
 # Glean Deploy Integration
 
 ## Overview

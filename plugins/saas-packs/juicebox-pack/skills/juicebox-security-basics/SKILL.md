@@ -1,16 +1,20 @@
 ---
 name: juicebox-security-basics
-description: |
-  Apply Juicebox security best practices.
+description: 'Apply Juicebox security best practices.
+
   Trigger: "juicebox security", "juicebox api key security".
+
+  '
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, recruiting, juicebox]
-compatible-with: claude-code
+tags:
+- saas
+- recruiting
+- juicebox
+compatibility: Designed for Claude Code
 ---
-
 # Juicebox Security Basics
 
 ## Overview

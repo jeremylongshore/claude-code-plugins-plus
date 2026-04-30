@@ -1,19 +1,27 @@
 ---
 name: hex-core-workflow-b
-description: |
-  Execute Hex secondary workflow: Core Workflow B.
+description: 'Execute Hex secondary workflow: Core Workflow B.
+
   Use when implementing secondary use case,
+
   or complementing primary workflow.
+
   Trigger with phrases like "hex secondary workflow",
+
   "secondary task with hex".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hex, data, scheduling]
-compatible-with: claude-code
+tags:
+- saas
+- hex
+- data
+- scheduling
+compatibility: Designed for Claude Code
 ---
-
 # Hex Scheduled Runs & Admin API
 
 ## Overview

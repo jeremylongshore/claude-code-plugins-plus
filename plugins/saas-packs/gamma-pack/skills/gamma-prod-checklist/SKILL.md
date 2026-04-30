@@ -1,17 +1,27 @@
 ---
 name: gamma-prod-checklist
-description: |
-  Production readiness checklist for Gamma integration.
+description: 'Production readiness checklist for Gamma integration.
+
   Use when preparing to deploy Gamma integration to production,
+
   or auditing existing production setup.
+
   Trigger with phrases like "gamma production", "gamma prod ready",
+
   "gamma go live", "gamma deployment checklist", "gamma launch".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, gamma, deployment, golang, audit]
+tags:
+- saas
+- gamma
+- deployment
+- golang
+- audit
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Gamma Production Checklist
 

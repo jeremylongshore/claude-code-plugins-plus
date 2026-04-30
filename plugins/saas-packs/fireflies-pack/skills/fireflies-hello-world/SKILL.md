@@ -1,17 +1,26 @@
 ---
 name: fireflies-hello-world
-description: |
-  Create a minimal working Fireflies.ai example that queries transcripts.
+description: 'Create a minimal working Fireflies.ai example that queries transcripts.
+
   Use when starting a new Fireflies.ai integration, testing your setup,
+
   or learning the GraphQL API patterns for meeting data.
+
   Trigger with phrases like "fireflies hello world", "fireflies example",
+
   "fireflies quick start", "simple fireflies code".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, fireflies, api, testing]
+tags:
+- saas
+- fireflies
+- api
+- testing
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Fireflies.ai Hello World
 

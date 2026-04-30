@@ -1,19 +1,25 @@
 ---
 name: framer-common-errors
-description: |
-  Diagnose and fix Framer common errors and exceptions.
+description: 'Diagnose and fix Framer common errors and exceptions.
+
   Use when encountering Framer errors, debugging failed requests,
+
   or troubleshooting integration issues.
+
   Trigger with phrases like "framer error", "fix framer",
+
   "framer not working", "debug framer".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, framer]
-compatible-with: claude-code
+tags:
+- saas
+- framer
+compatibility: Designed for Claude Code
 ---
-
 # Framer Common Errors
 
 ## Overview

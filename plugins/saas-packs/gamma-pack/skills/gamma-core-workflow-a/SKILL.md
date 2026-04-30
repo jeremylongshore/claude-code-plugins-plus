@@ -1,17 +1,26 @@
 ---
 name: gamma-core-workflow-a
-description: |
-  Generate presentations, documents, and webpages via Gamma API.
+description: 'Generate presentations, documents, and webpages via Gamma API.
+
   Use when creating content from text prompts, configuring themes,
+
   image styles, text modes, and output formats.
+
   Trigger: "gamma generate", "gamma presentation from text",
+
   "gamma AI slides", "gamma create deck", "gamma content generation".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, gamma, workflow, generation]
+tags:
+- saas
+- gamma
+- workflow
+- generation
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Gamma Core Workflow A: Content Generation
 

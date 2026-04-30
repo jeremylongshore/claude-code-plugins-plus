@@ -1,19 +1,27 @@
 ---
 name: hex-ci-integration
-description: |
-  Configure Hex CI/CD integration with GitHub Actions and testing.
+description: 'Configure Hex CI/CD integration with GitHub Actions and testing.
+
   Use when setting up automated testing, configuring CI pipelines,
+
   or integrating Hex tests into your build process.
+
   Trigger with phrases like "hex CI", "hex GitHub Actions",
+
   "hex automated tests", "CI hex".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hex, data, analytics]
-compatible-with: claude-code
+tags:
+- saas
+- hex
+- data
+- analytics
+compatibility: Designed for Claude Code
 ---
-
 # Hex CI Integration
 
 ## Overview

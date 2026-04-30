@@ -1,19 +1,27 @@
 ---
 name: intercom-multi-env-setup
-description: |
-  Configure Intercom across development, staging, and production workspaces.
+description: 'Configure Intercom across development, staging, and production workspaces.
+
   Use when setting up multi-environment deployments, configuring per-environment
+
   access tokens, or implementing workspace isolation.
+
   Trigger with phrases like "intercom environments", "intercom staging",
+
   "intercom dev prod", "intercom environment setup", "intercom workspace isolation".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, support, messaging, intercom]
-compatible-with: claude-code
+tags:
+- saas
+- support
+- messaging
+- intercom
+compatibility: Designed for Claude Code
 ---
-
 # Intercom Multi-Environment Setup
 
 ## Overview

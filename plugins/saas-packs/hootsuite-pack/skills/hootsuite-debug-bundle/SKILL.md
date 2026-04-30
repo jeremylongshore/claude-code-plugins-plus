@@ -1,19 +1,26 @@
 ---
 name: hootsuite-debug-bundle
-description: |
-  Collect Hootsuite debug evidence for support tickets and troubleshooting.
+description: 'Collect Hootsuite debug evidence for support tickets and troubleshooting.
+
   Use when encountering persistent issues, preparing support tickets,
+
   or collecting diagnostic information for Hootsuite problems.
+
   Trigger with phrases like "hootsuite debug", "hootsuite support bundle",
+
   "collect hootsuite logs", "hootsuite diagnostic".
+
+  '
 allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hootsuite, social-media]
-compatible-with: claude-code
+tags:
+- saas
+- hootsuite
+- social-media
+compatibility: Designed for Claude Code
 ---
-
 # Hootsuite Debug Bundle
 
 ## Overview

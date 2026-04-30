@@ -1,17 +1,27 @@
 ---
 name: instantly-incident-runbook
-description: |
-  Execute Instantly.ai incident response procedures with triage, mitigation, and recovery.
+description: 'Execute Instantly.ai incident response procedures with triage, mitigation,
+  and recovery.
+
   Use when responding to campaign failures, account health crises,
+
   deliverability drops, or Instantly API outages.
+
   Trigger with phrases like "instantly incident", "instantly outage",
+
   "instantly campaign failed", "instantly emergency", "instantly runbook".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, instantly, incident-response, runbook]
+tags:
+- saas
+- instantly
+- incident-response
+- runbook
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Instantly Incident Runbook
 

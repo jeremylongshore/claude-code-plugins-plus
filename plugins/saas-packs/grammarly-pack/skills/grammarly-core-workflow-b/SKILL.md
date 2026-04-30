@@ -1,19 +1,27 @@
 ---
 name: grammarly-core-workflow-b
-description: |
-  Execute Grammarly secondary workflow: Core Workflow B.
+description: 'Execute Grammarly secondary workflow: Core Workflow B.
+
   Use when implementing secondary use case,
+
   or complementing primary workflow.
+
   Trigger with phrases like "grammarly secondary workflow",
+
   "secondary task with grammarly".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, grammarly, writing, ai-detection]
-compatible-with: claude-code
+tags:
+- saas
+- grammarly
+- writing
+- ai-detection
+compatibility: Designed for Claude Code
 ---
-
 # Grammarly AI & Plagiarism Detection
 
 ## Overview

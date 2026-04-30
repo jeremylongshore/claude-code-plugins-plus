@@ -1,19 +1,26 @@
 ---
 name: grammarly-sdk-patterns
-description: |
-  Apply production-ready Grammarly SDK patterns for TypeScript and Python.
+description: 'Apply production-ready Grammarly SDK patterns for TypeScript and Python.
+
   Use when implementing Grammarly integrations, refactoring SDK usage,
+
   or establishing team coding standards for Grammarly.
+
   Trigger with phrases like "grammarly SDK patterns", "grammarly best practices",
+
   "grammarly code patterns", "idiomatic grammarly".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, grammarly, writing]
-compatible-with: claude-code
+tags:
+- saas
+- grammarly
+- writing
+compatibility: Designed for Claude Code
 ---
-
 # Grammarly SDK Patterns
 
 ## Overview

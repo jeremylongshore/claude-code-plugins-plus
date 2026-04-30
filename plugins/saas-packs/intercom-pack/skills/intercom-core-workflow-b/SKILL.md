@@ -1,20 +1,30 @@
 ---
 name: intercom-core-workflow-b
-description: |
-  Manage Intercom conversations: create, reply, close, snooze, assign, and tag.
+description: 'Manage Intercom conversations: create, reply, close, snooze, assign,
+  and tag.
+
   Use when building conversation management features, automating replies,
+
   or implementing support workflow automation.
+
   Trigger with phrases like "intercom conversations", "intercom reply",
+
   "intercom assign conversation", "intercom close conversation",
+
   "intercom snooze", "manage intercom conversations".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, support, messaging, intercom]
-compatible-with: claude-code
+tags:
+- saas
+- support
+- messaging
+- intercom
+compatibility: Designed for Claude Code
 ---
-
 # Intercom Conversations & Messaging
 
 ## Overview

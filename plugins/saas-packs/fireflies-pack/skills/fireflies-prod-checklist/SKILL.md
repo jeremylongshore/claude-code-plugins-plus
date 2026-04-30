@@ -1,17 +1,26 @@
 ---
 name: fireflies-prod-checklist
-description: |
-  Execute Fireflies.ai production deployment checklist with health checks and rollback.
+description: 'Execute Fireflies.ai production deployment checklist with health checks
+  and rollback.
+
   Use when deploying Fireflies.ai integrations to production, preparing for launch,
+
   or implementing go-live procedures.
+
   Trigger with phrases like "fireflies production", "deploy fireflies",
+
   "fireflies go-live", "fireflies launch checklist".
+
+  '
 allowed-tools: Read, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, fireflies, deployment]
+tags:
+- saas
+- fireflies
+- deployment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Fireflies.ai Production Checklist
 

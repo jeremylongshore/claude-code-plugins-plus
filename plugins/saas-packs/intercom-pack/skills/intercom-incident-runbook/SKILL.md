@@ -1,19 +1,28 @@
 ---
 name: intercom-incident-runbook
-description: |
-  Execute Intercom incident response procedures with triage, mitigation, and postmortem.
+description: 'Execute Intercom incident response procedures with triage, mitigation,
+  and postmortem.
+
   Use when responding to Intercom API outages, investigating integration errors,
+
   or running post-incident reviews for Intercom failures.
+
   Trigger with phrases like "intercom incident", "intercom outage",
+
   "intercom down", "intercom on-call", "intercom emergency", "intercom broken".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, support, messaging, intercom]
-compatible-with: claude-code
+tags:
+- saas
+- support
+- messaging
+- intercom
+compatibility: Designed for Claude Code
 ---
-
 # Intercom Incident Runbook
 
 ## Overview

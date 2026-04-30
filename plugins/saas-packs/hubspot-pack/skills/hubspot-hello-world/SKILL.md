@@ -1,19 +1,27 @@
 ---
 name: hubspot-hello-world
-description: |
-  Create a working HubSpot CRM example with contacts, companies, and deals.
+description: 'Create a working HubSpot CRM example with contacts, companies, and deals.
+
   Use when starting a new HubSpot integration, testing your setup,
+
   or learning basic CRM API patterns with real endpoints.
+
   Trigger with phrases like "hubspot hello world", "hubspot example",
+
   "hubspot quick start", "first hubspot API call", "hubspot contact create".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, marketing, hubspot]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- marketing
+- hubspot
+compatibility: Designed for Claude Code
 ---
-
 # HubSpot Hello World
 
 ## Overview

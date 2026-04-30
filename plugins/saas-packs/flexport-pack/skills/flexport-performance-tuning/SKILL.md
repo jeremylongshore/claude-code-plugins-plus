@@ -1,17 +1,23 @@
 ---
 name: flexport-performance-tuning
-description: |
-  Optimize Flexport API performance with pagination tuning, response caching,
+description: 'Optimize Flexport API performance with pagination tuning, response caching,
+
   parallel requests, and connection pooling for logistics data.
-  Trigger: "flexport performance", "flexport slow API", "flexport caching", "optimize flexport".
+
+  Trigger: "flexport performance", "flexport slow API", "flexport caching", "optimize
+  flexport".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, logistics, flexport]
-compatible-with: claude-code
+tags:
+- saas
+- logistics
+- flexport
+compatibility: Designed for Claude Code
 ---
-
 # Flexport Performance Tuning
 
 ## Overview

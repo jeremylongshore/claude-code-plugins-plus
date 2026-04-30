@@ -1,18 +1,25 @@
 ---
 name: flyio-hello-world
-description: |
-  Deploy your first app to Fly.io with flyctl launch and the Machines API.
+description: 'Deploy your first app to Fly.io with flyctl launch and the Machines
+  API.
+
   Use when starting a new Fly.io project, deploying a container globally,
+
   or testing edge compute deployment.
+
   Trigger: "fly.io hello world", "fly launch", "deploy to fly.io", "first fly app".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(fly:*), Bash(curl:*), Bash(docker:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, edge-compute, flyio]
-compatible-with: claude-code
+tags:
+- saas
+- edge-compute
+- flyio
+compatibility: Designed for Claude Code
 ---
-
 # Fly.io Hello World
 
 ## Overview

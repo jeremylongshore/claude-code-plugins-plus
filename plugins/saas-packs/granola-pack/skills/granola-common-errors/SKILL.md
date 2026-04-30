@@ -1,16 +1,19 @@
 ---
 name: granola-common-errors
-description: |
-  Troubleshoot common Granola errors — audio capture failures, transcription issues,
-  calendar sync problems, and integration errors. Platform-specific fixes for macOS and Windows.
-  Trigger: "granola error", "granola not working", "granola not recording",
-  "fix granola", "granola troubleshoot".
-allowed-tools: Read, Write, Edit, Bash(pgrep:*), Bash(ps:*), Bash(system_profiler:*), Bash(defaults:*)
+description: "Troubleshoot common Granola errors \u2014 audio capture failures, transcription\
+  \ issues,\ncalendar sync problems, and integration errors. Platform-specific fixes\
+  \ for macOS and Windows.\nTrigger: \"granola error\", \"granola not working\", \"\
+  granola not recording\",\n\"fix granola\", \"granola troubleshoot\".\n"
+allowed-tools: Read, Write, Edit, Bash(pgrep:*), Bash(ps:*), Bash(system_profiler:*),
+  Bash(defaults:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, granola, troubleshooting]
+tags:
+- saas
+- granola
+- troubleshooting
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Granola Common Errors
 

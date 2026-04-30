@@ -1,19 +1,27 @@
 ---
 name: hubspot-core-workflow-a
-description: |
-  Build a complete HubSpot CRM contact-to-deal pipeline workflow.
+description: 'Build a complete HubSpot CRM contact-to-deal pipeline workflow.
+
   Use when implementing lead capture, contact management, deal creation,
+
   or end-to-end sales pipeline automation with HubSpot.
+
   Trigger with phrases like "hubspot sales pipeline", "hubspot lead workflow",
+
   "hubspot contact to deal", "hubspot CRM automation", "hubspot pipeline".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, marketing, hubspot]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- marketing
+- hubspot
+compatibility: Designed for Claude Code
 ---
-
 # HubSpot Core Workflow A: Contact-to-Deal Pipeline
 
 ## Overview

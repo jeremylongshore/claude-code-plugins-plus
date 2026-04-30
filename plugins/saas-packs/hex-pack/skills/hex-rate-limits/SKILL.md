@@ -1,19 +1,27 @@
 ---
 name: hex-rate-limits
-description: |
-  Implement Hex rate limiting, backoff, and idempotency patterns.
+description: 'Implement Hex rate limiting, backoff, and idempotency patterns.
+
   Use when handling rate limit errors, implementing retry logic,
+
   or optimizing API request throughput for Hex.
+
   Trigger with phrases like "hex rate limit", "hex throttling",
+
   "hex 429", "hex retry", "hex backoff".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hex, data, analytics]
-compatible-with: claude-code
+tags:
+- saas
+- hex
+- data
+- analytics
+compatibility: Designed for Claude Code
 ---
-
 # Hex Rate Limits
 
 ## Overview

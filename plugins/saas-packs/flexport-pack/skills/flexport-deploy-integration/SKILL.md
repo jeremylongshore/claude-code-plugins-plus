@@ -1,18 +1,25 @@
 ---
 name: flexport-deploy-integration
-description: |
-  Deploy Flexport logistics integrations to Vercel, Fly.io, and Cloud Run.
+description: 'Deploy Flexport logistics integrations to Vercel, Fly.io, and Cloud
+  Run.
+
   Use when deploying shipment tracking dashboards, webhook receivers,
+
   or supply chain automation services to production infrastructure.
+
   Trigger: "deploy flexport", "flexport hosting", "flexport Cloud Run".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(fly:*), Bash(gcloud:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, logistics, flexport]
-compatible-with: claude-code
+tags:
+- saas
+- logistics
+- flexport
+compatibility: Designed for Claude Code
 ---
-
 # Flexport Deploy Integration
 
 ## Overview

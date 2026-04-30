@@ -1,17 +1,25 @@
 ---
 name: fireflies-common-errors
-description: |
-  Diagnose and fix Fireflies.ai GraphQL API errors by error code.
+description: 'Diagnose and fix Fireflies.ai GraphQL API errors by error code.
+
   Use when encountering Fireflies.ai errors, debugging failed requests,
+
   or troubleshooting authentication and rate limit issues.
+
   Trigger with phrases like "fireflies error", "fix fireflies",
+
   "fireflies not working", "debug fireflies", "fireflies 429".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, fireflies, debugging]
+tags:
+- saas
+- fireflies
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Fireflies.ai Common Errors
 

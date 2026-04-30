@@ -1,17 +1,27 @@
 ---
 name: groq-ci-integration
-description: |
-  Configure Groq CI/CD integration with GitHub Actions, testing, and model validation.
+description: 'Configure Groq CI/CD integration with GitHub Actions, testing, and model
+  validation.
+
   Use when setting up automated testing, configuring CI pipelines,
+
   or integrating Groq tests into your build process.
+
   Trigger with phrases like "groq CI", "groq GitHub Actions",
+
   "groq automated tests", "CI groq".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, groq, testing, ci-cd]
+tags:
+- saas
+- groq
+- testing
+- ci-cd
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Groq CI Integration
 

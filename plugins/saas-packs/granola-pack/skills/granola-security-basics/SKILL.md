@@ -1,17 +1,27 @@
 ---
 name: granola-security-basics
-description: |
-  Security and privacy configuration for Granola meeting data.
+description: 'Security and privacy configuration for Granola meeting data.
+
   Use when reviewing data handling practices, configuring encryption,
+
   ensuring SOC 2/GDPR compliance, or securing meeting recordings.
+
   Trigger: "granola security", "granola privacy", "granola encryption",
+
   "granola SOC 2", "granola GDPR", "secure granola".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, granola, security, compliance, privacy]
+tags:
+- saas
+- granola
+- security
+- compliance
+- privacy
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Granola Security Basics
 

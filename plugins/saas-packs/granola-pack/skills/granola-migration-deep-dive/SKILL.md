@@ -1,17 +1,26 @@
 ---
 name: granola-migration-deep-dive
-description: |
-  Migrate to Granola from Otter.ai, Fireflies, Fathom, tl;dv, or manual note-taking.
+description: 'Migrate to Granola from Otter.ai, Fireflies, Fathom, tl;dv, or manual
+  note-taking.
+
   Covers data export from source tools, parallel-run strategy, team transition,
+
   and historical data preservation.
+
   Trigger: "migrate to granola", "switch to granola", "granola from otter",
+
   "granola from fireflies", "replace meeting tool with granola".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(python3:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, granola, migration]
+tags:
+- saas
+- granola
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Granola Migration Deep Dive
 

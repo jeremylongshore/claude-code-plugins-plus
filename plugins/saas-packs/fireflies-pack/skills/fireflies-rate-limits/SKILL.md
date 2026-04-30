@@ -1,17 +1,25 @@
 ---
 name: fireflies-rate-limits
-description: |
-  Implement Fireflies.ai rate limiting, backoff, and request queuing.
+description: 'Implement Fireflies.ai rate limiting, backoff, and request queuing.
+
   Use when handling rate limit errors, implementing retry logic,
+
   or optimizing API request throughput for Fireflies.ai.
+
   Trigger with phrases like "fireflies rate limit", "fireflies throttling",
+
   "fireflies 429", "fireflies retry", "fireflies backoff".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, fireflies, api]
+tags:
+- saas
+- fireflies
+- api
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Fireflies.ai Rate Limits
 

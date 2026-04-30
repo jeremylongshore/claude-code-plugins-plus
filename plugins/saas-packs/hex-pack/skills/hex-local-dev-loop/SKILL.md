@@ -1,19 +1,27 @@
 ---
 name: hex-local-dev-loop
-description: |
-  Configure Hex local development with hot reload and testing.
+description: 'Configure Hex local development with hot reload and testing.
+
   Use when setting up a development environment, configuring test workflows,
+
   or establishing a fast iteration cycle with Hex.
+
   Trigger with phrases like "hex dev setup", "hex local development",
+
   "hex dev environment", "develop with hex".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hex, data, analytics]
-compatible-with: claude-code
+tags:
+- saas
+- hex
+- data
+- analytics
+compatibility: Designed for Claude Code
 ---
-
 # Hex Local Dev Loop
 
 ## Overview

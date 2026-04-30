@@ -1,17 +1,25 @@
 ---
 name: gamma-rate-limits
-description: |
-  Understand and manage Gamma API rate limits effectively.
+description: 'Understand and manage Gamma API rate limits effectively.
+
   Use when hitting rate limits, optimizing API usage,
+
   or implementing request queuing systems.
+
   Trigger with phrases like "gamma rate limit", "gamma quota",
+
   "gamma 429", "gamma throttle", "gamma request limits".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, gamma, api]
+tags:
+- saas
+- gamma
+- api
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Gamma Rate Limits
 

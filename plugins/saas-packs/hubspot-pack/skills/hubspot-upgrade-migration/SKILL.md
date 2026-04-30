@@ -1,19 +1,27 @@
 ---
 name: hubspot-upgrade-migration
-description: |
-  Upgrade @hubspot/api-client SDK versions and migrate between API versions.
+description: 'Upgrade @hubspot/api-client SDK versions and migrate between API versions.
+
   Use when upgrading the HubSpot Node.js SDK, migrating from v1/v2 to v3 APIs,
+
   or handling breaking changes in the HubSpot API client.
+
   Trigger with phrases like "upgrade hubspot", "hubspot SDK update",
+
   "hubspot breaking changes", "migrate hubspot API version", "hubspot v3 migration".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, marketing, hubspot]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- marketing
+- hubspot
+compatibility: Designed for Claude Code
 ---
-
 # HubSpot Upgrade & Migration
 
 ## Overview

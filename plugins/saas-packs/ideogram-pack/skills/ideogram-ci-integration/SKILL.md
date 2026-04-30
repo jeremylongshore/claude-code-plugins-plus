@@ -1,17 +1,26 @@
 ---
 name: ideogram-ci-integration
-description: |
-  Configure CI/CD pipelines for Ideogram integrations with GitHub Actions.
+description: 'Configure CI/CD pipelines for Ideogram integrations with GitHub Actions.
+
   Use when setting up automated testing, visual regression tests,
+
   or integrating Ideogram validation into your build process.
+
   Trigger with phrases like "ideogram CI", "ideogram GitHub Actions",
+
   "ideogram automated tests", "CI ideogram", "ideogram pipeline".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, ideogram, testing, ci-cd]
+tags:
+- saas
+- ideogram
+- testing
+- ci-cd
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Ideogram CI Integration
 

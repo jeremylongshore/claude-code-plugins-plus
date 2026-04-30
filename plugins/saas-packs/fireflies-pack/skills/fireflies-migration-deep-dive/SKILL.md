@@ -1,17 +1,26 @@
 ---
 name: fireflies-migration-deep-dive
-description: |
-  Migrate to Fireflies.ai from other meeting transcription platforms or legacy recording systems.
+description: 'Migrate to Fireflies.ai from other meeting transcription platforms or
+  legacy recording systems.
+
   Use when switching from Otter.ai, Rev, or custom transcription to Fireflies,
+
   or importing historical meeting data into the Fireflies ecosystem.
+
   Trigger with phrases like "migrate to fireflies", "switch from otter",
+
   "fireflies migration", "import meetings to fireflies", "fireflies replatform".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, fireflies, migration]
+tags:
+- saas
+- fireflies
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Fireflies.ai Migration Deep Dive
 

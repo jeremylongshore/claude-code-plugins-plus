@@ -1,17 +1,22 @@
 ---
 name: fondo-common-errors
-description: |
-  Diagnose and fix common Fondo issues including integration sync failures,
+description: 'Diagnose and fix common Fondo issues including integration sync failures,
+
   categorization errors, and R&D credit qualification problems.
+
   Trigger: "fondo error", "fondo sync issue", "fondo not syncing", "fondo problem".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, accounting, fondo]
-compatible-with: claude-code
+tags:
+- saas
+- accounting
+- fondo
+compatibility: Designed for Claude Code
 ---
-
 # Fondo Common Errors
 
 ## Overview

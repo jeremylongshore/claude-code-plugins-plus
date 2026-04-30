@@ -1,19 +1,27 @@
 ---
 name: intercom-reference-architecture
-description: |
-  Implement Intercom reference architecture with layered project structure.
+description: 'Implement Intercom reference architecture with layered project structure.
+
   Use when designing new Intercom integrations, reviewing project structure,
+
   or establishing architecture standards for Intercom applications.
+
   Trigger with phrases like "intercom architecture", "intercom project structure",
+
   "how to organize intercom", "intercom layout", "intercom design patterns".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, support, messaging, intercom]
-compatible-with: claude-code
+tags:
+- saas
+- support
+- messaging
+- intercom
+compatibility: Designed for Claude Code
 ---
-
 # Intercom Reference Architecture
 
 ## Overview

@@ -1,19 +1,28 @@
 ---
 name: hootsuite-cost-tuning
-description: |
-  Optimize Hootsuite costs through tier selection, sampling, and usage monitoring.
+description: 'Optimize Hootsuite costs through tier selection, sampling, and usage
+  monitoring.
+
   Use when analyzing Hootsuite billing, reducing API costs,
+
   or implementing usage monitoring and budget alerts.
+
   Trigger with phrases like "hootsuite cost", "hootsuite billing",
-  "reduce hootsuite costs", "hootsuite pricing", "hootsuite expensive", "hootsuite budget".
+
+  "reduce hootsuite costs", "hootsuite pricing", "hootsuite expensive", "hootsuite
+  budget".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hootsuite, social-media]
-compatible-with: claude-code
+tags:
+- saas
+- hootsuite
+- social-media
+compatibility: Designed for Claude Code
 ---
-
 # Hootsuite Cost Tuning
 
 ## Hootsuite Plans

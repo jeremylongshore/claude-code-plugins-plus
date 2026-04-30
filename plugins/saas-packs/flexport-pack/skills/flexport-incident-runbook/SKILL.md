@@ -1,17 +1,22 @@
 ---
 name: flexport-incident-runbook
-description: |
-  Execute Flexport incident response for API outages, webhook failures,
+description: 'Execute Flexport incident response for API outages, webhook failures,
+
   and supply chain data sync issues with triage and mitigation steps.
+
   Trigger: "flexport incident", "flexport outage", "flexport down", "flexport emergency".
+
+  '
 allowed-tools: Read, Bash(curl:*), Bash(jq:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, logistics, flexport]
-compatible-with: claude-code
+tags:
+- saas
+- logistics
+- flexport
+compatibility: Designed for Claude Code
 ---
-
 # Flexport Incident Runbook
 
 ## Overview

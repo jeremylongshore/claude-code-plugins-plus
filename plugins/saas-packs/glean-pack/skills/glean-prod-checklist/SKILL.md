@@ -1,16 +1,20 @@
 ---
 name: glean-prod-checklist
-description: |
-  Pre-launch: All datasources indexed and searchable.
+description: 'Pre-launch: All datasources indexed and searchable.
+
   Trigger: "glean prod checklist", "prod-checklist".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, enterprise-search, glean]
-compatible-with: claude-code
+tags:
+- saas
+- enterprise-search
+- glean
+compatibility: Designed for Claude Code
 ---
-
 # Glean Production Checklist
 
 ## Overview

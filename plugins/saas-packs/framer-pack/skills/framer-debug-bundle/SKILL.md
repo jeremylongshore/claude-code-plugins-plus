@@ -1,19 +1,25 @@
 ---
 name: framer-debug-bundle
-description: |
-  Collect Framer debug evidence for support tickets and troubleshooting.
+description: 'Collect Framer debug evidence for support tickets and troubleshooting.
+
   Use when encountering persistent issues, preparing support tickets,
+
   or collecting diagnostic information for Framer problems.
+
   Trigger with phrases like "framer debug", "framer support bundle",
+
   "collect framer logs", "framer diagnostic".
+
+  '
 allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, framer]
-compatible-with: claude-code
+tags:
+- saas
+- framer
+compatibility: Designed for Claude Code
 ---
-
 # Framer Debug Bundle
 
 ## Overview

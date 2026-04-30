@@ -1,19 +1,28 @@
 ---
 name: grammarly-cost-tuning
-description: |
-  Optimize Grammarly costs through tier selection, sampling, and usage monitoring.
+description: 'Optimize Grammarly costs through tier selection, sampling, and usage
+  monitoring.
+
   Use when analyzing Grammarly billing, reducing API costs,
+
   or implementing usage monitoring and budget alerts.
+
   Trigger with phrases like "grammarly cost", "grammarly billing",
-  "reduce grammarly costs", "grammarly pricing", "grammarly expensive", "grammarly budget".
+
+  "reduce grammarly costs", "grammarly pricing", "grammarly expensive", "grammarly
+  budget".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, grammarly, writing]
-compatible-with: claude-code
+tags:
+- saas
+- grammarly
+- writing
+compatibility: Designed for Claude Code
 ---
-
 # Grammarly Cost Tuning
 
 ## Overview

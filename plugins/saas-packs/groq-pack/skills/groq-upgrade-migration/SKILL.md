@@ -1,17 +1,26 @@
 ---
 name: groq-upgrade-migration
-description: |
-  Upgrade groq-sdk versions and handle Groq model deprecations.
+description: 'Upgrade groq-sdk versions and handle Groq model deprecations.
+
   Use when upgrading SDK versions, detecting deprecated models,
+
   or migrating to new Groq model IDs.
+
   Trigger with phrases like "upgrade groq", "groq migration",
+
   "groq breaking changes", "update groq SDK", "groq deprecated model".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, groq, api, migration]
+tags:
+- saas
+- groq
+- api
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Groq Upgrade & Migration
 

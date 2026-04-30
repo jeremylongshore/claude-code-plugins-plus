@@ -1,17 +1,23 @@
 ---
 name: flexport-ci-integration
-description: |
-  Configure CI/CD pipelines for Flexport logistics integrations with GitHub Actions,
+description: 'Configure CI/CD pipelines for Flexport logistics integrations with GitHub
+  Actions,
+
   automated API contract testing, and deployment workflows.
+
   Trigger: "flexport CI", "flexport GitHub Actions", "flexport CI/CD pipeline".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, logistics, flexport]
-compatible-with: claude-code
+tags:
+- saas
+- logistics
+- flexport
+compatibility: Designed for Claude Code
 ---
-
 # Flexport CI Integration
 
 ## Overview

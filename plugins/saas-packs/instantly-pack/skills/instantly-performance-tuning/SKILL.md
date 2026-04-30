@@ -1,17 +1,28 @@
 ---
 name: instantly-performance-tuning
-description: |
-  Optimize Instantly.ai API performance with caching, batching, and connection pooling.
+description: 'Optimize Instantly.ai API performance with caching, batching, and connection
+  pooling.
+
   Use when experiencing slow API responses, implementing caching strategies,
+
   or optimizing high-volume lead operations.
+
   Trigger with phrases like "instantly performance", "instantly slow",
+
   "instantly caching", "instantly batch", "optimize instantly api".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, instantly, performance, caching, optimization]
+tags:
+- saas
+- instantly
+- performance
+- caching
+- optimization
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Instantly Performance Tuning
 

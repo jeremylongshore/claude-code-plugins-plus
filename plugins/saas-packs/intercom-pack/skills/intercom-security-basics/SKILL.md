@@ -1,19 +1,28 @@
 ---
 name: intercom-security-basics
-description: |
-  Apply Intercom security best practices for tokens, webhook verification, and scopes.
+description: 'Apply Intercom security best practices for tokens, webhook verification,
+  and scopes.
+
   Use when securing access tokens, implementing webhook signature validation,
+
   or configuring least-privilege OAuth scopes.
+
   Trigger with phrases like "intercom security", "intercom secrets",
+
   "secure intercom", "intercom webhook signature", "intercom token rotation".
+
+  '
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, support, messaging, intercom]
-compatible-with: claude-code
+tags:
+- saas
+- support
+- messaging
+- intercom
+compatibility: Designed for Claude Code
 ---
-
 # Intercom Security Basics
 
 ## Overview

@@ -1,19 +1,27 @@
 ---
 name: hex-common-errors
-description: |
-  Diagnose and fix Hex common errors and exceptions.
+description: 'Diagnose and fix Hex common errors and exceptions.
+
   Use when encountering Hex errors, debugging failed requests,
+
   or troubleshooting integration issues.
+
   Trigger with phrases like "hex error", "fix hex",
+
   "hex not working", "debug hex".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hex, data, analytics]
-compatible-with: claude-code
+tags:
+- saas
+- hex
+- data
+- analytics
+compatibility: Designed for Claude Code
 ---
-
 # Hex Common Errors
 
 ## Error Reference

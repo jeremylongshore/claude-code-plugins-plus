@@ -1,17 +1,26 @@
 ---
 name: gamma-hello-world
-description: |
-  Generate your first Gamma presentation via the API.
+description: 'Generate your first Gamma presentation via the API.
+
   Use when learning the generate-poll-retrieve workflow,
+
   testing API connectivity, or creating a minimal example.
+
   Trigger: "gamma hello world", "gamma quick start",
+
   "first gamma presentation", "gamma example", "gamma test".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, gamma, api, getting-started]
+tags:
+- saas
+- gamma
+- api
+- getting-started
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Gamma Hello World
 

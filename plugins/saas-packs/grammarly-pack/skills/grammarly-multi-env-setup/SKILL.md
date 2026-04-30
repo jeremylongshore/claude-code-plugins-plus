@@ -1,18 +1,24 @@
 ---
 name: grammarly-multi-env-setup
-description: |
-  Configure Grammarly across multiple environments.
+description: 'Configure Grammarly across multiple environments.
+
   Use when setting up dev/staging/prod environments with Grammarly API.
+
   Trigger with phrases like "grammarly multi-env", "grammarly environments",
+
   "grammarly staging", "grammarly dev prod setup".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, grammarly, writing]
-compatible-with: claude-code
+tags:
+- saas
+- grammarly
+- writing
+compatibility: Designed for Claude Code
 ---
-
 # Grammarly Multi-Environment Setup
 
 ## Overview

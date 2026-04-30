@@ -1,17 +1,25 @@
 ---
 name: ideogram-incident-runbook
-description: |
-  Execute Ideogram incident response with triage, mitigation, and postmortem.
+description: 'Execute Ideogram incident response with triage, mitigation, and postmortem.
+
   Use when responding to Ideogram-related outages, investigating errors,
+
   or running post-incident reviews for Ideogram integration failures.
+
   Trigger with phrases like "ideogram incident", "ideogram outage",
+
   "ideogram down", "ideogram on-call", "ideogram emergency", "ideogram broken".
+
+  '
 allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, ideogram, incident-response]
+tags:
+- saas
+- ideogram
+- incident-response
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Ideogram Incident Runbook
 

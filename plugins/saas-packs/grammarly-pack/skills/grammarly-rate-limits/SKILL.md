@@ -1,19 +1,26 @@
 ---
 name: grammarly-rate-limits
-description: |
-  Implement Grammarly rate limiting, backoff, and idempotency patterns.
+description: 'Implement Grammarly rate limiting, backoff, and idempotency patterns.
+
   Use when handling rate limit errors, implementing retry logic,
+
   or optimizing API request throughput for Grammarly.
+
   Trigger with phrases like "grammarly rate limit", "grammarly throttling",
+
   "grammarly 429", "grammarly retry", "grammarly backoff".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, grammarly, writing]
-compatible-with: claude-code
+tags:
+- saas
+- grammarly
+- writing
+compatibility: Designed for Claude Code
 ---
-
 # Grammarly Rate Limits
 
 ## Overview

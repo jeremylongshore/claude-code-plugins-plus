@@ -1,16 +1,21 @@
 ---
 name: glean-debug-bundle
-description: |
-  Collect Glean diagnostic information for support including datasource config, indexing status, and search quality metrics.
+description: 'Collect Glean diagnostic information for support including datasource
+  config, indexing status, and search quality metrics.
+
   Trigger: "glean debug", "glean support", "glean diagnostic".
+
+  '
 allowed-tools: Read, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, enterprise-search, glean]
-compatible-with: claude-code
+tags:
+- saas
+- enterprise-search
+- glean
+compatibility: Designed for Claude Code
 ---
-
 # Glean Debug Bundle
 
 ## Overview

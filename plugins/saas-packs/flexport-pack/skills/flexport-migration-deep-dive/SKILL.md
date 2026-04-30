@@ -1,17 +1,23 @@
 ---
 name: flexport-migration-deep-dive
-description: |
-  Execute major migration strategies for Flexport including migrating from
+description: 'Execute major migration strategies for Flexport including migrating
+  from
+
   legacy freight forwarders, ERP system integration, and strangler fig patterns.
+
   Trigger: "flexport migration", "migrate to flexport", "flexport ERP integration".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, logistics, flexport]
-compatible-with: claude-code
+tags:
+- saas
+- logistics
+- flexport
+compatibility: Designed for Claude Code
 ---
-
 # Flexport Migration Deep Dive
 
 ## Overview

@@ -1,17 +1,26 @@
 ---
 name: groq-webhooks-events
-description: |
-  Build event-driven architectures with Groq streaming, batch processing, and async patterns.
+description: 'Build event-driven architectures with Groq streaming, batch processing,
+  and async patterns.
+
   Use when setting up real-time SSE endpoints, batch processing pipelines,
+
   or event-driven LLM processing with Groq.
+
   Trigger with phrases like "groq streaming", "groq events",
+
   "groq SSE", "groq batch", "groq async", "groq event-driven".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, groq, webhooks]
+tags:
+- saas
+- groq
+- webhooks
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Groq Events & Async Patterns
 

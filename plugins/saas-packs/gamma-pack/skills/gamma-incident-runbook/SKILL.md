@@ -1,17 +1,25 @@
 ---
 name: gamma-incident-runbook
-description: |
-  Manage incident response for Gamma integration issues.
+description: 'Manage incident response for Gamma integration issues.
+
   Use when experiencing production incidents, outages,
+
   or need systematic troubleshooting procedures.
+
   Trigger with phrases like "gamma incident", "gamma outage",
+
   "gamma down", "gamma emergency", "gamma runbook".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, gamma, incident-response]
+tags:
+- saas
+- gamma
+- incident-response
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Gamma Incident Runbook
 

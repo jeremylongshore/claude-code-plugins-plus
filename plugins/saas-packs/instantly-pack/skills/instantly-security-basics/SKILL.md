@@ -1,17 +1,27 @@
 ---
 name: instantly-security-basics
-description: |
-  Apply Instantly.ai security best practices for API keys, scopes, and access control.
+description: 'Apply Instantly.ai security best practices for API keys, scopes, and
+  access control.
+
   Use when securing API keys, implementing least-privilege access,
+
   or auditing Instantly workspace permissions.
+
   Trigger with phrases like "instantly security", "instantly api key safety",
+
   "instantly least privilege", "secure instantly", "instantly access control".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, instantly, security, access-control]
+tags:
+- saas
+- instantly
+- security
+- access-control
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Instantly Security Basics
 

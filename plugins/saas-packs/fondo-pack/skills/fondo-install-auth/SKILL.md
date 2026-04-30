@@ -1,17 +1,22 @@
 ---
 name: fondo-install-auth
-description: |
-  Set up Fondo account and configure integrations with Gusto, QuickBooks,
+description: 'Set up Fondo account and configure integrations with Gusto, QuickBooks,
+
   and bank accounts for automated startup bookkeeping and R&D tax credits.
+
   Trigger: "setup fondo", "fondo account", "fondo integrations", "connect fondo".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, accounting, fondo]
-compatible-with: claude-code
+tags:
+- saas
+- accounting
+- fondo
+compatibility: Designed for Claude Code
 ---
-
 # Fondo Install & Auth
 
 ## Overview

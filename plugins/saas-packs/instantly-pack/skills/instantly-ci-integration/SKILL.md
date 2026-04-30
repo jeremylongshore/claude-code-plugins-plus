@@ -1,17 +1,28 @@
 ---
 name: instantly-ci-integration
-description: |
-  Configure CI/CD pipelines for Instantly.ai integrations with GitHub Actions.
+description: 'Configure CI/CD pipelines for Instantly.ai integrations with GitHub
+  Actions.
+
   Use when setting up automated testing, deployment pipelines,
+
   or continuous validation of Instantly API integrations.
+
   Trigger with phrases like "instantly ci", "instantly github actions",
+
   "instantly pipeline", "instantly automated testing", "instantly ci/cd".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, instantly, ci-cd, github-actions, testing]
+tags:
+- saas
+- instantly
+- ci-cd
+- github-actions
+- testing
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Instantly CI Integration
 

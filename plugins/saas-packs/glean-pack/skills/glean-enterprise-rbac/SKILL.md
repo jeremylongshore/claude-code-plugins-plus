@@ -1,16 +1,20 @@
 ---
 name: glean-enterprise-rbac
-description: |
-  Map AD/Okta groups to Glean document permissions using allowedGroups.
+description: 'Map AD/Okta groups to Glean document permissions using allowedGroups.
+
   Trigger: "glean enterprise rbac", "enterprise-rbac".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, enterprise-search, glean]
-compatible-with: claude-code
+tags:
+- saas
+- enterprise-search
+- glean
+compatibility: Designed for Claude Code
 ---
-
 # Glean Enterprise RBAC
 
 ## Overview

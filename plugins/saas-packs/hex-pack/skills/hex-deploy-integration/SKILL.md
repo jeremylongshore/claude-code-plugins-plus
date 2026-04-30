@@ -1,19 +1,27 @@
 ---
 name: hex-deploy-integration
-description: |
-  Deploy Hex integrations to Vercel, Fly.io, and Cloud Run platforms.
+description: 'Deploy Hex integrations to Vercel, Fly.io, and Cloud Run platforms.
+
   Use when deploying Hex-powered applications to production,
+
   configuring platform-specific secrets, or setting up deployment pipelines.
+
   Trigger with phrases like "deploy hex", "hex Vercel",
+
   "hex production deploy", "hex Cloud Run", "hex Fly.io".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hex, data, analytics]
-compatible-with: claude-code
+tags:
+- saas
+- hex
+- data
+- analytics
+compatibility: Designed for Claude Code
 ---
-
 # Hex Deploy Integration
 
 ## Overview

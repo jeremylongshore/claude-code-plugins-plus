@@ -1,17 +1,26 @@
 ---
 name: granola-reference-architecture
-description: |
-  Enterprise reference architecture for meeting management with Granola.
+description: 'Enterprise reference architecture for meeting management with Granola.
+
   Use when designing org-wide meeting workflows, planning integration topology,
+
   or architecting meeting-to-action pipelines across departments.
+
   Trigger: "granola architecture", "granola enterprise design",
+
   "granola system design", "meeting system architecture".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, granola, architecture, enterprise]
+tags:
+- saas
+- granola
+- architecture
+- enterprise
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Granola Reference Architecture
 

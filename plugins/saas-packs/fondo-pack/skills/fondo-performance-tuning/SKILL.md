@@ -1,17 +1,22 @@
 ---
 name: fondo-performance-tuning
-description: |
-  Optimize Fondo workflows including faster month-end close, efficient
+description: 'Optimize Fondo workflows including faster month-end close, efficient
+
   data exports, and streamlined CPA communication.
+
   Trigger: "fondo performance", "fondo faster close", "optimize fondo workflow".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, accounting, fondo]
-compatible-with: claude-code
+tags:
+- saas
+- accounting
+- fondo
+compatibility: Designed for Claude Code
 ---
-
 # Fondo Performance Tuning
 
 ## Overview

@@ -1,17 +1,26 @@
 ---
 name: ideogram-common-errors
-description: |
-  Diagnose and fix Ideogram API errors and exceptions.
+description: 'Diagnose and fix Ideogram API errors and exceptions.
+
   Use when encountering Ideogram errors, debugging failed requests,
+
   or troubleshooting integration issues.
+
   Trigger with phrases like "ideogram error", "fix ideogram",
+
   "ideogram not working", "debug ideogram", "ideogram 422", "ideogram 429".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, ideogram, debugging, errors]
+tags:
+- saas
+- ideogram
+- debugging
+- errors
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Ideogram Common Errors
 

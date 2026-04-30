@@ -1,17 +1,26 @@
 ---
 name: granola-upgrade-migration
-description: |
-  Upgrade Granola app versions and migrate between subscription plans.
+description: 'Upgrade Granola app versions and migrate between subscription plans.
+
   Use when upgrading the desktop app, changing from free to paid plans,
+
   downgrading with data preservation, or resolving update issues.
+
   Trigger: "upgrade granola", "granola update", "change granola plan",
+
   "granola new version", "granola downgrade".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(brew:*), Bash(defaults:*), Bash(rm:*), Bash(open:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, granola, migration, upgrade]
+tags:
+- saas
+- granola
+- migration
+- upgrade
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Granola Upgrade & Migration
 

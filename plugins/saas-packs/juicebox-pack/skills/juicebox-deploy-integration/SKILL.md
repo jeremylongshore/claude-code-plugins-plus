@@ -1,16 +1,20 @@
 ---
 name: juicebox-deploy-integration
-description: |
-  Deploy Juicebox integrations.
+description: 'Deploy Juicebox integrations.
+
   Trigger: "deploy juicebox", "juicebox production deploy".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, recruiting, juicebox]
-compatible-with: claude-code
+tags:
+- saas
+- recruiting
+- juicebox
+compatibility: Designed for Claude Code
 ---
-
 # Juicebox Deploy Integration
 
 ## Overview

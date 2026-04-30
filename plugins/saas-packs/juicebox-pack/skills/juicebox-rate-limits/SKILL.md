@@ -1,16 +1,20 @@
 ---
 name: juicebox-rate-limits
-description: |
-  Implement Juicebox rate limiting.
+description: 'Implement Juicebox rate limiting.
+
   Trigger: "juicebox rate limit", "juicebox 429", "juicebox throttle".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, recruiting, juicebox]
-compatible-with: claude-code
+tags:
+- saas
+- recruiting
+- juicebox
+compatibility: Designed for Claude Code
 ---
-
 # Juicebox Rate Limits
 
 ## Overview

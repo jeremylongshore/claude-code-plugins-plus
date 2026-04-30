@@ -1,19 +1,27 @@
 ---
 name: intercom-prod-checklist
-description: |
-  Execute Intercom production readiness checklist and rollback procedures.
+description: 'Execute Intercom production readiness checklist and rollback procedures.
+
   Use when deploying Intercom integrations to production, preparing for launch,
+
   or implementing go-live validation.
+
   Trigger with phrases like "intercom production", "deploy intercom",
+
   "intercom go-live", "intercom launch checklist", "intercom production readiness".
+
+  '
 allowed-tools: Read, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, support, messaging, intercom]
-compatible-with: claude-code
+tags:
+- saas
+- support
+- messaging
+- intercom
+compatibility: Designed for Claude Code
 ---
-
 # Intercom Production Checklist
 
 ## Overview

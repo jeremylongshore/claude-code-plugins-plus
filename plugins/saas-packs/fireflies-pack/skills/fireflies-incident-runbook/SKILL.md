@@ -1,17 +1,26 @@
 ---
 name: fireflies-incident-runbook
-description: |
-  Execute Fireflies.ai incident response with triage, remediation, and postmortem.
+description: 'Execute Fireflies.ai incident response with triage, remediation, and
+  postmortem.
+
   Use when responding to Fireflies.ai API outages, auth failures,
+
   or webhook delivery problems.
+
   Trigger with phrases like "fireflies incident", "fireflies outage",
+
   "fireflies down", "fireflies on-call", "fireflies emergency", "fireflies broken".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, fireflies, incident-response]
+tags:
+- saas
+- fireflies
+- incident-response
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Fireflies.ai Incident Runbook
 

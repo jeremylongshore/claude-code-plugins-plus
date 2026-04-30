@@ -1,19 +1,26 @@
 ---
 name: hootsuite-hello-world
-description: |
-  Create a minimal working Hootsuite example.
+description: 'Create a minimal working Hootsuite example.
+
   Use when starting a new Hootsuite integration, testing your setup,
+
   or learning basic Hootsuite API patterns.
+
   Trigger with phrases like "hootsuite hello world", "hootsuite example",
+
   "hootsuite quick start", "simple hootsuite code".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hootsuite, social-media]
-compatible-with: claude-code
+tags:
+- saas
+- hootsuite
+- social-media
+compatibility: Designed for Claude Code
 ---
-
 # Hootsuite Hello World
 
 ## Overview

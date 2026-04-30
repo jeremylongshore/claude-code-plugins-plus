@@ -1,18 +1,19 @@
 ---
 name: flexport-hello-world
-description: |
-  Create a minimal working Flexport example — list shipments and track containers.
-  Use when starting a new Flexport integration, testing your setup,
-  or learning the Flexport REST API v2 patterns.
-  Trigger: "flexport hello world", "flexport example", "flexport quick start".
+description: "Create a minimal working Flexport example \u2014 list shipments and\
+  \ track containers.\nUse when starting a new Flexport integration, testing your\
+  \ setup,\nor learning the Flexport REST API v2 patterns.\nTrigger: \"flexport hello\
+  \ world\", \"flexport example\", \"flexport quick start\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, logistics, flexport]
-compatible-with: claude-code
+tags:
+- saas
+- logistics
+- flexport
+compatibility: Designed for Claude Code
 ---
-
 # Flexport Hello World
 
 ## Overview

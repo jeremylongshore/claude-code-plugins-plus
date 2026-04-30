@@ -1,19 +1,26 @@
 ---
 name: grammarly-data-handling
-description: |
-  Implement Grammarly data handling patterns for document processing.
+description: 'Implement Grammarly data handling patterns for document processing.
+
   Use when handling large documents, managing text chunking,
+
   or implementing data pipelines for Grammarly API.
+
   Trigger with phrases like "grammarly data", "grammarly documents",
+
   "grammarly text processing", "grammarly pipeline".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, grammarly, writing]
-compatible-with: claude-code
+tags:
+- saas
+- grammarly
+- writing
+compatibility: Designed for Claude Code
 ---
-
 # Grammarly Data Handling
 
 ## Overview

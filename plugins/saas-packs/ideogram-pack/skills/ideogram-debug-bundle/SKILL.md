@@ -1,17 +1,26 @@
 ---
 name: ideogram-debug-bundle
-description: |
-  Collect Ideogram debug evidence for support tickets and troubleshooting.
+description: 'Collect Ideogram debug evidence for support tickets and troubleshooting.
+
   Use when encountering persistent issues, preparing support tickets,
+
   or collecting diagnostic information for Ideogram problems.
+
   Trigger with phrases like "ideogram debug", "ideogram support bundle",
+
   "collect ideogram logs", "ideogram diagnostic".
+
+  '
 allowed-tools: Read, Bash(curl:*), Bash(tar:*), Bash(node:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, ideogram, debugging, support]
+tags:
+- saas
+- ideogram
+- debugging
+- support
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Ideogram Debug Bundle
 

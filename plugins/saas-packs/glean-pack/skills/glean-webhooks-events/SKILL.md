@@ -1,17 +1,23 @@
 ---
 name: glean-webhooks-events
-description: |
-  Implement event-driven Glean indexing triggered by source system webhooks from
+description: 'Implement event-driven Glean indexing triggered by source system webhooks
+  from
+
   GitHub, Confluence, Notion, and other content platforms.
+
   Trigger: "glean webhooks", "glean event indexing", "incremental glean index".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, enterprise-search, glean]
-compatible-with: claude-code
+tags:
+- saas
+- enterprise-search
+- glean
+compatibility: Designed for Claude Code
 ---
-
 # Glean Webhooks & Events
 
 ## Overview

@@ -1,16 +1,20 @@
 ---
 name: juicebox-enterprise-rbac
-description: |
-  Configure Juicebox team access.
+description: 'Configure Juicebox team access.
+
   Trigger: "juicebox rbac", "juicebox team roles".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, recruiting, juicebox]
-compatible-with: claude-code
+tags:
+- saas
+- recruiting
+- juicebox
+compatibility: Designed for Claude Code
 ---
-
 # Juicebox Enterprise RBAC
 
 ## Overview

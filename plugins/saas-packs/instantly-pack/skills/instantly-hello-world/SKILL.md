@@ -1,17 +1,26 @@
 ---
 name: instantly-hello-world
-description: |
-  Create a minimal working Instantly.ai example with real API calls.
+description: 'Create a minimal working Instantly.ai example with real API calls.
+
   Use when starting a new Instantly integration, testing your setup,
+
   or learning basic Instantly API v2 patterns.
+
   Trigger with phrases like "instantly hello world", "instantly example",
+
   "instantly quick start", "simple instantly code", "test instantly api".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, instantly, api, getting-started]
+tags:
+- saas
+- instantly
+- api
+- getting-started
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Instantly Hello World
 

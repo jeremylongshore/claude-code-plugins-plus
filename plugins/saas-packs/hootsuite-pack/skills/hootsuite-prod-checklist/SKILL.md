@@ -1,19 +1,26 @@
 ---
 name: hootsuite-prod-checklist
-description: |
-  Execute Hootsuite production deployment checklist and rollback procedures.
+description: 'Execute Hootsuite production deployment checklist and rollback procedures.
+
   Use when deploying Hootsuite integrations to production, preparing for launch,
+
   or implementing go-live procedures.
+
   Trigger with phrases like "hootsuite production", "deploy hootsuite",
+
   "hootsuite go-live", "hootsuite launch checklist".
+
+  '
 allowed-tools: Read, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hootsuite, social-media]
-compatible-with: claude-code
+tags:
+- saas
+- hootsuite
+- social-media
+compatibility: Designed for Claude Code
 ---
-
 # Hootsuite Production Checklist
 
 ## Overview

@@ -1,19 +1,29 @@
 ---
 name: intercom-enterprise-rbac
-description: |
-  Configure Intercom enterprise OAuth, admin roles, and app-level access control.
+description: 'Configure Intercom enterprise OAuth, admin roles, and app-level access
+  control.
+
   Use when implementing OAuth integration, managing admin permissions,
+
   or setting up organization-level controls for Intercom.
+
   Trigger with phrases like "intercom OAuth", "intercom RBAC",
-  "intercom enterprise", "intercom roles", "intercom permissions", "intercom admin access".
+
+  "intercom enterprise", "intercom roles", "intercom permissions", "intercom admin
+  access".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, support, messaging, intercom]
-compatible-with: claude-code
+tags:
+- saas
+- support
+- messaging
+- intercom
+compatibility: Designed for Claude Code
 ---
-
 # Intercom Enterprise RBAC
 
 ## Overview

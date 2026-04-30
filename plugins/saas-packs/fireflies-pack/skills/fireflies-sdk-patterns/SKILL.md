@@ -1,17 +1,27 @@
 ---
 name: fireflies-sdk-patterns
-description: |
-  Apply production-ready Fireflies.ai GraphQL client patterns for TypeScript and Python.
+description: 'Apply production-ready Fireflies.ai GraphQL client patterns for TypeScript
+  and Python.
+
   Use when implementing Fireflies.ai integrations, building typed clients,
+
   or establishing team coding standards for the GraphQL API.
+
   Trigger with phrases like "fireflies SDK patterns", "fireflies best practices",
+
   "fireflies client", "fireflies GraphQL wrapper", "typed fireflies".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, fireflies, python, typescript]
+tags:
+- saas
+- fireflies
+- python
+- typescript
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Fireflies.ai Client Patterns
 

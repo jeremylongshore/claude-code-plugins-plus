@@ -1,17 +1,28 @@
 ---
 name: instantly-webhooks-events
-description: |
-  Implement Instantly.ai webhook event handling with real API v2 event types.
+description: 'Implement Instantly.ai webhook event handling with real API v2 event
+  types.
+
   Use when setting up webhook endpoints, processing email events,
+
   or building CRM sync pipelines from Instantly notifications.
+
   Trigger with phrases like "instantly webhook", "instantly events",
+
   "instantly webhook handler", "handle instantly events", "instantly notifications".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, instantly, webhooks, events, crm-sync]
+tags:
+- saas
+- instantly
+- webhooks
+- events
+- crm-sync
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Instantly Webhooks & Events
 

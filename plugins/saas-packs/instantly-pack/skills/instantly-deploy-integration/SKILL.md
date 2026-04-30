@@ -1,17 +1,28 @@
 ---
 name: instantly-deploy-integration
-description: |
-  Deploy Instantly.ai webhook receivers and API integrations to cloud platforms.
+description: 'Deploy Instantly.ai webhook receivers and API integrations to cloud
+  platforms.
+
   Use when deploying to Vercel, Cloud Run, or Fly.io,
+
   or setting up production webhook endpoints.
+
   Trigger with phrases like "deploy instantly", "instantly cloud run",
+
   "instantly vercel", "instantly webhook deployment", "instantly production deploy".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, instantly, deployment, vercel, cloud-run]
+tags:
+- saas
+- instantly
+- deployment
+- vercel
+- cloud-run
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Instantly Deploy Integration
 

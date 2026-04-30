@@ -1,18 +1,24 @@
 ---
 name: flexport-local-dev-loop
-description: |
-  Configure Flexport local development with mock API responses and testing.
+description: 'Configure Flexport local development with mock API responses and testing.
+
   Use when setting up a development environment, creating mock shipment data,
+
   or establishing a fast iteration cycle for Flexport logistics integration.
+
   Trigger: "flexport dev setup", "flexport local development", "flexport mock API".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, logistics, flexport]
-compatible-with: claude-code
+tags:
+- saas
+- logistics
+- flexport
+compatibility: Designed for Claude Code
 ---
-
 # Flexport Local Dev Loop
 
 ## Overview

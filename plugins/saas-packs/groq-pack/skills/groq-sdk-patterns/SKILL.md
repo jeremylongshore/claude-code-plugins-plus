@@ -1,17 +1,26 @@
 ---
 name: groq-sdk-patterns
-description: |
-  Apply production-ready Groq SDK patterns for TypeScript and Python.
+description: 'Apply production-ready Groq SDK patterns for TypeScript and Python.
+
   Use when implementing Groq integrations, refactoring SDK usage,
+
   or establishing team coding standards for Groq.
+
   Trigger with phrases like "groq SDK patterns", "groq best practices",
+
   "groq code patterns", "idiomatic groq".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, groq, python, typescript]
+tags:
+- saas
+- groq
+- python
+- typescript
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Groq SDK Patterns
 

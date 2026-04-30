@@ -1,17 +1,27 @@
 ---
 name: ideogram-security-basics
-description: |
-  Apply Ideogram security best practices for API key management and access control.
+description: 'Apply Ideogram security best practices for API key management and access
+  control.
+
   Use when securing API keys, implementing key rotation,
+
   or auditing Ideogram security configuration.
+
   Trigger with phrases like "ideogram security", "ideogram secrets",
+
   "secure ideogram", "ideogram API key security", "ideogram key rotation".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, ideogram, api, security]
+tags:
+- saas
+- ideogram
+- api
+- security
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Ideogram Security Basics
 

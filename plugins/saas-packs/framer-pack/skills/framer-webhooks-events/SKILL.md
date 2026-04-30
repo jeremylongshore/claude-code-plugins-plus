@@ -1,19 +1,25 @@
 ---
 name: framer-webhooks-events
-description: |
-  Implement Framer webhook signature validation and event handling.
+description: 'Implement Framer webhook signature validation and event handling.
+
   Use when setting up webhook endpoints, implementing signature verification,
+
   or handling Framer event notifications securely.
+
   Trigger with phrases like "framer webhook", "framer events",
+
   "framer webhook signature", "handle framer events", "framer notifications".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, framer]
-compatible-with: claude-code
+tags:
+- saas
+- framer
+compatibility: Designed for Claude Code
 ---
-
 # Framer Webhooks & Events
 
 ## Overview

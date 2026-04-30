@@ -1,16 +1,21 @@
 ---
 name: glean-ci-integration
-description: |
-  CI/CD for Glean connectors with automated indexing tests and search quality validation.
+description: 'CI/CD for Glean connectors with automated indexing tests and search
+  quality validation.
+
   Trigger: "glean CI", "glean GitHub Actions", "glean connector CI/CD".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, enterprise-search, glean]
-compatible-with: claude-code
+tags:
+- saas
+- enterprise-search
+- glean
+compatibility: Designed for Claude Code
 ---
-
 # Glean CI Integration
 
 ## Overview

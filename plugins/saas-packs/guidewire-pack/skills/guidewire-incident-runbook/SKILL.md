@@ -1,16 +1,20 @@
 ---
 name: guidewire-incident-runbook
-description: |
-  Respond to Guidewire production incidents: triage, mitigation, and recovery.
+description: 'Respond to Guidewire production incidents: triage, mitigation, and recovery.
+
   Trigger: "guidewire incident runbook", "incident-runbook".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(gradle:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, insurance, guidewire]
-compatible-with: claude-code
+tags:
+- saas
+- insurance
+- guidewire
+compatibility: Designed for Claude Code
 ---
-
 # Guidewire Incident Runbook
 
 ## Overview

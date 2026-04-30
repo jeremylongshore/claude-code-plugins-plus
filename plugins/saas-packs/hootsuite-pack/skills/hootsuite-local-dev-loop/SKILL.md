@@ -1,19 +1,26 @@
 ---
 name: hootsuite-local-dev-loop
-description: |
-  Configure Hootsuite local development with hot reload and testing.
+description: 'Configure Hootsuite local development with hot reload and testing.
+
   Use when setting up a development environment, configuring test workflows,
+
   or establishing a fast iteration cycle with Hootsuite.
+
   Trigger with phrases like "hootsuite dev setup", "hootsuite local development",
+
   "hootsuite dev environment", "develop with hootsuite".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hootsuite, social-media]
-compatible-with: claude-code
+tags:
+- saas
+- hootsuite
+- social-media
+compatibility: Designed for Claude Code
 ---
-
 # Hootsuite Local Dev Loop
 
 ## Overview

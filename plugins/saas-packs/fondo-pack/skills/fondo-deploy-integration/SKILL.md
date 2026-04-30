@@ -1,17 +1,23 @@
 ---
 name: fondo-deploy-integration
-description: |
-  Deploy financial dashboards and reporting tools that consume Fondo data
+description: 'Deploy financial dashboards and reporting tools that consume Fondo data
+
   to Vercel, Fly.io, or internal infrastructure.
-  Trigger: "fondo dashboard deploy", "fondo financial dashboard", "deploy finance app".
+
+  Trigger: "fondo dashboard deploy", "fondo financial dashboard", "deploy finance
+  app".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, accounting, fondo]
-compatible-with: claude-code
+tags:
+- saas
+- accounting
+- fondo
+compatibility: Designed for Claude Code
 ---
-
 # Fondo Deploy Integration
 
 ## Overview

@@ -1,19 +1,27 @@
 ---
 name: hex-debug-bundle
-description: |
-  Collect Hex debug evidence for support tickets and troubleshooting.
+description: 'Collect Hex debug evidence for support tickets and troubleshooting.
+
   Use when encountering persistent issues, preparing support tickets,
+
   or collecting diagnostic information for Hex problems.
+
   Trigger with phrases like "hex debug", "hex support bundle",
+
   "collect hex logs", "hex diagnostic".
+
+  '
 allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hex, data, analytics]
-compatible-with: claude-code
+tags:
+- saas
+- hex
+- data
+- analytics
+compatibility: Designed for Claude Code
 ---
-
 # Hex Debug Bundle
 
 ## Overview

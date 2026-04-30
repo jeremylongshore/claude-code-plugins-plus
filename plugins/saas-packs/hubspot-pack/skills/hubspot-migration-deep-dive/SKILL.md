@@ -1,19 +1,27 @@
 ---
 name: hubspot-migration-deep-dive
-description: |
-  Execute CRM data migration to HubSpot with batch imports and validation.
+description: 'Execute CRM data migration to HubSpot with batch imports and validation.
+
   Use when migrating from Salesforce/Pipedrive/spreadsheets to HubSpot,
+
   performing bulk data imports, or re-platforming to HubSpot CRM.
+
   Trigger with phrases like "migrate to hubspot", "hubspot data import",
+
   "salesforce to hubspot", "hubspot migration", "bulk import hubspot".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, marketing, hubspot]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- marketing
+- hubspot
+compatibility: Designed for Claude Code
 ---
-
 # HubSpot Migration Deep Dive
 
 ## Overview

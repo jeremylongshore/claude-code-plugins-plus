@@ -1,16 +1,20 @@
 ---
 name: granola-core-workflow-a
-description: |
-  Meeting preparation and template setup in Granola — templates, recipes, and pre-meeting workflows.
-  Use when configuring note templates for 1:1s, standups, discovery calls, or sprint planning,
-  creating custom recipes, or preparing agenda notes before important meetings.
-  Trigger: "granola template", "granola meeting prep", "granola recipe", "granola agenda".
+description: "Meeting preparation and template setup in Granola \u2014 templates,\
+  \ recipes, and pre-meeting workflows.\nUse when configuring note templates for 1:1s,\
+  \ standups, discovery calls, or sprint planning,\ncreating custom recipes, or preparing\
+  \ agenda notes before important meetings.\nTrigger: \"granola template\", \"granola\
+  \ meeting prep\", \"granola recipe\", \"granola agenda\".\n"
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, granola, workflow, templates]
+tags:
+- saas
+- granola
+- workflow
+- templates
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Granola Core Workflow A: Meeting Preparation & Templates
 

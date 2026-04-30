@@ -1,17 +1,27 @@
 ---
 name: fireflies-ci-integration
-description: |
-  Configure CI/CD pipelines for Fireflies.ai integrations with GraphQL testing.
+description: 'Configure CI/CD pipelines for Fireflies.ai integrations with GraphQL
+  testing.
+
   Use when setting up automated testing, configuring GitHub Actions,
+
   or validating Fireflies.ai queries in your build process.
+
   Trigger with phrases like "fireflies CI", "fireflies GitHub Actions",
+
   "fireflies automated tests", "CI fireflies", "test fireflies pipeline".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, fireflies, testing, ci-cd]
+tags:
+- saas
+- fireflies
+- testing
+- ci-cd
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Fireflies.ai CI Integration
 

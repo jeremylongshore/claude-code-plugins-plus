@@ -1,17 +1,26 @@
 ---
 name: gamma-sdk-patterns
-description: |
-  Reusable patterns for the Gamma REST API (no SDK exists).
+description: 'Reusable patterns for the Gamma REST API (no SDK exists).
+
   Use when building typed wrappers, generation helpers,
+
   template factories, or error handling for Gamma.
+
   Trigger: "gamma patterns", "gamma client wrapper",
+
   "gamma best practices", "gamma API helper", "gamma code structure".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, gamma, patterns, api]
+tags:
+- saas
+- gamma
+- patterns
+- api
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Gamma API Patterns
 

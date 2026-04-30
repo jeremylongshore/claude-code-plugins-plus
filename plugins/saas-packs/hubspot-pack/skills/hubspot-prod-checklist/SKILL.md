@@ -1,19 +1,27 @@
 ---
 name: hubspot-prod-checklist
-description: |
-  Execute HubSpot production deployment checklist and go-live procedures.
+description: 'Execute HubSpot production deployment checklist and go-live procedures.
+
   Use when deploying HubSpot integrations to production, preparing for launch,
+
   or implementing health checks for HubSpot connectivity.
+
   Trigger with phrases like "hubspot production", "deploy hubspot",
+
   "hubspot go-live", "hubspot launch checklist", "hubspot health check".
+
+  '
 allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, marketing, hubspot]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- marketing
+- hubspot
+compatibility: Designed for Claude Code
 ---
-
 # HubSpot Production Checklist
 
 ## Overview

@@ -1,17 +1,28 @@
 ---
 name: instantly-core-workflow-b
-description: |
-  Manage Instantly.ai email account warmup, analytics, and deliverability.
+description: 'Manage Instantly.ai email account warmup, analytics, and deliverability.
+
   Use when enabling warmup, monitoring sender reputation, pulling analytics,
+
   or troubleshooting deliverability issues.
+
   Trigger with phrases like "instantly warmup", "instantly analytics",
+
   "email warmup instantly", "instantly deliverability", "instantly account health".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, instantly, workflow, warmup, analytics, deliverability]
+tags:
+- saas
+- instantly
+- workflow
+- warmup
+- analytics
+- deliverability
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Instantly Core Workflow B: Warmup & Analytics Pipeline
 

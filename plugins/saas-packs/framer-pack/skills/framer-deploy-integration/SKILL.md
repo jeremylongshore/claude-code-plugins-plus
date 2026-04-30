@@ -1,19 +1,25 @@
 ---
 name: framer-deploy-integration
-description: |
-  Deploy Framer integrations to Vercel, Fly.io, and Cloud Run platforms.
+description: 'Deploy Framer integrations to Vercel, Fly.io, and Cloud Run platforms.
+
   Use when deploying Framer-powered applications to production,
+
   configuring platform-specific secrets, or setting up deployment pipelines.
+
   Trigger with phrases like "deploy framer", "framer Vercel",
+
   "framer production deploy", "framer Cloud Run", "framer Fly.io".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, framer]
-compatible-with: claude-code
+tags:
+- saas
+- framer
+compatibility: Designed for Claude Code
 ---
-
 # Framer Deploy Integration
 
 ## Overview

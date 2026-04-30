@@ -1,19 +1,27 @@
 ---
 name: framer-core-workflow-a
-description: |
-  Execute Framer primary workflow: Core Workflow A.
+description: 'Execute Framer primary workflow: Core Workflow A.
+
   Use when implementing primary use case,
+
   building main features, or core integration tasks.
+
   Trigger with phrases like "framer main workflow",
+
   "primary task with framer".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, framer, cms, plugin]
-compatible-with: claude-code
+tags:
+- saas
+- framer
+- cms
+- plugin
+compatibility: Designed for Claude Code
 ---
-
 # Framer CMS Plugin — Managed Collections
 
 ## Overview

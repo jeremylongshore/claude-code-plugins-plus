@@ -1,19 +1,25 @@
 ---
 name: framer-install-auth
-description: |
-  Install and configure Framer SDK/CLI authentication.
+description: 'Install and configure Framer SDK/CLI authentication.
+
   Use when setting up a new Framer integration, configuring API keys,
+
   or initializing Framer in your project.
+
   Trigger with phrases like "install framer", "setup framer",
+
   "framer auth", "configure framer API key".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, framer]
-compatible-with: claude-code
+tags:
+- saas
+- framer
+compatibility: Designed for Claude Code
 ---
-
 # Framer Install & Auth
 
 ## Overview

@@ -1,19 +1,25 @@
 ---
 name: framer-rate-limits
-description: |
-  Implement Framer rate limiting, backoff, and idempotency patterns.
+description: 'Implement Framer rate limiting, backoff, and idempotency patterns.
+
   Use when handling rate limit errors, implementing retry logic,
+
   or optimizing API request throughput for Framer.
+
   Trigger with phrases like "framer rate limit", "framer throttling",
+
   "framer 429", "framer retry", "framer backoff".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, framer]
-compatible-with: claude-code
+tags:
+- saas
+- framer
+compatibility: Designed for Claude Code
 ---
-
 # Framer Rate Limits
 
 ## Overview

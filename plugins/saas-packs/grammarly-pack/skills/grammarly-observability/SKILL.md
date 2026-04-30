@@ -1,19 +1,26 @@
 ---
 name: grammarly-observability
-description: |
-  Implement Grammarly observability with metrics and logging.
+description: 'Implement Grammarly observability with metrics and logging.
+
   Use when setting up monitoring, tracking API performance,
+
   or implementing alerting for Grammarly integrations.
+
   Trigger with phrases like "grammarly monitoring", "grammarly metrics",
+
   "grammarly observability", "grammarly logging", "grammarly alerts".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, grammarly, writing]
-compatible-with: claude-code
+tags:
+- saas
+- grammarly
+- writing
+compatibility: Designed for Claude Code
 ---
-
 # Grammarly Observability
 
 ## Overview

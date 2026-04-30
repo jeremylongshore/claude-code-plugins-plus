@@ -1,17 +1,26 @@
 ---
 name: fireflies-enterprise-rbac
-description: |
-  Configure Fireflies.ai workspace roles, channels, privacy controls, and meeting sharing.
+description: 'Configure Fireflies.ai workspace roles, channels, privacy controls,
+  and meeting sharing.
+
   Use when managing team access, setting up channels,
+
   or configuring transcript visibility and sharing rules.
+
   Trigger with phrases like "fireflies roles", "fireflies permissions",
+
   "fireflies channels", "fireflies privacy", "fireflies sharing", "fireflies RBAC".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, fireflies, rbac]
+tags:
+- saas
+- fireflies
+- rbac
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Fireflies.ai Enterprise RBAC
 

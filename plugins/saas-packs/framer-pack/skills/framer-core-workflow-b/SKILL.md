@@ -1,19 +1,27 @@
 ---
 name: framer-core-workflow-b
-description: |
-  Execute Framer secondary workflow: Core Workflow B.
+description: 'Execute Framer secondary workflow: Core Workflow B.
+
   Use when implementing secondary use case,
+
   or complementing primary workflow.
+
   Trigger with phrases like "framer secondary workflow",
+
   "secondary task with framer".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, framer, components, overrides]
-compatible-with: claude-code
+tags:
+- saas
+- framer
+- components
+- overrides
+compatibility: Designed for Claude Code
 ---
-
 # Framer Code Components & Overrides
 
 ## Overview

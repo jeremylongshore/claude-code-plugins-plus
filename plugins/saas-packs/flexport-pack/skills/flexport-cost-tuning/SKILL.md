@@ -1,17 +1,23 @@
 ---
 name: flexport-cost-tuning
-description: |
-  Optimize Flexport API usage costs through efficient pagination, caching,
+description: 'Optimize Flexport API usage costs through efficient pagination, caching,
+
   webhook-driven updates, and monitoring API call volume.
-  Trigger: "flexport costs", "flexport API usage", "reduce flexport calls", "flexport billing".
+
+  Trigger: "flexport costs", "flexport API usage", "reduce flexport calls", "flexport
+  billing".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, logistics, flexport]
-compatible-with: claude-code
+tags:
+- saas
+- logistics
+- flexport
+compatibility: Designed for Claude Code
 ---
-
 # Flexport Cost Tuning
 
 ## Overview

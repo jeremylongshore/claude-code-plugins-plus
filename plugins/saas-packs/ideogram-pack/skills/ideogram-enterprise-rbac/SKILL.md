@@ -1,17 +1,26 @@
 ---
 name: ideogram-enterprise-rbac
-description: |
-  Implement team-based access control and credit management for Ideogram.
+description: 'Implement team-based access control and credit management for Ideogram.
+
   Use when managing multiple teams with separate budgets, enforcing content policies,
+
   or implementing API key isolation for enterprise Ideogram usage.
+
   Trigger with phrases like "ideogram RBAC", "ideogram enterprise",
+
   "ideogram teams", "ideogram permissions", "ideogram multi-tenant".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, ideogram, rbac, enterprise]
+tags:
+- saas
+- ideogram
+- rbac
+- enterprise
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Ideogram Enterprise RBAC
 

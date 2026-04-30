@@ -1,17 +1,26 @@
 ---
 name: groq-core-workflow-a
-description: |
-  Execute Groq primary workflow: chat completions with tool use and JSON mode.
+description: 'Execute Groq primary workflow: chat completions with tool use and JSON
+  mode.
+
   Use when implementing chat interfaces, function calling, structured output,
-  or building AI features with Groq's fast inference.
+
+  or building AI features with Groq''s fast inference.
+
   Trigger with phrases like "groq chat completion", "groq tool use",
+
   "groq function calling", "groq JSON mode".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, groq, workflow]
+tags:
+- saas
+- groq
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Groq Core Workflow A: Chat, Tools & Structured Output
 

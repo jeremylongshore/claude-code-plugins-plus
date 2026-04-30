@@ -1,17 +1,27 @@
 ---
 name: ideogram-local-dev-loop
-description: |
-  Configure Ideogram local development with mock responses and testing.
+description: 'Configure Ideogram local development with mock responses and testing.
+
   Use when setting up a development environment, configuring test workflows,
+
   or establishing a fast iteration cycle with Ideogram.
+
   Trigger with phrases like "ideogram dev setup", "ideogram local development",
+
   "ideogram dev environment", "develop with ideogram", "ideogram testing".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Bash(npx:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, ideogram, testing, workflow, development]
+tags:
+- saas
+- ideogram
+- testing
+- workflow
+- development
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Ideogram Local Dev Loop
 

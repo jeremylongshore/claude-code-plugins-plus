@@ -1,16 +1,20 @@
 ---
 name: juicebox-incident-runbook
-description: |
-  Juicebox incident response.
+description: 'Juicebox incident response.
+
   Trigger: "juicebox incident", "juicebox outage".
+
+  '
 allowed-tools: Read, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, recruiting, juicebox]
-compatible-with: claude-code
+tags:
+- saas
+- recruiting
+- juicebox
+compatibility: Designed for Claude Code
 ---
-
 # Juicebox Incident Runbook
 
 ## Overview

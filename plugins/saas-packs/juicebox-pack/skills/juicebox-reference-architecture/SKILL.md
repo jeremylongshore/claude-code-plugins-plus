@@ -1,16 +1,20 @@
 ---
 name: juicebox-reference-architecture
-description: |
-  Implement Juicebox reference architecture.
+description: 'Implement Juicebox reference architecture.
+
   Trigger: "juicebox architecture", "recruiting platform design".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, recruiting, juicebox]
-compatible-with: claude-code
+tags:
+- saas
+- recruiting
+- juicebox
+compatibility: Designed for Claude Code
 ---
-
 # Juicebox Reference Architecture
 
 ## Overview

@@ -1,17 +1,26 @@
 ---
 name: instantly-migration-deep-dive
-description: |
-  Execute complex Instantly.ai migration strategies for platform changes.
+description: 'Execute complex Instantly.ai migration strategies for platform changes.
+
   Use when migrating between cold email platforms, consolidating workspaces,
+
   or re-architecting outreach infrastructure around Instantly.
+
   Trigger with phrases like "migrate to instantly", "instantly migration",
+
   "switch to instantly", "instantly platform migration", "outreach migration".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, instantly, migration, architecture]
+tags:
+- saas
+- instantly
+- migration
+- architecture
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Instantly Migration Deep Dive
 

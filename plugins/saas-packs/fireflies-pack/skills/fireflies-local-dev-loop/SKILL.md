@@ -1,17 +1,26 @@
 ---
 name: fireflies-local-dev-loop
-description: |
-  Configure local development workflow for Fireflies.ai GraphQL integrations.
+description: 'Configure local development workflow for Fireflies.ai GraphQL integrations.
+
   Use when setting up a development environment, mocking transcript data,
+
   or establishing a fast iteration cycle with the Fireflies API.
+
   Trigger with phrases like "fireflies dev setup", "fireflies local development",
+
   "fireflies dev environment", "develop with fireflies", "mock fireflies".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, fireflies, testing, workflow]
+tags:
+- saas
+- fireflies
+- testing
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Fireflies.ai Local Dev Loop
 

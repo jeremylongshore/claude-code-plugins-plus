@@ -1,19 +1,27 @@
 ---
 name: hex-install-auth
-description: |
-  Install and configure Hex SDK/CLI authentication.
+description: 'Install and configure Hex SDK/CLI authentication.
+
   Use when setting up a new Hex integration, configuring API keys,
+
   or initializing Hex in your project.
+
   Trigger with phrases like "install hex", "setup hex",
+
   "hex auth", "configure hex API key".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hex, data, analytics]
-compatible-with: claude-code
+tags:
+- saas
+- hex
+- data
+- analytics
+compatibility: Designed for Claude Code
 ---
-
 # Hex Install & Auth
 
 ## Overview

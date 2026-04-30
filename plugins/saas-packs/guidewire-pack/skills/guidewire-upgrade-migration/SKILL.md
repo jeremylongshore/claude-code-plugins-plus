@@ -1,16 +1,21 @@
 ---
 name: guidewire-upgrade-migration
-description: |
-  Upgrade Guidewire InsuranceSuite versions and migrate between Cloud environments.
+description: 'Upgrade Guidewire InsuranceSuite versions and migrate between Cloud
+  environments.
+
   Trigger: "guidewire upgrade migration", "upgrade-migration".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(gradle:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, insurance, guidewire]
-compatible-with: claude-code
+tags:
+- saas
+- insurance
+- guidewire
+compatibility: Designed for Claude Code
 ---
-
 # Guidewire Upgrade Migration
 
 ## Overview

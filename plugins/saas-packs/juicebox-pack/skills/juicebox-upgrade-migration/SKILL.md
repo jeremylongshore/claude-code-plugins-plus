@@ -1,16 +1,20 @@
 ---
 name: juicebox-upgrade-migration
-description: |
-  Plan Juicebox SDK upgrades.
+description: 'Plan Juicebox SDK upgrades.
+
   Trigger: "upgrade juicebox", "juicebox migration".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, recruiting, juicebox]
-compatible-with: claude-code
+tags:
+- saas
+- recruiting
+- juicebox
+compatibility: Designed for Claude Code
 ---
-
 # Juicebox Upgrade & Migration
 
 ## Overview

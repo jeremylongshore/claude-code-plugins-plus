@@ -1,17 +1,26 @@
 ---
 name: ideogram-prod-checklist
-description: |
-  Execute Ideogram production deployment checklist and rollback procedures.
+description: 'Execute Ideogram production deployment checklist and rollback procedures.
+
   Use when deploying Ideogram integrations to production, preparing for launch,
+
   or implementing go-live procedures.
+
   Trigger with phrases like "ideogram production", "deploy ideogram",
+
   "ideogram go-live", "ideogram launch checklist", "ideogram production ready".
+
+  '
 allowed-tools: Read, Bash(curl:*), Bash(kubectl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, ideogram, deployment, production]
+tags:
+- saas
+- ideogram
+- deployment
+- production
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Ideogram Production Checklist
 

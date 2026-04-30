@@ -1,17 +1,27 @@
 ---
 name: ideogram-upgrade-migration
-description: |
-  Migrate between Ideogram API versions (V_1 to V_2 to V3) with breaking change detection.
+description: 'Migrate between Ideogram API versions (V_1 to V_2 to V3) with breaking
+  change detection.
+
   Use when upgrading from legacy to V3 endpoints, updating model versions,
+
   or handling deprecated API parameters.
+
   Trigger with phrases like "upgrade ideogram", "ideogram migration",
+
   "ideogram v2 to v3", "ideogram breaking changes", "migrate ideogram API".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, ideogram, api, migration]
+tags:
+- saas
+- ideogram
+- api
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Ideogram Upgrade & Migration
 

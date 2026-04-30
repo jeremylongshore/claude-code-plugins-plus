@@ -1,17 +1,29 @@
 ---
 name: ideogram-core-workflow-b
-description: |
-  Execute Ideogram secondary workflows: edit (Magic Fill), remix, upscale, describe, and reframe.
+description: 'Execute Ideogram secondary workflows: edit (Magic Fill), remix, upscale,
+  describe, and reframe.
+
   Use when modifying existing images, applying style transfer, upscaling,
+
   or building image-to-image pipelines.
+
   Trigger with phrases like "ideogram edit image", "ideogram remix",
+
   "ideogram upscale", "ideogram inpaint", "ideogram magic fill", "ideogram reframe".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, ideogram, workflow, editing, remix, upscale]
+tags:
+- saas
+- ideogram
+- workflow
+- editing
+- remix
+- upscale
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Ideogram Core Workflow B -- Edit, Remix, Upscale, Describe, Reframe
 

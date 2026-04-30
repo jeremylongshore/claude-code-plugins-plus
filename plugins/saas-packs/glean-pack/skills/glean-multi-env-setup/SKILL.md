@@ -1,16 +1,20 @@
 ---
 name: glean-multi-env-setup
-description: |
-  Use separate datasource names per environment (wiki_staging vs wiki_prod).
+description: 'Use separate datasource names per environment (wiki_staging vs wiki_prod).
+
   Trigger: "glean multi env setup", "multi-env-setup".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, enterprise-search, glean]
-compatible-with: claude-code
+tags:
+- saas
+- enterprise-search
+- glean
+compatibility: Designed for Claude Code
 ---
-
 # Glean Multi-Environment Setup
 
 ## Overview

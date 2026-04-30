@@ -1,17 +1,27 @@
 ---
 name: ideogram-sdk-patterns
-description: |
-  Apply production-ready Ideogram API patterns for TypeScript and Python.
+description: 'Apply production-ready Ideogram API patterns for TypeScript and Python.
+
   Use when implementing Ideogram integrations, refactoring API usage,
+
   or establishing team coding standards for Ideogram.
+
   Trigger with phrases like "ideogram SDK patterns", "ideogram best practices",
+
   "ideogram code patterns", "idiomatic ideogram", "ideogram wrapper".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, ideogram, python, typescript, patterns]
+tags:
+- saas
+- ideogram
+- python
+- typescript
+- patterns
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Ideogram SDK Patterns
 

@@ -1,19 +1,25 @@
 ---
 name: framer-reference-architecture
-description: |
-  Implement Framer reference architecture with best-practice project layout.
+description: 'Implement Framer reference architecture with best-practice project layout.
+
   Use when designing new Framer integrations, reviewing project structure,
+
   or establishing architecture standards for Framer applications.
+
   Trigger with phrases like "framer architecture", "framer best practices",
+
   "framer project structure", "how to organize framer", "framer layout".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, framer]
-compatible-with: claude-code
+tags:
+- saas
+- framer
+compatibility: Designed for Claude Code
 ---
-
 # Framer Reference Architecture
 
 ## Overview

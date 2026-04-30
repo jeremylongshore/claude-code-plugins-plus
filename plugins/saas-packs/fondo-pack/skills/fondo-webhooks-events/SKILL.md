@@ -1,17 +1,23 @@
 ---
 name: fondo-webhooks-events
-description: |
-  Implement event-driven financial workflows using webhooks from Fondo-connected
+description: 'Implement event-driven financial workflows using webhooks from Fondo-connected
+
   services: Stripe payment events, Gusto payroll events, and Plaid transactions.
-  Trigger: "fondo webhooks", "fondo events", "stripe payroll webhooks", "financial events".
+
+  Trigger: "fondo webhooks", "fondo events", "stripe payroll webhooks", "financial
+  events".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, accounting, fondo]
-compatible-with: claude-code
+tags:
+- saas
+- accounting
+- fondo
+compatibility: Designed for Claude Code
 ---
-
 # Fondo Webhooks & Events
 
 ## Overview

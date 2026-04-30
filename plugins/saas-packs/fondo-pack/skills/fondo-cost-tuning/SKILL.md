@@ -1,17 +1,23 @@
 ---
 name: fondo-cost-tuning
-description: |
-  Optimize Fondo costs by maximizing R&D tax credits, choosing the right plan,
+description: 'Optimize Fondo costs by maximizing R&D tax credits, choosing the right
+  plan,
+
   and reducing unnecessary bookkeeping complexity.
+
   Trigger: "fondo costs", "fondo pricing", "maximize R&D credit", "fondo ROI".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, accounting, fondo]
-compatible-with: claude-code
+tags:
+- saas
+- accounting
+- fondo
+compatibility: Designed for Claude Code
 ---
-
 # Fondo Cost Tuning
 
 ## Overview

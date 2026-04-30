@@ -1,17 +1,22 @@
 ---
 name: flexport-multi-env-setup
-description: |
-  Configure Flexport API across dev, staging, and production environments
+description: 'Configure Flexport API across dev, staging, and production environments
+
   with isolated API keys, separate webhook endpoints, and environment guards.
+
   Trigger: "flexport environments", "flexport staging", "flexport multi-env".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, logistics, flexport]
-compatible-with: claude-code
+tags:
+- saas
+- logistics
+- flexport
+compatibility: Designed for Claude Code
 ---
-
 # Flexport Multi-Environment Setup
 
 ## Overview

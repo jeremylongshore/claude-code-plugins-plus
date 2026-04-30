@@ -1,17 +1,27 @@
 ---
 name: gamma-debug-bundle
-description: |
-  Comprehensive debugging toolkit for Gamma integration issues.
+description: 'Comprehensive debugging toolkit for Gamma integration issues.
+
   Use when you need detailed diagnostics, request tracing,
+
   or systematic debugging of Gamma API problems.
+
   Trigger with phrases like "gamma debug bundle", "gamma diagnostics",
+
   "gamma trace", "gamma inspect", "gamma detailed logs".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(node:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, gamma, api, debugging, tracing]
+tags:
+- saas
+- gamma
+- api
+- debugging
+- tracing
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Gamma Debug Bundle
 

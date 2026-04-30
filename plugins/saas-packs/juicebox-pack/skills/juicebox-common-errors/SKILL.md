@@ -1,16 +1,20 @@
 ---
 name: juicebox-common-errors
-description: |
-  Diagnose and fix Juicebox API errors.
+description: 'Diagnose and fix Juicebox API errors.
+
   Trigger: "juicebox error", "fix juicebox", "debug juicebox".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, recruiting, juicebox]
-compatible-with: claude-code
+tags:
+- saas
+- recruiting
+- juicebox
+compatibility: Designed for Claude Code
 ---
-
 # Juicebox Common Errors
 
 ## Overview

@@ -1,19 +1,27 @@
 ---
 name: hex-reference-architecture
-description: |
-  Implement Hex reference architecture with best-practice project layout.
+description: 'Implement Hex reference architecture with best-practice project layout.
+
   Use when designing new Hex integrations, reviewing project structure,
+
   or establishing architecture standards for Hex applications.
+
   Trigger with phrases like "hex architecture", "hex best practices",
+
   "hex project structure", "how to organize hex", "hex layout".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hex, data, analytics]
-compatible-with: claude-code
+tags:
+- saas
+- hex
+- data
+- analytics
+compatibility: Designed for Claude Code
 ---
-
 # Hex Reference Architecture
 
 ## Architecture

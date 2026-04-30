@@ -1,17 +1,28 @@
 ---
 name: instantly-reference-architecture
-description: |
-  Implement Instantly.ai reference architecture with best-practice project layout.
+description: 'Implement Instantly.ai reference architecture with best-practice project
+  layout.
+
   Use when designing new Instantly integrations, planning multi-campaign systems,
+
   or building an outreach automation platform.
+
   Trigger with phrases like "instantly architecture", "instantly project structure",
-  "instantly reference design", "instantly system design", "instantly integration layout".
+
+  "instantly reference design", "instantly system design", "instantly integration
+  layout".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, instantly, architecture, design]
+tags:
+- saas
+- instantly
+- architecture
+- design
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Instantly Reference Architecture
 

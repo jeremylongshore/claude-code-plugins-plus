@@ -1,19 +1,26 @@
 ---
 name: grammarly-install-auth
-description: |
-  Install and configure Grammarly SDK/CLI authentication.
+description: 'Install and configure Grammarly SDK/CLI authentication.
+
   Use when setting up a new Grammarly integration, configuring API keys,
+
   or initializing Grammarly in your project.
+
   Trigger with phrases like "install grammarly", "setup grammarly",
+
   "grammarly auth", "configure grammarly API key".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, grammarly, writing]
-compatible-with: claude-code
+tags:
+- saas
+- grammarly
+- writing
+compatibility: Designed for Claude Code
 ---
-
 # Grammarly Install & Auth
 
 ## Overview

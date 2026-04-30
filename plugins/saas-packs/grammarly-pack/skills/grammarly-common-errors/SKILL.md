@@ -1,19 +1,26 @@
 ---
 name: grammarly-common-errors
-description: |
-  Diagnose and fix Grammarly common errors and exceptions.
+description: 'Diagnose and fix Grammarly common errors and exceptions.
+
   Use when encountering Grammarly errors, debugging failed requests,
+
   or troubleshooting integration issues.
+
   Trigger with phrases like "grammarly error", "fix grammarly",
+
   "grammarly not working", "debug grammarly".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, grammarly, writing]
-compatible-with: claude-code
+tags:
+- saas
+- grammarly
+- writing
+compatibility: Designed for Claude Code
 ---
-
 # Grammarly Common Errors
 
 ## Error Reference

@@ -1,17 +1,29 @@
 ---
 name: instantly-data-handling
-description: |
-  Implement Instantly.ai lead data management, GDPR/CAN-SPAM compliance, and list operations.
+description: 'Implement Instantly.ai lead data management, GDPR/CAN-SPAM compliance,
+  and list operations.
+
   Use when handling lead imports, managing block lists, implementing unsubscribe flows,
+
   or ensuring compliance with email regulations.
+
   Trigger with phrases like "instantly leads", "instantly data", "instantly GDPR",
+
   "instantly block list", "instantly lead management", "instantly unsubscribe".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, instantly, data-handling, gdpr, compliance, leads]
+tags:
+- saas
+- instantly
+- data-handling
+- gdpr
+- compliance
+- leads
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Instantly Data Handling
 
