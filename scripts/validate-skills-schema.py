@@ -3457,6 +3457,48 @@ def populate_compliance_db(db_path: str, skill_results: list, agent_results: lis
                  has_hooks, has_mcp, has_license, has_changelog, s_avg,
                  total_errors, total_warnings, now, validator_version, current_run_id))
 
+    # Sanity check: the populator's skill_compliance row count for this run_id
+    # should join 1:1 with the inventory's skills table for the same run_id.
+    # When they diverge by more than a small threshold, the two scanners are
+    # walking different filesystems — historically caused by `skills/` subdirs
+    # without SKILL.md being counted as skills (issue #594). Surface this
+    # loudly so future drift gets caught immediately instead of silently
+    # underweighting the grade rollups.
+    if current_run_id is not None:
+        try:
+            inv_count = c.execute(
+                "SELECT COUNT(*) FROM skills WHERE run_id = ?",
+                (current_run_id,),
+            ).fetchone()[0]
+            comp_count = c.execute(
+                "SELECT COUNT(*) FROM skill_compliance WHERE run_id = ?",
+                (current_run_id,),
+            ).fetchone()[0]
+            joined = c.execute(
+                """SELECT COUNT(*)
+                   FROM skills s
+                   INNER JOIN skill_compliance sc
+                     ON s.path = sc.skill_path AND s.run_id = sc.run_id
+                   WHERE s.run_id = ?""",
+                (current_run_id,),
+            ).fetchone()[0]
+            diff = inv_count - joined
+            # Threshold: 10 skills OR 0.5% of inventory, whichever is larger.
+            threshold = max(10, inv_count // 200)
+            if diff > threshold:
+                print(
+                    f"[populate-db] WARN: inventory has {inv_count} skills "
+                    f"for run_id={current_run_id}, but only {joined} have a "
+                    f"compliance row that joins on path. Drift = {diff} "
+                    f"(threshold = {threshold}). See issue #594 — usually "
+                    f"means scan_packs_plugins_skills counted a subdir of "
+                    f"skills/ that has no SKILL.md.",
+                    file=sys.stderr,
+                )
+        except sqlite3.OperationalError:
+            # Inventory table may not exist on a fresh DB — skip silently.
+            pass
+
     conn.commit()
     conn.close()
 

@@ -500,12 +500,21 @@ def scan_packs_plugins_skills(
                 except Exception:
                     plugin_json_shape = "parse_error"
 
-            # Scan skills for this plugin
+            # Scan skills for this plugin.
+            # Only directories that contain a SKILL.md file are skills — bare
+            # subdirectories like `skills/skill-adapter/` (helper code shipped
+            # alongside skills) are NOT skills. Counting them inflates the
+            # skills total and creates rows that the validator's compliance
+            # walker (which keys off SKILL.md) cannot match — see issue #594.
             skill_dirs: list[Path] = []
             skills_dir = plugin_dir / "skills"
             if skills_dir.exists():
                 for skill_sub in sorted(skills_dir.iterdir()):
-                    if skill_sub.is_dir() and skill_sub.name not in SKIP_DIRS:
+                    if (
+                        skill_sub.is_dir()
+                        and skill_sub.name not in SKIP_DIRS
+                        and (skill_sub / "SKILL.md").exists()
+                    ):
                         skill_dirs.append(skill_sub)
 
             plugin_skill_count = len(skill_dirs)
@@ -1503,20 +1512,38 @@ def scan_anomalies(
                 )
             )
 
-    # Plugins without skills dir
+    # Plugins without skills dir.
+    # Suppress when another structural signal explains the absence:
+    # MCP plugin (.mcp.json), command-only (commands/), hook-only (hooks/),
+    # or agent-only (agents/). Per issue #599: those are legitimately
+    # skill-less by design, not anomalous. Filing them masks real anomalies.
+    def _has_alternative_layout(plugin_dir: Path) -> bool:
+        if (plugin_dir / ".mcp.json").exists():
+            return True
+        if (plugin_dir / "mcp" / ".mcp.json").exists():
+            return True
+        for d in ("commands", "hooks", "agents"):
+            sub = plugin_dir / d
+            if sub.is_dir() and any(sub.iterdir()):
+                return True
+        return False
+
     for pjson in (REPO_ROOT / "plugins").rglob(".claude-plugin/plugin.json"):
         if should_skip(pjson):
             continue
         plugin_dir = pjson.parent.parent
-        if not (plugin_dir / "skills").exists():
-            batch.append(
-                (
-                    run_id, "plugin-no-skills-dir",
-                    rel(plugin_dir), 0,
-                    f"Plugin at {rel(plugin_dir)} has no skills/ directory",
-                    "Expected for MCP plugins or command-only plugins",
-                )
+        if (plugin_dir / "skills").exists():
+            continue
+        if _has_alternative_layout(plugin_dir):
+            continue
+        batch.append(
+            (
+                run_id, "plugin-no-skills-dir",
+                rel(plugin_dir), 0,
+                f"Plugin at {rel(plugin_dir)} has no skills/ directory and no alternative layout",
+                "No commands/, hooks/, agents/, or .mcp.json detected — likely actually empty",
             )
+        )
 
     # Stray .pyc files
     pyc_files = [
