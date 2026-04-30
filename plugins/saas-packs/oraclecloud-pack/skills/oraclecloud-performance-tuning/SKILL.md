@@ -1,17 +1,24 @@
 ---
 name: oraclecloud-performance-tuning
-description: |
-  Optimize OCI compute shapes, block volume tiers, and network throughput.
-  Use when choosing instance shapes, configuring block volume performance, or benchmarking OCI infrastructure.
-  Trigger with "oraclecloud performance", "oci shape comparison", "oci block volume iops", "oracle cloud performance tuning".
+description: 'Optimize OCI compute shapes, block volume tiers, and network throughput.
+
+  Use when choosing instance shapes, configuring block volume performance, or benchmarking
+  OCI infrastructure.
+
+  Trigger with "oraclecloud performance", "oci shape comparison", "oci block volume
+  iops", "oracle cloud performance tuning".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, oraclecloud, oci]
-compatible-with: claude-code
+tags:
+- saas
+- oraclecloud
+- oci
+compatibility: Designed for Claude Code
 ---
-
 # Oracle Cloud Performance Tuning
 
 ## Overview

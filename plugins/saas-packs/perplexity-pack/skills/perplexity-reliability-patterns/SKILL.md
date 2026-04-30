@@ -1,16 +1,24 @@
 ---
 name: perplexity-reliability-patterns
-description: |
-  Implement reliability patterns for Perplexity Sonar API: circuit breaker, model fallback,
+description: 'Implement reliability patterns for Perplexity Sonar API: circuit breaker,
+  model fallback,
+
   streaming timeout, and citation validation.
+
   Trigger with phrases like "perplexity reliability", "perplexity circuit breaker",
+
   "perplexity fallback", "perplexity resilience", "perplexity timeout".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, perplexity, perplexity-reliability]
+tags:
+- saas
+- perplexity
+- perplexity-reliability
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Perplexity Reliability Patterns
 

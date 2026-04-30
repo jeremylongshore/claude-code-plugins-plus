@@ -1,17 +1,27 @@
 ---
 name: replit-reference-architecture
-description: |
-  Implement Replit reference architecture with best-practice project layout, data layer, and deployment.
+description: 'Implement Replit reference architecture with best-practice project layout,
+  data layer, and deployment.
+
   Use when designing new Replit apps, reviewing project structure,
+
   or establishing architecture standards for production Replit applications.
+
   Trigger with phrases like "replit architecture", "replit best practices",
+
   "replit project structure", "how to organize replit", "replit production layout".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, replit, architecture, reference]
+tags:
+- saas
+- replit
+- architecture
+- reference
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Replit Reference Architecture
 

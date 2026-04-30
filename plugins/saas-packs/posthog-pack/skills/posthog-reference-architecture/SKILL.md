@@ -1,18 +1,25 @@
 ---
 name: posthog-reference-architecture
-description: |
-  Production PostHog architecture: event taxonomy, SDK layering, feature flag
+description: 'Production PostHog architecture: event taxonomy, SDK layering, feature
+  flag
+
   strategy, analytics module layout, and data pipeline integration patterns.
+
   Trigger: "posthog architecture", "posthog best practices", "posthog project
+
   structure", "how to organize posthog", "posthog design".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, posthog, posthog-reference]
+tags:
+- saas
+- posthog
+- posthog-reference
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # PostHog Reference Architecture
 
 ## Overview

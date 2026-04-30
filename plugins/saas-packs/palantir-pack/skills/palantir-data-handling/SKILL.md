@@ -1,19 +1,30 @@
 ---
 name: palantir-data-handling
-description: |
-  Implement Palantir Foundry data handling with PII protection, markings, and GDPR compliance.
+description: 'Implement Palantir Foundry data handling with PII protection, markings,
+  and GDPR compliance.
+
   Use when handling sensitive data in Foundry, implementing data classifications,
+
   or ensuring compliance with privacy regulations.
+
   Trigger with phrases like "palantir data", "foundry PII",
+
   "palantir GDPR", "foundry data protection", "palantir markings".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, palantir, foundry, data, privacy, compliance]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- palantir
+- foundry
+- data
+- privacy
+- compliance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Palantir Data Handling
 
 ## Overview

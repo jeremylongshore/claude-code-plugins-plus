@@ -1,16 +1,21 @@
 ---
 name: openevidence-core-workflow-a
-description: |
-  Execute OpenEvidence primary workflow: Clinical Query & Decision Support.
-  Trigger: "openevidence clinical query & decision support", "primary openevidence workflow".
+description: 'Execute OpenEvidence primary workflow: Clinical Query & Decision Support.
+
+  Trigger: "openevidence clinical query & decision support", "primary openevidence
+  workflow".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, openevidence, healthcare]
-compatible-with: claude-code
+tags:
+- saas
+- openevidence
+- healthcare
+compatibility: Designed for Claude Code
 ---
-
 # OpenEvidence — Evidence Search & Retrieval
 
 ## Overview

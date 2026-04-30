@@ -1,17 +1,28 @@
 ---
 name: perplexity-cost-tuning
-description: |
-  Optimize Perplexity costs through model routing, caching, token limits, and budget monitoring.
+description: 'Optimize Perplexity costs through model routing, caching, token limits,
+  and budget monitoring.
+
   Use when analyzing Perplexity billing, reducing API costs,
+
   or implementing budget alerts for Perplexity Sonar API.
+
   Trigger with phrases like "perplexity cost", "perplexity billing",
+
   "reduce perplexity costs", "perplexity pricing", "perplexity budget".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, perplexity, api, monitoring, cost-optimization]
+tags:
+- saas
+- perplexity
+- api
+- monitoring
+- cost-optimization
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Perplexity Cost Tuning
 

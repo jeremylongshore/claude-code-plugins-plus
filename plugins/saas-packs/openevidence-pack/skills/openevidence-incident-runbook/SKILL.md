@@ -1,16 +1,20 @@
 ---
 name: openevidence-incident-runbook
-description: |
-  Incident Runbook for OpenEvidence.
+description: 'Incident Runbook for OpenEvidence.
+
   Trigger: "openevidence incident runbook".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, openevidence, healthcare]
-compatible-with: claude-code
+tags:
+- saas
+- openevidence
+- healthcare
+compatibility: Designed for Claude Code
 ---
-
 # OpenEvidence Incident Runbook
 
 ## Severity

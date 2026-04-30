@@ -1,17 +1,25 @@
 ---
 name: persona-common-errors
-description: |
-  Fix top Persona API errors: 401, 422, webhook signature failures, inquiry state issues.
+description: 'Fix top Persona API errors: 401, 422, webhook signature failures, inquiry
+  state issues.
+
   Use when working with Persona identity verification.
+
   Trigger with phrases like "persona common-errors", "persona common-errors".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, persona, identity, kyc, verification]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- persona
+- identity
+- kyc
+- verification
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # persona common errors | sed 's/\b\(.\)/\u\1/g'
 
 ## Overview

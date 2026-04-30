@@ -1,17 +1,25 @@
 ---
 name: oraclecloud-local-dev-loop
-description: |
-  Set up a productive local OCI development workflow using CLI and SDK instead of the web console.
-  Use when the OCI Console is too slow, setting up CLI profiles, or building shell aliases for common operations.
-  Trigger with "oci local dev", "oci cli setup", "oraclecloud dev workflow", "avoid oci console".
+description: 'Set up a productive local OCI development workflow using CLI and SDK
+  instead of the web console.
+
+  Use when the OCI Console is too slow, setting up CLI profiles, or building shell
+  aliases for common operations.
+
+  Trigger with "oci local dev", "oci cli setup", "oraclecloud dev workflow", "avoid
+  oci console".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(pip:*), Bash(oci:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, oraclecloud, oci]
-compatible-with: claude-code
+tags:
+- saas
+- oraclecloud
+- oci
+compatibility: Designed for Claude Code
 ---
-
 # Oracle Cloud Local Dev Loop
 
 ## Overview

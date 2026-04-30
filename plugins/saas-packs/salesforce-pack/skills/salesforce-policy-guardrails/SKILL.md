@@ -1,19 +1,28 @@
 ---
 name: salesforce-policy-guardrails
-description: |
-  Implement Salesforce lint rules, SOQL injection prevention, and API usage guardrails.
+description: 'Implement Salesforce lint rules, SOQL injection prevention, and API
+  usage guardrails.
+
   Use when enforcing Salesforce integration code quality, preventing SOQL injection,
+
   or configuring CI policy checks for Salesforce best practices.
+
   Trigger with phrases like "salesforce policy", "salesforce lint",
-  "salesforce guardrails", "SOQL injection", "salesforce eslint", "salesforce code review".
+
+  "salesforce guardrails", "SOQL injection", "salesforce eslint", "salesforce code
+  review".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npx:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, salesforce]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- salesforce
+compatibility: Designed for Claude Code
 ---
-
 # Salesforce Policy & Guardrails
 
 ## Overview

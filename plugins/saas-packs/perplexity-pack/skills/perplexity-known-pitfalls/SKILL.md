@@ -1,17 +1,25 @@
 ---
 name: perplexity-known-pitfalls
-description: |
-  Identify and avoid Perplexity anti-patterns and common integration mistakes.
+description: 'Identify and avoid Perplexity anti-patterns and common integration mistakes.
+
   Use when reviewing Perplexity code, onboarding new developers,
+
   or auditing existing integrations for best practices violations.
+
   Trigger with phrases like "perplexity mistakes", "perplexity anti-patterns",
+
   "perplexity pitfalls", "perplexity code review", "perplexity gotchas".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, perplexity, audit]
+tags:
+- saas
+- perplexity
+- audit
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Perplexity Known Pitfalls
 

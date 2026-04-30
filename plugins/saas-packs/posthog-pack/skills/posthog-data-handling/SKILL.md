@@ -1,18 +1,24 @@
 ---
 name: posthog-data-handling
-description: |
-  PostHog PII handling, GDPR compliance, consent management, data deletion,
+description: 'PostHog PII handling, GDPR compliance, consent management, data deletion,
+
   property sanitization, and privacy-safe analytics configuration.
+
   Trigger: "posthog data", "posthog PII", "posthog GDPR", "posthog data
+
   retention", "posthog privacy", "posthog CCPA", "posthog consent".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, posthog, compliance]
+tags:
+- saas
+- posthog
+- compliance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # PostHog Data Handling
 
 ## Overview

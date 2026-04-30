@@ -1,13 +1,22 @@
 ---
 name: openrouter-compliance-review
-description: |
-  Review OpenRouter integration for regulatory compliance (SOC2, GDPR, HIPAA). Use when preparing for audits, evaluating data handling, or documenting compliance posture. Triggers: 'openrouter compliance', 'openrouter gdpr', 'openrouter soc2', 'openrouter data residency'.
+description: 'Review OpenRouter integration for regulatory compliance (SOC2, GDPR,
+  HIPAA). Use when preparing for audits, evaluating data handling, or documenting
+  compliance posture. Triggers: ''openrouter compliance'', ''openrouter gdpr'', ''openrouter
+  soc2'', ''openrouter data residency''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash, Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, openrouter, compliance, security, governance]
+tags:
+- saas
+- openrouter
+- compliance
+- security
+- governance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # OpenRouter Compliance Review
 

@@ -1,17 +1,25 @@
 ---
 name: oraclecloud-enterprise-rbac
-description: |
-  Design OCI compartment hierarchies, dynamic groups, and cross-tenancy access patterns.
-  Use when planning enterprise RBAC, setting up Instance Principal auth, or debugging policy inheritance.
-  Trigger with "oraclecloud enterprise rbac", "oci compartments", "oci dynamic groups", "oci policy inheritance".
+description: 'Design OCI compartment hierarchies, dynamic groups, and cross-tenancy
+  access patterns.
+
+  Use when planning enterprise RBAC, setting up Instance Principal auth, or debugging
+  policy inheritance.
+
+  Trigger with "oraclecloud enterprise rbac", "oci compartments", "oci dynamic groups",
+  "oci policy inheritance".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(pip:*), Bash(oci:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, oraclecloud, oci]
-compatible-with: claude-code
+tags:
+- saas
+- oraclecloud
+- oci
+compatibility: Designed for Claude Code
 ---
-
 # Oracle Cloud Enterprise RBAC
 
 ## Overview

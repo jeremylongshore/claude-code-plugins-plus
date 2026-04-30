@@ -1,19 +1,27 @@
 ---
 name: salesforce-local-dev-loop
-description: |
-  Configure Salesforce local development with scratch orgs, SFDX, and testing.
+description: 'Configure Salesforce local development with scratch orgs, SFDX, and
+  testing.
+
   Use when setting up a development environment, configuring test workflows,
+
   or establishing a fast iteration cycle with Salesforce.
+
   Trigger with phrases like "salesforce dev setup", "salesforce local development",
+
   "salesforce scratch org", "sfdx project", "develop with salesforce".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Bash(sf:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, salesforce]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- salesforce
+compatibility: Designed for Claude Code
 ---
-
 # Salesforce Local Dev Loop
 
 ## Overview

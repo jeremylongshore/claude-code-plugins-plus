@@ -1,19 +1,29 @@
 ---
 name: palantir-core-workflow-a
-description: |
-  Build Palantir Foundry data pipelines using Python transforms.
+description: 'Build Palantir Foundry data pipelines using Python transforms.
+
   Use when creating ETL pipelines, writing @transform decorators,
+
   or building dataset-to-dataset processing in Foundry.
+
   Trigger with phrases like "palantir pipeline", "foundry transform",
+
   "palantir ETL", "palantir data pipeline", "foundry python transform".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(pip:*), Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, palantir, foundry, transforms, pipelines, spark]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- palantir
+- foundry
+- transforms
+- pipelines
+- spark
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Palantir Core Workflow A — Data Pipelines with Transforms
 
 ## Overview

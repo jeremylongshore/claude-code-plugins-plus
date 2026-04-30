@@ -1,17 +1,25 @@
 ---
 name: perplexity-core-workflow-b
-description: |
-  Execute Perplexity multi-turn research sessions and batch query pipelines.
+description: 'Execute Perplexity multi-turn research sessions and batch query pipelines.
+
   Use when conducting in-depth investigations, generating research briefs,
+
   or processing multiple related search queries.
+
   Trigger with phrases like "perplexity research", "perplexity batch search",
+
   "multi-query perplexity", "perplexity deep dive", "perplexity report".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, perplexity, workflow]
+tags:
+- saas
+- perplexity
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Perplexity Core Workflow B: Multi-Query Research
 

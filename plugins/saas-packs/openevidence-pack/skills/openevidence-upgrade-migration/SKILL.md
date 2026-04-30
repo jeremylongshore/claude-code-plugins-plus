@@ -1,16 +1,20 @@
 ---
 name: openevidence-upgrade-migration
-description: |
-  Upgrade Migration for OpenEvidence.
+description: 'Upgrade Migration for OpenEvidence.
+
   Trigger: "openevidence upgrade migration".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, openevidence, healthcare]
-compatible-with: claude-code
+tags:
+- saas
+- openevidence
+- healthcare
+compatibility: Designed for Claude Code
 ---
-
 # OpenEvidence Upgrade & Migration
 
 ## Overview

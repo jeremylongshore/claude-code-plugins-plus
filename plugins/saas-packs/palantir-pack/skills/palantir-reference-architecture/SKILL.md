@@ -1,19 +1,29 @@
 ---
 name: palantir-reference-architecture
-description: |
-  Implement Palantir Foundry reference architecture with best-practice project layout.
+description: 'Implement Palantir Foundry reference architecture with best-practice
+  project layout.
+
   Use when designing new Foundry integrations, planning data pipeline architecture,
+
   or establishing patterns for Ontology-driven applications.
+
   Trigger with phrases like "palantir architecture", "foundry best practices",
+
   "foundry project structure", "how to organize palantir".
+
+  '
 allowed-tools: Read, Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, palantir, foundry, architecture, patterns]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- palantir
+- foundry
+- architecture
+- patterns
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Palantir Reference Architecture
 
 ## Overview

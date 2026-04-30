@@ -1,18 +1,27 @@
 ---
 name: salesloft-core-workflow-b
-description: |
-  Track SalesLoft activities, emails, calls, and analytics via the REST API.
+description: 'Track SalesLoft activities, emails, calls, and analytics via the REST
+  API.
+
   Use when reading email engagement data, logging call dispositions,
+
   or building sales activity dashboards.
-  Trigger: "salesloft activities", "salesloft emails", "salesloft calls", "salesloft analytics".
+
+  Trigger: "salesloft activities", "salesloft emails", "salesloft calls", "salesloft
+  analytics".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, sales, outreach, salesloft]
-compatible-with: claude-code
+tags:
+- saas
+- sales
+- outreach
+- salesloft
+compatibility: Designed for Claude Code
 ---
-
 # SalesLoft Core Workflow B: Activities & Analytics
 
 ## Overview

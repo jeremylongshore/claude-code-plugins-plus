@@ -1,17 +1,24 @@
 ---
 name: oraclecloud-core-workflow-a
-description: |
-  Launch, manage, and scale OCI compute instances with capacity retry logic.
-  Use when provisioning VMs, selecting instance shapes, or handling "out of capacity" errors.
+description: 'Launch, manage, and scale OCI compute instances with capacity retry
+  logic.
+
+  Use when provisioning VMs, selecting instance shapes, or handling "out of capacity"
+  errors.
+
   Trigger with "oci compute", "launch instance", "out of capacity", "instance shapes".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, oraclecloud, oci]
-compatible-with: claude-code
+tags:
+- saas
+- oraclecloud
+- oci
+compatibility: Designed for Claude Code
 ---
-
 # OCI Compute — Launch, Manage & Scale
 
 ## Overview

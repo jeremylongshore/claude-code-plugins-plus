@@ -1,17 +1,25 @@
 ---
 name: perplexity-debug-bundle
-description: |
-  Collect Perplexity debug evidence for support tickets and troubleshooting.
+description: 'Collect Perplexity debug evidence for support tickets and troubleshooting.
+
   Use when encountering persistent issues, preparing support tickets,
+
   or collecting diagnostic information for Perplexity problems.
+
   Trigger with phrases like "perplexity debug", "perplexity support bundle",
+
   "collect perplexity logs", "perplexity diagnostic".
+
+  '
 allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, perplexity, debugging]
+tags:
+- saas
+- perplexity
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Perplexity Debug Bundle
 

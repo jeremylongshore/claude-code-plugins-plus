@@ -1,18 +1,24 @@
 ---
 name: posthog-incident-runbook
-description: |
-  PostHog incident response: triage decision tree, immediate actions for
+description: 'PostHog incident response: triage decision tree, immediate actions for
+
   401/429/500 errors, graceful degradation, evidence collection, and postmortem.
+
   Trigger: "posthog incident", "posthog outage", "posthog down",
+
   "posthog on-call", "posthog emergency", "posthog broken production".
+
+  '
 allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, posthog, incident-response]
+tags:
+- saas
+- posthog
+- incident-response
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # PostHog Incident Runbook
 
 ## Overview

@@ -1,17 +1,27 @@
 ---
 name: replit-cost-tuning
-description: |
-  Optimize Replit costs: deployment sizing, seat audit, egress control, and plan selection.
+description: 'Optimize Replit costs: deployment sizing, seat audit, egress control,
+  and plan selection.
+
   Use when analyzing Replit billing, reducing deployment costs,
+
   or implementing usage monitoring and budget controls.
+
   Trigger with phrases like "replit cost", "replit billing",
+
   "reduce replit costs", "replit pricing", "replit expensive", "replit budget".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, replit, cost-optimization, billing]
+tags:
+- saas
+- replit
+- cost-optimization
+- billing
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Replit Cost Tuning
 

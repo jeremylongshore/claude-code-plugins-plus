@@ -1,18 +1,26 @@
 ---
 name: salesloft-common-errors
-description: |
-  Diagnose and fix SalesLoft API errors: 401, 403, 422, 429, and 5xx.
+description: 'Diagnose and fix SalesLoft API errors: 401, 403, 422, 429, and 5xx.
+
   Use when encountering SalesLoft errors, debugging failed requests,
+
   or troubleshooting OAuth token issues.
-  Trigger: "salesloft error", "fix salesloft", "salesloft not working", "salesloft 429".
+
+  Trigger: "salesloft error", "fix salesloft", "salesloft not working", "salesloft
+  429".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, sales, outreach, salesloft]
-compatible-with: claude-code
+tags:
+- saas
+- sales
+- outreach
+- salesloft
+compatibility: Designed for Claude Code
 ---
-
 # SalesLoft Common Errors
 
 ## Overview

@@ -1,13 +1,21 @@
 ---
 name: openrouter-prod-checklist
-description: |
-  Validate production readiness of your OpenRouter integration. Use before launching to production or during operational reviews. Triggers: 'openrouter production', 'openrouter launch', 'production checklist openrouter', 'openrouter deploy'.
+description: 'Validate production readiness of your OpenRouter integration. Use before
+  launching to production or during operational reviews. Triggers: ''openrouter production'',
+  ''openrouter launch'', ''production checklist openrouter'', ''openrouter deploy''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash, Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, openrouter, production, deployment, checklist]
+tags:
+- saas
+- openrouter
+- production
+- deployment
+- checklist
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # OpenRouter Production Checklist
 

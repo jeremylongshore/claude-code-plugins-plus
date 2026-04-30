@@ -1,17 +1,24 @@
 ---
 name: persona-webhooks-events
-description: |
-  Handle Persona webhook events for inquiry and verification status changes.
+description: 'Handle Persona webhook events for inquiry and verification status changes.
+
   Use when working with Persona identity verification.
+
   Trigger with phrases like "persona webhooks-events", "persona webhooks-events".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, persona, identity, kyc, verification]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- persona
+- identity
+- kyc
+- verification
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # persona webhooks events | sed 's/\b\(.\)/\u\1/g'
 
 ## Overview

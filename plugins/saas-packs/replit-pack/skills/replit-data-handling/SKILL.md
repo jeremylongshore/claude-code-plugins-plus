@@ -1,17 +1,29 @@
 ---
 name: replit-data-handling
-description: |
-  Implement secure data handling on Replit: PostgreSQL, KV Database, Object Storage, and data security patterns.
-  Use when handling sensitive data, connecting databases, implementing data access patterns,
+description: 'Implement secure data handling on Replit: PostgreSQL, KV Database, Object
+  Storage, and data security patterns.
+
+  Use when handling sensitive data, connecting databases, implementing data access
+  patterns,
+
   or ensuring secure data flow in Replit-hosted applications.
+
   Trigger with phrases like "replit data", "replit database",
+
   "replit PostgreSQL", "replit storage", "replit data security", "replit GDPR".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, replit, database, storage, security]
+tags:
+- saas
+- replit
+- database
+- storage
+- security
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Replit Data Handling
 

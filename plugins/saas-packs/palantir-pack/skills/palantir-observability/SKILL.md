@@ -1,19 +1,29 @@
 ---
 name: palantir-observability
-description: |
-  Set up observability for Palantir Foundry integrations with metrics, logging, and alerts.
+description: 'Set up observability for Palantir Foundry integrations with metrics,
+  logging, and alerts.
+
   Use when implementing monitoring for Foundry API calls, setting up dashboards,
+
   or configuring alerting for Foundry integration health.
+
   Trigger with phrases like "palantir monitoring", "foundry metrics",
+
   "palantir observability", "monitor foundry", "foundry alerts".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, palantir, foundry, observability, monitoring]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- palantir
+- foundry
+- observability
+- monitoring
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Palantir Observability
 
 ## Overview

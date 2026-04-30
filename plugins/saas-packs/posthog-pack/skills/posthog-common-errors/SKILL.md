@@ -1,18 +1,25 @@
 ---
 name: posthog-common-errors
-description: |
-  Diagnose and fix common PostHog errors: events not appearing, flags returning
+description: 'Diagnose and fix common PostHog errors: events not appearing, flags
+  returning
+
   undefined, 401/429 errors, SDK initialization failures, and identity issues.
+
   Trigger: "posthog error", "fix posthog", "posthog not working",
+
   "debug posthog", "posthog events missing", "posthog broken".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, posthog, debugging]
+tags:
+- saas
+- posthog
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # PostHog Common Errors
 
 ## Overview

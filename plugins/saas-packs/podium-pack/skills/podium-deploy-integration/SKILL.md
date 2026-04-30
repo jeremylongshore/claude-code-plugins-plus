@@ -1,17 +1,21 @@
 ---
 name: podium-deploy-integration
-description: |
-  Podium deploy integration — business messaging and communication platform integration.
-  Use when working with Podium API for messaging, reviews, or payments.
-  Trigger with phrases like "podium deploy integration", "podium-deploy-integration".
+description: "Podium deploy integration \u2014 business messaging and communication\
+  \ platform integration.\nUse when working with Podium API for messaging, reviews,\
+  \ or payments.\nTrigger with phrases like \"podium deploy integration\", \"podium-deploy-integration\"\
+  .\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, podium, messaging, reviews, payments]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- podium
+- messaging
+- reviews
+- payments
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Podium Deploy Integration
 
 ## Overview

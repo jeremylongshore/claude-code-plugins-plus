@@ -1,16 +1,24 @@
 ---
 name: perplexity-data-handling
-description: |
-  Implement Perplexity query sanitization, citation validation, result caching,
+description: 'Implement Perplexity query sanitization, citation validation, result
+  caching,
+
   and conversation context management for search workflows.
+
   Trigger with phrases like "perplexity data", "perplexity PII",
+
   "perplexity citations", "perplexity cache", "perplexity context".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, perplexity, compliance]
+tags:
+- saas
+- perplexity
+- compliance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Perplexity Data Handling
 

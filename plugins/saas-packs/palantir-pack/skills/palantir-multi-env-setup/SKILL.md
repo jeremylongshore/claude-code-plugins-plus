@@ -1,19 +1,29 @@
 ---
 name: palantir-multi-env-setup
-description: |
-  Configure Palantir Foundry across development, staging, and production environments.
+description: 'Configure Palantir Foundry across development, staging, and production
+  environments.
+
   Use when setting up multi-environment Foundry deployments, managing per-environment
+
   credentials, or implementing environment-specific configurations.
+
   Trigger with phrases like "palantir environments", "foundry staging",
+
   "foundry dev prod", "palantir environment setup".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gcloud:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, palantir, foundry, environments, configuration]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- palantir
+- foundry
+- environments
+- configuration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Palantir Multi-Environment Setup
 
 ## Overview

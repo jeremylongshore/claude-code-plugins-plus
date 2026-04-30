@@ -1,16 +1,21 @@
 ---
 name: openevidence-core-workflow-b
-description: |
-  Execute OpenEvidence secondary workflow: DeepConsult Research Synthesis.
-  Trigger: "openevidence deepconsult research synthesis", "secondary openevidence workflow".
+description: 'Execute OpenEvidence secondary workflow: DeepConsult Research Synthesis.
+
+  Trigger: "openevidence deepconsult research synthesis", "secondary openevidence
+  workflow".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, openevidence, healthcare]
-compatible-with: claude-code
+tags:
+- saas
+- openevidence
+- healthcare
+compatibility: Designed for Claude Code
 ---
-
 # OpenEvidence — Evidence Review & Citations
 
 ## Overview

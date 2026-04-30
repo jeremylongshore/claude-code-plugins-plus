@@ -1,19 +1,26 @@
 ---
 name: salesforce-common-errors
-description: |
-  Diagnose and fix Salesforce common errors, SOQL issues, and API exceptions.
+description: 'Diagnose and fix Salesforce common errors, SOQL issues, and API exceptions.
+
   Use when encountering Salesforce errors, debugging failed requests,
+
   or troubleshooting integration issues.
+
   Trigger with phrases like "salesforce error", "fix salesforce",
+
   "salesforce not working", "debug salesforce", "SOQL error", "salesforce exception".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*), Bash(sf:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, salesforce]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- salesforce
+compatibility: Designed for Claude Code
 ---
-
 # Salesforce Common Errors
 
 ## Overview

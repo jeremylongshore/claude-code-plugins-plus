@@ -1,17 +1,25 @@
 ---
 name: oraclecloud-multi-env-setup
-description: |
-  Configure multi-environment OCI workflows with config profiles and compartment-per-environment patterns.
-  Use when setting up dev/staging/prod separation, switching between OCI profiles, or preventing accidental production deployments.
-  Trigger with "oraclecloud multi env setup", "oci profiles", "oci environments", "oci config profiles".
+description: 'Configure multi-environment OCI workflows with config profiles and compartment-per-environment
+  patterns.
+
+  Use when setting up dev/staging/prod separation, switching between OCI profiles,
+  or preventing accidental production deployments.
+
+  Trigger with "oraclecloud multi env setup", "oci profiles", "oci environments",
+  "oci config profiles".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(pip:*), Bash(oci:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, oraclecloud, oci]
-compatible-with: claude-code
+tags:
+- saas
+- oraclecloud
+- oci
+compatibility: Designed for Claude Code
 ---
-
 # Oracle Cloud Multi-Environment Setup
 
 ## Overview

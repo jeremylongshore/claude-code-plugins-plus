@@ -1,17 +1,28 @@
 ---
 name: perplexity-observability
-description: |
-  Set up monitoring for Perplexity Sonar API with latency, cost, citation quality, and error tracking.
+description: 'Set up monitoring for Perplexity Sonar API with latency, cost, citation
+  quality, and error tracking.
+
   Use when implementing monitoring dashboards, setting up alerts,
+
   or tracking Perplexity API health in production.
+
   Trigger with phrases like "perplexity monitoring", "perplexity metrics",
+
   "perplexity observability", "monitor perplexity", "perplexity dashboard".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, perplexity, monitoring, observability, dashboard]
+tags:
+- saas
+- perplexity
+- monitoring
+- observability
+- dashboard
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Perplexity Observability
 

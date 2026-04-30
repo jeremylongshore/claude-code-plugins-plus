@@ -1,17 +1,28 @@
 ---
 name: replit-load-scale
-description: |
-  Load test and scale Replit deployments with Autoscale tuning, Reserved VM sizing, and capacity planning.
+description: 'Load test and scale Replit deployments with Autoscale tuning, Reserved
+  VM sizing, and capacity planning.
+
   Use when load testing Replit apps, optimizing Autoscale behavior,
+
   or planning capacity for production traffic.
+
   Trigger with phrases like "replit load test", "replit scale",
+
   "replit capacity", "replit performance test", "replit autoscale tuning".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npx:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, replit, testing, performance, scaling]
+tags:
+- saas
+- replit
+- testing
+- performance
+- scaling
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Replit Load & Scale
 

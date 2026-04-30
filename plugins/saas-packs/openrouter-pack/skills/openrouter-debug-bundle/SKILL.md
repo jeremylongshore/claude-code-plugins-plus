@@ -1,13 +1,21 @@
 ---
 name: openrouter-debug-bundle
-description: |
-  Create debug bundles for troubleshooting OpenRouter API issues. Use when diagnosing failures, unexpected responses, or latency problems. Triggers: 'openrouter debug', 'openrouter troubleshoot', 'debug openrouter request', 'openrouter issue'.
+description: 'Create debug bundles for troubleshooting OpenRouter API issues. Use
+  when diagnosing failures, unexpected responses, or latency problems. Triggers: ''openrouter
+  debug'', ''openrouter troubleshoot'', ''debug openrouter request'', ''openrouter
+  issue''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash, Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, openrouter, debugging, troubleshooting]
+tags:
+- saas
+- openrouter
+- debugging
+- troubleshooting
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # OpenRouter Debug Bundle
 

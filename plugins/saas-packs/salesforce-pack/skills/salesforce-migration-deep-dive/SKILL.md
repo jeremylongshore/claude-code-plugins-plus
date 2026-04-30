@@ -1,19 +1,27 @@
 ---
 name: salesforce-migration-deep-dive
-description: |
-  Execute Salesforce data migrations using Bulk API, Data Loader, and ETL patterns.
+description: 'Execute Salesforce data migrations using Bulk API, Data Loader, and
+  ETL patterns.
+
   Use when migrating data to/from Salesforce, performing org-to-org migrations,
+
   or re-platforming CRM data into Salesforce.
+
   Trigger with phrases like "migrate to salesforce", "salesforce data migration",
+
   "salesforce import data", "salesforce ETL", "CRM migration to salesforce".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(sf:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, salesforce]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- salesforce
+compatibility: Designed for Claude Code
 ---
-
 # Salesforce Migration Deep Dive
 
 ## Overview

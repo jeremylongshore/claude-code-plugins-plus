@@ -1,19 +1,28 @@
 ---
 name: palantir-common-errors
-description: |
-  Diagnose and fix Palantir Foundry common errors and API exceptions.
+description: 'Diagnose and fix Palantir Foundry common errors and API exceptions.
+
   Use when encountering Foundry errors, debugging failed API calls,
+
   or troubleshooting transform build failures.
+
   Trigger with phrases like "palantir error", "fix palantir",
+
   "foundry not working", "debug foundry", "palantir 401 403".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, palantir, foundry, debugging, errors]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- palantir
+- foundry
+- debugging
+- errors
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Palantir Common Errors
 
 ## Overview

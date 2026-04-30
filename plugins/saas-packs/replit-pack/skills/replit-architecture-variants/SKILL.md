@@ -1,17 +1,27 @@
 ---
 name: replit-architecture-variants
-description: |
-  Choose and implement Replit architecture blueprints: single-file script, modular app, and multi-service.
+description: 'Choose and implement Replit architecture blueprints: single-file script,
+  modular app, and multi-service.
+
   Use when designing new Replit apps, choosing the right architecture scale,
+
   or planning migration paths as your app grows.
+
   Trigger with phrases like "replit architecture options", "replit blueprint",
+
   "how to structure replit app", "replit monolith vs service", "replit app scale".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, replit, architecture, scaling]
+tags:
+- saas
+- replit
+- architecture
+- scaling
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Replit Architecture Variants
 

@@ -1,17 +1,25 @@
 ---
 name: quicknode-sdk-patterns
-description: |
-  Production-ready QuickNode SDK and ethers.js patterns for blockchain applications.
+description: 'Production-ready QuickNode SDK and ethers.js patterns for blockchain
+  applications.
+
   Use when building production dApps, implementing retry logic, or establishing patterns.
+
   Trigger with phrases like "quicknode patterns", "ethers best practices", "web3 patterns".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, quicknode, blockchain, web3, patterns]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- quicknode
+- blockchain
+- web3
+- patterns
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # QuickNode SDK Patterns
 
 ## Overview

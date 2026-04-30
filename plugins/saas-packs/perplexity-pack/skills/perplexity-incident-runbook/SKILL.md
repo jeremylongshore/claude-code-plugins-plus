@@ -1,17 +1,26 @@
 ---
 name: perplexity-incident-runbook
-description: |
-  Execute Perplexity incident response procedures with triage, mitigation, and postmortem.
+description: 'Execute Perplexity incident response procedures with triage, mitigation,
+  and postmortem.
+
   Use when responding to Perplexity API outages, investigating search failures,
+
   or running post-incident reviews for Perplexity integration issues.
+
   Trigger with phrases like "perplexity incident", "perplexity outage",
+
   "perplexity down", "perplexity on-call", "perplexity emergency".
+
+  '
 allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, perplexity, incident-response]
+tags:
+- saas
+- perplexity
+- incident-response
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Perplexity Incident Runbook
 

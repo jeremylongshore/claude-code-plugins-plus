@@ -1,19 +1,28 @@
 ---
 name: salesforce-load-scale
-description: |
-  Implement Salesforce load testing, API limit capacity planning, and Bulk API scaling.
+description: 'Implement Salesforce load testing, API limit capacity planning, and
+  Bulk API scaling.
+
   Use when running performance tests against Salesforce, planning API consumption,
+
   or scaling high-volume Salesforce integrations.
+
   Trigger with phrases like "salesforce load test", "salesforce scale",
-  "salesforce performance test", "salesforce capacity planning", "salesforce high volume".
+
+  "salesforce performance test", "salesforce capacity planning", "salesforce high
+  volume".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(k6:*), Bash(sf:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, salesforce]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- salesforce
+compatibility: Designed for Claude Code
 ---
-
 # Salesforce Load & Scale
 
 ## Overview

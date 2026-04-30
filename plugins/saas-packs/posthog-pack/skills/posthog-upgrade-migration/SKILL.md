@@ -1,19 +1,27 @@
 ---
 name: posthog-upgrade-migration
-description: |
-  Upgrade posthog-js and posthog-node SDKs with breaking change detection.
+description: 'Upgrade posthog-js and posthog-node SDKs with breaking change detection.
+
   Covers v4 to v5 posthog-node migration (sendFeatureFlags change),
+
   posthog-js autocapture API changes, and version-specific gotchas.
+
   Trigger: "upgrade posthog", "posthog breaking changes",
+
   "update posthog SDK", "posthog version", "posthog migration".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, posthog, api, migration]
+tags:
+- saas
+- posthog
+- api
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # PostHog Upgrade & Migration
 
 ## Current State

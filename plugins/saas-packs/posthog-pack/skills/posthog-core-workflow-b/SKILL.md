@@ -1,19 +1,28 @@
 ---
 name: posthog-core-workflow-b
-description: |
-  Implement PostHog feature flags, A/B experiments, and cohort management.
+description: 'Implement PostHog feature flags, A/B experiments, and cohort management.
+
   Use when rolling out features with flags, running A/B tests, creating cohorts,
+
   or evaluating multivariate experiments with PostHog.
+
   Trigger: "posthog feature flag", "posthog experiment", "posthog A/B test",
+
   "posthog cohort", "feature rollout posthog", "posthog multivariate".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, posthog, workflow, feature-flags, experiments]
+tags:
+- saas
+- posthog
+- workflow
+- feature-flags
+- experiments
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # PostHog Core Workflow B — Feature Flags & Experiments
 
 ## Overview

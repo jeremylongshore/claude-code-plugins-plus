@@ -1,13 +1,22 @@
 ---
 name: openrouter-audit-logging
-description: |
-  Implement audit logging for OpenRouter API calls. Use when building compliance trails, debugging production issues, or tracking model usage. Triggers: 'openrouter audit', 'openrouter logging', 'audit trail openrouter', 'log openrouter requests'.
+description: 'Implement audit logging for OpenRouter API calls. Use when building
+  compliance trails, debugging production issues, or tracking model usage. Triggers:
+  ''openrouter audit'', ''openrouter logging'', ''audit trail openrouter'', ''log
+  openrouter requests''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash, Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, openrouter, security, logging, compliance]
+tags:
+- saas
+- openrouter
+- security
+- logging
+- compliance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # OpenRouter Audit Logging
 

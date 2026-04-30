@@ -1,17 +1,24 @@
 ---
 name: persona-ci-integration
-description: |
-  CI/CD pipeline for Persona integrations with sandbox API testing.
+description: 'CI/CD pipeline for Persona integrations with sandbox API testing.
+
   Use when working with Persona identity verification.
+
   Trigger with phrases like "persona ci-integration", "persona ci-integration".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, persona, identity, kyc, verification]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- persona
+- identity
+- kyc
+- verification
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # persona ci integration | sed 's/\b\(.\)/\u\1/g'
 
 ## Overview

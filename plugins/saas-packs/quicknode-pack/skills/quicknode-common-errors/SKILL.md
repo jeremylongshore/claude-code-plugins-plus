@@ -1,17 +1,27 @@
 ---
 name: quicknode-common-errors
-description: |
-  Diagnose and fix QuickNode RPC errors: nonce issues, gas failures, rate limits.
-  Use when encountering blockchain RPC errors, failed transactions, or connection issues.
-  Trigger with phrases like "quicknode error", "RPC error", "nonce too low", "gas estimation failed".
+description: 'Diagnose and fix QuickNode RPC errors: nonce issues, gas failures, rate
+  limits.
+
+  Use when encountering blockchain RPC errors, failed transactions, or connection
+  issues.
+
+  Trigger with phrases like "quicknode error", "RPC error", "nonce too low", "gas
+  estimation failed".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, quicknode, blockchain, web3, debugging]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- quicknode
+- blockchain
+- web3
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # QuickNode Common Errors
 
 ## Overview

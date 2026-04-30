@@ -1,18 +1,24 @@
 ---
 name: posthog-prod-checklist
-description: |
-  Production readiness checklist for PostHog integrations: SDK configuration,
+description: 'Production readiness checklist for PostHog integrations: SDK configuration,
+
   graceful degradation, health checks, shutdown hooks, and rollback procedures.
+
   Trigger: "posthog production", "deploy posthog", "posthog go-live",
+
   "posthog launch checklist", "posthog production ready".
+
+  '
 allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, posthog, deployment]
+tags:
+- saas
+- posthog
+- deployment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # PostHog Production Checklist
 
 ## Overview

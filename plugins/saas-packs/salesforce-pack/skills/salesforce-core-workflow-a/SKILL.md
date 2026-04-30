@@ -1,19 +1,27 @@
 ---
 name: salesforce-core-workflow-a
-description: |
-  Execute Salesforce CRUD operations on standard sObjects with SOQL and REST API.
+description: 'Execute Salesforce CRUD operations on standard sObjects with SOQL and
+  REST API.
+
   Use when creating, reading, updating, or deleting Accounts, Contacts, Leads,
+
   or Opportunities via the Salesforce API.
+
   Trigger with phrases like "salesforce CRUD", "salesforce create record",
+
   "salesforce update account", "salesforce SOQL query", "salesforce REST API".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, salesforce]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- salesforce
+compatibility: Designed for Claude Code
 ---
-
 # Salesforce Core Workflow A — CRUD & SOQL
 
 ## Overview

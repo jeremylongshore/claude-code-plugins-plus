@@ -1,18 +1,24 @@
 ---
 name: posthog-rate-limits
-description: |
-  Handle PostHog API rate limits with exponential backoff, request queuing,
-  and understanding PostHog's actual limit tiers (240/min analytics, 600/min flags).
+description: 'Handle PostHog API rate limits with exponential backoff, request queuing,
+
+  and understanding PostHog''s actual limit tiers (240/min analytics, 600/min flags).
+
   Trigger: "posthog rate limit", "posthog throttling", "posthog 429",
+
   "posthog retry", "posthog backoff", "posthog too many requests".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, posthog, api]
+tags:
+- saas
+- posthog
+- api
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # PostHog Rate Limits
 
 ## Overview

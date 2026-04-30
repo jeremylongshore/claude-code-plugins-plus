@@ -1,17 +1,24 @@
 ---
 name: oraclecloud-ci-integration
-description: |
-  Configure CI/CD pipelines for OCI with Terraform and GitHub Actions.
-  Use when setting up automated infrastructure deployments, running Terraform plans in CI, or configuring OCI authentication for GitHub Actions.
-  Trigger with "oraclecloud ci", "oci terraform ci", "oci github actions", "oracle cloud ci integration".
+description: 'Configure CI/CD pipelines for OCI with Terraform and GitHub Actions.
+
+  Use when setting up automated infrastructure deployments, running Terraform plans
+  in CI, or configuring OCI authentication for GitHub Actions.
+
+  Trigger with "oraclecloud ci", "oci terraform ci", "oci github actions", "oracle
+  cloud ci integration".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(pip:*), Bash(terraform:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, oraclecloud, oci]
-compatible-with: claude-code
+tags:
+- saas
+- oraclecloud
+- oci
+compatibility: Designed for Claude Code
 ---
-
 # Oracle Cloud CI Integration
 
 ## Overview

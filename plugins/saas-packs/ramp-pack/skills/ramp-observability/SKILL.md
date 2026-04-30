@@ -1,17 +1,21 @@
 ---
 name: ramp-observability
-description: |
-  Ramp observability — corporate card and expense management API integration.
-  Use when working with Ramp for card management, expenses, or accounting sync.
-  Trigger with phrases like "ramp observability", "ramp-observability", "corporate card API".
+description: "Ramp observability \u2014 corporate card and expense management API\
+  \ integration.\nUse when working with Ramp for card management, expenses, or accounting\
+  \ sync.\nTrigger with phrases like \"ramp observability\", \"ramp-observability\"\
+  , \"corporate card API\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ramp, fintech, expenses, corporate-cards]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- ramp
+- fintech
+- expenses
+- corporate-cards
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Ramp Observability
 
 ## Overview

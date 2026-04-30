@@ -1,13 +1,20 @@
 ---
 name: openrouter-upgrade-migration
-description: |
-  Migrate to OpenRouter from direct provider APIs or upgrade between SDK/model versions. Triggers: 'openrouter migrate', 'openrouter upgrade', 'switch to openrouter', 'migrate from openai to openrouter'.
+description: 'Migrate to OpenRouter from direct provider APIs or upgrade between SDK/model
+  versions. Triggers: ''openrouter migrate'', ''openrouter upgrade'', ''switch to
+  openrouter'', ''migrate from openai to openrouter''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash, Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, openrouter, migration, upgrade]
+tags:
+- saas
+- openrouter
+- migration
+- upgrade
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # OpenRouter Upgrade & Migration
 

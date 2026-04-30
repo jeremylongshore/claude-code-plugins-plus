@@ -1,18 +1,26 @@
 ---
 name: posthog-cost-tuning
-description: |
-  Optimize PostHog costs: autocapture tuning, event sampling with before_send,
+description: 'Optimize PostHog costs: autocapture tuning, event sampling with before_send,
+
   bot filtering, session recording sampling, and billing monitoring.
+
   Trigger: "posthog cost", "posthog billing", "reduce posthog costs",
+
   "posthog pricing", "posthog expensive", "posthog budget", "posthog free tier".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, posthog, api, monitoring, cost-optimization]
+tags:
+- saas
+- posthog
+- api
+- monitoring
+- cost-optimization
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # PostHog Cost Tuning
 
 ## Overview

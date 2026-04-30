@@ -1,18 +1,25 @@
 ---
 name: salesloft-prod-checklist
-description: |
-  Production readiness checklist for SalesLoft API integrations.
+description: 'Production readiness checklist for SalesLoft API integrations.
+
   Use when deploying SalesLoft integrations to production, preparing for launch,
+
   or validating go-live requirements.
+
   Trigger: "salesloft production", "deploy salesloft", "salesloft go-live checklist".
+
+  '
 allowed-tools: Read, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, sales, outreach, salesloft]
-compatible-with: claude-code
+tags:
+- saas
+- sales
+- outreach
+- salesloft
+compatibility: Designed for Claude Code
 ---
-
 # SalesLoft Production Checklist
 
 ## Overview

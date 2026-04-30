@@ -1,17 +1,20 @@
 ---
 name: podium-hello-world
-description: |
-  Podium hello world — business messaging and communication platform integration.
-  Use when working with Podium API for messaging, reviews, or payments.
-  Trigger with phrases like "podium hello world", "podium-hello-world".
+description: "Podium hello world \u2014 business messaging and communication platform\
+  \ integration.\nUse when working with Podium API for messaging, reviews, or payments.\n\
+  Trigger with phrases like \"podium hello world\", \"podium-hello-world\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, podium, messaging, reviews, payments]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- podium
+- messaging
+- reviews
+- payments
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Podium Hello World
 
 ## Overview

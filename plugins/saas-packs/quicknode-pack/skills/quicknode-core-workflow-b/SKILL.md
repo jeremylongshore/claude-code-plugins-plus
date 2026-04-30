@@ -1,17 +1,27 @@
 ---
 name: quicknode-core-workflow-b
-description: |
-  Work with NFT and token APIs via QuickNode: metadata, balances, transfer history.
+description: 'Work with NFT and token APIs via QuickNode: metadata, balances, transfer
+  history.
+
   Use when building NFT or token features, checking balances, or tracking transfers.
-  Trigger with phrases like "quicknode NFT", "token balance", "NFT metadata", "ERC-20 balance".
+
+  Trigger with phrases like "quicknode NFT", "token balance", "NFT metadata", "ERC-20
+  balance".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, quicknode, blockchain, nft, tokens, web3]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- quicknode
+- blockchain
+- nft
+- tokens
+- web3
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # QuickNode Core Workflow B — NFT & Token APIs
 
 ## Overview

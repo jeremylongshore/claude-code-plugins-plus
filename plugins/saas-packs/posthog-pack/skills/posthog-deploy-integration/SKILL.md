@@ -1,19 +1,26 @@
 ---
 name: posthog-deploy-integration
-description: |
-  Deploy PostHog to Vercel, Docker (self-hosted), and Cloud Run.
+description: 'Deploy PostHog to Vercel, Docker (self-hosted), and Cloud Run.
+
   Covers Next.js reverse proxy, server-side capture in edge functions,
+
   self-hosted PostHog setup, and platform-specific environment configuration.
+
   Trigger: "deploy posthog", "posthog Vercel", "posthog production deploy",
+
   "posthog Cloud Run", "posthog self-hosted", "posthog Docker".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, posthog, deployment]
+tags:
+- saas
+- posthog
+- deployment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # PostHog Deploy Integration
 
 ## Overview

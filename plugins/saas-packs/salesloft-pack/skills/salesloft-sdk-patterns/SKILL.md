@@ -1,18 +1,26 @@
 ---
 name: salesloft-sdk-patterns
-description: |
-  Apply production-ready SalesLoft API patterns for TypeScript and Python.
+description: 'Apply production-ready SalesLoft API patterns for TypeScript and Python.
+
   Use when building SalesLoft integrations, implementing pagination,
+
   or wrapping the REST API v2 with typed clients.
-  Trigger: "salesloft SDK patterns", "salesloft best practices", "salesloft client wrapper".
+
+  Trigger: "salesloft SDK patterns", "salesloft best practices", "salesloft client
+  wrapper".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, sales, outreach, salesloft]
-compatible-with: claude-code
+tags:
+- saas
+- sales
+- outreach
+- salesloft
+compatibility: Designed for Claude Code
 ---
-
 # SalesLoft SDK Patterns
 
 ## Overview

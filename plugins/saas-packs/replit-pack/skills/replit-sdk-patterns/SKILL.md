@@ -1,17 +1,28 @@
 ---
 name: replit-sdk-patterns
-description: |
-  Apply production-ready patterns for Replit Database, Object Storage, and Auth APIs.
+description: 'Apply production-ready patterns for Replit Database, Object Storage,
+  and Auth APIs.
+
   Use when implementing Replit integrations, structuring data access layers,
+
   or establishing team coding standards for Replit services.
+
   Trigger with phrases like "replit patterns", "replit best practices",
+
   "replit code patterns", "idiomatic replit", "replit SDK".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, replit, python, typescript, patterns]
+tags:
+- saas
+- replit
+- python
+- typescript
+- patterns
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Replit SDK Patterns
 

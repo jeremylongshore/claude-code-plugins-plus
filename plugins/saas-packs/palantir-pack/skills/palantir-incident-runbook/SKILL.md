@@ -1,19 +1,29 @@
 ---
 name: palantir-incident-runbook
-description: |
-  Execute Palantir Foundry incident response with triage, mitigation, and postmortem.
+description: 'Execute Palantir Foundry incident response with triage, mitigation,
+  and postmortem.
+
   Use when responding to Foundry-related outages, API failures,
+
   or build pipeline incidents.
+
   Trigger with phrases like "palantir incident", "foundry outage",
+
   "palantir down", "foundry emergency", "palantir broken".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, palantir, foundry, incident, runbook]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- palantir
+- foundry
+- incident
+- runbook
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Palantir Incident Runbook
 
 ## Overview

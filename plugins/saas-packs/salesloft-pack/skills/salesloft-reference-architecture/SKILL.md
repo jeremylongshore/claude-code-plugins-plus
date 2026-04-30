@@ -1,18 +1,26 @@
 ---
 name: salesloft-reference-architecture
-description: |
-  Production architecture for SalesLoft API integrations with service layer,
+description: 'Production architecture for SalesLoft API integrations with service
+  layer,
+
   webhook processing, and CRM sync patterns.
+
   Use when designing new SalesLoft integrations or reviewing project structure.
+
   Trigger: "salesloft architecture", "salesloft project structure", "salesloft design".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, sales, outreach, salesloft]
-compatible-with: claude-code
+tags:
+- saas
+- sales
+- outreach
+- salesloft
+compatibility: Designed for Claude Code
 ---
-
 # SalesLoft Reference Architecture
 
 ## Overview

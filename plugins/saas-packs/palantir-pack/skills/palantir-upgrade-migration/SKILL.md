@@ -1,19 +1,28 @@
 ---
 name: palantir-upgrade-migration
-description: |
-  Upgrade Palantir Foundry SDK versions and handle breaking changes.
+description: 'Upgrade Palantir Foundry SDK versions and handle breaking changes.
+
   Use when upgrading foundry-platform-sdk, migrating between API versions,
+
   or detecting deprecations in Foundry integrations.
+
   Trigger with phrases like "upgrade palantir", "palantir migration",
+
   "foundry breaking changes", "update foundry SDK".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(pip:*), Bash(npm:*), Bash(git:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, palantir, foundry, upgrade, migration]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- palantir
+- foundry
+- upgrade
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Palantir Upgrade & Migration
 
 ## Overview

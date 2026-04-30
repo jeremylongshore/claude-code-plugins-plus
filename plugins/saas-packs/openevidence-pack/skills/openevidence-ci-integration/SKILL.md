@@ -1,16 +1,20 @@
 ---
 name: openevidence-ci-integration
-description: |
-  Ci Integration for OpenEvidence.
+description: 'Ci Integration for OpenEvidence.
+
   Trigger: "openevidence ci integration".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, openevidence, healthcare]
-compatible-with: claude-code
+tags:
+- saas
+- openevidence
+- healthcare
+compatibility: Designed for Claude Code
 ---
-
 # OpenEvidence CI Integration
 
 ## Overview

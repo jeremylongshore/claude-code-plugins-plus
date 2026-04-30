@@ -1,17 +1,27 @@
 ---
 name: replit-reliability-patterns
-description: |
-  Implement reliability patterns for Replit: cold start handling, graceful shutdown, persistent state, and keep-alive.
+description: 'Implement reliability patterns for Replit: cold start handling, graceful
+  shutdown, persistent state, and keep-alive.
+
   Use when building fault-tolerant Replit apps, handling container restarts,
+
   or adding resilience to production Replit deployments.
+
   Trigger with phrases like "replit reliability", "replit container restart",
+
   "replit data persistence", "replit always on", "replit graceful shutdown".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, replit, reliability, resilience]
+tags:
+- saas
+- replit
+- reliability
+- resilience
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Replit Reliability Patterns
 

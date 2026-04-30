@@ -1,16 +1,23 @@
 ---
 name: perplexity-webhooks-events
-description: |
-  Build event-driven architectures around Perplexity Sonar API with streaming,
+description: 'Build event-driven architectures around Perplexity Sonar API with streaming,
+
   batch pipelines, and scheduled search monitoring.
+
   Trigger with phrases like "perplexity streaming", "perplexity events",
+
   "perplexity batch search", "perplexity news monitor", "perplexity SSE".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, perplexity, webhooks]
+tags:
+- saas
+- perplexity
+- webhooks
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Perplexity Events & Async Patterns
 

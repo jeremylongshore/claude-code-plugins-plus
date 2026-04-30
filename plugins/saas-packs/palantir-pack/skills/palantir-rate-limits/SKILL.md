@@ -1,19 +1,28 @@
 ---
 name: palantir-rate-limits
-description: |
-  Implement Palantir Foundry API rate limiting, backoff, and request queuing.
+description: 'Implement Palantir Foundry API rate limiting, backoff, and request queuing.
+
   Use when handling 429 errors, implementing retry logic,
+
   or optimizing API request throughput for Foundry.
+
   Trigger with phrases like "palantir rate limit", "foundry throttling",
+
   "palantir 429", "foundry retry", "palantir backoff".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, palantir, foundry, rate-limits, reliability]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- palantir
+- foundry
+- rate-limits
+- reliability
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Palantir Rate Limits
 
 ## Overview

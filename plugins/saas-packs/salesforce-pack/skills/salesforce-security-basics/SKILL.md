@@ -1,19 +1,27 @@
 ---
 name: salesforce-security-basics
-description: |
-  Apply Salesforce security best practices for Connected Apps, OAuth, and field-level security.
+description: 'Apply Salesforce security best practices for Connected Apps, OAuth,
+  and field-level security.
+
   Use when securing API credentials, implementing least privilege access,
+
   or auditing Salesforce security configuration.
+
   Trigger with phrases like "salesforce security", "salesforce secrets",
+
   "secure salesforce", "salesforce connected app security", "salesforce FLS".
+
+  '
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, salesforce]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- salesforce
+compatibility: Designed for Claude Code
 ---
-
 # Salesforce Security Basics
 
 ## Overview

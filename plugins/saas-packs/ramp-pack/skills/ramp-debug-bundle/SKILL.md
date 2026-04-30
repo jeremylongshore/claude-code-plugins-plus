@@ -1,17 +1,21 @@
 ---
 name: ramp-debug-bundle
-description: |
-  Ramp debug bundle — corporate card and expense management API integration.
-  Use when working with Ramp for card management, expenses, or accounting sync.
-  Trigger with phrases like "ramp debug bundle", "ramp-debug-bundle", "corporate card API".
+description: "Ramp debug bundle \u2014 corporate card and expense management API integration.\n\
+  Use when working with Ramp for card management, expenses, or accounting sync.\n\
+  Trigger with phrases like \"ramp debug bundle\", \"ramp-debug-bundle\", \"corporate\
+  \ card API\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ramp, fintech, expenses, corporate-cards]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- ramp
+- fintech
+- expenses
+- corporate-cards
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Ramp Debug Bundle
 
 ## Overview

@@ -1,17 +1,28 @@
 ---
 name: replit-local-dev-loop
-description: |
-  Configure Replit development workflow with hot reload, Webview, and Replit Agent.
+description: 'Configure Replit development workflow with hot reload, Webview, and
+  Replit Agent.
+
   Use when setting up dev server, configuring run commands, debugging in Workspace,
+
   or using Replit Agent for AI-assisted development.
+
   Trigger with phrases like "replit dev server", "replit hot reload",
+
   "replit local development", "replit agent", "replit workflow".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, replit, development, workflow, agent]
+tags:
+- saas
+- replit
+- development
+- workflow
+- agent
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Replit Local Dev Loop
 

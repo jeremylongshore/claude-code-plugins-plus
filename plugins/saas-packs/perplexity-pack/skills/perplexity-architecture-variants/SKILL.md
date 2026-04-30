@@ -1,16 +1,26 @@
 ---
 name: perplexity-architecture-variants
-description: |
-  Choose and implement Perplexity architecture blueprints for different scales:
+description: 'Choose and implement Perplexity architecture blueprints for different
+  scales:
+
   direct search widget, cached research layer, and multi-query pipeline.
+
   Trigger with phrases like "perplexity architecture", "perplexity blueprint",
+
   "how to structure perplexity", "perplexity project layout".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, perplexity, migration, scaling, microservices]
+tags:
+- saas
+- perplexity
+- migration
+- scaling
+- microservices
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Perplexity Architecture Variants
 

@@ -1,19 +1,26 @@
 ---
 name: posthog-multi-env-setup
-description: |
-  Configure PostHog across development, staging, and production environments.
+description: 'Configure PostHog across development, staging, and production environments.
+
   Separate PostHog projects per environment, environment-specific SDK config,
+
   feature flag rollout per env, and session recording controls.
+
   Trigger: "posthog environments", "posthog staging", "posthog dev prod",
+
   "posthog environment setup", "posthog project per env".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, posthog, posthog-multi]
+tags:
+- saas
+- posthog
+- posthog-multi
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # PostHog Multi-Environment Setup
 
 ## Overview

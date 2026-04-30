@@ -1,18 +1,26 @@
 ---
 name: salesloft-security-basics
-description: |
-  Secure SalesLoft OAuth tokens, API keys, and webhook signatures.
+description: 'Secure SalesLoft OAuth tokens, API keys, and webhook signatures.
+
   Use when implementing token rotation, securing webhook endpoints,
+
   or auditing SalesLoft API access controls.
-  Trigger: "salesloft security", "salesloft secrets", "secure salesloft", "salesloft token rotation".
+
+  Trigger: "salesloft security", "salesloft secrets", "secure salesloft", "salesloft
+  token rotation".
+
+  '
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, sales, outreach, salesloft]
-compatible-with: claude-code
+tags:
+- saas
+- sales
+- outreach
+- salesloft
+compatibility: Designed for Claude Code
 ---
-
 # SalesLoft Security Basics
 
 ## Overview

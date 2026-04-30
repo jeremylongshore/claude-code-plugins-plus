@@ -1,17 +1,27 @@
 ---
 name: perplexity-local-dev-loop
-description: |
-  Configure Perplexity local development with mocking, testing, and hot reload.
+description: 'Configure Perplexity local development with mocking, testing, and hot
+  reload.
+
   Use when setting up a development environment, configuring test workflows,
+
   or establishing a fast iteration cycle with Perplexity Sonar API.
+
   Trigger with phrases like "perplexity dev setup", "perplexity local development",
+
   "perplexity dev environment", "develop with perplexity", "mock perplexity".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, perplexity, testing, workflow]
+tags:
+- saas
+- perplexity
+- testing
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Perplexity Local Dev Loop
 

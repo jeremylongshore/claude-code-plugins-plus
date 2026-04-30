@@ -1,13 +1,20 @@
 ---
 name: openrouter-rate-limits
-description: |
-  Understand and handle OpenRouter rate limits. Use when hitting 429 errors, building high-throughput systems, or implementing retry logic. Triggers: 'openrouter rate limit', 'openrouter 429', 'openrouter throttle', 'rate limiting openrouter'.
+description: 'Understand and handle OpenRouter rate limits. Use when hitting 429 errors,
+  building high-throughput systems, or implementing retry logic. Triggers: ''openrouter
+  rate limit'', ''openrouter 429'', ''openrouter throttle'', ''rate limiting openrouter''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash, Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, openrouter, rate-limits, throttling]
+tags:
+- saas
+- openrouter
+- rate-limits
+- throttling
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # OpenRouter Rate Limits
 

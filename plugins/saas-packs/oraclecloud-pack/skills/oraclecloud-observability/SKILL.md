@@ -1,17 +1,24 @@
 ---
 name: oraclecloud-observability
-description: |
-  Set up programmatic monitoring, logging, and alarms for OCI resources.
-  Use when configuring OCI Monitoring metrics, creating alarm rules, publishing custom metrics, or searching logs via the Logging service.
-  Trigger with "oraclecloud observability", "oci monitoring", "oci alarms", "oci logging", "oracle cloud observability".
+description: 'Set up programmatic monitoring, logging, and alarms for OCI resources.
+
+  Use when configuring OCI Monitoring metrics, creating alarm rules, publishing custom
+  metrics, or searching logs via the Logging service.
+
+  Trigger with "oraclecloud observability", "oci monitoring", "oci alarms", "oci logging",
+  "oracle cloud observability".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, oraclecloud, oci]
-compatible-with: claude-code
+tags:
+- saas
+- oraclecloud
+- oci
+compatibility: Designed for Claude Code
 ---
-
 # Oracle Cloud Observability
 
 ## Overview

@@ -1,17 +1,28 @@
 ---
 name: replit-rate-limits
-description: |
-  Handle Replit resource limits: KV database caps, deployment quotas, and request throttling.
+description: 'Handle Replit resource limits: KV database caps, deployment quotas,
+  and request throttling.
+
   Use when hitting storage limits, managing deployment resources,
+
   or implementing rate limiting in your Replit-hosted app.
+
   Trigger with phrases like "replit rate limit", "replit throttling",
+
   "replit 429", "replit storage limit", "replit quota".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, replit, api, limits, database]
+tags:
+- saas
+- replit
+- api
+- limits
+- database
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Replit Rate Limits
 

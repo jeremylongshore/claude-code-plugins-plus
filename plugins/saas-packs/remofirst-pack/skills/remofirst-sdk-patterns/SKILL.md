@@ -1,17 +1,22 @@
 ---
 name: remofirst-sdk-patterns
-description: |
-  RemoFirst sdk patterns — global HR, EOR, and payroll platform integration.
-  Use when working with RemoFirst for global employment, payroll, or compliance.
-  Trigger with phrases like "remofirst sdk patterns", "remofirst-sdk-patterns", "global HR API".
+description: "RemoFirst sdk patterns \u2014 global HR, EOR, and payroll platform integration.\n\
+  Use when working with RemoFirst for global employment, payroll, or compliance.\n\
+  Trigger with phrases like \"remofirst sdk patterns\", \"remofirst-sdk-patterns\"\
+  , \"global HR API\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, remofirst, hr, eor, payroll, global-employment]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- remofirst
+- hr
+- eor
+- payroll
+- global-employment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # RemoFirst Sdk Patterns
 
 ## Overview

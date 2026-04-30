@@ -1,17 +1,22 @@
 ---
 name: quicknode-rate-limits
-description: |
-  QuickNode rate limits — blockchain RPC and Web3 infrastructure integration.
-  Use when working with QuickNode for blockchain development.
-  Trigger with phrases like "quicknode rate limits", "quicknode-rate-limits", "blockchain RPC".
+description: "QuickNode rate limits \u2014 blockchain RPC and Web3 infrastructure\
+  \ integration.\nUse when working with QuickNode for blockchain development.\nTrigger\
+  \ with phrases like \"quicknode rate limits\", \"quicknode-rate-limits\", \"blockchain\
+  \ RPC\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, quicknode, blockchain, web3, rpc, ethereum]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- quicknode
+- blockchain
+- web3
+- rpc
+- ethereum
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # QuickNode Rate Limits
 
 ## Overview

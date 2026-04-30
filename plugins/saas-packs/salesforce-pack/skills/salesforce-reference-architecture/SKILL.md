@@ -1,19 +1,28 @@
 ---
 name: salesforce-reference-architecture
-description: |
-  Implement Salesforce integration reference architecture with jsforce, SFDX, and event-driven patterns.
+description: 'Implement Salesforce integration reference architecture with jsforce,
+  SFDX, and event-driven patterns.
+
   Use when designing new Salesforce integrations, reviewing project structure,
+
   or establishing architecture standards for Salesforce-connected applications.
+
   Trigger with phrases like "salesforce architecture", "salesforce project structure",
-  "salesforce integration design", "how to organize salesforce code", "salesforce layout".
+
+  "salesforce integration design", "how to organize salesforce code", "salesforce
+  layout".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, salesforce]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- salesforce
+compatibility: Designed for Claude Code
 ---
-
 # Salesforce Reference Architecture
 
 ## Overview

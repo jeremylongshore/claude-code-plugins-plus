@@ -1,13 +1,21 @@
 ---
 name: openrouter-streaming-setup
-description: |
-  Implement streaming responses with OpenRouter for real-time UIs. Use when building chat interfaces, reducing time-to-first-token, or processing long completions. Triggers: 'openrouter streaming', 'openrouter sse', 'stream response openrouter', 'real-time openrouter'.
+description: 'Implement streaming responses with OpenRouter for real-time UIs. Use
+  when building chat interfaces, reducing time-to-first-token, or processing long
+  completions. Triggers: ''openrouter streaming'', ''openrouter sse'', ''stream response
+  openrouter'', ''real-time openrouter''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash, Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, openrouter, streaming, real-time]
+tags:
+- saas
+- openrouter
+- streaming
+- real-time
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # OpenRouter Streaming Setup
 

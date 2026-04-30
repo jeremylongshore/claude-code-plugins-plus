@@ -1,17 +1,28 @@
 ---
 name: replit-ci-integration
-description: |
-  Configure CI/CD for Replit with GitHub Actions, automated testing, and deploy-on-push.
+description: 'Configure CI/CD for Replit with GitHub Actions, automated testing, and
+  deploy-on-push.
+
   Use when setting up automated testing, GitHub integration for Replit,
+
   or continuous deployment pipelines that deploy to Replit.
+
   Trigger with phrases like "replit CI", "replit GitHub Actions",
+
   "replit automated deploy", "CI replit", "replit GitHub".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, replit, ci-cd, github-actions, automation]
+tags:
+- saas
+- replit
+- ci-cd
+- github-actions
+- automation
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Replit CI Integration
 

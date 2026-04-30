@@ -1,19 +1,27 @@
 ---
 name: salesforce-prod-checklist
-description: |
-  Execute Salesforce production deployment checklist with sandbox testing and rollback.
+description: 'Execute Salesforce production deployment checklist with sandbox testing
+  and rollback.
+
   Use when deploying Salesforce integrations to production, preparing for launch,
+
   or implementing go-live procedures.
+
   Trigger with phrases like "salesforce production", "deploy salesforce",
+
   "salesforce go-live", "salesforce launch checklist", "salesforce sandbox to prod".
+
+  '
 allowed-tools: Read, Bash(sf:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, salesforce]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- salesforce
+compatibility: Designed for Claude Code
 ---
-
 # Salesforce Production Checklist
 
 ## Overview

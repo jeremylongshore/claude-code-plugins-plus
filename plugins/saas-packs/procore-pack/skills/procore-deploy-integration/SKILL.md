@@ -1,17 +1,20 @@
 ---
 name: procore-deploy-integration
-description: |
-  Procore deploy integration — construction management platform integration.
-  Use when working with Procore API for project management, RFIs, or submittals.
-  Trigger with phrases like "procore deploy integration", "procore-deploy-integration".
+description: "Procore deploy integration \u2014 construction management platform integration.\n\
+  Use when working with Procore API for project management, RFIs, or submittals.\n\
+  Trigger with phrases like \"procore deploy integration\", \"procore-deploy-integration\"\
+  .\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(curl:*), Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, procore, construction, project-management]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- procore
+- construction
+- project-management
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Procore Deploy Integration
 
 ## Overview

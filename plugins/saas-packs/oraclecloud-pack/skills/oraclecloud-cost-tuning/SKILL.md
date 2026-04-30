@@ -1,17 +1,24 @@
 ---
 name: oraclecloud-cost-tuning
-description: |
-  Track OCI spend with the Usage API and set up budget alerts.
-  Use when monitoring Oracle Cloud costs, creating budgets, analyzing spend by compartment or service, or optimizing Universal Credits consumption.
-  Trigger with "oraclecloud cost", "oci budget", "oci usage api", "oci spending", "oracle cloud cost tuning".
+description: 'Track OCI spend with the Usage API and set up budget alerts.
+
+  Use when monitoring Oracle Cloud costs, creating budgets, analyzing spend by compartment
+  or service, or optimizing Universal Credits consumption.
+
+  Trigger with "oraclecloud cost", "oci budget", "oci usage api", "oci spending",
+  "oracle cloud cost tuning".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, oraclecloud, oci]
-compatible-with: claude-code
+tags:
+- saas
+- oraclecloud
+- oci
+compatibility: Designed for Claude Code
 ---
-
 # Oracle Cloud Cost Tuning
 
 ## Overview

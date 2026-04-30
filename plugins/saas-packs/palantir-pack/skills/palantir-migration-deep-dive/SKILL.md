@@ -1,20 +1,30 @@
 ---
 name: palantir-migration-deep-dive
-description: |
-  Execute major Palantir Foundry migration strategies including data migration,
+description: 'Execute major Palantir Foundry migration strategies including data migration,
+
   API version upgrades, and platform transitions.
+
   Use when migrating data into Foundry, upgrading between API versions,
+
   or re-platforming existing integrations.
+
   Trigger with phrases like "migrate to palantir", "foundry migration",
+
   "palantir data migration", "foundry replatform".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(pip:*), Bash(node:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, palantir, foundry, migration, data-migration]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- palantir
+- foundry
+- migration
+- data-migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Palantir Migration Deep Dive
 
 ## Overview

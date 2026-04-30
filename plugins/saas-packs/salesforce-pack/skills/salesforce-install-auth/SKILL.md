@@ -1,19 +1,27 @@
 ---
 name: salesforce-install-auth
-description: |
-  Install and configure Salesforce SDK/CLI authentication with jsforce or Salesforce CLI.
+description: 'Install and configure Salesforce SDK/CLI authentication with jsforce
+  or Salesforce CLI.
+
   Use when setting up a new Salesforce integration, configuring OAuth flows,
+
   or initializing Salesforce connectivity in your project.
+
   Trigger with phrases like "install salesforce", "setup salesforce",
+
   "salesforce auth", "configure salesforce", "jsforce setup", "sf cli login".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(sf:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, salesforce]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- salesforce
+compatibility: Designed for Claude Code
 ---
-
 # Salesforce Install & Auth
 
 ## Overview

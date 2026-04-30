@@ -1,17 +1,27 @@
 ---
 name: retellai-common-errors
-description: |
-  Diagnose and fix Retell AI voice agent errors: call failures, webhook issues, voice quality.
-  Use when encountering Retell AI errors, debugging call issues, or troubleshooting agents.
-  Trigger with phrases like "retell error", "call failed", "voice agent not working", "retell debug".
+description: 'Diagnose and fix Retell AI voice agent errors: call failures, webhook
+  issues, voice quality.
+
+  Use when encountering Retell AI errors, debugging call issues, or troubleshooting
+  agents.
+
+  Trigger with phrases like "retell error", "call failed", "voice agent not working",
+  "retell debug".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, retellai, voice, telephony, debugging]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- retellai
+- voice
+- telephony
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Retell AI Common Errors
 
 ## Overview

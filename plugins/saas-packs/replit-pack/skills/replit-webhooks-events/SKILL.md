@@ -1,17 +1,28 @@
 ---
 name: replit-webhooks-events
-description: |
-  Handle Replit deployment events, build Replit Extensions, and set up Agents & Automations.
+description: 'Handle Replit deployment events, build Replit Extensions, and set up
+  Agents & Automations.
+
   Use when integrating with Replit deployment lifecycle, building workspace extensions,
+
   or creating automated workflows with Replit Agent.
+
   Trigger with phrases like "replit webhook", "replit events", "replit extension",
+
   "replit automation", "replit notifications", "replit agent automation".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, replit, webhooks, extensions, automation]
+tags:
+- saas
+- replit
+- webhooks
+- extensions
+- automation
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Replit Webhooks & Events
 

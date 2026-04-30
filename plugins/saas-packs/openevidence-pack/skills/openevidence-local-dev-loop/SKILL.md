@@ -1,16 +1,20 @@
 ---
 name: openevidence-local-dev-loop
-description: |
-  Local Dev Loop for OpenEvidence.
+description: 'Local Dev Loop for OpenEvidence.
+
   Trigger: "openevidence local dev loop".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, openevidence, healthcare]
-compatible-with: claude-code
+tags:
+- saas
+- openevidence
+- healthcare
+compatibility: Designed for Claude Code
 ---
-
 # OpenEvidence Local Dev Loop
 
 ## Overview

@@ -1,17 +1,25 @@
 ---
 name: oraclecloud-install-auth
-description: |
-  Install and configure Oracle Cloud Infrastructure (OCI) SDK and CLI authentication.
-  Use when setting up a new OCI integration, generating API signing keys, or debugging config file errors.
-  Trigger with "install oraclecloud", "setup oci auth", "oraclecloud credentials", "oci config".
+description: 'Install and configure Oracle Cloud Infrastructure (OCI) SDK and CLI
+  authentication.
+
+  Use when setting up a new OCI integration, generating API signing keys, or debugging
+  config file errors.
+
+  Trigger with "install oraclecloud", "setup oci auth", "oraclecloud credentials",
+  "oci config".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(pip:*), Bash(oci:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, oraclecloud, oci]
-compatible-with: claude-code
+tags:
+- saas
+- oraclecloud
+- oci
+compatibility: Designed for Claude Code
 ---
-
 # Oracle Cloud Install & Auth
 
 ## Overview

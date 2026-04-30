@@ -1,18 +1,26 @@
 ---
 name: posthog-performance-tuning
-description: |
-  Optimize PostHog performance: local flag evaluation, client batching config,
+description: 'Optimize PostHog performance: local flag evaluation, client batching
+  config,
+
   event sampling, efficient HogQL queries, and serverless flush patterns.
+
   Trigger: "posthog performance", "optimize posthog", "posthog latency",
+
   "posthog caching", "posthog slow", "posthog batch", "posthog fast".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, posthog, api, performance]
+tags:
+- saas
+- posthog
+- api
+- performance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # PostHog Performance Tuning
 
 ## Overview

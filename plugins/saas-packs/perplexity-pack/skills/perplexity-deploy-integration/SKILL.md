@@ -1,17 +1,25 @@
 ---
 name: perplexity-deploy-integration
-description: |
-  Deploy Perplexity Sonar API integrations to Vercel, Cloud Run, and Docker.
+description: 'Deploy Perplexity Sonar API integrations to Vercel, Cloud Run, and Docker.
+
   Use when deploying Perplexity-powered applications to production,
+
   configuring platform-specific secrets, or setting up edge functions.
+
   Trigger with phrases like "deploy perplexity", "perplexity Vercel",
+
   "perplexity production deploy", "perplexity Cloud Run", "perplexity Docker".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, perplexity, deployment]
+tags:
+- saas
+- perplexity
+- deployment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Perplexity Deploy Integration
 

@@ -1,13 +1,22 @@
 ---
 name: openrouter-load-balancing
-description: |
-  Distribute OpenRouter requests across multiple keys and models for high throughput. Use when scaling beyond single-key rate limits or building high-availability systems. Triggers: 'openrouter load balance', 'openrouter scaling', 'distribute openrouter requests', 'multiple api keys'.
+description: 'Distribute OpenRouter requests across multiple keys and models for high
+  throughput. Use when scaling beyond single-key rate limits or building high-availability
+  systems. Triggers: ''openrouter load balance'', ''openrouter scaling'', ''distribute
+  openrouter requests'', ''multiple api keys''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash, Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, openrouter, scaling, high-availability, load-balancing]
+tags:
+- saas
+- openrouter
+- scaling
+- high-availability
+- load-balancing
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # OpenRouter Load Balancing
 

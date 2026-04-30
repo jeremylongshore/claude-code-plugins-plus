@@ -1,19 +1,28 @@
 ---
 name: salesforce-enterprise-rbac
-description: |
-  Configure Salesforce Profiles, Permission Sets, and Sharing Rules for enterprise access control.
+description: 'Configure Salesforce Profiles, Permission Sets, and Sharing Rules for
+  enterprise access control.
+
   Use when implementing role-based access, configuring SSO with Salesforce,
+
   or setting up organization-wide sharing defaults.
+
   Trigger with phrases like "salesforce permissions", "salesforce RBAC",
-  "salesforce profiles", "salesforce SSO", "salesforce sharing rules", "salesforce OWD".
+
+  "salesforce profiles", "salesforce SSO", "salesforce sharing rules", "salesforce
+  OWD".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, salesforce]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- salesforce
+compatibility: Designed for Claude Code
 ---
-
 # Salesforce Enterprise RBAC
 
 ## Overview

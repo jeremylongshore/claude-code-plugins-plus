@@ -1,13 +1,21 @@
 ---
 name: openrouter-multi-provider
-description: |
-  Use multiple AI providers (OpenAI, Anthropic, Google, Meta) through OpenRouter's unified API. Use when comparing providers, building cross-provider workflows, or maximizing availability. Triggers: 'openrouter providers', 'multi provider', 'openrouter openai anthropic', 'compare models openrouter'.
+description: 'Use multiple AI providers (OpenAI, Anthropic, Google, Meta) through
+  OpenRouter''s unified API. Use when comparing providers, building cross-provider
+  workflows, or maximizing availability. Triggers: ''openrouter providers'', ''multi
+  provider'', ''openrouter openai anthropic'', ''compare models openrouter''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash, Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, openrouter, multi-provider, comparison]
+tags:
+- saas
+- openrouter
+- multi-provider
+- comparison
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # OpenRouter Multi-Provider
 

@@ -1,17 +1,21 @@
 ---
 name: runway-ci-integration
-description: |
-  Runway ci integration — AI video generation and creative AI platform.
-  Use when working with Runway for video generation, image editing, or creative AI.
-  Trigger with phrases like "runway ci integration", "runway-ci-integration", "AI video generation".
+description: "Runway ci integration \u2014 AI video generation and creative AI platform.\n\
+  Use when working with Runway for video generation, image editing, or creative AI.\n\
+  Trigger with phrases like \"runway ci integration\", \"runway-ci-integration\",\
+  \ \"AI video generation\".\n"
 allowed-tools: Read, Write, Edit, Bash(pip:*), Bash(npm:*), Bash(curl:*), Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, runway, ai, video-generation, creative]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- runway
+- ai
+- video-generation
+- creative
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Runway Ci Integration
 
 ## Overview

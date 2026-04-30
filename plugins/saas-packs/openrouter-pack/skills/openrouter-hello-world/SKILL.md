@@ -1,13 +1,21 @@
 ---
 name: openrouter-hello-world
-description: |
-  Send your first OpenRouter API request and understand the response. Use when learning OpenRouter, testing setup, or verifying connectivity. Triggers: 'openrouter hello world', 'openrouter first request', 'test openrouter', 'openrouter quickstart'.
+description: 'Send your first OpenRouter API request and understand the response.
+  Use when learning OpenRouter, testing setup, or verifying connectivity. Triggers:
+  ''openrouter hello world'', ''openrouter first request'', ''test openrouter'', ''openrouter
+  quickstart''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash, Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, openrouter, api, quickstart]
+tags:
+- saas
+- openrouter
+- api
+- quickstart
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # OpenRouter Hello World
 

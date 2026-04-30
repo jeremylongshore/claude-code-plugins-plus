@@ -1,13 +1,22 @@
 ---
 name: openrouter-model-routing
-description: |
-  Implement intelligent model routing to optimize cost, quality, and latency on OpenRouter. Use when building multi-model systems or optimizing spend across task types. Triggers: 'openrouter routing', 'model routing', 'route to model', 'model selection openrouter'.
+description: 'Implement intelligent model routing to optimize cost, quality, and latency
+  on OpenRouter. Use when building multi-model systems or optimizing spend across
+  task types. Triggers: ''openrouter routing'', ''model routing'', ''route to model'',
+  ''model selection openrouter''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash, Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, openrouter, routing, cost-optimization, model-selection]
+tags:
+- saas
+- openrouter
+- routing
+- cost-optimization
+- model-selection
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # OpenRouter Model Routing
 

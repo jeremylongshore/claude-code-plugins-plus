@@ -1,19 +1,30 @@
 ---
 name: palantir-core-workflow-b
-description: |
-  Work with Palantir Foundry Ontology objects, actions, and queries via SDK.
+description: 'Work with Palantir Foundry Ontology objects, actions, and queries via
+  SDK.
+
   Use when querying objects, applying actions, linking objects,
+
   or building Ontology-driven applications.
+
   Trigger with phrases like "palantir ontology", "foundry objects",
+
   "palantir actions", "ontology query", "OSDK objects".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(pip:*), Bash(npm:*), Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, palantir, foundry, ontology, osdk, actions]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- palantir
+- foundry
+- ontology
+- osdk
+- actions
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Palantir Core Workflow B — Ontology Objects & Actions
 
 ## Overview

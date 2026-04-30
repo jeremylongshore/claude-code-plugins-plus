@@ -1,19 +1,28 @@
 ---
 name: posthog-hello-world
-description: |
-  Create a minimal working PostHog example with event capture, identify, and feature flags.
+description: 'Create a minimal working PostHog example with event capture, identify,
+  and feature flags.
+
   Use when starting a new PostHog integration, testing your setup,
+
   or learning basic posthog-js and posthog-node patterns.
+
   Trigger: "posthog hello world", "posthog example", "posthog quick start",
+
   "simple posthog code", "first posthog event".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, posthog, api, testing]
+tags:
+- saas
+- posthog
+- api
+- testing
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # PostHog Hello World
 
 ## Overview

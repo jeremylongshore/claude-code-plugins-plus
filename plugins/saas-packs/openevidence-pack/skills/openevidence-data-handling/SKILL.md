@@ -1,16 +1,20 @@
 ---
 name: openevidence-data-handling
-description: |
-  Data Handling for OpenEvidence.
+description: 'Data Handling for OpenEvidence.
+
   Trigger: "openevidence data handling".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, openevidence, healthcare]
-compatible-with: claude-code
+tags:
+- saas
+- openevidence
+- healthcare
+compatibility: Designed for Claude Code
 ---
-
 # OpenEvidence Data Handling
 
 ## Overview

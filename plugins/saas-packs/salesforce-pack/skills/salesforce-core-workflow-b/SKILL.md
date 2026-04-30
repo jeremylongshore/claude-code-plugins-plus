@@ -1,19 +1,27 @@
 ---
 name: salesforce-core-workflow-b
-description: |
-  Execute Salesforce Bulk API 2.0 and Composite API operations for high-volume data.
+description: 'Execute Salesforce Bulk API 2.0 and Composite API operations for high-volume
+  data.
+
   Use when importing/exporting large datasets, performing multi-object transactions,
+
   or chaining dependent API calls.
+
   Trigger with phrases like "salesforce bulk API", "salesforce composite",
+
   "salesforce batch", "salesforce mass import", "salesforce large data".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, salesforce]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- salesforce
+compatibility: Designed for Claude Code
 ---
-
 # Salesforce Core Workflow B — Bulk & Composite API
 
 ## Overview

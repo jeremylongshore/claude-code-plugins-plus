@@ -1,17 +1,24 @@
 ---
 name: oraclecloud-query-transform
-description: |
-  Query OCI metrics with MQL and create monitoring alarms via the Python SDK.
+description: 'Query OCI metrics with MQL and create monitoring alarms via the Python
+  SDK.
+
   Use when building dashboards, querying CPU/memory/network metrics, or creating alarms.
-  Trigger with "oci monitoring", "mql query", "oci metrics", "oci alarm", "cpu utilization oci".
+
+  Trigger with "oci monitoring", "mql query", "oci metrics", "oci alarm", "cpu utilization
+  oci".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, oraclecloud, oci]
-compatible-with: claude-code
+tags:
+- saas
+- oraclecloud
+- oci
+compatibility: Designed for Claude Code
 ---
-
 # OCI Monitoring — MQL Queries & Alarms
 
 ## Overview

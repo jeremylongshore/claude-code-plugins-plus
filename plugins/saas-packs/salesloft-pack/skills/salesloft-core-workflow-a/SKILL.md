@@ -1,18 +1,25 @@
 ---
 name: salesloft-core-workflow-a
-description: |
-  Manage SalesLoft people, cadences, and email steps via the REST API.
+description: 'Manage SalesLoft people, cadences, and email steps via the REST API.
+
   Use when building prospect management, enrolling people in cadences,
+
   or automating outbound sales sequences.
+
   Trigger: "salesloft cadence", "salesloft people", "salesloft outbound sequence".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, sales, outreach, salesloft]
-compatible-with: claude-code
+tags:
+- saas
+- sales
+- outreach
+- salesloft
+compatibility: Designed for Claude Code
 ---
-
 # SalesLoft Core Workflow A: People & Cadences
 
 ## Overview

@@ -1,18 +1,26 @@
 ---
 name: salesloft-install-auth
-description: |
-  Set up SalesLoft API authentication with OAuth 2.0 or API key.
+description: 'Set up SalesLoft API authentication with OAuth 2.0 or API key.
+
   Use when configuring a new SalesLoft integration, setting up OAuth flows,
+
   or initializing API access to the SalesLoft REST API v2.
-  Trigger: "install salesloft", "setup salesloft", "salesloft auth", "salesloft API key".
+
+  Trigger: "install salesloft", "setup salesloft", "salesloft auth", "salesloft API
+  key".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, sales, outreach, salesloft]
-compatible-with: claude-code
+tags:
+- saas
+- sales
+- outreach
+- salesloft
+compatibility: Designed for Claude Code
 ---
-
 # SalesLoft Install & Auth
 
 ## Overview

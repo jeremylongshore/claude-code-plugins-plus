@@ -1,16 +1,20 @@
 ---
 name: openevidence-deploy-integration
-description: |
-  Deploy Integration for OpenEvidence.
+description: 'Deploy Integration for OpenEvidence.
+
   Trigger: "openevidence deploy integration".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, openevidence, healthcare]
-compatible-with: claude-code
+tags:
+- saas
+- openevidence
+- healthcare
+compatibility: Designed for Claude Code
 ---
-
 # OpenEvidence Deploy Integration
 
 ## Overview

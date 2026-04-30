@@ -1,16 +1,24 @@
 ---
 name: perplexity-policy-guardrails
-description: |
-  Implement content moderation, model selection policy, citation quality enforcement,
+description: 'Implement content moderation, model selection policy, citation quality
+  enforcement,
+
   and per-user usage quotas for Perplexity Sonar API.
+
   Trigger with phrases like "perplexity policy", "perplexity guardrails",
+
   "perplexity content moderation", "perplexity usage limits", "perplexity safety".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npx:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, perplexity, perplexity-policy]
+tags:
+- saas
+- perplexity
+- perplexity-policy
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Perplexity Policy Guardrails
 

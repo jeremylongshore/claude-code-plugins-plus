@@ -1,13 +1,20 @@
 ---
 name: openrouter-known-pitfalls
-description: |
-  Avoid common OpenRouter integration mistakes and gotchas. Use proactively when starting a new integration or reviewing existing code. Triggers: 'openrouter pitfalls', 'openrouter gotchas', 'openrouter mistakes', 'openrouter best practices'.
+description: 'Avoid common OpenRouter integration mistakes and gotchas. Use proactively
+  when starting a new integration or reviewing existing code. Triggers: ''openrouter
+  pitfalls'', ''openrouter gotchas'', ''openrouter mistakes'', ''openrouter best practices''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash, Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, openrouter, best-practices, pitfalls]
+tags:
+- saas
+- openrouter
+- best-practices
+- pitfalls
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # OpenRouter Known Pitfalls
 

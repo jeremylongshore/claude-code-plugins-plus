@@ -1,19 +1,28 @@
 ---
 name: salesforce-reliability-patterns
-description: |
-  Implement Salesforce reliability patterns including circuit breakers, idempotent upserts, and fallback caching.
+description: 'Implement Salesforce reliability patterns including circuit breakers,
+  idempotent upserts, and fallback caching.
+
   Use when building fault-tolerant Salesforce integrations, implementing retry strategies,
+
   or adding resilience to production Salesforce services.
+
   Trigger with phrases like "salesforce reliability", "salesforce circuit breaker",
-  "salesforce idempotent", "salesforce resilience", "salesforce fallback", "salesforce retry".
+
+  "salesforce idempotent", "salesforce resilience", "salesforce fallback", "salesforce
+  retry".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, salesforce]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- salesforce
+compatibility: Designed for Claude Code
 ---
-
 # Salesforce Reliability Patterns
 
 ## Overview

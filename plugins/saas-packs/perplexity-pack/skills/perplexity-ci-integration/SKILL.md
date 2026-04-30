@@ -1,17 +1,26 @@
 ---
 name: perplexity-ci-integration
-description: |
-  Configure CI/CD for Perplexity Sonar API integrations with GitHub Actions.
+description: 'Configure CI/CD for Perplexity Sonar API integrations with GitHub Actions.
+
   Use when setting up automated testing, configuring CI pipelines,
+
   or integrating Perplexity tests into your build process.
+
   Trigger with phrases like "perplexity CI", "perplexity GitHub Actions",
+
   "perplexity automated tests", "CI perplexity pipeline".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, perplexity, testing, ci-cd]
+tags:
+- saas
+- perplexity
+- testing
+- ci-cd
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Perplexity CI Integration
 

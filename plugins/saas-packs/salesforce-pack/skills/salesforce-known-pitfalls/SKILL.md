@@ -1,19 +1,27 @@
 ---
 name: salesforce-known-pitfalls
-description: |
-  Identify and avoid Salesforce anti-patterns including SOQL N+1, governor limit violations, and API waste.
+description: 'Identify and avoid Salesforce anti-patterns including SOQL N+1, governor
+  limit violations, and API waste.
+
   Use when reviewing Salesforce code for issues, onboarding new developers,
+
   or auditing existing Salesforce integrations for best practices violations.
+
   Trigger with phrases like "salesforce mistakes", "salesforce anti-patterns",
+
   "salesforce pitfalls", "salesforce what not to do", "salesforce code review".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, salesforce]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- salesforce
+compatibility: Designed for Claude Code
 ---
-
 # Salesforce Known Pitfalls
 
 ## Overview

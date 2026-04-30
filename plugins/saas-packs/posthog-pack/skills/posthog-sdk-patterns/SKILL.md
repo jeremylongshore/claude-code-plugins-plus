@@ -1,18 +1,25 @@
 ---
 name: posthog-sdk-patterns
-description: |
-  Production-ready PostHog SDK patterns: singleton client, typed events,
+description: 'Production-ready PostHog SDK patterns: singleton client, typed events,
+
   React hooks, Next.js App Router integration, and Python patterns.
+
   Trigger: "posthog SDK patterns", "posthog best practices",
+
   "posthog React hook", "posthog Next.js", "posthog typescript".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, posthog, python, typescript]
+tags:
+- saas
+- posthog
+- python
+- typescript
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # PostHog SDK Patterns
 
 ## Overview

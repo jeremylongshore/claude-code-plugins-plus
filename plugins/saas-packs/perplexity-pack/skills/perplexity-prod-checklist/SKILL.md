@@ -1,17 +1,25 @@
 ---
 name: perplexity-prod-checklist
-description: |
-  Execute Perplexity production deployment checklist for Sonar API integrations.
+description: 'Execute Perplexity production deployment checklist for Sonar API integrations.
+
   Use when deploying Perplexity integrations to production, preparing for launch,
+
   or implementing go-live procedures.
+
   Trigger with phrases like "perplexity production", "deploy perplexity",
+
   "perplexity go-live", "perplexity launch checklist".
+
+  '
 allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, perplexity, deployment]
+tags:
+- saas
+- perplexity
+- deployment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Perplexity Production Checklist
 

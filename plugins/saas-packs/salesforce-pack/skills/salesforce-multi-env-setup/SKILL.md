@@ -1,19 +1,27 @@
 ---
 name: salesforce-multi-env-setup
-description: |
-  Configure Salesforce across Developer, Sandbox, and Production environments with proper org management.
+description: 'Configure Salesforce across Developer, Sandbox, and Production environments
+  with proper org management.
+
   Use when setting up multi-environment deployments, configuring per-environment credentials,
+
   or implementing sandbox-to-production promotion flows.
+
   Trigger with phrases like "salesforce environments", "salesforce sandbox",
+
   "salesforce dev prod", "salesforce org management", "salesforce sandbox types".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(sf:*), Bash(gcloud:*), Bash(vault:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, salesforce]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- salesforce
+compatibility: Designed for Claude Code
 ---
-
 # Salesforce Multi-Environment Setup
 
 ## Overview

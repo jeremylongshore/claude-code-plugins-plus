@@ -1,19 +1,29 @@
 ---
 name: salesforce-architecture-variants
-description: |
-  Choose and implement Salesforce integration architecture patterns for different scales.
-  Use when designing new Salesforce integrations, choosing between polling/event-driven/Heroku Connect,
+description: 'Choose and implement Salesforce integration architecture patterns for
+  different scales.
+
+  Use when designing new Salesforce integrations, choosing between polling/event-driven/Heroku
+  Connect,
+
   or planning migration paths for Salesforce applications.
+
   Trigger with phrases like "salesforce architecture", "salesforce integration pattern",
-  "how to structure salesforce integration", "salesforce event-driven", "salesforce Heroku Connect".
+
+  "how to structure salesforce integration", "salesforce event-driven", "salesforce
+  Heroku Connect".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, salesforce]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- salesforce
+compatibility: Designed for Claude Code
 ---
-
 # Salesforce Architecture Variants
 
 ## Overview

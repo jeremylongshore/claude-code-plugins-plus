@@ -1,17 +1,25 @@
 ---
 name: oraclecloud-common-errors
-description: |
-  Diagnose and fix Oracle Cloud Infrastructure API errors with real error codes and proven fixes.
-  Use when encountering OCI ServiceError exceptions, auth failures, SSL issues, or timeout errors.
-  Trigger with "oci error", "fix oraclecloud", "debug oci", "NotAuthorizedOrNotFound", "oci 401".
+description: 'Diagnose and fix Oracle Cloud Infrastructure API errors with real error
+  codes and proven fixes.
+
+  Use when encountering OCI ServiceError exceptions, auth failures, SSL issues, or
+  timeout errors.
+
+  Trigger with "oci error", "fix oraclecloud", "debug oci", "NotAuthorizedOrNotFound",
+  "oci 401".
+
+  '
 allowed-tools: Read, Grep, Bash(oci:*), Bash(pip:*), Bash(openssl:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, oraclecloud, oci]
-compatible-with: claude-code
+tags:
+- saas
+- oraclecloud
+- oci
+compatibility: Designed for Claude Code
 ---
-
 # Oracle Cloud Common Errors
 
 ## Overview

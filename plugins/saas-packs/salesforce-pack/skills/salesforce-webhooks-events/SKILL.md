@@ -1,19 +1,28 @@
 ---
 name: salesforce-webhooks-events
-description: |
-  Implement Salesforce Platform Events, Change Data Capture (CDC), and Outbound Messages.
+description: 'Implement Salesforce Platform Events, Change Data Capture (CDC), and
+  Outbound Messages.
+
   Use when building real-time integrations, listening for record changes,
+
   or implementing event-driven architecture with Salesforce.
+
   Trigger with phrases like "salesforce events", "salesforce CDC",
-  "salesforce platform events", "salesforce streaming", "salesforce outbound message", "salesforce real-time".
+
+  "salesforce platform events", "salesforce streaming", "salesforce outbound message",
+  "salesforce real-time".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(sf:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, salesforce]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- salesforce
+compatibility: Designed for Claude Code
 ---
-
 # Salesforce Webhooks & Events
 
 ## Overview

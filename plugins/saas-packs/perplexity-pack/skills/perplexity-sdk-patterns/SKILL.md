@@ -1,17 +1,27 @@
 ---
 name: perplexity-sdk-patterns
-description: |
-  Apply production-ready Perplexity Sonar API patterns for TypeScript and Python.
+description: 'Apply production-ready Perplexity Sonar API patterns for TypeScript
+  and Python.
+
   Use when implementing Perplexity integrations, refactoring SDK usage,
+
   or establishing team coding standards for search-augmented generation.
+
   Trigger with phrases like "perplexity SDK patterns", "perplexity best practices",
+
   "perplexity code patterns", "idiomatic perplexity", "perplexity wrapper".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, perplexity, python, typescript]
+tags:
+- saas
+- perplexity
+- python
+- typescript
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Perplexity SDK Patterns
 

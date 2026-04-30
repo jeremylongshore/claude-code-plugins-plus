@@ -1,18 +1,26 @@
 ---
 name: posthog-observability
-description: |
-  Monitor PostHog integration health: event ingestion rates, feature flag
+description: 'Monitor PostHog integration health: event ingestion rates, feature flag
+
   evaluation latency, billing volume tracking, and Prometheus/Grafana alerting.
+
   Trigger: "posthog monitoring", "posthog metrics", "posthog observability",
+
   "monitor posthog", "posthog alerts", "posthog dashboard".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, posthog, monitoring, observability, dashboard]
+tags:
+- saas
+- posthog
+- monitoring
+- observability
+- dashboard
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # PostHog Observability
 
 ## Overview

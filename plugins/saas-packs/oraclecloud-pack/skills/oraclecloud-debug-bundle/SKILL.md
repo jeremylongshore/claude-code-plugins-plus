@@ -1,17 +1,20 @@
 ---
 name: oraclecloud-debug-bundle
-description: |
-  Collect OCI instance diagnostics — serial console, cloud-init logs, metadata, and VCN flow logs — into a single debug bundle.
-  Use when an OCI instance is unresponsive, stuck in provisioning, or showing infrastructure errors.
-  Trigger with "oraclecloud debug bundle", "oci diagnostics", "oci serial console", "oci instance debug".
+description: "Collect OCI instance diagnostics \u2014 serial console, cloud-init logs,\
+  \ metadata, and VCN flow logs \u2014 into a single debug bundle.\nUse when an OCI\
+  \ instance is unresponsive, stuck in provisioning, or showing infrastructure errors.\n\
+  Trigger with \"oraclecloud debug bundle\", \"oci diagnostics\", \"oci serial console\"\
+  , \"oci instance debug\".\n"
 allowed-tools: Read, Write, Edit, Bash(oci:*), Bash(python3:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, oraclecloud, oci]
-compatible-with: claude-code
+tags:
+- saas
+- oraclecloud
+- oci
+compatibility: Designed for Claude Code
 ---
-
 # Oracle Cloud Debug Bundle
 
 ## Overview

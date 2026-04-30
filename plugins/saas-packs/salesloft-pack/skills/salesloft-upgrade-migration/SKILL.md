@@ -1,18 +1,25 @@
 ---
 name: salesloft-upgrade-migration
-description: |
-  Migrate between SalesLoft API versions and handle breaking changes.
+description: 'Migrate between SalesLoft API versions and handle breaking changes.
+
   Use when SalesLoft announces API deprecations, upgrading OAuth flows,
+
   or transitioning from legacy endpoints.
+
   Trigger: "upgrade salesloft", "salesloft migration", "salesloft API version".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, sales, outreach, salesloft]
-compatible-with: claude-code
+tags:
+- saas
+- sales
+- outreach
+- salesloft
+compatibility: Designed for Claude Code
 ---
-
 # SalesLoft Upgrade & Migration
 
 ## Overview

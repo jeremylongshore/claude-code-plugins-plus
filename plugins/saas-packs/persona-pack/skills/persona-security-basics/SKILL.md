@@ -1,17 +1,25 @@
 ---
 name: persona-security-basics
-description: |
-  Secure Persona API keys, webhook secrets, PII handling in verification data.
+description: 'Secure Persona API keys, webhook secrets, PII handling in verification
+  data.
+
   Use when working with Persona identity verification.
+
   Trigger with phrases like "persona security-basics", "persona security-basics".
+
+  '
 allowed-tools: Read, Write, Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, persona, identity, kyc, verification]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- persona
+- identity
+- kyc
+- verification
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # persona security basics | sed 's/\b\(.\)/\u\1/g'
 
 ## Overview

@@ -1,13 +1,22 @@
 ---
 name: openrouter-openai-compat
-description: |
-  Migrate from OpenAI to OpenRouter with minimal code changes. Use when switching to OpenRouter or maintaining dual compatibility. Triggers: 'openrouter openai compatible', 'openrouter drop-in', 'openai to openrouter', 'openrouter migration'.
+description: 'Migrate from OpenAI to OpenRouter with minimal code changes. Use when
+  switching to OpenRouter or maintaining dual compatibility. Triggers: ''openrouter
+  openai compatible'', ''openrouter drop-in'', ''openai to openrouter'', ''openrouter
+  migration''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash, Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, openrouter, api, migration, openai]
+tags:
+- saas
+- openrouter
+- api
+- migration
+- openai
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # OpenRouter OpenAI Compatibility
 

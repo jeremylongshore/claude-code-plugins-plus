@@ -1,19 +1,26 @@
 ---
 name: salesforce-rate-limits
-description: |
-  Implement Salesforce API limit management, backoff, and quota monitoring.
+description: 'Implement Salesforce API limit management, backoff, and quota monitoring.
+
   Use when handling REQUEST_LIMIT_EXCEEDED errors, implementing retry logic,
+
   or optimizing API request throughput for Salesforce.
+
   Trigger with phrases like "salesforce rate limit", "salesforce API limit",
+
   "salesforce 403", "salesforce retry", "salesforce governor limits", "API quota".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, salesforce]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- salesforce
+compatibility: Designed for Claude Code
 ---
-
 # Salesforce Rate Limits
 
 ## Overview

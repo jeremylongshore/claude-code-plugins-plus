@@ -1,17 +1,28 @@
 ---
 name: replit-observability
-description: |
-  Monitor Replit deployments with health checks, uptime tracking, resource usage, and alerting.
+description: 'Monitor Replit deployments with health checks, uptime tracking, resource
+  usage, and alerting.
+
   Use when setting up monitoring for Replit apps, building health dashboards,
+
   or configuring alerting for deployment health and performance.
+
   Trigger with phrases like "replit monitoring", "replit metrics",
+
   "replit observability", "monitor replit", "replit alerts", "replit uptime".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, replit, monitoring, observability, alerting]
+tags:
+- saas
+- replit
+- monitoring
+- observability
+- alerting
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Replit Observability
 

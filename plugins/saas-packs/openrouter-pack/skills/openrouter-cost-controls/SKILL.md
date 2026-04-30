@@ -1,13 +1,20 @@
 ---
 name: openrouter-cost-controls
-description: |
-  Implement cost controls for OpenRouter API usage. Use when setting budgets, preventing overspend, or managing per-key limits. Triggers: 'openrouter budget', 'openrouter cost limit', 'openrouter spending', 'control openrouter cost'.
+description: 'Implement cost controls for OpenRouter API usage. Use when setting budgets,
+  preventing overspend, or managing per-key limits. Triggers: ''openrouter budget'',
+  ''openrouter cost limit'', ''openrouter spending'', ''control openrouter cost''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash, Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, openrouter, cost-optimization, budgets]
+tags:
+- saas
+- openrouter
+- cost-optimization
+- budgets
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # OpenRouter Cost Controls
 

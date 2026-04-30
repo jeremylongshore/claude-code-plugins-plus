@@ -1,17 +1,21 @@
 ---
 name: ramp-deploy-integration
-description: |
-  Ramp deploy integration — corporate card and expense management API integration.
-  Use when working with Ramp for card management, expenses, or accounting sync.
-  Trigger with phrases like "ramp deploy integration", "ramp-deploy-integration", "corporate card API".
+description: "Ramp deploy integration \u2014 corporate card and expense management\
+  \ API integration.\nUse when working with Ramp for card management, expenses, or\
+  \ accounting sync.\nTrigger with phrases like \"ramp deploy integration\", \"ramp-deploy-integration\"\
+  , \"corporate card API\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ramp, fintech, expenses, corporate-cards]
-compatible-with: claude-code, codex, openclaw
+tags:
+- saas
+- ramp
+- fintech
+- expenses
+- corporate-cards
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Ramp Deploy Integration
 
 ## Overview

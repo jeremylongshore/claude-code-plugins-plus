@@ -1,19 +1,27 @@
 ---
 name: salesforce-hello-world
-description: |
-  Create a minimal working Salesforce example with SOQL queries and sObject CRUD.
+description: 'Create a minimal working Salesforce example with SOQL queries and sObject
+  CRUD.
+
   Use when starting a new Salesforce integration, testing your setup,
+
   or learning basic Salesforce API patterns.
+
   Trigger with phrases like "salesforce hello world", "salesforce example",
+
   "salesforce quick start", "first salesforce query", "salesforce SOQL".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, salesforce]
-compatible-with: claude-code
+tags:
+- saas
+- crm
+- salesforce
+compatibility: Designed for Claude Code
 ---
-
 # Salesforce Hello World
 
 ## Overview

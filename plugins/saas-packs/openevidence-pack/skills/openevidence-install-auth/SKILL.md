@@ -1,17 +1,22 @@
 ---
 name: openevidence-install-auth
-description: |
-  Install and configure OpenEvidence SDK/API authentication.
+description: 'Install and configure OpenEvidence SDK/API authentication.
+
   Use when setting up a new OpenEvidence integration.
+
   Trigger: "install openevidence", "setup openevidence", "openevidence auth".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, openevidence, healthcare]
-compatible-with: claude-code
+tags:
+- saas
+- openevidence
+- healthcare
+compatibility: Designed for Claude Code
 ---
-
 # OpenEvidence Install & Auth
 
 ## Overview
