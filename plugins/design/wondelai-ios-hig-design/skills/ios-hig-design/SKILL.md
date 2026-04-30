@@ -1,22 +1,13 @@
 ---
 name: ios-hig-design
-description: 'Build native iOS interfaces following Apple Human Interface Guidelines.
-  Use when the user mentions "iPhone app", "iPad layout", "SwiftUI", "UIKit", "Dynamic
-  Island", "safe areas", or "HIG compliance". Covers navigation patterns, accessibility,
-  SF Symbols, and platform conventions. For general UI polish, see refactoring-ui.
-  For affordance design, see design-everyday-things. Trigger with ''ios'', ''hig'',
-  ''design''.
-
-  '
+description: |
+  Build native iOS interfaces following Apple Human Interface Guidelines. Use when the user mentions "iPhone app", "iPad layout", "SwiftUI", "UIKit", "Dynamic Island", "safe areas", or "HIG compliance". Covers navigation patterns, accessibility, SF Symbols, and platform conventions. For general UI polish, see refactoring-ui. For affordance design, see design-everyday-things. Trigger with 'ios', 'hig', 'design'.
 allowed-tools: Read, Glob, Grep
 license: MIT
 author: Wondelai <hello@wondelai.com>
 version: 1.0.1
-tags:
-- design
-- compliance
-- ios-hig
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatible-with: claude-code, codex, openclaw
+tags: [design, compliance, ios-hig]
 ---
 # iOS Human Interface Guidelines Design Skill
 

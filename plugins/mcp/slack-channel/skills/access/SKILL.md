@@ -1,19 +1,16 @@
 ---
 name: access
-description: "Manage Slack channel access control \u2014 pairing, allowlist, channel\
-  \ opt-in"
+description: Manage Slack channel access control — pairing, allowlist, channel opt-in
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 user-invocable: true
-argument-hint: pair <code> | policy <mode> | add <user_id> | remove <user_id> | channel
-  <id> [opts] | status
+argument-hint: "pair <code> | policy <mode> | add <user_id> | remove <user_id> | channel <id> [opts] | status"
 allowed-tools: Read, Write, Edit
-tags:
-- mcp
-- access
-compatibility: Designed for Claude Code
+compatible-with: claude-code
+tags: [mcp, access]
 ---
+
 # /slack-channel:access
 
 ## Overview

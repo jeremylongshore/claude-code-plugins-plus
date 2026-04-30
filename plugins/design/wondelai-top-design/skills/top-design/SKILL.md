@@ -1,22 +1,13 @@
 ---
 name: top-design
-description: 'Create award-winning, immersive web experiences at the level of Awwwards-featured
-  agencies. Use when the user mentions "premium website", "portfolio site", "scroll
-  animations", "Awwwards quality", or "brand experience". Covers dramatic typography,
-  purposeful motion, scroll-based composition, and performance-optimized animation.
-  For foundational UI, see refactoring-ui. For type selection, see web-typography.
-  Trigger with ''top'', ''design''.
-
-  '
+description: |
+  Create award-winning, immersive web experiences at the level of Awwwards-featured agencies. Use when the user mentions "premium website", "portfolio site", "scroll animations", "Awwwards quality", or "brand experience". Covers dramatic typography, purposeful motion, scroll-based composition, and performance-optimized animation. For foundational UI, see refactoring-ui. For type selection, see web-typography. Trigger with 'top', 'design'.
 allowed-tools: Read, Glob, Grep
 license: MIT
 author: Wondelai <hello@wondelai.com>
 version: 1.0.1
-tags:
-- design
-- performance
-- top-design
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatible-with: claude-code, codex, openclaw
+tags: [design, performance, top-design]
 ---
 # Top-Design: Award-Winning Digital Experiences
 

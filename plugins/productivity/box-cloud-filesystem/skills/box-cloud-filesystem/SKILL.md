@@ -1,29 +1,19 @@
 ---
 name: box-cloud-filesystem
-description: 'Cloud filesystem operations via Box CLI. Use when the user mentions
-
+description: |
+  Cloud filesystem operations via Box CLI. Use when the user mentions
   Box, cloud files, cloud storage, uploading to the cloud, sharing files,
-
   document management, or syncing project files offsite. Trigger with
-
   "upload to box", "save to cloud", "pull from box", "search my box files",
-
   "share this file", "box sync", "cloud backup", or "box filesystem".
-
-  '
 allowed-tools: Read, Write, Edit, Bash(box:*), Bash(npm:*), Bash(npx:*), Glob, Grep
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-tags:
-- box
-- cloud-storage
-- filesystem
-- sync
-- collaboration
-- document-management
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatible-with: claude-code, codex, openclaw
+tags: [box, cloud-storage, filesystem, sync, collaboration, document-management]
 ---
+
 # Box Cloud Filesystem
 
 Two modes, one goal: treat Box like a local filesystem.

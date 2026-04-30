@@ -1,21 +1,13 @@
 ---
 name: design-everyday-things
-description: 'Analyze and apply foundational design principles: affordances, signifiers,
-  constraints, feedback, and conceptual models. Use when the user mentions "why is
-  this confusing", "affordance", "error prevention", "discoverability", "human-centered
-  design", or "fault tolerance". Covers the gulfs of execution and evaluation. For
-  usability scoring, see ux-heuristics. For iOS-specific patterns, see ios-hig-design.
-  Trigger with ''design'', ''everyday'', ''things''.
-
-  '
+description: |
+  Analyze and apply foundational design principles: affordances, signifiers, constraints, feedback, and conceptual models. Use when the user mentions "why is this confusing", "affordance", "error prevention", "discoverability", "human-centered design", or "fault tolerance". Covers the gulfs of execution and evaluation. For usability scoring, see ux-heuristics. For iOS-specific patterns, see ios-hig-design. Trigger with 'design', 'everyday', 'things'.
 allowed-tools: Read, Glob, Grep
 license: MIT
 author: Wondelai <hello@wondelai.com>
 version: 1.0.1
-tags:
-- design
-- design-everyday
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatible-with: claude-code, codex, openclaw
+tags: [design, design-everyday]
 ---
 # Design of Everyday Things Framework
 

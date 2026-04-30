@@ -1,21 +1,13 @@
 ---
 name: obviously-awesome
-description: 'Build product positioning by mapping competitive alternatives, unique
-  attributes, and best-fit customers to the right market category. Use when the user
-  mentions "positioning", "competitive alternatives", "how to position", "market category",
-  or "why customers don''t get it". Covers positioning canvas and team workshops.
-  For customer jobs analysis, see jobs-to-be-done. For go-to-market, see crossing-the-chasm.
-  Trigger with ''obviously'', ''awesome''.
-
-  '
+description: |
+  Build product positioning by mapping competitive alternatives, unique attributes, and best-fit customers to the right market category. Use when the user mentions "positioning", "competitive alternatives", "how to position", "market category", or "why customers don't get it". Covers positioning canvas and team workshops. For customer jobs analysis, see jobs-to-be-done. For go-to-market, see crossing-the-chasm. Trigger with 'obviously', 'awesome'.
 allowed-tools: Read, Glob, Grep
 license: MIT
 author: Wondelai <hello@wondelai.com>
 version: 1.0.1
-tags:
-- business
-- obviously-awesome
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatible-with: claude-code, codex, openclaw
+tags: [business, obviously-awesome]
 ---
 # Product Positioning Framework
 

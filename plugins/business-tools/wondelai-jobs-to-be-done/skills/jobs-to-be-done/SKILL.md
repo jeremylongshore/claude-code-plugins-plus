@@ -1,21 +1,13 @@
 ---
 name: jobs-to-be-done
-description: 'Analyze what customers truly need by discovering the "job" they hire
-  your product to do. Use when the user mentions "customer discovery", "why customers
-  churn", "what job does this solve", "competing against luck", or "product-market
-  fit". Covers JTBD interviews, competition analysis, and jobs-oriented roadmaps.
-  For product positioning, see obviously-awesome. For rapid validation, see design-sprint.
-  Trigger with ''jobs'', ''to'', ''be''.
-
-  '
+description: |
+  Analyze what customers truly need by discovering the "job" they hire your product to do. Use when the user mentions "customer discovery", "why customers churn", "what job does this solve", "competing against luck", or "product-market fit". Covers JTBD interviews, competition analysis, and jobs-oriented roadmaps. For product positioning, see obviously-awesome. For rapid validation, see design-sprint. Trigger with 'jobs', 'to', 'be'.
 allowed-tools: Read, Glob, Grep
 license: MIT
 author: Wondelai <hello@wondelai.com>
 version: 1.0.1
-tags:
-- business
-- jobs-be
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatible-with: claude-code, codex, openclaw
+tags: [business, jobs-be]
 ---
 # Jobs to Be Done Framework
 

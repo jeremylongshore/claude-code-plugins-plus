@@ -1,21 +1,13 @@
 ---
 name: crossing-the-chasm
-description: 'Navigate the technology adoption lifecycle from early adopters to mainstream
-  market. Use when the user mentions "crossing the chasm", "beachhead segment", "whole
-  product", "early adopters vs. mainstream", or "tech go-to-market". Covers D-Day
-  analogy, bowling-pin strategy, and positioning against incumbents. For product positioning,
-  see obviously-awesome. For new market creation, see blue-ocean-strategy. Trigger
-  with ''crossing'', ''the'', ''chasm''.
-
-  '
+description: |
+  Navigate the technology adoption lifecycle from early adopters to mainstream market. Use when the user mentions "crossing the chasm", "beachhead segment", "whole product", "early adopters vs. mainstream", or "tech go-to-market". Covers D-Day analogy, bowling-pin strategy, and positioning against incumbents. For product positioning, see obviously-awesome. For new market creation, see blue-ocean-strategy. Trigger with 'crossing', 'the', 'chasm'.
 allowed-tools: Read, Glob, Grep
 license: MIT
 author: Wondelai <hello@wondelai.com>
 version: 1.0.1
-tags:
-- business
-- crossing-chasm
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatible-with: claude-code, codex, openclaw
+tags: [business, crossing-chasm]
 ---
 # Crossing the Chasm Framework
 

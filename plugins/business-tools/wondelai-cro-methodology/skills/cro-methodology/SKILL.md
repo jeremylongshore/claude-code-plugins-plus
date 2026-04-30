@@ -1,22 +1,13 @@
 ---
 name: cro-methodology
-description: 'Audit websites and landing pages for conversion issues and design evidence-based
-  A/B tests. Use when the user mentions "landing page isn''t converting", "conversion
-  rate", "A/B test", "why visitors leave", or "objection handling". Covers funnel
-  mapping, persuasion assets, and objection/counter-objection frameworks. For overall
-  marketing strategy, see one-page-marketing. For usability issues, see ux-heuristics.
-  Trigger with ''cro'', ''methodology''.
-
-  '
+description: |
+  Audit websites and landing pages for conversion issues and design evidence-based A/B tests. Use when the user mentions "landing page isn't converting", "conversion rate", "A/B test", "why visitors leave", or "objection handling". Covers funnel mapping, persuasion assets, and objection/counter-objection frameworks. For overall marketing strategy, see one-page-marketing. For usability issues, see ux-heuristics. Trigger with 'cro', 'methodology'.
 allowed-tools: Read, Glob, Grep
 license: MIT
 author: Wondelai <hello@wondelai.com>
 version: 1.0.1
-tags:
-- business
-- testing
-- audit
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatible-with: claude-code, codex, openclaw
+tags: [business, testing, audit]
 ---
 # CRO Methodology
 

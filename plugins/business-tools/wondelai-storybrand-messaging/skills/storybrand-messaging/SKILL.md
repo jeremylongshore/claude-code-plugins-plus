@@ -1,21 +1,13 @@
 ---
 name: storybrand-messaging
-description: 'Build clear brand messaging using narrative structure that positions
-  the customer as hero. Use when the user mentions "brand message", "website copy",
-  "elevator pitch", "one-liner", "messaging isn''t resonating", or "brand script".
-  Covers landing page copy, marketing collateral, and consistent communication. For
-  memorable messaging, see made-to-stick. For product positioning, see obviously-awesome.
-  Trigger with ''storybrand'', ''messaging''.
-
-  '
+description: |
+  Build clear brand messaging using narrative structure that positions the customer as hero. Use when the user mentions "brand message", "website copy", "elevator pitch", "one-liner", "messaging isn't resonating", or "brand script". Covers landing page copy, marketing collateral, and consistent communication. For memorable messaging, see made-to-stick. For product positioning, see obviously-awesome. Trigger with 'storybrand', 'messaging'.
 allowed-tools: Read, Glob, Grep
 license: MIT
 author: Wondelai <hello@wondelai.com>
 version: 1.0.1
-tags:
-- business
-- storybrand-messaging
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatible-with: claude-code, codex, openclaw
+tags: [business, storybrand-messaging]
 ---
 # StoryBrand Messaging Framework
 

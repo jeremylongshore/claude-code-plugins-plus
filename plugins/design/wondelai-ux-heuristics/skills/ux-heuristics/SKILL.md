@@ -1,21 +1,13 @@
 ---
 name: ux-heuristics
-description: 'Evaluate and improve interface usability using heuristic analysis. Use
-  when the user mentions "usability audit", "UX review", "users are confused", "heuristic
-  evaluation", "form usability", or "navigation problems". Covers Nielsen''s 10 heuristics,
-  severity ratings, and information architecture. For visual design fixes, see refactoring-ui.
-  For conversion-focused audits, see cro-methodology. Trigger with ''ux'', ''heuristics''.
-
-  '
+description: |
+  Evaluate and improve interface usability using heuristic analysis. Use when the user mentions "usability audit", "UX review", "users are confused", "heuristic evaluation", "form usability", or "navigation problems". Covers Nielsen's 10 heuristics, severity ratings, and information architecture. For visual design fixes, see refactoring-ui. For conversion-focused audits, see cro-methodology. Trigger with 'ux', 'heuristics'.
 allowed-tools: Read, Glob, Grep
 license: MIT
 author: Wondelai <hello@wondelai.com>
 version: 1.0.1
-tags:
-- design
-- audit
-- ux-heuristics
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatible-with: claude-code, codex, openclaw
+tags: [design, audit, ux-heuristics]
 ---
 # UX Heuristics Framework
 

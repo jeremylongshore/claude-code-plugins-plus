@@ -5,13 +5,12 @@ version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 user-invocable: true
-argument-hint: <bot-token> <app-token>
+argument-hint: "<bot-token> <app-token>"
 allowed-tools: Read, Write, Bash(chmod:*)
-tags:
-- mcp
-- configure
-compatibility: Designed for Claude Code
+compatible-with: claude-code
+tags: [mcp, configure]
 ---
+
 # /slack-channel:configure
 
 ## Overview

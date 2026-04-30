@@ -1,22 +1,13 @@
 ---
 name: predictable-revenue
-description: 'Build a scalable outbound B2B sales process with specialized roles (SDR,
-  AE, CSM). Use when the user mentions "outbound sales", "Cold Calling 2.0", "prospecting
-  emails", "sales pipeline", "SDR process", or "B2B SaaS sales". Covers lead generation,
-  qualification frameworks, and separating prospecting from closing. For offer design,
-  see hundred-million-offers. For persuasion science, see influence-psychology. Trigger
-  with ''predictable'', ''revenue''.
-
-  '
+description: |
+  Build a scalable outbound B2B sales process with specialized roles (SDR, AE, CSM). Use when the user mentions "outbound sales", "Cold Calling 2.0", "prospecting emails", "sales pipeline", "SDR process", or "B2B SaaS sales". Covers lead generation, qualification frameworks, and separating prospecting from closing. For offer design, see hundred-million-offers. For persuasion science, see influence-psychology. Trigger with 'predictable', 'revenue'.
 allowed-tools: Read, Glob, Grep
 license: MIT
 author: Wondelai <hello@wondelai.com>
 version: 1.0.1
-tags:
-- business
-- scaling
-- predictable-revenue
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatible-with: claude-code, codex, openclaw
+tags: [business, scaling, predictable-revenue]
 ---
 # Predictable Revenue Framework
 

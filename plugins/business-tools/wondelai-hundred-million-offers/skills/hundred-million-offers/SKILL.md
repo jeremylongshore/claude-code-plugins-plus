@@ -1,21 +1,13 @@
 ---
 name: hundred-million-offers
-description: 'Create irresistible offers using the Value Equation, bonus stacking,
-  risk-reversing guarantees, and ethical scarcity. Use when the user mentions "pricing
-  strategy", "irresistible offer", "bonuses and guarantees", "value-to-price ratio",
-  or "offer naming". Covers the MAGIC naming formula and starving-crowd targeting.
-  For product positioning, see obviously-awesome. For outbound sales, see predictable-revenue.
-  Trigger with ''hundred'', ''million'', ''offers''.
-
-  '
+description: |
+  Create irresistible offers using the Value Equation, bonus stacking, risk-reversing guarantees, and ethical scarcity. Use when the user mentions "pricing strategy", "irresistible offer", "bonuses and guarantees", "value-to-price ratio", or "offer naming". Covers the MAGIC naming formula and starving-crowd targeting. For product positioning, see obviously-awesome. For outbound sales, see predictable-revenue. Trigger with 'hundred', 'million', 'offers'.
 allowed-tools: Read, Glob, Grep
 license: MIT
 author: Wondelai <hello@wondelai.com>
 version: 1.0.1
-tags:
-- business
-- hundred-million
-compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
+compatible-with: claude-code, codex, openclaw
+tags: [business, hundred-million]
 ---
 # Grand Slam Offer Creation Framework
 
