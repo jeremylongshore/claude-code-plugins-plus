@@ -13,7 +13,7 @@ user-invocable: true
 argument-hint: "<account> [--window 24h]"
 model: inherit
 effort: high
-compatibility: Designed for claude-code
+compatible-with: claude-code
 tags: [triage, x-api, bug-tracking, social-monitoring]
 ---
 
