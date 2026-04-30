@@ -21,6 +21,22 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      # @intentsolutions/audit-harness verify — exit 0 when policy hashes
+      # match `.harness-hash`, exit 2 when a hash-pinned policy file (e.g.
+      # tests/TESTING.md, .dependency-cruiser.cjs, *.feature) was changed
+      # without a paired engineer-initiated `pnpm exec audit-harness init`.
+      # Hashing surface is currently empty (we declined the tools that get
+      # pinned — ADR-260/261/263) so this is exit 0; kept here so the gate
+      # is wired the moment any pinned file lands.
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+      - name: Install root dev dependencies
+        run: pnpm install --frozen-lockfile --filter "claude-code-plugins-monorepo"
+      - name: Verify audit-harness integrity
+        run: pnpm exec audit-harness verify
+
       - name: Sync CLI marketplace catalog
         run: |
           node scripts/sync-marketplace.cjs

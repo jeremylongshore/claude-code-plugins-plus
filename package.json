@@ -28,6 +28,7 @@
     "pnpm": ">=9.0.0"
   },
   "devDependencies": {
+    "@intentsolutions/audit-harness": "^0.1.0",
     "@types/node": "^20.19.27",
     "archiver": "^7.0.1",
     "eslint": "^9.39.2",

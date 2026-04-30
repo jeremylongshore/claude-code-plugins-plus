@@ -8,6 +8,9 @@ importers:
 
   .:
     devDependencies:
+      '@intentsolutions/audit-harness':
+        specifier: ^0.1.0
+        version: 0.1.0
       '@types/node':
         specifier: ^20.19.27
         version: 20.19.27
@@ -529,6 +532,8 @@ importers:
   plugins/saas-packs/klingai-pack: {}
 
   plugins/saas-packs/langchain-pack: {}
+
+  plugins/saas-packs/langchain-py-pack: {}
 
   plugins/saas-packs/langfuse-pack: {}
 
@@ -1458,6 +1463,11 @@ packages:
     engines: {node: ^18.17.0 || ^20.3.0 || >=21.0.0}
     cpu: [x64]
     os: [win32]
+
+  '@intentsolutions/audit-harness@0.1.0':
+    resolution: {integrity: sha512-7YNrX4KLEPwJUT41yKa4w94/bqWS3Bdcvxa57GfQOEF/yUtu39Yl59t+bijx+7lO3HmWS5gc/llU1Nca1+QGtg==}
+    engines: {node: '>=18'}
+    hasBin: true
 
   '@isaacs/balanced-match@4.0.1':
     resolution: {integrity: sha512-yzMTt9lEb8Gv7zRioUilSglI0c0smZ9k5D65677DLWLtWJaXIS3CqcGyUFByYKlnUj6TkjLVs54fBl6+TiGQDQ==}
@@ -5551,6 +5561,8 @@ snapshots:
 
   '@img/sharp-win32-x64@0.34.5':
     optional: true
+
+  '@intentsolutions/audit-harness@0.1.0': {}
 
   '@isaacs/balanced-match@4.0.1': {}
 
