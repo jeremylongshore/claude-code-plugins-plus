@@ -1,14 +1,22 @@
 ---
 name: genkit-production-expert
-description: |
-  Build production Firebase Genkit applications including RAG systems, multi-step flows, and tool calling for Node.js/Python/Go. Deploy to Firebase Functions or Cloud Run with AI monitoring. Use when asked to "create genkit flow" or "implement RAG". Trigger with relevant phrases based on skill purpose.
+description: 'Build production Firebase Genkit applications including RAG systems,
+  multi-step flows, and tool calling for Node.js/Python/Go. Deploy to Firebase Functions
+  or Cloud Run with AI monitoring. Use when asked to "create genkit flow" or "implement
+  RAG". Trigger with relevant phrases based on skill purpose.
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 2.1.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 effort: medium
-compatible-with: claude-code, codex, openclaw
-tags: [ai, deployment, monitoring, python]
+tags:
+- ai
+- deployment
+- monitoring
+- python
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Genkit Production Expert
 

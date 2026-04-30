@@ -1,13 +1,21 @@
 ---
 name: adapting-transfer-learning-models
-description: |
-  Build this skill automates the adaptation of pre-trained machine learning models using transfer learning techniques. it is triggered when the user requests assistance with fine-tuning a model, adapting a pre-trained model to a new dataset, or performing... Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
+description: 'Build this skill automates the adaptation of pre-trained machine learning
+  models using transfer learning techniques. it is triggered when the user requests
+  assistance with fine-tuning a model, adapting a pre-trained model to a new dataset,
+  or performing... Use when appropriate context detected. Trigger with relevant phrases
+  based on skill purpose.
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [ai, ml, adapting-transfer]
+tags:
+- ai
+- ml
+- adapting-transfer
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Transfer Learning Adapter
 

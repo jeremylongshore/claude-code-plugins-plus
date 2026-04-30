@@ -1,16 +1,23 @@
 ---
 name: validating-ai-ethics-and-fairness
-description: |
-  Validate AI/ML models and datasets for bias, fairness, and ethical concerns.
-  Use when auditing AI systems for ethical compliance, fairness assessment, or bias detection.
-  Trigger with phrases like "evaluate model fairness", "check for bias", or "validate AI ethics".
-  
+description: 'Validate AI/ML models and datasets for bias, fairness, and ethical concerns.
+
+  Use when auditing AI systems for ethical compliance, fairness assessment, or bias
+  detection.
+
+  Trigger with phrases like "evaluate model fairness", "check for bias", or "validate
+  AI ethics".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(python:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [ai, compliance, audit]
+tags:
+- ai
+- compliance
+- audit
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # AI Ethics Validator
 

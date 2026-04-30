@@ -1,13 +1,22 @@
 ---
 name: evaluating-machine-learning-models
-description: |
-  Build this skill allows AI assistant to evaluate machine learning models using a comprehensive suite of metrics. it should be used when the user requests model performance analysis, validation, or testing. AI assistant can use this skill to assess model accuracy, p... Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
+description: 'Build this skill allows AI assistant to evaluate machine learning models
+  using a comprehensive suite of metrics. it should be used when the user requests
+  model performance analysis, validation, or testing. AI assistant can use this skill
+  to assess model accuracy, p... Use when appropriate context detected. Trigger with
+  relevant phrases based on skill purpose.
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [ai, testing, ml, performance]
+tags:
+- ai
+- testing
+- ml
+- performance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Model Evaluation Suite
 

@@ -1,15 +1,22 @@
 ---
 name: adk-deployment-specialist
-description: |
-  Deploy and orchestrate Vertex AI ADK agents using A2A protocol. Manages AgentCard discovery, task submission, Code Execution Sandbox, and Memory Bank. Use when asked to "deploy ADK agent" or "orchestrate agents". Trigger with phrases like 'deploy', 'infrastructure', or 'CI/CD'.
+description: 'Deploy and orchestrate Vertex AI ADK agents using A2A protocol. Manages
+  AgentCard discovery, task submission, Code Execution Sandbox, and Memory Bank. Use
+  when asked to "deploy ADK agent" or "orchestrate agents". Trigger with phrases like
+  ''deploy'', ''infrastructure'', or ''CI/CD''.
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 2.1.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
 effort: high
-argument-hint: "<agent-name or project-id>"
-tags: [ai, deployment, ci-cd]
+argument-hint: <agent-name or project-id>
+tags:
+- ai
+- deployment
+- ci-cd
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Adk Deployment Specialist
 

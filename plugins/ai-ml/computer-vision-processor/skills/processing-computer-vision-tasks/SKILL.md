@@ -1,13 +1,18 @@
 ---
 name: processing-computer-vision-tasks
-description: |
-  Process images using object detection, classification, and segmentation. Use when requesting "analyze image", "object detection", "image classification", or "computer vision". Trigger with relevant phrases based on skill purpose.
+description: 'Process images using object detection, classification, and segmentation.
+  Use when requesting "analyze image", "object detection", "image classification",
+  or "computer vision". Trigger with relevant phrases based on skill purpose.
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [ai, processing-computer]
+tags:
+- ai
+- processing-computer
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Computer Vision Processor
 

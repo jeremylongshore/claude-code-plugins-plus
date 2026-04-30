@@ -1,15 +1,22 @@
 ---
 name: gcp-examples-expert
-description: |
-  Generate production-ready Google Cloud code examples from official repositories including ADK samples, Genkit templates, Vertex AI notebooks, and Gemini patterns. Use when asked to "show ADK example" or "provide GCP starter kit". Trigger with relevant phrases based on skill purpose.
+description: 'Generate production-ready Google Cloud code examples from official repositories
+  including ADK samples, Genkit templates, Vertex AI notebooks, and Gemini patterns.
+  Use when asked to "show ADK example" or "provide GCP starter kit". Trigger with
+  relevant phrases based on skill purpose.
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 2.1.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 effort: medium
-argument-hint: "[framework or use-case]"
-compatible-with: claude-code, codex, openclaw
-tags: [ai, gcp, gcp-examples]
+argument-hint: '[framework or use-case]'
+tags:
+- ai
+- gcp
+- gcp-examples
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # GCP Examples Expert
 

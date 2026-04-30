@@ -1,13 +1,18 @@
 ---
 name: creating-data-visualizations
-description: |
-  Generate plots, charts, and graphs from data with automatic visualization type selection. Use when requesting "visualization", "plot", "chart", or "graph". Trigger with phrases like 'generate', 'create', or 'scaffold'.
+description: 'Generate plots, charts, and graphs from data with automatic visualization
+  type selection. Use when requesting "visualization", "plot", "chart", or "graph".
+  Trigger with phrases like ''generate'', ''create'', or ''scaffold''.
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [ai, data-visualizations]
+tags:
+- ai
+- data-visualizations
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Data Visualization Creator
 

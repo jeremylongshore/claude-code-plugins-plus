@@ -1,13 +1,21 @@
 ---
 name: engineering-features-for-machine-learning
-description: |
-  Execute create, select, and transform features to improve machine learning model performance. Handles feature scaling, encoding, and importance analysis. Use when asked to "engineer features" or "select features". Trigger with relevant phrases based on skill purpose.
+description: 'Execute create, select, and transform features to improve machine learning
+  model performance. Handles feature scaling, encoding, and importance analysis. Use
+  when asked to "engineer features" or "select features". Trigger with relevant phrases
+  based on skill purpose.
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [ai, ml, performance, scaling]
+tags:
+- ai
+- ml
+- performance
+- scaling
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Feature Engineering Toolkit
 

@@ -1,15 +1,25 @@
 ---
 name: vertex-engine-inspector
-description: |
-  Inspect and validate Vertex AI Agent Engine deployments including Code Execution Sandbox, Memory Bank, A2A protocol compliance, and security posture. Generates production readiness scores. Use when asked to inspect, validate, or audit an Agent Engine deployment. Trigger with "inspect agent engine", "validate agent engine deployment", "check agent engine config", "audit agent engine security", "agent engine readiness check", "vertex engine health", or "reasoning engine status".
+description: 'Inspect and validate Vertex AI Agent Engine deployments including Code
+  Execution Sandbox, Memory Bank, A2A protocol compliance, and security posture. Generates
+  production readiness scores. Use when asked to inspect, validate, or audit an Agent
+  Engine deployment. Trigger with "inspect agent engine", "validate agent engine deployment",
+  "check agent engine config", "audit agent engine security", "agent engine readiness
+  check", "vertex engine health", or "reasoning engine status".
+
+  '
 allowed-tools: Read, Grep, Glob, Bash(cmd:*)
 version: 2.1.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-argument-hint: "<project-id> <agent-engine-id> [location]"
+argument-hint: <project-id> <agent-engine-id> [location]
 effort: high
-tags: [ai, deployment, security, compliance]
+tags:
+- ai
+- deployment
+- security
+- compliance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vertex Engine Inspector
 

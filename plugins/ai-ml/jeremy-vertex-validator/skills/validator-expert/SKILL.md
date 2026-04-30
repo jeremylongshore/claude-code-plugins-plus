@@ -1,24 +1,40 @@
 ---
 name: validator-expert
-description: |
-  Validate production readiness of Vertex AI Agent Engine deployments across
+description: 'Validate production readiness of Vertex AI Agent Engine deployments
+  across
+
   security, monitoring, performance, compliance, and best practices. Generates
+
   weighted scores (0-100%) with actionable remediation plans. Use when asked to
+
   validate a deployment, run a production readiness check, audit security posture,
+
   or verify compliance for Vertex AI agents. Trigger with "validate deployment",
+
   "production readiness", "security audit", "compliance check", "is this agent
+
   ready for prod", "check my ADK agent", "review before deploy", or
+
   "production readiness check". Make sure to use this skill whenever validating
+
   ADK agents for Agent Engine.
-allowed-tools: "Read,Grep,Glob,Bash(gcloud:*),Bash(python:*),Bash(pylint:*),Bash(flake8:*),Bash(mypy:*),Bash(bandit:*),Bash(pytest:*)"
+
+  '
+allowed-tools: Read,Grep,Glob,Bash(gcloud:*),Bash(python:*),Bash(pylint:*),Bash(flake8:*),Bash(mypy:*),Bash(bandit:*),Bash(pytest:*)
 version: 2.1.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [vertex-ai, security, compliance, validation, production-readiness, gcp]
+tags:
+- vertex-ai
+- security
+- compliance
+- validation
+- production-readiness
+- gcp
 model: inherit
 effort: high
-argument-hint: "[project-id]"
+argument-hint: '[project-id]'
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Validator Expert
 

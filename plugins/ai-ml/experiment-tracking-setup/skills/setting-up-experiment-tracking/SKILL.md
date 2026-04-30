@@ -1,13 +1,20 @@
 ---
 name: setting-up-experiment-tracking
-description: |
-  Implement machine learning experiment tracking using MLflow or Weights & Biases. Configures environment and provides code for logging parameters, metrics, and artifacts. Use when asked to "setup experiment tracking" or "initialize MLflow". Trigger with relevant phrases based on skill purpose.
+description: 'Implement machine learning experiment tracking using MLflow or Weights
+  & Biases. Configures environment and provides code for logging parameters, metrics,
+  and artifacts. Use when asked to "setup experiment tracking" or "initialize MLflow".
+  Trigger with relevant phrases based on skill purpose.
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [ai, ml, logging]
+tags:
+- ai
+- ml
+- logging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Experiment Tracking Setup
 

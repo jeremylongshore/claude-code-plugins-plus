@@ -1,15 +1,25 @@
 ---
 name: ollama-setup
-description: |
-  Configure auto-configure Ollama when user needs local LLM deployment, free AI alternatives,
+description: 'Configure auto-configure Ollama when user needs local LLM deployment,
+  free AI alternatives,
+
   or wants to eliminate hosted API costs. Trigger phrases: "install ollama",
-  "local AI", "free LLM", "self-hosted AI", "replace OpenAI", "no API costs". Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
+
+  "local AI", "free LLM", "self-hosted AI", "replace OpenAI", "no API costs". Use
+  when appropriate context detected. Trigger with relevant phrases based on skill
+  purpose.
+
+  '
 allowed-tools: Read, Write, Bash(cmd:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
-tags: [ai, deployment, api, llm]
+tags:
+- ai
+- deployment
+- api
+- llm
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Ollama Setup
 

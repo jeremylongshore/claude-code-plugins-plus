@@ -1,21 +1,35 @@
 ---
 name: local-tts
-description: |
-  Generate speech locally from text using VoxCPM2 (2B params, Apache-2.0). 30 languages,
+description: 'Generate speech locally from text using VoxCPM2 (2B params, Apache-2.0).
+  30 languages,
+
   voice design (describe a voice), voice cloning (from 3-10s reference). Runs 100%
+
   offline on Apple Silicon via Metal (MPS). Zero API calls, zero cost.
+
   Use when user asks to "say" or "speak" something, wants a voiceover, wants to clone
+
   a voice, or wants to generate audio from text. Trigger phrases: "say this",
+
   "read out loud", "clone my voice", "generate voiceover", "text to speech", "TTS".
+
+  '
 allowed-tools: Read, Bash(python3:*), Bash(file:*), Bash(ls:*)
 version: 1.0.0
 author: Bubble Invest <contact@bubbleinvest.com>
 license: Apache-2.0
-compatible-with: claude-code
-tags: [tts, voice, audio, voice-cloning, voice-design, offline, apple-silicon, narration]
+tags:
+- tts
+- voice
+- audio
+- voice-cloning
+- voice-design
+- offline
+- apple-silicon
+- narration
 user-invocable: true
+compatibility: Designed for Claude Code
 ---
-
 # Local TTS — Offline Text-to-Speech
 
 Generate speech from text using VoxCPM2 locally. 30 languages, voice design, voice cloning. Runs on Apple Silicon via Metal. Apache-2.0, zero cost.
