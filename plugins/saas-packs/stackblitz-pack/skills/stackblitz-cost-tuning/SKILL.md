@@ -1,17 +1,24 @@
 ---
 name: stackblitz-cost-tuning
-description: |
-  StackBlitz pricing tiers: free embedding, WebContainer API commercial licensing.
+description: 'StackBlitz pricing tiers: free embedding, WebContainer API commercial
+  licensing.
+
   Use when working with WebContainers or StackBlitz SDK.
+
   Trigger: "stackblitz cost".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ide, webcontainers, stackblitz]
-compatible-with: claude-code
+tags:
+- saas
+- ide
+- webcontainers
+- stackblitz
+compatibility: Designed for Claude Code
 ---
-
 # StackBlitz Cost Tuning
 
 ## Overview

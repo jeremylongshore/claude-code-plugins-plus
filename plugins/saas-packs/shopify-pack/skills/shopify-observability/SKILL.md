@@ -1,20 +1,28 @@
 ---
 name: shopify-observability
-description: |
-  Set up observability for Shopify app integrations with query cost tracking,
+description: 'Set up observability for Shopify app integrations with query cost tracking,
+
   rate limit monitoring, webhook delivery metrics, and structured logging.
+
   Use when instrumenting a Shopify app for production monitoring, setting up
+
   Prometheus metrics for API health, or configuring alerts for rate limit issues.
+
   Trigger with phrases like "shopify monitoring", "shopify metrics",
+
   "shopify observability", "monitor shopify API", "shopify alerts", "shopify dashboard".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ecommerce, shopify]
-compatible-with: claude-code
+tags:
+- saas
+- ecommerce
+- shopify
+compatibility: Designed for Claude Code
 ---
-
 # Shopify Observability
 
 ## Overview

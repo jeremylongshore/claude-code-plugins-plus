@@ -1,23 +1,39 @@
 ---
 name: supabase-load-scale
-description: |
-  Scale Supabase projects for production load: read replicas, connection pooling
+description: 'Scale Supabase projects for production load: read replicas, connection
+  pooling
+
   tuning via Supavisor, compute size upgrades, CDN caching for Storage,
+
   Edge Function regional deployment, and database table partitioning.
+
   Use when preparing for traffic spikes, optimizing connection limits,
+
   setting up read replicas for analytics queries, or partitioning large tables.
+
   Trigger with phrases like "supabase scale", "supabase read replica",
+
   "supabase connection pooling", "supabase compute upgrade",
+
   "supabase CDN storage", "supabase edge function regions",
+
   "supabase partitioning", "supavisor", "supabase pool mode".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(supabase:*), Bash(psql:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, supabase, scaling, performance, connection-pooling, read-replicas, partitioning]
+tags:
+- saas
+- supabase
+- scaling
+- performance
+- connection-pooling
+- read-replicas
+- partitioning
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Supabase Load & Scale
 
 ## Overview

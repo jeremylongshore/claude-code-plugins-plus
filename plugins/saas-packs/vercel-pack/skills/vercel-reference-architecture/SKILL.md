@@ -1,17 +1,27 @@
 ---
 name: vercel-reference-architecture
-description: |
-  Implement a Vercel reference architecture with layered project structure and best practices.
+description: 'Implement a Vercel reference architecture with layered project structure
+  and best practices.
+
   Use when designing new Vercel projects, reviewing project structure,
+
   or establishing architecture standards for Vercel applications.
+
   Trigger with phrases like "vercel architecture", "vercel project structure",
+
   "vercel best practices layout", "how to organize vercel project".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vercel, architecture, best-practices]
+tags:
+- saas
+- vercel
+- architecture
+- best-practices
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vercel Reference Architecture
 

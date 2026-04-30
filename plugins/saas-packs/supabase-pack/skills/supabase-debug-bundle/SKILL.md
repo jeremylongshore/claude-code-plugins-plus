@@ -1,19 +1,29 @@
 ---
 name: supabase-debug-bundle
-description: |
-  Collect Supabase diagnostic info for troubleshooting and support tickets.
+description: 'Collect Supabase diagnostic info for troubleshooting and support tickets.
+
   Use when debugging connection failures, auth issues, Realtime drops, Storage
+
   errors, RLS misconfigurations, or preparing a support escalation.
+
   Trigger: "supabase debug", "supabase diagnostics", "supabase support bundle",
+
   "collect supabase logs", "debug supabase connection".
-allowed-tools: Read, Bash(npx:*), Bash(node:*), Bash(curl:*), Bash(supabase:*), Bash(tar:*), Grep, Glob
+
+  '
+allowed-tools: Read, Bash(npx:*), Bash(node:*), Bash(curl:*), Bash(supabase:*), Bash(tar:*),
+  Grep, Glob
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, supabase, debugging, support, diagnostics]
+tags:
+- saas
+- supabase
+- debugging
+- support
+- diagnostics
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Supabase Debug Bundle
 
 Collect a comprehensive, redacted diagnostic bundle from a Supabase project. Tests connectivity, auth, Realtime, Storage, RLS policy behavior, and database health — then packages everything into a single archive safe for sharing with Supabase support.

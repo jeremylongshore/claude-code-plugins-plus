@@ -1,17 +1,28 @@
 ---
 name: vercel-load-scale
-description: |
-  Load test and scale Vercel deployments with concurrency tuning and capacity planning.
+description: 'Load test and scale Vercel deployments with concurrency tuning and capacity
+  planning.
+
   Use when running performance tests, planning for traffic spikes,
+
   or optimizing serverless function scaling on Vercel.
+
   Trigger with phrases like "vercel load test", "vercel scale",
+
   "vercel performance test", "vercel capacity", "vercel benchmark".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npx:*), Bash(vercel:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vercel, testing, performance, scaling]
+tags:
+- saas
+- vercel
+- testing
+- performance
+- scaling
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vercel Load & Scale
 

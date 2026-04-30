@@ -1,19 +1,30 @@
 ---
 name: sentry-error-capture
-description: |
-  Implement advanced error capture and context enrichment with Sentry.
+description: 'Implement advanced error capture and context enrichment with Sentry.
+
   Use when adding captureException/captureMessage calls, enriching errors
+
   with user context, tags, breadcrumbs, or custom fingerprinting.
+
   Trigger with "sentry error capture", "sentry context", "enrich sentry errors",
+
   "sentry exception handling", "sentry breadcrumbs", "sentry fingerprint".
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash(npm:*), Bash(npx:*), Bash(pip:*), Bash(python:*)
+
+  '
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(npm:*), Bash(npx:*), Bash(pip:*),
+  Bash(python:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, sentry, error-tracking, context, breadcrumbs, observability]
+tags:
+- saas
+- sentry
+- error-tracking
+- context
+- breadcrumbs
+- observability
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Sentry Error Capture
 
 ## Overview

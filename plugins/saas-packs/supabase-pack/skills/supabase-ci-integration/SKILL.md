@@ -1,21 +1,32 @@
 ---
 name: supabase-ci-integration
-description: |
-  Configure Supabase CI/CD pipelines with GitHub Actions: link projects,
+description: 'Configure Supabase CI/CD pipelines with GitHub Actions: link projects,
+
   push migrations, deploy Edge Functions, generate types, and run tests
+
   against local Supabase instances.
+
   Use when setting up CI pipelines for Supabase, automating database
+
   migrations, deploying Edge Functions in CI, or running integration tests.
+
   Trigger with phrases like "supabase CI", "supabase GitHub Actions",
+
   "supabase deploy pipeline", "CI supabase migrations", "supabase preview branches".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npx:*), Bash(gh:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, supabase, ci-cd, github-actions, devops]
+tags:
+- saas
+- supabase
+- ci-cd
+- github-actions
+- devops
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Supabase CI Integration
 
 ## Overview

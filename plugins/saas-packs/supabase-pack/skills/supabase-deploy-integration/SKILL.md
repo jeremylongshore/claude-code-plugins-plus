@@ -1,21 +1,33 @@
 ---
 name: supabase-deploy-integration
-description: |
-  Deploy and manage Supabase projects in production. Covers database migrations,
+description: 'Deploy and manage Supabase projects in production. Covers database migrations,
+
   Edge Functions deployment, secrets management, zero-downtime rollouts,
+
   blue/green branching, rollback procedures, and post-deploy health checks.
+
   Use when deploying Supabase to production, running migrations, deploying
+
   Edge Functions, managing secrets, or implementing zero-downtime deployments.
+
   Trigger: "deploy supabase", "supabase migration push", "deploy edge function",
+
   "supabase rollback", "supabase blue green", "supabase health check".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npx:supabase), Bash(supabase:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, supabase, deployment, migrations, edge-functions, devops]
+tags:
+- saas
+- supabase
+- deployment
+- migrations
+- edge-functions
+- devops
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Supabase Deploy Integration
 
 ## Overview

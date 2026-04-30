@@ -1,18 +1,26 @@
 ---
 name: serpapi-core-workflow-b
-description: |
-  Search Bing, YouTube, Google Shopping, Google News, and Google Maps with SerpApi.
+description: 'Search Bing, YouTube, Google Shopping, Google News, and Google Maps
+  with SerpApi.
+
   Use when scraping non-Google engines, building multi-engine search,
+
   or extracting video/news/shopping/maps data.
+
   Trigger: "serpapi youtube", "serpapi bing", "serpapi news", "serpapi shopping".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, seo, serpapi]
-compatible-with: claude-code
+tags:
+- saas
+- search
+- seo
+- serpapi
+compatibility: Designed for Claude Code
 ---
-
 # SerpApi Core Workflow B: Multi-Engine Search
 
 ## Overview

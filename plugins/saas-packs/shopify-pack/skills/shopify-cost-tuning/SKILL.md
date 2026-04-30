@@ -1,19 +1,28 @@
 ---
 name: shopify-cost-tuning
-description: |
-  Optimize Shopify app costs through plan selection, API usage monitoring,
+description: 'Optimize Shopify app costs through plan selection, API usage monitoring,
+
   and Shopify Plus upgrade analysis.
-  Use when analyzing API spend, choosing between Shopify plans, or reducing billable API calls.
+
+  Use when analyzing API spend, choosing between Shopify plans, or reducing billable
+  API calls.
+
   Trigger with phrases like "shopify cost", "shopify billing",
-  "shopify pricing", "shopify Plus worth it", "shopify API usage", "reduce shopify costs".
+
+  "shopify pricing", "shopify Plus worth it", "shopify API usage", "reduce shopify
+  costs".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ecommerce, shopify]
-compatible-with: claude-code
+tags:
+- saas
+- ecommerce
+- shopify
+compatibility: Designed for Claude Code
 ---
-
 # Shopify Cost Tuning
 
 ## Overview

@@ -1,20 +1,22 @@
 ---
 name: webflow-core-workflow-a
-description: |
-  Execute the primary Webflow workflow — CMS content management: list collections,
-  CRUD items, publish items, and manage content lifecycle via the Data API v2.
-  Use when working with Webflow CMS collections and items, managing blog posts,
-  team members, or any dynamic content.
-  Trigger with phrases like "webflow CMS", "webflow collections", "webflow items",
-  "create webflow content", "manage webflow CMS", "webflow content management".
+description: "Execute the primary Webflow workflow \u2014 CMS content management:\
+  \ list collections,\nCRUD items, publish items, and manage content lifecycle via\
+  \ the Data API v2.\nUse when working with Webflow CMS collections and items, managing\
+  \ blog posts,\nteam members, or any dynamic content.\nTrigger with phrases like\
+  \ \"webflow CMS\", \"webflow collections\", \"webflow items\",\n\"create webflow\
+  \ content\", \"manage webflow CMS\", \"webflow content management\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, no-code, webflow]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- no-code
+- webflow
+compatibility: Designed for Claude Code
 ---
-
 # Webflow Core Workflow A — CMS Content Management
 
 ## Overview

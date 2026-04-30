@@ -1,20 +1,31 @@
 ---
 name: sentry-common-errors
-description: |
-  Troubleshoot common Sentry integration issues and fixes.
+description: 'Troubleshoot common Sentry integration issues and fixes.
+
   Use when encountering Sentry errors, missing events, source map
+
   failures, rate limits, or configuration problems.
+
   Trigger: "sentry not working", "sentry errors missing", "fix sentry",
+
   "sentry troubleshoot", "sentry 429", "source maps not resolving",
+
   "sentry events not showing", "sentry flush", "sentry CORS".
-allowed-tools: Read, Grep, Bash(npm:*), Bash(node:*), Bash(curl:*), Bash(npx:*), Bash(sentry-cli:*), Bash(python3:*)
+
+  '
+allowed-tools: Read, Grep, Bash(npm:*), Bash(node:*), Bash(curl:*), Bash(npx:*), Bash(sentry-cli:*),
+  Bash(python3:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, sentry, troubleshooting, debugging, error-monitoring]
+tags:
+- saas
+- sentry
+- troubleshooting
+- debugging
+- error-monitoring
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Sentry Common Errors
 
 ## Overview

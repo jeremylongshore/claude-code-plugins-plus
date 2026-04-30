@@ -1,17 +1,26 @@
 ---
 name: twinmind-hello-world
-description: |
-  Create your first TwinMind meeting transcription and AI summary.
+description: 'Create your first TwinMind meeting transcription and AI summary.
+
   Use when starting with TwinMind, testing your setup,
+
   or learning basic transcription and summary patterns.
+
   Trigger with phrases like "twinmind hello world", "first twinmind meeting",
+
   "twinmind quick start", "test twinmind transcription".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, twinmind, testing, transcription]
+tags:
+- saas
+- twinmind
+- testing
+- transcription
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # TwinMind Hello World
 

@@ -1,16 +1,24 @@
 ---
 name: speak-common-errors
-description: |
-  Diagnose and fix common Speak API errors: authentication failures, audio format issues, rate limits, and session management problems.
+description: 'Diagnose and fix common Speak API errors: authentication failures, audio
+  format issues, rate limits, and session management problems.
+
   Use when implementing common errors features,
+
   or troubleshooting Speak language learning integration issues.
+
   Trigger with phrases like "speak common errors", "speak common errors".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, speak, debugging]
+tags:
+- saas
+- speak
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Speak Common Errors
 

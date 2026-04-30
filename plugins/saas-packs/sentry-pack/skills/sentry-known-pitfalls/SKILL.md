@@ -1,17 +1,30 @@
 ---
 name: sentry-known-pitfalls
-description: |
-  Identify and fix common Sentry SDK pitfalls that cause silent data loss,
+description: 'Identify and fix common Sentry SDK pitfalls that cause silent data loss,
+
   cost overruns, and missed alerts. Covers 10 anti-patterns with fix code.
+
   Use when auditing Sentry config, debugging missing events, or reviewing
+
   SDK setup. Trigger: "sentry pitfalls", "sentry anti-patterns",
+
   "sentry mistakes", "why are sentry events missing".
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash(node:*), Bash(npm:*), Bash(npx:*), Bash(grep:*), Bash(find:*)
+
+  '
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(node:*), Bash(npm:*), Bash(npx:*),
+  Bash(grep:*), Bash(find:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, sentry, anti-patterns, troubleshooting, best-practices, sdk, configuration]
+tags:
+- saas
+- sentry
+- anti-patterns
+- troubleshooting
+- best-practices
+- sdk
+- configuration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Sentry Known Pitfalls
 

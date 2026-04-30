@@ -1,17 +1,30 @@
 ---
 name: sentry-load-scale
-description: |
-  Scale Sentry for high-traffic applications handling millions of events per day.
+description: 'Scale Sentry for high-traffic applications handling millions of events
+  per day.
+
   Use when optimizing SDK performance at high volume, implementing adaptive sampling,
+
   managing quotas and costs at scale, or deploying Sentry across multi-region infrastructure.
-  Trigger with phrases like "sentry high traffic", "scale sentry", "sentry millions events",
+
+  Trigger with phrases like "sentry high traffic", "scale sentry", "sentry millions
+  events",
+
   "sentry high volume", "sentry quota management", "sentry load test".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Bash(node:*), Bash(npx:*), Bash(k6:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, sentry, performance, scaling, high-traffic, enterprise]
+tags:
+- saas
+- sentry
+- performance
+- scaling
+- high-traffic
+- enterprise
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Sentry Load & Scale
 

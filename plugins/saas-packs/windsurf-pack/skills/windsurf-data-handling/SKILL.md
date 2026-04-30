@@ -1,17 +1,28 @@
 ---
 name: windsurf-data-handling
-description: |
-  Control what code and data Windsurf AI can access and process in your workspace.
+description: 'Control what code and data Windsurf AI can access and process in your
+  workspace.
+
   Use when handling sensitive data, implementing data exclusion patterns,
+
   or ensuring compliance with privacy regulations in Windsurf environments.
+
   Trigger with phrases like "windsurf data privacy", "windsurf PII",
+
   "windsurf GDPR", "windsurf compliance", "codeium data", "windsurf telemetry".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, privacy, compliance, data-handling]
+tags:
+- saas
+- windsurf
+- privacy
+- compliance
+- data-handling
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Windsurf Data Handling
 

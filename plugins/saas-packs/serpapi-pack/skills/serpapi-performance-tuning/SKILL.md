@@ -1,18 +1,27 @@
 ---
 name: serpapi-performance-tuning
-description: |
-  Optimize SerpApi performance with caching, async searches, and result filtering.
+description: 'Optimize SerpApi performance with caching, async searches, and result
+  filtering.
+
   Use when reducing latency, minimizing credit consumption,
+
   or optimizing search throughput.
-  Trigger: "serpapi performance", "optimize serpapi", "serpapi caching", "serpapi slow".
+
+  Trigger: "serpapi performance", "optimize serpapi", "serpapi caching", "serpapi
+  slow".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, seo, serpapi]
-compatible-with: claude-code
+tags:
+- saas
+- search
+- seo
+- serpapi
+compatibility: Designed for Claude Code
 ---
-
 # SerpApi Performance Tuning
 
 ## Overview

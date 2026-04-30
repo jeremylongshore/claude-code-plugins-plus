@@ -1,19 +1,27 @@
 ---
 name: shopify-migration-deep-dive
-description: |
-  Migrate e-commerce data to Shopify using bulk operations, product imports,
+description: 'Migrate e-commerce data to Shopify using bulk operations, product imports,
+
   and the strangler fig pattern for gradual platform migration.
-  Use when replatforming to Shopify, importing product catalogs, or migrating customer and order data from another e-commerce system.
+
+  Use when replatforming to Shopify, importing product catalogs, or migrating customer
+  and order data from another e-commerce system.
+
   Trigger with phrases like "migrate to shopify", "shopify data migration",
+
   "import products shopify", "shopify replatform", "move to shopify".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ecommerce, shopify]
-compatible-with: claude-code
+tags:
+- saas
+- ecommerce
+- shopify
+compatibility: Designed for Claude Code
 ---
-
 # Shopify Migration Deep Dive
 
 ## Overview

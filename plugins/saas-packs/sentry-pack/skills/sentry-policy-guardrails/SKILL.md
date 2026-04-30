@@ -1,17 +1,30 @@
 ---
 name: sentry-policy-guardrails
-description: |
-  Enforce organizational governance and policy guardrails for Sentry usage.
+description: 'Enforce organizational governance and policy guardrails for Sentry usage.
+
   Use when standardizing Sentry configuration across services, enforcing
+
   PII scrubbing, building shared config packages, or auditing drift.
+
   Trigger with phrases like "sentry governance", "sentry policy",
+
   "sentry standards", "enforce sentry config", "sentry compliance".
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash(node:*), Bash(npm:*), Bash(npx:*), Bash(curl:*), Bash(grep:*), Bash(git:*)
+
+  '
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(node:*), Bash(npm:*), Bash(npx:*),
+  Bash(curl:*), Bash(grep:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, sentry, compliance, governance, policy, ci, cost-governance]
+tags:
+- saas
+- sentry
+- compliance
+- governance
+- policy
+- ci
+- cost-governance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Sentry Policy Guardrails
 

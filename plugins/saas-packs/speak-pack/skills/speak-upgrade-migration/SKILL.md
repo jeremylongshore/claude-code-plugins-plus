@@ -1,16 +1,24 @@
 ---
 name: speak-upgrade-migration
-description: |
-  Upgrade Speak SDK versions, migrate between language learning platforms, and handle API version changes.
+description: 'Upgrade Speak SDK versions, migrate between language learning platforms,
+  and handle API version changes.
+
   Use when implementing upgrade migration features,
+
   or troubleshooting Speak language learning integration issues.
+
   Trigger with phrases like "speak upgrade migration", "speak upgrade migration".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, speak, api]
+tags:
+- saas
+- speak
+- api
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Speak Upgrade & Migration
 

@@ -1,21 +1,37 @@
 ---
 name: supabase-data-handling
-description: |
-  Implement GDPR/CCPA compliance with Supabase: RLS for data isolation, user deletion
+description: 'Implement GDPR/CCPA compliance with Supabase: RLS for data isolation,
+  user deletion
+
   via auth.admin.deleteUser(), data export via SQL, PII column management,
+
   backup/restore workflows, and retention policies.
-  Use when handling sensitive data, implementing right-to-deletion, configuring data retention,
+
+  Use when handling sensitive data, implementing right-to-deletion, configuring data
+  retention,
+
   or auditing PII in Supabase database columns.
+
   Trigger: "supabase GDPR", "supabase data handling", "supabase PII", "supabase compliance",
+
   "supabase data retention", "supabase delete user", "supabase data export".
-allowed-tools: Read, Write, Edit, Bash(npx supabase:*), Bash(supabase:*), Bash(psql:*), Grep, Glob
+
+  '
+allowed-tools: Read, Write, Edit, Bash(npx supabase:*), Bash(supabase:*), Bash(psql:*),
+  Grep, Glob
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, supabase, gdpr, ccpa, compliance, data-handling, privacy]
+tags:
+- saas
+- supabase
+- gdpr
+- ccpa
+- compliance
+- data-handling
+- privacy
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Supabase Data Handling
 
 ## Overview

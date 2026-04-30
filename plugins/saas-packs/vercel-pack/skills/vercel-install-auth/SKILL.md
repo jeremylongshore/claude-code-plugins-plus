@@ -1,17 +1,27 @@
 ---
 name: vercel-install-auth
-description: |
-  Install Vercel CLI and configure API token authentication.
+description: 'Install Vercel CLI and configure API token authentication.
+
   Use when setting up Vercel for the first time, creating access tokens,
+
   or initializing a project with vercel link.
+
   Trigger with phrases like "install vercel", "setup vercel",
+
   "vercel auth", "configure vercel token", "vercel login".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(vercel:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vercel, authentication, cli, setup]
+tags:
+- saas
+- vercel
+- authentication
+- cli
+- setup
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vercel Install & Auth
 

@@ -1,17 +1,24 @@
 ---
 name: stackblitz-prod-checklist
-description: |
-  Production checklist for WebContainer apps: headers, browser support, fallbacks.
+description: 'Production checklist for WebContainer apps: headers, browser support,
+  fallbacks.
+
   Use when working with WebContainers or StackBlitz SDK.
+
   Trigger: "stackblitz production".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ide, webcontainers, stackblitz]
-compatible-with: claude-code
+tags:
+- saas
+- ide
+- webcontainers
+- stackblitz
+compatibility: Designed for Claude Code
 ---
-
 # StackBlitz Prod Checklist
 
 ## Overview

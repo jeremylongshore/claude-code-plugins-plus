@@ -1,17 +1,27 @@
 ---
 name: vercel-upgrade-migration
-description: |
-  Upgrade Vercel CLI, Node.js runtime, and Next.js framework versions with breaking change detection.
+description: 'Upgrade Vercel CLI, Node.js runtime, and Next.js framework versions
+  with breaking change detection.
+
   Use when upgrading Vercel CLI versions, migrating Node.js runtimes,
+
   or updating Next.js between major versions on Vercel.
+
   Trigger with phrases like "upgrade vercel", "vercel migration",
+
   "vercel breaking changes", "update vercel CLI", "next.js upgrade on vercel".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(npm:*), Bash(npx:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vercel, migration, upgrade]
+tags:
+- saas
+- vercel
+- migration
+- upgrade
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vercel Upgrade Migration
 

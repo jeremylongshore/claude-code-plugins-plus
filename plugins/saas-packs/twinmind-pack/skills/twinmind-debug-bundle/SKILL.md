@@ -1,17 +1,25 @@
 ---
 name: twinmind-debug-bundle
-description: |
-  Collect comprehensive diagnostic information for TwinMind issues.
+description: 'Collect comprehensive diagnostic information for TwinMind issues.
+
   Use when preparing support requests, investigating complex problems,
+
   or gathering evidence for bug reports.
+
   Trigger with phrases like "twinmind debug", "twinmind diagnostics",
+
   "collect twinmind info", "twinmind support bundle".
+
+  '
 allowed-tools: Read, Write, Bash(curl:*), Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, twinmind, debugging]
+tags:
+- saas
+- twinmind
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # TwinMind Debug Bundle
 

@@ -1,19 +1,28 @@
 ---
 name: webflow-performance-tuning
-description: |
-  Optimize Webflow API performance with response caching, bulk endpoint batching,
+description: 'Optimize Webflow API performance with response caching, bulk endpoint
+  batching,
+
   CDN-cached live item reads, pagination optimization, and connection pooling.
+
   Use when experiencing slow API responses or optimizing request throughput.
+
   Trigger with phrases like "webflow performance", "optimize webflow",
+
   "webflow latency", "webflow caching", "webflow slow", "webflow batch".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, no-code, webflow]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- no-code
+- webflow
+compatibility: Designed for Claude Code
 ---
-
 # Webflow Performance Tuning
 
 ## Overview

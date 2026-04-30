@@ -1,18 +1,26 @@
 ---
 name: serpapi-reference-architecture
-description: |
-  Production architecture for SerpApi search services with caching, monitoring, and multi-engine support.
+description: 'Production architecture for SerpApi search services with caching, monitoring,
+  and multi-engine support.
+
   Use when designing search features, building SERP tracking systems,
+
   or architecting search-powered applications.
+
   Trigger: "serpapi architecture", "serpapi project structure", "serpapi design".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, seo, serpapi]
-compatible-with: claude-code
+tags:
+- saas
+- search
+- seo
+- serpapi
+compatibility: Designed for Claude Code
 ---
-
 # SerpApi Reference Architecture
 
 ## Overview

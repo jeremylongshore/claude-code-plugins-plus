@@ -1,17 +1,27 @@
 ---
 name: vastai-cost-tuning
-description: |
-  Optimize Vast.ai GPU cloud costs through smart instance selection and lifecycle management.
+description: 'Optimize Vast.ai GPU cloud costs through smart instance selection and
+  lifecycle management.
+
   Use when analyzing GPU spending, reducing training costs,
+
   or implementing budget controls for Vast.ai workloads.
+
   Trigger with phrases like "vastai cost", "vastai billing",
+
   "reduce vastai costs", "vastai pricing", "vastai budget".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vastai:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vast-ai, api, cost-optimization]
+tags:
+- saas
+- vast-ai
+- api
+- cost-optimization
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vast.ai Cost Tuning
 

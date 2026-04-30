@@ -1,17 +1,25 @@
 ---
 name: vastai-incident-runbook
-description: |
-  Execute Vast.ai incident response for GPU instance failures and outages.
+description: 'Execute Vast.ai incident response for GPU instance failures and outages.
+
   Use when responding to instance failures, investigating training crashes,
+
   or handling spot preemption emergencies.
+
   Trigger with phrases like "vastai incident", "vastai outage",
+
   "vastai down", "vastai emergency", "vastai instance failed".
+
+  '
 allowed-tools: Read, Grep, Bash(vastai:*), Bash(curl:*), Bash(ssh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vast-ai, incident-response]
+tags:
+- saas
+- vast-ai
+- incident-response
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vast.ai Incident Runbook
 

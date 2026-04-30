@@ -1,20 +1,33 @@
 ---
 name: supabase-multi-env-setup
-description: |
-  Configure Supabase across development, staging, and production with separate projects,
+description: 'Configure Supabase across development, staging, and production with
+  separate projects,
+
   environment-specific secrets, and safe migration promotion.
+
   Use when setting up multi-environment deployments, isolating dev from prod data,
+
   configuring per-environment Supabase projects, or promoting migrations through environments.
+
   Trigger: "supabase environments", "supabase staging", "supabase dev prod",
+
   "supabase multi-project", "supabase env config", "database branching".
-allowed-tools: Read, Write, Edit, Bash(npx supabase:*), Bash(supabase:*), Bash(vercel:*), Grep, Glob
+
+  '
+allowed-tools: Read, Write, Edit, Bash(npx supabase:*), Bash(supabase:*), Bash(vercel:*),
+  Grep, Glob
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, supabase, deployment, environments, multi-env, devops]
+tags:
+- saas
+- supabase
+- deployment
+- environments
+- multi-env
+- devops
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Supabase Multi-Environment Setup
 
 ## Overview

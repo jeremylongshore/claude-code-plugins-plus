@@ -1,17 +1,28 @@
 ---
 name: vercel-edge-functions
-description: |
-  Build and deploy Vercel Edge Functions for ultra-low latency at the edge.
+description: 'Build and deploy Vercel Edge Functions for ultra-low latency at the
+  edge.
+
   Use when creating API routes with minimal latency, geolocation-based routing,
+
   A/B testing, or authentication at the edge.
+
   Trigger with phrases like "vercel edge function", "vercel edge runtime",
+
   "deploy edge function", "vercel middleware", "@vercel/edge".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vercel, edge, serverless, performance]
+tags:
+- saas
+- vercel
+- edge
+- serverless
+- performance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vercel Edge Functions
 

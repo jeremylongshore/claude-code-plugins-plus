@@ -1,17 +1,28 @@
 ---
 name: vercel-policy-guardrails
-description: |
-  Implement lint rules, CI policy checks, and automated guardrails for Vercel projects.
+description: 'Implement lint rules, CI policy checks, and automated guardrails for
+  Vercel projects.
+
   Use when setting up code quality rules, preventing secret exposure,
+
   or enforcing deployment policies for Vercel applications.
+
   Trigger with phrases like "vercel policy", "vercel lint",
+
   "vercel guardrails", "vercel best practices check", "vercel secret scan".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npx:*), Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vercel, policy, linting, security]
+tags:
+- saas
+- vercel
+- policy
+- linting
+- security
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vercel Policy Guardrails
 

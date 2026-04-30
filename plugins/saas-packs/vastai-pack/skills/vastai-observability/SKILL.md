@@ -1,17 +1,26 @@
 ---
 name: vastai-observability
-description: |
-  Monitor Vast.ai GPU instance health, utilization, and costs.
+description: 'Monitor Vast.ai GPU instance health, utilization, and costs.
+
   Use when setting up monitoring dashboards, configuring alerts,
+
   or tracking GPU utilization and spending.
+
   Trigger with phrases like "vastai monitoring", "vastai metrics",
+
   "vastai observability", "monitor vastai", "vastai alerts".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vastai:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vast-ai, monitoring, observability]
+tags:
+- saas
+- vast-ai
+- monitoring
+- observability
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vast.ai Observability
 

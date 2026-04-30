@@ -1,20 +1,29 @@
 ---
 name: snowflake-enterprise-rbac
-description: |
-  Configure Snowflake enterprise RBAC with system roles, custom role hierarchies,
+description: 'Configure Snowflake enterprise RBAC with system roles, custom role hierarchies,
+
   SSO/SCIM integration, and least-privilege access patterns.
+
   Use when implementing role-based access control, configuring SSO with SAML/OIDC,
+
   or setting up organization-level governance in Snowflake.
+
   Trigger with phrases like "snowflake RBAC", "snowflake roles",
+
   "snowflake SSO", "snowflake SCIM", "snowflake permissions", "snowflake access control".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, data-warehouse, analytics, snowflake]
-compatible-with: claude-code
+tags:
+- saas
+- data-warehouse
+- analytics
+- snowflake
+compatibility: Designed for Claude Code
 ---
-
 # Snowflake Enterprise RBAC
 
 ## Overview

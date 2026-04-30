@@ -1,19 +1,27 @@
 ---
 name: snowflake-common-errors
-description: |
-  Diagnose and fix common Snowflake errors and SQL compilation failures.
+description: 'Diagnose and fix common Snowflake errors and SQL compilation failures.
+
   Use when encountering Snowflake error codes, failed queries,
+
   authentication issues, or warehouse/connection problems.
+
   Trigger with phrases like "snowflake error", "fix snowflake",
+
   "snowflake not working", "snowflake SQL error", "snowflake 002003".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, data-warehouse, analytics, snowflake]
-compatible-with: claude-code
+tags:
+- saas
+- data-warehouse
+- analytics
+- snowflake
+compatibility: Designed for Claude Code
 ---
-
 # Snowflake Common Errors
 
 ## Overview

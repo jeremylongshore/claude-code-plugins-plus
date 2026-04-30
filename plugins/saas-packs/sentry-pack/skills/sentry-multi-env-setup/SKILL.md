@@ -1,22 +1,37 @@
 ---
 name: sentry-multi-env-setup
-description: |
-  Configure Sentry across development, staging, and production environments
+description: 'Configure Sentry across development, staging, and production environments
+
   with separate DSNs, environment-specific sample rates, per-environment
+
   alert rules, and dashboard filtering.
+
   Use when setting up Sentry for dev/staging/production, managing
+
   environment-specific configurations, isolating data between environments,
+
   or configuring .env files for per-environment DSNs.
+
   Trigger: "sentry environments", "sentry staging setup",
+
   "multi-environment sentry", "sentry dev vs prod", "sentry DSN per env".
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash(npm:*), Bash(npx:*), Bash(node:*), Bash(sentry-cli:*)
+
+  '
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(npm:*), Bash(npx:*), Bash(node:*),
+  Bash(sentry-cli:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, sentry, environments, configuration, multi-env, dsn, alerts]
+tags:
+- saas
+- sentry
+- environments
+- configuration
+- multi-env
+- dsn
+- alerts
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Sentry Multi-Environment Setup
 
 ## Overview

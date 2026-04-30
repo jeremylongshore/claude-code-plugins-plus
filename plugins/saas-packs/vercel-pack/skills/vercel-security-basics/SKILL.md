@@ -1,17 +1,28 @@
 ---
 name: vercel-security-basics
-description: |
-  Apply Vercel security best practices for secrets, headers, and access control.
+description: 'Apply Vercel security best practices for secrets, headers, and access
+  control.
+
   Use when securing API keys, configuring security headers,
+
   or auditing Vercel security configuration.
+
   Trigger with phrases like "vercel security", "vercel secrets",
+
   "secure vercel", "vercel headers", "vercel CSP".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vercel, security, headers, secrets]
+tags:
+- saas
+- vercel
+- security
+- headers
+- secrets
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vercel Security Basics
 

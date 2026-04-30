@@ -1,18 +1,26 @@
 ---
 name: shopify-rate-limits
-description: |
-  Handle Shopify API rate limits for both REST (leaky bucket) and GraphQL (calculated query cost).
-  Use when hitting 429 errors, implementing retry logic, or optimizing API request throughput.
+description: 'Handle Shopify API rate limits for both REST (leaky bucket) and GraphQL
+  (calculated query cost).
+
+  Use when hitting 429 errors, implementing retry logic, or optimizing API request
+  throughput.
+
   Trigger with phrases like "shopify rate limit", "shopify throttling",
+
   "shopify 429", "shopify THROTTLED", "shopify query cost", "shopify backoff".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ecommerce, shopify]
-compatible-with: claude-code
+tags:
+- saas
+- ecommerce
+- shopify
+compatibility: Designed for Claude Code
 ---
-
 # Shopify Rate Limits
 
 ## Overview

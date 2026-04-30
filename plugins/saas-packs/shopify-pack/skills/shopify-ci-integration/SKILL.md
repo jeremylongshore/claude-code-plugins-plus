@@ -1,19 +1,28 @@
 ---
 name: shopify-ci-integration
-description: |
-  Configure CI/CD pipelines for Shopify apps with GitHub Actions, API version testing,
+description: 'Configure CI/CD pipelines for Shopify apps with GitHub Actions, API
+  version testing,
+
   and Shopify CLI deployment.
-  Use when setting up automated testing, deployment pipelines, or API version monitoring for Shopify apps.
+
+  Use when setting up automated testing, deployment pipelines, or API version monitoring
+  for Shopify apps.
+
   Trigger with phrases like "shopify CI", "shopify GitHub Actions",
+
   "shopify automated tests", "CI shopify", "shopify deploy pipeline".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ecommerce, shopify]
-compatible-with: claude-code
+tags:
+- saas
+- ecommerce
+- shopify
+compatibility: Designed for Claude Code
 ---
-
 # Shopify CI Integration
 
 ## Overview

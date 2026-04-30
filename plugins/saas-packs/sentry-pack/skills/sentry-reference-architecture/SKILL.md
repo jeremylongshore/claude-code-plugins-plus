@@ -1,19 +1,29 @@
 ---
 name: sentry-reference-architecture
-description: |
-  Design production-grade Sentry architecture for multi-service organizations.
+description: 'Design production-grade Sentry architecture for multi-service organizations.
+
   Use when planning Sentry rollout, structuring projects across teams,
+
   building shared config modules, or setting up distributed tracing.
+
   Trigger: "sentry architecture", "sentry project structure",
+
   "sentry reference design", "sentry distributed tracing".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Glob, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, sentry, architecture, enterprise, distributed-tracing, microservices]
+tags:
+- saas
+- sentry
+- architecture
+- enterprise
+- distributed-tracing
+- microservices
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Sentry Reference Architecture
 
 ## Overview

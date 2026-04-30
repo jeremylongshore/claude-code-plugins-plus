@@ -1,19 +1,35 @@
 ---
 name: sentry-architecture-variants
-description: |
-  Configure Sentry error tracking and performance monitoring for different
+description: 'Configure Sentry error tracking and performance monitoring for different
+
   application architectures. Use when setting up Sentry for monoliths,
+
   microservices, serverless functions, event-driven systems, frontend SPAs,
+
   mobile apps, or hybrid deployments.
+
   Trigger: "sentry monolith setup", "sentry microservices tracing",
+
   "sentry serverless lambda", "sentry event-driven kafka",
+
   "sentry react native", "sentry architecture pattern".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(node:*), Bash(npx:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, sentry, serverless, microservices, architecture, distributed-tracing, lambda, spa, mobile]
+tags:
+- saas
+- sentry
+- serverless
+- microservices
+- architecture
+- distributed-tracing
+- lambda
+- spa
+- mobile
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Sentry Architecture Variants
 

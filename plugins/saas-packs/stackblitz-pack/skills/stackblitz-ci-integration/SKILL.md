@@ -1,17 +1,23 @@
 ---
 name: stackblitz-ci-integration
-description: |
-  CI testing for WebContainer apps with Playwright browser tests.
+description: 'CI testing for WebContainer apps with Playwright browser tests.
+
   Use when working with WebContainers or StackBlitz SDK.
+
   Trigger: "stackblitz CI".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ide, webcontainers, stackblitz]
-compatible-with: claude-code
+tags:
+- saas
+- ide
+- webcontainers
+- stackblitz
+compatibility: Designed for Claude Code
 ---
-
 # StackBlitz Ci Integration
 
 ## Overview

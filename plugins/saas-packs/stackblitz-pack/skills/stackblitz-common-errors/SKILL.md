@@ -1,18 +1,26 @@
 ---
 name: stackblitz-common-errors
-description: |
-  Fix WebContainer and StackBlitz errors: COOP/COEP, SharedArrayBuffer, boot failures.
-  Use when WebContainers fail to boot, embeds don't load,
+description: 'Fix WebContainer and StackBlitz errors: COOP/COEP, SharedArrayBuffer,
+  boot failures.
+
+  Use when WebContainers fail to boot, embeds don''t load,
+
   or processes crash inside WebContainers.
+
   Trigger: "stackblitz error", "webcontainer error", "SharedArrayBuffer not defined".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ide, webcontainers, stackblitz]
-compatible-with: claude-code
+tags:
+- saas
+- ide
+- webcontainers
+- stackblitz
+compatibility: Designed for Claude Code
 ---
-
 # StackBlitz Common Errors
 
 ## Error Reference

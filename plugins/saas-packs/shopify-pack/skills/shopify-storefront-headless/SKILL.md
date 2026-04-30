@@ -1,19 +1,26 @@
 ---
 name: shopify-storefront-headless
-description: |
-  Build headless storefronts with Shopify's Storefront API and Cart API.
+description: 'Build headless storefronts with Shopify''s Storefront API and Cart API.
+
   Use when building custom frontends, setting up Hydrogen, querying products
+
   for customer-facing apps, or managing cart operations programmatically.
+
   Trigger with phrases like "shopify headless", "shopify storefront api",
+
   "shopify hydrogen", "shopify cart api", "headless commerce shopify".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ecommerce, shopify]
-compatible-with: claude-code
+tags:
+- saas
+- ecommerce
+- shopify
+compatibility: Designed for Claude Code
 ---
-
 # Shopify Storefront & Headless Commerce
 
 ## Overview

@@ -1,17 +1,28 @@
 ---
 name: windsurf-performance-tuning
-description: |
-  Optimize Windsurf IDE performance: indexing speed, Cascade responsiveness, and memory usage.
+description: 'Optimize Windsurf IDE performance: indexing speed, Cascade responsiveness,
+  and memory usage.
+
   Use when Windsurf is slow, indexing takes too long, Cascade times out,
+
   or the IDE uses too much memory.
+
   Trigger with phrases like "windsurf slow", "windsurf performance",
+
   "optimize windsurf", "windsurf memory", "cascade slow", "indexing slow".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, performance, indexing, optimization]
+tags:
+- saas
+- windsurf
+- performance
+- indexing
+- optimization
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Windsurf Performance Tuning
 

@@ -1,20 +1,29 @@
 ---
 name: snowflake-migration-deep-dive
-description: |
-  Execute migration to Snowflake from Redshift, BigQuery, or on-prem databases
+description: 'Execute migration to Snowflake from Redshift, BigQuery, or on-prem databases
+
   with data transfer, schema conversion, and validation strategies.
+
   Use when migrating to Snowflake from another platform, planning data transfers,
+
   or re-platforming existing data warehouses to Snowflake.
+
   Trigger with phrases like "migrate to snowflake", "snowflake migration",
+
   "redshift to snowflake", "bigquery to snowflake", "snowflake replatform".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(python3:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, data-warehouse, analytics, snowflake]
-compatible-with: claude-code
+tags:
+- saas
+- data-warehouse
+- analytics
+- snowflake
+compatibility: Designed for Claude Code
 ---
-
 # Snowflake Migration Deep Dive
 
 ## Overview

@@ -1,18 +1,25 @@
 ---
 name: workhuman-install-auth
-description: |
-  Workhuman install auth for employee recognition and rewards API.
+description: 'Workhuman install auth for employee recognition and rewards API.
+
   Use when integrating Workhuman Social Recognition,
+
   or building recognition workflows with HRIS systems.
+
   Trigger: "workhuman install auth".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hr, recognition, workhuman]
-compatible-with: claude-code
+tags:
+- saas
+- hr
+- recognition
+- workhuman
+compatibility: Designed for Claude Code
 ---
-
 # Workhuman Install & Auth
 
 ## Overview

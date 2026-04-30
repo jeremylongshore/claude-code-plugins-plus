@@ -1,19 +1,28 @@
 ---
 name: shopify-local-dev-loop
-description: |
-  Configure Shopify local development with Shopify CLI, hot reload, and ngrok tunneling.
+description: 'Configure Shopify local development with Shopify CLI, hot reload, and
+  ngrok tunneling.
+
   Use when setting up a development environment, configuring test workflows,
+
   or establishing a fast iteration cycle with Shopify.
+
   Trigger with phrases like "shopify dev setup", "shopify local development",
+
   "shopify dev environment", "develop with shopify", "shopify CLI dev".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Bash(npx:*), Bash(shopify:*), Grep
+
+  '
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Bash(npx:*), Bash(shopify:*),
+  Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ecommerce, shopify]
-compatible-with: claude-code
+tags:
+- saas
+- ecommerce
+- shopify
+compatibility: Designed for Claude Code
 ---
-
 # Shopify Local Dev Loop
 
 ## Overview

@@ -1,18 +1,26 @@
 ---
 name: serpapi-sdk-patterns
-description: |
-  Production-ready SerpApi client patterns with caching, typing, and multi-engine support.
+description: 'Production-ready SerpApi client patterns with caching, typing, and multi-engine
+  support.
+
   Use when building search services, implementing result caching,
+
   or wrapping SerpApi with typed responses.
+
   Trigger: "serpapi patterns", "serpapi best practices", "serpapi client wrapper".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, seo, serpapi]
-compatible-with: claude-code
+tags:
+- saas
+- search
+- seo
+- serpapi
+compatibility: Designed for Claude Code
 ---
-
 # SerpApi SDK Patterns
 
 ## Overview

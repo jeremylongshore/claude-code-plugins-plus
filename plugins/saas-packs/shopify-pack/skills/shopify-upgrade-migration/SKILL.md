@@ -1,19 +1,27 @@
 ---
 name: shopify-upgrade-migration
-description: |
-  Upgrade Shopify API versions and migrate from REST to GraphQL with breaking change detection.
+description: 'Upgrade Shopify API versions and migrate from REST to GraphQL with breaking
+  change detection.
+
   Use when upgrading API versions, migrating from deprecated REST endpoints,
-  or handling Shopify's quarterly API release cycle.
+
+  or handling Shopify''s quarterly API release cycle.
+
   Trigger with phrases like "upgrade shopify", "shopify API version",
+
   "shopify breaking changes", "migrate REST to GraphQL", "shopify deprecation".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ecommerce, shopify]
-compatible-with: claude-code
+tags:
+- saas
+- ecommerce
+- shopify
+compatibility: Designed for Claude Code
 ---
-
 # Shopify Upgrade & Migration
 
 ## Overview

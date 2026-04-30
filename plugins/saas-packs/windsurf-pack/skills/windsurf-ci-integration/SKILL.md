@@ -1,17 +1,27 @@
 ---
 name: windsurf-ci-integration
-description: |
-  Integrate Windsurf Cascade workflows into CI/CD pipelines and team automation.
+description: 'Integrate Windsurf Cascade workflows into CI/CD pipelines and team automation.
+
   Use when automating Cascade tasks in GitHub Actions, enforcing AI code quality gates,
+
   or setting up Windsurf config validation in CI.
+
   Trigger with phrases like "windsurf CI", "windsurf GitHub Actions",
+
   "windsurf automation", "cascade CI", "windsurf pipeline".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, ci-cd, github-actions, automation]
+tags:
+- saas
+- windsurf
+- ci-cd
+- github-actions
+- automation
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Windsurf CI Integration
 

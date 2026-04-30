@@ -1,18 +1,29 @@
 ---
 name: sentry-debug-bundle
-description: |
-  Collect diagnostic information for Sentry troubleshooting and support tickets.
+description: 'Collect diagnostic information for Sentry troubleshooting and support
+  tickets.
+
   Use when events are not appearing in Sentry, SDK initialization seems broken,
+
   DSN connectivity fails, source maps are not resolving, or preparing a support request.
-  Trigger with "sentry debug info", "sentry diagnostics", "debug bundle", "sentry support ticket".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(npx:*), Bash(pip:*), Bash(python:*), Bash(curl:*), Bash(dig:*), Bash(sentry-cli:*), Grep, Glob
+
+  Trigger with "sentry debug info", "sentry diagnostics", "debug bundle", "sentry
+  support ticket".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(npx:*), Bash(pip:*),
+  Bash(python:*), Bash(curl:*), Bash(dig:*), Bash(sentry-cli:*), Grep, Glob
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, sentry, debugging, support, diagnostics]
+tags:
+- saas
+- sentry
+- debugging
+- support
+- diagnostics
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Sentry Debug Bundle
 
 ## Overview

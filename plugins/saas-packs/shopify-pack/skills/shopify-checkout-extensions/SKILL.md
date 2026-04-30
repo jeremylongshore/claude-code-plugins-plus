@@ -1,19 +1,29 @@
 ---
 name: shopify-checkout-extensions
-description: |
-  Build Checkout UI Extensions to customize Shopify checkout with sandboxed React-like components.
-  Use when replacing checkout.liquid (deprecated Aug 2025), adding custom fields to checkout,
+description: 'Build Checkout UI Extensions to customize Shopify checkout with sandboxed
+  React-like components.
+
+  Use when replacing checkout.liquid (deprecated Aug 2025), adding custom fields to
+  checkout,
+
   displaying banners, or reading checkout state with hooks.
+
   Trigger with phrases like "shopify checkout extension", "shopify checkout ui",
-  "checkout customization shopify", "checkout.liquid migration", "shopify checkout components".
+
+  "checkout customization shopify", "checkout.liquid migration", "shopify checkout
+  components".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ecommerce, shopify]
-compatible-with: claude-code
+tags:
+- saas
+- ecommerce
+- shopify
+compatibility: Designed for Claude Code
 ---
-
 # Shopify Checkout UI Extensions
 
 ## Overview

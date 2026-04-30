@@ -1,19 +1,27 @@
 ---
 name: shopify-install-auth
-description: |
-  Install and configure Shopify app authentication with OAuth, session tokens, and the @shopify/shopify-api SDK.
+description: 'Install and configure Shopify app authentication with OAuth, session
+  tokens, and the @shopify/shopify-api SDK.
+
   Use when setting up a new Shopify app, configuring API credentials,
+
   or initializing authentication for Admin or Storefront API access.
+
   Trigger with phrases like "install shopify", "setup shopify",
+
   "shopify auth", "shopify OAuth", "configure shopify API".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Bash(npx:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ecommerce, shopify]
-compatible-with: claude-code
+tags:
+- saas
+- ecommerce
+- shopify
+compatibility: Designed for Claude Code
 ---
-
 # Shopify Install & Auth
 
 ## Overview

@@ -1,21 +1,33 @@
 ---
 name: supabase-performance-tuning
-description: |
-  Optimize Supabase query performance with indexes, EXPLAIN ANALYZE, connection pooling,
+description: 'Optimize Supabase query performance with indexes, EXPLAIN ANALYZE, connection
+  pooling,
+
   column selection, pagination, RPC functions, materialized views, and diagnostics.
+
   Use when queries are slow, connections are exhausted, response payloads are bloated,
+
   or when preparing a Supabase project for production-scale traffic.
+
   Trigger with phrases like "supabase performance", "supabase slow queries",
+
   "optimize supabase", "supabase index", "supabase connection pool",
+
   "supabase pagination", "supabase explain analyze".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npx:supabase), Bash(supabase:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, supabase, performance, optimization, postgres]
+tags:
+- saas
+- supabase
+- performance
+- optimization
+- postgres
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Supabase Performance Tuning
 
 ## Overview

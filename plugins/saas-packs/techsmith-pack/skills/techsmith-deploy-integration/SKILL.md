@@ -1,17 +1,23 @@
 ---
 name: techsmith-deploy-integration
-description: |
-  TechSmith deploy integration for Snagit COM API and Camtasia automation.
+description: 'TechSmith deploy integration for Snagit COM API and Camtasia automation.
+
   Use when working with TechSmith screen capture and video editing automation.
+
   Trigger: "techsmith deploy integration".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(powershell:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, screen-capture, video, techsmith]
-compatible-with: claude-code
+tags:
+- saas
+- screen-capture
+- video
+- techsmith
+compatibility: Designed for Claude Code
 ---
-
 # TechSmith Deploy Integration
 
 ## Overview

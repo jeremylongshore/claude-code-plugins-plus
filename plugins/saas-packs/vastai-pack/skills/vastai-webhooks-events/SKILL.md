@@ -1,17 +1,25 @@
 ---
 name: vastai-webhooks-events
-description: |
-  Build event-driven workflows around Vast.ai instance lifecycle events.
+description: 'Build event-driven workflows around Vast.ai instance lifecycle events.
+
   Use when monitoring instance status changes, implementing auto-recovery,
+
   or building event-driven GPU orchestration.
+
   Trigger with phrases like "vastai events", "vastai instance monitoring",
+
   "vastai status changes", "vastai lifecycle events".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vastai:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vast-ai, webhooks]
+tags:
+- saas
+- vast-ai
+- webhooks
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vast.ai Webhooks & Events
 

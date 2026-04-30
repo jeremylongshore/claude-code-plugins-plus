@@ -1,17 +1,26 @@
 ---
 name: vastai-install-auth
-description: |
-  Install and configure Vast.ai CLI and REST API authentication.
+description: 'Install and configure Vast.ai CLI and REST API authentication.
+
   Use when setting up a new Vast.ai integration, configuring API keys,
+
   or initializing Vast.ai GPU cloud access in your project.
+
   Trigger with phrases like "install vastai", "setup vastai",
+
   "vastai auth", "configure vastai API key", "vastai gpu setup".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(pip:*), Bash(vastai:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vast-ai, api, authentication]
+tags:
+- saas
+- vast-ai
+- api
+- authentication
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vast.ai Install & Auth
 

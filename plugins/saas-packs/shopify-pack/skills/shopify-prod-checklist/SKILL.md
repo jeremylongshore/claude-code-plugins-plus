@@ -1,20 +1,29 @@
 ---
 name: shopify-prod-checklist
-description: |
-  Execute Shopify app production deployment checklist covering App Store requirements,
+description: 'Execute Shopify app production deployment checklist covering App Store
+  requirements,
+
   mandatory webhooks, API versioning, and rollback procedures.
+
   Use when preparing a Shopify app for production launch, submitting to the App Store,
+
   or auditing an existing deployment for compliance gaps.
+
   Trigger with phrases like "shopify production", "deploy shopify",
+
   "shopify go-live", "shopify launch checklist", "shopify app store submit".
+
+  '
 allowed-tools: Read, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ecommerce, shopify]
-compatible-with: claude-code
+tags:
+- saas
+- ecommerce
+- shopify
+compatibility: Designed for Claude Code
 ---
-
 # Shopify Production Checklist
 
 ## Overview

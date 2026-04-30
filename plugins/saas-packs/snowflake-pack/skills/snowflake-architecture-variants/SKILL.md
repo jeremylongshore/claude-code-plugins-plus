@@ -1,20 +1,30 @@
 ---
 name: snowflake-architecture-variants
-description: |
-  Choose and implement Snowflake architecture blueprints: data lakehouse, data mesh,
+description: 'Choose and implement Snowflake architecture blueprints: data lakehouse,
+  data mesh,
+
   data sharing, and Snowpark-native patterns for different scales.
+
   Use when designing Snowflake data platforms, choosing between architectures,
+
   or implementing data sharing and Snowpark patterns.
+
   Trigger with phrases like "snowflake architecture", "snowflake lakehouse",
+
   "snowflake data mesh", "snowflake data sharing", "snowflake Snowpark".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, data-warehouse, analytics, snowflake]
-compatible-with: claude-code
+tags:
+- saas
+- data-warehouse
+- analytics
+- snowflake
+compatibility: Designed for Claude Code
 ---
-
 # Snowflake Architecture Variants
 
 ## Overview

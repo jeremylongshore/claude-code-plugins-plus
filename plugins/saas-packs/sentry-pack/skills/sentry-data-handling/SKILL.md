@@ -1,19 +1,33 @@
 ---
 name: sentry-data-handling
-description: |
-  Configure GDPR-compliant data handling, PII scrubbing, and data
+description: 'Configure GDPR-compliant data handling, PII scrubbing, and data
+
   retention policies in Sentry. Use when implementing beforeSend
+
   filters, server-side data scrubbing rules, IP anonymization,
+
   data subject deletion requests, or SOC 2 audit controls.
+
   Trigger with phrases like "sentry pii scrubbing", "sentry gdpr",
+
   "sentry data privacy", "scrub sensitive data sentry",
+
   "sentry data retention", "sentry compliance".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Bash(curl:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, sentry, security, compliance, gdpr, pii, data-privacy]
+tags:
+- saas
+- sentry
+- security
+- compliance
+- gdpr
+- pii
+- data-privacy
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Sentry Data Handling
 

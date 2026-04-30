@@ -1,19 +1,28 @@
 ---
 name: snowflake-deploy-integration
-description: |
-  Deploy Snowflake-powered applications with proper connection management and secrets.
+description: 'Deploy Snowflake-powered applications with proper connection management
+  and secrets.
+
   Use when deploying apps that query Snowflake, configuring connection pools
+
   for serverless/container platforms, or managing Snowflake credentials in production.
+
   Trigger with phrases like "deploy snowflake", "snowflake serverless",
+
   "snowflake production deploy", "snowflake Cloud Run", "snowflake Lambda".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gcloud:*), Bash(aws:*), Bash(docker:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, data-warehouse, analytics, snowflake]
-compatible-with: claude-code
+tags:
+- saas
+- data-warehouse
+- analytics
+- snowflake
+compatibility: Designed for Claude Code
 ---
-
 # Snowflake Deploy Integration
 
 ## Overview

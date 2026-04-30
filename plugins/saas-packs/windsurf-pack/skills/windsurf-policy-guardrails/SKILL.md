@@ -1,17 +1,29 @@
 ---
 name: windsurf-policy-guardrails
-description: |
-  Implement team-wide Windsurf usage policies, code quality gates, and Cascade guardrails.
-  Use when setting up code review policies for AI-generated code, configuring Turbo mode
+description: 'Implement team-wide Windsurf usage policies, code quality gates, and
+  Cascade guardrails.
+
+  Use when setting up code review policies for AI-generated code, configuring Turbo
+  mode
+
   safety controls, or implementing CI gates for Cascade output.
+
   Trigger with phrases like "windsurf policy", "windsurf guardrails",
+
   "cascade safety rules", "windsurf team rules", "AI code policy".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npx:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, policy, guardrails, team-management]
+tags:
+- saas
+- windsurf
+- policy
+- guardrails
+- team-management
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Windsurf Policy Guardrails
 

@@ -1,17 +1,28 @@
 ---
 name: windsurf-prod-checklist
-description: |
-  Execute Windsurf production readiness checklist for team and enterprise deployments.
+description: 'Execute Windsurf production readiness checklist for team and enterprise
+  deployments.
+
   Use when rolling out Windsurf to a team, preparing for enterprise deployment,
+
   or auditing production configuration.
+
   Trigger with phrases like "windsurf production", "windsurf team rollout",
+
   "windsurf go-live", "windsurf enterprise deploy", "windsurf checklist".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, deployment, enterprise, checklist]
+tags:
+- saas
+- windsurf
+- deployment
+- enterprise
+- checklist
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Windsurf Production Checklist
 

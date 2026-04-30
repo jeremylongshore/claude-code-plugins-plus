@@ -1,17 +1,25 @@
 ---
 name: vastai-debug-bundle
-description: |
-  Collect Vast.ai debug evidence for support tickets and troubleshooting.
+description: 'Collect Vast.ai debug evidence for support tickets and troubleshooting.
+
   Use when encountering persistent issues, preparing support tickets,
+
   or collecting diagnostic information for Vast.ai problems.
+
   Trigger with phrases like "vastai debug", "vastai support bundle",
+
   "collect vastai logs", "vastai diagnostic".
+
+  '
 allowed-tools: Read, Bash(vastai:*), Bash(curl:*), Bash(ssh:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vast-ai, debugging]
+tags:
+- saas
+- vast-ai
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vast.ai Debug Bundle
 

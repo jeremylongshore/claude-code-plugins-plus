@@ -1,20 +1,29 @@
 ---
 name: shopify-policy-guardrails
-description: |
-  Implement Shopify app policy enforcement with ESLint rules for API key detection,
+description: 'Implement Shopify app policy enforcement with ESLint rules for API key
+  detection,
+
   query cost budgets, and App Store compliance checks.
+
   Use when hardening a Shopify app against secret leaks, enforcing query cost limits,
+
   or preparing for App Store submission review.
+
   Trigger with phrases like "shopify policy", "shopify lint",
+
   "shopify guardrails", "shopify compliance", "shopify eslint", "shopify app review".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npx:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ecommerce, shopify]
-compatible-with: claude-code
+tags:
+- saas
+- ecommerce
+- shopify
+compatibility: Designed for Claude Code
 ---
-
 # Shopify Policy & Guardrails
 
 ## Overview

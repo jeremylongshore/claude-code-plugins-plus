@@ -1,17 +1,27 @@
 ---
 name: windsurf-webhooks-events
-description: |
-  Build Windsurf extensions and integrate with VS Code extension API events.
+description: 'Build Windsurf extensions and integrate with VS Code extension API events.
+
   Use when building custom Windsurf extensions, tracking editor events,
+
   or integrating Windsurf with external tools via extension development.
+
   Trigger with phrases like "windsurf extension", "windsurf events",
+
   "windsurf plugin", "build windsurf extension", "windsurf API".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, extensions, vscode-api, development]
+tags:
+- saas
+- windsurf
+- extensions
+- vscode-api
+- development
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Windsurf Extension Development & Events
 

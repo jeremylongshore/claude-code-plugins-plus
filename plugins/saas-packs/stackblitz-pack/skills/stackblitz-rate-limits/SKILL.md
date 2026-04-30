@@ -1,17 +1,24 @@
 ---
 name: stackblitz-rate-limits
-description: |
-  WebContainer resource limits: memory, CPU, file system size, process count.
+description: 'WebContainer resource limits: memory, CPU, file system size, process
+  count.
+
   Use when working with WebContainers or StackBlitz SDK.
+
   Trigger: "webcontainer limits".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ide, webcontainers, stackblitz]
-compatible-with: claude-code
+tags:
+- saas
+- ide
+- webcontainers
+- stackblitz
+compatibility: Designed for Claude Code
 ---
-
 # StackBlitz Rate Limits
 
 ## Overview

@@ -1,19 +1,30 @@
 ---
 name: supabase-local-dev-loop
-description: |
-  Configure Supabase local development with the CLI, Docker, and migration workflow.
+description: 'Configure Supabase local development with the CLI, Docker, and migration
+  workflow.
+
   Use when initializing a Supabase project locally, starting the local stack,
+
   writing migrations, seeding data, or iterating on schema changes.
+
   Trigger with phrases like "supabase local dev", "supabase start",
+
   "supabase init", "supabase db reset", "supabase local setup".
-allowed-tools: Read, Write, Edit, Bash(npx:*), Bash(supabase:*), Bash(docker:*), Bash(curl:*), Grep
+
+  '
+allowed-tools: Read, Write, Edit, Bash(npx:*), Bash(supabase:*), Bash(docker:*), Bash(curl:*),
+  Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code
-tags: [saas, supabase, local-development, docker, postgres]
+tags:
+- saas
+- supabase
+- local-development
+- docker
+- postgres
+compatibility: Designed for Claude Code
 ---
-
 # Supabase Local Dev Loop
 
 ## Overview

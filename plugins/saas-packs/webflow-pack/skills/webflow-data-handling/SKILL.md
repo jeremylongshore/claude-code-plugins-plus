@@ -1,18 +1,21 @@
 ---
 name: webflow-data-handling
-description: |
-  Implement Webflow data handling — CMS content delivery patterns, PII redaction in
-  form submissions, GDPR/CCPA compliance for ecommerce data, and data retention policies.
-  Trigger with phrases like "webflow data", "webflow PII", "webflow GDPR",
-  "webflow data retention", "webflow privacy", "webflow CCPA", "webflow forms data".
+description: "Implement Webflow data handling \u2014 CMS content delivery patterns,\
+  \ PII redaction in\nform submissions, GDPR/CCPA compliance for ecommerce data, and\
+  \ data retention policies.\nTrigger with phrases like \"webflow data\", \"webflow\
+  \ PII\", \"webflow GDPR\",\n\"webflow data retention\", \"webflow privacy\", \"\
+  webflow CCPA\", \"webflow forms data\".\n"
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, no-code, webflow]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- no-code
+- webflow
+compatibility: Designed for Claude Code
 ---
-
 # Webflow Data Handling
 
 ## Overview

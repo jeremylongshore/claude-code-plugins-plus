@@ -1,16 +1,24 @@
 ---
 name: speak-cost-tuning
-description: |
-  Optimize Speak API costs through usage monitoring, tier selection, and efficient audio processing.
+description: 'Optimize Speak API costs through usage monitoring, tier selection, and
+  efficient audio processing.
+
   Use when implementing cost tuning,
+
   or managing Speak language learning platform operations.
+
   Trigger with phrases like "speak cost tuning", "speak cost tuning".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, speak, api]
+tags:
+- saas
+- speak
+- api
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Speak Cost Tuning
 

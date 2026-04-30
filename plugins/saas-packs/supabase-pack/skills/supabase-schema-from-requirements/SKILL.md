@@ -1,17 +1,30 @@
 ---
 name: supabase-schema-from-requirements
-description: |
-  Design Supabase Postgres schema from business requirements with migrations, RLS, and types.
+description: 'Design Supabase Postgres schema from business requirements with migrations,
+  RLS, and types.
+
   Use when translating specifications into database tables, creating migration files,
+
   adding Row Level Security policies, or generating TypeScript types from schema.
+
   Trigger with phrases like "supabase schema", "design database supabase",
+
   "schema from requirements", "supabase migration", "supabase tables from spec".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(supabase:*), Bash(npx:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, supabase, database, migration, schema-design, postgres, rls]
+tags:
+- saas
+- supabase
+- database
+- migration
+- schema-design
+- postgres
+- rls
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Supabase Schema from Requirements
 

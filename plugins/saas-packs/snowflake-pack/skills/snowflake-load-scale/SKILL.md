@@ -1,19 +1,27 @@
 ---
 name: snowflake-load-scale
-description: |
-  Implement Snowflake load testing, warehouse scaling, and capacity planning.
+description: 'Implement Snowflake load testing, warehouse scaling, and capacity planning.
+
   Use when testing query performance at scale, configuring multi-cluster warehouses,
+
   or planning capacity for production Snowflake workloads.
+
   Trigger with phrases like "snowflake load test", "snowflake scale",
+
   "snowflake capacity", "snowflake benchmark", "snowflake multi-cluster".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(python3:*), Bash(snowsql:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, data-warehouse, analytics, snowflake]
-compatible-with: claude-code
+tags:
+- saas
+- data-warehouse
+- analytics
+- snowflake
+compatibility: Designed for Claude Code
 ---
-
 # Snowflake Load & Scale
 
 ## Overview

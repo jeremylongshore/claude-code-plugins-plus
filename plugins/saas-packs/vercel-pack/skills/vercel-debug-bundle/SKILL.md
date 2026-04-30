@@ -1,17 +1,26 @@
 ---
 name: vercel-debug-bundle
-description: |
-  Collect Vercel debug evidence for support tickets and troubleshooting.
+description: 'Collect Vercel debug evidence for support tickets and troubleshooting.
+
   Use when encountering persistent issues, preparing support tickets,
+
   or collecting diagnostic information for Vercel problems.
+
   Trigger with phrases like "vercel debug", "vercel support bundle",
+
   "collect vercel logs", "vercel diagnostic".
+
+  '
 allowed-tools: Read, Bash(vercel:*), Bash(curl:*), Bash(tar:*), Bash(jq:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vercel, debugging, support]
+tags:
+- saas
+- vercel
+- debugging
+- support
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vercel Debug Bundle
 

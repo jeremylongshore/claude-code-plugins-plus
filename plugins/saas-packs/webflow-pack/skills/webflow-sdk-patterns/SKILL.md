@@ -1,20 +1,22 @@
 ---
 name: webflow-sdk-patterns
-description: |
-  Apply production-ready Webflow SDK patterns — singleton client, typed error handling,
-  pagination helpers, and raw response access for the webflow-api package.
-  Use when implementing Webflow integrations, refactoring SDK usage,
-  or establishing team coding standards.
-  Trigger with phrases like "webflow SDK patterns", "webflow best practices",
-  "webflow code patterns", "idiomatic webflow", "webflow typescript".
+description: "Apply production-ready Webflow SDK patterns \u2014 singleton client,\
+  \ typed error handling,\npagination helpers, and raw response access for the webflow-api\
+  \ package.\nUse when implementing Webflow integrations, refactoring SDK usage,\n\
+  or establishing team coding standards.\nTrigger with phrases like \"webflow SDK\
+  \ patterns\", \"webflow best practices\",\n\"webflow code patterns\", \"idiomatic\
+  \ webflow\", \"webflow typescript\".\n"
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, no-code, webflow]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- no-code
+- webflow
+compatibility: Designed for Claude Code
 ---
-
 # Webflow SDK Patterns
 
 ## Overview

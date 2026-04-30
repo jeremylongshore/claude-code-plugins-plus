@@ -1,21 +1,34 @@
 ---
 name: sentry-rate-limits
-description: |
-  Manage Sentry rate limits, quotas, and event volume optimization.
+description: 'Manage Sentry rate limits, quotas, and event volume optimization.
+
   Use when hitting 429 errors, tuning sampleRate/tracesSampleRate,
+
   filtering noisy browser errors with beforeSend, configuring
+
   inbound data filters, setting per-key rate limits, or monitoring
+
   quota usage via the Sentry stats API.
+
   Trigger: "sentry rate limit", "sentry quota", "reduce sentry events",
+
   "sentry 429", "sentry spike protection", "sentry sampling".
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash(curl:*), Bash(node:*), Bash(python3:*), Bash(pip:*)
+
+  '
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(curl:*), Bash(node:*), Bash(python3:*),
+  Bash(pip:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, sentry, cost-optimization, rate-limiting, quotas, observability]
+tags:
+- saas
+- sentry
+- cost-optimization
+- rate-limiting
+- quotas
+- observability
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Sentry Rate Limits & Quota Optimization
 
 ## Overview

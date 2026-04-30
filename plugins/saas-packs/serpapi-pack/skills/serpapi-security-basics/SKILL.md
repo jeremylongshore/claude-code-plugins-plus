@@ -1,18 +1,25 @@
 ---
 name: serpapi-security-basics
-description: |
-  Secure SerpApi API keys and prevent credit abuse.
+description: 'Secure SerpApi API keys and prevent credit abuse.
+
   Use when storing API keys, implementing backend proxies,
+
   or auditing SerpApi access patterns.
+
   Trigger: "serpapi security", "serpapi API key security", "secure serpapi".
+
+  '
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, seo, serpapi]
-compatible-with: claude-code
+tags:
+- saas
+- search
+- seo
+- serpapi
+compatibility: Designed for Claude Code
 ---
-
 # SerpApi Security Basics
 
 ## Overview

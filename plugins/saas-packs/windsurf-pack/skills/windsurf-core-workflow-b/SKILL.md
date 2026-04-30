@@ -1,17 +1,28 @@
 ---
 name: windsurf-core-workflow-b
-description: |
-  Execute Windsurf's secondary workflow: Workflows, Memories, and reusable automation.
+description: 'Execute Windsurf''s secondary workflow: Workflows, Memories, and reusable
+  automation.
+
   Use when creating reusable Cascade workflows, managing persistent memories,
+
   or automating repetitive development tasks.
+
   Trigger with phrases like "windsurf workflow", "windsurf automation",
+
   "windsurf memories", "cascade workflow", "windsurf slash command".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, workflows, memories, automation]
+tags:
+- saas
+- windsurf
+- workflows
+- memories
+- automation
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Windsurf Core Workflow B — Workflows & Memories
 

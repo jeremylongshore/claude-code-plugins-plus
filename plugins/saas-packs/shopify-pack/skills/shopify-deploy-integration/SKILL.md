@@ -1,19 +1,27 @@
 ---
 name: shopify-deploy-integration
-description: |
-  Deploy Shopify apps to Vercel, Fly.io, Railway, and Cloud Run with proper environment configuration.
+description: 'Deploy Shopify apps to Vercel, Fly.io, Railway, and Cloud Run with proper
+  environment configuration.
+
   Use when deploying Shopify-powered applications to production,
+
   configuring platform-specific secrets, or setting up hosting.
+
   Trigger with phrases like "deploy shopify", "shopify hosting",
+
   "shopify Vercel", "shopify production deploy", "shopify Fly.io".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*), Bash(shopify:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ecommerce, shopify]
-compatible-with: claude-code
+tags:
+- saas
+- ecommerce
+- shopify
+compatibility: Designed for Claude Code
 ---
-
 # Shopify Deploy Integration
 
 ## Overview

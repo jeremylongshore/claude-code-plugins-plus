@@ -1,17 +1,23 @@
 ---
 name: together-cost-tuning
-description: |
-  Together AI cost tuning for inference, fine-tuning, and model deployment.
-  Use when working with Together AI's OpenAI-compatible API.
+description: 'Together AI cost tuning for inference, fine-tuning, and model deployment.
+
+  Use when working with Together AI''s OpenAI-compatible API.
+
   Trigger: "together cost tuning".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, inference, together]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- inference
+- together
+compatibility: Designed for Claude Code
 ---
-
 # Together AI Cost Tuning
 
 ## Overview

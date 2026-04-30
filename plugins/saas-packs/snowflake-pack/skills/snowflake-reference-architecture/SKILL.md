@@ -1,19 +1,29 @@
 ---
 name: snowflake-reference-architecture
-description: |
-  Implement Snowflake reference architecture with medallion pattern and Snowflake-native design.
-  Use when designing a new Snowflake data platform, setting up bronze/silver/gold layers,
+description: 'Implement Snowflake reference architecture with medallion pattern and
+  Snowflake-native design.
+
+  Use when designing a new Snowflake data platform, setting up bronze/silver/gold
+  layers,
+
   or establishing architecture standards for a Snowflake deployment.
+
   Trigger with phrases like "snowflake architecture", "snowflake medallion",
+
   "snowflake best practices layout", "snowflake data platform design".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, data-warehouse, analytics, snowflake]
-compatible-with: claude-code
+tags:
+- saas
+- data-warehouse
+- analytics
+- snowflake
+compatibility: Designed for Claude Code
 ---
-
 # Snowflake Reference Architecture
 
 ## Overview

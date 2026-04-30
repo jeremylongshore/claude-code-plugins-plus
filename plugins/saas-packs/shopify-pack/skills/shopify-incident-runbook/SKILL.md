@@ -1,19 +1,27 @@
 ---
 name: shopify-incident-runbook
-description: |
-  Execute Shopify incident response with triage using Shopify status page,
+description: 'Execute Shopify incident response with triage using Shopify status page,
+
   API health checks, and rate limit diagnosis.
-  Use when a Shopify integration is down, returning errors, or behaving unexpectedly in production.
+
+  Use when a Shopify integration is down, returning errors, or behaving unexpectedly
+  in production.
+
   Trigger with phrases like "shopify incident", "shopify outage",
+
   "shopify down", "shopify on-call", "shopify emergency", "shopify not responding".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ecommerce, shopify]
-compatible-with: claude-code
+tags:
+- saas
+- ecommerce
+- shopify
+compatibility: Designed for Claude Code
 ---
-
 # Shopify Incident Runbook
 
 ## Overview

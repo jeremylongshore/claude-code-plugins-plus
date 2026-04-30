@@ -1,20 +1,30 @@
 ---
 name: snowflake-reliability-patterns
-description: |
-  Implement Snowflake reliability patterns: replication, failover, Time Travel recovery,
+description: 'Implement Snowflake reliability patterns: replication, failover, Time
+  Travel recovery,
+
   and application-level resilience for Snowflake integrations.
+
   Use when building fault-tolerant pipelines, configuring disaster recovery,
+
   or adding resilience to production Snowflake services.
+
   Trigger with phrases like "snowflake reliability", "snowflake failover",
+
   "snowflake replication", "snowflake disaster recovery", "snowflake Time Travel".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, data-warehouse, analytics, snowflake]
-compatible-with: claude-code
+tags:
+- saas
+- data-warehouse
+- analytics
+- snowflake
+compatibility: Designed for Claude Code
 ---
-
 # Snowflake Reliability Patterns
 
 ## Overview

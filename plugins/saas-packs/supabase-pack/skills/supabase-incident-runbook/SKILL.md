@@ -1,20 +1,33 @@
 ---
 name: supabase-incident-runbook
-description: |
-  Execute Supabase incident response: dashboard health checks, connection pool status,
-  pg_stat_activity queries, RLS debugging, Edge Function logs, storage health, and escalation.
+description: 'Execute Supabase incident response: dashboard health checks, connection
+  pool status,
+
+  pg_stat_activity queries, RLS debugging, Edge Function logs, storage health, and
+  escalation.
+
   Use when responding to Supabase outages, investigating production errors, debugging
+
   connection issues, or preparing evidence for Supabase support escalation.
+
   Trigger: "supabase incident", "supabase outage", "supabase down", "supabase on-call",
+
   "supabase emergency", "supabase broken", "supabase connection issues".
+
+  '
 allowed-tools: Read, Grep, Bash(npx supabase:*), Bash(supabase:*), Bash(curl:*), Bash(psql:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, supabase, incident-response, debugging, operations, runbook]
+tags:
+- saas
+- supabase
+- incident-response
+- debugging
+- operations
+- runbook
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Supabase Incident Runbook
 
 ## Overview

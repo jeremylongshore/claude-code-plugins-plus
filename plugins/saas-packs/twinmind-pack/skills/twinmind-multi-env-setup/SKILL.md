@@ -1,16 +1,24 @@
 ---
 name: twinmind-multi-env-setup
-description: |
-  Configure TwinMind across development, staging, and production environments with separate accounts and API key management.
+description: 'Configure TwinMind across development, staging, and production environments
+  with separate accounts and API key management.
+
   Use when implementing multi env setup,
+
   or managing TwinMind meeting AI operations.
+
   Trigger with phrases like "twinmind multi env setup", "twinmind multi env setup".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: ['saas', 'twinmind', 'deployment']
+tags:
+- saas
+- twinmind
+- deployment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # TwinMind Multi-Environment Setup
 

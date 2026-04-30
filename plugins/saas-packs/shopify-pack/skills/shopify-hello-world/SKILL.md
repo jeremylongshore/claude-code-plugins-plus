@@ -1,19 +1,27 @@
 ---
 name: shopify-hello-world
-description: |
-  Create a minimal working Shopify app that queries products via GraphQL Admin API.
+description: 'Create a minimal working Shopify app that queries products via GraphQL
+  Admin API.
+
   Use when starting a new Shopify integration, testing your setup,
+
   or learning basic Shopify API patterns.
+
   Trigger with phrases like "shopify hello world", "shopify example",
+
   "shopify quick start", "simple shopify app", "first shopify API call".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ecommerce, shopify]
-compatible-with: claude-code
+tags:
+- saas
+- ecommerce
+- shopify
+compatibility: Designed for Claude Code
 ---
-
 # Shopify Hello World
 
 ## Overview

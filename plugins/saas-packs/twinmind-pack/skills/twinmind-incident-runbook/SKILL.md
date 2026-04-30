@@ -1,16 +1,24 @@
 ---
 name: twinmind-incident-runbook
-description: |
-  Incident response for TwinMind failures: transcription not starting, audio not captured, sync failures, and calendar disconnect.
+description: 'Incident response for TwinMind failures: transcription not starting,
+  audio not captured, sync failures, and calendar disconnect.
+
   Use when implementing incident runbook,
+
   or managing TwinMind meeting AI operations.
+
   Trigger with phrases like "twinmind incident runbook", "twinmind incident runbook".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: ['saas', 'twinmind', 'incident-response']
+tags:
+- saas
+- twinmind
+- incident-response
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # TwinMind Incident Runbook
 

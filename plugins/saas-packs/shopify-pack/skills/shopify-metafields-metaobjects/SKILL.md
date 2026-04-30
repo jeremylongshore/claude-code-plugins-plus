@@ -1,19 +1,27 @@
 ---
 name: shopify-metafields-metaobjects
-description: |
-  Model custom data with Shopify metafields and metaobjects via the GraphQL Admin API.
+description: 'Model custom data with Shopify metafields and metaobjects via the GraphQL
+  Admin API.
+
   Use when adding custom fields to products/orders, creating custom content types,
-  or building structured data models beyond Shopify's default schema.
+
+  or building structured data models beyond Shopify''s default schema.
+
   Trigger with phrases like "shopify metafields", "shopify metaobjects",
+
   "custom data shopify", "shopify custom fields", "metafield definition".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ecommerce, shopify]
-compatible-with: claude-code
+tags:
+- saas
+- ecommerce
+- shopify
+compatibility: Designed for Claude Code
 ---
-
 # Shopify Metafields & Metaobjects
 
 ## Overview

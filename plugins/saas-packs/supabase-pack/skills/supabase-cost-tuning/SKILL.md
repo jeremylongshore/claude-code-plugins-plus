@@ -1,20 +1,29 @@
 ---
 name: supabase-cost-tuning
-description: |
-  Optimize Supabase costs through plan selection, database tuning, storage cleanup,
+description: 'Optimize Supabase costs through plan selection, database tuning, storage
+  cleanup,
+
   connection pooling, and Edge Function optimization.
+
   Use when analyzing Supabase billing, reducing costs, right-sizing compute,
+
   or implementing usage tracking and budget alerts.
+
   Trigger with phrases like "supabase cost", "supabase billing",
+
   "reduce supabase costs", "supabase pricing", "supabase expensive", "supabase budget".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Bash(supabase:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, supabase, cost-optimization]
+tags:
+- saas
+- supabase
+- cost-optimization
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Supabase Cost Tuning
 
 ## Overview

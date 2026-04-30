@@ -1,19 +1,22 @@
 ---
 name: webflow-prod-checklist
-description: |
-  Execute Webflow production deployment checklist — token security, rate limit hardening,
-  health checks, circuit breakers, gradual rollout, and rollback procedures.
-  Use when deploying Webflow integrations to production or preparing for launch.
-  Trigger with phrases like "webflow production", "deploy webflow",
-  "webflow go-live", "webflow launch checklist", "webflow production ready".
+description: "Execute Webflow production deployment checklist \u2014 token security,\
+  \ rate limit hardening,\nhealth checks, circuit breakers, gradual rollout, and rollback\
+  \ procedures.\nUse when deploying Webflow integrations to production or preparing\
+  \ for launch.\nTrigger with phrases like \"webflow production\", \"deploy webflow\"\
+  ,\n\"webflow go-live\", \"webflow launch checklist\", \"webflow production ready\"\
+  .\n"
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, no-code, webflow]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- no-code
+- webflow
+compatibility: Designed for Claude Code
 ---
-
 # Webflow Production Checklist
 
 ## Overview

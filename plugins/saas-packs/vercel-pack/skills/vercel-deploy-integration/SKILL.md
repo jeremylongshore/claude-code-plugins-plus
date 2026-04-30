@@ -1,17 +1,28 @@
 ---
 name: vercel-deploy-integration
-description: |
-  Deploy and manage Vercel production deployments with promotion, rollback, and multi-region strategies.
+description: 'Deploy and manage Vercel production deployments with promotion, rollback,
+  and multi-region strategies.
+
   Use when deploying to production, configuring deployment regions,
+
   or setting up blue-green deployment patterns on Vercel.
+
   Trigger with phrases like "deploy vercel", "vercel production deploy",
+
   "vercel promote", "vercel rollback", "vercel regions".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vercel, deployment, production, rollback]
+tags:
+- saas
+- vercel
+- deployment
+- production
+- rollback
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vercel Deploy Integration
 

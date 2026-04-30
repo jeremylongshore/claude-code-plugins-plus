@@ -1,17 +1,23 @@
 ---
 name: veeva-multi-env-setup
-description: |
-  Veeva Vault multi env setup for enterprise operations.
+description: 'Veeva Vault multi env setup for enterprise operations.
+
   Use when implementing advanced Veeva Vault patterns.
+
   Trigger: "veeva multi env setup".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, life-sciences, crm, veeva]
-compatible-with: claude-code
+tags:
+- saas
+- life-sciences
+- crm
+- veeva
+compatibility: Designed for Claude Code
 ---
-
 # Veeva Vault Multi Env Setup
 
 ## Overview

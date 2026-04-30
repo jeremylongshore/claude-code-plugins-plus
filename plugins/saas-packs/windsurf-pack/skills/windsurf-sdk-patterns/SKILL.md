@@ -1,17 +1,28 @@
 ---
 name: windsurf-sdk-patterns
-description: |
-  Apply production-ready Windsurf workspace configuration and Cascade interaction patterns.
+description: 'Apply production-ready Windsurf workspace configuration and Cascade
+  interaction patterns.
+
   Use when configuring .windsurfrules, workspace rules, MCP servers,
+
   or establishing team coding standards for Windsurf AI.
+
   Trigger with phrases like "windsurf patterns", "windsurf best practices",
+
   "windsurf config patterns", "windsurfrules", "windsurf workspace".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, configuration, rules, mcp]
+tags:
+- saas
+- windsurf
+- configuration
+- rules
+- mcp
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Windsurf Configuration Patterns
 

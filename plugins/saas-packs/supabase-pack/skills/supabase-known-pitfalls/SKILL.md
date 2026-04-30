@@ -1,24 +1,41 @@
 ---
 name: supabase-known-pitfalls
-description: |
-  Avoid and fix the most common Supabase mistakes: exposing service_role key
+description: 'Avoid and fix the most common Supabase mistakes: exposing service_role
+  key
+
   in client bundles, forgetting to enable RLS, not using connection pooling
+
   in serverless, .single() throwing on empty results, missing .select() after
+
   insert/update, not destructuring { data, error }, creating multiple client
+
   instances, and not using generated types.
+
   Use when reviewing Supabase code, onboarding developers, auditing an
+
   existing project, or debugging unexpected behavior.
+
   Trigger with phrases like "supabase mistakes", "supabase anti-patterns",
+
   "supabase pitfalls", "supabase code review", "supabase gotchas",
+
   "supabase debugging", "what not to do supabase", "supabase common errors".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, supabase, anti-patterns, code-review, debugging, security, pitfalls]
+tags:
+- saas
+- supabase
+- anti-patterns
+- code-review
+- debugging
+- security
+- pitfalls
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Supabase Known Pitfalls
 
 ## Overview

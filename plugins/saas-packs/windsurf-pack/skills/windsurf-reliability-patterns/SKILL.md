@@ -1,17 +1,29 @@
 ---
 name: windsurf-reliability-patterns
-description: |
-  Implement reliable Cascade workflows with checkpoints, rollback, and incremental editing.
-  Use when building fault-tolerant AI coding workflows, preventing Cascade from breaking builds,
+description: 'Implement reliable Cascade workflows with checkpoints, rollback, and
+  incremental editing.
+
+  Use when building fault-tolerant AI coding workflows, preventing Cascade from breaking
+  builds,
+
   or establishing safe practices for multi-file AI edits.
+
   Trigger with phrases like "windsurf reliability", "cascade safety",
+
   "windsurf rollback", "cascade checkpoint", "safe cascade workflow".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, reliability, safety, git-workflow]
+tags:
+- saas
+- windsurf
+- reliability
+- safety
+- git-workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Windsurf Reliability Patterns
 

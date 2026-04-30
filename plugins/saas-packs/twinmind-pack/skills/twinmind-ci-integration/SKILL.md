@@ -1,16 +1,24 @@
 ---
 name: twinmind-ci-integration
-description: |
-  Integrate TwinMind meeting transcription workflows into CI/CD pipelines for automated meeting documentation and action item tracking.
+description: 'Integrate TwinMind meeting transcription workflows into CI/CD pipelines
+  for automated meeting documentation and action item tracking.
+
   Use when implementing ci integration,
+
   or managing TwinMind meeting AI operations.
+
   Trigger with phrases like "twinmind ci integration", "twinmind ci integration".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: ['saas', 'twinmind', 'ci-cd']
+tags:
+- saas
+- twinmind
+- ci-cd
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # TwinMind CI Integration
 

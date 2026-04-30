@@ -1,18 +1,26 @@
 ---
 name: stackblitz-local-dev-loop
-description: |
-  Configure local development for WebContainer applications with hot reload and testing.
+description: 'Configure local development for WebContainer applications with hot reload
+  and testing.
+
   Use when building browser-based IDEs, testing WebContainer file operations,
+
   or setting up development workflows for WebContainer projects.
+
   Trigger: "stackblitz dev setup", "webcontainer local", "test webcontainers locally".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ide, webcontainers, stackblitz]
-compatible-with: claude-code
+tags:
+- saas
+- ide
+- webcontainers
+- stackblitz
+compatibility: Designed for Claude Code
 ---
-
 # StackBlitz Local Dev Loop
 
 ## Overview

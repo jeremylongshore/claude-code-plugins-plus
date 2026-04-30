@@ -1,17 +1,28 @@
 ---
 name: windsurf-advanced-troubleshooting
-description: |
-  Advanced Windsurf debugging for hard-to-diagnose IDE, Cascade, and indexing issues.
+description: 'Advanced Windsurf debugging for hard-to-diagnose IDE, Cascade, and indexing
+  issues.
+
   Use when standard troubleshooting fails, Cascade produces consistently wrong output,
+
   or investigating deep configuration problems.
+
   Trigger with phrases like "windsurf deep debug", "windsurf mystery error",
+
   "windsurf impossible to fix", "cascade keeps failing", "windsurf advanced debug".
+
+  '
 allowed-tools: Read, Grep, Bash(ls:*), Bash(curl:*), Bash(find:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, debugging, advanced, troubleshooting]
+tags:
+- saas
+- windsurf
+- debugging
+- advanced
+- troubleshooting
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Windsurf Advanced Troubleshooting
 

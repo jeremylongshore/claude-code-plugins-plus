@@ -1,18 +1,26 @@
 ---
 name: sentry-observability
-description: |
-  Integrate Sentry with your observability stack — logging, metrics, APM, and dashboards.
-  Use when connecting Sentry to winston/pino/structlog, correlating errors with business
-  metrics, deciding between Sentry performance and Datadog/New Relic, building Sentry
-  Discover dashboards, or linking events to external tools via extra context.
-  Trigger: "sentry observability", "sentry logging", "sentry metrics", "sentry grafana",
-  "sentry datadog correlation", "sentry discover dashboard".
+description: "Integrate Sentry with your observability stack \u2014 logging, metrics,\
+  \ APM, and dashboards.\nUse when connecting Sentry to winston/pino/structlog, correlating\
+  \ errors with business\nmetrics, deciding between Sentry performance and Datadog/New\
+  \ Relic, building Sentry\nDiscover dashboards, or linking events to external tools\
+  \ via extra context.\nTrigger: \"sentry observability\", \"sentry logging\", \"\
+  sentry metrics\", \"sentry grafana\",\n\"sentry datadog correlation\", \"sentry\
+  \ discover dashboard\".\n"
 allowed-tools: Read, Write, Edit, Grep, Bash(node:*), Bash(npx:*), Bash(pip:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, sentry, observability, logging, metrics, apm, grafana, opentelemetry]
+tags:
+- saas
+- sentry
+- observability
+- logging
+- metrics
+- apm
+- grafana
+- opentelemetry
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Sentry Observability Integration
 

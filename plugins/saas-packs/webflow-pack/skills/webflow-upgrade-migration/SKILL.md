@@ -1,18 +1,26 @@
 ---
 name: webflow-upgrade-migration
-description: |
-  Analyze, plan, and execute Webflow SDK upgrades (webflow-api v1 to v3) with
+description: 'Analyze, plan, and execute Webflow SDK upgrades (webflow-api v1 to v3)
+  with
+
   breaking change detection, API v1-to-v2 migration, and deprecation handling.
+
   Trigger with phrases like "upgrade webflow", "webflow migration",
+
   "webflow breaking changes", "update webflow SDK", "webflow v1 to v2".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, no-code, webflow]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- no-code
+- webflow
+compatibility: Designed for Claude Code
 ---
-
 # Webflow Upgrade & Migration
 
 ## Overview

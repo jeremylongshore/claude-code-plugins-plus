@@ -1,22 +1,27 @@
 ---
 name: supabase-reference-architecture
-description: |
-  Implement enterprise Supabase reference architectures — monorepo layout, multi-tenant RLS,
-  microservices with cross-project access, framework integration, edge functions, caching,
-  queue patterns, and audit logging.
-  Use when designing a new Supabase project from scratch, reviewing project structure for
-  production readiness, planning multi-tenant isolation, or establishing team architecture standards.
-  Trigger with phrases like "supabase architecture", "supabase project structure",
-  "supabase monorepo", "supabase multi-tenant", "supabase reference design",
-  "how to organize supabase at scale".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(supabase:*), Grep, Glob
+description: "Implement enterprise Supabase reference architectures \u2014 monorepo\
+  \ layout, multi-tenant RLS,\nmicroservices with cross-project access, framework\
+  \ integration, edge functions, caching,\nqueue patterns, and audit logging.\nUse\
+  \ when designing a new Supabase project from scratch, reviewing project structure\
+  \ for\nproduction readiness, planning multi-tenant isolation, or establishing team\
+  \ architecture standards.\nTrigger with phrases like \"supabase architecture\",\
+  \ \"supabase project structure\",\n\"supabase monorepo\", \"supabase multi-tenant\"\
+  , \"supabase reference design\",\n\"how to organize supabase at scale\".\n"
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(supabase:*), Grep,
+  Glob
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, supabase, architecture, patterns, multi-tenant, monorepo]
+tags:
+- saas
+- supabase
+- architecture
+- patterns
+- multi-tenant
+- monorepo
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Supabase Reference Architecture
 
 ## Overview

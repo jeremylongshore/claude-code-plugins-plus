@@ -1,25 +1,44 @@
 ---
 name: supabase-architecture-variants
-description: |
-  Implement Supabase across different app architectures: Next.js SSR with
+description: 'Implement Supabase across different app architectures: Next.js SSR with
+
   server components using service_role and client components with anon key,
+
   SPA (React/Vue), mobile (React Native), serverless (Edge Functions),
+
   and multi-tenant with schema-per-tenant or RLS isolation.
+
   Use when choosing how to integrate Supabase into your specific stack,
+
   setting up SSR auth flows, configuring mobile deep links,
+
   or designing multi-tenant data isolation.
+
   Trigger with phrases like "supabase next.js", "supabase SSR",
+
   "supabase react native", "supabase SPA", "supabase serverless",
+
   "supabase multi-tenant", "supabase server component",
+
   "supabase architecture", "supabase service_role server".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(supabase:*), Bash(npx:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, supabase, architecture, nextjs, ssr, spa, mobile, multi-tenant, serverless]
+tags:
+- saas
+- supabase
+- architecture
+- nextjs
+- ssr
+- spa
+- mobile
+- multi-tenant
+- serverless
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Supabase Architecture Variants
 
 ## Overview

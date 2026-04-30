@@ -1,17 +1,26 @@
 ---
 name: vastai-upgrade-migration
-description: |
-  Upgrade Vast.ai CLI, migrate API versions, and handle breaking changes.
+description: 'Upgrade Vast.ai CLI, migrate API versions, and handle breaking changes.
+
   Use when upgrading vastai CLI, detecting deprecations,
+
   or migrating between API versions.
+
   Trigger with phrases like "upgrade vastai", "vastai migration",
+
   "vastai breaking changes", "update vastai CLI".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(pip:*), Bash(vastai:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vast-ai, api, migration]
+tags:
+- saas
+- vast-ai
+- api
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vast.ai Upgrade & Migration
 

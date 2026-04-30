@@ -1,17 +1,26 @@
 ---
 name: vastai-security-basics
-description: |
-  Apply Vast.ai security best practices for API keys and instance access.
+description: 'Apply Vast.ai security best practices for API keys and instance access.
+
   Use when securing API keys, hardening SSH access to GPU instances,
+
   or auditing Vast.ai security configuration.
+
   Trigger with phrases like "vastai security", "vastai secrets",
+
   "secure vastai", "vastai API key security", "vastai ssh security".
+
+  '
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vast-ai, api, security]
+tags:
+- saas
+- vast-ai
+- api
+- security
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vast.ai Security Basics
 

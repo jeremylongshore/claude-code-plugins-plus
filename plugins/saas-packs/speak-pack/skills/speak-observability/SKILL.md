@@ -1,16 +1,24 @@
 ---
 name: speak-observability
-description: |
-  Monitor Speak API health, assessment latency, session metrics, and pronunciation score distributions.
+description: 'Monitor Speak API health, assessment latency, session metrics, and pronunciation
+  score distributions.
+
   Use when implementing observability,
+
   or managing Speak language learning platform operations.
+
   Trigger with phrases like "speak observability", "speak observability".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, speak, api]
+tags:
+- saas
+- speak
+- api
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Speak Observability
 

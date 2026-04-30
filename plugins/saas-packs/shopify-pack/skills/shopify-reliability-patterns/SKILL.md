@@ -1,20 +1,28 @@
 ---
 name: shopify-reliability-patterns
-description: |
-  Implement reliability patterns for Shopify apps including circuit breakers
+description: 'Implement reliability patterns for Shopify apps including circuit breakers
+
   for API outages, webhook retry handling, and graceful degradation.
+
   Use when building fault-tolerant Shopify integrations, handling webhook retry storms,
+
   or adding resilience to API calls.
+
   Trigger with phrases like "shopify reliability", "shopify circuit breaker",
+
   "shopify resilience", "shopify fallback", "shopify retry webhook".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ecommerce, shopify]
-compatible-with: claude-code
+tags:
+- saas
+- ecommerce
+- shopify
+compatibility: Designed for Claude Code
 ---
-
 # Shopify Reliability Patterns
 
 ## Overview

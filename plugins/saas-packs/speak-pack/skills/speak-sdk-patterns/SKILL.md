@@ -1,16 +1,24 @@
 ---
 name: speak-sdk-patterns
-description: |
-  Production patterns for Speak language learning API: conversation sessions, pronunciation assessment, audio preprocessing, and batch operations.
+description: 'Production patterns for Speak language learning API: conversation sessions,
+  pronunciation assessment, audio preprocessing, and batch operations.
+
   Use when implementing sdk patterns features,
+
   or troubleshooting Speak language learning integration issues.
+
   Trigger with phrases like "speak sdk patterns", "speak sdk patterns".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, speak, api]
+tags:
+- saas
+- speak
+- api
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Speak SDK Patterns
 

@@ -1,19 +1,27 @@
 ---
 name: snowflake-rate-limits
-description: |
-  Handle Snowflake concurrency limits, warehouse queuing, and query throttling.
+description: 'Handle Snowflake concurrency limits, warehouse queuing, and query throttling.
+
   Use when queries are queuing, hitting concurrency limits,
+
   or needing to optimize warehouse sizing for throughput.
+
   Trigger with phrases like "snowflake rate limit", "snowflake throttling",
+
   "snowflake queuing", "snowflake concurrency", "snowflake warehouse sizing".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, data-warehouse, analytics, snowflake]
-compatible-with: claude-code
+tags:
+- saas
+- data-warehouse
+- analytics
+- snowflake
+compatibility: Designed for Claude Code
 ---
-
 # Snowflake Rate Limits & Concurrency
 
 ## Overview

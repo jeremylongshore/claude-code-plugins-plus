@@ -1,17 +1,26 @@
 ---
 name: vercel-common-errors
-description: |
-  Diagnose and fix common Vercel deployment and function errors.
+description: 'Diagnose and fix common Vercel deployment and function errors.
+
   Use when encountering Vercel errors, debugging failed deployments,
+
   or troubleshooting serverless function issues.
+
   Trigger with phrases like "vercel error", "fix vercel",
+
   "vercel not working", "debug vercel", "vercel 500", "vercel build failed".
+
+  '
 allowed-tools: Read, Grep, Bash(vercel:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vercel, debugging, errors]
+tags:
+- saas
+- vercel
+- debugging
+- errors
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vercel Common Errors
 

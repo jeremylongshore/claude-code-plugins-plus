@@ -1,18 +1,26 @@
 ---
 name: snowflake-multi-env-setup
-description: |
-  Configure Snowflake across dev, staging, and production with account-level isolation,
+description: 'Configure Snowflake across dev, staging, and production with account-level
+  isolation,
+
   zero-copy clones, and environment-specific RBAC.
+
   Trigger with phrases like "snowflake environments", "snowflake staging",
+
   "snowflake dev prod", "snowflake clone", "snowflake environment setup".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, data-warehouse, analytics, snowflake]
-compatible-with: claude-code
+tags:
+- saas
+- data-warehouse
+- analytics
+- snowflake
+compatibility: Designed for Claude Code
 ---
-
 # Snowflake Multi-Environment Setup
 
 ## Overview

@@ -1,17 +1,26 @@
 ---
 name: twinmind-core-workflow-b
-description: |
-  Execute TwinMind secondary workflow: Action item extraction and follow-up automation.
+description: 'Execute TwinMind secondary workflow: Action item extraction and follow-up
+  automation.
+
   Use when automating meeting follow-ups, extracting tasks,
+
   or integrating with project management tools.
+
   Trigger with phrases like "twinmind action items",
+
   "meeting follow-up automation", "extract tasks from meeting".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, twinmind, workflow]
+tags:
+- saas
+- twinmind
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # TwinMind Core Workflow B: Action Items & Follow-ups
 

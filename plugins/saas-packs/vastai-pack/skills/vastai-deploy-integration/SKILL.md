@@ -1,17 +1,25 @@
 ---
 name: vastai-deploy-integration
-description: |
-  Deploy ML training jobs and inference services on Vast.ai GPU cloud.
+description: 'Deploy ML training jobs and inference services on Vast.ai GPU cloud.
+
   Use when deploying GPU workloads, configuring Docker images,
+
   or setting up automated deployment scripts.
+
   Trigger with phrases like "deploy vastai", "vastai deployment",
+
   "vastai docker", "vastai production deploy".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vastai:*), Bash(docker:*), Bash(ssh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vast-ai, deployment]
+tags:
+- saas
+- vast-ai
+- deployment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vast.ai Deploy Integration
 

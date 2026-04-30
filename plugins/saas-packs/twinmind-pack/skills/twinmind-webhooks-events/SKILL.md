@@ -1,16 +1,24 @@
 ---
 name: twinmind-webhooks-events
-description: |
-  Handle TwinMind meeting events including transcription completion, action item extraction, and calendar sync notifications.
+description: 'Handle TwinMind meeting events including transcription completion, action
+  item extraction, and calendar sync notifications.
+
   Use when implementing webhooks events,
+
   or managing TwinMind meeting AI operations.
+
   Trigger with phrases like "twinmind webhooks events", "twinmind webhooks events".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: ['saas', 'twinmind', 'webhooks']
+tags:
+- saas
+- twinmind
+- webhooks
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # TwinMind Webhooks & Events
 

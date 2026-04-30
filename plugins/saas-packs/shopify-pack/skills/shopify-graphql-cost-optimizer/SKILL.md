@@ -1,19 +1,26 @@
 ---
 name: shopify-graphql-cost-optimizer
-description: |
-  Master Shopify's calculated query cost system to avoid throttling.
+description: 'Master Shopify''s calculated query cost system to avoid throttling.
+
   Use when hitting THROTTLED errors, optimizing GraphQL queries,
+
   or deciding when to use bulk operations instead.
+
   Trigger with phrases like "shopify query cost", "shopify graphql cost",
+
   "shopify rate limit graphql", "shopify throttled", "shopify bulk operations".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ecommerce, shopify]
-compatible-with: claude-code
+tags:
+- saas
+- ecommerce
+- shopify
+compatibility: Designed for Claude Code
 ---
-
 # Shopify GraphQL Cost Optimizer
 
 ## Overview

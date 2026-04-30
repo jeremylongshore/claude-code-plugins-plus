@@ -1,19 +1,32 @@
 ---
 name: supabase-common-errors
-description: |
-  Diagnose and fix Supabase errors across PostgREST, PostgreSQL, Auth, Storage, and Realtime.
+description: 'Diagnose and fix Supabase errors across PostgREST, PostgreSQL, Auth,
+  Storage, and Realtime.
+
   Use when encountering error codes like PGRST301, 42501, 23505, or auth failures.
+
   Use when debugging failed queries, RLS policy violations, or HTTP 4xx/5xx responses.
-  Trigger with "supabase error", "fix supabase", "PGRST", "supabase 403", "RLS not working",
+
+  Trigger with "supabase error", "fix supabase", "PGRST", "supabase 403", "RLS not
+  working",
+
   "supabase auth error", "unique constraint", "foreign key violation".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*), Bash(supabase:*), Bash(npx:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, supabase, debugging, errors, postgrest, rls, auth]
+tags:
+- saas
+- supabase
+- debugging
+- errors
+- postgrest
+- rls
+- auth
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Supabase Common Errors
 
 ## Overview

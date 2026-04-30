@@ -1,17 +1,28 @@
 ---
 name: windsurf-upgrade-migration
-description: |
-  Upgrade Windsurf IDE, migrate settings from VS Code or Cursor, and handle breaking changes.
+description: 'Upgrade Windsurf IDE, migrate settings from VS Code or Cursor, and handle
+  breaking changes.
+
   Use when upgrading Windsurf versions, migrating from another editor,
+
   or handling configuration changes after updates.
+
   Trigger with phrases like "upgrade windsurf", "windsurf update",
+
   "migrate to windsurf", "windsurf from cursor", "windsurf from vscode".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, migration, upgrade, vscode]
+tags:
+- saas
+- windsurf
+- migration
+- upgrade
+- vscode
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Windsurf Upgrade & Migration
 

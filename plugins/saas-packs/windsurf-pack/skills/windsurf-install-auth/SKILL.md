@@ -1,17 +1,27 @@
 ---
 name: windsurf-install-auth
-description: |
-  Install Windsurf IDE and configure Codeium authentication.
+description: 'Install Windsurf IDE and configure Codeium authentication.
+
   Use when setting up Windsurf for the first time, logging in to Codeium,
+
   or configuring API keys for team/enterprise deployments.
+
   Trigger with phrases like "install windsurf", "setup windsurf",
+
   "windsurf auth", "codeium login", "windsurf API key".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(brew:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, codeium, authentication, ide-setup]
+tags:
+- saas
+- windsurf
+- codeium
+- authentication
+- ide-setup
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Windsurf Install & Auth
 

@@ -1,17 +1,27 @@
 ---
 name: vercel-deploy-preview
-description: |
-  Create and manage Vercel preview deployments for branches and pull requests.
+description: 'Create and manage Vercel preview deployments for branches and pull requests.
+
   Use when deploying a preview for a pull request, testing changes before production,
+
   or sharing preview URLs with stakeholders.
+
   Trigger with phrases like "vercel deploy preview", "vercel preview URL",
+
   "create preview deployment", "vercel PR preview".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(curl:*), Bash(git:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vercel, deployment, preview, workflow]
+tags:
+- saas
+- vercel
+- deployment
+- preview
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vercel Deploy Preview
 

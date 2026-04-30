@@ -1,17 +1,27 @@
 ---
 name: windsurf-known-pitfalls
-description: |
-  Identify and avoid Windsurf anti-patterns and common mistakes.
+description: 'Identify and avoid Windsurf anti-patterns and common mistakes.
+
   Use when onboarding new developers to Windsurf, reviewing AI workflow practices,
+
   or auditing Windsurf configuration for issues.
+
   Trigger with phrases like "windsurf mistakes", "windsurf anti-patterns",
+
   "windsurf pitfalls", "windsurf what not to do", "windsurf gotchas".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, anti-patterns, gotchas, best-practices]
+tags:
+- saas
+- windsurf
+- anti-patterns
+- gotchas
+- best-practices
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Windsurf Known Pitfalls
 

@@ -1,17 +1,29 @@
 ---
 name: vercel-architecture-variants
-description: |
-  Choose and implement Vercel architecture blueprints for different scales and use cases.
-  Use when designing new Vercel projects, choosing between static, serverless, and edge architectures,
+description: 'Choose and implement Vercel architecture blueprints for different scales
+  and use cases.
+
+  Use when designing new Vercel projects, choosing between static, serverless, and
+  edge architectures,
+
   or planning how to structure a multi-project Vercel deployment.
+
   Trigger with phrases like "vercel architecture", "vercel blueprint",
+
   "how to structure vercel", "vercel monorepo", "vercel multi-project".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vercel, architecture, scaling, patterns]
+tags:
+- saas
+- vercel
+- architecture
+- scaling
+- patterns
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vercel Architecture Variants
 

@@ -1,18 +1,23 @@
 ---
 name: supabase-upgrade-migration
-description: |
-  Upgrade Supabase SDK and CLI versions with breaking-change detection and automated code migration.
-  Use when upgrading @supabase/supabase-js (v1→v2 or minor bumps), migrating auth/realtime/storage
-  APIs, or updating the Supabase CLI. Trigger with phrases like "upgrade supabase",
-  "supabase breaking changes", "migrate supabase v2", "update supabase SDK".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(pip:*), Bash(supabase:*), Bash(git:*), Grep, Glob
+description: "Upgrade Supabase SDK and CLI versions with breaking-change detection\
+  \ and automated code migration.\nUse when upgrading @supabase/supabase-js (v1\u2192\
+  v2 or minor bumps), migrating auth/realtime/storage\nAPIs, or updating the Supabase\
+  \ CLI. Trigger with phrases like \"upgrade supabase\",\n\"supabase breaking changes\"\
+  , \"migrate supabase v2\", \"update supabase SDK\".\n"
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(pip:*), Bash(supabase:*),
+  Bash(git:*), Grep, Glob
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, supabase, migration, upgrade, sdk]
+tags:
+- saas
+- supabase
+- migration
+- upgrade
+- sdk
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Supabase Upgrade Migration
 
 ## Overview

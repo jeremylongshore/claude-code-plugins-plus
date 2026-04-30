@@ -1,20 +1,30 @@
 ---
 name: webflow-local-dev-loop
-description: |
-  Configure a Webflow local development workflow with TypeScript, hot reload, mocked API tests,
+description: 'Configure a Webflow local development workflow with TypeScript, hot
+  reload, mocked API tests,
+
   and webhook tunneling via ngrok.
+
   Use when setting up a development environment, configuring test workflows,
+
   or establishing a fast iteration cycle with the Webflow Data API.
+
   Trigger with phrases like "webflow dev setup", "webflow local development",
+
   "webflow dev environment", "develop with webflow".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Bash(npx:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, no-code, webflow]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- no-code
+- webflow
+compatibility: Designed for Claude Code
 ---
-
 # Webflow Local Dev Loop
 
 ## Overview

@@ -1,17 +1,23 @@
 ---
 name: stackblitz-webhooks-events
-description: |
-  WebContainer lifecycle events: server-ready, port changes, error handling.
+description: 'WebContainer lifecycle events: server-ready, port changes, error handling.
+
   Use when working with WebContainers or StackBlitz SDK.
+
   Trigger: "webcontainer events".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ide, webcontainers, stackblitz]
-compatible-with: claude-code
+tags:
+- saas
+- ide
+- webcontainers
+- stackblitz
+compatibility: Designed for Claude Code
 ---
-
 # StackBlitz Webhooks Events
 
 ## Overview

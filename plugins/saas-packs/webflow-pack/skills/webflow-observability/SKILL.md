@@ -1,19 +1,21 @@
 ---
 name: webflow-observability
-description: |
-  Set up observability for Webflow integrations — Prometheus metrics for API calls,
-  OpenTelemetry tracing, structured logging with pino, Grafana dashboards,
-  and alerting for rate limits, errors, and latency.
-  Trigger with phrases like "webflow monitoring", "webflow metrics",
-  "webflow observability", "monitor webflow", "webflow alerts", "webflow tracing".
+description: "Set up observability for Webflow integrations \u2014 Prometheus metrics\
+  \ for API calls,\nOpenTelemetry tracing, structured logging with pino, Grafana dashboards,\n\
+  and alerting for rate limits, errors, and latency.\nTrigger with phrases like \"\
+  webflow monitoring\", \"webflow metrics\",\n\"webflow observability\", \"monitor\
+  \ webflow\", \"webflow alerts\", \"webflow tracing\".\n"
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, no-code, webflow]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- no-code
+- webflow
+compatibility: Designed for Claude Code
 ---
-
 # Webflow Observability
 
 ## Overview

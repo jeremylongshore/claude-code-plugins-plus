@@ -1,17 +1,23 @@
 ---
 name: stackblitz-upgrade-migration
-description: |
-  Migrate between WebContainer API versions and StackBlitz SDK updates.
+description: 'Migrate between WebContainer API versions and StackBlitz SDK updates.
+
   Use when working with WebContainers or StackBlitz SDK.
+
   Trigger: "upgrade stackblitz".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ide, webcontainers, stackblitz]
-compatible-with: claude-code
+tags:
+- saas
+- ide
+- webcontainers
+- stackblitz
+compatibility: Designed for Claude Code
 ---
-
 # StackBlitz Upgrade Migration
 
 ## Overview

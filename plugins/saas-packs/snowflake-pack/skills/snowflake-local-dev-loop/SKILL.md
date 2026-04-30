@@ -1,19 +1,28 @@
 ---
 name: snowflake-local-dev-loop
-description: |
-  Configure Snowflake local development with testing, mocking, and fast iteration.
+description: 'Configure Snowflake local development with testing, mocking, and fast
+  iteration.
+
   Use when setting up dev environment, writing tests against Snowflake,
+
   or establishing a fast iteration cycle with SnowSQL and dev warehouses.
+
   Trigger with phrases like "snowflake dev setup", "snowflake local development",
+
   "snowflake dev environment", "develop with snowflake", "snowflake testing".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, data-warehouse, analytics, snowflake]
-compatible-with: claude-code
+tags:
+- saas
+- data-warehouse
+- analytics
+- snowflake
+compatibility: Designed for Claude Code
 ---
-
 # Snowflake Local Dev Loop
 
 ## Overview

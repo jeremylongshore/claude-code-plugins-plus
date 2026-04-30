@@ -1,20 +1,30 @@
 ---
 name: snowflake-policy-guardrails
-description: |
-  Implement Snowflake governance guardrails with network rules, session policies,
+description: 'Implement Snowflake governance guardrails with network rules, session
+  policies,
+
   authentication policies, and automated compliance checks.
+
   Use when enforcing security policies, implementing data governance,
+
   or configuring automated compliance for Snowflake.
+
   Trigger with phrases like "snowflake policy", "snowflake guardrails",
+
   "snowflake governance", "snowflake compliance", "snowflake enforce".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npx:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, data-warehouse, analytics, snowflake]
-compatible-with: claude-code
+tags:
+- saas
+- data-warehouse
+- analytics
+- snowflake
+compatibility: Designed for Claude Code
 ---
-
 # Snowflake Policy & Guardrails
 
 ## Overview

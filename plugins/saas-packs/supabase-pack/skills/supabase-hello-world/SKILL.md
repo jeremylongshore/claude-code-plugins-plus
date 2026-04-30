@@ -1,19 +1,21 @@
 ---
 name: supabase-hello-world
-description: |
-  Run your first Supabase query — insert a row and read it back.
-  Use when starting a new Supabase project, verifying your connection works,
-  or learning the basic insert-then-select pattern with @supabase/supabase-js.
-  Trigger with phrases like "supabase hello world", "first supabase query",
-  "supabase quick start", "test supabase connection", "supabase insert and select".
+description: "Run your first Supabase query \u2014 insert a row and read it back.\n\
+  Use when starting a new Supabase project, verifying your connection works,\nor learning\
+  \ the basic insert-then-select pattern with @supabase/supabase-js.\nTrigger with\
+  \ phrases like \"supabase hello world\", \"first supabase query\",\n\"supabase quick\
+  \ start\", \"test supabase connection\", \"supabase insert and select\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(supabase:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, supabase, database, getting-started]
+tags:
+- saas
+- supabase
+- database
+- getting-started
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Supabase Hello World — First Query
 
 ## Overview

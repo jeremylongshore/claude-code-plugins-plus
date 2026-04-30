@@ -1,17 +1,27 @@
 ---
 name: vercel-migration-deep-dive
-description: |
-  Migrate to Vercel from other platforms or re-architecture existing Vercel deployments.
+description: 'Migrate to Vercel from other platforms or re-architecture existing Vercel
+  deployments.
+
   Use when migrating from Netlify, AWS, or Cloudflare to Vercel,
+
   or when re-platforming an existing Vercel application.
+
   Trigger with phrases like "migrate to vercel", "vercel migration",
+
   "switch to vercel", "netlify to vercel", "aws to vercel", "vercel replatform".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(npm:*), Bash(npx:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vercel, migration, replatform]
+tags:
+- saas
+- vercel
+- migration
+- replatform
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vercel Migration Deep Dive
 

@@ -1,16 +1,24 @@
 ---
 name: speak-ci-integration
-description: |
-  GitHub Actions pipeline for Speak integrations with mocked API tests and audio validation.
+description: 'GitHub Actions pipeline for Speak integrations with mocked API tests
+  and audio validation.
+
   Use when implementing ci integration,
+
   or managing Speak language learning platform operations.
+
   Trigger with phrases like "speak ci integration", "speak ci integration".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, speak, api]
+tags:
+- saas
+- speak
+- api
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Speak CI Integration
 

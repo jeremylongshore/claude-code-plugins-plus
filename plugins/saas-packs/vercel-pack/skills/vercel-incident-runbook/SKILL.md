@@ -1,17 +1,27 @@
 ---
 name: vercel-incident-runbook
-description: |
-  Vercel incident response procedures with triage, instant rollback, and postmortem.
+description: 'Vercel incident response procedures with triage, instant rollback, and
+  postmortem.
+
   Use when responding to Vercel-related outages, investigating production errors,
+
   or running post-incident reviews for deployment failures.
+
   Trigger with phrases like "vercel incident", "vercel outage",
+
   "vercel down", "vercel on-call", "vercel emergency", "vercel broken".
+
+  '
 allowed-tools: Read, Grep, Bash(vercel:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vercel, incident-response, runbook]
+tags:
+- saas
+- vercel
+- incident-response
+- runbook
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vercel Incident Runbook
 

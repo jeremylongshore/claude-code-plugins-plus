@@ -1,17 +1,27 @@
 ---
 name: vastai-performance-tuning
-description: |
-  Optimize Vast.ai GPU instance selection, startup time, and training throughput.
+description: 'Optimize Vast.ai GPU instance selection, startup time, and training
+  throughput.
+
   Use when optimizing instance selection, reducing startup latency,
+
   or maximizing GPU utilization on rented hardware.
+
   Trigger with phrases like "vastai performance", "optimize vastai",
+
   "vastai slow", "vastai gpu utilization", "vastai throughput".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vastai:*), Bash(ssh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vast-ai, api, performance]
+tags:
+- saas
+- vast-ai
+- api
+- performance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vast.ai Performance Tuning
 

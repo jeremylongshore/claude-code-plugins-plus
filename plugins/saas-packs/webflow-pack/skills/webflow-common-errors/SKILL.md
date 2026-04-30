@@ -1,19 +1,21 @@
 ---
 name: webflow-common-errors
-description: |
-  Diagnose and fix Webflow Data API v2 errors — 400, 401, 403, 404, 409, 429, 500.
-  Use when encountering Webflow API errors, debugging failed requests,
-  or troubleshooting integration issues.
-  Trigger with phrases like "webflow error", "fix webflow",
-  "webflow not working", "debug webflow", "webflow 429", "webflow 401".
+description: "Diagnose and fix Webflow Data API v2 errors \u2014 400, 401, 403, 404,\
+  \ 409, 429, 500.\nUse when encountering Webflow API errors, debugging failed requests,\n\
+  or troubleshooting integration issues.\nTrigger with phrases like \"webflow error\"\
+  , \"fix webflow\",\n\"webflow not working\", \"debug webflow\", \"webflow 429\"\
+  , \"webflow 401\".\n"
 allowed-tools: Read, Grep, Bash(curl:*), Bash(npx:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, no-code, webflow]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- no-code
+- webflow
+compatibility: Designed for Claude Code
 ---
-
 # Webflow Common Errors
 
 ## Overview

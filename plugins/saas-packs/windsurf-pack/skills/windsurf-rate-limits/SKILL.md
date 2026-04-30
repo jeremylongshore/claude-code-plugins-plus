@@ -1,17 +1,28 @@
 ---
 name: windsurf-rate-limits
-description: |
-  Understand and manage Windsurf credit system, usage limits, and model selection.
+description: 'Understand and manage Windsurf credit system, usage limits, and model
+  selection.
+
   Use when running out of credits, optimizing AI usage costs,
+
   or understanding the credit-per-model pricing structure.
+
   Trigger with phrases like "windsurf credits", "windsurf rate limit",
+
   "windsurf usage", "windsurf out of credits", "windsurf model costs".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, credits, pricing, usage]
+tags:
+- saas
+- windsurf
+- credits
+- pricing
+- usage
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Windsurf Rate Limits & Credits
 

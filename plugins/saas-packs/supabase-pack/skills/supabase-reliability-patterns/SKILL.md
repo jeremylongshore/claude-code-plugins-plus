@@ -1,23 +1,38 @@
 ---
 name: supabase-reliability-patterns
-description: |
-  Build resilient Supabase integrations: circuit breakers wrapping createClient
+description: 'Build resilient Supabase integrations: circuit breakers wrapping createClient
+
   calls, offline queue with IndexedDB, graceful degradation with cached fallbacks,
+
   health check endpoints, retry with exponential backoff and jitter,
+
   and dual-write patterns for critical data.
+
   Use when building fault-tolerant apps, handling Supabase outages gracefully,
+
   implementing offline-first patterns, or adding retry logic to SDK calls.
+
   Trigger with phrases like "supabase circuit breaker", "supabase offline",
+
   "supabase retry", "supabase health check", "supabase fallback",
+
   "supabase resilience", "supabase dual write", "supabase outage".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(supabase:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, supabase, reliability, resilience, circuit-breaker, offline, retry]
+tags:
+- saas
+- supabase
+- reliability
+- resilience
+- circuit-breaker
+- offline
+- retry
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Supabase Reliability Patterns
 
 ## Overview

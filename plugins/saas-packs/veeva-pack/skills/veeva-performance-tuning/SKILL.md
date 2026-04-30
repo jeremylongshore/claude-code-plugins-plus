@@ -1,17 +1,23 @@
 ---
 name: veeva-performance-tuning
-description: |
-  Veeva Vault performance tuning for REST API and clinical operations.
+description: 'Veeva Vault performance tuning for REST API and clinical operations.
+
   Use when working with Veeva Vault document management and CRM.
+
   Trigger: "veeva performance tuning".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, life-sciences, crm, veeva]
-compatible-with: claude-code
+tags:
+- saas
+- life-sciences
+- crm
+- veeva
+compatibility: Designed for Claude Code
 ---
-
 # Veeva Vault Performance Tuning
 
 ## Overview

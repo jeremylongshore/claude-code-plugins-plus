@@ -1,18 +1,26 @@
 ---
 name: serpapi-debug-bundle
-description: |
-  Collect SerpApi debug diagnostics: account status, recent searches, and error logs.
+description: 'Collect SerpApi debug diagnostics: account status, recent searches,
+  and error logs.
+
   Use when troubleshooting SerpApi issues, checking credit usage,
+
   or preparing support tickets.
+
   Trigger: "serpapi debug", "serpapi diagnostic", "serpapi support".
+
+  '
 allowed-tools: Read, Bash(curl:*), Bash(tar:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, seo, serpapi]
-compatible-with: claude-code
+tags:
+- saas
+- search
+- seo
+- serpapi
+compatibility: Designed for Claude Code
 ---
-
 # SerpApi Debug Bundle
 
 ## Overview

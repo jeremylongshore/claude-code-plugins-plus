@@ -1,16 +1,24 @@
 ---
 name: speak-data-handling
-description: |
-  Handle student audio data, assessment records, and learning progress with GDPR/COPPA compliance.
+description: 'Handle student audio data, assessment records, and learning progress
+  with GDPR/COPPA compliance.
+
   Use when implementing data handling,
+
   or managing Speak language learning platform operations.
+
   Trigger with phrases like "speak data handling", "speak data handling".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, speak, api]
+tags:
+- saas
+- speak
+- api
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Speak Data Handling
 

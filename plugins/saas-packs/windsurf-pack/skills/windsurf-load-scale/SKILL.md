@@ -1,17 +1,28 @@
 ---
 name: windsurf-load-scale
-description: |
-  Scale Windsurf adoption across large organizations with workspace strategies and performance tuning.
+description: 'Scale Windsurf adoption across large organizations with workspace strategies
+  and performance tuning.
+
   Use when rolling out Windsurf to 50+ developers, managing large monorepo workspaces,
+
   or planning enterprise-scale deployment.
+
   Trigger with phrases like "windsurf at scale", "windsurf large team",
+
   "windsurf monorepo", "windsurf organization", "windsurf 100 developers".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, scaling, enterprise, large-team]
+tags:
+- saas
+- windsurf
+- scaling
+- enterprise
+- large-team
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Windsurf Load & Scale
 

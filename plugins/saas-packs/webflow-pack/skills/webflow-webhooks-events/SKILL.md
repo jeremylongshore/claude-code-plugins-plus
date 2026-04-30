@@ -1,20 +1,30 @@
 ---
 name: webflow-webhooks-events
-description: |
-  Implement Webflow webhook registration, signature verification, and event handling
+description: 'Implement Webflow webhook registration, signature verification, and
+  event handling
+
   for form_submission, site_publish, ecomm_new_order, page_created, and more.
+
   Use when setting up webhook endpoints, implementing event-driven workflows,
+
   or handling Webflow notifications.
+
   Trigger with phrases like "webflow webhook", "webflow events",
+
   "webflow webhook signature", "handle webflow events", "webflow notifications".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, no-code, webflow]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- no-code
+- webflow
+compatibility: Designed for Claude Code
 ---
-
 # Webflow Webhooks & Events
 
 ## Overview

@@ -1,20 +1,22 @@
 ---
 name: webflow-rate-limits
-description: |
-  Handle Webflow Data API v2 rate limits — per-key limits, Retry-After headers,
-  exponential backoff, request queuing, and bulk endpoint optimization.
-  Use when hitting 429 errors, implementing retry logic,
-  or optimizing API request throughput.
-  Trigger with phrases like "webflow rate limit", "webflow throttling",
-  "webflow 429", "webflow retry", "webflow backoff", "webflow too many requests".
+description: "Handle Webflow Data API v2 rate limits \u2014 per-key limits, Retry-After\
+  \ headers,\nexponential backoff, request queuing, and bulk endpoint optimization.\n\
+  Use when hitting 429 errors, implementing retry logic,\nor optimizing API request\
+  \ throughput.\nTrigger with phrases like \"webflow rate limit\", \"webflow throttling\"\
+  ,\n\"webflow 429\", \"webflow retry\", \"webflow backoff\", \"webflow too many requests\"\
+  .\n"
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, no-code, webflow]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- no-code
+- webflow
+compatibility: Designed for Claude Code
 ---
-
 # Webflow Rate Limits
 
 ## Overview

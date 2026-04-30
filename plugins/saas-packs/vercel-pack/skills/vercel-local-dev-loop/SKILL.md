@@ -1,17 +1,28 @@
 ---
 name: vercel-local-dev-loop
-description: |
-  Configure Vercel local development with vercel dev, environment variables, and hot reload.
+description: 'Configure Vercel local development with vercel dev, environment variables,
+  and hot reload.
+
   Use when setting up a development environment, testing serverless functions locally,
+
   or establishing a fast iteration cycle with Vercel.
+
   Trigger with phrases like "vercel dev setup", "vercel local development",
+
   "vercel dev environment", "develop with vercel locally".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(npm:*), Bash(npx:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vercel, development, testing, workflow]
+tags:
+- saas
+- vercel
+- development
+- testing
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vercel Local Dev Loop
 

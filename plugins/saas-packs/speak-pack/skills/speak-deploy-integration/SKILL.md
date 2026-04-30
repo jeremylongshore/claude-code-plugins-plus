@@ -1,16 +1,24 @@
 ---
 name: speak-deploy-integration
-description: |
-  Deploy Speak language learning features to Vercel, Cloud Run, or containerized environments.
+description: 'Deploy Speak language learning features to Vercel, Cloud Run, or containerized
+  environments.
+
   Use when implementing deploy integration,
+
   or managing Speak language learning platform operations.
+
   Trigger with phrases like "speak deploy integration", "speak deploy integration".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, speak, deployment]
+tags:
+- saas
+- speak
+- deployment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Speak Deploy Integration
 

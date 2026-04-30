@@ -1,19 +1,27 @@
 ---
 name: snowflake-debug-bundle
-description: |
-  Collect Snowflake debug evidence for support tickets and troubleshooting.
+description: 'Collect Snowflake debug evidence for support tickets and troubleshooting.
+
   Use when encountering persistent issues, preparing support cases,
+
   or collecting diagnostic information from QUERY_HISTORY and ACCOUNT_USAGE.
+
   Trigger with phrases like "snowflake debug", "snowflake support bundle",
+
   "snowflake diagnostic", "snowflake query history", "snowflake troubleshoot".
+
+  '
 allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, data-warehouse, analytics, snowflake]
-compatible-with: claude-code
+tags:
+- saas
+- data-warehouse
+- analytics
+- snowflake
+compatibility: Designed for Claude Code
 ---
-
 # Snowflake Debug Bundle
 
 ## Overview

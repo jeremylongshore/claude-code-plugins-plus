@@ -1,17 +1,26 @@
 ---
 name: vastai-hello-world
-description: |
-  Rent your first GPU instance on Vast.ai and run a workload.
+description: 'Rent your first GPU instance on Vast.ai and run a workload.
+
   Use when starting a new Vast.ai integration, testing your setup,
+
   or learning basic Vast.ai GPU rental patterns.
+
   Trigger with phrases like "vastai hello world", "vastai example",
+
   "vastai quick start", "rent first gpu", "vastai first instance".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vastai:*), Bash(curl:*), Bash(ssh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vast-ai, api, testing]
+tags:
+- saas
+- vast-ai
+- api
+- testing
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vast.ai Hello World
 

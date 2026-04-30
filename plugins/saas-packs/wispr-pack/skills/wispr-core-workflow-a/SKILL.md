@@ -1,18 +1,25 @@
 ---
 name: wispr-core-workflow-a
-description: |
-  Wispr Flow core workflow a for voice-to-text API integration.
+description: 'Wispr Flow core workflow a for voice-to-text API integration.
+
   Use when integrating Wispr Flow dictation, WebSocket streaming,
+
   or building voice-powered applications.
+
   Trigger: "wispr core workflow a".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, voice, dictation, wispr]
-compatible-with: claude-code
+tags:
+- saas
+- voice
+- dictation
+- wispr
+compatibility: Designed for Claude Code
 ---
-
 # Wispr Flow Core Workflow A
 
 ## Overview

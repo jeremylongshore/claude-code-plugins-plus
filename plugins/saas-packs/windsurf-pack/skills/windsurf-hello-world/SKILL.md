@@ -1,17 +1,27 @@
 ---
 name: windsurf-hello-world
-description: |
-  Create your first Windsurf Cascade interaction and Supercomplete experience.
+description: 'Create your first Windsurf Cascade interaction and Supercomplete experience.
+
   Use when starting with Windsurf, testing your setup,
+
   or learning basic Cascade and Supercomplete workflows.
+
   Trigger with phrases like "windsurf hello world", "windsurf example",
+
   "windsurf quick start", "first windsurf project", "try windsurf".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, cascade, supercomplete, quickstart]
+tags:
+- saas
+- windsurf
+- cascade
+- supercomplete
+- quickstart
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Windsurf Hello World
 

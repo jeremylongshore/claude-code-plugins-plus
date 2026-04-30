@@ -1,18 +1,29 @@
 ---
 name: supabase-rate-limits
-description: |
-  Manage Supabase rate limits and quotas across all plan tiers.
+description: 'Manage Supabase rate limits and quotas across all plan tiers.
+
   Use when hitting 429 errors, configuring connection pooling,
+
   optimizing API throughput, or understanding tier-specific quotas
+
   for Auth, Storage, Realtime, and Edge Functions.
+
   Trigger: "supabase rate limit", "supabase 429", "supabase throttle",
+
   "supabase quota", "supabase connection pool", "supabase too many requests".
+
+  '
 allowed-tools: Read, Write, Edit, Bash, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, supabase, rate-limiting, reliability, quotas]
+tags:
+- saas
+- supabase
+- rate-limiting
+- reliability
+- quotas
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Supabase Rate Limits
 

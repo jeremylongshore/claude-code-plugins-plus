@@ -1,17 +1,26 @@
 ---
 name: speak-hello-world
-description: |
-  Create your first Speak AI tutoring session with pronunciation feedback.
+description: 'Create your first Speak AI tutoring session with pronunciation feedback.
+
   Use when starting a new Speak integration, testing your setup,
+
   or learning basic language learning API patterns.
+
   Trigger with phrases like "speak hello world", "speak example",
+
   "speak quick start", "first speak lesson".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, speak, api, testing]
+tags:
+- saas
+- speak
+- api
+- testing
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Speak Hello World
 

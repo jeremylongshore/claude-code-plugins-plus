@@ -1,17 +1,28 @@
 ---
 name: windsurf-reference-architecture
-description: |
-  Implement Windsurf reference architecture with optimal project structure and AI configuration.
+description: 'Implement Windsurf reference architecture with optimal project structure
+  and AI configuration.
+
   Use when designing workspace configuration for Windsurf, setting up team standards,
+
   or establishing architecture patterns that maximize Cascade effectiveness.
+
   Trigger with phrases like "windsurf architecture", "windsurf project structure",
+
   "windsurf best practices", "windsurf team setup", "optimize for cascade".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, architecture, configuration, team-setup]
+tags:
+- saas
+- windsurf
+- architecture
+- configuration
+- team-setup
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Windsurf Reference Architecture
 

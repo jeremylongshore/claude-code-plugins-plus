@@ -1,24 +1,41 @@
 ---
 name: supabase-policy-guardrails
-description: |
-  Enforce organizational governance for Supabase projects: shared RLS policy
+description: 'Enforce organizational governance for Supabase projects: shared RLS
+  policy
+
   library with reusable templates, table and column naming conventions,
+
   migration review process with CI checks, cost alert thresholds,
+
   and security audit scripts scanning for common misconfigurations.
+
   Use when establishing Supabase standards across teams, creating RLS
+
   policy templates, setting up migration review workflows, or auditing
+
   existing projects for security and cost issues.
+
   Trigger with phrases like "supabase governance", "supabase policy library",
+
   "supabase naming convention", "supabase migration review",
+
   "supabase cost alert", "supabase security audit", "supabase RLS template".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(supabase:*), Bash(psql:*), Bash(npx:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, supabase, governance, security, rls, naming-conventions, cost-management]
+tags:
+- saas
+- supabase
+- governance
+- security
+- rls
+- naming-conventions
+- cost-management
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Supabase Policy Guardrails
 
 ## Overview

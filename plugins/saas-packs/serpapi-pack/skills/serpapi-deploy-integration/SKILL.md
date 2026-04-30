@@ -1,18 +1,25 @@
 ---
 name: serpapi-deploy-integration
-description: |
-  Deploy SerpApi-powered search features to production platforms.
+description: 'Deploy SerpApi-powered search features to production platforms.
+
   Use when deploying search APIs, configuring backend proxies,
+
   or setting up SerpApi in serverless environments.
+
   Trigger: "deploy serpapi", "serpapi Vercel", "serpapi production deploy".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, seo, serpapi]
-compatible-with: claude-code
+tags:
+- saas
+- search
+- seo
+- serpapi
+compatibility: Designed for Claude Code
 ---
-
 # SerpApi Deploy Integration
 
 ## Overview

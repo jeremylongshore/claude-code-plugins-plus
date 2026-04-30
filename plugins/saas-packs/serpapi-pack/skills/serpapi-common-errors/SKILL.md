@@ -1,17 +1,24 @@
 ---
 name: serpapi-common-errors
-description: |
-  Diagnose and fix SerpApi errors: invalid keys, exhausted credits, blocked searches.
+description: 'Diagnose and fix SerpApi errors: invalid keys, exhausted credits, blocked
+  searches.
+
   Use when SerpApi returns errors, empty results, or unexpected status codes.
+
   Trigger: "serpapi error", "fix serpapi", "serpapi not working", "serpapi empty results".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, seo, serpapi]
-compatible-with: claude-code
+tags:
+- saas
+- search
+- seo
+- serpapi
+compatibility: Designed for Claude Code
 ---
-
 # SerpApi Common Errors
 
 ## Overview

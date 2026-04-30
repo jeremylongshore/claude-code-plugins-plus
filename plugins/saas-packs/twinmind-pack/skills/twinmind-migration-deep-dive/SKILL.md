@@ -1,16 +1,24 @@
 ---
 name: twinmind-migration-deep-dive
-description: |
-  Migrate from other meeting AI tools (Otter.
+description: 'Migrate from other meeting AI tools (Otter.
+
   Use when implementing migration deep dive,
+
   or managing TwinMind meeting AI operations.
-  Trigger with phrases like "twinmind migration deep dive", "twinmind migration deep dive".
+
+  Trigger with phrases like "twinmind migration deep dive", "twinmind migration deep
+  dive".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: ['saas', 'twinmind', 'migration']
+tags:
+- saas
+- twinmind
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # TwinMind Migration Deep Dive
 

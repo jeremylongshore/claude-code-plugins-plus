@@ -1,16 +1,24 @@
 ---
 name: speak-prod-checklist
-description: |
-  Production readiness checklist for Speak language learning integrations: auth, audio pipeline, monitoring, and compliance.
+description: 'Production readiness checklist for Speak language learning integrations:
+  auth, audio pipeline, monitoring, and compliance.
+
   Use when implementing prod checklist features,
+
   or troubleshooting Speak language learning integration issues.
+
   Trigger with phrases like "speak prod checklist", "speak prod checklist".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, speak, api]
+tags:
+- saas
+- speak
+- api
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Speak Production Checklist
 

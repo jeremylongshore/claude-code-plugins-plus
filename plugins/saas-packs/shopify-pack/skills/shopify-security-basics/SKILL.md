@@ -1,20 +1,29 @@
 ---
 name: shopify-security-basics
-description: |
-  Apply Shopify security best practices for API credentials, webhook HMAC validation,
+description: 'Apply Shopify security best practices for API credentials, webhook HMAC
+  validation,
+
   and access scope management.
+
   Use when securing API keys, validating webhook signatures,
+
   or auditing Shopify security configuration.
+
   Trigger with phrases like "shopify security", "shopify secrets",
+
   "secure shopify", "shopify HMAC", "shopify webhook verify".
+
+  '
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ecommerce, shopify]
-compatible-with: claude-code
+tags:
+- saas
+- ecommerce
+- shopify
+compatibility: Designed for Claude Code
 ---
-
 # Shopify Security Basics
 
 ## Overview

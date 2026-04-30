@@ -1,17 +1,28 @@
 ---
 name: vercel-enterprise-rbac
-description: |
-  Configure Vercel enterprise RBAC, access groups, SSO integration, and audit logging.
+description: 'Configure Vercel enterprise RBAC, access groups, SSO integration, and
+  audit logging.
+
   Use when implementing team access control, configuring SAML SSO,
+
   or setting up role-based permissions for Vercel projects.
+
   Trigger with phrases like "vercel SSO", "vercel RBAC",
+
   "vercel enterprise", "vercel roles", "vercel permissions", "vercel access groups".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vercel, rbac, enterprise, sso]
+tags:
+- saas
+- vercel
+- rbac
+- enterprise
+- sso
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vercel Enterprise RBAC
 

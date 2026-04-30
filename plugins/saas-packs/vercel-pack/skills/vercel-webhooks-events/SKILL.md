@@ -1,17 +1,28 @@
 ---
 name: vercel-webhooks-events
-description: |
-  Implement Vercel webhook handling with signature verification and event processing.
+description: 'Implement Vercel webhook handling with signature verification and event
+  processing.
+
   Use when setting up webhook endpoints, processing deployment events,
+
   or building integrations that react to Vercel deployment lifecycle.
+
   Trigger with phrases like "vercel webhook", "vercel events",
+
   "vercel deployment.ready", "handle vercel events", "vercel webhook signature".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vercel, webhooks, events, integration]
+tags:
+- saas
+- vercel
+- webhooks
+- events
+- integration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vercel Webhooks & Events
 

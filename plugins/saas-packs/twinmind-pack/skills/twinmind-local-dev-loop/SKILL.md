@@ -1,17 +1,27 @@
 ---
 name: twinmind-local-dev-loop
-description: |
-  Set up local development workflow with TwinMind API integration.
+description: 'Set up local development workflow with TwinMind API integration.
+
   Use when building applications that integrate TwinMind transcription,
+
   testing API calls locally, or developing meeting automation tools.
+
   Trigger with phrases like "twinmind dev setup", "twinmind local development",
+
   "twinmind API testing", "build with twinmind".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, twinmind, api, testing, transcription]
+tags:
+- saas
+- twinmind
+- api
+- testing
+- transcription
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # TwinMind Local Dev Loop
 

@@ -1,17 +1,26 @@
 ---
 name: vastai-data-handling
-description: |
-  Manage training data and model artifacts securely on Vast.ai GPU instances.
+description: 'Manage training data and model artifacts securely on Vast.ai GPU instances.
+
   Use when transferring data to instances, managing checkpoints,
+
   or implementing secure data lifecycle on rented hardware.
+
   Trigger with phrases like "vastai data", "vastai upload data",
+
   "vastai checkpoints", "vastai data security", "vastai artifacts".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vastai:*), Bash(ssh:*), Bash(scp:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vast-ai, compliance, data]
+tags:
+- saas
+- vast-ai
+- compliance
+- data
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vast.ai Data Handling
 

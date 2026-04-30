@@ -1,19 +1,28 @@
 ---
 name: webflow-install-auth
-description: |
-  Install the Webflow JS SDK (webflow-api) and configure OAuth 2.0 or API token authentication.
+description: 'Install the Webflow JS SDK (webflow-api) and configure OAuth 2.0 or
+  API token authentication.
+
   Use when setting up a new Webflow integration, configuring access tokens,
+
   or initializing the WebflowClient in your project.
+
   Trigger with phrases like "install webflow", "setup webflow",
+
   "webflow auth", "configure webflow API token", "webflow OAuth".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, no-code, webflow]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- no-code
+- webflow
+compatibility: Designed for Claude Code
 ---
-
 # Webflow Install & Auth
 
 ## Overview

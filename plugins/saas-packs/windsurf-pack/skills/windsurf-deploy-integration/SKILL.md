@@ -1,17 +1,28 @@
 ---
 name: windsurf-deploy-integration
-description: |
-  Deploy applications using Windsurf's built-in deployment features and Cascade automation.
+description: 'Deploy applications using Windsurf''s built-in deployment features and
+  Cascade automation.
+
   Use when deploying apps from Windsurf, configuring Netlify/Vercel integration,
+
   or building deployment workflows with Cascade.
+
   Trigger with phrases like "deploy windsurf", "windsurf deploy",
+
   "windsurf netlify", "windsurf vercel", "cascade deploy".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, deployment, netlify, vercel]
+tags:
+- saas
+- windsurf
+- deployment
+- netlify
+- vercel
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Windsurf Deploy Integration
 

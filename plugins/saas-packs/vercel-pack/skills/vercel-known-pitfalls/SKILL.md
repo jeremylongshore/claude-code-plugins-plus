@@ -1,17 +1,27 @@
 ---
 name: vercel-known-pitfalls
-description: |
-  Identify and avoid Vercel anti-patterns and common integration mistakes.
+description: 'Identify and avoid Vercel anti-patterns and common integration mistakes.
+
   Use when reviewing Vercel code for issues, onboarding new developers,
+
   or auditing existing Vercel deployments for best practice violations.
+
   Trigger with phrases like "vercel mistakes", "vercel anti-patterns",
+
   "vercel pitfalls", "vercel what not to do", "vercel code review".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vercel, audit, anti-patterns, best-practices]
+tags:
+- saas
+- vercel
+- audit
+- anti-patterns
+- best-practices
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vercel Known Pitfalls
 

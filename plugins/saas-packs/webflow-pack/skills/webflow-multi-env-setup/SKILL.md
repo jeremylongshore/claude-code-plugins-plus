@@ -1,18 +1,26 @@
 ---
 name: webflow-multi-env-setup
-description: |
-  Configure Webflow across development, staging, and production environments with
+description: 'Configure Webflow across development, staging, and production environments
+  with
+
   per-environment API tokens, site IDs, and secret management via Vault/AWS/GCP.
+
   Trigger with phrases like "webflow environments", "webflow staging",
+
   "webflow dev prod", "webflow environment setup", "webflow config by env".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, no-code, webflow]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- no-code
+- webflow
+compatibility: Designed for Claude Code
 ---
-
 # Webflow Multi-Environment Setup
 
 ## Overview

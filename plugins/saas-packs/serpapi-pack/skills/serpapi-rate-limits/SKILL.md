@@ -1,18 +1,25 @@
 ---
 name: serpapi-rate-limits
-description: |
-  Handle SerpApi rate limits and credit-based usage quotas.
+description: 'Handle SerpApi rate limits and credit-based usage quotas.
+
   Use when managing API credit consumption, implementing request throttling,
+
   or optimizing search volume for your plan tier.
+
   Trigger: "serpapi rate limit", "serpapi credits", "serpapi quota", "serpapi throttle".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, seo, serpapi]
-compatible-with: claude-code
+tags:
+- saas
+- search
+- seo
+- serpapi
+compatibility: Designed for Claude Code
 ---
-
 # SerpApi Rate Limits
 
 ## Overview

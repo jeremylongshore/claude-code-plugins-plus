@@ -1,19 +1,31 @@
 ---
 name: sentry-migration-deep-dive
-description: |
-  Migrate to Sentry from other error tracking tools like Rollbar, Bugsnag, or New Relic.
+description: 'Migrate to Sentry from other error tracking tools like Rollbar, Bugsnag,
+  or New Relic.
+
   Use when replacing an existing error tracker with Sentry, running tools in parallel
+
   during a transition, or mapping API calls between providers.
+
   Trigger with phrases like "migrate to sentry", "switch from rollbar to sentry",
+
   "replace bugsnag with sentry", "sentry migration plan".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(node:*), Grep, Glob
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, sentry, migration, rollbar, bugsnag, new-relic, error-tracking]
+tags:
+- saas
+- sentry
+- migration
+- rollbar
+- bugsnag
+- new-relic
+- error-tracking
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Sentry Migration Deep Dive
 
 ## Overview

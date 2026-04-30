@@ -1,17 +1,26 @@
 ---
 name: vastai-core-workflow-a
-description: |
-  Execute Vast.ai primary workflow: GPU instance provisioning and job execution.
+description: 'Execute Vast.ai primary workflow: GPU instance provisioning and job
+  execution.
+
   Use when renting GPUs for training, searching offers by price and specs,
+
   or managing the full instance lifecycle from search to teardown.
+
   Trigger with phrases like "vastai rent gpu", "vastai training job",
+
   "vastai provision instance", "run job on vastai".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vastai:*), Bash(curl:*), Bash(ssh:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vast-ai, workflow]
+tags:
+- saas
+- vast-ai
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Vast.ai Core Workflow A: Instance Provisioning & Job Execution
 

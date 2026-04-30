@@ -1,19 +1,28 @@
 ---
 name: snowflake-core-workflow-a
-description: |
-  Execute Snowflake primary workflow: data loading via stages and COPY INTO.
+description: 'Execute Snowflake primary workflow: data loading via stages and COPY
+  INTO.
+
   Use when loading data from S3/GCS/Azure into Snowflake tables,
+
   setting up Snowpipe for continuous ingestion, or bulk loading files.
+
   Trigger with phrases like "snowflake load data", "snowflake COPY INTO",
+
   "snowflake stage", "snowflake ingest", "snowflake S3 load", "snowpipe".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, data-warehouse, analytics, snowflake]
-compatible-with: claude-code
+tags:
+- saas
+- data-warehouse
+- analytics
+- snowflake
+compatibility: Designed for Claude Code
 ---
-
 # Snowflake Core Workflow A — Data Loading
 
 ## Overview

@@ -1,17 +1,26 @@
 ---
 name: speak-local-dev-loop
-description: |
-  Configure Speak local development with mocked tutors and audio testing.
+description: 'Configure Speak local development with mocked tutors and audio testing.
+
   Use when setting up a development environment, configuring test workflows,
+
   or building language learning features locally.
+
   Trigger with phrases like "speak dev setup", "speak local development",
+
   "speak dev environment", "develop with speak".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, speak, testing, workflow]
+tags:
+- saas
+- speak
+- testing
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Speak Local Dev Loop
 

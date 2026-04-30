@@ -1,19 +1,28 @@
 ---
 name: snowflake-upgrade-migration
-description: |
-  Upgrade Snowflake drivers, handle breaking changes, and migrate between editions.
+description: 'Upgrade Snowflake drivers, handle breaking changes, and migrate between
+  editions.
+
   Use when upgrading snowflake-sdk or snowflake-connector-python versions,
+
   migrating between Snowflake editions, or handling deprecations.
+
   Trigger with phrases like "upgrade snowflake", "snowflake migration",
+
   "snowflake breaking changes", "update snowflake driver", "snowflake version".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, data-warehouse, analytics, snowflake]
-compatible-with: claude-code
+tags:
+- saas
+- data-warehouse
+- analytics
+- snowflake
+compatibility: Designed for Claude Code
 ---
-
 # Snowflake Upgrade & Migration
 
 ## Overview

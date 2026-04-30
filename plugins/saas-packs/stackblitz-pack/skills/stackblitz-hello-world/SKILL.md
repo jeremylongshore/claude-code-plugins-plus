@@ -1,18 +1,26 @@
 ---
 name: stackblitz-hello-world
-description: |
-  Boot a WebContainer, mount files, install npm packages, and run a dev server in the browser.
+description: 'Boot a WebContainer, mount files, install npm packages, and run a dev
+  server in the browser.
+
   Use when learning WebContainers, building browser-based IDEs,
+
   or running Node.js without a backend server.
+
   Trigger: "stackblitz hello world", "webcontainer example", "run node in browser".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ide, webcontainers, stackblitz]
-compatible-with: claude-code
+tags:
+- saas
+- ide
+- webcontainers
+- stackblitz
+compatibility: Designed for Claude Code
 ---
-
 # StackBlitz Hello World
 
 ## Overview

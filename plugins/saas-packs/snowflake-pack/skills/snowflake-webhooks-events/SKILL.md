@@ -1,19 +1,28 @@
 ---
 name: snowflake-webhooks-events
-description: |
-  Implement Snowflake event-driven patterns with alerts, notifications, and external functions.
+description: 'Implement Snowflake event-driven patterns with alerts, notifications,
+  and external functions.
+
   Use when setting up Snowflake alerts, email notifications, external API calls,
+
   or event-driven pipelines triggered by Snowflake data changes.
+
   Trigger with phrases like "snowflake alerts", "snowflake notifications",
+
   "snowflake events", "snowflake external function", "snowflake email".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, data-warehouse, analytics, snowflake]
-compatible-with: claude-code
+tags:
+- saas
+- data-warehouse
+- analytics
+- snowflake
+compatibility: Designed for Claude Code
 ---
-
 # Snowflake Webhooks & Events
 
 ## Overview

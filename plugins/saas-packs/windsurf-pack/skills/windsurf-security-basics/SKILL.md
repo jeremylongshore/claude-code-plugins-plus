@@ -1,17 +1,28 @@
 ---
 name: windsurf-security-basics
-description: |
-  Apply Windsurf security best practices for workspace isolation, data privacy, and secret protection.
+description: 'Apply Windsurf security best practices for workspace isolation, data
+  privacy, and secret protection.
+
   Use when securing sensitive code from AI indexing, configuring telemetry,
+
   or auditing Windsurf security posture.
+
   Trigger with phrases like "windsurf security", "windsurf secrets",
+
   "windsurf privacy", "windsurf data protection", "codeiumignore".
+
+  '
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, security, privacy, compliance]
+tags:
+- saas
+- windsurf
+- security
+- privacy
+- compliance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Windsurf Security Basics
 

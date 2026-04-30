@@ -1,16 +1,24 @@
 ---
 name: speak-rate-limits
-description: |
-  Handle Speak API rate limits with exponential backoff, request queuing, and optimization strategies.
+description: 'Handle Speak API rate limits with exponential backoff, request queuing,
+  and optimization strategies.
+
   Use when implementing rate limits features,
+
   or troubleshooting Speak language learning integration issues.
+
   Trigger with phrases like "speak rate limits", "speak rate limits".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, speak, api]
+tags:
+- saas
+- speak
+- api
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Speak Rate Limits
 

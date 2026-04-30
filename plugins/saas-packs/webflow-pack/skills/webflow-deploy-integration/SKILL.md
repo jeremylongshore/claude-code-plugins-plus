@@ -1,18 +1,26 @@
 ---
 name: webflow-deploy-integration
-description: |
-  Deploy Webflow-powered applications to Vercel, Fly.io, and Google Cloud Run
+description: 'Deploy Webflow-powered applications to Vercel, Fly.io, and Google Cloud
+  Run
+
   with proper secrets management and Webflow-specific health checks.
+
   Trigger with phrases like "deploy webflow", "webflow Vercel",
+
   "webflow production deploy", "webflow Cloud Run", "webflow Fly.io".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, no-code, webflow]
-compatible-with: claude-code
+tags:
+- saas
+- design
+- no-code
+- webflow
+compatibility: Designed for Claude Code
 ---
-
 # Webflow Deploy Integration
 
 ## Overview
