@@ -1,19 +1,28 @@
 ---
 name: cohere-performance-tuning
-description: |
-  Optimize Cohere API performance with caching, batching, model selection, and streaming.
+description: 'Optimize Cohere API performance with caching, batching, model selection,
+  and streaming.
+
   Use when experiencing slow API responses, implementing caching strategies,
+
   or optimizing request throughput for Cohere Chat, Embed, and Rerank.
+
   Trigger with phrases like "cohere performance", "optimize cohere",
+
   "cohere latency", "cohere caching", "cohere slow", "cohere batch".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, nlp, cohere]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- nlp
+- cohere
+compatibility: Designed for Claude Code
 ---
-
 # Cohere Performance Tuning
 
 ## Overview

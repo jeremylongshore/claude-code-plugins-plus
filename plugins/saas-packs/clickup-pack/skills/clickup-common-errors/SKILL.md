@@ -1,19 +1,26 @@
 ---
 name: clickup-common-errors
-description: |
-  Diagnose and fix ClickUp API v2 errors by HTTP status and error code.
+description: 'Diagnose and fix ClickUp API v2 errors by HTTP status and error code.
+
   Use when encountering ClickUp API errors, debugging failed requests,
+
   or troubleshooting OAUTH_* error codes, 401s, 429s, and 500s.
+
   Trigger: "clickup error", "fix clickup", "clickup not working",
+
   "clickup 401", "clickup 429", "OAUTH error", "debug clickup API".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, clickup]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- clickup
+compatibility: Designed for Claude Code
 ---
-
 # ClickUp Common Errors
 
 ## Overview

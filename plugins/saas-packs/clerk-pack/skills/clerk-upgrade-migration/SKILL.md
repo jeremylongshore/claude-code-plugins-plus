@@ -1,17 +1,25 @@
 ---
 name: clerk-upgrade-migration
-description: |
-  Manage Clerk SDK version upgrades and handle breaking changes.
+description: 'Manage Clerk SDK version upgrades and handle breaking changes.
+
   Use when upgrading Clerk packages, migrating to new SDK versions,
+
   or handling deprecation warnings.
+
   Trigger with phrases like "upgrade clerk", "clerk migration",
+
   "update clerk SDK", "clerk breaking changes".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clerk, migration]
+tags:
+- saas
+- clerk
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clerk Upgrade & Migration
 

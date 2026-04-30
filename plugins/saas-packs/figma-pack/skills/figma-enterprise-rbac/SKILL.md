@@ -1,19 +1,26 @@
 ---
 name: figma-enterprise-rbac
-description: |
-  Configure Figma Enterprise features: OAuth 2.0, team management, and access control.
+description: 'Configure Figma Enterprise features: OAuth 2.0, team management, and
+  access control.
+
   Use when implementing OAuth flows, managing team/project access via API,
+
   or building Enterprise-level Figma integrations.
+
   Trigger with phrases like "figma enterprise", "figma OAuth",
+
   "figma team management", "figma access control", "figma SCIM".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, figma]
-compatible-with: claude-code
+tags:
+- saas
+- figma
+compatibility: Designed for Claude Code
 ---
-
 # Figma Enterprise RBAC
 
 ## Overview

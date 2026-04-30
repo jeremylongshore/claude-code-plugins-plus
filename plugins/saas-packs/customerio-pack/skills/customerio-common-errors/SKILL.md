@@ -1,17 +1,26 @@
 ---
 name: customerio-common-errors
-description: |
-  Diagnose and fix Customer.io common errors.
+description: 'Diagnose and fix Customer.io common errors.
+
   Use when troubleshooting API errors, delivery failures,
+
   campaign issues, or SDK exceptions.
+
   Trigger: "customer.io error", "customer.io not working",
+
   "debug customer.io", "customer.io 401", "customer.io 429".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*), Bash(npx:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, customer-io, debugging, errors]
+tags:
+- saas
+- customer-io
+- debugging
+- errors
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Customer.io Common Errors
 

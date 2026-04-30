@@ -1,18 +1,26 @@
 ---
 name: fathom-common-errors
-description: |
-  Diagnose and fix Fathom API errors including auth failures and missing data.
+description: 'Diagnose and fix Fathom API errors including auth failures and missing
+  data.
+
   Use when API calls fail, transcripts are empty, or webhooks are not firing.
+
   Trigger with phrases like "fathom error", "fathom not working",
+
   "fathom api failure", "fix fathom".
+
+  '
 allowed-tools: Read, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, meeting-intelligence, ai-notes, fathom]
-compatible-with: claude-code
+tags:
+- saas
+- meeting-intelligence
+- ai-notes
+- fathom
+compatibility: Designed for Claude Code
 ---
-
 # Fathom Common Errors
 
 ## Error Reference

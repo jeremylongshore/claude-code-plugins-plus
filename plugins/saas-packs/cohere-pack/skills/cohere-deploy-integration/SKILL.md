@@ -1,19 +1,27 @@
 ---
 name: cohere-deploy-integration
-description: |
-  Deploy Cohere-powered applications to Vercel, Fly.io, and Cloud Run.
+description: 'Deploy Cohere-powered applications to Vercel, Fly.io, and Cloud Run.
+
   Use when deploying Cohere API v2 apps to production,
+
   configuring platform-specific secrets, or setting up deployment pipelines.
+
   Trigger with phrases like "deploy cohere", "cohere Vercel",
+
   "cohere production deploy", "cohere Cloud Run", "cohere Fly.io".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, nlp, cohere]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- nlp
+- cohere
+compatibility: Designed for Claude Code
 ---
-
 # Cohere Deploy Integration
 
 ## Overview

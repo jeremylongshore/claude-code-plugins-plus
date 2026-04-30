@@ -1,17 +1,27 @@
 ---
 name: exa-reference-architecture
-description: |
-  Implement Exa reference architecture for search pipelines, RAG, and content discovery.
+description: 'Implement Exa reference architecture for search pipelines, RAG, and
+  content discovery.
+
   Use when designing new Exa integrations, reviewing project structure,
+
   or establishing architecture standards for neural search applications.
+
   Trigger with phrases like "exa architecture", "exa project structure",
+
   "exa RAG pipeline", "exa reference design", "exa search pipeline".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, exa, architecture, rag]
+tags:
+- saas
+- exa
+- architecture
+- rag
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Exa Reference Architecture
 

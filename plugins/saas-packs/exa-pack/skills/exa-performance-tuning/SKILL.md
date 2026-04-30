@@ -1,17 +1,28 @@
 ---
 name: exa-performance-tuning
-description: |
-  Optimize Exa API performance with search type selection, caching, and parallelization.
+description: 'Optimize Exa API performance with search type selection, caching, and
+  parallelization.
+
   Use when experiencing slow responses, implementing caching strategies,
+
   or optimizing request throughput for Exa integrations.
+
   Trigger with phrases like "exa performance", "optimize exa",
+
   "exa latency", "exa caching", "exa slow", "exa fast".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, exa, api, performance, optimization]
+tags:
+- saas
+- exa
+- api
+- performance
+- optimization
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Exa Performance Tuning
 

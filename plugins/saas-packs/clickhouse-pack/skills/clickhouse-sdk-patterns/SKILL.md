@@ -1,20 +1,22 @@
 ---
 name: clickhouse-sdk-patterns
-description: |
-  Production-ready patterns for @clickhouse/client — streaming inserts, typed queries,
-  error handling, and connection management.
-  Use when building robust ClickHouse integrations, implementing streaming,
-  or establishing team coding standards.
-  Trigger: "clickhouse SDK patterns", "clickhouse client patterns",
-  "clickhouse best practices", "clickhouse streaming insert".
+description: "Production-ready patterns for @clickhouse/client \u2014 streaming inserts,\
+  \ typed queries,\nerror handling, and connection management.\nUse when building\
+  \ robust ClickHouse integrations, implementing streaming,\nor establishing team\
+  \ coding standards.\nTrigger: \"clickhouse SDK patterns\", \"clickhouse client patterns\"\
+  ,\n\"clickhouse best practices\", \"clickhouse streaming insert\".\n"
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, database, analytics, clickhouse, olap]
-compatible-with: claude-code
+tags:
+- saas
+- database
+- analytics
+- clickhouse
+- olap
+compatibility: Designed for Claude Code
 ---
-
 # ClickHouse SDK Patterns
 
 ## Overview

@@ -1,19 +1,27 @@
 ---
 name: cohere-local-dev-loop
-description: |
-  Configure Cohere local development with mocking, testing, and hot reload.
+description: 'Configure Cohere local development with mocking, testing, and hot reload.
+
   Use when setting up a development environment, configuring test workflows,
+
   or establishing a fast iteration cycle with Cohere API v2.
+
   Trigger with phrases like "cohere dev setup", "cohere local development",
+
   "cohere dev environment", "develop with cohere", "mock cohere".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, nlp, cohere]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- nlp
+- cohere
+compatibility: Designed for Claude Code
 ---
-
 # Cohere Local Dev Loop
 
 ## Overview

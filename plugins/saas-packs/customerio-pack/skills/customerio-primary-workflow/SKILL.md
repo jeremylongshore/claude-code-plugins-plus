@@ -1,17 +1,27 @@
 ---
 name: customerio-primary-workflow
-description: |
-  Implement Customer.io primary messaging workflow.
+description: 'Implement Customer.io primary messaging workflow.
+
   Use when setting up campaign triggers, welcome sequences,
+
   onboarding flows, or event-driven email automation.
+
   Trigger: "customer.io campaign", "customer.io workflow",
+
   "customer.io email automation", "customer.io messaging", "customer.io onboarding".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Glob, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, customer-io, workflow, campaigns, automation]
+tags:
+- saas
+- customer-io
+- workflow
+- campaigns
+- automation
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Customer.io Primary Workflow
 

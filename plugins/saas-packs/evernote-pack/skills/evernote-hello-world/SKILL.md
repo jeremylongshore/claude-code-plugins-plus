@@ -1,17 +1,26 @@
 ---
 name: evernote-hello-world
-description: |
-  Create a minimal working Evernote example.
+description: 'Create a minimal working Evernote example.
+
   Use when starting a new Evernote integration, testing your setup,
+
   or learning basic Evernote API patterns.
+
   Trigger with phrases like "evernote hello world", "evernote example",
+
   "evernote quick start", "simple evernote code", "create first note".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, evernote, api, testing]
+tags:
+- saas
+- evernote
+- api
+- testing
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Evernote Hello World
 

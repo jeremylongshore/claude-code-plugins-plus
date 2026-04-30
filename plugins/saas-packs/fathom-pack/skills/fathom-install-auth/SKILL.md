@@ -1,19 +1,27 @@
 ---
 name: fathom-install-auth
-description: |
-  Configure Fathom AI meeting assistant API access with API key authentication.
+description: 'Configure Fathom AI meeting assistant API access with API key authentication.
+
   Use when setting up Fathom API integration, generating API keys,
+
   or configuring webhook access for meeting data.
+
   Trigger with phrases like "install fathom", "setup fathom api",
+
   "fathom auth", "fathom api key", "configure fathom".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, meeting-intelligence, ai-notes, fathom]
-compatible-with: claude-code
+tags:
+- saas
+- meeting-intelligence
+- ai-notes
+- fathom
+compatibility: Designed for Claude Code
 ---
-
 # Fathom Install & Auth
 
 ## Overview

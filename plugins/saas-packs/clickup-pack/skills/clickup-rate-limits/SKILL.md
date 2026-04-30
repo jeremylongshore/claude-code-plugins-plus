@@ -1,19 +1,26 @@
 ---
 name: clickup-rate-limits
-description: |
-  Handle ClickUp API rate limits with backoff, queuing, and header monitoring.
+description: 'Handle ClickUp API rate limits with backoff, queuing, and header monitoring.
+
   Use when hitting 429 errors, implementing retry logic, or optimizing
-  API throughput against ClickUp's per-plan rate limits.
+
+  API throughput against ClickUp''s per-plan rate limits.
+
   Trigger: "clickup rate limit", "clickup 429", "clickup throttling",
+
   "clickup retry", "clickup backoff", "clickup request queue".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, clickup]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- clickup
+compatibility: Designed for Claude Code
 ---
-
 # ClickUp Rate Limits
 
 ## Overview

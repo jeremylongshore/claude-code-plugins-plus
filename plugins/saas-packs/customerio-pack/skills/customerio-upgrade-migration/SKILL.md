@@ -1,17 +1,26 @@
 ---
 name: customerio-upgrade-migration
-description: |
-  Plan and execute Customer.io SDK upgrades and migrations.
+description: 'Plan and execute Customer.io SDK upgrades and migrations.
+
   Use when upgrading customerio-node versions, migrating from
+
   legacy APIs, or updating to new SDK patterns.
+
   Trigger: "upgrade customer.io", "customer.io migration",
+
   "update customer.io sdk", "customer.io breaking changes".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Glob, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, customer-io, migration, upgrade]
+tags:
+- saas
+- customer-io
+- migration
+- upgrade
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Customer.io Upgrade & Migration
 

@@ -1,17 +1,28 @@
 ---
 name: exa-data-handling
-description: |
-  Implement Exa search result processing, content extraction, caching, and RAG context management.
+description: 'Implement Exa search result processing, content extraction, caching,
+  and RAG context management.
+
   Use when handling search results, implementing caching, building citation pipelines,
+
   or managing content payloads for LLM context windows.
+
   Trigger with phrases like "exa data", "exa results processing",
+
   "exa cache", "exa RAG context", "exa content extraction".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, exa, data, rag, caching]
+tags:
+- saas
+- exa
+- data
+- rag
+- caching
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Exa Data Handling
 

@@ -1,17 +1,27 @@
 ---
 name: coderabbit-upgrade-migration
-description: |
-  Update CodeRabbit configuration for new features, migrate between plans, and adopt new capabilities.
+description: 'Update CodeRabbit configuration for new features, migrate between plans,
+  and adopt new capabilities.
+
   Use when CodeRabbit releases new features, upgrading from Free to Pro plan,
+
   or updating .coderabbit.yaml schema for new options.
+
   Trigger with phrases like "upgrade coderabbit", "coderabbit new features",
+
   "update coderabbit config", "coderabbit plan upgrade", "coderabbit changelog".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, coderabbit, migration, upgrade]
+tags:
+- saas
+- coderabbit
+- migration
+- upgrade
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # CodeRabbit Upgrade & Migration
 

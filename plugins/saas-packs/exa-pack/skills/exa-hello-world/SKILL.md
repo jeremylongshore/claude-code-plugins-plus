@@ -1,17 +1,27 @@
 ---
 name: exa-hello-world
-description: |
-  Create a minimal working Exa search example with real results.
+description: 'Create a minimal working Exa search example with real results.
+
   Use when starting a new Exa integration, testing your setup,
+
   or learning basic search, searchAndContents, and findSimilar patterns.
+
   Trigger with phrases like "exa hello world", "exa example",
+
   "exa quick start", "simple exa search", "first exa query".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(npx:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, exa, api, quickstart, neural-search]
+tags:
+- saas
+- exa
+- api
+- quickstart
+- neural-search
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Exa Hello World
 

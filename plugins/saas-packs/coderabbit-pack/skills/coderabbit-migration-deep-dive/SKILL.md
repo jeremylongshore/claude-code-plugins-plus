@@ -1,17 +1,28 @@
 ---
 name: coderabbit-migration-deep-dive
-description: |
-  Migrate to CodeRabbit from other code review tools or roll out across a large organization.
+description: 'Migrate to CodeRabbit from other code review tools or roll out across
+  a large organization.
+
   Use when switching from another AI review tool, migrating from manual-only reviews,
+
   or planning a phased CodeRabbit adoption strategy.
+
   Trigger with phrases like "migrate to coderabbit", "coderabbit migration",
-  "switch to coderabbit", "coderabbit from reviewbot", "adopt coderabbit", "replace code review tool".
+
+  "switch to coderabbit", "coderabbit from reviewbot", "adopt coderabbit", "replace
+  code review tool".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(git:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, coderabbit, migration, adoption]
+tags:
+- saas
+- coderabbit
+- migration
+- adoption
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # CodeRabbit Migration Deep Dive
 

@@ -1,17 +1,27 @@
 ---
 name: firecrawl-performance-tuning
-description: |
-  Optimize Firecrawl scraping performance with caching, batch scraping, and format selection.
+description: 'Optimize Firecrawl scraping performance with caching, batch scraping,
+  and format selection.
+
   Use when experiencing slow scrapes, optimizing credit usage per page,
+
   or building high-throughput scraping pipelines.
+
   Trigger with phrases like "firecrawl performance", "optimize firecrawl",
+
   "firecrawl latency", "firecrawl caching", "firecrawl slow", "firecrawl batch".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, firecrawl, api, performance]
+tags:
+- saas
+- firecrawl
+- api
+- performance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Firecrawl Performance Tuning
 

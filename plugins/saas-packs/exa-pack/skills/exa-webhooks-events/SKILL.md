@@ -1,17 +1,28 @@
 ---
 name: exa-webhooks-events
-description: |
-  Build event-driven integrations with Exa using scheduled monitors and content alerts.
+description: 'Build event-driven integrations with Exa using scheduled monitors and
+  content alerts.
+
   Use when building content monitoring, competitive intelligence pipelines,
+
   or scheduled search automation with Exa.
+
   Trigger with phrases like "exa monitor", "exa content alerts",
+
   "exa scheduled search", "exa event-driven", "exa notifications".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, exa, webhooks, monitoring, automation]
+tags:
+- saas
+- exa
+- webhooks
+- monitoring
+- automation
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Exa Webhooks & Events
 

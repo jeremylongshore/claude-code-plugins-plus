@@ -1,19 +1,29 @@
 ---
 name: clickhouse-ci-integration
-description: |
-  Run ClickHouse integration tests in CI with GitHub Actions and Docker containers.
+description: 'Run ClickHouse integration tests in CI with GitHub Actions and Docker
+  containers.
+
   Use when setting up automated testing against a real ClickHouse instance,
+
   configuring CI pipelines, or implementing schema validation in CI.
+
   Trigger: "clickhouse CI", "clickhouse GitHub Actions", "clickhouse integration tests",
+
   "test clickhouse in CI", "clickhouse automated testing".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, database, analytics, clickhouse, olap]
-compatible-with: claude-code
+tags:
+- saas
+- database
+- analytics
+- clickhouse
+- olap
+compatibility: Designed for Claude Code
 ---
-
 # ClickHouse CI Integration
 
 ## Overview

@@ -1,17 +1,25 @@
 ---
 name: databricks-rate-limits
-description: |
-  Implement Databricks API rate limiting, backoff, and idempotency patterns.
+description: 'Implement Databricks API rate limiting, backoff, and idempotency patterns.
+
   Use when handling rate limit errors, implementing retry logic,
+
   or optimizing API request throughput for Databricks.
+
   Trigger with phrases like "databricks rate limit", "databricks throttling",
+
   "databricks 429", "databricks retry", "databricks backoff".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, databricks, api]
+tags:
+- saas
+- databricks
+- api
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Databricks Rate Limits
 

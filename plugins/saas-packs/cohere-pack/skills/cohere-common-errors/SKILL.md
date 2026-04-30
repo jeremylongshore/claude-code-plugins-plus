@@ -1,19 +1,27 @@
 ---
 name: cohere-common-errors
-description: |
-  Diagnose and fix Cohere API v2 errors and exceptions.
+description: 'Diagnose and fix Cohere API v2 errors and exceptions.
+
   Use when encountering Cohere errors, debugging failed requests,
+
   or troubleshooting CohereError, CohereTimeoutError, rate limits.
+
   Trigger with phrases like "cohere error", "fix cohere",
+
   "cohere not working", "debug cohere", "cohere 429", "cohere 400".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, nlp, cohere]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- nlp
+- cohere
+compatibility: Designed for Claude Code
 ---
-
 # Cohere Common Errors
 
 ## Overview

@@ -1,17 +1,28 @@
 ---
 name: coderabbit-local-dev-loop
-description: |
-  Configure CodeRabbit CLI for local pre-commit code reviews and fast iteration.
+description: 'Configure CodeRabbit CLI for local pre-commit code reviews and fast
+  iteration.
+
   Use when setting up local development with CodeRabbit CLI reviews,
+
   integrating AI review into your commit workflow, or testing config changes.
+
   Trigger with phrases like "coderabbit dev setup", "coderabbit local development",
+
   "coderabbit CLI workflow", "coderabbit pre-commit review".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(cr:*), Bash(git:*), Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, coderabbit, cli, workflow, development]
+tags:
+- saas
+- coderabbit
+- cli
+- workflow
+- development
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # CodeRabbit Local Dev Loop
 

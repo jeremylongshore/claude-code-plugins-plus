@@ -1,19 +1,27 @@
 ---
 name: fathom-core-workflow-b
-description: |
-  Sync Fathom meeting data to CRM and build automated follow-up workflows.
+description: 'Sync Fathom meeting data to CRM and build automated follow-up workflows.
+
   Use when integrating Fathom with Salesforce, HubSpot, or custom CRMs,
+
   or creating automated post-meeting email summaries.
+
   Trigger with phrases like "fathom crm sync", "fathom salesforce",
+
   "fathom follow-up", "fathom post-meeting workflow".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(python3:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, meeting-intelligence, ai-notes, fathom]
-compatible-with: claude-code
+tags:
+- saas
+- meeting-intelligence
+- ai-notes
+- fathom
+compatibility: Designed for Claude Code
 ---
-
 # Fathom Core Workflow: CRM Sync & Follow-Up
 
 ## Overview

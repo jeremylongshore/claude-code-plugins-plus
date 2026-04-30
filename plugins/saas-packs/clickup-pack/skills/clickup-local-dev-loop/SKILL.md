@@ -1,18 +1,24 @@
 ---
 name: clickup-local-dev-loop
-description: |
-  Set up local development for ClickUp API integrations with testing,
+description: 'Set up local development for ClickUp API integrations with testing,
+
   mocking, and hot reload.
+
   Trigger: "clickup dev setup", "clickup local development", "clickup dev environment",
+
   "develop with clickup", "clickup testing setup", "mock clickup API".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, clickup]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- clickup
+compatibility: Designed for Claude Code
 ---
-
 # ClickUp Local Dev Loop
 
 ## Overview

@@ -1,16 +1,21 @@
 ---
 name: fathom-prod-checklist
-description: |
-  Production readiness checklist for Fathom API integrations.
+description: 'Production readiness checklist for Fathom API integrations.
+
   Trigger with phrases like "fathom production", "fathom go-live", "fathom checklist".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, meeting-intelligence, ai-notes, fathom]
-compatible-with: claude-code
+tags:
+- saas
+- meeting-intelligence
+- ai-notes
+- fathom
+compatibility: Designed for Claude Code
 ---
-
 # Fathom Production Checklist
 
 ## Overview

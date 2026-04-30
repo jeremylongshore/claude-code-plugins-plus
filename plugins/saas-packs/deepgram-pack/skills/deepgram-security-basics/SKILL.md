@@ -1,17 +1,28 @@
 ---
 name: deepgram-security-basics
-description: |
-  Apply Deepgram security best practices for API key management and data protection.
+description: 'Apply Deepgram security best practices for API key management and data
+  protection.
+
   Use when securing Deepgram integrations, implementing key rotation,
+
   or auditing security configurations.
+
   Trigger: "deepgram security", "deepgram API key security", "secure deepgram",
+
   "deepgram key rotation", "deepgram data protection", "deepgram PII redaction".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, deepgram, api, security, compliance]
+tags:
+- saas
+- deepgram
+- api
+- security
+- compliance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Deepgram Security Basics
 

@@ -1,19 +1,27 @@
 ---
 name: fathom-core-workflow-a
-description: |
-  Build a meeting analytics pipeline with Fathom transcripts and summaries.
+description: 'Build a meeting analytics pipeline with Fathom transcripts and summaries.
+
   Use when extracting insights from meetings, building CRM sync,
+
   or creating automated meeting follow-up workflows.
+
   Trigger with phrases like "fathom analytics", "fathom meeting pipeline",
+
   "fathom transcript analysis", "fathom action items sync".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(python3:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, meeting-intelligence, ai-notes, fathom]
-compatible-with: claude-code
+tags:
+- saas
+- meeting-intelligence
+- ai-notes
+- fathom
+compatibility: Designed for Claude Code
 ---
-
 # Fathom Core Workflow: Meeting Analytics
 
 ## Overview

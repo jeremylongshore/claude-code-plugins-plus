@@ -1,15 +1,23 @@
 ---
-name: "cursor-team-setup"
-description: |
-  Set up Cursor for teams: plan selection, member management, shared rules, admin dashboard, and
-  onboarding. Triggers on "cursor team", "cursor organization", "cursor business", "cursor enterprise setup",
+name: cursor-team-setup
+description: 'Set up Cursor for teams: plan selection, member management, shared rules,
+  admin dashboard, and
+
+  onboarding. Triggers on "cursor team", "cursor organization", "cursor business",
+  "cursor enterprise setup",
+
   "cursor admin".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, cursor, cursor-team]
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- cursor
+- cursor-team
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Cursor Team Setup
 

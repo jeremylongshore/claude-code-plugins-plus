@@ -1,19 +1,30 @@
 ---
 name: elevenlabs-prod-checklist
-description: |
-  Execute ElevenLabs production deployment checklist with health checks and rollback.
+description: 'Execute ElevenLabs production deployment checklist with health checks
+  and rollback.
+
   Use when deploying TTS/voice integrations to production, preparing for launch,
+
   or implementing go-live procedures for ElevenLabs-powered apps.
+
   Trigger: "elevenlabs production", "deploy elevenlabs",
+
   "elevenlabs go-live", "elevenlabs launch checklist", "production TTS".
+
+  '
 allowed-tools: Read, Bash(curl:*), Bash(node:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, voice, ai, elevenlabs, production, deployment]
-compatible-with: claude-code
+tags:
+- saas
+- voice
+- ai
+- elevenlabs
+- production
+- deployment
+compatibility: Designed for Claude Code
 ---
-
 # ElevenLabs Production Checklist
 
 ## Overview

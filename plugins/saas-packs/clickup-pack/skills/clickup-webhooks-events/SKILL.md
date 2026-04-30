@@ -1,19 +1,26 @@
 ---
 name: clickup-webhooks-events
-description: |
-  Create and manage ClickUp webhooks for real-time event notifications.
+description: 'Create and manage ClickUp webhooks for real-time event notifications.
+
   Use when setting up webhook listeners for task/list/space events,
+
   implementing two-way sync, or handling ClickUp event payloads.
+
   Trigger: "clickup webhook", "clickup events", "clickup notifications",
+
   "clickup real-time", "clickup event listener", "clickup webhook create".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, clickup]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- clickup
+compatibility: Designed for Claude Code
 ---
-
 # ClickUp Webhooks & Events
 
 ## Overview

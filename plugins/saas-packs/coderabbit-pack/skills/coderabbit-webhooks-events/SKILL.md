@@ -1,17 +1,25 @@
 ---
 name: coderabbit-webhooks-events
-description: |
-  Implement CodeRabbit webhook signature validation and event handling.
+description: 'Implement CodeRabbit webhook signature validation and event handling.
+
   Use when setting up webhook endpoints, implementing signature verification,
+
   or handling CodeRabbit event notifications securely.
+
   Trigger with phrases like "coderabbit webhook", "coderabbit events",
+
   "coderabbit webhook signature", "handle coderabbit events", "coderabbit notifications".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, coderabbit, webhooks]
+tags:
+- saas
+- coderabbit
+- webhooks
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # CodeRabbit Webhooks & Events
 

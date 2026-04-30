@@ -1,17 +1,26 @@
 ---
 name: databricks-sdk-patterns
-description: |
-  Apply production-ready Databricks SDK patterns for Python and REST API.
+description: 'Apply production-ready Databricks SDK patterns for Python and REST API.
+
   Use when implementing Databricks integrations, refactoring SDK usage,
+
   or establishing team coding standards for Databricks.
+
   Trigger with phrases like "databricks SDK patterns", "databricks best practices",
+
   "databricks code patterns", "idiomatic databricks".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, databricks, api, python]
+tags:
+- saas
+- databricks
+- api
+- python
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Databricks SDK Patterns
 

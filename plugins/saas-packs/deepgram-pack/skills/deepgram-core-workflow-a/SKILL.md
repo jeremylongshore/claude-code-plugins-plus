@@ -1,17 +1,28 @@
 ---
 name: deepgram-core-workflow-a
-description: |
-  Implement production pre-recorded speech-to-text with Deepgram.
+description: 'Implement production pre-recorded speech-to-text with Deepgram.
+
   Use when building audio transcription, batch processing,
+
   or implementing diarization and intelligence features.
+
   Trigger: "deepgram transcription", "speech to text", "transcribe audio",
+
   "batch transcription", "deepgram nova", "diarize audio".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, deepgram, voice-ai, transcription, workflow, stt]
+tags:
+- saas
+- deepgram
+- voice-ai
+- transcription
+- workflow
+- stt
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Deepgram Core Workflow A: Pre-recorded Transcription
 

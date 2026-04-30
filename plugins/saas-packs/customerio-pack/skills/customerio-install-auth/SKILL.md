@@ -1,17 +1,27 @@
 ---
 name: customerio-install-auth
-description: |
-  Install and configure Customer.io SDK/CLI authentication.
+description: 'Install and configure Customer.io SDK/CLI authentication.
+
   Use when setting up a new Customer.io integration, configuring API keys,
+
   or initializing Customer.io in your project.
+
   Trigger: "install customer.io", "setup customer.io", "customer.io auth",
+
   "configure customer.io API key", "customer.io credentials".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Glob, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, customer-io, api, authentication, setup]
+tags:
+- saas
+- customer-io
+- api
+- authentication
+- setup
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Customer.io Install & Auth
 

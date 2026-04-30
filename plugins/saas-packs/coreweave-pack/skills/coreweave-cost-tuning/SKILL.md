@@ -1,19 +1,28 @@
 ---
 name: coreweave-cost-tuning
-description: |
-  Optimize CoreWeave GPU cloud costs with right-sizing and scheduling.
+description: 'Optimize CoreWeave GPU cloud costs with right-sizing and scheduling.
+
   Use when reducing GPU spend, selecting cost-effective instances,
+
   or implementing scale-to-zero for dev workloads.
+
   Trigger with phrases like "coreweave cost", "coreweave pricing",
+
   "reduce coreweave spend", "coreweave budget".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(kubectl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, gpu-cloud, kubernetes, inference, coreweave]
-compatible-with: claude-code
+tags:
+- saas
+- gpu-cloud
+- kubernetes
+- inference
+- coreweave
+compatibility: Designed for Claude Code
 ---
-
 # CoreWeave Cost Tuning
 
 ## GPU Pricing Reference (approximate)

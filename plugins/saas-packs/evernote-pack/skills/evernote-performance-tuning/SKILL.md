@@ -1,17 +1,27 @@
 ---
 name: evernote-performance-tuning
-description: |
-  Optimize Evernote integration performance.
+description: 'Optimize Evernote integration performance.
+
   Use when improving response times, reducing API calls,
+
   or scaling Evernote integrations.
+
   Trigger with phrases like "evernote performance", "optimize evernote",
+
   "evernote speed", "evernote caching".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, evernote, api, performance, scaling]
+tags:
+- saas
+- evernote
+- api
+- performance
+- scaling
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Evernote Performance Tuning
 

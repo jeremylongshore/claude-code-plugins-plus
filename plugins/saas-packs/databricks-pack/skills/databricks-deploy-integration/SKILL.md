@@ -1,17 +1,25 @@
 ---
 name: databricks-deploy-integration
-description: |
-  Deploy Databricks jobs and pipelines with Declarative Automation Bundles.
+description: 'Deploy Databricks jobs and pipelines with Declarative Automation Bundles.
+
   Use when deploying jobs to different environments, managing deployments,
+
   or setting up deployment automation.
+
   Trigger with phrases like "databricks deploy", "asset bundles",
+
   "databricks deployment", "deploy to production", "bundle deploy".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(databricks:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, databricks, deployment]
+tags:
+- saas
+- databricks
+- deployment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Databricks Deploy Integration
 

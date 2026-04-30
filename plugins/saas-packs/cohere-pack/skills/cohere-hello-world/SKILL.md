@@ -1,19 +1,27 @@
 ---
 name: cohere-hello-world
-description: |
-  Create a minimal working Cohere example with Chat, Embed, and Rerank.
+description: 'Create a minimal working Cohere example with Chat, Embed, and Rerank.
+
   Use when starting a new Cohere integration, testing your setup,
+
   or learning basic Cohere API v2 patterns.
+
   Trigger with phrases like "cohere hello world", "cohere example",
+
   "cohere quick start", "simple cohere code".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, nlp, cohere]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- nlp
+- cohere
+compatibility: Designed for Claude Code
 ---
-
 # Cohere Hello World
 
 ## Overview

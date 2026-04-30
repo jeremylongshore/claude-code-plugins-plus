@@ -1,19 +1,27 @@
 ---
 name: finta-webhooks-events
-description: |
-  Automate Finta pipeline events with Zapier and email triggers.
+description: 'Automate Finta pipeline events with Zapier and email triggers.
+
   Use when setting up notifications for investor responses,
+
   automating follow-up reminders, or syncing events to other tools.
+
   Trigger with phrases like "finta automation", "finta notifications",
+
   "finta pipeline events", "finta zapier".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, fundraising-crm, investor-management, finta]
-compatible-with: claude-code
+tags:
+- saas
+- fundraising-crm
+- investor-management
+- finta
+compatibility: Designed for Claude Code
 ---
-
 # Finta Webhooks & Events
 
 ## Overview

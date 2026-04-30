@@ -1,19 +1,25 @@
 ---
 name: figma-reference-architecture
-description: |
-  Reference architecture for production Figma API integrations.
+description: 'Reference architecture for production Figma API integrations.
+
   Use when designing a new Figma integration, planning project structure,
+
   or establishing patterns for design-to-code pipelines.
+
   Trigger with phrases like "figma architecture", "figma project structure",
+
   "figma integration design", "figma best practices layout".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, figma]
-compatible-with: claude-code
+tags:
+- saas
+- figma
+compatibility: Designed for Claude Code
 ---
-
 # Figma Reference Architecture
 
 ## Overview

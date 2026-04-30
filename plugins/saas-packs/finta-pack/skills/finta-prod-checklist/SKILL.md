@@ -1,16 +1,21 @@
 ---
 name: finta-prod-checklist
-description: |
-  Fundraise launch checklist using Finta CRM.
+description: 'Fundraise launch checklist using Finta CRM.
+
   Trigger with phrases like "finta checklist", "finta launch", "finta go-live".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, fundraising-crm, investor-management, finta]
-compatible-with: claude-code
+tags:
+- saas
+- fundraising-crm
+- investor-management
+- finta
+compatibility: Designed for Claude Code
 ---
-
 # Finta Production Checklist
 
 ## Overview

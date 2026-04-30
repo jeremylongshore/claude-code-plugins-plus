@@ -1,17 +1,26 @@
 ---
 name: customerio-advanced-troubleshooting
-description: |
-  Apply Customer.io advanced debugging and incident response.
+description: 'Apply Customer.io advanced debugging and incident response.
+
   Use when diagnosing complex delivery issues, investigating
+
   campaign failures, or running incident playbooks.
+
   Trigger: "debug customer.io", "customer.io investigation",
+
   "customer.io troubleshoot", "customer.io incident", "customer.io not delivering".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(npx:*), Glob, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, customer-io, debugging, incident-response]
+tags:
+- saas
+- customer-io
+- debugging
+- incident-response
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Customer.io Advanced Troubleshooting
 

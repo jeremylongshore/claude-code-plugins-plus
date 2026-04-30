@@ -1,17 +1,27 @@
 ---
 name: deepgram-local-dev-loop
-description: |
-  Configure Deepgram local development workflow with testing and mocks.
+description: 'Configure Deepgram local development workflow with testing and mocks.
+
   Use when setting up development environment, configuring test fixtures,
+
   or establishing rapid iteration patterns for Deepgram integration.
+
   Trigger: "deepgram local dev", "deepgram development setup",
+
   "deepgram test environment", "deepgram dev workflow", "deepgram mock".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, deepgram, testing, workflow, development]
+tags:
+- saas
+- deepgram
+- testing
+- workflow
+- development
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Deepgram Local Dev Loop
 

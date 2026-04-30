@@ -1,17 +1,27 @@
 ---
 name: customerio-sdk-patterns
-description: |
-  Apply production-ready Customer.io SDK patterns.
+description: 'Apply production-ready Customer.io SDK patterns.
+
   Use when implementing typed clients, retry logic, event batching,
+
   or singleton management for customerio-node.
+
   Trigger: "customer.io best practices", "customer.io patterns",
+
   "production customer.io", "customer.io architecture", "customer.io singleton".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Glob, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, customer-io, sdk, patterns, typescript]
+tags:
+- saas
+- customer-io
+- sdk
+- patterns
+- typescript
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Customer.io SDK Patterns
 

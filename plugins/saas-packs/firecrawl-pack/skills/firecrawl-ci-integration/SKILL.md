@@ -1,17 +1,28 @@
 ---
 name: firecrawl-ci-integration
-description: |
-  Configure Firecrawl CI/CD integration with GitHub Actions and automated scraping tests.
-  Use when setting up automated testing of Firecrawl integrations, configuring CI pipelines,
+description: 'Configure Firecrawl CI/CD integration with GitHub Actions and automated
+  scraping tests.
+
+  Use when setting up automated testing of Firecrawl integrations, configuring CI
+  pipelines,
+
   or validating scraping behavior in pull requests.
+
   Trigger with phrases like "firecrawl CI", "firecrawl GitHub Actions",
+
   "firecrawl automated tests", "CI firecrawl", "test firecrawl in CI".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, firecrawl, testing, ci-cd]
+tags:
+- saas
+- firecrawl
+- testing
+- ci-cd
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Firecrawl CI Integration
 

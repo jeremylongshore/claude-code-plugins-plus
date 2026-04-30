@@ -1,16 +1,21 @@
 ---
 name: finta-deploy-integration
-description: |
-  Deploy Finta integrations and reporting dashboards.
+description: 'Deploy Finta integrations and reporting dashboards.
+
   Trigger with phrases like "deploy finta", "finta dashboard".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, fundraising-crm, investor-management, finta]
-compatible-with: claude-code
+tags:
+- saas
+- fundraising-crm
+- investor-management
+- finta
+compatibility: Designed for Claude Code
 ---
-
 # Finta Deploy Integration
 
 ## Overview

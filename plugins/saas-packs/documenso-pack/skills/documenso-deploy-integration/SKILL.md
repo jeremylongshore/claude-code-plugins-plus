@@ -1,17 +1,27 @@
 ---
 name: documenso-deploy-integration
-description: |
-  Deploy Documenso integrations across different platforms and environments.
+description: 'Deploy Documenso integrations across different platforms and environments.
+
   Use when deploying to cloud platforms, containerizing applications,
+
   or setting up infrastructure for Documenso integrations.
+
   Trigger with phrases like "deploy documenso", "documenso docker",
+
   "documenso kubernetes", "documenso cloud deployment".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(docker:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, documenso, deployment, docker, kubernetes]
+tags:
+- saas
+- documenso
+- deployment
+- docker
+- kubernetes
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Documenso Deploy Integration
 

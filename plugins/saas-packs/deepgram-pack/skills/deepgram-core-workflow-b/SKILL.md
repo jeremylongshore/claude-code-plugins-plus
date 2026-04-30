@@ -1,17 +1,28 @@
 ---
 name: deepgram-core-workflow-b
-description: |
-  Implement real-time streaming transcription with Deepgram WebSocket.
+description: 'Implement real-time streaming transcription with Deepgram WebSocket.
+
   Use when building live transcription, voice interfaces,
+
   real-time captioning, or voice AI applications.
+
   Trigger: "deepgram streaming", "real-time transcription", "live transcription",
+
   "websocket transcription", "voice streaming", "deepgram live".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, deepgram, voice-ai, transcription, streaming, websocket]
+tags:
+- saas
+- deepgram
+- voice-ai
+- transcription
+- streaming
+- websocket
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Deepgram Core Workflow B: Live Streaming Transcription
 

@@ -1,19 +1,27 @@
 ---
 name: finta-core-workflow-a
-description: |
-  Manage a fundraise pipeline end-to-end with Finta.
+description: 'Manage a fundraise pipeline end-to-end with Finta.
+
   Use when running a fundraise, tracking investor conversations,
+
   managing deal rooms, or collecting commitments.
+
   Trigger with phrases like "finta fundraise", "finta pipeline management",
+
   "finta investor tracking", "run fundraise with finta".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, fundraising-crm, investor-management, finta]
-compatible-with: claude-code
+tags:
+- saas
+- fundraising-crm
+- investor-management
+- finta
+compatibility: Designed for Claude Code
 ---
-
 # Finta Core Workflow: Fundraise Pipeline
 
 ## Overview

@@ -1,17 +1,25 @@
 ---
 name: evernote-rate-limits
-description: |
-  Handle Evernote API rate limits effectively.
+description: 'Handle Evernote API rate limits effectively.
+
   Use when implementing rate limit handling, optimizing API usage,
+
   or troubleshooting rate limit errors.
+
   Trigger with phrases like "evernote rate limit", "evernote throttling",
+
   "api quota evernote", "rate limit exceeded".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, evernote, api]
+tags:
+- saas
+- evernote
+- api
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Evernote Rate Limits
 

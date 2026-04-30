@@ -1,17 +1,29 @@
 ---
 name: coderabbit-security-basics
-description: |
-  Configure CodeRabbit for security-focused code review with secret detection and vulnerability scanning.
+description: 'Configure CodeRabbit for security-focused code review with secret detection
+  and vulnerability scanning.
+
   Use when setting up security review rules, configuring secret detection in PRs,
+
   or hardening CodeRabbit configuration for compliance requirements.
+
   Trigger with phrases like "coderabbit security", "coderabbit secrets",
-  "secure coderabbit", "coderabbit vulnerability detection", "coderabbit security review".
+
+  "secure coderabbit", "coderabbit vulnerability detection", "coderabbit security
+  review".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, coderabbit, security, secrets, compliance]
+tags:
+- saas
+- coderabbit
+- security
+- secrets
+- compliance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # CodeRabbit Security Basics
 

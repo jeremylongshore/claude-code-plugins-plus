@@ -1,16 +1,21 @@
 ---
 name: fathom-debug-bundle
-description: |
-  Collect Fathom API diagnostics for support cases.
+description: 'Collect Fathom API diagnostics for support cases.
+
   Trigger with phrases like "fathom debug", "fathom diagnostics".
+
+  '
 allowed-tools: Read, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, meeting-intelligence, ai-notes, fathom]
-compatible-with: claude-code
+tags:
+- saas
+- meeting-intelligence
+- ai-notes
+- fathom
+compatibility: Designed for Claude Code
 ---
-
 # Fathom Debug Bundle
 
 ## Overview

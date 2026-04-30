@@ -1,17 +1,26 @@
 ---
 name: customerio-rate-limits
-description: |
-  Implement Customer.io rate limiting and backoff.
+description: 'Implement Customer.io rate limiting and backoff.
+
   Use when handling high-volume API calls, implementing
+
   retry logic, or hitting 429 errors.
+
   Trigger: "customer.io rate limit", "customer.io throttle",
+
   "customer.io 429", "customer.io backoff", "customer.io too many requests".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Glob, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, customer-io, api, rate-limiting]
+tags:
+- saas
+- customer-io
+- api
+- rate-limiting
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Customer.io Rate Limits
 

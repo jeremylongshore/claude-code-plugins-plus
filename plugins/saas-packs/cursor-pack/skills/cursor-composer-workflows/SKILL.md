@@ -1,14 +1,21 @@
 ---
-name: "cursor-composer-workflows"
-description: |
-  Master Cursor Composer for multi-file AI editing, scaffolding, and refactoring. Triggers on "cursor composer",
-  "multi-file edit", "cursor generate files", "composer workflow", "cursor scaffold", "Cmd+I".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+name: cursor-composer-workflows
+description: 'Master Cursor Composer for multi-file AI editing, scaffolding, and refactoring.
+  Triggers on "cursor composer",
+
+  "multi-file edit", "cursor generate files", "composer workflow", "cursor scaffold",
+  "Cmd+I".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, cursor, workflow]
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- cursor
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Cursor Composer Workflows
 

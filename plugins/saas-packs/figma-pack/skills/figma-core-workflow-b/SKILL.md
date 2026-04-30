@@ -1,19 +1,25 @@
 ---
 name: figma-core-workflow-b
-description: |
-  Export images, icons, and assets from Figma files via the REST API.
+description: 'Export images, icons, and assets from Figma files via the REST API.
+
   Use when building an asset pipeline, exporting icons as SVG/PNG,
+
   or rendering frames to images for documentation or previews.
+
   Trigger with phrases like "figma export", "figma images",
+
   "export figma icons", "figma assets", "figma render".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, figma]
-compatible-with: claude-code
+tags:
+- saas
+- figma
+compatibility: Designed for Claude Code
 ---
-
 # Figma Core Workflow B -- Asset Export
 
 ## Overview

@@ -1,15 +1,24 @@
 ---
-name: "cursor-api-key-management"
-description: |
-  Configure BYOK API keys for OpenAI, Anthropic, Google, Azure, and custom models in Cursor.
-  Triggers on "cursor api key", "cursor openai key", "cursor anthropic key", "own api key cursor",
+name: cursor-api-key-management
+description: 'Configure BYOK API keys for OpenAI, Anthropic, Google, Azure, and custom
+  models in Cursor.
+
+  Triggers on "cursor api key", "cursor openai key", "cursor anthropic key", "own
+  api key cursor",
+
   "BYOK cursor", "cursor azure key".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, cursor, api, authentication]
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- cursor
+- api
+- authentication
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Cursor API Key Management
 

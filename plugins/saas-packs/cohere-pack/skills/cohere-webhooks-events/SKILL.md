@@ -1,19 +1,28 @@
 ---
 name: cohere-webhooks-events
-description: |
-  Implement Cohere streaming event handling, SSE patterns, and connector webhooks.
+description: 'Implement Cohere streaming event handling, SSE patterns, and connector
+  webhooks.
+
   Use when building streaming UIs, handling chat/tool events,
+
   or registering Cohere connectors for RAG.
+
   Trigger with phrases like "cohere streaming", "cohere events",
+
   "cohere SSE", "cohere connectors", "cohere webhook".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, nlp, cohere]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- nlp
+- cohere
+compatibility: Designed for Claude Code
 ---
-
 # Cohere Streaming Events & Connectors
 
 ## Overview

@@ -1,17 +1,25 @@
 ---
 name: clerk-core-workflow-a
-description: |
-  Implement user sign-up and sign-in flows with Clerk.
+description: 'Implement user sign-up and sign-in flows with Clerk.
+
   Use when building authentication UI, customizing sign-in experience,
+
   or implementing OAuth social login.
+
   Trigger with phrases like "clerk sign-in", "clerk sign-up",
+
   "clerk login flow", "clerk OAuth", "clerk social login".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clerk, authentication]
+tags:
+- saas
+- clerk
+- authentication
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clerk Core Workflow A: Sign-Up & Sign-In
 

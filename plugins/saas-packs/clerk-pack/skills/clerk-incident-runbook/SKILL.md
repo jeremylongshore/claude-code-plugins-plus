@@ -1,17 +1,27 @@
 ---
 name: clerk-incident-runbook
-description: |
-  Manage incident response for Clerk authentication issues.
+description: 'Manage incident response for Clerk authentication issues.
+
   Use when handling auth outages, security incidents,
+
   or production authentication problems.
+
   Trigger with phrases like "clerk incident", "clerk outage",
+
   "clerk down", "auth not working", "clerk emergency".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clerk, security, authentication, incident-response]
+tags:
+- saas
+- clerk
+- security
+- authentication
+- incident-response
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clerk Incident Runbook
 

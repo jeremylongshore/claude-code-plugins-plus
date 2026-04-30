@@ -1,17 +1,28 @@
 ---
 name: firecrawl-local-dev-loop
-description: |
-  Configure Firecrawl local development with self-hosted Docker, mocking, and testing.
-  Use when setting up a development environment, running Firecrawl locally to save credits,
+description: 'Configure Firecrawl local development with self-hosted Docker, mocking,
+  and testing.
+
+  Use when setting up a development environment, running Firecrawl locally to save
+  credits,
+
   or configuring test workflows with vitest.
+
   Trigger with phrases like "firecrawl dev setup", "firecrawl local development",
+
   "firecrawl docker", "firecrawl self-hosted dev", "firecrawl test setup".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Bash(docker:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, firecrawl, testing, workflow]
+tags:
+- saas
+- firecrawl
+- testing
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Firecrawl Local Dev Loop
 

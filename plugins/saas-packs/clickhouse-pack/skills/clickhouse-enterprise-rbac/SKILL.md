@@ -1,20 +1,23 @@
 ---
 name: clickhouse-enterprise-rbac
-description: |
-  Configure ClickHouse enterprise RBAC — SQL-based users, roles, row policies,
-  column-level grants, and quota management.
-  Use when setting up multi-user access control, implementing tenant isolation,
-  or configuring enterprise security for ClickHouse.
-  Trigger: "clickhouse RBAC", "clickhouse roles", "clickhouse permissions",
-  "clickhouse row policy", "clickhouse enterprise access", "clickhouse GRANT".
+description: "Configure ClickHouse enterprise RBAC \u2014 SQL-based users, roles,\
+  \ row policies,\ncolumn-level grants, and quota management.\nUse when setting up\
+  \ multi-user access control, implementing tenant isolation,\nor configuring enterprise\
+  \ security for ClickHouse.\nTrigger: \"clickhouse RBAC\", \"clickhouse roles\",\
+  \ \"clickhouse permissions\",\n\"clickhouse row policy\", \"clickhouse enterprise\
+  \ access\", \"clickhouse GRANT\".\n"
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, database, analytics, clickhouse, olap]
-compatible-with: claude-code
+tags:
+- saas
+- database
+- analytics
+- clickhouse
+- olap
+compatibility: Designed for Claude Code
 ---
-
 # ClickHouse Enterprise RBAC
 
 ## Overview

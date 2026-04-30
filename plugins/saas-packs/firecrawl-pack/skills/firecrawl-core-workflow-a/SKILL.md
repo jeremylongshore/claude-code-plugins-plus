@@ -1,17 +1,26 @@
 ---
 name: firecrawl-core-workflow-a
-description: |
-  Execute Firecrawl primary workflow: scrape and crawl websites into LLM-ready markdown.
+description: 'Execute Firecrawl primary workflow: scrape and crawl websites into LLM-ready
+  markdown.
+
   Use when scraping single pages, crawling entire sites, or building content
-  ingestion pipelines with Firecrawl's scrapeUrl and crawlUrl methods.
+
+  ingestion pipelines with Firecrawl''s scrapeUrl and crawlUrl methods.
+
   Trigger with phrases like "firecrawl scrape", "firecrawl crawl site",
+
   "scrape page to markdown", "crawl documentation".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, firecrawl, workflow]
+tags:
+- saas
+- firecrawl
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Firecrawl Core Workflow A — Scrape & Crawl
 

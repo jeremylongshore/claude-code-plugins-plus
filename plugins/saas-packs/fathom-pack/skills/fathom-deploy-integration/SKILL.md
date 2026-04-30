@@ -1,16 +1,22 @@
 ---
 name: fathom-deploy-integration
-description: |
-  Deploy Fathom webhook handlers and meeting sync services.
-  Trigger with phrases like "deploy fathom", "fathom webhook server", "fathom cloud function".
+description: 'Deploy Fathom webhook handlers and meeting sync services.
+
+  Trigger with phrases like "deploy fathom", "fathom webhook server", "fathom cloud
+  function".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, meeting-intelligence, ai-notes, fathom]
-compatible-with: claude-code
+tags:
+- saas
+- meeting-intelligence
+- ai-notes
+- fathom
+compatibility: Designed for Claude Code
 ---
-
 # Fathom Deploy Integration
 
 ## Overview

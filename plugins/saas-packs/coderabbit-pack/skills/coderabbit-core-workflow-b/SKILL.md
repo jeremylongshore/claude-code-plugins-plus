@@ -1,17 +1,28 @@
 ---
 name: coderabbit-core-workflow-b
-description: |
-  Tune CodeRabbit review configuration: learnings, code guidelines, and noise reduction.
+description: 'Tune CodeRabbit review configuration: learnings, code guidelines, and
+  noise reduction.
+
   Use when fine-tuning review quality, training CodeRabbit with team preferences,
+
   adding code guidelines, or reducing false positives.
+
   Trigger with phrases like "coderabbit tune reviews", "coderabbit learnings",
+
   "coderabbit guidelines", "reduce coderabbit noise", "coderabbit false positives".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, coderabbit, workflow, tuning, learnings]
+tags:
+- saas
+- coderabbit
+- workflow
+- tuning
+- learnings
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # CodeRabbit Core Workflow B: Learnings & Tuning
 

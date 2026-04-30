@@ -1,20 +1,30 @@
 ---
 name: clickhouse-multi-env-setup
-description: |
-  Configure ClickHouse across dev, staging, and production with environment-specific
+description: 'Configure ClickHouse across dev, staging, and production with environment-specific
+
   settings, secrets management, and infrastructure-as-code patterns.
+
   Use when setting up per-environment ClickHouse instances, managing connection
+
   configs, or deploying to multiple environments.
+
   Trigger: "clickhouse environments", "clickhouse dev staging prod",
+
   "clickhouse multi-env", "clickhouse environment config", "clickhouse staging setup".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, database, analytics, clickhouse, olap]
-compatible-with: claude-code
+tags:
+- saas
+- database
+- analytics
+- clickhouse
+- olap
+compatibility: Designed for Claude Code
 ---
-
 # ClickHouse Multi-Environment Setup
 
 ## Overview

@@ -1,17 +1,26 @@
 ---
 name: databricks-enterprise-rbac
-description: |
-  Configure Databricks enterprise SSO, Unity Catalog RBAC, and organization management.
+description: 'Configure Databricks enterprise SSO, Unity Catalog RBAC, and organization
+  management.
+
   Use when implementing SSO integration, configuring role-based permissions,
+
   or setting up organization-level controls with Unity Catalog.
+
   Trigger with phrases like "databricks SSO", "databricks RBAC",
+
   "databricks enterprise", "unity catalog permissions", "databricks SCIM".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(databricks:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, databricks, rbac]
+tags:
+- saas
+- databricks
+- rbac
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Databricks Enterprise RBAC
 

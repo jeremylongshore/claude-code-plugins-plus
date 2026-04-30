@@ -1,19 +1,28 @@
 ---
 name: coreweave-core-workflow-b
-description: |
-  Run distributed GPU training jobs on CoreWeave with multi-node PyTorch.
+description: 'Run distributed GPU training jobs on CoreWeave with multi-node PyTorch.
+
   Use when training models across multiple GPUs, setting up distributed training,
+
   or running fine-tuning jobs on CoreWeave H100 clusters.
+
   Trigger with phrases like "coreweave training", "coreweave multi-gpu",
+
   "distributed training coreweave", "fine-tune on coreweave".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(kubectl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, gpu-cloud, kubernetes, inference, coreweave]
-compatible-with: claude-code
+tags:
+- saas
+- gpu-cloud
+- kubernetes
+- inference
+- coreweave
+compatibility: Designed for Claude Code
 ---
-
 # CoreWeave Core Workflow: GPU Training
 
 ## Overview

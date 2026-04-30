@@ -1,19 +1,27 @@
 ---
 name: cohere-upgrade-migration
-description: |
-  Migrate from Cohere API v1 to v2 and upgrade SDK versions.
+description: 'Migrate from Cohere API v1 to v2 and upgrade SDK versions.
+
   Use when upgrading cohere-ai SDK, migrating from CohereClient to CohereClientV2,
+
   or handling breaking changes between API versions.
+
   Trigger with phrases like "upgrade cohere", "cohere migration",
+
   "cohere v1 to v2", "update cohere SDK", "cohere breaking changes".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, nlp, cohere]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- nlp
+- cohere
+compatibility: Designed for Claude Code
 ---
-
 # Cohere Upgrade & Migration
 
 ## Overview

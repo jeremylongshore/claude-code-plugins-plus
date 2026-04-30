@@ -1,17 +1,25 @@
 ---
 name: databricks-prod-checklist
-description: |
-  Execute Databricks production deployment checklist and rollback procedures.
+description: 'Execute Databricks production deployment checklist and rollback procedures.
+
   Use when deploying Databricks jobs to production, preparing for launch,
+
   or implementing go-live procedures.
+
   Trigger with phrases like "databricks production", "deploy databricks",
+
   "databricks go-live", "databricks launch checklist".
+
+  '
 allowed-tools: Read, Bash(databricks:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, databricks, deployment]
+tags:
+- saas
+- databricks
+- deployment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Databricks Production Checklist
 

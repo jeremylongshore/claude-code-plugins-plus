@@ -1,17 +1,26 @@
 ---
 name: evernote-install-auth
-description: |
-  Install and configure Evernote SDK and OAuth authentication.
+description: 'Install and configure Evernote SDK and OAuth authentication.
+
   Use when setting up a new Evernote integration, configuring API keys,
+
   or initializing Evernote in your project.
+
   Trigger with phrases like "install evernote", "setup evernote",
+
   "evernote auth", "configure evernote API", "evernote oauth".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, evernote, api, authentication]
+tags:
+- saas
+- evernote
+- api
+- authentication
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Evernote Install & Auth
 

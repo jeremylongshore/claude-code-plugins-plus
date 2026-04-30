@@ -1,19 +1,26 @@
 ---
 name: figma-core-workflow-a
-description: |
-  Extract design tokens, colors, typography, and spacing from Figma files via REST API.
+description: 'Extract design tokens, colors, typography, and spacing from Figma files
+  via REST API.
+
   Use when building a design-to-code pipeline, syncing design tokens,
+
   or extracting styles from a Figma design system file.
+
   Trigger with phrases like "figma design tokens", "extract figma styles",
+
   "figma to CSS", "sync figma colors", "figma typography".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, figma]
-compatible-with: claude-code
+tags:
+- saas
+- figma
+compatibility: Designed for Claude Code
 ---
-
 # Figma Core Workflow A -- Design Token Extraction
 
 ## Overview

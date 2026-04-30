@@ -1,17 +1,26 @@
 ---
 name: documenso-local-dev-loop
-description: |
-  Set up local development environment and testing workflow for Documenso.
+description: 'Set up local development environment and testing workflow for Documenso.
+
   Use when configuring dev environment, setting up test workflows,
+
   or establishing rapid iteration patterns with Documenso.
+
   Trigger with phrases like "documenso local dev", "documenso development",
+
   "test documenso locally", "documenso dev environment".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(docker:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, documenso, testing, workflow]
+tags:
+- saas
+- documenso
+- testing
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Documenso Local Dev Loop
 

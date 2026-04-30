@@ -1,16 +1,21 @@
 ---
 name: fathom-rate-limits
-description: |
-  Handle Fathom API rate limits (60 requests/minute per user).
+description: 'Handle Fathom API rate limits (60 requests/minute per user).
+
   Trigger with phrases like "fathom rate limit", "fathom 429", "fathom throttle".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, meeting-intelligence, ai-notes, fathom]
-compatible-with: claude-code
+tags:
+- saas
+- meeting-intelligence
+- ai-notes
+- fathom
+compatibility: Designed for Claude Code
 ---
-
 # Fathom Rate Limits
 
 ## Overview

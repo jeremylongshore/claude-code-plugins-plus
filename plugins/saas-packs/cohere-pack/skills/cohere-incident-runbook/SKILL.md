@@ -1,19 +1,28 @@
 ---
 name: cohere-incident-runbook
-description: |
-  Execute Cohere incident response procedures with triage, mitigation, and postmortem.
+description: 'Execute Cohere incident response procedures with triage, mitigation,
+  and postmortem.
+
   Use when responding to Cohere API outages, investigating errors,
+
   or running post-incident reviews for Cohere integration failures.
+
   Trigger with phrases like "cohere incident", "cohere outage",
+
   "cohere down", "cohere on-call", "cohere emergency", "cohere broken".
+
+  '
 allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, nlp, cohere]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- nlp
+- cohere
+compatibility: Designed for Claude Code
 ---
-
 # Cohere Incident Runbook
 
 ## Overview

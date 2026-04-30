@@ -1,17 +1,27 @@
 ---
 name: deepgram-sdk-patterns
-description: |
-  Apply production-ready Deepgram SDK patterns for TypeScript and Python.
+description: 'Apply production-ready Deepgram SDK patterns for TypeScript and Python.
+
   Use when implementing Deepgram integrations, refactoring SDK usage,
+
   or establishing team coding standards for Deepgram.
+
   Trigger: "deepgram SDK patterns", "deepgram best practices",
+
   "deepgram code patterns", "idiomatic deepgram", "deepgram typescript".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, deepgram, python, typescript, patterns]
+tags:
+- saas
+- deepgram
+- python
+- typescript
+- patterns
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Deepgram SDK Patterns
 

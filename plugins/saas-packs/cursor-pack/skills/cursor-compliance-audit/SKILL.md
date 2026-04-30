@@ -1,15 +1,25 @@
 ---
-name: "cursor-compliance-audit"
-description: |
-  Compliance and security auditing for Cursor IDE usage: SOC 2, GDPR, HIPAA assessment, evidence
-  collection, and remediation. Triggers on "cursor compliance", "cursor audit", "cursor security review",
+name: cursor-compliance-audit
+description: 'Compliance and security auditing for Cursor IDE usage: SOC 2, GDPR,
+  HIPAA assessment, evidence
+
+  collection, and remediation. Triggers on "cursor compliance", "cursor audit", "cursor
+  security review",
+
   "cursor soc2", "cursor gdpr", "cursor data governance".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, cursor, security, compliance, audit]
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- cursor
+- security
+- compliance
+- audit
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Cursor Compliance Audit
 

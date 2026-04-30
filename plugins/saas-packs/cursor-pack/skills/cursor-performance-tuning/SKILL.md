@@ -1,15 +1,23 @@
 ---
-name: "cursor-performance-tuning"
-description: |
-  Optimize Cursor IDE performance: reduce memory usage, speed up indexing, tune AI features, and manage
-  extensions for large codebases. Triggers on "cursor performance", "cursor slow", "cursor optimization",
+name: cursor-performance-tuning
+description: 'Optimize Cursor IDE performance: reduce memory usage, speed up indexing,
+  tune AI features, and manage
+
+  extensions for large codebases. Triggers on "cursor performance", "cursor slow",
+  "cursor optimization",
+
   "cursor memory", "speed up cursor", "cursor lag".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, cursor, performance]
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- cursor
+- performance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Cursor Performance Tuning
 

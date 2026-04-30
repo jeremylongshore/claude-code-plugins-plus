@@ -1,17 +1,25 @@
 ---
 name: evernote-migration-deep-dive
-description: |
-  Deep dive into Evernote data migration strategies.
+description: 'Deep dive into Evernote data migration strategies.
+
   Use when migrating to/from Evernote, bulk data transfers,
+
   or complex migration scenarios.
+
   Trigger with phrases like "migrate to evernote", "migrate from evernote",
+
   "evernote data transfer", "bulk evernote migration".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, evernote, migration]
+tags:
+- saas
+- evernote
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Evernote Migration Deep Dive
 

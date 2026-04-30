@@ -1,17 +1,27 @@
 ---
 name: databricks-security-basics
-description: |
-  Apply Databricks security best practices for secrets and access control.
+description: 'Apply Databricks security best practices for secrets and access control.
+
   Use when securing API tokens, implementing least privilege access,
+
   or auditing Databricks security configuration.
+
   Trigger with phrases like "databricks security", "databricks secrets",
+
   "secure databricks", "databricks token security", "databricks scopes".
+
+  '
 allowed-tools: Read, Write, Grep, Bash(databricks:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, databricks, api, security, audit]
+tags:
+- saas
+- databricks
+- api
+- security
+- audit
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Databricks Security Basics
 

@@ -1,17 +1,28 @@
 ---
 name: customerio-deploy-pipeline
-description: |
-  Deploy Customer.io integrations to production cloud platforms.
+description: 'Deploy Customer.io integrations to production cloud platforms.
+
   Use when deploying to Cloud Run, Vercel, AWS Lambda, or Kubernetes
+
   with proper secrets management and health checks.
+
   Trigger: "deploy customer.io", "customer.io cloud run",
+
   "customer.io kubernetes", "customer.io lambda", "customer.io vercel".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(gcloud:*), Bash(kubectl:*), Glob, Grep
+
+  '
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(gcloud:*), Bash(kubectl:*), Glob,
+  Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, customer-io, deployment, cloud-run, kubernetes]
+tags:
+- saas
+- customer-io
+- deployment
+- cloud-run
+- kubernetes
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Customer.io Deploy Pipeline
 

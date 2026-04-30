@@ -1,17 +1,25 @@
 ---
 name: documenso-cost-tuning
-description: |
-  Optimize Documenso usage costs and manage subscription efficiency.
+description: 'Optimize Documenso usage costs and manage subscription efficiency.
+
   Use when analyzing costs, optimizing document usage,
+
   or managing Documenso subscription tiers.
+
   Trigger with phrases like "documenso costs", "documenso pricing",
+
   "optimize documenso spending", "documenso usage".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, documenso, cost-optimization]
+tags:
+- saas
+- documenso
+- cost-optimization
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Documenso Cost Tuning
 

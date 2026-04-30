@@ -1,17 +1,27 @@
 ---
 name: databricks-cost-tuning
-description: |
-  Optimize Databricks costs with cluster policies, spot instances, and monitoring.
+description: 'Optimize Databricks costs with cluster policies, spot instances, and
+  monitoring.
+
   Use when reducing cloud spend, implementing cost controls,
+
   or analyzing Databricks usage costs.
+
   Trigger with phrases like "databricks cost", "reduce databricks spend",
+
   "databricks billing", "databricks cost optimization", "cluster cost".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(databricks:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, databricks, monitoring, cost-optimization]
+tags:
+- saas
+- databricks
+- monitoring
+- cost-optimization
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Databricks Cost Tuning
 

@@ -1,17 +1,26 @@
 ---
 name: deepgram-debug-bundle
-description: |
-  Collect Deepgram debug evidence for support and troubleshooting.
+description: 'Collect Deepgram debug evidence for support and troubleshooting.
+
   Use when preparing support tickets, investigating issues,
+
   or collecting diagnostic information for Deepgram problems.
+
   Trigger: "deepgram debug", "deepgram support ticket", "collect deepgram logs",
+
   "deepgram diagnostic", "deepgram debug bundle".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*), Bash(ffprobe:*), Bash(npm:*), Bash(tar:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, deepgram, debugging, support]
+tags:
+- saas
+- deepgram
+- debugging
+- support
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Deepgram Debug Bundle
 

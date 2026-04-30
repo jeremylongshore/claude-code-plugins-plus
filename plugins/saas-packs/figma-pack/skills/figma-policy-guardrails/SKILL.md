@@ -1,19 +1,25 @@
 ---
 name: figma-policy-guardrails
-description: |
-  Enforce security policies and coding standards for Figma API integrations.
+description: 'Enforce security policies and coding standards for Figma API integrations.
+
   Use when setting up linting rules for Figma tokens, preventing accidental
+
   credential leaks, or enforcing API usage best practices.
+
   Trigger with phrases like "figma policy", "figma lint",
+
   "figma guardrails", "figma security rules", "figma best practices check".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npx:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, figma]
-compatible-with: claude-code
+tags:
+- saas
+- figma
+compatibility: Designed for Claude Code
 ---
-
 # Figma Policy & Guardrails
 
 ## Overview

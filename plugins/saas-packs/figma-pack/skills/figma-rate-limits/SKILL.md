@@ -1,19 +1,26 @@
 ---
 name: figma-rate-limits
-description: |
-  Handle Figma REST API rate limits with exponential backoff and request queuing.
+description: 'Handle Figma REST API rate limits with exponential backoff and request
+  queuing.
+
   Use when encountering 429 errors, implementing retry logic,
+
   or optimizing API request throughput for Figma.
+
   Trigger with phrases like "figma rate limit", "figma throttling",
+
   "figma 429", "figma retry", "figma backoff".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, figma]
-compatible-with: claude-code
+tags:
+- saas
+- figma
+compatibility: Designed for Claude Code
 ---
-
 # Figma Rate Limits
 
 ## Overview

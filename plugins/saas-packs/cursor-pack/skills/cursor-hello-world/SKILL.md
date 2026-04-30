@@ -1,15 +1,23 @@
 ---
-name: "cursor-hello-world"
-description: |
-  Create your first project using Cursor AI features: Tab, Chat, Composer, and Inline Edit.
-  Triggers on "cursor hello world", "first cursor project", "cursor getting started", "try cursor ai",
+name: cursor-hello-world
+description: 'Create your first project using Cursor AI features: Tab, Chat, Composer,
+  and Inline Edit.
+
+  Triggers on "cursor hello world", "first cursor project", "cursor getting started",
+  "try cursor ai",
+
   "cursor basics", "cursor tutorial".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, cursor, cursor-hello]
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- cursor
+- cursor-hello
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Cursor Hello World
 

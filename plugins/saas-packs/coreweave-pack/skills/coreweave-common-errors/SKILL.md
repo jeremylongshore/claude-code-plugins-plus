@@ -1,19 +1,28 @@
 ---
 name: coreweave-common-errors
-description: |
-  Diagnose and fix CoreWeave GPU scheduling, pod, and networking errors.
+description: 'Diagnose and fix CoreWeave GPU scheduling, pod, and networking errors.
+
   Use when pods are stuck Pending, GPUs are not allocated,
+
   or experiencing CUDA and NCCL errors.
+
   Trigger with phrases like "coreweave error", "coreweave pod pending",
+
   "coreweave gpu not found", "coreweave debug", "fix coreweave".
+
+  '
 allowed-tools: Read, Bash(kubectl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, gpu-cloud, kubernetes, inference, coreweave]
-compatible-with: claude-code
+tags:
+- saas
+- gpu-cloud
+- kubernetes
+- inference
+- coreweave
+compatibility: Designed for Claude Code
 ---
-
 # CoreWeave Common Errors
 
 ## Error Reference

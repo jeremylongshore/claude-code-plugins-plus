@@ -1,17 +1,26 @@
 ---
 name: deepgram-multi-env-setup
-description: |
-  Configure Deepgram multi-environment setup for dev, staging, and production.
+description: 'Configure Deepgram multi-environment setup for dev, staging, and production.
+
   Use when setting up environment-specific configurations, managing multiple
+
   Deepgram projects, or implementing environment isolation.
+
   Trigger: "deepgram environments", "deepgram staging", "deepgram dev prod",
+
   "multi-environment deepgram", "deepgram config management".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(kubectl:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, deepgram, environments, configuration]
+tags:
+- saas
+- deepgram
+- environments
+- configuration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Deepgram Multi-Environment Setup
 

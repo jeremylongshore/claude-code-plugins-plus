@@ -1,17 +1,26 @@
 ---
 name: evernote-debug-bundle
-description: |
-  Debug Evernote API issues with diagnostic tools and techniques.
+description: 'Debug Evernote API issues with diagnostic tools and techniques.
+
   Use when troubleshooting API calls, inspecting requests/responses,
+
   or diagnosing integration problems.
+
   Trigger with phrases like "debug evernote", "evernote diagnostic",
+
   "troubleshoot evernote", "evernote logs", "inspect evernote".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, evernote, api, debugging]
+tags:
+- saas
+- evernote
+- api
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Evernote Debug Bundle
 

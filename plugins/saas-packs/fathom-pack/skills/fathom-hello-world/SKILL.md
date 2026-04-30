@@ -1,19 +1,27 @@
 ---
 name: fathom-hello-world
-description: |
-  Retrieve meeting transcripts and summaries from the Fathom API.
+description: 'Retrieve meeting transcripts and summaries from the Fathom API.
+
   Use when fetching meeting data, testing API access,
+
   or learning Fathom API response structure.
+
   Trigger with phrases like "fathom hello world", "fathom first api call",
+
   "get fathom transcript", "fathom meeting data".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, meeting-intelligence, ai-notes, fathom]
-compatible-with: claude-code
+tags:
+- saas
+- meeting-intelligence
+- ai-notes
+- fathom
+compatibility: Designed for Claude Code
 ---
-
 # Fathom Hello World
 
 ## Overview

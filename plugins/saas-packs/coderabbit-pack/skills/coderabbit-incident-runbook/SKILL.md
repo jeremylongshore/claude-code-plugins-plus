@@ -1,17 +1,28 @@
 ---
 name: coderabbit-incident-runbook
-description: |
-  Execute CodeRabbit incident response procedures when reviews stop working or block PRs.
+description: 'Execute CodeRabbit incident response procedures when reviews stop working
+  or block PRs.
+
   Use when CodeRabbit is down, reviews are not posting, PRs are blocked by stale checks,
+
   or CodeRabbit is producing incorrect reviews.
+
   Trigger with phrases like "coderabbit incident", "coderabbit outage",
-  "coderabbit down", "coderabbit broken", "coderabbit emergency", "coderabbit not reviewing".
+
+  "coderabbit down", "coderabbit broken", "coderabbit emergency", "coderabbit not
+  reviewing".
+
+  '
 allowed-tools: Read, Grep, Bash(gh:*), Bash(curl:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, coderabbit, incident-response, runbook]
+tags:
+- saas
+- coderabbit
+- incident-response
+- runbook
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # CodeRabbit Incident Runbook
 

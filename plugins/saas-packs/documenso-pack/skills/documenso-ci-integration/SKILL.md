@@ -1,17 +1,27 @@
 ---
 name: documenso-ci-integration
-description: |
-  Configure CI/CD pipelines for Documenso integrations.
+description: 'Configure CI/CD pipelines for Documenso integrations.
+
   Use when setting up automated testing, deployment pipelines,
+
   or continuous integration for Documenso projects.
+
   Trigger with phrases like "documenso CI", "documenso GitHub Actions",
+
   "documenso pipeline", "documenso automated testing".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, documenso, deployment, testing, ci-cd]
+tags:
+- saas
+- documenso
+- deployment
+- testing
+- ci-cd
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Documenso CI Integration
 

@@ -1,16 +1,22 @@
 ---
 name: finta-common-errors
-description: |
-  Diagnose and fix common Finta CRM issues with email sync, deal rooms, and pipeline.
+description: 'Diagnose and fix common Finta CRM issues with email sync, deal rooms,
+  and pipeline.
+
   Trigger with phrases like "finta error", "finta not working", "fix finta".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, fundraising-crm, investor-management, finta]
-compatible-with: claude-code
+tags:
+- saas
+- fundraising-crm
+- investor-management
+- finta
+compatibility: Designed for Claude Code
 ---
-
 # Finta Common Errors
 
 ## Overview

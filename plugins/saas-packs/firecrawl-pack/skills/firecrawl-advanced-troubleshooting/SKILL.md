@@ -1,17 +1,28 @@
 ---
 name: firecrawl-advanced-troubleshooting
-description: |
-  Debug hard-to-diagnose Firecrawl issues with systematic isolation and evidence collection.
-  Use when standard troubleshooting fails, investigating why scrapes return empty content,
-  crawl jobs hang, or webhooks don't fire.
+description: 'Debug hard-to-diagnose Firecrawl issues with systematic isolation and
+  evidence collection.
+
+  Use when standard troubleshooting fails, investigating why scrapes return empty
+  content,
+
+  crawl jobs hang, or webhooks don''t fire.
+
   Trigger with phrases like "firecrawl hard bug", "firecrawl mystery error",
+
   "firecrawl impossible to debug", "firecrawl deep debug", "firecrawl not scraping".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, firecrawl, debugging, scaling]
+tags:
+- saas
+- firecrawl
+- debugging
+- scaling
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Firecrawl Advanced Troubleshooting
 

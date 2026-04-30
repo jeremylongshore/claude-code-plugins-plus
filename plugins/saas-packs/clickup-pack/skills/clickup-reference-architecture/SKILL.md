@@ -1,18 +1,25 @@
 ---
 name: clickup-reference-architecture
-description: |
-  Production architecture for ClickUp API v2 integrations with layered design,
+description: 'Production architecture for ClickUp API v2 integrations with layered
+  design,
+
   custom fields, time tracking, goals, and two-way sync patterns.
+
   Trigger: "clickup architecture", "clickup design", "clickup project structure",
+
   "clickup custom fields", "clickup time tracking", "clickup goals API".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, clickup]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- clickup
+compatibility: Designed for Claude Code
 ---
-
 # ClickUp Reference Architecture
 
 ## Overview

@@ -1,16 +1,21 @@
 ---
 name: fathom-performance-tuning
-description: |
-  Optimize Fathom API performance with caching and batch processing.
+description: 'Optimize Fathom API performance with caching and batch processing.
+
   Trigger with phrases like "fathom performance", "fathom caching", "optimize fathom".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, meeting-intelligence, ai-notes, fathom]
-compatible-with: claude-code
+tags:
+- saas
+- meeting-intelligence
+- ai-notes
+- fathom
+compatibility: Designed for Claude Code
 ---
-
 # Fathom Performance Tuning
 
 ## Overview

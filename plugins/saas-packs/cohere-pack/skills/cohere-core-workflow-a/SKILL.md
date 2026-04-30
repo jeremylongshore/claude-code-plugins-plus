@@ -1,19 +1,27 @@
 ---
 name: cohere-core-workflow-a
-description: |
-  Build a complete RAG pipeline with Cohere Chat, Embed, and Rerank.
+description: 'Build a complete RAG pipeline with Cohere Chat, Embed, and Rerank.
+
   Use when implementing retrieval-augmented generation, building
+
   grounded Q&A systems, or combining search with LLM generation.
+
   Trigger with phrases like "cohere RAG", "cohere retrieval",
+
   "cohere grounded generation", "cohere search and answer".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, nlp, cohere]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- nlp
+- cohere
+compatibility: Designed for Claude Code
 ---
-
 # Cohere RAG Pipeline (Core Workflow A)
 
 ## Overview

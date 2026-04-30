@@ -1,20 +1,31 @@
 ---
 name: clickhouse-deploy-integration
-description: |
-  Deploy ClickHouse-backed applications to Vercel, Fly.io, and Cloud Run with
+description: 'Deploy ClickHouse-backed applications to Vercel, Fly.io, and Cloud Run
+  with
+
   connection pooling, secrets, and health checks.
+
   Use when deploying applications that connect to ClickHouse Cloud,
+
   configuring platform secrets, or setting up deployment pipelines.
+
   Trigger: "deploy clickhouse app", "clickhouse Vercel", "clickhouse Cloud Run",
+
   "clickhouse production deploy", "clickhouse Fly.io".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, database, analytics, clickhouse, olap]
-compatible-with: claude-code
+tags:
+- saas
+- database
+- analytics
+- clickhouse
+- olap
+compatibility: Designed for Claude Code
 ---
-
 # ClickHouse Deploy Integration
 
 ## Overview

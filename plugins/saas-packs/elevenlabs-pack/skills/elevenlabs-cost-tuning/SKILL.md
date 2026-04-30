@@ -1,21 +1,34 @@
 ---
 name: elevenlabs-cost-tuning
-description: |
-  Optimize ElevenLabs costs through model selection, character-efficient patterns,
+description: 'Optimize ElevenLabs costs through model selection, character-efficient
+  patterns,
+
   caching, and usage monitoring with budget alerts.
+
   Use when analyzing ElevenLabs billing, reducing character usage,
+
   or implementing quota monitoring for TTS workloads.
+
   Trigger: "elevenlabs cost", "elevenlabs billing", "reduce elevenlabs costs",
+
   "elevenlabs pricing", "elevenlabs expensive", "elevenlabs budget",
+
   "elevenlabs characters", "elevenlabs quota".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, voice, ai, elevenlabs, cost, billing]
-compatible-with: claude-code
+tags:
+- saas
+- voice
+- ai
+- elevenlabs
+- cost
+- billing
+compatibility: Designed for Claude Code
 ---
-
 # ElevenLabs Cost Tuning
 
 ## Overview

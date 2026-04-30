@@ -1,17 +1,27 @@
 ---
 name: firecrawl-multi-env-setup
-description: |
-  Configure Firecrawl across development, staging, and production environments.
-  Use when setting up multi-environment scraping pipelines, managing credit budgets per env,
+description: 'Configure Firecrawl across development, staging, and production environments.
+
+  Use when setting up multi-environment scraping pipelines, managing credit budgets
+  per env,
+
   or configuring self-hosted Firecrawl for development.
+
   Trigger with phrases like "firecrawl environments", "firecrawl staging",
+
   "firecrawl dev prod", "firecrawl environment setup", "firecrawl config by env".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(docker:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, firecrawl, deployment, api]
+tags:
+- saas
+- firecrawl
+- deployment
+- api
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Firecrawl Multi-Environment Setup
 

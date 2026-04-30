@@ -1,17 +1,25 @@
 ---
 name: databricks-install-auth
-description: |
-  Install and configure Databricks CLI and SDK authentication.
+description: 'Install and configure Databricks CLI and SDK authentication.
+
   Use when setting up a new Databricks integration, configuring tokens,
+
   or initializing Databricks in your project.
+
   Trigger with phrases like "install databricks", "setup databricks",
+
   "databricks auth", "configure databricks token", "databricks CLI".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(pip:*), Bash(databricks:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, databricks, authentication]
+tags:
+- saas
+- databricks
+- authentication
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Databricks Install & Auth
 

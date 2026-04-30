@@ -1,17 +1,27 @@
 ---
 name: exa-deploy-integration
-description: |
-  Deploy Exa integrations to Vercel, Docker, and Cloud Run platforms.
+description: 'Deploy Exa integrations to Vercel, Docker, and Cloud Run platforms.
+
   Use when deploying Exa-powered applications to production,
+
   configuring platform-specific secrets, or building search API endpoints.
+
   Trigger with phrases like "deploy exa", "exa Vercel",
+
   "exa production deploy", "exa Cloud Run", "exa Docker".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*), Bash(docker:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, exa, deployment, vercel, docker]
+tags:
+- saas
+- exa
+- deployment
+- vercel
+- docker
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Exa Deploy Integration
 

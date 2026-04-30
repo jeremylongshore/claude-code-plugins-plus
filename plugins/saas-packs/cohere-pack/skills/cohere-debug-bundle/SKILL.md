@@ -1,19 +1,27 @@
 ---
 name: cohere-debug-bundle
-description: |
-  Collect Cohere debug evidence for support tickets and troubleshooting.
+description: 'Collect Cohere debug evidence for support tickets and troubleshooting.
+
   Use when encountering persistent issues, preparing support tickets,
+
   or collecting diagnostic information for Cohere API problems.
+
   Trigger with phrases like "cohere debug", "cohere support bundle",
+
   "collect cohere logs", "cohere diagnostic".
+
+  '
 allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, nlp, cohere]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- nlp
+- cohere
+compatibility: Designed for Claude Code
 ---
-
 # Cohere Debug Bundle
 
 ## Overview

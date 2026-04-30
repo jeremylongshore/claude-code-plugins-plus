@@ -1,16 +1,21 @@
 ---
 name: finta-debug-bundle
-description: |
-  Collect Finta diagnostic information for support.
+description: 'Collect Finta diagnostic information for support.
+
   Trigger with phrases like "finta debug", "finta support".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, fundraising-crm, investor-management, finta]
-compatible-with: claude-code
+tags:
+- saas
+- fundraising-crm
+- investor-management
+- finta
+compatibility: Designed for Claude Code
 ---
-
 # Finta Debug Bundle
 
 ## Overview

@@ -1,19 +1,28 @@
 ---
 name: cohere-ci-integration
-description: |
-  Configure CI/CD for Cohere integrations with GitHub Actions and automated testing.
+description: 'Configure CI/CD for Cohere integrations with GitHub Actions and automated
+  testing.
+
   Use when setting up automated testing for Chat/Embed/Rerank,
+
   configuring CI pipelines, or testing Cohere-powered applications.
+
   Trigger with phrases like "cohere CI", "cohere GitHub Actions",
+
   "cohere automated tests", "CI cohere", "cohere pipeline".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, nlp, cohere]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- nlp
+- cohere
+compatibility: Designed for Claude Code
 ---
-
 # Cohere CI Integration
 
 ## Overview

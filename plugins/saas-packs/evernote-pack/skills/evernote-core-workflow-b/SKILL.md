@@ -1,17 +1,25 @@
 ---
 name: evernote-core-workflow-b
-description: |
-  Execute Evernote secondary workflow: Search and Retrieval.
+description: 'Execute Evernote secondary workflow: Search and Retrieval.
+
   Use when implementing search features, finding notes,
+
   filtering content, or building search interfaces.
+
   Trigger with phrases like "search evernote", "find evernote notes",
+
   "evernote search", "query evernote".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, evernote, workflow]
+tags:
+- saas
+- evernote
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Evernote Core Workflow B: Search & Retrieval
 

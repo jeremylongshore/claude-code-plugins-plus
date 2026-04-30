@@ -1,17 +1,28 @@
 ---
 name: coderabbit-reference-architecture
-description: |
-  Implement CodeRabbit reference architecture with production-grade .coderabbit.yaml configuration.
+description: 'Implement CodeRabbit reference architecture with production-grade .coderabbit.yaml
+  configuration.
+
   Use when designing review configuration for a new project, establishing team standards,
+
   or building a comprehensive review setup from scratch.
+
   Trigger with phrases like "coderabbit architecture", "coderabbit best practices",
-  "coderabbit project structure", "coderabbit reference config", "coderabbit full setup".
+
+  "coderabbit project structure", "coderabbit reference config", "coderabbit full
+  setup".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, coderabbit, reference-architecture, best-practices]
+tags:
+- saas
+- coderabbit
+- reference-architecture
+- best-practices
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # CodeRabbit Reference Architecture
 

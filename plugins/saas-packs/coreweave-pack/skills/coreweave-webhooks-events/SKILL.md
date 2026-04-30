@@ -1,19 +1,28 @@
 ---
 name: coreweave-webhooks-events
-description: |
-  Monitor CoreWeave cluster events and GPU workload status.
+description: 'Monitor CoreWeave cluster events and GPU workload status.
+
   Use when tracking pod lifecycle events, monitoring GPU utilization,
+
   or alerting on inference service health changes.
+
   Trigger with phrases like "coreweave events", "coreweave monitoring",
+
   "coreweave pod alerts", "coreweave gpu monitoring".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, gpu-cloud, kubernetes, inference, coreweave]
-compatible-with: claude-code
+tags:
+- saas
+- gpu-cloud
+- kubernetes
+- inference
+- coreweave
+compatibility: Designed for Claude Code
 ---
-
 # CoreWeave Webhooks & Events
 
 ## Overview

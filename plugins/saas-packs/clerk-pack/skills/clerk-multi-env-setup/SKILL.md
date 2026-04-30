@@ -1,17 +1,25 @@
 ---
 name: clerk-multi-env-setup
-description: |
-  Configure Clerk for multiple environments (dev, staging, production).
+description: 'Configure Clerk for multiple environments (dev, staging, production).
+
   Use when setting up environment-specific configurations,
+
   managing multiple Clerk instances, or implementing environment promotion.
+
   Trigger with phrases like "clerk environments", "clerk staging",
+
   "clerk dev prod", "clerk multi-environment".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clerk, clerk-multi]
+tags:
+- saas
+- clerk
+- clerk-multi
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clerk Multi-Environment Setup
 

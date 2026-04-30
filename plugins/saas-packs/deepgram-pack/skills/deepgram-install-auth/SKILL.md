@@ -1,17 +1,27 @@
 ---
 name: deepgram-install-auth
-description: |
-  Install and configure Deepgram SDK authentication.
+description: 'Install and configure Deepgram SDK authentication.
+
   Use when setting up a new Deepgram integration, configuring API keys,
+
   or initializing Deepgram in your project.
+
   Trigger: "install deepgram", "setup deepgram", "deepgram auth",
+
   "configure deepgram API key", "deepgram credentials".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, deepgram, api, authentication, setup]
+tags:
+- saas
+- deepgram
+- api
+- authentication
+- setup
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Deepgram Install & Auth
 

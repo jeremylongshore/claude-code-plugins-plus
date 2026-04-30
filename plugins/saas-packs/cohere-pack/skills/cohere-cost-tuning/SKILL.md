@@ -1,19 +1,28 @@
 ---
 name: cohere-cost-tuning
-description: |
-  Optimize Cohere costs through model selection, token budgets, and usage monitoring.
+description: 'Optimize Cohere costs through model selection, token budgets, and usage
+  monitoring.
+
   Use when analyzing Cohere billing, reducing API costs,
+
   or implementing usage monitoring and budget alerts.
+
   Trigger with phrases like "cohere cost", "cohere billing",
+
   "reduce cohere costs", "cohere pricing", "cohere expensive", "cohere budget".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, nlp, cohere]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- nlp
+- cohere
+compatibility: Designed for Claude Code
 ---
-
 # Cohere Cost Tuning
 
 ## Overview

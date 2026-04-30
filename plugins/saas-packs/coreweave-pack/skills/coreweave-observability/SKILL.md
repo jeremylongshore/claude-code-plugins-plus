@@ -1,19 +1,28 @@
 ---
 name: coreweave-observability
-description: |
-  Set up GPU monitoring and observability for CoreWeave workloads.
+description: 'Set up GPU monitoring and observability for CoreWeave workloads.
+
   Use when implementing GPU metrics dashboards, configuring alerts,
+
   or tracking inference latency and throughput.
+
   Trigger with phrases like "coreweave monitoring", "coreweave observability",
+
   "coreweave gpu metrics", "coreweave grafana".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(kubectl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, gpu-cloud, kubernetes, inference, coreweave]
-compatible-with: claude-code
+tags:
+- saas
+- gpu-cloud
+- kubernetes
+- inference
+- coreweave
+compatibility: Designed for Claude Code
 ---
-
 # CoreWeave Observability
 
 ## Overview

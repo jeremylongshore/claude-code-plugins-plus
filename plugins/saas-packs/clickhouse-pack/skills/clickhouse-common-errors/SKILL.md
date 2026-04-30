@@ -1,20 +1,22 @@
 ---
 name: clickhouse-common-errors
-description: |
-  Diagnose and fix the top 15 ClickHouse errors — query failures, insert problems,
-  memory limits, and merge issues.
-  Use when encountering ClickHouse exceptions, debugging failed queries,
-  or troubleshooting server-side errors.
-  Trigger: "clickhouse error", "fix clickhouse", "clickhouse not working",
-  "debug clickhouse", "clickhouse exception", "clickhouse syntax error".
+description: "Diagnose and fix the top 15 ClickHouse errors \u2014 query failures,\
+  \ insert problems,\nmemory limits, and merge issues.\nUse when encountering ClickHouse\
+  \ exceptions, debugging failed queries,\nor troubleshooting server-side errors.\n\
+  Trigger: \"clickhouse error\", \"fix clickhouse\", \"clickhouse not working\",\n\
+  \"debug clickhouse\", \"clickhouse exception\", \"clickhouse syntax error\".\n"
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, database, analytics, clickhouse, olap]
-compatible-with: claude-code
+tags:
+- saas
+- database
+- analytics
+- clickhouse
+- olap
+compatibility: Designed for Claude Code
 ---
-
 # ClickHouse Common Errors
 
 ## Overview

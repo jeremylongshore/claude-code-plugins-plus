@@ -1,20 +1,22 @@
 ---
 name: clickhouse-prod-checklist
-description: |
-  Production readiness checklist for ClickHouse — server tuning, backup, monitoring,
-  and deployment verification.
-  Use when launching a ClickHouse deployment, doing go-live reviews,
-  or auditing production readiness.
-  Trigger: "clickhouse production", "clickhouse go-live", "clickhouse launch checklist",
-  "production clickhouse", "clickhouse prod ready".
+description: "Production readiness checklist for ClickHouse \u2014 server tuning,\
+  \ backup, monitoring,\nand deployment verification.\nUse when launching a ClickHouse\
+  \ deployment, doing go-live reviews,\nor auditing production readiness.\nTrigger:\
+  \ \"clickhouse production\", \"clickhouse go-live\", \"clickhouse launch checklist\"\
+  ,\n\"production clickhouse\", \"clickhouse prod ready\".\n"
 allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, database, analytics, clickhouse, olap]
-compatible-with: claude-code
+tags:
+- saas
+- database
+- analytics
+- clickhouse
+- olap
+compatibility: Designed for Claude Code
 ---
-
 # ClickHouse Production Checklist
 
 ## Overview

@@ -1,17 +1,25 @@
 ---
 name: documenso-core-workflow-b
-description: |
-  Implement Documenso template-based workflows and direct signing links.
+description: 'Implement Documenso template-based workflows and direct signing links.
+
   Use when creating reusable templates, generating documents from templates,
+
   or implementing direct signing experiences.
+
   Trigger with phrases like "documenso template", "signing link",
+
   "direct template", "reusable document", "template workflow".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, documenso, workflow]
+tags:
+- saas
+- documenso
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Documenso Core Workflow B: Templates & Direct Signing
 

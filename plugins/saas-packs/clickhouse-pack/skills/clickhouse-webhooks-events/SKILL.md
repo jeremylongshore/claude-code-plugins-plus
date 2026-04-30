@@ -1,20 +1,30 @@
 ---
 name: clickhouse-webhooks-events
-description: |
-  Ingest data into ClickHouse from webhooks, Kafka, and streaming sources
+description: 'Ingest data into ClickHouse from webhooks, Kafka, and streaming sources
+
   with batching, dedup, and exactly-once patterns.
+
   Use when building data ingestion pipelines, consuming webhook payloads,
+
   or integrating Kafka topics into ClickHouse.
+
   Trigger: "clickhouse ingestion", "clickhouse webhook", "clickhouse Kafka",
+
   "stream data to clickhouse", "clickhouse data pipeline".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, database, analytics, clickhouse, olap]
-compatible-with: claude-code
+tags:
+- saas
+- database
+- analytics
+- clickhouse
+- olap
+compatibility: Designed for Claude Code
 ---
-
 # ClickHouse Data Ingestion
 
 ## Overview

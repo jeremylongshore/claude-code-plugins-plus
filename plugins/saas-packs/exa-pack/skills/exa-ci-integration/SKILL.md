@@ -1,17 +1,26 @@
 ---
 name: exa-ci-integration
-description: |
-  Configure Exa CI/CD integration with GitHub Actions and automated testing.
+description: 'Configure Exa CI/CD integration with GitHub Actions and automated testing.
+
   Use when setting up automated testing for Exa integrations,
+
   configuring CI pipelines, or adding Exa health checks to builds.
+
   Trigger with phrases like "exa CI", "exa GitHub Actions",
+
   "exa automated tests", "CI exa", "exa pipeline".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, exa, testing, ci-cd]
+tags:
+- saas
+- exa
+- testing
+- ci-cd
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Exa CI Integration
 

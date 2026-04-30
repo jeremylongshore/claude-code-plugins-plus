@@ -1,19 +1,25 @@
 ---
 name: figma-known-pitfalls
-description: |
-  Avoid the most common Figma API integration mistakes and anti-patterns.
+description: 'Avoid the most common Figma API integration mistakes and anti-patterns.
+
   Use when reviewing Figma code, onboarding new developers,
+
   or auditing an existing Figma integration.
+
   Trigger with phrases like "figma mistakes", "figma anti-patterns",
+
   "figma pitfalls", "figma code review", "figma what not to do".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, figma]
-compatible-with: claude-code
+tags:
+- saas
+- figma
+compatibility: Designed for Claude Code
 ---
-
 # Figma Known Pitfalls
 
 ## Overview

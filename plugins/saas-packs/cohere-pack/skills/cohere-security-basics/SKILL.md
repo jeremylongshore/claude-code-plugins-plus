@@ -1,19 +1,28 @@
 ---
 name: cohere-security-basics
-description: |
-  Apply Cohere security best practices for API key management and access control.
+description: 'Apply Cohere security best practices for API key management and access
+  control.
+
   Use when securing API keys, implementing key rotation,
+
   or auditing Cohere security configuration.
+
   Trigger with phrases like "cohere security", "cohere secrets",
+
   "secure cohere", "cohere API key security", "cohere key rotation".
+
+  '
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, nlp, cohere]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- nlp
+- cohere
+compatibility: Designed for Claude Code
 ---
-
 # Cohere Security Basics
 
 ## Overview

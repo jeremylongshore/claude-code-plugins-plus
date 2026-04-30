@@ -1,15 +1,23 @@
 ---
-name: "cursor-reference-architecture"
-description: |
-  Reference architecture for Cursor IDE projects: directory structure, rules organization, indexing
-  strategy, and team configuration patterns. Triggers on "cursor architecture", "cursor project structure",
+name: cursor-reference-architecture
+description: 'Reference architecture for Cursor IDE projects: directory structure,
+  rules organization, indexing
+
+  strategy, and team configuration patterns. Triggers on "cursor architecture", "cursor
+  project structure",
+
   "cursor best practices", "cursor file structure".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, cursor, cursor-reference]
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- cursor
+- cursor-reference
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Cursor Reference Architecture
 

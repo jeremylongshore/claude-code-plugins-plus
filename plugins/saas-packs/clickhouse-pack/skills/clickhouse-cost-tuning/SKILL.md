@@ -1,20 +1,22 @@
 ---
 name: clickhouse-cost-tuning
-description: |
-  Optimize ClickHouse Cloud costs — compute scaling, storage tiering, compression,
-  and query efficiency for lower bills.
-  Use when analyzing ClickHouse Cloud bills, reducing storage costs,
-  or optimizing compute utilization.
-  Trigger: "clickhouse cost", "clickhouse billing", "reduce clickhouse spend",
-  "clickhouse pricing", "clickhouse expensive", "clickhouse storage cost".
+description: "Optimize ClickHouse Cloud costs \u2014 compute scaling, storage tiering,\
+  \ compression,\nand query efficiency for lower bills.\nUse when analyzing ClickHouse\
+  \ Cloud bills, reducing storage costs,\nor optimizing compute utilization.\nTrigger:\
+  \ \"clickhouse cost\", \"clickhouse billing\", \"reduce clickhouse spend\",\n\"\
+  clickhouse pricing\", \"clickhouse expensive\", \"clickhouse storage cost\".\n"
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, database, analytics, clickhouse, olap]
-compatible-with: claude-code
+tags:
+- saas
+- database
+- analytics
+- clickhouse
+- olap
+compatibility: Designed for Claude Code
 ---
-
 # ClickHouse Cost Tuning
 
 ## Overview

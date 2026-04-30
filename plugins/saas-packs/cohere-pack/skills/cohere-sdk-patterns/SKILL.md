@@ -1,19 +1,27 @@
 ---
 name: cohere-sdk-patterns
-description: |
-  Apply production-ready Cohere SDK patterns for TypeScript and Python.
+description: 'Apply production-ready Cohere SDK patterns for TypeScript and Python.
+
   Use when implementing Cohere integrations, refactoring SDK usage,
+
   or establishing team coding standards for Cohere API v2.
+
   Trigger with phrases like "cohere SDK patterns", "cohere best practices",
+
   "cohere code patterns", "idiomatic cohere", "cohere wrapper".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, nlp, cohere]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- nlp
+- cohere
+compatibility: Designed for Claude Code
 ---
-
 # Cohere SDK Patterns
 
 ## Overview

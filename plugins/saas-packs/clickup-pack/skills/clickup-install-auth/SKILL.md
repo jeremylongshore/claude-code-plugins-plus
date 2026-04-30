@@ -1,19 +1,26 @@
 ---
 name: clickup-install-auth
-description: |
-  Set up ClickUp API v2 authentication with personal tokens or OAuth 2.0.
+description: 'Set up ClickUp API v2 authentication with personal tokens or OAuth 2.0.
+
   Use when configuring a new ClickUp integration, setting up API access,
+
   or initializing OAuth flows for multi-user apps.
+
   Trigger: "install clickup", "setup clickup auth", "clickup API token",
+
   "clickup OAuth", "configure clickup credentials".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, clickup]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- clickup
+compatibility: Designed for Claude Code
 ---
-
 # ClickUp Install & Auth
 
 ## Overview

@@ -1,17 +1,26 @@
 ---
 name: firecrawl-reference-architecture
-description: |
-  Implement Firecrawl reference architecture with scrape/crawl/map/extract pipelines.
+description: 'Implement Firecrawl reference architecture with scrape/crawl/map/extract
+  pipelines.
+
   Use when designing new Firecrawl integrations, reviewing project structure,
+
   or building content ingestion pipelines for AI/RAG applications.
+
   Trigger with phrases like "firecrawl architecture", "firecrawl project structure",
+
   "firecrawl pipeline", "firecrawl RAG", "firecrawl knowledge base".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, firecrawl, firecrawl-reference]
+tags:
+- saas
+- firecrawl
+- firecrawl-reference
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Firecrawl Reference Architecture
 

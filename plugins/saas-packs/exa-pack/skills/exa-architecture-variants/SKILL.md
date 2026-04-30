@@ -1,17 +1,28 @@
 ---
 name: exa-architecture-variants
-description: |
-  Choose and implement Exa architecture patterns at different scales: direct search, cached search, and RAG pipeline.
+description: 'Choose and implement Exa architecture patterns at different scales:
+  direct search, cached search, and RAG pipeline.
+
   Use when designing Exa integrations, choosing between simple search and full RAG,
+
   or planning architecture for different traffic volumes.
+
   Trigger with phrases like "exa architecture", "exa blueprint",
+
   "how to structure exa", "exa RAG design", "exa at scale".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, exa, architecture, rag, scaling]
+tags:
+- saas
+- exa
+- architecture
+- rag
+- scaling
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Exa Architecture Variants
 

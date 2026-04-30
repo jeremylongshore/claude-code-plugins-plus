@@ -1,18 +1,24 @@
 ---
 name: clickup-deploy-integration
-description: |
-  Deploy ClickUp API integrations to Vercel, Fly.io, and Cloud Run with
+description: 'Deploy ClickUp API integrations to Vercel, Fly.io, and Cloud Run with
+
   secure secrets management and health checks.
+
   Trigger: "deploy clickup", "clickup Vercel", "clickup production deploy",
+
   "clickup Cloud Run", "clickup Fly.io", "clickup hosting".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, clickup]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- clickup
+compatibility: Designed for Claude Code
 ---
-
 # ClickUp Deploy Integration
 
 ## Overview

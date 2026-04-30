@@ -1,16 +1,22 @@
 ---
 name: fathom-reference-architecture
-description: |
-  Reference architecture for Fathom meeting intelligence integrations.
-  Trigger with phrases like "fathom architecture", "fathom design", "fathom integration pattern".
+description: 'Reference architecture for Fathom meeting intelligence integrations.
+
+  Trigger with phrases like "fathom architecture", "fathom design", "fathom integration
+  pattern".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, meeting-intelligence, ai-notes, fathom]
-compatible-with: claude-code
+tags:
+- saas
+- meeting-intelligence
+- ai-notes
+- fathom
+compatibility: Designed for Claude Code
 ---
-
 # Fathom Reference Architecture
 
 ## Architecture

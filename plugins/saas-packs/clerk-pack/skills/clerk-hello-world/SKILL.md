@@ -1,17 +1,27 @@
 ---
 name: clerk-hello-world
-description: |
-  Create your first authenticated request with Clerk.
+description: 'Create your first authenticated request with Clerk.
+
   Use when making initial API calls, testing authentication,
+
   or verifying Clerk integration works correctly.
+
   Trigger with phrases like "clerk hello world", "first clerk request",
+
   "test clerk auth", "verify clerk setup".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clerk, api, testing, authentication]
+tags:
+- saas
+- clerk
+- api
+- testing
+- authentication
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clerk Hello World
 

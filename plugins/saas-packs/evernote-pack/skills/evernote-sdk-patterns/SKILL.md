@@ -1,17 +1,25 @@
 ---
 name: evernote-sdk-patterns
-description: |
-  Advanced Evernote SDK patterns and best practices.
+description: 'Advanced Evernote SDK patterns and best practices.
+
   Use when implementing complex note operations, batch processing,
+
   search queries, or optimizing SDK usage.
+
   Trigger with phrases like "evernote sdk patterns", "evernote best practices",
+
   "evernote advanced", "evernote batch operations".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, evernote, evernote-sdk]
+tags:
+- saas
+- evernote
+- evernote-sdk
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Evernote SDK Patterns
 

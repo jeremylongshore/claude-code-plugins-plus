@@ -1,19 +1,30 @@
 ---
 name: elevenlabs-performance-tuning
-description: |
-  Optimize ElevenLabs TTS latency with model selection, streaming, caching, and audio format tuning.
+description: 'Optimize ElevenLabs TTS latency with model selection, streaming, caching,
+  and audio format tuning.
+
   Use when experiencing slow TTS responses, implementing real-time voice features,
+
   or optimizing audio generation throughput.
+
   Trigger: "elevenlabs performance", "optimize elevenlabs", "elevenlabs latency",
+
   "elevenlabs slow", "fast TTS", "reduce elevenlabs latency", "TTS streaming".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, voice, ai, elevenlabs, performance, optimization]
-compatible-with: claude-code
+tags:
+- saas
+- voice
+- ai
+- elevenlabs
+- performance
+- optimization
+compatibility: Designed for Claude Code
 ---
-
 # ElevenLabs Performance Tuning
 
 ## Overview

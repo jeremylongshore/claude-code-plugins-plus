@@ -1,15 +1,23 @@
 ---
-name: "cursor-install-auth"
-description: |
-  Install Cursor IDE and configure authentication across macOS, Linux, and Windows. Triggers on
-  "install cursor", "setup cursor", "cursor authentication", "cursor login", "cursor license",
+name: cursor-install-auth
+description: 'Install Cursor IDE and configure authentication across macOS, Linux,
+  and Windows. Triggers on
+
+  "install cursor", "setup cursor", "cursor authentication", "cursor login", "cursor
+  license",
+
   "cursor download".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, cursor, authentication]
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- cursor
+- authentication
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Cursor Install & Auth
 

@@ -1,18 +1,24 @@
 ---
 name: clickup-observability
-description: |
-  Monitor ClickUp API integrations with metrics, tracing, structured logging,
+description: 'Monitor ClickUp API integrations with metrics, tracing, structured logging,
+
   and alerting using Prometheus, OpenTelemetry, and Grafana.
+
   Trigger: "clickup monitoring", "clickup metrics", "clickup observability",
+
   "monitor clickup", "clickup alerts", "clickup tracing", "clickup dashboard".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, clickup]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- clickup
+compatibility: Designed for Claude Code
 ---
-
 # ClickUp Observability
 
 ## Overview

@@ -1,19 +1,29 @@
 ---
 name: clickhouse-core-workflow-a
-description: |
-  Design ClickHouse schemas with MergeTree engines, ORDER BY keys, and partitioning.
+description: 'Design ClickHouse schemas with MergeTree engines, ORDER BY keys, and
+  partitioning.
+
   Use when creating new tables, choosing engines, designing sort keys,
+
   or modeling data for analytical workloads.
+
   Trigger: "clickhouse schema design", "clickhouse table design",
+
   "clickhouse ORDER BY", "clickhouse partitioning", "MergeTree table".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, database, analytics, clickhouse, olap]
-compatible-with: claude-code
+tags:
+- saas
+- database
+- analytics
+- clickhouse
+- olap
+compatibility: Designed for Claude Code
 ---
-
 # ClickHouse Schema Design (Core Workflow A)
 
 ## Overview

@@ -1,17 +1,25 @@
 ---
 name: databricks-common-errors
-description: |
-  Diagnose and fix Databricks common errors and exceptions.
+description: 'Diagnose and fix Databricks common errors and exceptions.
+
   Use when encountering Databricks errors, debugging failed jobs,
+
   or troubleshooting cluster and notebook issues.
+
   Trigger with phrases like "databricks error", "fix databricks",
+
   "databricks not working", "debug databricks", "spark error".
+
+  '
 allowed-tools: Read, Grep, Bash(databricks:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, databricks, debugging]
+tags:
+- saas
+- databricks
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Databricks Common Errors
 

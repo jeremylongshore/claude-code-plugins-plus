@@ -1,14 +1,21 @@
 ---
-name: "cursor-tab-completion"
-description: |
-  Master Cursor Tab autocomplete, ghost text, and AI code suggestions. Triggers on "cursor completion",
-  "cursor tab", "cursor suggestions", "cursor autocomplete", "cursor ghost text", "cursor copilot".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+name: cursor-tab-completion
+description: 'Master Cursor Tab autocomplete, ghost text, and AI code suggestions.
+  Triggers on "cursor completion",
+
+  "cursor tab", "cursor suggestions", "cursor autocomplete", "cursor ghost text",
+  "cursor copilot".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, cursor, cursor-tab]
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- cursor
+- cursor-tab
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Cursor Tab Completion
 

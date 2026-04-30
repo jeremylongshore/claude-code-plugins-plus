@@ -1,17 +1,25 @@
 ---
 name: documenso-migration-deep-dive
-description: |
-  Execute comprehensive Documenso migration strategies for platform switches.
+description: 'Execute comprehensive Documenso migration strategies for platform switches.
+
   Use when migrating from other signing platforms, re-platforming to Documenso,
+
   or performing major infrastructure changes.
+
   Trigger with phrases like "migrate to documenso", "documenso migration",
+
   "switch to documenso", "documenso replatform", "replace docusign".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, documenso, migration]
+tags:
+- saas
+- documenso
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Documenso Migration Deep Dive
 

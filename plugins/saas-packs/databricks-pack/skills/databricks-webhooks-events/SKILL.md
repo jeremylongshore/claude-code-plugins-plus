@@ -1,17 +1,25 @@
 ---
 name: databricks-webhooks-events
-description: |
-  Configure Databricks job notifications, webhooks, and event handling.
+description: 'Configure Databricks job notifications, webhooks, and event handling.
+
   Use when setting up Slack/Teams notifications, configuring alerts,
+
   or integrating Databricks events with external systems.
+
   Trigger with phrases like "databricks webhook", "databricks notifications",
+
   "databricks alerts", "job failure notification", "databricks slack".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(databricks:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, databricks, webhooks]
+tags:
+- saas
+- databricks
+- webhooks
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Databricks Webhooks & Events
 

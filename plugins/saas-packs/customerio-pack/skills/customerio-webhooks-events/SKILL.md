@@ -1,17 +1,27 @@
 ---
 name: customerio-webhooks-events
-description: |
-  Implement Customer.io webhook and reporting event handling.
+description: 'Implement Customer.io webhook and reporting event handling.
+
   Use when processing email delivery events, click/open tracking,
+
   bounce handling, or streaming to a data warehouse.
+
   Trigger: "customer.io webhook", "customer.io events",
+
   "customer.io delivery status", "customer.io bounces", "customer.io open tracking".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Glob, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, customer-io, webhooks, events, delivery]
+tags:
+- saas
+- customer-io
+- webhooks
+- events
+- delivery
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Customer.io Webhooks & Events
 

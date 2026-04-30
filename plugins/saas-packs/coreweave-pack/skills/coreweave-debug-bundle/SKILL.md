@@ -1,19 +1,28 @@
 ---
 name: coreweave-debug-bundle
-description: |
-  Collect CoreWeave cluster diagnostics for support tickets.
+description: 'Collect CoreWeave cluster diagnostics for support tickets.
+
   Use when preparing a support case, collecting GPU node status,
+
   or documenting pod failures.
+
   Trigger with phrases like "coreweave debug", "coreweave support",
+
   "coreweave diagnostics", "collect coreweave logs".
+
+  '
 allowed-tools: Read, Bash(kubectl:*), Bash(tar:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, gpu-cloud, kubernetes, inference, coreweave]
-compatible-with: claude-code
+tags:
+- saas
+- gpu-cloud
+- kubernetes
+- inference
+- coreweave
+compatibility: Designed for Claude Code
 ---
-
 # CoreWeave Debug Bundle
 
 ## Overview

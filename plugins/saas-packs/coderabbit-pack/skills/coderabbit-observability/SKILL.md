@@ -1,17 +1,29 @@
 ---
 name: coderabbit-observability
-description: |
-  Monitor CodeRabbit review effectiveness with metrics, dashboards, and alerts.
+description: 'Monitor CodeRabbit review effectiveness with metrics, dashboards, and
+  alerts.
+
   Use when tracking review coverage, measuring comment acceptance rates,
+
   or building dashboards for CodeRabbit adoption across your organization.
+
   Trigger with phrases like "coderabbit monitoring", "coderabbit metrics",
-  "coderabbit observability", "monitor coderabbit", "coderabbit alerts", "coderabbit dashboard".
+
+  "coderabbit observability", "monitor coderabbit", "coderabbit alerts", "coderabbit
+  dashboard".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, coderabbit, monitoring, observability, metrics]
+tags:
+- saas
+- coderabbit
+- monitoring
+- observability
+- metrics
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # CodeRabbit Observability
 

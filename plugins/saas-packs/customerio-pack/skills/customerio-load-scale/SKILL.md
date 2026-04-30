@@ -1,17 +1,28 @@
 ---
 name: customerio-load-scale
-description: |
-  Implement Customer.io load testing and horizontal scaling.
+description: 'Implement Customer.io load testing and horizontal scaling.
+
   Use when preparing for high traffic, running load tests,
+
   or designing queue-based architectures for scale.
+
   Trigger: "customer.io load test", "customer.io scale",
+
   "customer.io high volume", "customer.io k6", "customer.io performance test".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(kubectl:*), Glob, Grep
+
+  '
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(kubectl:*), Glob,
+  Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, customer-io, load-testing, scaling, performance]
+tags:
+- saas
+- customer-io
+- load-testing
+- scaling
+- performance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Customer.io Load & Scale
 

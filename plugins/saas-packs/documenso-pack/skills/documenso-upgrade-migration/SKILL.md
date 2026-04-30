@@ -1,17 +1,26 @@
 ---
 name: documenso-upgrade-migration
-description: |
-  Manage Documenso API version upgrades and SDK migrations.
+description: 'Manage Documenso API version upgrades and SDK migrations.
+
   Use when upgrading from v1 to v2 API, updating SDK versions,
+
   or migrating between Documenso versions.
+
   Trigger with phrases like "documenso upgrade", "documenso v2 migration",
+
   "update documenso SDK", "documenso API version".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, documenso, api, migration]
+tags:
+- saas
+- documenso
+- api
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Documenso Upgrade & Migration
 

@@ -1,19 +1,29 @@
 ---
 name: coreweave-core-workflow-a
-description: |
-  Deploy KServe InferenceService on CoreWeave with autoscaling and GPU scheduling.
+description: 'Deploy KServe InferenceService on CoreWeave with autoscaling and GPU
+  scheduling.
+
   Use when serving ML models with KServe, configuring scale-to-zero,
+
   or deploying production inference endpoints on CoreWeave.
+
   Trigger with phrases like "coreweave inference service", "coreweave kserve",
+
   "coreweave model serving", "deploy model on coreweave".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(kubectl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, gpu-cloud, kubernetes, inference, coreweave]
-compatible-with: claude-code
+tags:
+- saas
+- gpu-cloud
+- kubernetes
+- inference
+- coreweave
+compatibility: Designed for Claude Code
 ---
-
 # CoreWeave Core Workflow: KServe Inference
 
 ## Overview

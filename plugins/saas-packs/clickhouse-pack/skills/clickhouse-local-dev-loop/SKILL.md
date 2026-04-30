@@ -1,19 +1,30 @@
 ---
 name: clickhouse-local-dev-loop
-description: |
-  Run ClickHouse locally with Docker, configure test fixtures, and iterate fast.
+description: 'Run ClickHouse locally with Docker, configure test fixtures, and iterate
+  fast.
+
   Use when setting up a local ClickHouse dev environment, writing integration tests,
+
   or running ClickHouse in Docker Compose.
+
   Trigger: "clickhouse local dev", "clickhouse docker", "clickhouse dev environment",
+
   "run clickhouse locally", "clickhouse docker compose".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(docker:*), Bash(docker-compose:*), Grep
+
+  '
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(docker:*), Bash(docker-compose:*),
+  Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, database, analytics, clickhouse, olap]
-compatible-with: claude-code
+tags:
+- saas
+- database
+- analytics
+- clickhouse
+- olap
+compatibility: Designed for Claude Code
 ---
-
 # ClickHouse Local Dev Loop
 
 ## Overview

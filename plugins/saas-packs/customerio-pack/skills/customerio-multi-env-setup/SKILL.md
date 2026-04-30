@@ -1,17 +1,26 @@
 ---
 name: customerio-multi-env-setup
-description: |
-  Configure Customer.io multi-environment setup with workspace isolation.
+description: 'Configure Customer.io multi-environment setup with workspace isolation.
+
   Use when setting up dev/staging/prod workspaces, environment-aware
+
   clients, or Kubernetes config overlays.
+
   Trigger: "customer.io environments", "customer.io staging",
+
   "customer.io dev prod", "customer.io workspace isolation".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(kubectl:*), Glob, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, customer-io, multi-environment, kubernetes]
+tags:
+- saas
+- customer-io
+- multi-environment
+- kubernetes
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Customer.io Multi-Environment Setup
 

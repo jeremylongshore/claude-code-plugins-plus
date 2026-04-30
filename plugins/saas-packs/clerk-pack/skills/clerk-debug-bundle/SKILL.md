@@ -1,17 +1,25 @@
 ---
 name: clerk-debug-bundle
-description: |
-  Collect comprehensive debug information for Clerk issues.
+description: 'Collect comprehensive debug information for Clerk issues.
+
   Use when troubleshooting complex problems, preparing support tickets,
+
   or diagnosing intermittent issues.
+
   Trigger with phrases like "clerk debug", "clerk diagnostics",
+
   "clerk support ticket", "clerk troubleshooting".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clerk, debugging]
+tags:
+- saas
+- clerk
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clerk Debug Bundle
 

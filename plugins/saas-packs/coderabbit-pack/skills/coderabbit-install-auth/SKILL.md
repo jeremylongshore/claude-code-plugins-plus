@@ -1,17 +1,27 @@
 ---
 name: coderabbit-install-auth
-description: |
-  Install and configure CodeRabbit AI code review on GitHub or GitLab repositories.
+description: 'Install and configure CodeRabbit AI code review on GitHub or GitLab
+  repositories.
+
   Use when setting up CodeRabbit for the first time, installing the GitHub App,
+
   configuring the CLI, or connecting CodeRabbit to your repositories.
+
   Trigger with phrases like "install coderabbit", "setup coderabbit",
+
   "coderabbit auth", "configure coderabbit", "add coderabbit to repo".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, coderabbit, authentication, setup]
+tags:
+- saas
+- coderabbit
+- authentication
+- setup
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # CodeRabbit Install & Auth
 

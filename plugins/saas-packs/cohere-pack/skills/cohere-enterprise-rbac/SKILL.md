@@ -1,19 +1,28 @@
 ---
 name: cohere-enterprise-rbac
-description: |
-  Configure Cohere enterprise API key management, role-based access, and org controls.
+description: 'Configure Cohere enterprise API key management, role-based access, and
+  org controls.
+
   Use when implementing multi-team API key management, per-team usage limits,
+
   or setting up organization-level controls for Cohere.
+
   Trigger with phrases like "cohere enterprise", "cohere RBAC",
+
   "cohere team keys", "cohere org management", "cohere access control".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, nlp, cohere]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- nlp
+- cohere
+compatibility: Designed for Claude Code
 ---
-
 # Cohere Enterprise RBAC
 
 ## Overview

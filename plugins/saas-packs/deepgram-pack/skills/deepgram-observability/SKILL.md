@@ -1,17 +1,27 @@
 ---
 name: deepgram-observability
-description: |
-  Set up comprehensive observability for Deepgram integrations.
+description: 'Set up comprehensive observability for Deepgram integrations.
+
   Use when implementing monitoring, setting up dashboards,
+
   or configuring alerting for Deepgram integration health.
+
   Trigger: "deepgram monitoring", "deepgram metrics", "deepgram observability",
+
   "monitor deepgram", "deepgram alerts", "deepgram dashboard".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, deepgram, monitoring, observability, prometheus]
+tags:
+- saas
+- deepgram
+- monitoring
+- observability
+- prometheus
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Deepgram Observability
 

@@ -1,19 +1,29 @@
 ---
 name: elevenlabs-sdk-patterns
-description: |
-  Apply production-ready ElevenLabs SDK patterns for TypeScript and Python.
+description: 'Apply production-ready ElevenLabs SDK patterns for TypeScript and Python.
+
   Use when implementing ElevenLabs integrations, refactoring SDK usage,
+
   or establishing team coding standards for audio AI applications.
+
   Trigger: "elevenlabs SDK patterns", "elevenlabs best practices",
+
   "elevenlabs code patterns", "idiomatic elevenlabs", "elevenlabs typescript".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, voice, ai, elevenlabs, sdk, patterns]
-compatible-with: claude-code
+tags:
+- saas
+- voice
+- ai
+- elevenlabs
+- sdk
+- patterns
+compatibility: Designed for Claude Code
 ---
-
 # ElevenLabs SDK Patterns
 
 ## Overview

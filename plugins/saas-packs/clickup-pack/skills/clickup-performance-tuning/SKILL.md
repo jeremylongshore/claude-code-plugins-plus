@@ -1,18 +1,25 @@
 ---
 name: clickup-performance-tuning
-description: |
-  Optimize ClickUp API v2 performance with caching, pagination, connection pooling,
+description: 'Optimize ClickUp API v2 performance with caching, pagination, connection
+  pooling,
+
   and request batching patterns.
+
   Trigger: "clickup performance", "optimize clickup", "clickup latency",
+
   "clickup caching", "clickup slow", "clickup batch requests", "clickup pagination".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, clickup]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- clickup
+compatibility: Designed for Claude Code
 ---
-
 # ClickUp Performance Tuning
 
 ## Overview

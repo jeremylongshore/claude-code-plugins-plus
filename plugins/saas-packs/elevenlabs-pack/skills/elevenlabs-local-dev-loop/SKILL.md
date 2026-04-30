@@ -1,19 +1,30 @@
 ---
 name: elevenlabs-local-dev-loop
-description: |
-  Configure local ElevenLabs development with mocking, hot reload, and audio testing.
+description: 'Configure local ElevenLabs development with mocking, hot reload, and
+  audio testing.
+
   Use when setting up a dev environment for TTS/voice projects, configuring test
+
   workflows, or building a fast iteration cycle with ElevenLabs audio.
+
   Trigger: "elevenlabs dev setup", "elevenlabs local development",
+
   "elevenlabs dev environment", "develop with elevenlabs", "test elevenlabs locally".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, voice, ai, elevenlabs, tts, testing]
-compatible-with: claude-code
+tags:
+- saas
+- voice
+- ai
+- elevenlabs
+- tts
+- testing
+compatibility: Designed for Claude Code
 ---
-
 # ElevenLabs Local Dev Loop
 
 ## Overview

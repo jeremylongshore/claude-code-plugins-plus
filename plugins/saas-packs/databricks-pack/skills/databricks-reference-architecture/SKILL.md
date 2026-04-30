@@ -1,17 +1,26 @@
 ---
 name: databricks-reference-architecture
-description: |
-  Implement Databricks reference architecture with best-practice project layout.
+description: 'Implement Databricks reference architecture with best-practice project
+  layout.
+
   Use when designing new Databricks projects, reviewing architecture,
+
   or establishing standards for Databricks applications.
+
   Trigger with phrases like "databricks architecture", "databricks best practices",
+
   "databricks project structure", "how to organize databricks", "databricks layout".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, databricks, databricks-reference]
+tags:
+- saas
+- databricks
+- databricks-reference
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Databricks Reference Architecture
 

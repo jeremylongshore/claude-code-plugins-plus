@@ -1,19 +1,26 @@
 ---
 name: figma-install-auth
-description: |
-  Set up Figma REST API authentication with personal access tokens or OAuth 2.0.
+description: 'Set up Figma REST API authentication with personal access tokens or
+  OAuth 2.0.
+
   Use when connecting to the Figma API, generating tokens, configuring scopes,
+
   or setting up OAuth flows for Figma integrations.
+
   Trigger with phrases like "install figma", "setup figma API",
+
   "figma auth", "figma personal access token", "figma OAuth".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, figma]
-compatible-with: claude-code
+tags:
+- saas
+- figma
+compatibility: Designed for Claude Code
 ---
-
 # Figma Install & Auth
 
 ## Overview

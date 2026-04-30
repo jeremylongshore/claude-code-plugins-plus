@@ -1,15 +1,23 @@
 ---
-name: "cursor-indexing-issues"
-description: |
-  Troubleshoot Cursor codebase indexing: stuck indexing, empty search, @codebase failures, and
-  performance issues. Triggers on "cursor indexing", "cursor index", "@codebase not working",
+name: cursor-indexing-issues
+description: 'Troubleshoot Cursor codebase indexing: stuck indexing, empty search,
+  @codebase failures, and
+
+  performance issues. Triggers on "cursor indexing", "cursor index", "@codebase not
+  working",
+
   "cursor search broken", "indexing stuck".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, cursor, cursor-indexing]
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- cursor
+- cursor-indexing
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Cursor Indexing Issues
 

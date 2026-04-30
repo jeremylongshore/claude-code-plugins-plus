@@ -1,20 +1,23 @@
 ---
 name: clickhouse-debug-bundle
-description: |
-  Collect ClickHouse diagnostic data — system tables, query logs, merge status,
-  and server metrics for support tickets and troubleshooting.
-  Use when investigating persistent issues, preparing debug artifacts,
-  or collecting evidence for ClickHouse support.
-  Trigger: "clickhouse debug", "clickhouse diagnostics", "clickhouse support bundle",
-  "collect clickhouse logs", "clickhouse system tables".
+description: "Collect ClickHouse diagnostic data \u2014 system tables, query logs,\
+  \ merge status,\nand server metrics for support tickets and troubleshooting.\nUse\
+  \ when investigating persistent issues, preparing debug artifacts,\nor collecting\
+  \ evidence for ClickHouse support.\nTrigger: \"clickhouse debug\", \"clickhouse\
+  \ diagnostics\", \"clickhouse support bundle\",\n\"collect clickhouse logs\", \"\
+  clickhouse system tables\".\n"
 allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, database, analytics, clickhouse, olap]
-compatible-with: claude-code
+tags:
+- saas
+- database
+- analytics
+- clickhouse
+- olap
+compatibility: Designed for Claude Code
 ---
-
 # ClickHouse Debug Bundle
 
 ## Overview

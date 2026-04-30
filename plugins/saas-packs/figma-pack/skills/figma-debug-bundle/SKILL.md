@@ -1,19 +1,25 @@
 ---
 name: figma-debug-bundle
-description: |
-  Collect Figma API diagnostic evidence for support tickets and troubleshooting.
+description: 'Collect Figma API diagnostic evidence for support tickets and troubleshooting.
+
   Use when encountering persistent issues, preparing support tickets,
+
   or collecting diagnostic information for Figma API problems.
+
   Trigger with phrases like "figma debug", "figma support bundle",
+
   "collect figma logs", "figma diagnostic".
+
+  '
 allowed-tools: Read, Bash(curl:*), Bash(tar:*), Bash(node:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, figma]
-compatible-with: claude-code
+tags:
+- saas
+- figma
+compatibility: Designed for Claude Code
 ---
-
 # Figma Debug Bundle
 
 ## Overview

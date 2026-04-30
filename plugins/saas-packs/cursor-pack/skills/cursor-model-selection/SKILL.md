@@ -1,14 +1,21 @@
 ---
-name: "cursor-model-selection"
-description: |
-  Configure and select AI models in Cursor for Chat, Composer, and Agent mode. Triggers on "cursor model",
-  "cursor gpt", "cursor claude", "change cursor model", "cursor ai model", "cursor auto mode".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+name: cursor-model-selection
+description: 'Configure and select AI models in Cursor for Chat, Composer, and Agent
+  mode. Triggers on "cursor model",
+
+  "cursor gpt", "cursor claude", "change cursor model", "cursor ai model", "cursor
+  auto mode".
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, cursor, cursor-model]
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- cursor
+- cursor-model
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Cursor Model Selection
 

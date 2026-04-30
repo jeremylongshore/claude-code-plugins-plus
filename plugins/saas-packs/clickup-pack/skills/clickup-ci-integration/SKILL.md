@@ -1,18 +1,24 @@
 ---
 name: clickup-ci-integration
-description: |
-  Set up CI/CD pipelines for ClickUp API integrations with GitHub Actions,
+description: 'Set up CI/CD pipelines for ClickUp API integrations with GitHub Actions,
+
   automated testing, and task status sync.
+
   Trigger: "clickup CI", "clickup GitHub Actions", "clickup automated tests",
+
   "CI clickup integration", "clickup pipeline", "clickup CI/CD".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, clickup]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- clickup
+compatibility: Designed for Claude Code
 ---
-
 # ClickUp CI Integration
 
 ## Overview

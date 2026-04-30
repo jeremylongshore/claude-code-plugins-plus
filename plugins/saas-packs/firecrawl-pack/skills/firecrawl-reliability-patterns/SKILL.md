@@ -1,17 +1,27 @@
 ---
 name: firecrawl-reliability-patterns
-description: |
-  Implement Firecrawl reliability patterns: circuit breakers, crawl fallbacks, and content validation.
-  Use when building fault-tolerant scraping pipelines, implementing crawl-to-scrape fallback,
+description: 'Implement Firecrawl reliability patterns: circuit breakers, crawl fallbacks,
+  and content validation.
+
+  Use when building fault-tolerant scraping pipelines, implementing crawl-to-scrape
+  fallback,
+
   or adding content quality gates to Firecrawl integrations.
+
   Trigger with phrases like "firecrawl reliability", "firecrawl circuit breaker",
+
   "firecrawl fallback", "firecrawl resilience", "firecrawl fault tolerant".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, firecrawl, firecrawl-reliability]
+tags:
+- saas
+- firecrawl
+- firecrawl-reliability
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Firecrawl Reliability Patterns
 

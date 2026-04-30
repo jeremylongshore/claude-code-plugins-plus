@@ -1,17 +1,26 @@
 ---
 name: customerio-performance-tuning
-description: |
-  Optimize Customer.io API performance for high throughput.
+description: 'Optimize Customer.io API performance for high throughput.
+
   Use when improving response times, implementing connection
+
   pooling, batching, caching, or regional routing.
+
   Trigger: "customer.io performance", "optimize customer.io",
+
   "customer.io latency", "customer.io connection pooling".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Glob, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, customer-io, performance, optimization]
+tags:
+- saas
+- customer-io
+- performance
+- optimization
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Customer.io Performance Tuning
 

@@ -1,18 +1,24 @@
 ---
 name: clickup-data-handling
-description: |
-  Handle ClickUp data exports, PII redaction, GDPR compliance, and
+description: 'Handle ClickUp data exports, PII redaction, GDPR compliance, and
+
   data retention for ClickUp API integrations.
+
   Trigger: "clickup data", "clickup PII", "clickup GDPR", "clickup data retention",
+
   "clickup privacy", "clickup CCPA", "clickup data export".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, clickup]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- clickup
+compatibility: Designed for Claude Code
 ---
-
 # ClickUp Data Handling
 
 ## Overview

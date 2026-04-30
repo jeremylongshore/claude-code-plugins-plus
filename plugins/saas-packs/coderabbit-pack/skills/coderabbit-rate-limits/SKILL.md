@@ -1,17 +1,27 @@
 ---
 name: coderabbit-rate-limits
-description: |
-  Understand and handle CodeRabbit and GitHub API rate limits for review automation.
+description: 'Understand and handle CodeRabbit and GitHub API rate limits for review
+  automation.
+
   Use when hitting rate limits on @coderabbitai commands, automating review queries,
+
   or building scripts that interact with CodeRabbit via the GitHub API.
+
   Trigger with phrases like "coderabbit rate limit", "coderabbit throttling",
+
   "coderabbit too many requests", "github api rate limit coderabbit".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, coderabbit, rate-limits, github-api]
+tags:
+- saas
+- coderabbit
+- rate-limits
+- github-api
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # CodeRabbit Rate Limits
 

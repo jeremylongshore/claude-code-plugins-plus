@@ -1,17 +1,28 @@
 ---
 name: firecrawl-architecture-variants
-description: |
-  Choose and implement Firecrawl architecture patterns for different scales and use cases.
+description: 'Choose and implement Firecrawl architecture patterns for different scales
+  and use cases.
+
   Use when designing new Firecrawl integrations, choosing between on-demand/scheduled/pipeline
+
   architectures, or planning scraping infrastructure.
+
   Trigger with phrases like "firecrawl architecture", "firecrawl blueprint",
+
   "how to structure firecrawl", "firecrawl at scale", "firecrawl pipeline design".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, firecrawl, migration, scaling, microservices]
+tags:
+- saas
+- firecrawl
+- migration
+- scaling
+- microservices
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Firecrawl Architecture Variants
 

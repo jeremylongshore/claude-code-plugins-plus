@@ -1,20 +1,23 @@
 ---
 name: clickhouse-reference-architecture
-description: |
-  Production reference architecture for ClickHouse-backed applications —
-  project layout, data flow, multi-tenant patterns, and operational topology.
-  Use when designing new ClickHouse systems, reviewing architecture,
-  or establishing standards for ClickHouse integrations.
-  Trigger: "clickhouse architecture", "clickhouse project structure",
-  "clickhouse design", "clickhouse multi-tenant", "clickhouse reference".
+description: "Production reference architecture for ClickHouse-backed applications\
+  \ \u2014\nproject layout, data flow, multi-tenant patterns, and operational topology.\n\
+  Use when designing new ClickHouse systems, reviewing architecture,\nor establishing\
+  \ standards for ClickHouse integrations.\nTrigger: \"clickhouse architecture\",\
+  \ \"clickhouse project structure\",\n\"clickhouse design\", \"clickhouse multi-tenant\"\
+  , \"clickhouse reference\".\n"
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, database, analytics, clickhouse, olap]
-compatible-with: claude-code
+tags:
+- saas
+- database
+- analytics
+- clickhouse
+- olap
+compatibility: Designed for Claude Code
 ---
-
 # ClickHouse Reference Architecture
 
 ## Overview

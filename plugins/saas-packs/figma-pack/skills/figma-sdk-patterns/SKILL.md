@@ -1,19 +1,25 @@
 ---
 name: figma-sdk-patterns
-description: |
-  Production-ready patterns for the Figma REST API and Plugin API.
+description: 'Production-ready patterns for the Figma REST API and Plugin API.
+
   Use when building reusable Figma client wrappers, extracting design tokens,
+
   traversing node trees, or creating typed API helpers.
+
   Trigger with phrases like "figma patterns", "figma best practices",
+
   "figma client wrapper", "figma typed API".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, figma]
-compatible-with: claude-code
+tags:
+- saas
+- figma
+compatibility: Designed for Claude Code
 ---
-
 # Figma SDK Patterns
 
 ## Overview

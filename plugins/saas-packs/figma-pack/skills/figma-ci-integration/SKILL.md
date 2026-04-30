@@ -1,19 +1,25 @@
 ---
 name: figma-ci-integration
-description: |
-  Automate Figma design token sync and asset export in CI/CD pipelines.
+description: 'Automate Figma design token sync and asset export in CI/CD pipelines.
+
   Use when setting up GitHub Actions for Figma, automating icon exports,
+
   or validating design token changes in pull requests.
+
   Trigger with phrases like "figma CI", "figma GitHub Actions",
+
   "automate figma export", "figma CI pipeline".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, figma]
-compatible-with: claude-code
+tags:
+- saas
+- figma
+compatibility: Designed for Claude Code
 ---
-
 # Figma CI Integration
 
 ## Overview

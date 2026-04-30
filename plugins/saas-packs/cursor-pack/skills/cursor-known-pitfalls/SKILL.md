@@ -1,15 +1,23 @@
 ---
-name: "cursor-known-pitfalls"
-description: |
-  Avoid common Cursor IDE pitfalls: AI feature mistakes, security gotchas, configuration errors, and
-  team workflow issues. Triggers on "cursor pitfalls", "cursor mistakes", "cursor gotchas", "cursor issues",
+name: cursor-known-pitfalls
+description: 'Avoid common Cursor IDE pitfalls: AI feature mistakes, security gotchas,
+  configuration errors, and
+
+  team workflow issues. Triggers on "cursor pitfalls", "cursor mistakes", "cursor
+  gotchas", "cursor issues",
+
   "cursor problems", "cursor tips".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, cursor, cursor-known]
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- cursor
+- cursor-known
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Cursor Known Pitfalls
 

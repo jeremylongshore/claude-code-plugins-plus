@@ -1,17 +1,26 @@
 ---
 name: firecrawl-incident-runbook
-description: |
-  Execute Firecrawl incident response procedures with triage, mitigation, and postmortem.
+description: 'Execute Firecrawl incident response procedures with triage, mitigation,
+  and postmortem.
+
   Use when responding to Firecrawl-related outages, investigating scrape/crawl failures,
+
   or running post-incident reviews for Firecrawl integration issues.
+
   Trigger with phrases like "firecrawl incident", "firecrawl outage",
+
   "firecrawl down", "firecrawl on-call", "firecrawl emergency", "firecrawl broken".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, firecrawl, incident-response]
+tags:
+- saas
+- firecrawl
+- incident-response
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Firecrawl Incident Runbook
 

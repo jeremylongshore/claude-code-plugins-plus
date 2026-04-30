@@ -1,17 +1,26 @@
 ---
 name: documenso-reference-architecture
-description: |
-  Implement Documenso reference architecture with best-practice project layout.
+description: 'Implement Documenso reference architecture with best-practice project
+  layout.
+
   Use when designing new Documenso integrations, reviewing project structure,
+
   or establishing architecture standards for document signing applications.
+
   Trigger with phrases like "documenso architecture", "documenso best practices",
+
   "documenso project structure", "how to organize documenso".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, documenso, documenso-reference]
+tags:
+- saas
+- documenso
+- documenso-reference
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Documenso Reference Architecture
 

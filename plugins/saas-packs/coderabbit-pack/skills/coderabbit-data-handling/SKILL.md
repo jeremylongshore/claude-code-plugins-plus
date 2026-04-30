@@ -1,17 +1,28 @@
 ---
 name: coderabbit-data-handling
-description: |
-  Implement CodeRabbit PII handling, data retention, and GDPR/CCPA compliance patterns.
-  Use when handling sensitive data, implementing data redaction, configuring retention policies,
+description: 'Implement CodeRabbit PII handling, data retention, and GDPR/CCPA compliance
+  patterns.
+
+  Use when handling sensitive data, implementing data redaction, configuring retention
+  policies,
+
   or ensuring compliance with privacy regulations for CodeRabbit integrations.
+
   Trigger with phrases like "coderabbit data", "coderabbit PII",
-  "coderabbit GDPR", "coderabbit data retention", "coderabbit privacy", "coderabbit CCPA".
+
+  "coderabbit GDPR", "coderabbit data retention", "coderabbit privacy", "coderabbit
+  CCPA".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, coderabbit, compliance]
+tags:
+- saas
+- coderabbit
+- compliance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # CodeRabbit Data Handling
 

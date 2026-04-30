@@ -1,19 +1,25 @@
 ---
 name: figma-multi-env-setup
-description: |
-  Configure Figma API access across dev, staging, and production environments.
+description: 'Configure Figma API access across dev, staging, and production environments.
+
   Use when setting up per-environment tokens, managing multiple Figma files,
+
   or isolating development from production Figma resources.
+
   Trigger with phrases like "figma environments", "figma staging",
+
   "figma dev prod", "figma environment config".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gcloud:*), Bash(vault:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, figma]
-compatible-with: claude-code
+tags:
+- saas
+- figma
+compatibility: Designed for Claude Code
 ---
-
 # Figma Multi-Environment Setup
 
 ## Overview

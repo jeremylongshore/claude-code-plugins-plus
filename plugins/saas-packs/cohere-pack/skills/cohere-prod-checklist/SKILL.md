@@ -1,19 +1,27 @@
 ---
 name: cohere-prod-checklist
-description: |
-  Execute Cohere production deployment checklist and rollback procedures.
+description: 'Execute Cohere production deployment checklist and rollback procedures.
+
   Use when deploying Cohere integrations to production, preparing for launch,
+
   or implementing go-live procedures for Cohere-powered apps.
+
   Trigger with phrases like "cohere production", "deploy cohere",
+
   "cohere go-live", "cohere launch checklist".
+
+  '
 allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, nlp, cohere]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- nlp
+- cohere
+compatibility: Designed for Claude Code
 ---
-
 # Cohere Production Checklist
 
 ## Overview

@@ -1,19 +1,27 @@
 ---
 name: finta-install-auth
-description: |
-  Set up Finta fundraising CRM account and configure integrations.
+description: 'Set up Finta fundraising CRM account and configure integrations.
+
   Use when onboarding to Finta, connecting email/calendar,
+
   or configuring investor pipeline automation.
+
   Trigger with phrases like "install finta", "setup finta",
+
   "finta onboarding", "configure finta crm".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, fundraising-crm, investor-management, finta]
-compatible-with: claude-code
+tags:
+- saas
+- fundraising-crm
+- investor-management
+- finta
+compatibility: Designed for Claude Code
 ---
-
 # Finta Install & Auth
 
 ## Overview

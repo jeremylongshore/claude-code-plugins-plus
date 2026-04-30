@@ -1,18 +1,24 @@
 ---
 name: clickup-sdk-patterns
-description: |
-  Production-ready ClickUp API v2 client patterns with typed wrappers,
+description: 'Production-ready ClickUp API v2 client patterns with typed wrappers,
+
   error handling, caching, and multi-tenant support.
+
   Trigger: "clickup client wrapper", "clickup SDK patterns", "clickup best practices",
+
   "clickup typescript client", "clickup API wrapper", "production clickup code".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, clickup]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- clickup
+compatibility: Designed for Claude Code
 ---
-
 # ClickUp SDK Patterns
 
 ## Overview

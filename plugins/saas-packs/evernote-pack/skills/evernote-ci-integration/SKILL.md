@@ -1,17 +1,27 @@
 ---
 name: evernote-ci-integration
-description: |
-  Configure CI/CD pipelines for Evernote integrations.
+description: 'Configure CI/CD pipelines for Evernote integrations.
+
   Use when setting up automated testing, continuous integration,
+
   or deployment pipelines for Evernote projects.
+
   Trigger with phrases like "evernote ci", "evernote github actions",
+
   "evernote pipeline", "automate evernote tests".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, evernote, deployment, testing, ci-cd]
+tags:
+- saas
+- evernote
+- deployment
+- testing
+- ci-cd
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Evernote CI Integration
 

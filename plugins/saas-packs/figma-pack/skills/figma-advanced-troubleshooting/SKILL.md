@@ -1,19 +1,26 @@
 ---
 name: figma-advanced-troubleshooting
-description: |
-  Deep debugging for Figma API issues: network analysis, response inspection, and support escalation.
+description: 'Deep debugging for Figma API issues: network analysis, response inspection,
+  and support escalation.
+
   Use when standard troubleshooting fails, diagnosing intermittent failures,
+
   or preparing detailed evidence for Figma support.
+
   Trigger with phrases like "figma hard bug", "figma mystery error",
+
   "figma deep debug", "figma intermittent failure", "figma support ticket".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, figma]
-compatible-with: claude-code
+tags:
+- saas
+- figma
+compatibility: Designed for Claude Code
 ---
-
 # Figma Advanced Troubleshooting
 
 ## Overview

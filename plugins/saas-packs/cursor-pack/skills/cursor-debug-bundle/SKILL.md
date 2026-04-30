@@ -1,15 +1,23 @@
 ---
-name: "cursor-debug-bundle"
-description: |
-  Debug AI suggestion quality, context issues, and code generation problems in Cursor. Triggers on
-  "debug cursor ai", "cursor suggestions wrong", "bad cursor completion", "cursor ai debug",
+name: cursor-debug-bundle
+description: 'Debug AI suggestion quality, context issues, and code generation problems
+  in Cursor. Triggers on
+
+  "debug cursor ai", "cursor suggestions wrong", "bad cursor completion", "cursor
+  ai debug",
+
   "cursor hallucination".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, cursor, debugging]
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- cursor
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Cursor Debug Bundle
 

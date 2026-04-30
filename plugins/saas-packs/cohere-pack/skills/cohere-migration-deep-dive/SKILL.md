@@ -1,19 +1,28 @@
 ---
 name: cohere-migration-deep-dive
-description: |
-  Migrate from OpenAI/Anthropic/other LLM providers to Cohere, or vice versa.
+description: 'Migrate from OpenAI/Anthropic/other LLM providers to Cohere, or vice
+  versa.
+
   Use when switching LLM providers, migrating embeddings between models,
+
   or re-platforming existing AI integrations to Cohere API v2.
+
   Trigger with phrases like "migrate to cohere", "switch from openai to cohere",
+
   "cohere migration", "replace openai with cohere", "cohere replatform".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, nlp, cohere]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- nlp
+- cohere
+compatibility: Designed for Claude Code
 ---
-
 # Cohere Migration Deep Dive
 
 ## Overview

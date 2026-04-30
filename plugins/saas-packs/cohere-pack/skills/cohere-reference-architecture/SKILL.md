@@ -1,19 +1,28 @@
 ---
 name: cohere-reference-architecture
-description: |
-  Implement Cohere reference architecture with layered project layout for RAG and agents.
+description: 'Implement Cohere reference architecture with layered project layout
+  for RAG and agents.
+
   Use when designing new Cohere integrations, reviewing project structure,
+
   or establishing architecture standards for Cohere API v2 applications.
+
   Trigger with phrases like "cohere architecture", "cohere project structure",
+
   "cohere layout", "organize cohere app", "cohere design pattern".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, nlp, cohere]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- nlp
+- cohere
+compatibility: Designed for Claude Code
 ---
-
 # Cohere Reference Architecture
 
 ## Overview

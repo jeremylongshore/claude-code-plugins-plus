@@ -1,15 +1,23 @@
 ---
-name: "cursor-custom-prompts"
-description: |
-  Create effective custom prompts for Cursor AI using project rules, prompt engineering patterns, and
-  reusable templates. Triggers on "cursor prompts", "prompt engineering cursor", "better cursor prompts",
+name: cursor-custom-prompts
+description: 'Create effective custom prompts for Cursor AI using project rules, prompt
+  engineering patterns, and
+
+  reusable templates. Triggers on "cursor prompts", "prompt engineering cursor", "better
+  cursor prompts",
+
   "cursor instructions", "cursor prompt templates".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, cursor, cursor-custom]
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- cursor
+- cursor-custom
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Cursor Custom Prompts
 

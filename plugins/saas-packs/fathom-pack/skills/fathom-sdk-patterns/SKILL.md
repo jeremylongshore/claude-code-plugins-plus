@@ -1,19 +1,27 @@
 ---
 name: fathom-sdk-patterns
-description: |
-  Production-ready Fathom API client patterns in Python and TypeScript.
+description: 'Production-ready Fathom API client patterns in Python and TypeScript.
+
   Use when building reusable Fathom clients, implementing meeting data pipelines,
+
   or wrapping the Fathom REST API.
+
   Trigger with phrases like "fathom API patterns", "fathom client wrapper",
+
   "fathom Python client", "fathom TypeScript".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, meeting-intelligence, ai-notes, fathom]
-compatible-with: claude-code
+tags:
+- saas
+- meeting-intelligence
+- ai-notes
+- fathom
+compatibility: Designed for Claude Code
 ---
-
 # Fathom SDK Patterns
 
 ## Python Client

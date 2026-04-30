@@ -1,16 +1,25 @@
 ---
 name: databricks-core-workflow-b
-description: |
-  Execute Databricks secondary workflow: MLflow model training and deployment.
+description: 'Execute Databricks secondary workflow: MLflow model training and deployment.
+
   Use when building ML pipelines, training models, or deploying to production.
+
   Trigger with phrases like "databricks ML", "mlflow training",
+
   "databricks model", "feature store", "model registry".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(databricks:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, databricks, deployment, ml, workflow]
+tags:
+- saas
+- databricks
+- deployment
+- ml
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Databricks Core Workflow B: MLflow Training & Serving
 

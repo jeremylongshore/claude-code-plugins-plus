@@ -1,15 +1,23 @@
 ---
-name: "cursor-context-management"
-description: |
-  Optimize context window usage in Cursor with @-mentions, context pills, and conversation strategy.
-  Triggers on "cursor context", "context window", "context limit", "cursor memory", "context management",
+name: cursor-context-management
+description: 'Optimize context window usage in Cursor with @-mentions, context pills,
+  and conversation strategy.
+
+  Triggers on "cursor context", "context window", "context limit", "cursor memory",
+  "context management",
+
   "@-mentions", "context pills".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, cursor, cursor-context]
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- cursor
+- cursor-context
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Cursor Context Management
 

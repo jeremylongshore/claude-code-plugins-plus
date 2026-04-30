@@ -1,17 +1,28 @@
 ---
 name: deepgram-hello-world
-description: |
-  Create a minimal working Deepgram transcription example.
+description: 'Create a minimal working Deepgram transcription example.
+
   Use when starting a new Deepgram integration, testing your setup,
+
   or learning basic Deepgram API patterns.
+
   Trigger: "deepgram hello world", "deepgram example", "deepgram quick start",
+
   "simple transcription", "transcribe audio".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, deepgram, api, testing, transcription, quickstart]
+tags:
+- saas
+- deepgram
+- api
+- testing
+- transcription
+- quickstart
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Deepgram Hello World
 

@@ -1,17 +1,26 @@
 ---
 name: clerk-prod-checklist
-description: |
-  Production readiness checklist for Clerk deployment.
+description: 'Production readiness checklist for Clerk deployment.
+
   Use when preparing to deploy, reviewing production configuration,
+
   or auditing Clerk implementation before launch.
+
   Trigger with phrases like "clerk production", "clerk deploy checklist",
+
   "clerk go-live", "clerk launch ready".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clerk, deployment, audit]
+tags:
+- saas
+- clerk
+- deployment
+- audit
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clerk Production Checklist
 

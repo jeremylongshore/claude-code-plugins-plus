@@ -1,17 +1,25 @@
 ---
 name: documenso-core-workflow-a
-description: |
-  Implement Documenso document creation and recipient management workflows.
+description: 'Implement Documenso document creation and recipient management workflows.
+
   Use when creating documents, managing recipients, adding signature fields,
+
   or building signing workflows with Documenso.
+
   Trigger with phrases like "documenso document", "create document",
+
   "add recipient", "documenso signer", "signature field".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, documenso, workflow]
+tags:
+- saas
+- documenso
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Documenso Core Workflow A: Document Creation & Recipients
 

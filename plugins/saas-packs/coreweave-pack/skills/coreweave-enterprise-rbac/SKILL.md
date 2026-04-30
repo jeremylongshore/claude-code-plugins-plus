@@ -1,19 +1,29 @@
 ---
 name: coreweave-enterprise-rbac
-description: |
-  Configure RBAC and namespace isolation for CoreWeave multi-team GPU access.
+description: 'Configure RBAC and namespace isolation for CoreWeave multi-team GPU
+  access.
+
   Use when managing team permissions, isolating GPU quotas,
+
   or implementing namespace-level access control.
+
   Trigger with phrases like "coreweave rbac", "coreweave permissions",
+
   "coreweave namespace isolation", "coreweave team access".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(kubectl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, gpu-cloud, kubernetes, inference, coreweave]
-compatible-with: claude-code
+tags:
+- saas
+- gpu-cloud
+- kubernetes
+- inference
+- coreweave
+compatibility: Designed for Claude Code
 ---
-
 # CoreWeave Enterprise RBAC
 
 ## Overview

@@ -1,19 +1,27 @@
 ---
 name: clickup-upgrade-migration
-description: |
-  Migrate between ClickUp API versions (v2 to v3) and handle breaking changes.
+description: 'Migrate between ClickUp API versions (v2 to v3) and handle breaking
+  changes.
+
   Use when upgrading API versions, adapting to endpoint changes,
+
   or migrating between ClickUp plan tiers.
+
   Trigger: "upgrade clickup API", "clickup v2 to v3", "clickup breaking changes",
+
   "clickup API migration", "clickup deprecation".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, clickup]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- clickup
+compatibility: Designed for Claude Code
 ---
-
 # ClickUp Upgrade & Migration
 
 ## Overview

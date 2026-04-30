@@ -1,19 +1,28 @@
 ---
 name: coreweave-prod-checklist
-description: |
-  Production readiness checklist for CoreWeave GPU workloads.
+description: 'Production readiness checklist for CoreWeave GPU workloads.
+
   Use when launching inference services, preparing GPU training for production,
+
   or validating deployment configurations.
+
   Trigger with phrases like "coreweave production", "coreweave go-live",
+
   "coreweave checklist", "coreweave launch".
+
+  '
 allowed-tools: Read, Bash(kubectl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, gpu-cloud, kubernetes, inference, coreweave]
-compatible-with: claude-code
+tags:
+- saas
+- gpu-cloud
+- kubernetes
+- inference
+- coreweave
+compatibility: Designed for Claude Code
 ---
-
 # CoreWeave Production Checklist
 
 ## Inference Services

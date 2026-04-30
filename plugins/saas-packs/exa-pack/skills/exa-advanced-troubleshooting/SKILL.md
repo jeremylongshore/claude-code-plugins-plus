@@ -1,17 +1,26 @@
 ---
 name: exa-advanced-troubleshooting
-description: |
-  Apply advanced debugging techniques for hard-to-diagnose Exa issues.
+description: 'Apply advanced debugging techniques for hard-to-diagnose Exa issues.
+
   Use when standard troubleshooting fails, investigating latency spikes,
+
   or preparing evidence bundles for Exa support escalation.
+
   Trigger with phrases like "exa hard bug", "exa mystery error",
+
   "exa deep debug", "difficult exa issue", "exa latency spike".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*), Bash(node:*), Bash(tcpdump:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, exa, debugging, advanced]
+tags:
+- saas
+- exa
+- debugging
+- advanced
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Exa Advanced Troubleshooting
 

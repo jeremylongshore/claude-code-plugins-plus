@@ -1,18 +1,24 @@
 ---
 name: clickup-enterprise-rbac
-description: |
-  Implement ClickUp Enterprise SSO, OAuth 2.0 multi-workspace access,
+description: 'Implement ClickUp Enterprise SSO, OAuth 2.0 multi-workspace access,
+
   role-based permissions, and organization management via API v2.
+
   Trigger: "clickup SSO", "clickup RBAC", "clickup enterprise",
+
   "clickup roles", "clickup permissions", "clickup OAuth app", "clickup multi-workspace".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, clickup]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- clickup
+compatibility: Designed for Claude Code
 ---
-
 # ClickUp Enterprise RBAC
 
 ## Overview

@@ -1,17 +1,26 @@
 ---
 name: customerio-reference-architecture
-description: |
-  Implement Customer.io enterprise reference architecture.
+description: 'Implement Customer.io enterprise reference architecture.
+
   Use when designing integration layers, event-driven architectures,
+
   or enterprise-grade Customer.io setups.
+
   Trigger: "customer.io architecture", "customer.io design",
+
   "customer.io enterprise", "customer.io integration pattern".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Glob, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, customer-io, architecture, enterprise]
+tags:
+- saas
+- customer-io
+- architecture
+- enterprise
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Customer.io Reference Architecture
 

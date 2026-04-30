@@ -1,19 +1,26 @@
 ---
 name: figma-webhooks-events
-description: |
-  Implement Figma Webhooks V2 for real-time file, comment, and library events.
+description: 'Implement Figma Webhooks V2 for real-time file, comment, and library
+  events.
+
   Use when setting up webhook endpoints, handling FILE_UPDATE events,
+
   or building event-driven Figma automation.
+
   Trigger with phrases like "figma webhook", "figma events",
+
   "figma FILE_UPDATE", "figma notifications", "figma real-time".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, figma]
-compatible-with: claude-code
+tags:
+- saas
+- figma
+compatibility: Designed for Claude Code
 ---
-
 # Figma Webhooks & Events
 
 ## Overview

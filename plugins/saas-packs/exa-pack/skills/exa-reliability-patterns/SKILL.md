@@ -1,17 +1,27 @@
 ---
 name: exa-reliability-patterns
-description: |
-  Implement Exa reliability patterns: query fallback chains, circuit breakers, and graceful degradation.
+description: 'Implement Exa reliability patterns: query fallback chains, circuit breakers,
+  and graceful degradation.
+
   Use when building fault-tolerant Exa integrations, implementing fallback strategies,
+
   or adding resilience to production search services.
+
   Trigger with phrases like "exa reliability", "exa circuit breaker",
+
   "exa fallback", "exa resilience", "exa graceful degradation".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, exa, reliability, resilience]
+tags:
+- saas
+- exa
+- reliability
+- resilience
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Exa Reliability Patterns
 

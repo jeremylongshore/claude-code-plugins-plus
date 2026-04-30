@@ -1,15 +1,23 @@
 ---
-name: "cursor-local-dev-loop"
-description: |
-  Optimize daily development workflow with Cursor IDE using Chat, Composer, Tab, and Git integration.
-  Triggers on "cursor workflow", "cursor development loop", "cursor productivity", "cursor daily workflow",
+name: cursor-local-dev-loop
+description: 'Optimize daily development workflow with Cursor IDE using Chat, Composer,
+  Tab, and Git integration.
+
+  Triggers on "cursor workflow", "cursor development loop", "cursor productivity",
+  "cursor daily workflow",
+
   "cursor dev flow".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+
+  '
+allowed-tools: Read, Write, Edit, Bash(cmd:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, cursor, workflow]
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags:
+- saas
+- cursor
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Cursor Local Dev Loop
 

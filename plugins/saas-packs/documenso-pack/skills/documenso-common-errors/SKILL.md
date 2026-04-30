@@ -1,17 +1,26 @@
 ---
 name: documenso-common-errors
-description: |
-  Diagnose and resolve common Documenso API errors and issues.
+description: 'Diagnose and resolve common Documenso API errors and issues.
+
   Use when encountering Documenso errors, debugging integration issues,
+
   or troubleshooting failed operations.
+
   Trigger with phrases like "documenso error", "documenso 401",
+
   "documenso failed", "fix documenso", "documenso not working".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, documenso, api, debugging]
+tags:
+- saas
+- documenso
+- api
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Documenso Common Errors
 

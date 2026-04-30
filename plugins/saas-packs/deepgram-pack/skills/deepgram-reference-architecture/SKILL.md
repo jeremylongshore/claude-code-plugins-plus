@@ -1,17 +1,27 @@
 ---
 name: deepgram-reference-architecture
-description: |
-  Implement Deepgram reference architecture for scalable transcription systems.
+description: 'Implement Deepgram reference architecture for scalable transcription
+  systems.
+
   Use when designing transcription pipelines, building production architectures,
+
   or planning Deepgram integration at scale.
+
   Trigger: "deepgram architecture", "transcription pipeline", "deepgram system design",
+
   "deepgram at scale", "enterprise deepgram", "deepgram queue".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, deepgram, architecture, scaling]
+tags:
+- saas
+- deepgram
+- architecture
+- scaling
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Deepgram Reference Architecture
 

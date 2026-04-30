@@ -1,19 +1,26 @@
 ---
 name: figma-migration-deep-dive
-description: |
-  Migrate design systems between Figma files, or from other tools to Figma via API.
+description: 'Migrate design systems between Figma files, or from other tools to Figma
+  via API.
+
   Use when migrating design tokens between files, syncing variables across libraries,
+
   or building automated migration pipelines for Figma.
+
   Trigger with phrases like "migrate figma", "figma migration",
+
   "move figma library", "figma file migration", "sync figma files".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, figma]
-compatible-with: claude-code
+tags:
+- saas
+- figma
+compatibility: Designed for Claude Code
 ---
-
 # Figma Migration Deep Dive
 
 ## Overview

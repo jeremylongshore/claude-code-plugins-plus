@@ -1,19 +1,28 @@
 ---
 name: coreweave-reference-architecture
-description: |
-  Reference architecture for CoreWeave GPU cloud deployments.
+description: 'Reference architecture for CoreWeave GPU cloud deployments.
+
   Use when designing ML infrastructure, planning multi-model serving,
+
   or establishing CoreWeave deployment standards.
+
   Trigger with phrases like "coreweave architecture", "coreweave design",
+
   "coreweave infrastructure", "coreweave best practices".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, gpu-cloud, kubernetes, inference, coreweave]
-compatible-with: claude-code
+tags:
+- saas
+- gpu-cloud
+- kubernetes
+- inference
+- coreweave
+compatibility: Designed for Claude Code
 ---
-
 # CoreWeave Reference Architecture
 
 ## Architecture Diagram

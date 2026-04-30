@@ -1,17 +1,25 @@
 ---
 name: clerk-reference-architecture
-description: |
-  Reference architecture patterns for Clerk authentication.
+description: 'Reference architecture patterns for Clerk authentication.
+
   Use when designing application architecture, planning auth flows,
+
   or implementing enterprise-grade authentication.
+
   Trigger with phrases like "clerk architecture", "clerk design",
+
   "clerk system design", "clerk integration patterns".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clerk, authentication]
+tags:
+- saas
+- clerk
+- authentication
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Clerk Reference Architecture
 

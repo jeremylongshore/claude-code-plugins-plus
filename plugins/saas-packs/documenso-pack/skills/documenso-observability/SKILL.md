@@ -1,17 +1,27 @@
 ---
 name: documenso-observability
-description: |
-  Implement monitoring, logging, and tracing for Documenso integrations.
+description: 'Implement monitoring, logging, and tracing for Documenso integrations.
+
   Use when setting up observability, implementing metrics collection,
+
   or debugging production issues.
+
   Trigger with phrases like "documenso monitoring", "documenso metrics",
+
   "documenso logging", "documenso tracing", "documenso observability".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, documenso, monitoring, observability, debugging]
+tags:
+- saas
+- documenso
+- monitoring
+- observability
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Documenso Observability
 

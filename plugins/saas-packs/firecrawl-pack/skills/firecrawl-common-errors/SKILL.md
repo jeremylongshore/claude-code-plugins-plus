@@ -1,17 +1,25 @@
 ---
 name: firecrawl-common-errors
-description: |
-  Diagnose and fix Firecrawl common errors and API response codes.
+description: 'Diagnose and fix Firecrawl common errors and API response codes.
+
   Use when encountering Firecrawl errors, debugging failed scrapes,
+
   or troubleshooting crawl job issues.
+
   Trigger with phrases like "firecrawl error", "fix firecrawl",
+
   "firecrawl not working", "debug firecrawl", "firecrawl 429", "firecrawl 402".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, firecrawl, debugging]
+tags:
+- saas
+- firecrawl
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Firecrawl Common Errors
 

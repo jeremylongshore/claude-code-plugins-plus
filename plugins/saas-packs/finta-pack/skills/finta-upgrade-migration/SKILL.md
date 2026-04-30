@@ -1,16 +1,21 @@
 ---
 name: finta-upgrade-migration
-description: |
-  Handle Finta platform updates and data migration.
+description: 'Handle Finta platform updates and data migration.
+
   Trigger with phrases like "finta upgrade", "finta migration".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, fundraising-crm, investor-management, finta]
-compatible-with: claude-code
+tags:
+- saas
+- fundraising-crm
+- investor-management
+- finta
+compatibility: Designed for Claude Code
 ---
-
 # Finta Upgrade & Migration
 
 ## Overview

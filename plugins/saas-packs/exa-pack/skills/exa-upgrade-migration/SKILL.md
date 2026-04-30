@@ -1,17 +1,27 @@
 ---
 name: exa-upgrade-migration
-description: |
-  Upgrade exa-js SDK versions and handle breaking changes safely.
+description: 'Upgrade exa-js SDK versions and handle breaking changes safely.
+
   Use when upgrading the Exa SDK, detecting deprecations,
+
   or migrating between exa-js versions.
+
   Trigger with phrases like "upgrade exa", "exa update",
+
   "exa breaking changes", "update exa-js", "exa new version".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, exa, api, migration, upgrade]
+tags:
+- saas
+- exa
+- api
+- migration
+- upgrade
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Exa Upgrade & Migration
 

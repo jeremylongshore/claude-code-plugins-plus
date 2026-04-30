@@ -1,19 +1,29 @@
 ---
 name: clickhouse-install-auth
-description: |
-  Install @clickhouse/client and configure authentication to ClickHouse Cloud or self-hosted.
+description: 'Install @clickhouse/client and configure authentication to ClickHouse
+  Cloud or self-hosted.
+
   Use when setting up a new ClickHouse project, configuring connection strings,
+
   or initializing the official Node.js client.
+
   Trigger: "install clickhouse", "setup clickhouse client", "clickhouse auth",
+
   "connect to clickhouse", "clickhouse credentials".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, database, analytics, clickhouse, olap]
-compatible-with: claude-code
+tags:
+- saas
+- database
+- analytics
+- clickhouse
+- olap
+compatibility: Designed for Claude Code
 ---
-
 # ClickHouse Install & Auth
 
 ## Overview

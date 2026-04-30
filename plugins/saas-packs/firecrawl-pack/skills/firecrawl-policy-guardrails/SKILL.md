@@ -1,18 +1,28 @@
 ---
 name: firecrawl-policy-guardrails
-description: |
-  Implement Firecrawl scraping policy enforcement: domain blocklists, credit budgets,
+description: 'Implement Firecrawl scraping policy enforcement: domain blocklists,
+  credit budgets,
+
   content filtering, and robots.txt compliance guardrails.
+
   Use when setting up scraping policies, enforcing crawl limits, or preventing
+
   accidental scraping of prohibited domains.
+
   Trigger with phrases like "firecrawl policy", "firecrawl guardrails",
+
   "firecrawl domain blocklist", "firecrawl scraping rules", "firecrawl compliance".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npx:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, firecrawl, firecrawl-policy]
+tags:
+- saas
+- firecrawl
+- firecrawl-policy
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Firecrawl Policy Guardrails
 

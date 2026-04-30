@@ -1,19 +1,28 @@
 ---
 name: cohere-observability
-description: |
-  Set up comprehensive observability for Cohere API v2 with metrics, traces, and alerts.
+description: 'Set up comprehensive observability for Cohere API v2 with metrics, traces,
+  and alerts.
+
   Use when implementing monitoring for Chat/Embed/Rerank operations,
+
   setting up dashboards, or configuring alerts for Cohere integrations.
+
   Trigger with phrases like "cohere monitoring", "cohere metrics",
+
   "cohere observability", "monitor cohere", "cohere alerts", "cohere tracing".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, nlp, cohere]
-compatible-with: claude-code
+tags:
+- saas
+- ai
+- nlp
+- cohere
+compatibility: Designed for Claude Code
 ---
-
 # Cohere Observability
 
 ## Overview

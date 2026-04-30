@@ -1,17 +1,26 @@
 ---
 name: databricks-migration-deep-dive
-description: |
-  Execute comprehensive platform migrations to Databricks from legacy systems.
+description: 'Execute comprehensive platform migrations to Databricks from legacy
+  systems.
+
   Use when migrating from on-premises Hadoop, other cloud platforms,
+
   or legacy data warehouses to Databricks.
+
   Trigger with phrases like "migrate to databricks", "hadoop migration",
+
   "snowflake to databricks", "legacy migration", "data warehouse migration".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(databricks:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, databricks, migration]
+tags:
+- saas
+- databricks
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Databricks Migration Deep Dive
 
