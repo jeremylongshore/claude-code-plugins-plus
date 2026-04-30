@@ -594,6 +594,17 @@ jobs:
         env:
           CI: true
 
+      # A11y smoke tests (issue #588) — gate-wired-but-non-blocking. The spec
+      # baselines the current violation count per page; cleanup is tracked
+      # separately under the a11y-cleanup-followup workstream. We run the
+      # suite explicitly here so the result shows up as its own CI step.
+      - name: Run a11y baseline tests
+        run: |
+          cd marketplace
+          npx playwright test tests/a11y/ --reporter=list
+        env:
+          CI: true
+
       - name: Upload Playwright report
         uses: actions/upload-artifact@v6
         if: always()
@@ -766,3 +777,13 @@ jobs:
             echo "❌ npm pack failed"
             exit 1
           fi
+
+      # Bundle size budget (issue #591). Caps the gzipped JS shipped to npm
+      # so install latency stays bounded as the CLI grows. Budget is set ~50%
+      # above the current size (currently ~27 KB → 40 KB ceiling). Tighten
+      # the limit in .size-limit.json after every shrink. MCP plugins are
+      # intentionally excluded — they're server-side, not install-latency-bound.
+      - name: Bundle size budget
+        run: |
+          cd packages/cli
+          pnpm exec size-limit

@@ -1,0 +1,8 @@
+[
+  {
+    "name": "ccpi shipped JS (all dist/*.js, gzipped)",
+    "path": "dist/**/*.js",
+    "limit": "40 KB",
+    "gzip": true
+  }
+]
