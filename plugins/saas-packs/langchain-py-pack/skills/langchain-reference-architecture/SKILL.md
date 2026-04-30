@@ -1,22 +1,28 @@
 ---
 name: langchain-reference-architecture
-description: |
-  A reference layered architecture for production LangChain 1.0 / LangGraph 1.0
-  services — LLM factory with version-safe defaults, chain/graph registry,
-  retriever and tool DI, Pydantic-validated config, per-request tenant scoping,
-  middleware ordering, checkpointer selection per environment. Use when starting
-  a new service, refactoring a tangled chain, or onboarding a team to existing code.
-  Trigger with "langchain architecture", "langchain llm factory",
-  "langchain chain registry", "langchain dependency injection",
-  "langchain project structure".
+description: "A reference layered architecture for production LangChain 1.0 / LangGraph\
+  \ 1.0\nservices \u2014 LLM factory with version-safe defaults, chain/graph registry,\n\
+  retriever and tool DI, Pydantic-validated config, per-request tenant scoping,\n\
+  middleware ordering, checkpointer selection per environment. Use when starting\n\
+  a new service, refactoring a tangled chain, or onboarding a team to existing code.\n\
+  Trigger with \"langchain architecture\", \"langchain llm factory\",\n\"langchain\
+  \ chain registry\", \"langchain dependency injection\",\n\"langchain project structure\"\
+  .\n"
 allowed-tools: Read, Write, Edit
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, langchain, langgraph, python, langchain-1.0, architecture, reference-architecture, patterns]
-compatible-with: claude-code, codex
+tags:
+- saas
+- langchain
+- langgraph
+- python
+- langchain-1.0
+- architecture
+- reference-architecture
+- patterns
+compatibility: Designed for Claude Code, also compatible with Codex
 ---
-
 # LangChain Reference Architecture (Python)
 
 ## Overview

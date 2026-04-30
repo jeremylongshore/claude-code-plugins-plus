@@ -1,16 +1,20 @@
 ---
 name: mindtickle-core-workflow-a
-description: |
-  Execute MindTickle primary workflow: Training Content Management.
+description: 'Execute MindTickle primary workflow: Training Content Management.
+
   Trigger: "mindtickle training content management", "primary mindtickle workflow".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, mindtickle, sales]
-compatible-with: claude-code
+tags:
+- saas
+- mindtickle
+- sales
+compatibility: Designed for Claude Code
 ---
-
 # MindTickle — Course & Module Management
 
 ## Overview

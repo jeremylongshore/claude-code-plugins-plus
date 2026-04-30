@@ -1,17 +1,26 @@
 ---
 name: lindy-enterprise-rbac
-description: |
-  Configure enterprise role-based access control for Lindy AI workspaces.
+description: 'Configure enterprise role-based access control for Lindy AI workspaces.
+
   Use when setting up team permissions, managing workspace access,
+
   or implementing enterprise security policies with SSO/SCIM.
+
   Trigger with phrases like "lindy permissions", "lindy RBAC",
+
   "lindy access control", "lindy enterprise security", "lindy SSO".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lindy, security, rbac]
+tags:
+- saas
+- lindy
+- security
+- rbac
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lindy Enterprise RBAC
 

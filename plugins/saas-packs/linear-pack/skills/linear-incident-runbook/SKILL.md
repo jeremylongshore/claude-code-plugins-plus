@@ -1,17 +1,26 @@
 ---
 name: linear-incident-runbook
-description: |
-  Production incident response procedures for Linear integrations.
+description: 'Production incident response procedures for Linear integrations.
+
   Use when handling production issues, diagnosing outages,
+
   or responding to Linear-related incidents.
+
   Trigger: "linear incident", "linear outage", "linear production issue",
+
   "debug linear production", "linear down", "linear 500".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, linear, debugging, incident-response]
+tags:
+- saas
+- linear
+- debugging
+- incident-response
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Linear Incident Runbook
 

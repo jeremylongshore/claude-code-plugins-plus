@@ -1,15 +1,24 @@
 ---
 name: klingai-image-to-video
-description: |
-  Animate static images into video using Kling AI. Use when converting images to video,
-  adding motion to stills, or building I2V pipelines. Trigger with phrases like 'klingai image to video',
-  'kling ai animate image', 'klingai img2vid', 'animate picture klingai'.
+description: 'Animate static images into video using Kling AI. Use when converting
+  images to video,
+
+  adding motion to stills, or building I2V pipelines. Trigger with phrases like ''klingai
+  image to video'',
+
+  ''kling ai animate image'', ''klingai img2vid'', ''animate picture klingai''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, kling-ai, image-to-video, video-generation]
+tags:
+- saas
+- kling-ai
+- image-to-video
+- video-generation
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Kling AI Image-to-Video
 

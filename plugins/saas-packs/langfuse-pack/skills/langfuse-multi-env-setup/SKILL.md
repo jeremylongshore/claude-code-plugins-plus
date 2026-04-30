@@ -1,17 +1,25 @@
 ---
 name: langfuse-multi-env-setup
-description: |
-  Configure Langfuse across development, staging, and production environments.
+description: 'Configure Langfuse across development, staging, and production environments.
+
   Use when setting up multi-environment deployments, configuring per-environment keys,
+
   or implementing environment-specific Langfuse configurations.
+
   Trigger with phrases like "langfuse environments", "langfuse staging",
+
   "langfuse dev prod", "langfuse environment setup", "langfuse config by env".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langfuse, deployment]
+tags:
+- saas
+- langfuse
+- deployment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Langfuse Multi-Environment Setup
 

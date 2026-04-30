@@ -1,17 +1,27 @@
 ---
 name: lokalise-migration-deep-dive
-description: |
-  Execute major migration to Lokalise from other TMS platforms with data migration strategies.
+description: 'Execute major migration to Lokalise from other TMS platforms with data
+  migration strategies.
+
   Use when migrating to Lokalise from competitors, performing data imports,
+
   or re-platforming existing translation management to Lokalise.
+
   Trigger with phrases like "migrate to lokalise", "lokalise migration",
+
   "switch to lokalise", "lokalise import", "lokalise replatform".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(lokalise2:*), Bash(curl:*), Bash(jq:*), Bash(node:*), Bash(python3:*), Bash(mkdir:*), Grep
+
+  '
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(lokalise2:*), Bash(curl:*), Bash(jq:*),
+  Bash(node:*), Bash(python3:*), Bash(mkdir:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lokalise, migration]
+tags:
+- saas
+- lokalise
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lokalise Migration Deep Dive
 

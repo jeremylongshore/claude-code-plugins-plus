@@ -1,16 +1,25 @@
 ---
 name: langchain-data-handling
-description: |
-  Implement LangChain RAG pipelines with document loaders, text splitters,
+description: 'Implement LangChain RAG pipelines with document loaders, text splitters,
+
   embeddings, and vector stores (Chroma, Pinecone, FAISS).
+
   Trigger: "langchain RAG", "langchain documents", "langchain vector store",
+
   "langchain embeddings", "document loaders", "text splitters", "retrieval".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langchain, llm, rag, vector-store]
+tags:
+- saas
+- langchain
+- llm
+- rag
+- vector-store
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # LangChain Data Handling: RAG & Document Processing
 

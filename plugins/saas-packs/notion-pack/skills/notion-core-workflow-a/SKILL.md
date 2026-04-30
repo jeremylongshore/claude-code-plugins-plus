@@ -1,19 +1,26 @@
 ---
 name: notion-core-workflow-a
-description: |
-  Query, filter, and manage Notion databases and pages.
+description: 'Query, filter, and manage Notion databases and pages.
+
   Use when building database queries with filters and sorts,
+
   creating/updating pages with typed properties, or reading page content.
+
   Trigger with phrases like "notion database query", "notion filter",
+
   "notion create page", "notion update properties", "notion CRUD".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notion]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- notion
+compatibility: Designed for Claude Code
 ---
-
 # Notion Core Workflow A — Databases & Pages
 
 ## Overview

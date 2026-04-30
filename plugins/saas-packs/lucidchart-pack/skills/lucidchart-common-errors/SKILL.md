@@ -1,16 +1,20 @@
 ---
 name: lucidchart-common-errors
-description: |
-  Diagnose and fix Lucidchart common errors.
+description: 'Diagnose and fix Lucidchart common errors.
+
   Trigger: "lucidchart error", "fix lucidchart", "debug lucidchart".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, lucidchart, diagramming]
-compatible-with: claude-code
+tags:
+- saas
+- lucidchart
+- diagramming
+compatibility: Designed for Claude Code
 ---
-
 # Lucidchart Common Errors
 
 ## Overview

@@ -1,20 +1,28 @@
 ---
 name: notion-local-dev-loop
-description: |
-  Configure Notion local development with a dedicated dev integration,
+description: 'Configure Notion local development with a dedicated dev integration,
+
   test mocking, and hot reload. Use when setting up a development
+
   environment, writing tests for Notion code, or establishing a fast
+
   iteration cycle with the Notion API.
+
   Trigger: "notion dev setup", "notion local development",
+
   "mock notion", "notion test environment".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notion]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- notion
+compatibility: Designed for Claude Code
 ---
-
 # Notion Local Dev Loop
 
 ## Overview

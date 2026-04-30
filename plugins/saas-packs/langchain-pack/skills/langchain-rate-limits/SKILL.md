@@ -1,17 +1,26 @@
 ---
 name: langchain-rate-limits
-description: |
-  Implement LangChain rate limiting, retry strategies, and backoff.
+description: 'Implement LangChain rate limiting, retry strategies, and backoff.
+
   Use when handling API rate limits, controlling request throughput,
+
   or implementing concurrency-safe batch processing.
+
   Trigger: "langchain rate limit", "langchain throttling",
+
   "langchain backoff", "langchain retry", "API quota", "429 error".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langchain, api, llm]
+tags:
+- saas
+- langchain
+- api
+- llm
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # LangChain Rate Limits
 

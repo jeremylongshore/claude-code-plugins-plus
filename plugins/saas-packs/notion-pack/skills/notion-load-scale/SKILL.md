@@ -1,19 +1,26 @@
 ---
 name: notion-load-scale
-description: |
-  High-volume Notion operations: parallel requests within 3 req/sec,
+description: 'High-volume Notion operations: parallel requests within 3 req/sec,
+
   worker queues, database pagination at scale, incremental sync for
+
   large workspaces, and memory management for bulk operations.
+
   Trigger with phrases like "notion scale", "notion bulk operations",
+
   "notion high volume", "notion worker queue", "notion incremental sync".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(node:*), Bash(npx:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notion]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- notion
+compatibility: Designed for Claude Code
 ---
-
 # Notion Load & Scale
 
 ## Overview

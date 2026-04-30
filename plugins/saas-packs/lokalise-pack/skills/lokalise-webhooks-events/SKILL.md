@@ -1,17 +1,25 @@
 ---
 name: lokalise-webhooks-events
-description: |
-  Implement Lokalise webhook handling and event processing.
+description: 'Implement Lokalise webhook handling and event processing.
+
   Use when setting up webhook endpoints, handling translation events,
+
   or building automation based on Lokalise notifications.
+
   Trigger with phrases like "lokalise webhook", "lokalise events",
+
   "lokalise notifications", "handle lokalise events", "lokalise automation".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lokalise, webhooks]
+tags:
+- saas
+- lokalise
+- webhooks
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lokalise Webhooks Events
 

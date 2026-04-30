@@ -1,17 +1,26 @@
 ---
 name: lindy-prod-checklist
-description: |
-  Production readiness checklist for Lindy AI agent deployments.
+description: 'Production readiness checklist for Lindy AI agent deployments.
+
   Use when preparing agents for production, auditing live agents,
+
   or validating go-live readiness.
+
   Trigger with phrases like "lindy production", "lindy prod ready",
+
   "lindy go live", "lindy deployment checklist".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lindy, deployment, audit]
+tags:
+- saas
+- lindy
+- deployment
+- audit
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lindy Production Checklist
 

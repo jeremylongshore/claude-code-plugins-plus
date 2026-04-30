@@ -1,17 +1,26 @@
 ---
 name: lindy-install-auth
-description: |
-  Set up Lindy AI account, API access, and webhook authentication.
+description: 'Set up Lindy AI account, API access, and webhook authentication.
+
   Use when onboarding to Lindy, configuring API keys for webhook triggers,
+
   or connecting Lindy agents to your application.
+
   Trigger with phrases like "install lindy", "setup lindy",
+
   "lindy auth", "configure lindy API key", "lindy webhook secret".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lindy, api, authentication]
+tags:
+- saas
+- lindy
+- api
+- authentication
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lindy Install & Auth
 

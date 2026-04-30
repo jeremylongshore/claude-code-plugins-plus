@@ -1,17 +1,26 @@
 ---
 name: lindy-hello-world
-description: |
-  Create your first Lindy AI agent with a real trigger and action.
+description: 'Create your first Lindy AI agent with a real trigger and action.
+
   Use when starting with Lindy, testing your setup,
+
   or learning basic agent workflow patterns.
+
   Trigger with phrases like "lindy hello world", "lindy example",
+
   "lindy quick start", "simple lindy agent", "first lindy".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lindy, api, testing]
+tags:
+- saas
+- lindy
+- api
+- testing
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lindy Hello World
 

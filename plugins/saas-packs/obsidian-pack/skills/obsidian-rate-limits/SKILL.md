@@ -1,17 +1,25 @@
 ---
 name: obsidian-rate-limits
-description: |
-  Handle Obsidian file system operations and throttling patterns.
+description: 'Handle Obsidian file system operations and throttling patterns.
+
   Use when processing many files, handling bulk operations,
+
   or preventing performance issues from excessive operations.
+
   Trigger with phrases like "obsidian rate limit", "obsidian bulk operations",
+
   "obsidian file throttling", "obsidian performance limits".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, obsidian, performance]
+tags:
+- saas
+- obsidian
+- performance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Obsidian Rate Limits
 

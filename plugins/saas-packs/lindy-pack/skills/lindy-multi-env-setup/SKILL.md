@@ -1,17 +1,25 @@
 ---
 name: lindy-multi-env-setup
-description: |
-  Configure Lindy AI across development, staging, and production environments.
+description: 'Configure Lindy AI across development, staging, and production environments.
+
   Use when setting up isolated workspaces, per-environment secrets,
+
   or environment-specific agent configurations.
+
   Trigger with phrases like "lindy environments", "lindy staging",
+
   "lindy dev prod", "lindy environment setup", "lindy workspace isolation".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lindy, deployment]
+tags:
+- saas
+- lindy
+- deployment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lindy Multi-Environment Setup
 

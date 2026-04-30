@@ -1,17 +1,28 @@
 ---
 name: langfuse-observability
-description: |
-  Set up comprehensive observability for Langfuse with metrics, dashboards, and alerts.
+description: 'Set up comprehensive observability for Langfuse with metrics, dashboards,
+  and alerts.
+
   Use when implementing monitoring for LLM operations, setting up dashboards,
+
   or configuring alerting for Langfuse integration health.
+
   Trigger with phrases like "langfuse monitoring", "langfuse metrics",
+
   "langfuse observability", "monitor langfuse", "langfuse alerts", "langfuse dashboard".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langfuse, monitoring, observability, llm]
+tags:
+- saas
+- langfuse
+- monitoring
+- observability
+- llm
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Langfuse Observability
 

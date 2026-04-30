@@ -1,17 +1,27 @@
 ---
 name: mistral-upgrade-migration
-description: |
-  Analyze, plan, and execute Mistral AI SDK upgrades with breaking change detection.
+description: 'Analyze, plan, and execute Mistral AI SDK upgrades with breaking change
+  detection.
+
   Use when upgrading Mistral SDK versions, detecting deprecations,
+
   or migrating to new API versions.
+
   Trigger with phrases like "upgrade mistral", "mistral breaking changes",
+
   "update mistral SDK", "analyze mistral version".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, mistral, api, migration]
+tags:
+- saas
+- mistral
+- api
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Mistral AI Upgrade & Migration
 

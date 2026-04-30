@@ -1,17 +1,26 @@
 ---
 name: linear-performance-tuning
-description: |
-  Optimize Linear API queries, caching, and batching for performance.
+description: 'Optimize Linear API queries, caching, and batching for performance.
+
   Use when improving response times, reducing API calls,
+
   or implementing caching strategies for Linear data.
+
   Trigger: "linear performance", "optimize linear", "linear caching",
+
   "linear slow queries", "speed up linear", "linear N+1".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, linear, api, performance]
+tags:
+- saas
+- linear
+- api
+- performance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Linear Performance Tuning
 

@@ -1,15 +1,24 @@
 ---
 name: klingai-style-transfer
-description: |
-  Apply artistic styles and visual effects to Kling AI video generation. Use when creating
-  stylized content or using effects API. Trigger with phrases like 'klingai style', 'kling ai effects',
-  'klingai artistic video', 'stylize klingai video'.
+description: 'Apply artistic styles and visual effects to Kling AI video generation.
+  Use when creating
+
+  stylized content or using effects API. Trigger with phrases like ''klingai style'',
+  ''kling ai effects'',
+
+  ''klingai artistic video'', ''stylize klingai video''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, kling-ai, style-transfer, effects]
+tags:
+- saas
+- kling-ai
+- style-transfer
+- effects
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Kling AI Style Transfer & Effects
 

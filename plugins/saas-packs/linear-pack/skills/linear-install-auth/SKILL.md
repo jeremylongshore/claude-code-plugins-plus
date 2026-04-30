@@ -1,17 +1,26 @@
 ---
 name: linear-install-auth
-description: |
-  Install and configure Linear SDK/CLI authentication.
+description: 'Install and configure Linear SDK/CLI authentication.
+
   Use when setting up a new Linear integration, configuring API keys,
+
   OAuth2 flows, or initializing LinearClient in your project.
+
   Trigger: "install linear", "setup linear", "linear auth",
+
   "configure linear API key", "linear SDK setup", "linear OAuth".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Bash(yarn:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, linear, api, authentication]
+tags:
+- saas
+- linear
+- api
+- authentication
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Linear Install & Auth
 

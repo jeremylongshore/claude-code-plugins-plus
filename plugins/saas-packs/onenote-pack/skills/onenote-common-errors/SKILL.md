@@ -1,17 +1,23 @@
 ---
 name: onenote-common-errors
-description: |
-  Decode and fix every common OneNote Graph API error with root cause analysis.
+description: 'Decode and fix every common OneNote Graph API error with root cause
+  analysis.
+
   Use when debugging 400, 403, 404, 429, 500, 502, or 507 errors from OneNote API.
+
   Trigger with "onenote error", "onenote 403", "onenote debug", "graph api error onenote".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, onenote, microsoft]
-compatible-with: claude-code
+tags:
+- saas
+- onenote
+- microsoft
+compatibility: Designed for Claude Code
 ---
-
 # OneNote Common Errors
 
 ## Overview

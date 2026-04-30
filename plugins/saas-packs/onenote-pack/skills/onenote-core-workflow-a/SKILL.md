@@ -1,17 +1,24 @@
 ---
 name: onenote-core-workflow-a
-description: |
-  Full CRUD lifecycle for OneNote notebooks, section groups, sections, and pages via Graph API.
-  Use when building notebook management features, creating page hierarchies, or working with XHTML content.
+description: 'Full CRUD lifecycle for OneNote notebooks, section groups, sections,
+  and pages via Graph API.
+
+  Use when building notebook management features, creating page hierarchies, or working
+  with XHTML content.
+
   Trigger with "onenote crud", "onenote page management", "onenote notebook workflow".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, onenote, microsoft]
-compatible-with: claude-code
+tags:
+- saas
+- onenote
+- microsoft
+compatibility: Designed for Claude Code
 ---
-
 # OneNote — Full CRUD Lifecycle (Notebooks, Sections, Pages)
 
 ## Overview

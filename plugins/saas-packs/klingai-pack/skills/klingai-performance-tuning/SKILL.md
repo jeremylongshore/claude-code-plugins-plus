@@ -1,15 +1,24 @@
 ---
 name: klingai-performance-tuning
-description: |
-  Optimize Kling AI for speed, quality, and cost efficiency. Use when improving generation times
-  or finding optimal settings. Trigger with phrases like 'klingai performance', 'kling ai optimize',
-  'faster klingai', 'klingai quality settings'.
+description: 'Optimize Kling AI for speed, quality, and cost efficiency. Use when
+  improving generation times
+
+  or finding optimal settings. Trigger with phrases like ''klingai performance'',
+  ''kling ai optimize'',
+
+  ''faster klingai'', ''klingai quality settings''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, kling-ai, performance, optimization]
+tags:
+- saas
+- kling-ai
+- performance
+- optimization
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Kling AI Performance Tuning
 

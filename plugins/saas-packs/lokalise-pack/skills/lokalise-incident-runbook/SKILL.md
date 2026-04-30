@@ -1,17 +1,26 @@
 ---
 name: lokalise-incident-runbook
-description: |
-  Execute Lokalise incident response procedures with triage, mitigation, and postmortem.
+description: 'Execute Lokalise incident response procedures with triage, mitigation,
+  and postmortem.
+
   Use when responding to Lokalise-related outages, investigating errors,
+
   or running post-incident reviews for Lokalise integration failures.
+
   Trigger with phrases like "lokalise incident", "lokalise outage",
+
   "lokalise down", "lokalise on-call", "lokalise emergency", "translations broken".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*), Bash(lokalise2:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lokalise, incident-response]
+tags:
+- saas
+- lokalise
+- incident-response
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lokalise Incident Runbook
 

@@ -1,17 +1,25 @@
 ---
 name: onenote-security-basics
-description: |
-  Implement secure authentication, token management, and permission scoping for OneNote Graph API.
-  Use when hardening OneNote integrations, implementing least-privilege permissions, or managing token lifecycle.
-  Trigger with "onenote security", "onenote permissions", "onenote token management", "onenote least privilege".
+description: 'Implement secure authentication, token management, and permission scoping
+  for OneNote Graph API.
+
+  Use when hardening OneNote integrations, implementing least-privilege permissions,
+  or managing token lifecycle.
+
+  Trigger with "onenote security", "onenote permissions", "onenote token management",
+  "onenote least privilege".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, onenote, microsoft]
-compatible-with: claude-code
+tags:
+- saas
+- onenote
+- microsoft
+compatibility: Designed for Claude Code
 ---
-
 # OneNote Security Basics
 
 ## Overview

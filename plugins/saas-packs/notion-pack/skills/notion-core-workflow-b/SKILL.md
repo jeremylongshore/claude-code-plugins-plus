@@ -1,19 +1,26 @@
 ---
 name: notion-core-workflow-b
-description: |
-  Work with Notion blocks, rich text, comments, and page content.
+description: 'Work with Notion blocks, rich text, comments, and page content.
+
   Use when reading/writing page content blocks, building rich text,
+
   managing comments, or working with nested block trees.
+
   Trigger with phrases like "notion blocks", "notion page content",
+
   "notion rich text", "notion comments", "notion append blocks".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notion]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- notion
+compatibility: Designed for Claude Code
 ---
-
 # Notion Core Workflow B — Blocks, Content & Comments
 
 ## Overview

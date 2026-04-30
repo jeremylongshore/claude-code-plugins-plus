@@ -1,17 +1,26 @@
 ---
 name: langfuse-rate-limits
-description: |
-  Implement Langfuse rate limiting, batching, and backoff patterns.
+description: 'Implement Langfuse rate limiting, batching, and backoff patterns.
+
   Use when handling rate limit errors, optimizing trace ingestion,
+
   or managing high-volume LLM observability workloads.
+
   Trigger with phrases like "langfuse rate limit", "langfuse throttling",
+
   "langfuse 429", "langfuse batching", "langfuse high volume".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langfuse, observability, llm]
+tags:
+- saas
+- langfuse
+- observability
+- llm
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Langfuse Rate Limits
 

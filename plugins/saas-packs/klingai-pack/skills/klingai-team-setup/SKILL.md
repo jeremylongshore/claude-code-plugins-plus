@@ -1,15 +1,24 @@
 ---
 name: klingai-team-setup
-description: |
-  Configure Kling AI for teams with per-project API keys, usage quotas, and role-based access.
-  Trigger with phrases like 'klingai team', 'kling ai organization', 'klingai multi-user',
-  'shared klingai access'.
+description: 'Configure Kling AI for teams with per-project API keys, usage quotas,
+  and role-based access.
+
+  Trigger with phrases like ''klingai team'', ''kling ai organization'', ''klingai
+  multi-user'',
+
+  ''shared klingai access''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, kling-ai, teams, access-control]
+tags:
+- saas
+- kling-ai
+- teams
+- access-control
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Kling AI Team Setup
 

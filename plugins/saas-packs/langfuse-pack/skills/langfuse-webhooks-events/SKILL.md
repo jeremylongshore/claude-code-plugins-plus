@@ -1,17 +1,26 @@
 ---
 name: langfuse-webhooks-events
-description: |
-  Configure Langfuse webhooks for prompt change notifications and event-driven workflows.
+description: 'Configure Langfuse webhooks for prompt change notifications and event-driven
+  workflows.
+
   Use when setting up prompt change notifications, triggering CI/CD on prompt updates,
+
   or integrating Langfuse events with Slack and external systems.
+
   Trigger with phrases like "langfuse webhooks", "langfuse events",
+
   "langfuse notifications", "langfuse prompt webhook", "langfuse alerts".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langfuse, webhooks]
+tags:
+- saas
+- langfuse
+- webhooks
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Langfuse Webhooks & Events
 

@@ -1,19 +1,28 @@
 ---
 name: notion-prod-checklist
-description: |
-  Execute Notion API production deployment checklist and readiness verification.
+description: 'Execute Notion API production deployment checklist and readiness verification.
+
   Use when deploying Notion integrations to production, preparing for launch,
+
   verifying go-live readiness, or auditing an existing Notion integration.
+
   Trigger: "notion production checklist", "deploy notion integration",
+
   "notion go-live", "notion launch readiness", "notion prod audit".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(grep:*), Bash(curl:*), Bash(jq:*), Glob, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notion, deployment, checklist]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- notion
+- deployment
+- checklist
+compatibility: Designed for Claude Code
 ---
-
 # Notion API Production Deployment Checklist
 
 ## Overview

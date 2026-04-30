@@ -1,17 +1,23 @@
 ---
 name: onenote-hello-world
-description: |
-  Create your first OneNote notebook, section, and page with correct XHTML content.
+description: 'Create your first OneNote notebook, section, and page with correct XHTML
+  content.
+
   Use when starting a new OneNote integration or testing Graph API connectivity.
+
   Trigger with "onenote hello world", "first onenote page", "create onenote notebook".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, onenote, microsoft]
-compatible-with: claude-code
+tags:
+- saas
+- onenote
+- microsoft
+compatibility: Designed for Claude Code
 ---
-
 # OneNote Hello World
 
 ## Overview

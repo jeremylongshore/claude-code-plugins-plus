@@ -1,17 +1,25 @@
 ---
 name: obsidian-enterprise-rbac
-description: |
-  Implement team vault access patterns and role-based controls.
+description: 'Implement team vault access patterns and role-based controls.
+
   Use when managing shared vaults, implementing access controls,
+
   or building team collaboration features for Obsidian.
+
   Trigger with phrases like "obsidian team", "obsidian access control",
+
   "obsidian enterprise", "shared vault permissions".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, obsidian, obsidian-enterprise]
+tags:
+- saas
+- obsidian
+- obsidian-enterprise
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Obsidian Enterprise RBAC
 

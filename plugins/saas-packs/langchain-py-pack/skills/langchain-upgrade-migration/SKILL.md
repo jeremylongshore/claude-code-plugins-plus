@@ -1,21 +1,26 @@
 ---
 name: langchain-upgrade-migration
-description: |
-  Migrate a LangChain 0.3.x Python codebase to LangChain 1.0 / LangGraph 1.0 without
-  breaking production — named breaking changes, codemod patterns, and a phased rollout.
-  Use when upgrading LangChain or LangGraph from 0.2 or 0.3 to 1.0, when hitting
-  ImportError after an upgrade, or when preparing a migration PR.
-  Trigger with "langchain 1.0 migration", "langchain upgrade", "LLMChain removed",
-  "initialize_agent removed", "ConversationBufferMemory removed", "astream_log deprecated",
-  "langchain-anthropic 1.0".
+description: "Migrate a LangChain 0.3.x Python codebase to LangChain 1.0 / LangGraph\
+  \ 1.0 without\nbreaking production \u2014 named breaking changes, codemod patterns,\
+  \ and a phased rollout.\nUse when upgrading LangChain or LangGraph from 0.2 or 0.3\
+  \ to 1.0, when hitting\nImportError after an upgrade, or when preparing a migration\
+  \ PR.\nTrigger with \"langchain 1.0 migration\", \"langchain upgrade\", \"LLMChain\
+  \ removed\",\n\"initialize_agent removed\", \"ConversationBufferMemory removed\"\
+  , \"astream_log deprecated\",\n\"langchain-anthropic 1.0\".\n"
 allowed-tools: Read, Write, Edit, Grep, Bash(python:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, langchain, langgraph, python, langchain-1.0, migration, upgrade]
-compatible-with: claude-code, codex
+tags:
+- saas
+- langchain
+- langgraph
+- python
+- langchain-1.0
+- migration
+- upgrade
+compatibility: Designed for Claude Code, also compatible with Codex
 ---
-
 # LangChain 1.0 Upgrade Migration (Python)
 
 ## Overview

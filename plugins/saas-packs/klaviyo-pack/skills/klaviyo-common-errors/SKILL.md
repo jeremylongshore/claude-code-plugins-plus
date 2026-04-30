@@ -1,19 +1,27 @@
 ---
 name: klaviyo-common-errors
-description: |
-  Diagnose and fix common Klaviyo API errors and exceptions.
+description: 'Diagnose and fix common Klaviyo API errors and exceptions.
+
   Use when encountering Klaviyo 4xx/5xx errors, debugging failed requests,
+
   or troubleshooting SDK integration issues.
+
   Trigger with phrases like "klaviyo error", "fix klaviyo",
+
   "klaviyo not working", "debug klaviyo", "klaviyo 400", "klaviyo 429".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*), Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, klaviyo, email-marketing, cdp]
-compatible-with: claude-code
+tags:
+- saas
+- klaviyo
+- email-marketing
+- cdp
+compatibility: Designed for Claude Code
 ---
-
 # Klaviyo Common Errors
 
 ## Overview

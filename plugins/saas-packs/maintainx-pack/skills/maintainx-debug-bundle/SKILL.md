@@ -1,17 +1,26 @@
 ---
 name: maintainx-debug-bundle
-description: |
-  Comprehensive debugging toolkit for MaintainX integrations.
+description: 'Comprehensive debugging toolkit for MaintainX integrations.
+
   Use when experiencing complex issues, need detailed logging,
+
   or troubleshooting integration problems with MaintainX.
+
   Trigger with phrases like "debug maintainx", "maintainx troubleshoot",
+
   "maintainx detailed logs", "diagnose maintainx", "maintainx issue".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Bash(node:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, maintainx, debugging, logging]
+tags:
+- saas
+- maintainx
+- debugging
+- logging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # MaintainX Debug Bundle
 

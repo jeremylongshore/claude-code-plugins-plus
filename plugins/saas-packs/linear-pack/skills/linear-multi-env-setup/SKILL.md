@@ -1,17 +1,26 @@
 ---
 name: linear-multi-env-setup
-description: |
-  Configure Linear across development, staging, and production environments.
+description: 'Configure Linear across development, staging, and production environments.
+
   Use when setting up per-environment API keys, secret management,
+
   or environment-specific Linear configurations.
+
   Trigger: "linear environments", "linear staging", "linear dev prod",
+
   "linear environment setup", "multi-environment linear".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vault:*), Bash(gcloud:*), Bash(aws:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, linear, deployment, api]
+tags:
+- saas
+- linear
+- deployment
+- api
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Linear Multi-Environment Setup
 

@@ -1,18 +1,27 @@
 ---
 name: miro-data-handling
-description: |
-  Implement Miro REST API v2 data handling with PII detection in board content,
+description: 'Implement Miro REST API v2 data handling with PII detection in board
+  content,
+
   data export via API, retention policies, and GDPR/CCPA compliance patterns.
+
   Trigger with phrases like "miro data", "miro PII",
+
   "miro GDPR", "miro data export", "miro privacy", "miro compliance".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, miro, data-handling, privacy, compliance]
-compatible-with: claude-code
+tags:
+- saas
+- miro
+- data-handling
+- privacy
+- compliance
+compatibility: Designed for Claude Code
 ---
-
 # Miro Data Handling
 
 ## Overview

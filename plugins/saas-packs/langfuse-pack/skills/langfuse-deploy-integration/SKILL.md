@@ -1,17 +1,26 @@
 ---
 name: langfuse-deploy-integration
-description: |
-  Deploy Langfuse with your application across different platforms.
+description: 'Deploy Langfuse with your application across different platforms.
+
   Use when deploying Langfuse to Vercel, AWS, GCP, or Docker,
+
   or integrating Langfuse into your deployment pipeline.
+
   Trigger with phrases like "deploy langfuse", "langfuse Vercel",
+
   "langfuse AWS", "langfuse Docker", "langfuse production deploy".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(docker:*), Bash(vercel:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langfuse, deployment, docker]
+tags:
+- saas
+- langfuse
+- deployment
+- docker
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Langfuse Deploy Integration
 

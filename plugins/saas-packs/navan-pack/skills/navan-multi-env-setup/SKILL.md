@@ -1,17 +1,25 @@
 ---
 name: navan-multi-env-setup
-description: |
-  Set up dev/staging/prod environment separation for Navan integrations without a sandbox API.
-  Use when configuring multiple environments, building CI test pipelines, or setting up local development.
-  Trigger with "navan environments", "navan multi env", "navan dev setup", "navan mock server".
+description: 'Set up dev/staging/prod environment separation for Navan integrations
+  without a sandbox API.
+
+  Use when configuring multiple environments, building CI test pipelines, or setting
+  up local development.
+
+  Trigger with "navan environments", "navan multi env", "navan dev setup", "navan
+  mock server".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, navan, travel]
-compatible-with: claude-code
+tags:
+- saas
+- navan
+- travel
+compatibility: Designed for Claude Code
 ---
-
 # Navan Multi-Environment Setup
 
 ## Overview

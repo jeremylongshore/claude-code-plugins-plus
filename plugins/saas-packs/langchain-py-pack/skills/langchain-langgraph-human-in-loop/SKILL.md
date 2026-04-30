@@ -1,21 +1,27 @@
 ---
 name: langchain-langgraph-human-in-loop
-description: |
-  Build LangGraph 1.0 human-in-the-loop approval flows with `interrupt_before` /
-  `interrupt_after` and `Command(resume=...)` — JSON-serializable state, clean
-  resume semantics, and UI wiring for approval decisions. Use when adding an
-  approval gate before an expensive tool call, wiring a Slack/web UI for agent
-  approvals, or debugging a graph that crashes on interrupt.
-  Trigger with "langgraph human in loop", "langgraph interrupt_before",
-  "langgraph approval flow", "Command resume", "langgraph HITL".
+description: "Build LangGraph 1.0 human-in-the-loop approval flows with `interrupt_before`\
+  \ /\n`interrupt_after` and `Command(resume=...)` \u2014 JSON-serializable state,\
+  \ clean\nresume semantics, and UI wiring for approval decisions. Use when adding\
+  \ an\napproval gate before an expensive tool call, wiring a Slack/web UI for agent\n\
+  approvals, or debugging a graph that crashes on interrupt.\nTrigger with \"langgraph\
+  \ human in loop\", \"langgraph interrupt_before\",\n\"langgraph approval flow\"\
+  , \"Command resume\", \"langgraph HITL\".\n"
 allowed-tools: Read, Write, Edit, Bash(python:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, langchain, langgraph, python, langchain-1.0, human-in-loop, approval, interrupts]
-compatible-with: claude-code, codex
+tags:
+- saas
+- langchain
+- langgraph
+- python
+- langchain-1.0
+- human-in-loop
+- approval
+- interrupts
+compatibility: Designed for Claude Code, also compatible with Codex
 ---
-
 # LangChain LangGraph Human-in-the-Loop (Python)
 
 ## Overview

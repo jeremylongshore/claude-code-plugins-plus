@@ -1,18 +1,25 @@
 ---
 name: miro-rate-limits
-description: |
-  Implement Miro REST API v2 rate limiting with the credit-based system,
+description: 'Implement Miro REST API v2 rate limiting with the credit-based system,
+
   exponential backoff, and request queuing.
+
   Trigger with phrases like "miro rate limit", "miro throttling",
+
   "miro 429", "miro retry", "miro backoff", "miro credits".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, miro, rate-limits, performance]
-compatible-with: claude-code
+tags:
+- saas
+- miro
+- rate-limits
+- performance
+compatibility: Designed for Claude Code
 ---
-
 # Miro Rate Limits
 
 ## Overview

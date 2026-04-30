@@ -1,19 +1,26 @@
 ---
 name: notion-architecture-variants
-description: |
-  Different Notion integration architectures: CMS (headless blog), task
+description: 'Different Notion integration architectures: CMS (headless blog), task
+
   tracker (project management), knowledge base (wiki), form submission
+
   handler, and data pipeline source.
+
   Trigger with phrases like "notion cms", "notion headless blog",
+
   "notion task tracker", "notion wiki", "notion form handler", "notion data pipeline".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notion]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- notion
+compatibility: Designed for Claude Code
 ---
-
 # Notion Architecture Variants
 
 ## Overview

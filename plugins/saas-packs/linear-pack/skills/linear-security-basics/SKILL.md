@@ -1,17 +1,27 @@
 ---
 name: linear-security-basics
-description: |
-  Secure API key management, OAuth best practices, and webhook
+description: 'Secure API key management, OAuth best practices, and webhook
+
   verification for Linear integrations.
+
   Trigger: "linear security", "linear API key security",
+
   "linear OAuth", "secure linear", "linear webhook verification",
+
   "linear secrets management", "linear token refresh".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, linear, api, security, authentication]
+tags:
+- saas
+- linear
+- api
+- security
+- authentication
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Linear Security Basics
 

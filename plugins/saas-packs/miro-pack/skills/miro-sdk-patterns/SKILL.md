@@ -1,19 +1,27 @@
 ---
 name: miro-sdk-patterns
-description: |
-  Apply production-ready patterns for @mirohq/miro-api client usage.
+description: 'Apply production-ready patterns for @mirohq/miro-api client usage.
+
   Use when implementing Miro integrations, refactoring SDK usage,
+
   or establishing coding standards for Miro REST API v2.
+
   Trigger with phrases like "miro SDK patterns", "miro best practices",
+
   "miro code patterns", "miro client wrapper", "miro typescript".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, miro, patterns, typescript]
-compatible-with: claude-code
+tags:
+- saas
+- miro
+- patterns
+- typescript
+compatibility: Designed for Claude Code
 ---
-
 # Miro SDK Patterns
 
 ## Overview

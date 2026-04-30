@@ -1,22 +1,33 @@
 ---
 name: notion-reference-architecture
-description: |
-  Design and implement a production-ready Notion integration architecture
+description: 'Design and implement a production-ready Notion integration architecture
+
   with proper layering, caching, error handling, and testing strategies.
+
   Use when designing new Notion integrations, reviewing existing project
+
   structure, establishing architecture standards for Notion applications,
+
   or migrating from ad-hoc API calls to a layered architecture.
+
   Trigger: "notion architecture", "notion project structure", "notion
+
   reference architecture", "notion integration design", "notion layered
+
   architecture", "notion service pattern".
+
+  '
 allowed-tools: Read, Write, Edit, Bash, Glob, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notion, architecture]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- notion
+- architecture
+compatibility: Designed for Claude Code
 ---
-
 # Notion Reference Architecture
 
 ## Overview

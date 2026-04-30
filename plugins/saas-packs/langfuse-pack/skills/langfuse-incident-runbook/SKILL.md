@@ -1,17 +1,27 @@
 ---
 name: langfuse-incident-runbook
-description: |
-  Troubleshoot and respond to Langfuse-related incidents and outages.
+description: 'Troubleshoot and respond to Langfuse-related incidents and outages.
+
   Use when experiencing Langfuse outages, debugging production issues,
+
   or responding to LLM observability incidents.
+
   Trigger with phrases like "langfuse incident", "langfuse outage",
+
   "langfuse down", "langfuse production issue", "langfuse troubleshoot".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langfuse, observability, llm, debugging]
+tags:
+- saas
+- langfuse
+- observability
+- llm
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Langfuse Incident Runbook
 

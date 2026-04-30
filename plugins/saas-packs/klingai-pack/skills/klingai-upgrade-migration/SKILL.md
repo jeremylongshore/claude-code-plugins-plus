@@ -1,15 +1,24 @@
 ---
 name: klingai-upgrade-migration
-description: |
-  Migrate between Kling AI model versions safely. Use when upgrading from v1.x to v2.x or
-  adopting new features. Trigger with phrases like 'klingai upgrade', 'kling ai migrate',
-  'klingai version update', 'upgrade kling model'.
+description: 'Migrate between Kling AI model versions safely. Use when upgrading from
+  v1.x to v2.x or
+
+  adopting new features. Trigger with phrases like ''klingai upgrade'', ''kling ai
+  migrate'',
+
+  ''klingai version update'', ''upgrade kling model''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, kling-ai, migration, upgrade]
+tags:
+- saas
+- kling-ai
+- migration
+- upgrade
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Kling AI Upgrade & Migration
 

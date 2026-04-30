@@ -1,16 +1,19 @@
 ---
 name: navan-performance-tuning
-description: |
-  Use when optimizing Navan API call patterns for high-volume integrations — caching, batching, connection pooling, and pagination strategies.
-  Trigger with "navan performance tuning" or "navan api optimization" or "navan caching".
+description: "Use when optimizing Navan API call patterns for high-volume integrations\
+  \ \u2014 caching, batching, connection pooling, and pagination strategies.\nTrigger\
+  \ with \"navan performance tuning\" or \"navan api optimization\" or \"navan caching\"\
+  .\n"
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep, Glob
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, navan, travel]
-compatible-with: claude-code
+tags:
+- saas
+- navan
+- travel
+compatibility: Designed for Claude Code
 ---
-
 # Navan Performance Tuning
 
 ## Overview

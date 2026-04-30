@@ -1,22 +1,27 @@
 ---
 name: langchain-prompt-engineering
-description: |
-  Manage LangChain 1.0 prompts like code — LangSmith prompt hub versioning,
-  XML-tag conventions for Claude, few-shot example selection, discriminated-union
-  extraction schemas, and A/B test wiring. Use when taking ad-hoc prompts into
-  version control, migrating prompts from f-strings to ChatPromptTemplate,
-  optimizing prompts for Claude vs GPT-4o vs Gemini, or A/B testing a prompt
-  change. Trigger with "langchain prompt hub", "langsmith prompts",
-  "prompt versioning", "claude xml prompt", "few-shot example selector",
-  "prompt engineering".
+description: "Manage LangChain 1.0 prompts like code \u2014 LangSmith prompt hub versioning,\n\
+  XML-tag conventions for Claude, few-shot example selection, discriminated-union\n\
+  extraction schemas, and A/B test wiring. Use when taking ad-hoc prompts into\nversion\
+  \ control, migrating prompts from f-strings to ChatPromptTemplate,\noptimizing prompts\
+  \ for Claude vs GPT-4o vs Gemini, or A/B testing a prompt\nchange. Trigger with\
+  \ \"langchain prompt hub\", \"langsmith prompts\",\n\"prompt versioning\", \"claude\
+  \ xml prompt\", \"few-shot example selector\",\n\"prompt engineering\".\n"
 allowed-tools: Read, Write, Edit, Bash(python:*), Bash(pip:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, langchain, langgraph, python, langchain-1.0, prompts, langsmith, prompt-engineering]
-compatible-with: claude-code, codex
+tags:
+- saas
+- langchain
+- langgraph
+- python
+- langchain-1.0
+- prompts
+- langsmith
+- prompt-engineering
+compatibility: Designed for Claude Code, also compatible with Codex
 ---
-
 # LangChain Prompt Engineering (Python)
 
 ## Overview

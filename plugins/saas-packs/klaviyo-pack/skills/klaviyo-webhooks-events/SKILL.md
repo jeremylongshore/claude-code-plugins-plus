@@ -1,19 +1,28 @@
 ---
 name: klaviyo-webhooks-events
-description: |
-  Implement Klaviyo webhooks with HMAC-SHA256 signature verification and event handling.
+description: 'Implement Klaviyo webhooks with HMAC-SHA256 signature verification and
+  event handling.
+
   Use when setting up webhook endpoints, handling Klaviyo event notifications,
+
   or creating event-driven integrations with Klaviyo.
+
   Trigger with phrases like "klaviyo webhook", "klaviyo events",
+
   "klaviyo webhook signature", "handle klaviyo events", "klaviyo notifications".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, klaviyo, email-marketing, cdp]
-compatible-with: claude-code
+tags:
+- saas
+- klaviyo
+- email-marketing
+- cdp
+compatibility: Designed for Claude Code
 ---
-
 # Klaviyo Webhooks & Events
 
 ## Overview

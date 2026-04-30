@@ -1,17 +1,25 @@
 ---
 name: mistral-enterprise-rbac
-description: |
-  Configure Mistral AI enterprise access control and workspace management.
+description: 'Configure Mistral AI enterprise access control and workspace management.
+
   Use when implementing role-based API key scoping, managing team access,
+
   or setting up organization-level controls for Mistral AI.
+
   Trigger with phrases like "mistral access control", "mistral RBAC",
+
   "mistral enterprise", "mistral roles", "mistral team".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, mistral, rbac]
+tags:
+- saas
+- mistral
+- rbac
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Mistral AI Enterprise RBAC
 

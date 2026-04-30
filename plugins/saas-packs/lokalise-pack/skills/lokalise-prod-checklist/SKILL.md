@@ -1,17 +1,25 @@
 ---
 name: lokalise-prod-checklist
-description: |
-  Execute Lokalise production deployment checklist and rollback procedures.
+description: 'Execute Lokalise production deployment checklist and rollback procedures.
+
   Use when deploying Lokalise integrations to production, preparing for launch,
+
   or implementing go-live procedures.
+
   Trigger with phrases like "lokalise production", "deploy lokalise",
+
   "lokalise go-live", "lokalise launch checklist".
+
+  '
 allowed-tools: Read, Bash(lokalise2:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lokalise, deployment]
+tags:
+- saas
+- lokalise
+- deployment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lokalise Production Checklist
 

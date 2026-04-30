@@ -1,17 +1,26 @@
 ---
 name: langfuse-hello-world
-description: |
-  Create a minimal working Langfuse trace example.
+description: 'Create a minimal working Langfuse trace example.
+
   Use when starting a new Langfuse integration, testing your setup,
+
   or learning basic Langfuse tracing patterns.
+
   Trigger with phrases like "langfuse hello world", "langfuse example",
+
   "langfuse quick start", "first langfuse trace", "simple langfuse code".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langfuse, testing, tracing]
+tags:
+- saas
+- langfuse
+- testing
+- tracing
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Langfuse Hello World
 

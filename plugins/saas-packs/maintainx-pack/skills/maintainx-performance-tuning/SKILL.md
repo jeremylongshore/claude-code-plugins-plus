@@ -1,17 +1,26 @@
 ---
 name: maintainx-performance-tuning
-description: |
-  Optimize MaintainX API integration performance.
+description: 'Optimize MaintainX API integration performance.
+
   Use when experiencing slow API responses, optimizing data fetching,
+
   or improving integration throughput with MaintainX.
+
   Trigger with phrases like "maintainx performance", "maintainx slow",
+
   "optimize maintainx", "maintainx caching", "maintainx faster".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, maintainx, api, performance]
+tags:
+- saas
+- maintainx
+- api
+- performance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # MaintainX Performance Tuning
 

@@ -1,17 +1,25 @@
 ---
 name: langchain-debug-bundle
-description: |
-  Collect LangChain debug evidence for troubleshooting and bug reports.
+description: 'Collect LangChain debug evidence for troubleshooting and bug reports.
+
   Use when preparing GitHub issues, collecting LangSmith traces,
+
   or gathering diagnostic info for complex LangChain failures.
+
   Trigger: "langchain debug bundle", "langchain diagnostics",
+
   "langchain support info", "collect langchain logs", "langchain trace".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(node:*), Bash(npm:*), Bash(python:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langchain, debugging]
+tags:
+- saas
+- langchain
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # LangChain Debug Bundle
 

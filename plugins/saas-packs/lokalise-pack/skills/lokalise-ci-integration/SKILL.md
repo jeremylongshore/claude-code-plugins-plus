@@ -1,17 +1,26 @@
 ---
 name: lokalise-ci-integration
-description: |
-  Configure Lokalise CI/CD integration with GitHub Actions and automated sync.
+description: 'Configure Lokalise CI/CD integration with GitHub Actions and automated
+  sync.
+
   Use when setting up automated translation sync, configuring CI pipelines,
+
   or integrating Lokalise into your build process.
+
   Trigger with phrases like "lokalise CI", "lokalise GitHub Actions",
+
   "lokalise automated sync", "CI lokalise", "lokalise pipeline".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lokalise, ci-cd]
+tags:
+- saas
+- lokalise
+- ci-cd
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lokalise CI Integration
 

@@ -1,17 +1,25 @@
 ---
 name: langfuse-common-errors
-description: |
-  Diagnose and fix common Langfuse errors and exceptions.
+description: 'Diagnose and fix common Langfuse errors and exceptions.
+
   Use when encountering Langfuse errors, debugging missing traces,
+
   or troubleshooting integration issues.
+
   Trigger with phrases like "langfuse error", "fix langfuse",
+
   "langfuse not working", "debug langfuse", "traces not appearing".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langfuse, debugging]
+tags:
+- saas
+- langfuse
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Langfuse Common Errors
 

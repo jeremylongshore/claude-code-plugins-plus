@@ -1,17 +1,27 @@
 ---
 name: obsidian-observability
-description: |
-  Implement structured logging, metrics, error tracking, and a debug panel
+description: 'Implement structured logging, metrics, error tracking, and a debug panel
+
   for Obsidian plugins. Use when adding debug logging, tracking plugin
+
   performance, building a diagnostics view, or setting up error reporting.
+
   Trigger with phrases like "obsidian logging", "obsidian monitoring",
+
   "obsidian debug panel", "track obsidian plugin performance".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [obsidian, monitoring, debugging, performance, logging]
+tags:
+- obsidian
+- monitoring
+- debugging
+- performance
+- logging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Obsidian Observability
 

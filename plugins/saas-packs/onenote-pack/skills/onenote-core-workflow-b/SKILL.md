@@ -1,17 +1,25 @@
 ---
 name: onenote-core-workflow-b
-description: |
-  Search, query, and paginate OneNote content with OData filters and client-side search patterns.
-  Use when building search features, querying pages across notebooks, or handling large result sets.
-  Trigger with "onenote search", "onenote query pages", "onenote pagination", "find onenote content".
+description: 'Search, query, and paginate OneNote content with OData filters and client-side
+  search patterns.
+
+  Use when building search features, querying pages across notebooks, or handling
+  large result sets.
+
+  Trigger with "onenote search", "onenote query pages", "onenote pagination", "find
+  onenote content".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, onenote, microsoft]
-compatible-with: claude-code
+tags:
+- saas
+- onenote
+- microsoft
+compatibility: Designed for Claude Code
 ---
-
 # OneNote — Search, Query, and Pagination
 
 ## Overview

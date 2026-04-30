@@ -1,17 +1,27 @@
 ---
 name: maintainx-ci-integration
-description: |
-  Integrate MaintainX API testing into CI/CD pipelines.
+description: 'Integrate MaintainX API testing into CI/CD pipelines.
+
   Use when setting up automated testing, configuring CI workflows,
+
   or implementing continuous integration for MaintainX integrations.
+
   Trigger with phrases like "maintainx ci", "maintainx github actions",
+
   "maintainx pipeline", "maintainx automated testing", "maintainx ci/cd".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, maintainx, api, testing, ci-cd]
+tags:
+- saas
+- maintainx
+- api
+- testing
+- ci-cd
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # MaintainX CI Integration
 

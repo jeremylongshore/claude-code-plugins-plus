@@ -1,15 +1,24 @@
 ---
 name: klingai-debug-bundle
-description: |
-  Set up logging and debugging for Kling AI API integrations. Use when troubleshooting video
-  generation or building observability. Trigger with phrases like 'klingai debug', 'kling ai logging',
-  'klingai troubleshoot', 'debug kling video generation'.
+description: 'Set up logging and debugging for Kling AI API integrations. Use when
+  troubleshooting video
+
+  generation or building observability. Trigger with phrases like ''klingai debug'',
+  ''kling ai logging'',
+
+  ''klingai troubleshoot'', ''debug kling video generation''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, kling-ai, debugging, observability]
+tags:
+- saas
+- kling-ai
+- debugging
+- observability
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Kling AI Debug Bundle
 

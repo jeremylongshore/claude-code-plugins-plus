@@ -1,17 +1,25 @@
 ---
 name: maintainx-webhooks-events
-description: |
-  Implement MaintainX webhook handling and event-driven integrations.
+description: 'Implement MaintainX webhook handling and event-driven integrations.
+
   Use when setting up webhooks, handling MaintainX events,
+
   or building real-time integrations with MaintainX.
+
   Trigger with phrases like "maintainx webhook", "maintainx events",
+
   "maintainx notifications", "maintainx real-time", "maintainx triggers".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, maintainx, webhooks]
+tags:
+- saas
+- maintainx
+- webhooks
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # MaintainX Webhooks & Events
 

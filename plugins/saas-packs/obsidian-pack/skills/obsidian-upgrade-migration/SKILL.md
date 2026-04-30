@@ -1,17 +1,26 @@
 ---
 name: obsidian-upgrade-migration
-description: |
-  Migrate Obsidian plugins between API versions and handle breaking changes.
+description: 'Migrate Obsidian plugins between API versions and handle breaking changes.
+
   Use when upgrading to new Obsidian versions, handling API deprecations,
+
   or migrating plugin code to new patterns.
+
   Trigger with phrases like "obsidian upgrade", "obsidian migration",
+
   "obsidian API changes", "update obsidian plugin".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, obsidian, api, migration]
+tags:
+- saas
+- obsidian
+- api
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Obsidian Upgrade Migration
 

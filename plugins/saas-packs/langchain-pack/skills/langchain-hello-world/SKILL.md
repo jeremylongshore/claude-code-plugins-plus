@@ -1,17 +1,25 @@
 ---
 name: langchain-hello-world
-description: |
-  Create a minimal working LangChain example with LCEL chains.
+description: 'Create a minimal working LangChain example with LCEL chains.
+
   Use when starting a new LangChain integration, testing your setup,
+
   or learning LCEL pipe syntax with prompts and output parsers.
+
   Trigger: "langchain hello world", "langchain example",
+
   "langchain quick start", "simple langchain code", "first langchain app".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langchain, testing]
+tags:
+- saas
+- langchain
+- testing
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # LangChain Hello World
 

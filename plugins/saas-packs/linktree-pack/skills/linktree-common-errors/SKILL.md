@@ -1,16 +1,20 @@
 ---
 name: linktree-common-errors
-description: |
-  Diagnose and fix Linktree common errors.
+description: 'Diagnose and fix Linktree common errors.
+
   Trigger: "linktree error", "fix linktree", "debug linktree".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, linktree, social]
-compatible-with: claude-code
+tags:
+- saas
+- linktree
+- social
+compatibility: Designed for Claude Code
 ---
-
 # Linktree Common Errors
 
 ## Overview

@@ -1,17 +1,27 @@
 ---
 name: langfuse-performance-tuning
-description: |
-  Optimize Langfuse tracing performance for high-throughput applications.
+description: 'Optimize Langfuse tracing performance for high-throughput applications.
+
   Use when experiencing latency issues, optimizing trace overhead,
+
   or scaling Langfuse for production workloads.
+
   Trigger with phrases like "langfuse performance", "optimize langfuse",
+
   "langfuse latency", "langfuse overhead", "langfuse slow".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langfuse, performance, scaling, tracing]
+tags:
+- saas
+- langfuse
+- performance
+- scaling
+- tracing
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Langfuse Performance Tuning
 

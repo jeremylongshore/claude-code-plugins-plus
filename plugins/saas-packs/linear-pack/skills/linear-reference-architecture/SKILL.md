@@ -1,17 +1,25 @@
 ---
 name: linear-reference-architecture
-description: |
-  Production-grade Linear integration architecture patterns.
+description: 'Production-grade Linear integration architecture patterns.
+
   Use when designing system architecture, choosing integration patterns,
+
   or reviewing architectural decisions for Linear integrations.
+
   Trigger: "linear architecture", "linear system design",
+
   "linear integration patterns", "linear best practices architecture".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, linear, linear-reference]
+tags:
+- saas
+- linear
+- linear-reference
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Linear Reference Architecture
 

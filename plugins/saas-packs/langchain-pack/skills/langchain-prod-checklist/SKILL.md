@@ -1,17 +1,26 @@
 ---
 name: langchain-prod-checklist
-description: |
-  Production readiness checklist for LangChain applications.
+description: 'Production readiness checklist for LangChain applications.
+
   Use when preparing for launch, validating deployment readiness,
+
   or auditing existing production LangChain systems.
+
   Trigger: "langchain production", "langchain prod ready",
+
   "deploy langchain", "langchain launch checklist", "go-live langchain".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(node:*), Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langchain, deployment, audit]
+tags:
+- saas
+- langchain
+- deployment
+- audit
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # LangChain Production Checklist
 

@@ -1,16 +1,20 @@
 ---
 name: linktree-ci-integration
-description: |
-  Ci Integration for Linktree.
+description: 'Ci Integration for Linktree.
+
   Trigger: "linktree ci integration".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, linktree, social]
-compatible-with: claude-code
+tags:
+- saas
+- linktree
+- social
+compatibility: Designed for Claude Code
 ---
-
 # Linktree CI Integration
 
 ## Overview

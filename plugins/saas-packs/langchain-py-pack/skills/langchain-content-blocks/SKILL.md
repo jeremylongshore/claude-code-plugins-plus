@@ -1,22 +1,27 @@
 ---
 name: langchain-content-blocks
-description: |
-  Works correctly with LangChain 1.0's typed content blocks on AIMessage.content
-  — text, tool_use, image, thinking, document — across Claude, GPT-4o, and
-  Gemini, including multi-modal composition and tool-call iteration. Use when
-  composing multi-modal messages, iterating tool_use blocks, handling Claude's
-  thinking content, or unifying image inputs across providers. Trigger with
-  "langchain content blocks", "AIMessage.content", "tool_use block", "claude
-  image input", "langchain multimodal", "thinking block replay",
-  "claude citations".
+description: "Works correctly with LangChain 1.0's typed content blocks on AIMessage.content\n\
+  \u2014 text, tool_use, image, thinking, document \u2014 across Claude, GPT-4o, and\n\
+  Gemini, including multi-modal composition and tool-call iteration. Use when\ncomposing\
+  \ multi-modal messages, iterating tool_use blocks, handling Claude's\nthinking content,\
+  \ or unifying image inputs across providers. Trigger with\n\"langchain content blocks\"\
+  , \"AIMessage.content\", \"tool_use block\", \"claude\nimage input\", \"langchain\
+  \ multimodal\", \"thinking block replay\",\n\"claude citations\".\n"
 allowed-tools: Read, Write, Edit, Bash(python:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, langchain, langgraph, python, langchain-1.0, content-blocks, multimodal, tool-use]
-compatible-with: claude-code, codex
+tags:
+- saas
+- langchain
+- langgraph
+- python
+- langchain-1.0
+- content-blocks
+- multimodal
+- tool-use
+compatibility: Designed for Claude Code, also compatible with Codex
 ---
-
 # LangChain Content Blocks (Python)
 
 ## Overview

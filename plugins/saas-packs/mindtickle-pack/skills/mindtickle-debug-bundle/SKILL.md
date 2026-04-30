@@ -1,16 +1,20 @@
 ---
 name: mindtickle-debug-bundle
-description: |
-  Debug Bundle for MindTickle.
+description: 'Debug Bundle for MindTickle.
+
   Trigger: "mindtickle debug bundle".
+
+  '
 allowed-tools: Read, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, mindtickle, sales]
-compatible-with: claude-code
+tags:
+- saas
+- mindtickle
+- sales
+compatibility: Designed for Claude Code
 ---
-
 # MindTickle Debug Bundle
 
 ## Overview

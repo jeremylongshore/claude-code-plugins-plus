@@ -1,16 +1,20 @@
 ---
 name: linktree-debug-bundle
-description: |
-  Debug Bundle for Linktree.
+description: 'Debug Bundle for Linktree.
+
   Trigger: "linktree debug bundle".
+
+  '
 allowed-tools: Read, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, linktree, social]
-compatible-with: claude-code
+tags:
+- saas
+- linktree
+- social
+compatibility: Designed for Claude Code
 ---
-
 # Linktree Debug Bundle
 
 ## Overview

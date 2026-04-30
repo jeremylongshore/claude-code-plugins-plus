@@ -1,17 +1,24 @@
 ---
 name: navan-core-workflow-b
-description: |
-  Manage Navan expense reporting, transaction data, and ERP synchronization.
-  Use when building expense pipelines, automating approval workflows, or syncing transactions to accounting systems.
-  Trigger with "navan expense management", "navan expense workflow", "navan transaction sync".
+description: 'Manage Navan expense reporting, transaction data, and ERP synchronization.
+
+  Use when building expense pipelines, automating approval workflows, or syncing transactions
+  to accounting systems.
+
+  Trigger with "navan expense management", "navan expense workflow", "navan transaction
+  sync".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, navan, travel]
-compatible-with: claude-code
+tags:
+- saas
+- navan
+- travel
+compatibility: Designed for Claude Code
 ---
-
 # Navan — Expense Management
 
 ## Overview

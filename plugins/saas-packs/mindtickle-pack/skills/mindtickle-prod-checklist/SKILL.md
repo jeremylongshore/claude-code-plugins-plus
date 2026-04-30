@@ -1,16 +1,20 @@
 ---
 name: mindtickle-prod-checklist
-description: |
-  Prod Checklist for MindTickle.
+description: 'Prod Checklist for MindTickle.
+
   Trigger: "mindtickle prod checklist".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, mindtickle, sales]
-compatible-with: claude-code
+tags:
+- saas
+- mindtickle
+- sales
+compatibility: Designed for Claude Code
 ---
-
 # MindTickle Production Checklist
 
 ## Overview

@@ -1,18 +1,27 @@
 ---
 name: lindy-cost-tuning
-description: |
-  Optimize Lindy AI costs through credit management, model selection,
+description: 'Optimize Lindy AI costs through credit management, model selection,
+
   and agent consolidation.
+
   Use when reducing spend, analyzing credit usage patterns,
+
   or optimizing budget allocation across agents.
+
   Trigger with phrases like "lindy cost", "lindy billing",
+
   "reduce lindy spend", "lindy budget", "lindy credits".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lindy, cost-optimization]
+tags:
+- saas
+- lindy
+- cost-optimization
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lindy Cost Tuning
 

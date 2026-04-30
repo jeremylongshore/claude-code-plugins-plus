@@ -1,15 +1,24 @@
 ---
 name: klingai-install-auth
-description: |
-  Set up Kling AI API authentication with JWT tokens. Use when starting a new Kling AI
-  integration or troubleshooting auth issues. Trigger with phrases like 'kling ai setup',
-  'klingai api key', 'kling ai authentication', 'configure klingai'.
+description: 'Set up Kling AI API authentication with JWT tokens. Use when starting
+  a new Kling AI
+
+  integration or troubleshooting auth issues. Trigger with phrases like ''kling ai
+  setup'',
+
+  ''klingai api key'', ''kling ai authentication'', ''configure klingai''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, kling-ai, api, authentication]
+tags:
+- saas
+- kling-ai
+- api
+- authentication
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Kling AI Install & Auth
 

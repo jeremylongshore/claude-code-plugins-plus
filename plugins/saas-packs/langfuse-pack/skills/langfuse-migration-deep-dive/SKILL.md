@@ -1,17 +1,27 @@
 ---
 name: langfuse-migration-deep-dive
-description: |
-  Execute complex Langfuse migrations including data migration and platform changes.
+description: 'Execute complex Langfuse migrations including data migration and platform
+  changes.
+
   Use when migrating from other observability platforms, moving between Langfuse instances,
+
   or performing major infrastructure migrations.
+
   Trigger with phrases like "langfuse migration", "migrate to langfuse",
+
   "langfuse data migration", "langfuse platform migration", "switch to langfuse".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langfuse, observability, migration]
+tags:
+- saas
+- langfuse
+- observability
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Langfuse Migration Deep Dive
 

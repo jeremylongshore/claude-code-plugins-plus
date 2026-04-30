@@ -1,17 +1,27 @@
 ---
 name: obsidian-performance-tuning
-description: |
-  Optimize Obsidian plugin performance for smooth operation in large vaults.
+description: 'Optimize Obsidian plugin performance for smooth operation in large vaults.
+
   Use when experiencing lag, memory issues, slow startup, or optimizing
+
   plugin code for vaults with thousands of files.
+
   Trigger with phrases like "obsidian performance", "obsidian slow",
+
   "optimize obsidian plugin", "obsidian memory usage", "obsidian lag".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [obsidian, performance, optimization, memory, profiling]
+tags:
+- obsidian
+- performance
+- optimization
+- memory
+- profiling
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Obsidian Performance Tuning
 

@@ -1,17 +1,27 @@
 ---
 name: maintainx-security-basics
-description: |
-  Configure MaintainX API security, credential management, and access control.
+description: 'Configure MaintainX API security, credential management, and access
+  control.
+
   Use when securing API keys, implementing access controls,
+
   or hardening your MaintainX integration.
+
   Trigger with phrases like "maintainx security", "maintainx api key security",
+
   "secure maintainx", "maintainx credentials", "maintainx access control".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, maintainx, api, security]
+tags:
+- saas
+- maintainx
+- api
+- security
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # MaintainX Security Basics
 

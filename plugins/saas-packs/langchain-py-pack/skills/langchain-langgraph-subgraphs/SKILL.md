@@ -1,21 +1,26 @@
 ---
 name: langchain-langgraph-subgraphs
-description: |
-  Compose LangGraph 1.0 subgraphs correctly — shared state key propagation,
-  Send / Command(graph=...) dispatch, callback scoping, per-subgraph recursion
-  budgets, and testing each subgraph in isolation. Use when building a planner +
-  executor, a nested agent team, or a reusable subgraph library. Trigger with
-  "langgraph subgraph", "langgraph composition", "langgraph send",
-  "nested agents", "langgraph state propagation", "Command(graph=...)",
-  "langgraph subgraph callbacks".
+description: "Compose LangGraph 1.0 subgraphs correctly \u2014 shared state key propagation,\n\
+  Send / Command(graph=...) dispatch, callback scoping, per-subgraph recursion\nbudgets,\
+  \ and testing each subgraph in isolation. Use when building a planner +\nexecutor,\
+  \ a nested agent team, or a reusable subgraph library. Trigger with\n\"langgraph\
+  \ subgraph\", \"langgraph composition\", \"langgraph send\",\n\"nested agents\"\
+  , \"langgraph state propagation\", \"Command(graph=...)\",\n\"langgraph subgraph\
+  \ callbacks\".\n"
 allowed-tools: Read, Write, Edit, Bash(python:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, langchain, langgraph, python, langchain-1.0, subgraphs, composition]
-compatible-with: claude-code, codex
+tags:
+- saas
+- langchain
+- langgraph
+- python
+- langchain-1.0
+- subgraphs
+- composition
+compatibility: Designed for Claude Code, also compatible with Codex
 ---
-
 # LangGraph Subgraphs and Composition (Python)
 
 ## Overview

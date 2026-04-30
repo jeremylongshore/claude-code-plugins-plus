@@ -1,18 +1,25 @@
 ---
 name: miro-cost-tuning
-description: |
-  Optimize Miro API costs through credit monitoring, request reduction,
+description: 'Optimize Miro API costs through credit monitoring, request reduction,
+
   and plan selection based on the credit-based rate limiting model.
+
   Trigger with phrases like "miro cost", "miro billing",
+
   "reduce miro costs", "miro pricing", "miro credits usage".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, miro, cost-optimization, billing]
-compatible-with: claude-code
+tags:
+- saas
+- miro
+- cost-optimization
+- billing
+compatibility: Designed for Claude Code
 ---
-
 # Miro Cost Tuning
 
 ## Overview

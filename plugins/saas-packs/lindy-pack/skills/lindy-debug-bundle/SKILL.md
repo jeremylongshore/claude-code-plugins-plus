@@ -1,17 +1,25 @@
 ---
 name: lindy-debug-bundle
-description: |
-  Comprehensive debugging toolkit for Lindy AI agents.
+description: 'Comprehensive debugging toolkit for Lindy AI agents.
+
   Use when investigating complex agent failures, collecting diagnostics,
+
   or preparing support tickets for Lindy support.
+
   Trigger with phrases like "lindy debug", "lindy diagnostics",
+
   "lindy support bundle", "investigate lindy issue".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lindy, debugging]
+tags:
+- saas
+- lindy
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lindy Debug Bundle
 

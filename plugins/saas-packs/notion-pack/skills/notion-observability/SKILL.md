@@ -1,19 +1,27 @@
 ---
 name: notion-observability
-description: |
-  Set up observability for Notion integrations with metrics, traces, and alerts.
+description: 'Set up observability for Notion integrations with metrics, traces, and
+  alerts.
+
   Use when implementing monitoring for Notion API calls, setting up dashboards,
+
   or configuring alerting for Notion integration health.
+
   Trigger with phrases like "notion monitoring", "notion metrics",
+
   "notion observability", "monitor notion", "notion alerts", "notion tracing".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notion]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- notion
+compatibility: Designed for Claude Code
 ---
-
 # Notion Observability
 
 ## Overview

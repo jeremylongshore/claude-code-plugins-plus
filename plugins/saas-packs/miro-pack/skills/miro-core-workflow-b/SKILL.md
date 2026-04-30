@@ -1,18 +1,27 @@
 ---
 name: miro-core-workflow-b
-description: |
-  Manage Miro connectors, images, embeds, app cards, and document items via REST API v2.
+description: 'Manage Miro connectors, images, embeds, app cards, and document items
+  via REST API v2.
+
   Use for visual workflows, embedding content, and building rich board layouts.
+
   Trigger with phrases like "miro connectors", "miro embed",
+
   "miro app card", "miro image upload", "connect miro items".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, miro, connectors, embeds, app-cards]
-compatible-with: claude-code
+tags:
+- saas
+- miro
+- connectors
+- embeds
+- app-cards
+compatibility: Designed for Claude Code
 ---
-
 # Miro Core Workflow B — Connectors, Embeds & Rich Items
 
 ## Overview

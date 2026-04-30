@@ -1,20 +1,26 @@
 ---
 name: langchain-observability
-description: |
-  Wire LangSmith tracing and custom metric callbacks into a LangChain 1.0 chain
-  or LangGraph 1.0 agent correctly — env-var spelling, subgraph propagation,
-  per-tenant dimensions, cost and latency counters. Use when setting up
-  observability on a new service, debugging blank traces in LangSmith, or adding
-  per-tenant cost breakdowns. Trigger with "langchain observability",
-  "langsmith tracing", "langchain callbacks", "langchain metrics".
+description: "Wire LangSmith tracing and custom metric callbacks into a LangChain\
+  \ 1.0 chain\nor LangGraph 1.0 agent correctly \u2014 env-var spelling, subgraph\
+  \ propagation,\nper-tenant dimensions, cost and latency counters. Use when setting\
+  \ up\nobservability on a new service, debugging blank traces in LangSmith, or adding\n\
+  per-tenant cost breakdowns. Trigger with \"langchain observability\",\n\"langsmith\
+  \ tracing\", \"langchain callbacks\", \"langchain metrics\".\n"
 allowed-tools: Read, Write, Edit, Bash(python:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, langchain, langgraph, python, langchain-1.0, observability, langsmith, callbacks]
-compatible-with: claude-code, codex
+tags:
+- saas
+- langchain
+- langgraph
+- python
+- langchain-1.0
+- observability
+- langsmith
+- callbacks
+compatibility: Designed for Claude Code, also compatible with Codex
 ---
-
 # LangChain Observability (Python)
 
 ## Overview

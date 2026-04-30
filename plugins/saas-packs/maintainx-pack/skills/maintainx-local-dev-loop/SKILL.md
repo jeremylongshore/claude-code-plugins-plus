@@ -1,17 +1,27 @@
 ---
 name: maintainx-local-dev-loop
-description: |
-  Set up a local development loop for MaintainX integration development.
+description: 'Set up a local development loop for MaintainX integration development.
+
   Use when configuring dev environment, testing API calls locally,
+
   or setting up a sandbox workflow for MaintainX.
+
   Trigger with phrases like "maintainx dev setup", "maintainx local",
+
   "maintainx development environment", "maintainx testing setup".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(docker:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, maintainx, api, testing, workflow]
+tags:
+- saas
+- maintainx
+- api
+- testing
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # MaintainX Local Dev Loop
 

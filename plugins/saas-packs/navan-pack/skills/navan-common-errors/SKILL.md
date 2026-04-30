@@ -1,17 +1,24 @@
 ---
 name: navan-common-errors
-description: |
-  Diagnose and fix common Navan API errors with targeted fix procedures.
-  Use when an API call returns an unexpected HTTP error or when debugging production failures.
-  Trigger with "navan error", "fix navan", "debug navan", "navan 401", "navan 403", "navan 429".
+description: 'Diagnose and fix common Navan API errors with targeted fix procedures.
+
+  Use when an API call returns an unexpected HTTP error or when debugging production
+  failures.
+
+  Trigger with "navan error", "fix navan", "debug navan", "navan 401", "navan 403",
+  "navan 429".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, navan, travel]
-compatible-with: claude-code
+tags:
+- saas
+- navan
+- travel
+compatibility: Designed for Claude Code
 ---
-
 # Navan Common Errors
 
 ## Overview

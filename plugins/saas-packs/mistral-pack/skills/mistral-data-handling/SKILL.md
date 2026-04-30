@@ -1,17 +1,27 @@
 ---
 name: mistral-data-handling
-description: |
-  Implement Mistral AI PII handling, data retention, and GDPR/CCPA compliance patterns.
-  Use when handling sensitive data, implementing data redaction, configuring retention policies,
+description: 'Implement Mistral AI PII handling, data retention, and GDPR/CCPA compliance
+  patterns.
+
+  Use when handling sensitive data, implementing data redaction, configuring retention
+  policies,
+
   or ensuring compliance with privacy regulations for Mistral AI integrations.
+
   Trigger with phrases like "mistral data", "mistral PII",
+
   "mistral GDPR", "mistral data retention", "mistral privacy".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, mistral, compliance]
+tags:
+- saas
+- mistral
+- compliance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Mistral Data Handling
 

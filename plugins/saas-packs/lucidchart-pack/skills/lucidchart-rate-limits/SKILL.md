@@ -1,16 +1,20 @@
 ---
 name: lucidchart-rate-limits
-description: |
-  Rate Limits for Lucidchart.
+description: 'Rate Limits for Lucidchart.
+
   Trigger: "lucidchart rate limits".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, lucidchart, diagramming]
-compatible-with: claude-code
+tags:
+- saas
+- lucidchart
+- diagramming
+compatibility: Designed for Claude Code
 ---
-
 # Lucidchart Rate Limits
 
 ## Overview

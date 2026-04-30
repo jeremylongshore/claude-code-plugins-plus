@@ -1,19 +1,27 @@
 ---
 name: klaviyo-sdk-patterns
-description: |
-  Apply production-ready Klaviyo SDK patterns for the klaviyo-api package.
+description: 'Apply production-ready Klaviyo SDK patterns for the klaviyo-api package.
+
   Use when implementing Klaviyo integrations, refactoring SDK usage,
+
   or establishing team coding standards for Klaviyo API calls.
+
   Trigger with phrases like "klaviyo SDK patterns", "klaviyo best practices",
+
   "klaviyo code patterns", "idiomatic klaviyo", "klaviyo wrapper".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, klaviyo, email-marketing, cdp]
-compatible-with: claude-code
+tags:
+- saas
+- klaviyo
+- email-marketing
+- cdp
+compatibility: Designed for Claude Code
 ---
-
 # Klaviyo SDK Patterns
 
 ## Overview

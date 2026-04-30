@@ -1,17 +1,27 @@
 ---
 name: langfuse-sdk-patterns
-description: |
-  Langfuse SDK best practices, patterns, and idiomatic usage.
+description: 'Langfuse SDK best practices, patterns, and idiomatic usage.
+
   Use when learning Langfuse SDK patterns, implementing proper tracing,
+
   or following best practices for LLM observability.
+
   Trigger with phrases like "langfuse patterns", "langfuse best practices",
+
   "langfuse SDK guide", "how to use langfuse", "langfuse idioms".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langfuse, observability, llm, tracing]
+tags:
+- saas
+- langfuse
+- observability
+- llm
+- tracing
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Langfuse SDK Patterns
 

@@ -1,17 +1,25 @@
 ---
 name: lindy-migration-deep-dive
-description: |
-  Advanced migration strategies for moving to Lindy AI from other platforms.
+description: 'Advanced migration strategies for moving to Lindy AI from other platforms.
+
   Use when migrating from Zapier, Make, n8n, custom automations,
+
   or consolidating fragmented agent systems.
+
   Trigger with phrases like "lindy migration", "migrate to lindy",
+
   "zapier to lindy", "switch to lindy", "consolidate automations".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lindy, migration]
+tags:
+- saas
+- lindy
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lindy Migration Deep Dive
 

@@ -1,17 +1,27 @@
 ---
 name: mistral-ci-integration
-description: |
-  Configure Mistral AI CI/CD integration with GitHub Actions and prompt testing.
+description: 'Configure Mistral AI CI/CD integration with GitHub Actions and prompt
+  testing.
+
   Use when setting up automated testing, prompt regression suites,
+
   or integrating Mistral AI quality gates into your build process.
+
   Trigger with phrases like "mistral CI", "mistral GitHub Actions",
+
   "mistral automated tests", "CI mistral", "prompt testing".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, mistral, testing, ci-cd]
+tags:
+- saas
+- mistral
+- testing
+- ci-cd
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Mistral CI Integration
 

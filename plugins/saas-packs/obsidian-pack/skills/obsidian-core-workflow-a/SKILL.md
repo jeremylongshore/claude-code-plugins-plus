@@ -1,20 +1,29 @@
 ---
 name: obsidian-core-workflow-a
-description: |
-  Create an Obsidian plugin from scratch with full project scaffolding.
+description: 'Create an Obsidian plugin from scratch with full project scaffolding.
+
   Covers Plugin class, ribbon icons, commands, settings tab, esbuild config,
+
   manifest.json, and building/testing. Use when starting a new plugin,
+
   scaffolding a project, or learning the plugin lifecycle.
+
   Trigger with "create obsidian plugin", "scaffold obsidian plugin",
+
   "new obsidian plugin", "obsidian plugin from scratch".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(mkdir:*), Bash(ln:*), Glob
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [obsidian, plugin-development, typescript, scaffolding]
+tags:
+- obsidian
+- plugin-development
+- typescript
+- scaffolding
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Obsidian Core Workflow A: Create a Plugin from Scratch
 
 ## Overview

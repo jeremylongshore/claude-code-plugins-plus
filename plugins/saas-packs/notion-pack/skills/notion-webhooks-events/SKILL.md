@@ -1,21 +1,30 @@
 ---
 name: notion-webhooks-events
-description: |
-  Build change detection and event handling for Notion workspaces using
+description: 'Build change detection and event handling for Notion workspaces using
+
   polling, native webhooks, and third-party connectors.
+
   Use when implementing real-time sync, change feeds, incremental backup,
+
   or event-driven workflows with Notion data.
+
   Trigger with phrases like "notion webhook", "notion events",
+
   "notion change detection", "notion polling", "notion sync changes",
+
   "notion real-time", "notion watch for changes".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(node:*), Bash(npx:*), Bash(npm:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notion]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- notion
+compatibility: Designed for Claude Code
 ---
-
 # Notion Webhooks & Event Handling
 
 ## Overview

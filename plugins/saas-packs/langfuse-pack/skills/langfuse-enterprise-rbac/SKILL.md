@@ -1,17 +1,25 @@
 ---
 name: langfuse-enterprise-rbac
-description: |
-  Configure Langfuse enterprise organization management and access control.
+description: 'Configure Langfuse enterprise organization management and access control.
+
   Use when implementing team access controls, configuring organization settings,
+
   or setting up role-based permissions for Langfuse projects.
+
   Trigger with phrases like "langfuse RBAC", "langfuse teams",
+
   "langfuse organization", "langfuse access control", "langfuse permissions".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langfuse, rbac]
+tags:
+- saas
+- langfuse
+- rbac
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Langfuse Enterprise RBAC
 

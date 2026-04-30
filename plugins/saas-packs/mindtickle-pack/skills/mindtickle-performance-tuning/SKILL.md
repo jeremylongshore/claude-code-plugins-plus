@@ -1,17 +1,24 @@
 ---
 name: mindtickle-performance-tuning
-description: |
-  Optimize MindTickle API integration performance with caching, bulk progress queries, and webhook processing.
-  Use when learner progress queries are slow, report generation times out, or completion webhooks cause backpressure.
+description: 'Optimize MindTickle API integration performance with caching, bulk progress
+  queries, and webhook processing.
+
+  Use when learner progress queries are slow, report generation times out, or completion
+  webhooks cause backpressure.
+
   Trigger with "mindtickle performance tuning".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, mindtickle, sales]
-compatible-with: claude-code
+tags:
+- saas
+- mindtickle
+- sales
+compatibility: Designed for Claude Code
 ---
-
 # MindTickle Performance Tuning
 
 ## Overview

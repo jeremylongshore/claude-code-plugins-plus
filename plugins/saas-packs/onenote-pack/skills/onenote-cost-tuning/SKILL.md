@@ -1,17 +1,25 @@
 ---
 name: onenote-cost-tuning
-description: |
-  Optimize costs and API usage for OneNote Graph API integrations with caching and batching strategies.
-  Use when reducing API call volume, planning capacity, or evaluating OneNote integration costs.
-  Trigger with "onenote costs", "onenote api usage", "onenote optimization", "graph api billing onenote".
+description: 'Optimize costs and API usage for OneNote Graph API integrations with
+  caching and batching strategies.
+
+  Use when reducing API call volume, planning capacity, or evaluating OneNote integration
+  costs.
+
+  Trigger with "onenote costs", "onenote api usage", "onenote optimization", "graph
+  api billing onenote".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, onenote, microsoft]
-compatible-with: claude-code
+tags:
+- saas
+- onenote
+- microsoft
+compatibility: Designed for Claude Code
 ---
-
 # OneNote Cost Tuning
 
 ## Overview

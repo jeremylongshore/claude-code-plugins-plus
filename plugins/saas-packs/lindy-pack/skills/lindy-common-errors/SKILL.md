@@ -1,17 +1,25 @@
 ---
 name: lindy-common-errors
-description: |
-  Troubleshoot common Lindy AI agent errors and workflow failures.
+description: 'Troubleshoot common Lindy AI agent errors and workflow failures.
+
   Use when encountering errors, debugging agent failures,
+
   or resolving integration problems.
+
   Trigger with phrases like "lindy error", "lindy not working",
+
   "debug lindy", "lindy troubleshoot", "lindy agent failed".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lindy, debugging]
+tags:
+- saas
+- lindy
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lindy Common Errors
 

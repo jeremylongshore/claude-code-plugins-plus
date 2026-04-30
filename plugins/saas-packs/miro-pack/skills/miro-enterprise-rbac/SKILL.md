@@ -1,18 +1,26 @@
 ---
 name: miro-enterprise-rbac
-description: |
-  Configure Miro Enterprise features: organization management, SCIM provisioning,
+description: 'Configure Miro Enterprise features: organization management, SCIM provisioning,
+
   board-level access control, audit logs, and SSO integration via REST API v2.
+
   Trigger with phrases like "miro SSO", "miro RBAC",
+
   "miro enterprise", "miro SCIM", "miro permissions", "miro organization".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, miro, enterprise, rbac, scim]
-compatible-with: claude-code
+tags:
+- saas
+- miro
+- enterprise
+- rbac
+- scim
+compatibility: Designed for Claude Code
 ---
-
 # Miro Enterprise RBAC
 
 ## Overview

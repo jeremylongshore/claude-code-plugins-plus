@@ -1,19 +1,27 @@
 ---
 name: klaviyo-hello-world
-description: |
-  Create a minimal working Klaviyo example with real API calls.
+description: 'Create a minimal working Klaviyo example with real API calls.
+
   Use when starting a new Klaviyo integration, testing your setup,
+
   or learning basic profile creation and event tracking patterns.
+
   Trigger with phrases like "klaviyo hello world", "klaviyo example",
+
   "klaviyo quick start", "simple klaviyo code", "first klaviyo call".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, klaviyo, email-marketing, cdp]
-compatible-with: claude-code
+tags:
+- saas
+- klaviyo
+- email-marketing
+- cdp
+compatibility: Designed for Claude Code
 ---
-
 # Klaviyo Hello World
 
 ## Overview

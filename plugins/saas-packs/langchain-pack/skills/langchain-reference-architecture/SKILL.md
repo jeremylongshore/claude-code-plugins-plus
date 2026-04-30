@@ -1,17 +1,26 @@
 ---
 name: langchain-reference-architecture
-description: |
-  Implement LangChain reference architecture for production systems:
+description: 'Implement LangChain reference architecture for production systems:
+
   layered design, provider abstraction, chain registry, RAG pipelines,
+
   and multi-agent orchestration.
+
   Trigger: "langchain architecture", "langchain design patterns",
+
   "langchain scalable", "langchain enterprise", "LLM architecture".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langchain, llm, scaling]
+tags:
+- saas
+- langchain
+- llm
+- scaling
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # LangChain Reference Architecture
 

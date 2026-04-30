@@ -1,15 +1,25 @@
 ---
 name: klingai-storage-integration
-description: |
-  Download and store Kling AI generated videos in cloud storage (S3, GCS, Azure). Use when
-  persisting videos or building CDN pipelines. Trigger with phrases like 'klingai storage',
-  'save klingai video', 'kling ai s3 upload', 'klingai cloud storage'.
+description: 'Download and store Kling AI generated videos in cloud storage (S3, GCS,
+  Azure). Use when
+
+  persisting videos or building CDN pipelines. Trigger with phrases like ''klingai
+  storage'',
+
+  ''save klingai video'', ''kling ai s3 upload'', ''klingai cloud storage''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, kling-ai, storage, s3, gcs]
+tags:
+- saas
+- kling-ai
+- storage
+- s3
+- gcs
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Kling AI Storage Integration
 

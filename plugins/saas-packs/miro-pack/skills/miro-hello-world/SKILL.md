@@ -1,19 +1,26 @@
 ---
 name: miro-hello-world
-description: |
-  Create a minimal working Miro example with real board and item operations.
+description: 'Create a minimal working Miro example with real board and item operations.
+
   Use when starting a new Miro integration, testing your setup,
+
   or learning the Miro REST API v2 item model.
+
   Trigger with phrases like "miro hello world", "miro example",
+
   "miro quick start", "first miro board", "create miro sticky note".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, miro, quickstart]
-compatible-with: claude-code
+tags:
+- saas
+- miro
+- quickstart
+compatibility: Designed for Claude Code
 ---
-
 # Miro Hello World
 
 ## Overview

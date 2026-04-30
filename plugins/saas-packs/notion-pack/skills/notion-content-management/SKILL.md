@@ -1,20 +1,28 @@
 ---
 name: notion-content-management
-description: |
-  Create, update, archive, and compose Notion pages and block content.
+description: 'Create, update, archive, and compose Notion pages and block content.
+
   Use when building pages programmatically, appending rich content blocks,
+
   updating page properties, or managing page lifecycle (archive/restore).
+
   Trigger with phrases like "notion create page", "notion add blocks",
+
   "notion update page", "notion archive page", "notion content",
+
   "notion block types", "notion rich text".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notion]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- notion
+compatibility: Designed for Claude Code
 ---
-
 # Notion Content Management
 
 ## Overview

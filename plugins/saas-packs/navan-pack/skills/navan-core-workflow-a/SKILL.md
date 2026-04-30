@@ -1,17 +1,23 @@
 ---
 name: navan-core-workflow-a
-description: |
-  Manage the complete Navan travel booking lifecycle via REST API.
-  Use when building travel dashboards, automating trip reporting, or syncing booking data to internal systems.
+description: 'Manage the complete Navan travel booking lifecycle via REST API.
+
+  Use when building travel dashboards, automating trip reporting, or syncing booking
+  data to internal systems.
+
   Trigger with "navan travel workflow", "navan booking management", "navan trip retrieval".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, navan, travel]
-compatible-with: claude-code
+tags:
+- saas
+- navan
+- travel
+compatibility: Designed for Claude Code
 ---
-
 # Navan — Travel Booking & Management
 
 ## Overview

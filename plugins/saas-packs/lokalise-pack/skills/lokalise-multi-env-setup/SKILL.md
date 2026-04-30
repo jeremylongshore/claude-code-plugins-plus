@@ -1,17 +1,25 @@
 ---
 name: lokalise-multi-env-setup
-description: |
-  Configure Lokalise across development, staging, and production environments.
+description: 'Configure Lokalise across development, staging, and production environments.
+
   Use when setting up multi-environment deployments, configuring per-environment secrets,
+
   or implementing environment-specific Lokalise configurations.
+
   Trigger with phrases like "lokalise environments", "lokalise staging",
+
   "lokalise dev prod", "lokalise environment setup", "lokalise config by env".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lokalise, deployment]
+tags:
+- saas
+- lokalise
+- deployment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lokalise Multi-Environment Setup
 

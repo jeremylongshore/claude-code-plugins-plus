@@ -1,17 +1,27 @@
 ---
 name: linear-hello-world
-description: |
-  Create your first Linear issue and query using the SDK and GraphQL API.
+description: 'Create your first Linear issue and query using the SDK and GraphQL API.
+
   Use when making initial API calls, testing connection,
+
   or learning basic Linear CRUD operations.
+
   Trigger: "linear hello world", "first linear issue",
+
   "create linear issue", "linear API example", "test linear".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npx:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, linear, api, graphql, testing]
+tags:
+- saas
+- linear
+- api
+- graphql
+- testing
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Linear Hello World
 

@@ -1,17 +1,27 @@
 ---
 name: maintainx-deploy-integration
-description: |
-  Deploy MaintainX integrations to production environments.
+description: 'Deploy MaintainX integrations to production environments.
+
   Use when deploying to cloud platforms, configuring production environments,
+
   or automating deployment pipelines for MaintainX integrations.
+
   Trigger with phrases like "deploy maintainx", "maintainx deployment",
+
   "maintainx cloud deploy", "maintainx kubernetes", "maintainx docker".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(docker:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, maintainx, deployment, docker, kubernetes]
+tags:
+- saas
+- maintainx
+- deployment
+- docker
+- kubernetes
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # MaintainX Deploy Integration
 

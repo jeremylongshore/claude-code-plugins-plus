@@ -1,16 +1,19 @@
 ---
 name: navan-upgrade-migration
-description: |
-  Use when handling Navan API changes in production — defensive coding patterns, schema validation, deprecation monitoring, and gradual rollout strategies for unversioned APIs.
-  Trigger with "navan upgrade migration" or "navan api change handling".
+description: "Use when handling Navan API changes in production \u2014 defensive coding\
+  \ patterns, schema validation, deprecation monitoring, and gradual rollout strategies\
+  \ for unversioned APIs.\nTrigger with \"navan upgrade migration\" or \"navan api\
+  \ change handling\".\n"
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(jq:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, navan, travel]
-compatible-with: claude-code
+tags:
+- saas
+- navan
+- travel
+compatibility: Designed for Claude Code
 ---
-
 # Navan Upgrade Migration
 
 ## Overview

@@ -1,17 +1,25 @@
 ---
 name: maintainx-enterprise-rbac
-description: |
-  Configure enterprise role-based access control for MaintainX integrations.
+description: 'Configure enterprise role-based access control for MaintainX integrations.
+
   Use when implementing SSO, managing organization-level permissions,
+
   or setting up enterprise access controls with MaintainX.
+
   Trigger with phrases like "maintainx rbac", "maintainx sso",
+
   "maintainx enterprise", "maintainx permissions", "maintainx roles".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, maintainx, rbac]
+tags:
+- saas
+- maintainx
+- rbac
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # MaintainX Enterprise RBAC
 

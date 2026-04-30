@@ -1,19 +1,27 @@
 ---
 name: klaviyo-debug-bundle
-description: |
-  Collect Klaviyo debug evidence for support tickets and troubleshooting.
+description: 'Collect Klaviyo debug evidence for support tickets and troubleshooting.
+
   Use when encountering persistent issues, preparing support tickets,
+
   or collecting diagnostic information for Klaviyo API problems.
+
   Trigger with phrases like "klaviyo debug", "klaviyo support bundle",
+
   "collect klaviyo logs", "klaviyo diagnostic", "klaviyo troubleshoot".
+
+  '
 allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, klaviyo, email-marketing, cdp]
-compatible-with: claude-code
+tags:
+- saas
+- klaviyo
+- email-marketing
+- cdp
+compatibility: Designed for Claude Code
 ---
-
 # Klaviyo Debug Bundle
 
 ## Overview

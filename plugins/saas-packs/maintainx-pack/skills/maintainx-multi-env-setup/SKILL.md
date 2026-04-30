@@ -1,17 +1,25 @@
 ---
 name: maintainx-multi-env-setup
-description: |
-  Configure multiple MaintainX environments (dev, staging, production).
+description: 'Configure multiple MaintainX environments (dev, staging, production).
+
   Use when setting up environment-specific configurations,
+
   managing multiple MaintainX accounts, or implementing environment promotion.
+
   Trigger with phrases like "maintainx environments", "maintainx staging",
+
   "maintainx dev prod", "maintainx multi-environment", "maintainx config".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, maintainx, maintainx-multi]
+tags:
+- saas
+- maintainx
+- maintainx-multi
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # MaintainX Multi-Environment Setup
 

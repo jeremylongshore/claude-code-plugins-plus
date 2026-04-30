@@ -1,19 +1,21 @@
 ---
 name: miro-migration-deep-dive
-description: |
-  Execute major Miro migrations — migrate boards between teams/orgs,
-  export board content to external systems, import data into Miro,
-  and re-platform from competing whiteboard tools using REST API v2.
-  Trigger with phrases like "migrate miro", "miro migration",
-  "export miro boards", "import to miro", "miro data migration".
+description: "Execute major Miro migrations \u2014 migrate boards between teams/orgs,\n\
+  export board content to external systems, import data into Miro,\nand re-platform\
+  \ from competing whiteboard tools using REST API v2.\nTrigger with phrases like\
+  \ \"migrate miro\", \"miro migration\",\n\"export miro boards\", \"import to miro\"\
+  , \"miro data migration\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, miro, migration, data-export]
-compatible-with: claude-code
+tags:
+- saas
+- miro
+- migration
+- data-export
+compatibility: Designed for Claude Code
 ---
-
 # Miro Migration Deep Dive
 
 ## Overview

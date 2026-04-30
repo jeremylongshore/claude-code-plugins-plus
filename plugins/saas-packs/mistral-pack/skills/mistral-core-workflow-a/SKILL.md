@@ -1,17 +1,26 @@
 ---
 name: mistral-core-workflow-a
-description: |
-  Execute Mistral AI chat completions with streaming, multi-turn, and guardrails.
+description: 'Execute Mistral AI chat completions with streaming, multi-turn, and
+  guardrails.
+
   Use when implementing chat interfaces, building conversational AI,
+
   or integrating Mistral for text generation.
+
   Trigger with phrases like "mistral chat", "mistral completion",
+
   "mistral streaming", "mistral conversation", "mistral guardrails".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, mistral, workflow]
+tags:
+- saas
+- mistral
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Mistral AI Core Workflow A: Chat Completions
 

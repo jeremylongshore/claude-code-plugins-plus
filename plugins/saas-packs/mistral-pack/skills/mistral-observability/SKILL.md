@@ -1,17 +1,28 @@
 ---
 name: mistral-observability
-description: |
-  Set up comprehensive observability for Mistral AI with metrics, traces, and alerts.
+description: 'Set up comprehensive observability for Mistral AI with metrics, traces,
+  and alerts.
+
   Use when implementing monitoring for Mistral AI operations, setting up dashboards,
+
   or configuring alerting for integration health.
+
   Trigger with phrases like "mistral monitoring", "mistral metrics",
+
   "mistral observability", "monitor mistral", "mistral alerts".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, mistral, monitoring, observability, dashboard]
+tags:
+- saas
+- mistral
+- monitoring
+- observability
+- dashboard
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Mistral AI Observability
 

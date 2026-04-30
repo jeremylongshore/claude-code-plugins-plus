@@ -1,17 +1,26 @@
 ---
 name: lokalise-hello-world
-description: |
-  Create a minimal working Lokalise example.
+description: 'Create a minimal working Lokalise example.
+
   Use when starting a new Lokalise integration, testing your setup,
+
   or learning basic Lokalise API patterns.
+
   Trigger with phrases like "lokalise hello world", "lokalise example",
+
   "lokalise quick start", "simple lokalise code".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lokalise, api, testing]
+tags:
+- saas
+- lokalise
+- api
+- testing
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lokalise Hello World
 

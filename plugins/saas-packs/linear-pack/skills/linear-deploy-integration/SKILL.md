@@ -1,17 +1,25 @@
 ---
 name: linear-deploy-integration
-description: |
-  Deploy Linear-integrated applications and track deployments.
+description: 'Deploy Linear-integrated applications and track deployments.
+
   Use when deploying to production, linking deploys to issues,
+
   or setting up deployment tracking with Vercel/Railway/Cloud Run.
+
   Trigger: "deploy linear integration", "linear deployment",
+
   "linear vercel", "track linear deployments", "linear deploy tracking".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(gcloud:*), Bash(aws:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, linear, deployment]
+tags:
+- saas
+- linear
+- deployment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Linear Deploy Integration
 

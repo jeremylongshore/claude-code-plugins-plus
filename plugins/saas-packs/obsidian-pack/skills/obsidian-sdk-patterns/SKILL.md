@@ -1,20 +1,30 @@
 ---
 name: obsidian-sdk-patterns
-description: |
-  Production-ready Obsidian plugin patterns: typed settings with migration,
+description: 'Production-ready Obsidian plugin patterns: typed settings with migration,
+
   safe vault operations, event auto-cleanup, workspace layout, metadata cache,
+
   and debounced file handlers. Use when hardening a plugin for release,
+
   refactoring for reliability, or learning idiomatic Obsidian TypeScript.
+
   Trigger with "obsidian patterns", "obsidian best practices",
+
   "obsidian production code", "idiomatic obsidian plugin".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [obsidian, patterns, production, typescript, best-practices]
+tags:
+- obsidian
+- patterns
+- production
+- typescript
+- best-practices
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Obsidian SDK Patterns
 
 ## Overview

@@ -1,15 +1,24 @@
 ---
 name: klingai-cost-controls
-description: |
-  Implement budget limits, usage alerts, and spending controls for Kling AI. Use when managing
-  costs or preventing overruns. Trigger with phrases like 'klingai cost', 'kling ai budget',
-  'klingai spending limit', 'video generation costs'.
+description: 'Implement budget limits, usage alerts, and spending controls for Kling
+  AI. Use when managing
+
+  costs or preventing overruns. Trigger with phrases like ''klingai cost'', ''kling
+  ai budget'',
+
+  ''klingai spending limit'', ''video generation costs''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, kling-ai, cost-controls, budget]
+tags:
+- saas
+- kling-ai
+- cost-controls
+- budget
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Kling AI Cost Controls
 

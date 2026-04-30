@@ -1,19 +1,27 @@
 ---
 name: klaviyo-install-auth
-description: |
-  Install and configure Klaviyo Node.js SDK with API key authentication.
+description: 'Install and configure Klaviyo Node.js SDK with API key authentication.
+
   Use when setting up a new Klaviyo integration, configuring API keys,
+
   or initializing the klaviyo-api package in your project.
+
   Trigger with phrases like "install klaviyo", "setup klaviyo",
+
   "klaviyo auth", "configure klaviyo API key", "klaviyo SDK setup".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, klaviyo, email-marketing, cdp]
-compatible-with: claude-code
+tags:
+- saas
+- klaviyo
+- email-marketing
+- cdp
+compatibility: Designed for Claude Code
 ---
-
 # Klaviyo Install & Auth
 
 ## Overview

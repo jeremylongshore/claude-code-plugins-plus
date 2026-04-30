@@ -1,20 +1,32 @@
 ---
 name: langchain-model-inference
-description: |
-  Invoke Claude, GPT-4o, and Gemini through LangChain 1.0 without tripping on
+description: 'Invoke Claude, GPT-4o, and Gemini through LangChain 1.0 without tripping
+  on
+
   the content-block, token-accounting, and structured-output quirks that silently
+
   break production code. Use when initializing chat models, routing across providers,
+
   iterating AIMessage content, or choosing a structured-output method.
+
   Trigger with "langchain model inference", "ChatAnthropic", "ChatOpenAI",
+
   "with_structured_output", "AIMessage content blocks", "langchain routing".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(python:*), Bash(pip:*), Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, langchain, langgraph, python, langchain-1.0, model-inference]
-compatible-with: claude-code, codex
+tags:
+- saas
+- langchain
+- langgraph
+- python
+- langchain-1.0
+- model-inference
+compatibility: Designed for Claude Code, also compatible with Codex
 ---
-
 # LangChain Model Inference (Python)
 
 ## Overview

@@ -1,16 +1,25 @@
 ---
 name: langchain-enterprise-rbac
-description: |
-  Implement role-based access control for LangChain applications
+description: 'Implement role-based access control for LangChain applications
+
   with multi-tenant isolation, model access control, and usage quotas.
+
   Trigger: "langchain RBAC", "langchain permissions",
+
   "langchain access control", "langchain multi-tenant", "enterprise LLM auth".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langchain, security, llm, authentication]
+tags:
+- saas
+- langchain
+- security
+- llm
+- authentication
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # LangChain Enterprise RBAC
 

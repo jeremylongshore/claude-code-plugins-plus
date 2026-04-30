@@ -1,17 +1,25 @@
 ---
 name: obsidian-common-errors
-description: |
-  Diagnose and fix common Obsidian plugin errors and exceptions.
+description: 'Diagnose and fix common Obsidian plugin errors and exceptions.
+
   Use when encountering plugin errors, debugging failed operations,
+
   or troubleshooting Obsidian plugin issues.
+
   Trigger with phrases like "obsidian error", "fix obsidian plugin",
+
   "obsidian not working", "debug obsidian plugin".
+
+  '
 allowed-tools: Read, Grep, Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, obsidian, debugging]
+tags:
+- saas
+- obsidian
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Obsidian Common Errors
 

@@ -1,19 +1,27 @@
 ---
 name: notion-debug-bundle
-description: |
-  Collect Notion API diagnostic info for troubleshooting and support tickets.
+description: 'Collect Notion API diagnostic info for troubleshooting and support tickets.
+
   Use when encountering persistent API issues, token/auth failures, page access
+
   problems, or preparing diagnostic bundles for Notion support.
+
   Trigger with phrases like "notion debug", "notion diagnostic", "notion support
+
   bundle", "collect notion logs", "notion troubleshoot".
-allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Bash(npm:*), Bash(node:*), Grep
+
+  '
+allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Bash(npm:*), Bash(node:*),
+  Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notion]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- notion
+compatibility: Designed for Claude Code
 ---
-
 # Notion Debug Bundle
 
 ## Overview

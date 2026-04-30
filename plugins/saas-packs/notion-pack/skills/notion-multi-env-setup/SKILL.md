@@ -1,19 +1,27 @@
 ---
 name: notion-multi-env-setup
-description: |
-  Configure Notion integrations across development, staging, and production environments.
+description: 'Configure Notion integrations across development, staging, and production
+  environments.
+
   Use when setting up multi-environment deployments, managing per-environment tokens,
+
   or implementing environment-specific Notion configurations.
+
   Trigger with phrases like "notion environments", "notion staging",
+
   "notion dev prod", "notion environment setup", "notion config by env".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notion]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- notion
+compatibility: Designed for Claude Code
 ---
-
 # Notion Multi-Environment Setup
 
 ## Overview

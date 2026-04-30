@@ -1,17 +1,27 @@
 ---
 name: lokalise-cost-tuning
-description: |
-  Optimize Lokalise costs through plan selection, usage monitoring, and efficiency.
+description: 'Optimize Lokalise costs through plan selection, usage monitoring, and
+  efficiency.
+
   Use when analyzing Lokalise billing, reducing costs,
+
   or implementing usage monitoring and budget alerts.
+
   Trigger with phrases like "lokalise cost", "lokalise billing",
+
   "reduce lokalise costs", "lokalise pricing", "lokalise budget".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(jq:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lokalise, monitoring, cost-optimization]
+tags:
+- saas
+- lokalise
+- monitoring
+- cost-optimization
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lokalise Cost Tuning
 

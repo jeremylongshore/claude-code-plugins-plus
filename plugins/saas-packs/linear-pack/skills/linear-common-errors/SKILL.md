@@ -1,17 +1,27 @@
 ---
 name: linear-common-errors
-description: |
-  Diagnose and fix common Linear API and SDK errors.
+description: 'Diagnose and fix common Linear API and SDK errors.
+
   Use when encountering Linear API errors, debugging integration issues,
+
   or troubleshooting authentication, rate limits, or query problems.
+
   Trigger: "linear error", "linear API error", "debug linear",
+
   "linear not working", "linear 429", "linear authentication error".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, linear, api, debugging, authentication]
+tags:
+- saas
+- linear
+- api
+- debugging
+- authentication
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Linear Common Errors
 

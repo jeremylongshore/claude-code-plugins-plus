@@ -1,17 +1,27 @@
 ---
 name: obsidian-hello-world
-description: |
-  Create a minimal working Obsidian plugin with commands, settings, modals, and ribbon icons.
+description: 'Create a minimal working Obsidian plugin with commands, settings, modals,
+  and ribbon icons.
+
   Use when building your first plugin feature, testing your setup,
+
   or learning basic Obsidian plugin patterns.
+
   Trigger with phrases like "obsidian hello world", "first obsidian plugin",
+
   "obsidian quick start", "simple obsidian plugin".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Glob
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, obsidian, testing, getting-started]
+tags:
+- saas
+- obsidian
+- testing
+- getting-started
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Obsidian Hello World
 

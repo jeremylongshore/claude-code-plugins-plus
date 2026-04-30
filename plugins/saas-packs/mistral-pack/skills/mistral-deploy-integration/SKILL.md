@@ -1,17 +1,25 @@
 ---
 name: mistral-deploy-integration
-description: |
-  Deploy Mistral AI integrations to Vercel, Docker, and Cloud Run platforms.
+description: 'Deploy Mistral AI integrations to Vercel, Docker, and Cloud Run platforms.
+
   Use when deploying Mistral AI-powered applications to production,
+
   configuring platform-specific secrets, or setting up deployment pipelines.
+
   Trigger with phrases like "deploy mistral", "mistral Vercel",
+
   "mistral production deploy", "mistral Cloud Run", "mistral Docker".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(docker:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, mistral, deployment]
+tags:
+- saas
+- mistral
+- deployment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Mistral AI Deploy Integration
 

@@ -1,21 +1,27 @@
 ---
 name: langchain-middleware-patterns
-description: |
-  Build composable middleware for LangChain 1.0 chains and LangGraph 1.0 agents —
-  PII redaction, caching, retry, token budgets, guardrails — with ORDERING rules
-  that avoid cache-key leakage and double-counting. Use when adding cross-cutting
-  behavior, hardening against prompt injection, enforcing per-tenant budgets, or
-  debugging cache-poisoning incidents.
-  Trigger with "langchain middleware", "langgraph middleware", "PII redaction
-  middleware", "cache middleware order", "langchain guardrails".
+description: "Build composable middleware for LangChain 1.0 chains and LangGraph 1.0\
+  \ agents \u2014\nPII redaction, caching, retry, token budgets, guardrails \u2014\
+  \ with ORDERING rules\nthat avoid cache-key leakage and double-counting. Use when\
+  \ adding cross-cutting\nbehavior, hardening against prompt injection, enforcing\
+  \ per-tenant budgets, or\ndebugging cache-poisoning incidents.\nTrigger with \"\
+  langchain middleware\", \"langgraph middleware\", \"PII redaction\nmiddleware\"\
+  , \"cache middleware order\", \"langchain guardrails\".\n"
 allowed-tools: Read, Write, Edit, Bash(python:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, langchain, langgraph, python, langchain-1.0, middleware, security, caching]
-compatible-with: claude-code, codex
+tags:
+- saas
+- langchain
+- langgraph
+- python
+- langchain-1.0
+- middleware
+- security
+- caching
+compatibility: Designed for Claude Code, also compatible with Codex
 ---
-
 # LangChain Middleware Patterns (Python)
 
 ## Overview

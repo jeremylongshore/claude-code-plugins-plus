@@ -1,20 +1,32 @@
 ---
 name: notion-sdk-patterns
-description: |
-  Apply production-ready @notionhq/client SDK patterns for TypeScript and Python.
+description: 'Apply production-ready @notionhq/client SDK patterns for TypeScript
+  and Python.
+
   Use when implementing Notion integrations, building database queries with filters
+
   and sorts, handling pagination, constructing rich text blocks, or establishing
+
   team coding standards for Notion API usage.
+
   Trigger with "notion SDK patterns", "notion best practices", "notion code patterns",
+
   "idiomatic notion", "notion typescript", "notion python SDK".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Glob, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notion, sdk, typescript, python]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- notion
+- sdk
+- typescript
+- python
+compatibility: Designed for Claude Code
 ---
-
 # Notion SDK Patterns
 
 ## Overview

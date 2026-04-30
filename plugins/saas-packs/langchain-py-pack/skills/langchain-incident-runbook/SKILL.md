@@ -1,20 +1,27 @@
 ---
 name: langchain-incident-runbook
-description: |
-  Triage LangChain 1.0 / LangGraph 1.0 production incidents — LLM-specific SLOs,
-  provider outage runbook, latency spike decision tree, cost-overrun response,
-  agent loop containment. Use during an on-call page, in a post-mortem, or writing
-  the team's first LLM runbook.
-  Trigger with "langchain incident", "llm on-call", "langchain slo",
-  "langchain outage", "langchain cost spike", "langchain agent loop".
+description: "Triage LangChain 1.0 / LangGraph 1.0 production incidents \u2014 LLM-specific\
+  \ SLOs,\nprovider outage runbook, latency spike decision tree, cost-overrun response,\n\
+  agent loop containment. Use during an on-call page, in a post-mortem, or writing\n\
+  the team's first LLM runbook.\nTrigger with \"langchain incident\", \"llm on-call\"\
+  , \"langchain slo\",\n\"langchain outage\", \"langchain cost spike\", \"langchain\
+  \ agent loop\".\n"
 allowed-tools: Read
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, langchain, langgraph, python, langchain-1.0, sre, incident-response, slo, on-call]
-compatible-with: claude-code, codex
+tags:
+- saas
+- langchain
+- langgraph
+- python
+- langchain-1.0
+- sre
+- incident-response
+- slo
+- on-call
+compatibility: Designed for Claude Code, also compatible with Codex
 ---
-
 # LangChain Incident Runbook
 
 ## Overview

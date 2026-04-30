@@ -1,17 +1,25 @@
 ---
 name: obsidian-migration-deep-dive
-description: |
-  Execute major Obsidian plugin rewrites and migration strategies.
+description: 'Execute major Obsidian plugin rewrites and migration strategies.
+
   Use when migrating to or from Obsidian, performing major plugin rewrites,
+
   or re-platforming existing note systems to Obsidian.
+
   Trigger with phrases like "migrate to obsidian", "obsidian migration",
+
   "convert notes to obsidian", "obsidian replatform".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, obsidian, migration]
+tags:
+- saas
+- obsidian
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Obsidian Migration Deep Dive
 

@@ -1,15 +1,24 @@
 ---
 name: klingai-prod-checklist
-description: |
-  Production readiness checklist for Kling AI integrations. Use before going live or during
-  deployment review. Trigger with phrases like 'klingai production ready', 'kling ai go live',
-  'klingai checklist', 'deploy klingai'.
+description: 'Production readiness checklist for Kling AI integrations. Use before
+  going live or during
+
+  deployment review. Trigger with phrases like ''klingai production ready'', ''kling
+  ai go live'',
+
+  ''klingai checklist'', ''deploy klingai''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, kling-ai, production, deployment]
+tags:
+- saas
+- kling-ai
+- production
+- deployment
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Kling AI Production Checklist
 

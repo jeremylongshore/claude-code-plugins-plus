@@ -1,19 +1,27 @@
 ---
 name: klaviyo-core-workflow-b
-description: |
-  Execute Klaviyo secondary workflow: event tracking, segments, and campaigns.
+description: 'Execute Klaviyo secondary workflow: event tracking, segments, and campaigns.
+
   Use when tracking customer events, creating segments, building campaigns,
+
   or triggering flows via the Klaviyo API.
+
   Trigger with phrases like "klaviyo events", "klaviyo segments",
+
   "klaviyo campaigns", "track klaviyo event", "klaviyo flow trigger".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, klaviyo, email-marketing, cdp]
-compatible-with: claude-code
+tags:
+- saas
+- klaviyo
+- email-marketing
+- cdp
+compatibility: Designed for Claude Code
 ---
-
 # Klaviyo Core Workflow B -- Events, Segments & Campaigns
 
 ## Overview

@@ -1,20 +1,30 @@
 ---
 name: klaviyo-data-handling
-description: |
-  Implement Klaviyo data privacy, GDPR/CCPA compliance, and PII handling patterns.
+description: 'Implement Klaviyo data privacy, GDPR/CCPA compliance, and PII handling
+  patterns.
+
   Use when handling profile data, implementing right-to-deletion, configuring
+
   data retention, or ensuring compliance with privacy regulations.
+
   Trigger with phrases like "klaviyo data", "klaviyo PII",
+
   "klaviyo GDPR", "klaviyo data retention", "klaviyo privacy", "klaviyo CCPA",
+
   "klaviyo delete profile", "klaviyo data privacy".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, klaviyo, email-marketing, cdp]
-compatible-with: claude-code
+tags:
+- saas
+- klaviyo
+- email-marketing
+- cdp
+compatibility: Designed for Claude Code
 ---
-
 # Klaviyo Data Handling
 
 ## Overview

@@ -1,17 +1,25 @@
 ---
 name: onenote-prod-checklist
-description: |
-  Production readiness checklist for OneNote Graph API integrations covering auth, rate limits, and failure modes.
-  Use when preparing a OneNote integration for production deployment or conducting a launch review.
-  Trigger with "onenote production checklist", "onenote launch review", "onenote prod ready".
+description: 'Production readiness checklist for OneNote Graph API integrations covering
+  auth, rate limits, and failure modes.
+
+  Use when preparing a OneNote integration for production deployment or conducting
+  a launch review.
+
+  Trigger with "onenote production checklist", "onenote launch review", "onenote prod
+  ready".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, onenote, microsoft]
-compatible-with: claude-code
+tags:
+- saas
+- onenote
+- microsoft
+compatibility: Designed for Claude Code
 ---
-
 # OneNote Production Checklist
 
 ## Overview

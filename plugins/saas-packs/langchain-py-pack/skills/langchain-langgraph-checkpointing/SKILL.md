@@ -1,20 +1,26 @@
 ---
 name: langchain-langgraph-checkpointing
-description: |
-  Persist LangGraph agent state correctly with MemorySaver and PostgresSaver —
-  thread_id discipline, JSON-serializable state rules, time-travel, schema
-  migration. Use when adding chat memory, migrating from ConversationBufferMemory,
-  or time-traveling an agent state to debug an incident.
-  Trigger with "langgraph checkpointer", "MemorySaver", "PostgresSaver",
-  "thread_id", "langgraph time travel", "langgraph state persistence".
+description: "Persist LangGraph agent state correctly with MemorySaver and PostgresSaver\
+  \ \u2014\nthread_id discipline, JSON-serializable state rules, time-travel, schema\n\
+  migration. Use when adding chat memory, migrating from ConversationBufferMemory,\n\
+  or time-traveling an agent state to debug an incident.\nTrigger with \"langgraph\
+  \ checkpointer\", \"MemorySaver\", \"PostgresSaver\",\n\"thread_id\", \"langgraph\
+  \ time travel\", \"langgraph state persistence\".\n"
 allowed-tools: Read, Write, Edit, Bash(python:*), Bash(psql:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, langchain, langgraph, python, langchain-1.0, checkpointing, persistence, memory]
-compatible-with: claude-code, codex
+tags:
+- saas
+- langchain
+- langgraph
+- python
+- langchain-1.0
+- checkpointing
+- persistence
+- memory
+compatibility: Designed for Claude Code, also compatible with Codex
 ---
-
 # LangGraph Checkpointing (Python)
 
 ## Overview

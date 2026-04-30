@@ -1,16 +1,20 @@
 ---
 name: mindtickle-sdk-patterns
-description: |
-  Sdk Patterns for MindTickle.
+description: 'Sdk Patterns for MindTickle.
+
   Trigger: "mindtickle sdk patterns".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, mindtickle, sales]
-compatible-with: claude-code
+tags:
+- saas
+- mindtickle
+- sales
+compatibility: Designed for Claude Code
 ---
-
 # MindTickle SDK Patterns
 
 ## Overview

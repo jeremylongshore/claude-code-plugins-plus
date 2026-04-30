@@ -1,17 +1,24 @@
 ---
 name: navan-enterprise-rbac
-description: |
-  Configure Navan admin roles, travel policies, approval workflows, and department-level access controls.
+description: 'Configure Navan admin roles, travel policies, approval workflows, and
+  department-level access controls.
+
   Use when setting up enterprise RBAC, policy enforcement, or approval chains in Navan.
-  Trigger with "navan rbac", "navan roles", "navan travel policy", "navan approval workflow".
+
+  Trigger with "navan rbac", "navan roles", "navan travel policy", "navan approval
+  workflow".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, navan, travel]
-compatible-with: claude-code
+tags:
+- saas
+- navan
+- travel
+compatibility: Designed for Claude Code
 ---
-
 # Navan Enterprise RBAC
 
 ## Overview

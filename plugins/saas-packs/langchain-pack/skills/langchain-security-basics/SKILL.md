@@ -1,17 +1,27 @@
 ---
 name: langchain-security-basics
-description: |
-  Apply LangChain security best practices for production LLM apps.
+description: 'Apply LangChain security best practices for production LLM apps.
+
   Use when securing API keys, preventing prompt injection,
+
   sandboxing tool execution, or validating LLM outputs.
+
   Trigger: "langchain security", "prompt injection", "langchain secrets",
+
   "secure langchain", "LLM security", "safe tool execution".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langchain, api, security, llm]
+tags:
+- saas
+- langchain
+- api
+- security
+- llm
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # LangChain Security Basics
 

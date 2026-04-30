@@ -1,17 +1,27 @@
 ---
 name: mistral-performance-tuning
-description: |
-  Optimize Mistral AI performance with caching, batching, and latency reduction.
+description: 'Optimize Mistral AI performance with caching, batching, and latency
+  reduction.
+
   Use when experiencing slow API responses, implementing caching strategies,
+
   or optimizing request throughput for Mistral AI integrations.
+
   Trigger with phrases like "mistral performance", "optimize mistral",
+
   "mistral latency", "mistral caching", "mistral slow".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, mistral, api, performance]
+tags:
+- saas
+- mistral
+- api
+- performance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Mistral AI Performance Tuning
 

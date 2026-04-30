@@ -1,17 +1,25 @@
 ---
 name: obsidian-deploy-integration
-description: |
-  Publish Obsidian plugins to the community plugin directory.
+description: 'Publish Obsidian plugins to the community plugin directory.
+
   Use when releasing your first plugin, updating existing plugins,
+
   or managing the community plugin submission process.
+
   Trigger with phrases like "publish obsidian plugin", "obsidian community plugins",
+
   "submit obsidian plugin", "obsidian plugin directory".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(git:*), Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, obsidian, obsidian-deploy]
+tags:
+- saas
+- obsidian
+- obsidian-deploy
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Obsidian Plugin Deploy Integration
 

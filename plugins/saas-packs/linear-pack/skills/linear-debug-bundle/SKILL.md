@@ -1,17 +1,27 @@
 ---
 name: linear-debug-bundle
-description: |
-  Comprehensive debugging toolkit for Linear integrations.
+description: 'Comprehensive debugging toolkit for Linear integrations.
+
   Use when setting up logging, tracing API calls,
+
   or building debug utilities for Linear.
+
   Trigger: "debug linear integration", "linear logging",
+
   "trace linear API", "linear debugging tools".
+
+  '
 allowed-tools: Read, Write, Edit, Grep, Bash(node:*), Bash(npx:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, linear, api, debugging, logging]
+tags:
+- saas
+- linear
+- api
+- debugging
+- logging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Linear Debug Bundle
 

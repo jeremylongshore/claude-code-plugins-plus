@@ -1,15 +1,24 @@
 ---
 name: klingai-ci-integration
-description: |
-  Integrate Kling AI video generation into CI/CD pipelines. Use when automating video content
-  in GitHub Actions or GitLab CI. Trigger with phrases like 'klingai ci', 'kling ai github actions',
-  'klingai automation', 'automated video generation'.
+description: 'Integrate Kling AI video generation into CI/CD pipelines. Use when automating
+  video content
+
+  in GitHub Actions or GitLab CI. Trigger with phrases like ''klingai ci'', ''kling
+  ai github actions'',
+
+  ''klingai automation'', ''automated video generation''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, kling-ai, ci-cd, automation]
+tags:
+- saas
+- kling-ai
+- ci-cd
+- automation
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Kling AI CI Integration
 

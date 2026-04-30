@@ -1,18 +1,20 @@
 ---
 name: miro-core-workflow-a
-description: |
-  Manage Miro boards and items — create, read, update, delete boards,
-  sticky notes, shapes, cards, frames, and tags via REST API v2.
-  Trigger with phrases like "miro board management", "create miro board",
-  "miro items CRUD", "miro sticky notes", "organize miro board".
+description: "Manage Miro boards and items \u2014 create, read, update, delete boards,\n\
+  sticky notes, shapes, cards, frames, and tags via REST API v2.\nTrigger with phrases\
+  \ like \"miro board management\", \"create miro board\",\n\"miro items CRUD\", \"\
+  miro sticky notes\", \"organize miro board\".\n"
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, miro, boards, items]
-compatible-with: claude-code
+tags:
+- saas
+- miro
+- boards
+- items
+compatibility: Designed for Claude Code
 ---
-
 # Miro Core Workflow A — Boards & Items CRUD
 
 ## Overview

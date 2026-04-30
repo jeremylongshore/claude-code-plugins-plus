@@ -1,17 +1,26 @@
 ---
 name: mistral-hello-world
-description: |
-  Create a minimal working Mistral AI chat completion example.
+description: 'Create a minimal working Mistral AI chat completion example.
+
   Use when starting a new Mistral integration, testing your setup,
+
   or learning basic Mistral API patterns.
+
   Trigger with phrases like "mistral hello world", "mistral example",
+
   "mistral quick start", "simple mistral code", "mistral chat".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, mistral, api, testing]
+tags:
+- saas
+- mistral
+- api
+- testing
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Mistral AI Hello World
 

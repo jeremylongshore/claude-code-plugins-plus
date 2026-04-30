@@ -1,19 +1,28 @@
 ---
 name: klaviyo-reference-architecture
-description: |
-  Implement Klaviyo reference architecture with best-practice project layout.
+description: 'Implement Klaviyo reference architecture with best-practice project
+  layout.
+
   Use when designing new Klaviyo integrations, reviewing project structure,
+
   or establishing architecture standards for email/SMS marketing applications.
+
   Trigger with phrases like "klaviyo architecture", "klaviyo project structure",
+
   "klaviyo design", "how to organize klaviyo", "klaviyo layout".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, klaviyo, email-marketing, cdp]
-compatible-with: claude-code
+tags:
+- saas
+- klaviyo
+- email-marketing
+- cdp
+compatibility: Designed for Claude Code
 ---
-
 # Klaviyo Reference Architecture
 
 ## Overview

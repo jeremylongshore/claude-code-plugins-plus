@@ -1,21 +1,31 @@
 ---
 name: notion-security-basics
-description: |
-  Apply Notion API security best practices for integration tokens, OAuth2 flows,
+description: 'Apply Notion API security best practices for integration tokens, OAuth2
+  flows,
+
   least-privilege capabilities, and page-level access control.
+
   Use when securing integration tokens, configuring OAuth2 for public integrations,
+
   rotating credentials, or auditing which pages an integration can access.
+
   Trigger with phrases like "notion security", "notion secrets",
+
   "secure notion", "notion API key security", "notion token rotation",
+
   "notion OAuth2", "notion permissions audit".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep, Glob
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notion]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- notion
+compatibility: Designed for Claude Code
 ---
-
 # Notion Security Basics
 
 ## Overview

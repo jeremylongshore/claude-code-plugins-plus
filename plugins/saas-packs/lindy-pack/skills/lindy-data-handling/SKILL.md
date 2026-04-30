@@ -1,17 +1,25 @@
 ---
 name: lindy-data-handling
-description: |
-  Data handling best practices for Lindy AI agents.
+description: 'Data handling best practices for Lindy AI agents.
+
   Use when managing sensitive data in agent workflows,
+
   implementing data privacy controls, or ensuring compliance.
+
   Trigger with phrases like "lindy data", "lindy privacy",
+
   "lindy PII", "lindy data handling", "lindy GDPR", "lindy HIPAA".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lindy, compliance]
+tags:
+- saas
+- lindy
+- compliance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lindy Data Handling
 

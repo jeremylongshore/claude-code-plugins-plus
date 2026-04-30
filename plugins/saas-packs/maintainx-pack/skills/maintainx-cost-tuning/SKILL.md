@@ -1,17 +1,26 @@
 ---
 name: maintainx-cost-tuning
-description: |
-  Optimize MaintainX API usage for cost efficiency.
+description: 'Optimize MaintainX API usage for cost efficiency.
+
   Use when managing API costs, optimizing request volume,
+
   or implementing cost-effective integration patterns with MaintainX.
+
   Trigger with phrases like "maintainx cost", "maintainx billing",
+
   "reduce maintainx usage", "maintainx api costs", "maintainx optimization".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, maintainx, api, cost-optimization]
+tags:
+- saas
+- maintainx
+- api
+- cost-optimization
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # MaintainX Cost Tuning
 

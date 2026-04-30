@@ -1,17 +1,25 @@
 ---
 name: onenote-ci-integration
-description: |
-  Set up CI/CD pipelines for OneNote integrations with Graph API testing and mock strategies.
-  Use when configuring GitHub Actions, setting up test credentials, or building mock-based CI tests.
-  Trigger with "onenote ci", "onenote github actions", "onenote test pipeline", "graph api ci".
+description: 'Set up CI/CD pipelines for OneNote integrations with Graph API testing
+  and mock strategies.
+
+  Use when configuring GitHub Actions, setting up test credentials, or building mock-based
+  CI tests.
+
+  Trigger with "onenote ci", "onenote github actions", "onenote test pipeline", "graph
+  api ci".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, onenote, microsoft]
-compatible-with: claude-code
+tags:
+- saas
+- onenote
+- microsoft
+compatibility: Designed for Claude Code
 ---
-
 # OneNote CI Integration
 
 ## Overview

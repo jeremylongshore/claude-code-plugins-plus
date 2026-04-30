@@ -1,19 +1,29 @@
 ---
 name: notion-cost-tuning
-description: |
-  Optimize Notion API usage to minimize rate-limit pressure, reduce engineering
+description: 'Optimize Notion API usage to minimize rate-limit pressure, reduce engineering
+
   overhead, and maximize throughput. Use when auditing request volume, eliminating
+
   redundant API calls, implementing caching, or restructuring queries for efficiency.
+
   Trigger with "notion cost", "notion optimize", "notion API usage", "reduce notion
+
   requests", "notion rate limit budget", "notion efficient", "notion caching".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Glob, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notion, optimization, caching, cost]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- notion
+- optimization
+- caching
+- cost
+compatibility: Designed for Claude Code
 ---
-
 # Notion Cost Tuning
 
 ## Overview

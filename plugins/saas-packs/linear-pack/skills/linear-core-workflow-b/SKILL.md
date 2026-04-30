@@ -1,17 +1,25 @@
 ---
 name: linear-core-workflow-b
-description: |
-  Project, cycle, and roadmap management workflows with Linear.
+description: 'Project, cycle, and roadmap management workflows with Linear.
+
   Use when implementing sprint planning, managing projects and milestones,
+
   or organizing work into cycles.
+
   Trigger: "linear project", "linear cycle", "linear sprint",
+
   "linear roadmap", "linear planning", "linear milestone".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, linear, workflow]
+tags:
+- saas
+- linear
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Linear Core Workflow B: Projects & Cycles
 

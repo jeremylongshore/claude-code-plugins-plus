@@ -1,23 +1,29 @@
 ---
 name: langchain-debug-bundle
-description: |
-  Produce a reproducible, sanitized diagnostic bundle for a LangChain / LangGraph
-  incident — environment snapshot, version manifest, filtered astream_events(v2)
-  transcript, propagating callback stack, LangSmith trace URL — so a debug
-  colleague can reproduce the failure without a live terminal. Use when triaging
-  a production incident, filing a Discord or GitHub bug report, asking for help
-  on the LangChain forum, or archiving a post-mortem artifact.
-  Trigger with "langchain debug bundle", "langgraph debug dump",
-  "langchain diagnostic export", "langsmith trace export", "astream_events dump",
-  "langchain incident bundle".
+description: "Produce a reproducible, sanitized diagnostic bundle for a LangChain\
+  \ / LangGraph\nincident \u2014 environment snapshot, version manifest, filtered\
+  \ astream_events(v2)\ntranscript, propagating callback stack, LangSmith trace URL\
+  \ \u2014 so a debug\ncolleague can reproduce the failure without a live terminal.\
+  \ Use when triaging\na production incident, filing a Discord or GitHub bug report,\
+  \ asking for help\non the LangChain forum, or archiving a post-mortem artifact.\n\
+  Trigger with \"langchain debug bundle\", \"langgraph debug dump\",\n\"langchain\
+  \ diagnostic export\", \"langsmith trace export\", \"astream_events dump\",\n\"\
+  langchain incident bundle\".\n"
 allowed-tools: Read, Write, Edit, Bash(python:*), Bash(pip:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, langchain, langgraph, python, langchain-1.0, debugging, observability, incident-response]
-compatible-with: claude-code, codex
+tags:
+- saas
+- langchain
+- langgraph
+- python
+- langchain-1.0
+- debugging
+- observability
+- incident-response
+compatibility: Designed for Claude Code, also compatible with Codex
 ---
-
 # LangChain Debug Bundle (Python)
 
 ## Overview

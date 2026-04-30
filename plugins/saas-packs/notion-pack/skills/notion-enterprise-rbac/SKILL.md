@@ -1,19 +1,27 @@
 ---
 name: notion-enterprise-rbac
-description: |
-  Configure Notion enterprise access control with OAuth, workspace permissions, and audit logging.
+description: 'Configure Notion enterprise access control with OAuth, workspace permissions,
+  and audit logging.
+
   Use when implementing OAuth public integrations, managing multi-workspace access,
+
   or building permission-aware Notion applications.
+
   Trigger with phrases like "notion SSO", "notion RBAC",
+
   "notion enterprise", "notion OAuth", "notion permissions", "notion multi-workspace".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notion]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- notion
+compatibility: Designed for Claude Code
 ---
-
 # Notion Enterprise RBAC
 
 ## Overview

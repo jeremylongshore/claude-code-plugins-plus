@@ -1,20 +1,28 @@
 ---
 name: notion-search-retrieve
-description: |
-  Search Notion workspaces and retrieve pages, databases, and block content
+description: 'Search Notion workspaces and retrieve pages, databases, and block content
+
   using the Notion API. Use when querying databases with filters, searching
+
   across a workspace, paginating large result sets, or extracting page content.
+
   Trigger with phrases like "notion search", "query notion database",
+
   "notion retrieve page", "notion pagination", "notion filter",
+
   "notion blocks", "notion get content".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notion]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- notion
+compatibility: Designed for Claude Code
 ---
-
 # Notion Search & Data Retrieval
 
 ## Overview

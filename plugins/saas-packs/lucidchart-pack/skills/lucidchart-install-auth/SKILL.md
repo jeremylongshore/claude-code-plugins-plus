@@ -1,17 +1,22 @@
 ---
 name: lucidchart-install-auth
-description: |
-  Install and configure Lucidchart SDK/API authentication.
+description: 'Install and configure Lucidchart SDK/API authentication.
+
   Use when setting up a new Lucidchart integration.
+
   Trigger: "install lucidchart", "setup lucidchart", "lucidchart auth".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, lucidchart, diagramming]
-compatible-with: claude-code
+tags:
+- saas
+- lucidchart
+- diagramming
+compatibility: Designed for Claude Code
 ---
-
 # Lucidchart Install & Auth
 
 ## Overview

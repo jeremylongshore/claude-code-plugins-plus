@@ -1,16 +1,20 @@
 ---
 name: mindtickle-webhooks-events
-description: |
-  Webhooks Events for MindTickle.
+description: 'Webhooks Events for MindTickle.
+
   Trigger: "mindtickle webhooks events".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, mindtickle, sales]
-compatible-with: claude-code
+tags:
+- saas
+- mindtickle
+- sales
+compatibility: Designed for Claude Code
 ---
-
 # MindTickle Webhooks & Events
 
 ## Overview

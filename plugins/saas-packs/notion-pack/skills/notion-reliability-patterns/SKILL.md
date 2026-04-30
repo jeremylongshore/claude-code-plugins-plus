@@ -1,19 +1,26 @@
 ---
 name: notion-reliability-patterns
-description: |
-  Graceful degradation when Notion is down: offline cache, retry with
+description: 'Graceful degradation when Notion is down: offline cache, retry with
+
   exponential backoff, circuit breaker, health checks, and fallback content.
+
   Use when building fault-tolerant Notion integrations for production.
+
   Trigger with phrases like "notion reliability", "notion circuit breaker",
+
   "notion offline fallback", "notion health check", "notion graceful degradation".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notion]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- notion
+compatibility: Designed for Claude Code
 ---
-
 # Notion Reliability Patterns
 
 ## Overview

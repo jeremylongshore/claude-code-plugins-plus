@@ -1,17 +1,28 @@
 ---
 name: lokalise-upgrade-migration
-description: |
-  Analyze, plan, and execute Lokalise SDK upgrades with breaking change detection.
+description: 'Analyze, plan, and execute Lokalise SDK upgrades with breaking change
+  detection.
+
   Use when upgrading Lokalise SDK versions, detecting deprecations,
+
   or migrating to new API versions.
+
   Trigger with phrases like "upgrade lokalise", "lokalise migration",
+
   "lokalise breaking changes", "update lokalise SDK", "analyze lokalise version".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(git:*), Bash(node:*), Bash(grep:*), Grep
+
+  '
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(git:*), Bash(node:*),
+  Bash(grep:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lokalise, api, migration]
+tags:
+- saas
+- lokalise
+- api
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lokalise Upgrade Migration
 

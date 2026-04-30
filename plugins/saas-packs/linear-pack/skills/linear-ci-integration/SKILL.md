@@ -1,17 +1,26 @@
 ---
 name: linear-ci-integration
-description: |
-  Integrate Linear with GitHub Actions CI/CD pipelines.
+description: 'Integrate Linear with GitHub Actions CI/CD pipelines.
+
   Use when setting up automated testing, PR-to-issue linking,
+
   or creating Linear issues from CI failures.
+
   Trigger: "linear CI", "linear GitHub Actions", "linear CI/CD",
+
   "linear automated tests", "linear PR integration".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, linear, testing, ci-cd]
+tags:
+- saas
+- linear
+- testing
+- ci-cd
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Linear CI Integration
 

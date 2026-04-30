@@ -1,17 +1,26 @@
 ---
 name: maintainx-upgrade-migration
-description: |
-  Migrate MaintainX API versions and handle breaking changes.
+description: 'Migrate MaintainX API versions and handle breaking changes.
+
   Use when upgrading API versions, handling deprecations,
+
   or migrating between MaintainX API releases.
+
   Trigger with phrases like "maintainx upgrade", "maintainx api version",
+
   "maintainx migration", "maintainx breaking changes", "maintainx deprecation".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, maintainx, api, migration]
+tags:
+- saas
+- maintainx
+- api
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # MaintainX Upgrade & Migration
 

@@ -1,17 +1,25 @@
 ---
 name: lindy-reference-architecture
-description: |
-  Reference architectures for Lindy AI agent integrations.
+description: 'Reference architectures for Lindy AI agent integrations.
+
   Use when designing systems, planning multi-agent architectures,
+
   or implementing production integration patterns.
+
   Trigger with phrases like "lindy architecture", "lindy design",
+
   "lindy system design", "lindy patterns", "lindy multi-agent".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lindy, lindy-reference]
+tags:
+- saas
+- lindy
+- lindy-reference
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lindy Reference Architecture
 

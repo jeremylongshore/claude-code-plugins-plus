@@ -1,16 +1,24 @@
 ---
 name: langchain-deploy-integration
-description: |
-  Deploy LangChain applications to production with LangServe,
+description: 'Deploy LangChain applications to production with LangServe,
+
   Docker, and cloud platforms (Cloud Run, AWS Lambda).
+
   Trigger: "deploy langchain", "langchain production deploy",
+
   "langchain docker", "langchain cloud run", "LangServe".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(docker:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langchain, deployment, docker]
+tags:
+- saas
+- langchain
+- deployment
+- docker
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # LangChain Deploy Integration
 

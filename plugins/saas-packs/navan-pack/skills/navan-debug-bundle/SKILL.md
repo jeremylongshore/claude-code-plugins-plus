@@ -1,16 +1,19 @@
 ---
 name: navan-debug-bundle
-description: |
-  Use when collecting diagnostic data from a Navan API integration — OAuth token inspection, API response capture, connectivity testing, and request/response logging.
-  Trigger with "navan debug bundle" or "debug navan api".
-allowed-tools: Read, Bash(curl:*), Bash(jq:*), Bash(tar:*), Bash(mkdir:*), Bash(date:*), Grep
+description: "Use when collecting diagnostic data from a Navan API integration \u2014\
+  \ OAuth token inspection, API response capture, connectivity testing, and request/response\
+  \ logging.\nTrigger with \"navan debug bundle\" or \"debug navan api\".\n"
+allowed-tools: Read, Bash(curl:*), Bash(jq:*), Bash(tar:*), Bash(mkdir:*), Bash(date:*),
+  Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, navan, travel]
-compatible-with: claude-code
+tags:
+- saas
+- navan
+- travel
+compatibility: Designed for Claude Code
 ---
-
 # Navan Debug Bundle
 
 ## Overview

@@ -1,16 +1,24 @@
 ---
 name: langchain-ci-integration
-description: |
-  Configure CI/CD for LangChain with GitHub Actions, mocked unit tests,
+description: 'Configure CI/CD for LangChain with GitHub Actions, mocked unit tests,
+
   gated integration tests, and RAG pipeline validation.
+
   Trigger: "langchain CI", "langchain GitHub Actions",
+
   "langchain automated tests", "CI langchain", "langchain pipeline testing".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langchain, testing, ci-cd]
+tags:
+- saas
+- langchain
+- testing
+- ci-cd
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # LangChain CI Integration
 

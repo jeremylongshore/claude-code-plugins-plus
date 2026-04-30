@@ -1,19 +1,27 @@
 ---
 name: klaviyo-ci-integration
-description: |
-  Configure CI/CD pipelines for Klaviyo integrations with GitHub Actions.
+description: 'Configure CI/CD pipelines for Klaviyo integrations with GitHub Actions.
+
   Use when setting up automated testing, configuring CI secrets,
+
   or integrating Klaviyo SDK tests into your build pipeline.
+
   Trigger with phrases like "klaviyo CI", "klaviyo GitHub Actions",
+
   "klaviyo automated tests", "CI klaviyo", "klaviyo pipeline".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, klaviyo, email-marketing, cdp]
-compatible-with: claude-code
+tags:
+- saas
+- klaviyo
+- email-marketing
+- cdp
+compatibility: Designed for Claude Code
 ---
-
 # Klaviyo CI Integration
 
 ## Overview

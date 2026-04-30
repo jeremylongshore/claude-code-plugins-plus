@@ -1,16 +1,25 @@
 ---
 name: langchain-cost-tuning
-description: |
-  Optimize LangChain API costs with token tracking, model tiering,
+description: 'Optimize LangChain API costs with token tracking, model tiering,
+
   caching, prompt compression, and budget enforcement.
+
   Trigger: "langchain cost", "langchain tokens", "reduce langchain cost",
+
   "langchain billing", "langchain budget", "token optimization".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langchain, api, llm, cost-optimization]
+tags:
+- saas
+- langchain
+- api
+- llm
+- cost-optimization
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # LangChain Cost Tuning
 

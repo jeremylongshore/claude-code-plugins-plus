@@ -1,16 +1,21 @@
 ---
 name: navan-ci-integration
-description: |
-  Use when setting up CI/CD pipelines that validate Navan API integrations, run booking data health checks, or generate automated compliance reports.
+description: 'Use when setting up CI/CD pipelines that validate Navan API integrations,
+  run booking data health checks, or generate automated compliance reports.
+
   Trigger with "navan ci integration" or "navan pipeline" or "navan github actions".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(git:*), Bash(gh:*), Grep, Glob
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, navan, travel]
-compatible-with: claude-code
+tags:
+- saas
+- navan
+- travel
+compatibility: Designed for Claude Code
 ---
-
 # Navan CI Integration
 
 ## Overview

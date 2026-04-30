@@ -1,19 +1,26 @@
 ---
 name: notion-hello-world
-description: |
-  Create a minimal working Notion API example.
+description: 'Create a minimal working Notion API example.
+
   Use when starting a new Notion integration, testing your setup,
+
   or learning basic Notion API patterns (search, pages, users).
+
   Trigger with phrases like "notion hello world", "notion example",
+
   "notion quick start", "simple notion code", "first notion API call".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notion]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- notion
+compatibility: Designed for Claude Code
 ---
-
 # Notion Hello World
 
 ## Overview

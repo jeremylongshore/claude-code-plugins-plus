@@ -1,21 +1,27 @@
 ---
 name: langchain-data-handling
-description: |
-  Load and chunk documents for LangChain 1.0 RAG pipelines correctly —
-  language-aware splitters, table-safe PDF loaders, Cloudflare-compatible web
-  loaders, chunk-boundary strategies that survive real-world structure. Use when
-  building a RAG pipeline, diagnosing why retrieval misquotes a table, or
-  debugging a crawler returning blank content. Trigger with "langchain document
-  loader", "text splitter", "chunking strategy", "pdf loader",
-  "markdown splitter", "webbaseloader".
+description: "Load and chunk documents for LangChain 1.0 RAG pipelines correctly \u2014\
+  \nlanguage-aware splitters, table-safe PDF loaders, Cloudflare-compatible web\n\
+  loaders, chunk-boundary strategies that survive real-world structure. Use when\n\
+  building a RAG pipeline, diagnosing why retrieval misquotes a table, or\ndebugging\
+  \ a crawler returning blank content. Trigger with \"langchain document\nloader\"\
+  , \"text splitter\", \"chunking strategy\", \"pdf loader\",\n\"markdown splitter\"\
+  , \"webbaseloader\".\n"
 allowed-tools: Read, Write, Edit, Bash(python:*), Bash(pip:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, langchain, langgraph, python, langchain-1.0, document-loaders, text-splitters, rag]
-compatible-with: claude-code, codex
+tags:
+- saas
+- langchain
+- langgraph
+- python
+- langchain-1.0
+- document-loaders
+- text-splitters
+- rag
+compatibility: Designed for Claude Code, also compatible with Codex
 ---
-
 # LangChain Data Handling — Loaders and Splitters (Python)
 
 ## Overview

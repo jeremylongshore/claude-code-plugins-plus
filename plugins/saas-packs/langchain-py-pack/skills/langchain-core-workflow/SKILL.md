@@ -1,23 +1,28 @@
 ---
 name: langchain-core-workflow
-description: |
-  Compose LangChain 1.0 chains with RunnableParallel, RunnableBranch,
-  RunnablePassthrough.assign, and RunnableLambda — correct input/output shapes,
-  debug probes, and typed composition that catches dict-shape bugs before
-  invocation. Use when wiring multi-step chains, parallel retrievals,
-  conditional routing, or threading state through a chain for RAG,
-  classification, or extraction pipelines.
-  Trigger with "runnable parallel", "runnable branch", "langchain rag
-  composition", "passthrough assign", "langchain lcel", "runnable lambda",
-  "debug probe".
+description: "Compose LangChain 1.0 chains with RunnableParallel, RunnableBranch,\n\
+  RunnablePassthrough.assign, and RunnableLambda \u2014 correct input/output shapes,\n\
+  debug probes, and typed composition that catches dict-shape bugs before\ninvocation.\
+  \ Use when wiring multi-step chains, parallel retrievals,\nconditional routing,\
+  \ or threading state through a chain for RAG,\nclassification, or extraction pipelines.\n\
+  Trigger with \"runnable parallel\", \"runnable branch\", \"langchain rag\ncomposition\"\
+  , \"passthrough assign\", \"langchain lcel\", \"runnable lambda\",\n\"debug probe\"\
+  .\n"
 allowed-tools: Read, Write, Edit, Bash(python:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, langchain, langgraph, python, langchain-1.0, lcel, runnables, rag]
-compatible-with: claude-code, codex
+tags:
+- saas
+- langchain
+- langgraph
+- python
+- langchain-1.0
+- lcel
+- runnables
+- rag
+compatibility: Designed for Claude Code, also compatible with Codex
 ---
-
 # LangChain Core Workflow (Python)
 
 ## Overview

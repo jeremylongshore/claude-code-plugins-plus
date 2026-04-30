@@ -1,17 +1,26 @@
 ---
 name: lindy-sdk-patterns
-description: |
-  Lindy AI integration patterns for webhook handling, HTTP actions, and Run Code.
+description: 'Lindy AI integration patterns for webhook handling, HTTP actions, and
+  Run Code.
+
   Use when building integrations, calling Lindy agents from code,
+
   or implementing the Run Code action with Python/JavaScript.
+
   Trigger with phrases like "lindy SDK patterns", "lindy best practices",
+
   "lindy API patterns", "lindy Run Code", "lindy HTTP Request".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lindy, api]
+tags:
+- saas
+- lindy
+- api
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lindy SDK & Integration Patterns
 

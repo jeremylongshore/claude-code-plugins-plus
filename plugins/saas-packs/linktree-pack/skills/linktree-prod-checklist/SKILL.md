@@ -1,16 +1,20 @@
 ---
 name: linktree-prod-checklist
-description: |
-  Prod Checklist for Linktree.
+description: 'Prod Checklist for Linktree.
+
   Trigger: "linktree prod checklist".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, linktree, social]
-compatible-with: claude-code
+tags:
+- saas
+- linktree
+- social
+compatibility: Designed for Claude Code
 ---
-
 # Linktree Production Checklist
 
 ## Overview

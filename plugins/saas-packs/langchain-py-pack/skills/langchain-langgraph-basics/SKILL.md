@@ -1,20 +1,24 @@
 ---
 name: langchain-langgraph-basics
-description: |
-  Build a correct LangGraph 1.0 StateGraph — typed TypedDict state with reducers,
-  nodes, edges, compile, and recursion budgets — without hitting the silent-termination
-  and state-replacement traps. Use when writing your first LangGraph StateGraph,
-  diagnosing why a graph halted without reaching END, or picking recursion_limit.
-  Trigger with "langgraph statgraph", "langgraph basics", "GraphRecursionError",
-  "langgraph conditional edges".
+description: "Build a correct LangGraph 1.0 StateGraph \u2014 typed TypedDict state\
+  \ with reducers,\nnodes, edges, compile, and recursion budgets \u2014 without hitting\
+  \ the silent-termination\nand state-replacement traps. Use when writing your first\
+  \ LangGraph StateGraph,\ndiagnosing why a graph halted without reaching END, or\
+  \ picking recursion_limit.\nTrigger with \"langgraph statgraph\", \"langgraph basics\"\
+  , \"GraphRecursionError\",\n\"langgraph conditional edges\".\n"
 allowed-tools: Read, Write, Edit, Bash(python:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, langchain, langgraph, python, langchain-1.0, statgraph]
-compatible-with: claude-code, codex
+tags:
+- saas
+- langchain
+- langgraph
+- python
+- langchain-1.0
+- statgraph
+compatibility: Designed for Claude Code, also compatible with Codex
 ---
-
 # LangChain LangGraph Basics (Python)
 
 ## Overview

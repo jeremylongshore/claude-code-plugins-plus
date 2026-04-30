@@ -1,17 +1,25 @@
 ---
 name: langchain-common-errors
-description: |
-  Diagnose and fix common LangChain errors and exceptions.
+description: 'Diagnose and fix common LangChain errors and exceptions.
+
   Use when encountering LangChain import errors, auth failures,
+
   output parsing issues, agent loops, or version conflicts.
+
   Trigger: "langchain error", "langchain exception", "debug langchain",
+
   "langchain not working", "langchain troubleshoot".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langchain, debugging]
+tags:
+- saas
+- langchain
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # LangChain Common Errors
 

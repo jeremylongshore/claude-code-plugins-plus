@@ -1,15 +1,24 @@
 ---
 name: klingai-rate-limits
-description: |
-  Handle Kling AI API rate limits with backoff and queuing strategies. Use when hitting 429 errors
-  or planning high-volume workflows. Trigger with phrases like 'klingai rate limit', 'kling ai 429',
-  'klingai throttle', 'kling api limits'.
+description: 'Handle Kling AI API rate limits with backoff and queuing strategies.
+  Use when hitting 429 errors
+
+  or planning high-volume workflows. Trigger with phrases like ''klingai rate limit'',
+  ''kling ai 429'',
+
+  ''klingai throttle'', ''kling api limits''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, kling-ai, rate-limits, reliability]
+tags:
+- saas
+- kling-ai
+- rate-limits
+- reliability
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Kling AI Rate Limits
 

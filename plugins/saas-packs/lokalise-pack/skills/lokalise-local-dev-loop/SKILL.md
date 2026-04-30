@@ -1,17 +1,25 @@
 ---
 name: lokalise-local-dev-loop
-description: |
-  Configure Lokalise local development with file sync and hot reload.
+description: 'Configure Lokalise local development with file sync and hot reload.
+
   Use when setting up a development environment, configuring translation sync,
+
   or establishing a fast iteration cycle with Lokalise.
+
   Trigger with phrases like "lokalise dev setup", "lokalise local development",
+
   "lokalise dev environment", "develop with lokalise", "lokalise sync".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Bash(lokalise2:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lokalise, lokalise-local]
+tags:
+- saas
+- lokalise
+- lokalise-local
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lokalise Local Dev Loop
 

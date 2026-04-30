@@ -1,15 +1,23 @@
 ---
 name: klingai-compliance-review
-description: |
-  Security and compliance review framework for Kling AI integrations. Use when preparing for
-  audits or reviewing security posture. Trigger with phrases like 'klingai compliance',
-  'kling ai security review', 'klingai audit prep', 'video generation compliance'.
+description: 'Security and compliance review framework for Kling AI integrations.
+  Use when preparing for
+
+  audits or reviewing security posture. Trigger with phrases like ''klingai compliance'',
+
+  ''kling ai security review'', ''klingai audit prep'', ''video generation compliance''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, kling-ai, compliance, security]
+tags:
+- saas
+- kling-ai
+- compliance
+- security
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Kling AI Compliance Review
 

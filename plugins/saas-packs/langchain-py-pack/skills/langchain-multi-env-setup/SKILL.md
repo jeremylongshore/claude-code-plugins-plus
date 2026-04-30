@@ -1,21 +1,28 @@
 ---
 name: langchain-multi-env-setup
-description: |
-  Build reliable dev / staging / prod isolation for LangChain 1.0 services —
-  Pydantic `Settings` + `SecretStr`, cloud Secret Manager in prod, per-env
-  prompt and model version pinning, env-specific checkpointer and observability.
-  Use when graduating from `.env`-in-dev to real prod infra, or debugging a
-  config that loaded the wrong values in the wrong env.
-  Trigger with "langchain multi-env", "langchain pydantic settings",
-  "langchain secret manager", "langchain env config", "langchain prod setup".
+description: "Build reliable dev / staging / prod isolation for LangChain 1.0 services\
+  \ \u2014\nPydantic `Settings` + `SecretStr`, cloud Secret Manager in prod, per-env\n\
+  prompt and model version pinning, env-specific checkpointer and observability.\n\
+  Use when graduating from `.env`-in-dev to real prod infra, or debugging a\nconfig\
+  \ that loaded the wrong values in the wrong env.\nTrigger with \"langchain multi-env\"\
+  , \"langchain pydantic settings\",\n\"langchain secret manager\", \"langchain env\
+  \ config\", \"langchain prod setup\".\n"
 allowed-tools: Read, Write, Edit, Bash(python:*), Bash(gcloud:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, langchain, langgraph, python, langchain-1.0, config, pydantic, multi-env, secrets]
-compatible-with: claude-code, codex
+tags:
+- saas
+- langchain
+- langgraph
+- python
+- langchain-1.0
+- config
+- pydantic
+- multi-env
+- secrets
+compatibility: Designed for Claude Code, also compatible with Codex
 ---
-
 # LangChain Multi-Env Setup (Python)
 
 ## Overview

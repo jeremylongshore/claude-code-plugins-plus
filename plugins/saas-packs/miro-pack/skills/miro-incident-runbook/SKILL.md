@@ -1,19 +1,28 @@
 ---
 name: miro-incident-runbook
-description: |
-  Execute Miro REST API v2 incident response with triage, mitigation, and postmortem.
+description: 'Execute Miro REST API v2 incident response with triage, mitigation,
+  and postmortem.
+
   Use when responding to Miro-related outages, investigating API errors,
+
   or running post-incident reviews for Miro integration failures.
+
   Trigger with phrases like "miro incident", "miro outage",
+
   "miro down", "miro on-call", "miro emergency", "miro broken".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*), Bash(jq:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, miro, incident-response, runbook]
-compatible-with: claude-code
+tags:
+- saas
+- miro
+- incident-response
+- runbook
+compatibility: Designed for Claude Code
 ---
-
 # Miro Incident Runbook
 
 ## Overview

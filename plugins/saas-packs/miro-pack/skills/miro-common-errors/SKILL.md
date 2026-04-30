@@ -1,19 +1,27 @@
 ---
 name: miro-common-errors
-description: |
-  Diagnose and fix Miro REST API v2 errors by HTTP status code.
+description: 'Diagnose and fix Miro REST API v2 errors by HTTP status code.
+
   Use when encountering Miro API errors, debugging failed requests,
+
   or troubleshooting authentication and permission issues.
+
   Trigger with phrases like "miro error", "fix miro",
+
   "miro not working", "debug miro", "miro 401", "miro 403", "miro 429".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, miro, errors, troubleshooting]
-compatible-with: claude-code
+tags:
+- saas
+- miro
+- errors
+- troubleshooting
+compatibility: Designed for Claude Code
 ---
-
 # Miro Common Errors
 
 ## Overview

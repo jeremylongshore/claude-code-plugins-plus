@@ -1,17 +1,26 @@
 ---
 name: linear-prod-checklist
-description: |
-  Production readiness checklist for Linear integrations.
+description: 'Production readiness checklist for Linear integrations.
+
   Use when preparing to deploy, reviewing production requirements,
+
   or auditing existing Linear deployments.
+
   Trigger: "linear production checklist", "deploy linear",
+
   "linear production ready", "linear go live", "linear launch".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, linear, deployment, audit]
+tags:
+- saas
+- linear
+- deployment
+- audit
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Linear Production Checklist
 

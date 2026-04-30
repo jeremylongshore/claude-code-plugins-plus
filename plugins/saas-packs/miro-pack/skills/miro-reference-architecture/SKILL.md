@@ -1,18 +1,26 @@
 ---
 name: miro-reference-architecture
-description: |
-  Implement a production-ready reference architecture for Miro REST API v2
+description: 'Implement a production-ready reference architecture for Miro REST API
+  v2
+
   integrations with layered design, caching, and event processing.
+
   Trigger with phrases like "miro architecture", "miro project structure",
+
   "how to organize miro integration", "miro design patterns".
+
+  '
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, miro, architecture, design]
-compatible-with: claude-code
+tags:
+- saas
+- miro
+- architecture
+- design
+compatibility: Designed for Claude Code
 ---
-
 # Miro Reference Architecture
 
 ## Overview

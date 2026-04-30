@@ -1,17 +1,26 @@
 ---
 name: lokalise-data-handling
-description: |
-  Implement Lokalise translation data handling, PII management, and compliance patterns.
+description: 'Implement Lokalise translation data handling, PII management, and compliance
+  patterns.
+
   Use when handling sensitive translation data, implementing data redaction,
+
   or ensuring compliance with privacy regulations for Lokalise integrations.
+
   Trigger with phrases like "lokalise data", "lokalise PII",
+
   "lokalise GDPR", "lokalise data retention", "lokalise privacy", "lokalise compliance".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lokalise, compliance]
+tags:
+- saas
+- lokalise
+- compliance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lokalise Data Handling
 

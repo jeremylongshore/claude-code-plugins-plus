@@ -1,16 +1,18 @@
 ---
 name: navan-incident-runbook
-description: |
-  Use when responding to Navan platform incidents — flight cancellations, booking API failures, expense sync outages, or OAuth authentication errors.
-  Trigger with "navan incident runbook" or "navan outage response".
+description: "Use when responding to Navan platform incidents \u2014 flight cancellations,\
+  \ booking API failures, expense sync outages, or OAuth authentication errors.\n\
+  Trigger with \"navan incident runbook\" or \"navan outage response\".\n"
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(jq:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, navan, travel]
-compatible-with: claude-code
+tags:
+- saas
+- navan
+- travel
+compatibility: Designed for Claude Code
 ---
-
 # Navan Incident Runbook
 
 ## Overview

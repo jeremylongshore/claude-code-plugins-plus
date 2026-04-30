@@ -1,15 +1,24 @@
 ---
 name: klingai-sdk-patterns
-description: |
-  Production SDK patterns for Kling AI: client wrapper, retry logic, async polling, and error
-  handling. Use when building robust integrations. Trigger with phrases like 'klingai sdk',
-  'kling ai client', 'klingai patterns', 'kling ai wrapper'.
+description: 'Production SDK patterns for Kling AI: client wrapper, retry logic, async
+  polling, and error
+
+  handling. Use when building robust integrations. Trigger with phrases like ''klingai
+  sdk'',
+
+  ''kling ai client'', ''klingai patterns'', ''kling ai wrapper''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, kling-ai, sdk, patterns]
+tags:
+- saas
+- kling-ai
+- sdk
+- patterns
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Kling AI SDK Patterns
 

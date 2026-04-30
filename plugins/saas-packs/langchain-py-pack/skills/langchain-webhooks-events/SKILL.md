@@ -1,22 +1,29 @@
 ---
 name: langchain-webhooks-events
-description: |
-  Dispatch LangChain 1.0 chain/agent events to external systems — webhooks, Kafka,
-  Redis Streams, SNS — via async fire-and-forget callbacks, subgraph-aware wiring,
-  and HMAC-signed delivery with idempotency keys. Use when firing webhooks on tool
-  calls, pushing telemetry to Kafka / Redis Streams, or fanning progress to multiple
-  subscribers without blocking the chain.
-  Trigger with "langchain webhook", "langchain event dispatch", "langchain callback kafka",
-  "langchain pubsub", "langchain per-tool webhook", "BaseCallbackHandler webhook",
-  "on_tool_end webhook", "langchain analytics event".
+description: "Dispatch LangChain 1.0 chain/agent events to external systems \u2014\
+  \ webhooks, Kafka,\nRedis Streams, SNS \u2014 via async fire-and-forget callbacks,\
+  \ subgraph-aware wiring,\nand HMAC-signed delivery with idempotency keys. Use when\
+  \ firing webhooks on tool\ncalls, pushing telemetry to Kafka / Redis Streams, or\
+  \ fanning progress to multiple\nsubscribers without blocking the chain.\nTrigger\
+  \ with \"langchain webhook\", \"langchain event dispatch\", \"langchain callback\
+  \ kafka\",\n\"langchain pubsub\", \"langchain per-tool webhook\", \"BaseCallbackHandler\
+  \ webhook\",\n\"on_tool_end webhook\", \"langchain analytics event\".\n"
 allowed-tools: Read, Write, Edit, Bash(python:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, langchain, langgraph, python, langchain-1.0, webhooks, async, events, callbacks]
-compatible-with: claude-code, codex
+tags:
+- saas
+- langchain
+- langgraph
+- python
+- langchain-1.0
+- webhooks
+- async
+- events
+- callbacks
+compatibility: Designed for Claude Code, also compatible with Codex
 ---
-
 # LangChain Webhooks and Event Dispatch (Python)
 
 ## Overview

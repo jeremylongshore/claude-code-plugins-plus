@@ -1,17 +1,26 @@
 ---
 name: linear-sdk-patterns
-description: |
-  TypeScript/JavaScript SDK patterns and best practices for Linear.
+description: 'TypeScript/JavaScript SDK patterns and best practices for Linear.
+
   Use when learning SDK idioms, implementing pagination,
+
   filtering, relation loading, or custom GraphQL queries.
+
   Trigger: "linear SDK patterns", "linear best practices",
+
   "linear typescript", "linear API patterns", "linear pagination".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, linear, api, typescript]
+tags:
+- saas
+- linear
+- api
+- typescript
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Linear SDK Patterns
 

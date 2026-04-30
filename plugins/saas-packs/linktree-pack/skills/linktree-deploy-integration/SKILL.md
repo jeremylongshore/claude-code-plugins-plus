@@ -1,16 +1,20 @@
 ---
 name: linktree-deploy-integration
-description: |
-  Deploy Integration for Linktree.
+description: 'Deploy Integration for Linktree.
+
   Trigger: "linktree deploy integration".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, linktree, social]
-compatible-with: claude-code
+tags:
+- saas
+- linktree
+- social
+compatibility: Designed for Claude Code
 ---
-
 # Linktree Deploy Integration
 
 ## Overview

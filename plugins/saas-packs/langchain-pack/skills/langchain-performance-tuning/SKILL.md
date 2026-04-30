@@ -1,16 +1,23 @@
 ---
 name: langchain-performance-tuning
-description: |
-  Optimize LangChain application performance: latency, throughput,
+description: 'Optimize LangChain application performance: latency, throughput,
+
   streaming, caching, batch processing, and connection pooling.
+
   Trigger: "langchain performance", "langchain optimization",
+
   "langchain latency", "langchain slow", "speed up langchain".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langchain, performance]
+tags:
+- saas
+- langchain
+- performance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # LangChain Performance Tuning
 

@@ -1,17 +1,25 @@
 ---
 name: lindy-webhooks-events
-description: |
-  Configure Lindy AI webhook triggers, callback patterns, and event handling.
+description: 'Configure Lindy AI webhook triggers, callback patterns, and event handling.
+
   Use when setting up webhook triggers, implementing callback receivers,
+
   or building event-driven Lindy integrations.
+
   Trigger with phrases like "lindy webhook", "lindy events",
+
   "lindy callback", "lindy webhook trigger".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lindy, webhooks]
+tags:
+- saas
+- lindy
+- webhooks
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lindy Webhooks & Events
 

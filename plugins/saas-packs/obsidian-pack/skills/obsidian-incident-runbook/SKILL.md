@@ -1,17 +1,26 @@
 ---
 name: obsidian-incident-runbook
-description: |
-  Troubleshoot Obsidian plugin failures with systematic incident response.
+description: 'Troubleshoot Obsidian plugin failures with systematic incident response.
+
   Use when plugins crash, data is corrupted, or users report critical issues
+
   with your Obsidian plugin.
+
   Trigger with phrases like "obsidian crash", "obsidian plugin broken",
+
   "obsidian incident", "debug obsidian failure", "obsidian emergency".
+
+  '
 allowed-tools: Read, Grep, Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, obsidian, debugging, incident-response]
+tags:
+- saas
+- obsidian
+- debugging
+- incident-response
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Obsidian Incident Runbook
 

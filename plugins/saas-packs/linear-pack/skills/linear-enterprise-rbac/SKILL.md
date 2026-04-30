@@ -1,17 +1,25 @@
 ---
 name: linear-enterprise-rbac
-description: |
-  Implement enterprise role-based access control with Linear.
+description: 'Implement enterprise role-based access control with Linear.
+
   Use when setting up team permissions, OAuth scopes,
+
   SAML SSO, SCIM provisioning, or audit logging.
+
   Trigger: "linear RBAC", "linear permissions", "linear SSO",
+
   "linear enterprise access", "linear role management", "linear SCIM".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, linear, rbac]
+tags:
+- saas
+- linear
+- rbac
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Linear Enterprise RBAC
 

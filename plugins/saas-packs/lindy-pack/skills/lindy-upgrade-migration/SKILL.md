@@ -1,17 +1,25 @@
 ---
 name: lindy-upgrade-migration
-description: |
-  Manage Lindy agent configuration changes, platform updates, and migrations.
+description: 'Manage Lindy agent configuration changes, platform updates, and migrations.
+
   Use when reconfiguring agents, handling platform changes,
+
   or migrating agents between workspaces.
+
   Trigger with phrases like "upgrade lindy", "lindy migration",
+
   "lindy reconfigure", "update lindy agents", "lindy workspace migration".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lindy, migration]
+tags:
+- saas
+- lindy
+- migration
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lindy Upgrade & Migration
 

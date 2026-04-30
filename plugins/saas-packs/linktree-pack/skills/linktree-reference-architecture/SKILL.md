@@ -1,16 +1,20 @@
 ---
 name: linktree-reference-architecture
-description: |
-  Reference Architecture for Linktree.
+description: 'Reference Architecture for Linktree.
+
   Trigger: "linktree reference architecture".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, linktree, social]
-compatible-with: claude-code
+tags:
+- saas
+- linktree
+- social
+compatibility: Designed for Claude Code
 ---
-
 # Linktree Reference Architecture
 
 ## Overview

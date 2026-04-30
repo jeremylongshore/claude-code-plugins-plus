@@ -1,18 +1,26 @@
 ---
 name: miro-webhooks-events
-description: |
-  Implement Miro REST API v2 webhooks with board subscriptions, event handling,
+description: 'Implement Miro REST API v2 webhooks with board subscriptions, event
+  handling,
+
   and signature verification for real-time board change notifications.
+
   Trigger with phrases like "miro webhook", "miro events",
+
   "miro board subscription", "miro real-time", "miro notifications".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, miro, webhooks, events]
-compatible-with: claude-code
+tags:
+- saas
+- miro
+- webhooks
+- events
+compatibility: Designed for Claude Code
 ---
-
 # Miro Webhooks & Events
 
 ## Overview

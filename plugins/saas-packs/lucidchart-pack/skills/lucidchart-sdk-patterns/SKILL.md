@@ -1,16 +1,20 @@
 ---
 name: lucidchart-sdk-patterns
-description: |
-  Sdk Patterns for Lucidchart.
+description: 'Sdk Patterns for Lucidchart.
+
   Trigger: "lucidchart sdk patterns".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, lucidchart, diagramming]
-compatible-with: claude-code
+tags:
+- saas
+- lucidchart
+- diagramming
+compatibility: Designed for Claude Code
 ---
-
 # Lucidchart SDK Patterns
 
 ## Overview

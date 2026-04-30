@@ -1,17 +1,25 @@
 ---
 name: mistral-common-errors
-description: |
-  Diagnose and fix Mistral AI common errors and exceptions.
+description: 'Diagnose and fix Mistral AI common errors and exceptions.
+
   Use when encountering Mistral errors, debugging failed requests,
+
   or troubleshooting integration issues.
+
   Trigger with phrases like "mistral error", "fix mistral",
+
   "mistral not working", "debug mistral".
+
+  '
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, mistral, debugging]
+tags:
+- saas
+- mistral
+- debugging
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Mistral AI Common Errors
 

@@ -1,20 +1,31 @@
 ---
 name: notion-deploy-integration
-description: |
-  Deploy Node.js applications that use the Notion API to production
+description: 'Deploy Node.js applications that use the Notion API to production
+
   on Vercel, Railway, or Fly.io. Use when deploying Notion-powered
+
   backends, setting up NOTION_TOKEN in production secrets, configuring
+
   serverless singleton patterns, or adding health checks that verify
+
   Notion connectivity. Trigger: "deploy notion app", "notion production",
+
   "notion vercel deploy", "notion railway", "notion fly.io".
-allowed-tools: Read, Write, Edit, Bash(npx:*), Bash(vercel:*), Bash(railway:*), Bash(fly:*), Glob
+
+  '
+allowed-tools: Read, Write, Edit, Bash(npx:*), Bash(vercel:*), Bash(railway:*), Bash(fly:*),
+  Glob
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notion, deployment, serverless]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- notion
+- deployment
+- serverless
+compatibility: Designed for Claude Code
 ---
-
 # Deploy Notion-Integrated Applications
 
 Ship Node.js apps that talk to the Notion API to Vercel, Railway, or Fly.io. This skill covers environment variable management, the Notion client singleton pattern for serverless, rate limit handling at 3 req/sec, health check endpoints that verify Notion connectivity, and caching strategies to reduce API calls.

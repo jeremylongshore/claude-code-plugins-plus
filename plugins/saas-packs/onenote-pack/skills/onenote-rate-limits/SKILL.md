@@ -1,17 +1,24 @@
 ---
 name: onenote-rate-limits
-description: |
-  Implement proper rate limit handling for OneNote Graph API with queue-based throttling.
+description: 'Implement proper rate limit handling for OneNote Graph API with queue-based
+  throttling.
+
   Use when building high-throughput OneNote integrations or debugging 429 errors.
-  Trigger with "onenote rate limit", "onenote 429", "onenote throttling", "graph api throttle".
+
+  Trigger with "onenote rate limit", "onenote 429", "onenote throttling", "graph api
+  throttle".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, onenote, microsoft]
-compatible-with: claude-code
+tags:
+- saas
+- onenote
+- microsoft
+compatibility: Designed for Claude Code
 ---
-
 # OneNote — Rate Limit Handling & Request Throttling
 
 ## Overview

@@ -1,16 +1,20 @@
 ---
 name: linktree-rate-limits
-description: |
-  Rate Limits for Linktree.
+description: 'Rate Limits for Linktree.
+
   Trigger: "linktree rate limits".
+
+  '
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, linktree, social]
-compatible-with: claude-code
+tags:
+- saas
+- linktree
+- social
+compatibility: Designed for Claude Code
 ---
-
 # Linktree Rate Limits
 
 ## Overview

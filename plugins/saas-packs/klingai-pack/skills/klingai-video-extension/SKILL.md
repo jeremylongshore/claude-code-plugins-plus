@@ -1,15 +1,24 @@
 ---
 name: klingai-video-extension
-description: |
-  Extend video duration using Kling AI continuation. Use when creating longer videos from
-  shorter clips or building sequences. Trigger with phrases like 'klingai extend video',
-  'kling ai video continuation', 'klingai longer video', 'extend klingai clip'.
+description: 'Extend video duration using Kling AI continuation. Use when creating
+  longer videos from
+
+  shorter clips or building sequences. Trigger with phrases like ''klingai extend
+  video'',
+
+  ''kling ai video continuation'', ''klingai longer video'', ''extend klingai clip''.
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, kling-ai, video-extension, continuation]
+tags:
+- saas
+- kling-ai
+- video-extension
+- continuation
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Kling AI Video Extension
 

@@ -1,17 +1,26 @@
 ---
 name: obsidian-ci-integration
-description: |
-  Set up GitHub Actions CI/CD for Obsidian plugin development.
+description: 'Set up GitHub Actions CI/CD for Obsidian plugin development.
+
   Use when automating builds, tests, and releases for your plugin,
+
   or setting up continuous integration for Obsidian projects.
+
   Trigger with phrases like "obsidian CI", "obsidian github actions",
+
   "obsidian automated build", "obsidian CI/CD".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, obsidian, testing, ci-cd]
+tags:
+- saas
+- obsidian
+- testing
+- ci-cd
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Obsidian CI Integration
 

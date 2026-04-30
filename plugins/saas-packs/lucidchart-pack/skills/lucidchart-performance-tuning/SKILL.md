@@ -1,17 +1,24 @@
 ---
 name: lucidchart-performance-tuning
-description: |
-  Optimize Lucidchart API integration performance with caching, batch shape operations, and pagination strategies.
-  Use when diagram exports are slow, shape updates hit rate limits, or document list queries time out.
+description: 'Optimize Lucidchart API integration performance with caching, batch
+  shape operations, and pagination strategies.
+
+  Use when diagram exports are slow, shape updates hit rate limits, or document list
+  queries time out.
+
   Trigger with "lucidchart performance tuning".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, lucidchart, diagramming]
-compatible-with: claude-code
+tags:
+- saas
+- lucidchart
+- diagramming
+compatibility: Designed for Claude Code
 ---
-
 # Lucidchart Performance Tuning
 
 ## Overview

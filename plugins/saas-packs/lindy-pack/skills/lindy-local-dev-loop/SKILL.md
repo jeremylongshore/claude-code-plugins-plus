@@ -1,17 +1,26 @@
 ---
 name: lindy-local-dev-loop
-description: |
-  Set up local development workflow for testing Lindy AI agent integrations.
+description: 'Set up local development workflow for testing Lindy AI agent integrations.
+
   Use when building webhook receivers, testing agent callbacks,
+
   or iterating on Lindy-connected applications locally.
+
   Trigger with phrases like "lindy local dev", "lindy development",
+
   "test lindy locally", "lindy webhook local".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(npx:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lindy, testing, workflow]
+tags:
+- saas
+- lindy
+- testing
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lindy Local Dev Loop
 

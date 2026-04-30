@@ -1,16 +1,24 @@
 ---
 name: linear-cost-tuning
-description: |
-  Optimize Linear API usage, reduce unnecessary calls, and maximize
+description: 'Optimize Linear API usage, reduce unnecessary calls, and maximize
+
   efficiency within rate limit budgets.
+
   Trigger: "linear cost", "reduce linear API calls", "linear efficiency",
+
   "linear API usage", "optimize linear costs", "linear budget".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, linear, api, cost-optimization]
+tags:
+- saas
+- linear
+- api
+- cost-optimization
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Linear Cost Tuning
 

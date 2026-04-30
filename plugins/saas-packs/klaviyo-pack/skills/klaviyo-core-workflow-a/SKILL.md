@@ -1,19 +1,27 @@
 ---
 name: klaviyo-core-workflow-a
-description: |
-  Execute Klaviyo primary workflow: profiles, lists, and subscriptions.
+description: 'Execute Klaviyo primary workflow: profiles, lists, and subscriptions.
+
   Use when creating/updating profiles, managing lists, subscribing contacts,
+
   or syncing customer data to Klaviyo for email/SMS marketing.
+
   Trigger with phrases like "klaviyo profiles", "klaviyo lists",
+
   "klaviyo subscribe", "add contacts to klaviyo", "klaviyo customer data".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, klaviyo, email-marketing, cdp]
-compatible-with: claude-code
+tags:
+- saas
+- klaviyo
+- email-marketing
+- cdp
+compatibility: Designed for Claude Code
 ---
-
 # Klaviyo Core Workflow A -- Profiles, Lists & Subscriptions
 
 ## Overview

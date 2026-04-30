@@ -1,21 +1,35 @@
 ---
 name: langchain-cost-tuning
-description: |
-  Control LangChain 1.0 AI spend with accurate streaming token accounting,
+description: 'Control LangChain 1.0 AI spend with accurate streaming token accounting,
+
   model tiering, provider-specific cache hit tuning, per-tenant budgets,
+
   and retry dedup. Use when AI spend grows faster than traffic, a cost
+
   regression lands, or you need per-tenant budget enforcement.
+
   Trigger with "langchain cost", "langchain token accounting",
+
   "langchain per-tenant budget", "langchain model tiering",
+
   "prompt cache savings".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(python:*), Bash(redis-cli:*)
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, langchain, langgraph, python, langchain-1.0, cost, tokens, budget]
-compatible-with: claude-code, codex
+tags:
+- saas
+- langchain
+- langgraph
+- python
+- langchain-1.0
+- cost
+- tokens
+- budget
+compatibility: Designed for Claude Code, also compatible with Codex
 ---
-
 # LangChain Cost Tuning (Python)
 
 ## Overview

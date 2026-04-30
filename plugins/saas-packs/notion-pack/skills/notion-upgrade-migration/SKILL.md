@@ -1,19 +1,29 @@
 ---
 name: notion-upgrade-migration
-description: |
-  Upgrade @notionhq/client SDK versions and migrate between Notion API versions.
+description: 'Upgrade @notionhq/client SDK versions and migrate between Notion API
+  versions.
+
   Use when updating SDK packages, handling breaking changes between API versions,
-  adopting new SDK features like comments API or status properties, or migrating Python notion-client.
-  Trigger with phrases like "upgrade notion SDK", "notion migration", "notion breaking changes",
+
+  adopting new SDK features like comments API or status properties, or migrating Python
+  notion-client.
+
+  Trigger with phrases like "upgrade notion SDK", "notion migration", "notion breaking
+  changes",
+
   "update notionhq client", "notion API version upgrade", "notion deprecation".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(git:*), Glob, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notion]
-compatible-with: claude-code
+tags:
+- saas
+- productivity
+- notion
+compatibility: Designed for Claude Code
 ---
-
 # Notion Upgrade & Migration
 
 ## Overview

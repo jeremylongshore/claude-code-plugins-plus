@@ -1,16 +1,20 @@
 ---
 name: mindtickle-reference-architecture
-description: |
-  Reference Architecture for MindTickle.
+description: 'Reference Architecture for MindTickle.
+
   Trigger: "mindtickle reference architecture".
+
+  '
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, mindtickle, sales]
-compatible-with: claude-code
+tags:
+- saas
+- mindtickle
+- sales
+compatibility: Designed for Claude Code
 ---
-
 # MindTickle Reference Architecture
 
 ## Overview

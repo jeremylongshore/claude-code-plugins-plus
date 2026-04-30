@@ -1,16 +1,20 @@
 ---
 name: mindtickle-core-workflow-b
-description: |
-  Execute MindTickle secondary workflow: Rep Performance & Readiness.
+description: 'Execute MindTickle secondary workflow: Rep Performance & Readiness.
+
   Trigger: "mindtickle rep performance & readiness", "secondary mindtickle workflow".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, mindtickle, sales]
-compatible-with: claude-code
+tags:
+- saas
+- mindtickle
+- sales
+compatibility: Designed for Claude Code
 ---
-
 # MindTickle — Quiz & Assessment
 
 ## Overview

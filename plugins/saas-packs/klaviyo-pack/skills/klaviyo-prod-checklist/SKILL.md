@@ -1,19 +1,27 @@
 ---
 name: klaviyo-prod-checklist
-description: |
-  Execute Klaviyo production deployment checklist and validation procedures.
+description: 'Execute Klaviyo production deployment checklist and validation procedures.
+
   Use when deploying Klaviyo integrations to production, preparing for launch,
+
   or implementing go-live procedures for email/SMS marketing.
+
   Trigger with phrases like "klaviyo production", "deploy klaviyo",
+
   "klaviyo go-live", "klaviyo launch checklist", "klaviyo prod ready".
+
+  '
 allowed-tools: Read, Bash(curl:*), Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, klaviyo, email-marketing, cdp]
-compatible-with: claude-code
+tags:
+- saas
+- klaviyo
+- email-marketing
+- cdp
+compatibility: Designed for Claude Code
 ---
-
 # Klaviyo Production Checklist
 
 ## Overview

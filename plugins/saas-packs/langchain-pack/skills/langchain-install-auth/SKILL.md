@@ -1,17 +1,26 @@
 ---
 name: langchain-install-auth
-description: |
-  Install and configure LangChain SDK with provider authentication.
+description: 'Install and configure LangChain SDK with provider authentication.
+
   Use when setting up a new LangChain project, configuring API keys
+
   for OpenAI/Anthropic/Google, or initializing @langchain/core in Node.js or Python.
+
   Trigger: "install langchain", "setup langchain", "langchain auth",
+
   "configure langchain API key", "langchain credentials".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langchain, api, authentication]
+tags:
+- saas
+- langchain
+- api
+- authentication
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # LangChain Install & Auth
 

@@ -1,21 +1,33 @@
 ---
 name: obsidian-local-dev-loop
-description: |
-  Set up a fast Obsidian plugin development loop with hot reload.
+description: 'Set up a fast Obsidian plugin development loop with hot reload.
+
   Covers cloning the sample plugin, esbuild watch mode, symlinking
+
   into a vault, Ctrl+R hot reload, Chrome DevTools debugging, and
+
   testing with vitest. Use when starting plugin development or
+
   configuring a dev environment.
+
   Trigger with "obsidian dev loop", "obsidian hot reload",
+
   "obsidian development setup", "develop obsidian plugin".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Bash(mkdir:*), Bash(ln:*), Bash(ls:*), Grep
+
+  '
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Bash(mkdir:*), Bash(ln:*),
+  Bash(ls:*), Grep
 version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [obsidian, development, hot-reload, debugging, testing]
+tags:
+- obsidian
+- development
+- hot-reload
+- debugging
+- testing
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
-
 # Obsidian Local Dev Loop
 
 ## Overview

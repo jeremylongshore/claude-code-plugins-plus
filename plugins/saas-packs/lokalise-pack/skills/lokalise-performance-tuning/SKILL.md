@@ -1,17 +1,28 @@
 ---
 name: lokalise-performance-tuning
-description: |
-  Optimize Lokalise API performance with caching, pagination, and bulk operations.
+description: 'Optimize Lokalise API performance with caching, pagination, and bulk
+  operations.
+
   Use when experiencing slow API responses, implementing caching strategies,
+
   or optimizing request throughput for Lokalise integrations.
+
   Trigger with phrases like "lokalise performance", "optimize lokalise",
+
   "lokalise latency", "lokalise caching", "lokalise slow", "lokalise batch".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(curl:*), Bash(jq:*), Grep
+
+  '
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(curl:*), Bash(jq:*),
+  Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lokalise, api, performance]
+tags:
+- saas
+- lokalise
+- api
+- performance
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Lokalise Performance Tuning
 

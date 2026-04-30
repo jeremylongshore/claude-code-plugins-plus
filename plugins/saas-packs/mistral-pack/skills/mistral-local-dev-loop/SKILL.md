@@ -1,17 +1,27 @@
 ---
 name: mistral-local-dev-loop
-description: |
-  Configure Mistral AI local development with hot reload, testing, and mocking.
+description: 'Configure Mistral AI local development with hot reload, testing, and
+  mocking.
+
   Use when setting up a development environment, configuring test workflows,
+
   or establishing a fast iteration cycle with Mistral AI.
+
   Trigger with phrases like "mistral dev setup", "mistral local development",
+
   "mistral dev environment", "develop with mistral".
+
+  '
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, mistral, testing, workflow]
+tags:
+- saas
+- mistral
+- testing
+- workflow
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 ---
 # Mistral AI Local Dev Loop
 
