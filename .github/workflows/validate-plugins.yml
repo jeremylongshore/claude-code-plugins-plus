@@ -102,7 +102,11 @@ jobs:
         run: |
           echo "Checking plugin structure..."
           # Find all plugin directories (any directory with .claude-plugin/plugin.json)
-          find plugins/ -name "plugin.json" -path "*/.claude-plugin/plugin.json" | while read plugin_json; do
+          # -maxdepth 4 = plugins/<category>/<plugin>/.claude-plugin/plugin.json only.
+          # This excludes nested sub-plugin manifests inside synced plugins like
+          # tonone, where each skill subdirectory has its own plugin.json from
+          # upstream. Those aren't separate marketplace plugins.
+          find plugins/ -maxdepth 4 -name "plugin.json" -path "*/.claude-plugin/plugin.json" | while read plugin_json; do
             plugin=$(dirname $(dirname "$plugin_json"))
             echo "Validating $plugin"
 
