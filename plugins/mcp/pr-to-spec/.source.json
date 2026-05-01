@@ -1,0 +1,15 @@
+{
+  "synced_from": {
+    "repo": "jeremylongshore/pr-to-prompt",
+    "path": ".",
+    "branch": "main"
+  },
+  "last_sync": "2026-05-01T04:48:02.152Z",
+  "author": {
+    "name": "Jeremy Longshore",
+    "github": "jeremylongshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "license": "MIT",
+  "files_synced": 6
+}

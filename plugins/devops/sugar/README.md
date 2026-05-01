@@ -1,16 +1,18 @@
-# Sugar 🍰 - Claude Code Plugin
+# Sugar - Claude Code Plugin
 
-Transform your Claude Code experience with autonomous AI development capabilities!
+Autonomous issue resolution for AI-assisted development.
+
+Persistent memory, cross-session context, and autonomous task execution for any AI coding CLI.
 
 ## What is Sugar?
 
-Sugar is a premier Claude Code plugin that brings true autonomous development to your projects. Unlike simple automation plugins, Sugar provides:
+Sugar is a Claude Code plugin that brings persistent memory and autonomous development to your projects. Sugar provides:
 
+- **🧠 Persistent Memory** - Cross-session context that survives restarts - decisions, preferences, error patterns, and more
+- **🌐 Global Knowledge** - Project-independent memory for guidelines and standards available across all your work
 - **🤖 Autonomous Task Execution** - Let AI handle complex, multi-step development work
-- **📋 Enterprise Task Management** - Persistent SQLite-backed task tracking with rich metadata
-- **🎯 Intelligent Agent Orchestration** - Specialized agents for different development aspects
+- **📋 Task Management** - Persistent SQLite-backed task tracking with rich metadata
 - **🔍 Automatic Work Discovery** - Finds work from error logs, GitHub issues, and code quality metrics
-- **👥 Team Collaboration** - Shared task queues with multi-project support
 
 ## Quick Start
 
@@ -29,11 +31,20 @@ Sugar is a premier Claude Code plugin that brings true autonomous development to
 
 ### Installation
 
-Install the Sugar plugin via Claude Code:
+Install the Sugar plugin via Claude Code using one of these methods:
 
+**Option 1: Direct Repository Installation (Recommended)**
 ```
+/plugin install roboticforce/sugar
+```
+
+**Option 2: Register Sugar Marketplace First**
+```
+/plugin marketplace add roboticforce/sugar
 /plugin install sugar
 ```
+
+**Note**: The plugin is available from the `roboticforce/sugar` GitHub repository. If you get "Plugin not found in any marketplace", use the direct installation method above.
 
 ### Basic Usage
 
@@ -62,6 +73,7 @@ Install the Sugar plugin via Claude Code:
 - `/sugar-review` - Review and manage pending tasks
 - `/sugar-run` - Start autonomous execution mode
 - `/sugar-analyze` - Analyze codebase for potential work
+- `/sugar-thinking` - View Claude's thinking logs for tasks *(New in v3.4)*
 
 ### Specialized Agents
 
@@ -144,23 +156,23 @@ sugar:
 
 ## Documentation
 
-- [Complete Documentation](https://github.com/cdnsteve/sugar/tree/main/docs)
-- [Quick Start Guide](https://github.com/cdnsteve/sugar/blob/main/docs/user/quick-start.md)
-- [CLI Reference](https://github.com/cdnsteve/sugar/blob/main/docs/user/cli-reference.md)
-- [GitHub Integration](https://github.com/cdnsteve/sugar/blob/main/docs/user/github-integration.md)
+- [Complete Documentation](https://github.com/roboticforce/sugar/tree/main/docs)
+- [Quick Start Guide](https://github.com/roboticforce/sugar/blob/main/docs/user/quick-start.md)
+- [CLI Reference](https://github.com/roboticforce/sugar/blob/main/docs/user/cli-reference.md)
+- [GitHub Integration](https://github.com/roboticforce/sugar/blob/main/docs/user/github-integration.md)
 
 ## Support
 
-- **Issues**: [GitHub Issues](https://github.com/cdnsteve/sugar/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/cdnsteve/sugar/discussions)
-- **Documentation**: [docs.roboticforce.io/sugar](https://docs.roboticforce.io/sugar)
+- **Issues**: [GitHub Issues](https://github.com/roboticforce/sugar/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/roboticforce/sugar/discussions)
+- **Documentation**: [sugar.roboticforce.io](https://sugar.roboticforce.io/)
 
 ## License
 
-MIT License - see [LICENSE](https://github.com/cdnsteve/sugar/blob/main/000-docs/001-BL-LICN-license.txt)
+MIT License - see [LICENSE](https://github.com/roboticforce/sugar/blob/main/LICENSE)
 
 ---
 
-**Sugar 🍰 v1.9.1** - Transform any project into an autonomous development environment.
+**Sugar** - Autonomous issue resolution for AI-assisted development.
 
 ⚠️ **Disclaimer**: Sugar is an independent third-party tool. "Claude," "Claude Code," and related marks are trademarks of Anthropic, Inc. Sugar is not affiliated with, endorsed by, or sponsored by Anthropic, Inc.

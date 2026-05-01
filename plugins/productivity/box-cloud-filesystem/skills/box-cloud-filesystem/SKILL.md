@@ -10,7 +10,7 @@ allowed-tools: Read, Write, Edit, Bash(box:*), Bash(npm:*), Bash(npx:*), Glob, G
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 tags: [box, cloud-storage, filesystem, sync, collaboration, document-management]
 ---
 

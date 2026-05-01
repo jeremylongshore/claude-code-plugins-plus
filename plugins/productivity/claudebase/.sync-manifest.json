@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "_comment": "Defines which Claude Code files to sync. Paths are relative to project root or use ~ for home.",
+  "version": "1.0",
+  "sync": {
+    "project": {
+      "_comment": "Project-scoped files (per-repo config)",
+      "include": [
+        ".mcp.json",
+        ".claude/settings.json",
+        ".claude/agents/",
+        ".claude/commands/",
+        ".claude/skills/",
+        ".claude/hooks/scripts/",
+        ".claude/hooks/config/hooks-config.json",
+        ".claude/hooks/sounds/",
+        ".claude/hooks/HOOKS-README.md",
+        ".claude/rules/",
+        ".claude/agent-memory/"
+      ],
+      "exclude": [
+        ".claude/settings.local.json",
+        ".claude/hooks/config/hooks-config.local.json",
+        ".claude/.gitignore"
+      ]
+    },
+    "user": {
+      "_comment": "User-scoped files (cross-repo, from ~/.claude/). Opt-in only — use --include-global flag.",
+      "include": [
+        "~/.claude/settings.json"
+      ],
+      "exclude": [],
+      "opt_in": true
+    },
+    "memory": {
+      "_comment": "Auto-memory files",
+      "include": [
+        ".auto-memory/"
+      ],
+      "exclude": []
+    },
+    "agent_skills": {
+      "_comment": "Agent skills lock file. Syncs the file only; prints install commands on pull but does not auto-execute. Opt-in.",
+      "include": [
+        "skills-lock.json"
+      ],
+      "exclude": [],
+      "opt_in": true
+    }
+  },
+  "never_sync": [
+    ".claude/projects/",
+    ".claude/sessions/",
+    ".claude/shell-snapshots/",
+    ".claude/session-env/",
+    ".claude/backups/",
+    "*.jsonl",
+    "*.log"
+  ],
+  "secret_patterns": [
+    "sk-[a-zA-Z0-9]{20,}",
+    "sk-ant-[a-zA-Z0-9]{20,}",
+    "ghp_[a-zA-Z0-9]{36}",
+    "ghs_[a-zA-Z0-9]{36}",
+    "github_pat_[a-zA-Z0-9_]{22,}",
+    "AKIA[0-9A-Z]{16}",
+    "xoxb-[0-9A-Za-z\\-]{20,}",
+    "xoxp-[0-9A-Za-z\\-]{20,}",
+    "-----BEGIN.*PRIVATE KEY-----",
+    "Bearer [a-zA-Z0-9._\\-]{20,}"
+  ]
+}

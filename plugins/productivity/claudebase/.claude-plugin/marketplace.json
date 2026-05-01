@@ -1,0 +1,17 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "rohithzr",
+  "description": "Back up and restore your entire Claude Code environment to a private GitHub repo",
+  "owner": {
+    "name": "Rohit Hazra"
+  },
+  "plugins": [
+    {
+      "name": "claudebase",
+      "description": "Back up and restore your entire Claude Code environment to a private GitHub repo",
+      "category": "productivity",
+      "source": "./",
+      "homepage": "https://github.com/rohithzr/claudebase"
+    }
+  ]
+}

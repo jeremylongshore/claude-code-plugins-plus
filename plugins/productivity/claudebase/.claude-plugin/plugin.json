@@ -1,0 +1,13 @@
+{
+  "name": "claudebase",
+  "description": "Back up and restore your entire Claude Code environment to a private GitHub repo",
+  "version": "0.2.0",
+  "author": {
+    "name": "Rohit Hazra",
+    "url": "https://github.com/rohithzr"
+  },
+  "homepage": "https://github.com/rohithzr/claudebase",
+  "repository": "https://github.com/rohithzr/claudebase",
+  "license": "MIT",
+  "keywords": ["github", "sync", "backup", "config", "profiles", "settings"]
+}
