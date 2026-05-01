@@ -4,20 +4,32 @@ description: |
   Internal process for the bug-clusterer agent. Defines the step-by-step
   procedure for parsing, classifying, redacting, scoring, and clustering
   bug candidates from raw X/Twitter posts. Not user-invocable — loaded
-  by the agent via its `skills: ["bug-clustering"]` frontmatter property.
+  by the bug-clusterer agent through its skills frontmatter.
+allowed-tools: "Read, Bash(cat:*), Grep, Glob"
 user-invocable: false
 version: 0.1.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: SEE LICENSE IN LICENSE
 model: inherit
 effort: high
-compatible-with: claude-code
+compatibility: "Designed for Claude Code; internal agent-loaded skill (not user-invocable)"
 tags: [triage, clustering, pii-redaction, classification, internal-agent-skill]
 ---
 
 # Bug Clustering Process
 
 Step-by-step procedure for transforming raw XPost objects into structured, clustered bug candidates with PII redaction and reliability scoring.
+
+## Overview
+
+Loaded by the `bug-clusterer` agent inside the `x-bug-triage` plugin. Transforms raw `XPost` records ingested from X/Twitter into structured `BugCandidate` rows, deduplicates near-identical candidates, classifies each candidate into one of 12 bug families, redacts six categories of PII, scores reporter reliability across four dimensions, and groups results into bug clusters by deterministic signature. The output feeds the downstream repo-scanning, owner-routing, and triage-display stages.
+
+## Prerequisites
+
+- Database initialized via `lib/db.ts` schema migrations
+- `config/cluster-matching-thresholds.json` present (controls dedup + cluster overlap thresholds)
+- `config/approved-accounts.json` present (drives reporter category tagging)
+- Raw `XPost[]` array passed in by the orchestrator (not fetched here)
 
 ## Instructions
 
@@ -35,7 +47,7 @@ Before classification, run content-similarity deduplication using `lib/dedupe.ts
 - Uses char-trigram + token-Jaccard hybrid similarity
 - Does NOT remove posts — tags them as duplicate groups with a canonical post (highest engagement)
 - Only canonical posts and non-duplicates (`forward_ids`) proceed to classification
-- Log dedup stats: `"{n} posts ({m} unique, {k} duplicate groups)"`
+- Log dedup stats in the form: "N posts (M unique, K duplicate groups)" with N/M/K replaced by integer counts
 
 ### Step 2: Classify
 
@@ -47,7 +59,7 @@ Run `lib/classifier.ts` on each candidate:
 
 Run `lib/redactor.ts` on each candidate:
 - Detect 6 PII types: email, API key, phone, account ID, media flag, URL token
-- Replace with `[REDACTED:type]` tags
+- Replace with [REDACTED:type] tags
 - Set pii_flags array and raw_text_storage_policy
 
 ### Step 4: Score Reliability
@@ -78,14 +90,34 @@ Using `lib/clusterer.ts` and `lib/signatures.ts`:
 - Insert/update clusters and cluster_posts junction
 - Write audit events for each classification, redaction, and cluster action
 
-## References
+## Output
+
+- `bug_candidates` rows with classification, PII flags, and reporter reliability scores
+- `bug_clusters` rows (new or updated) with severity, sub_status, and report_count
+- `cluster_posts` junction rows linking candidates to clusters
+- Audit-event rows recording every classification, redaction, and cluster action
+
+## Error Handling
+
+- Parser failure on a single XPost: log + skip, continue with remaining posts (degraded mode)
+- Classification confidence below threshold: still recorded, flagged for human review
+- Cluster signature collision across families: hard-blocked by the family-first guard — never cross-clusters
+- Persist failure mid-batch: rollback uncommitted writes for that batch only; preserve already-committed work
+
+## Examples
+
+The bug-clusterer agent invokes this skill after the X/Twitter ingest phase completes. A typical batch processes 50–500 candidates per run, producing 5–30 clusters depending on overlap. Sample audit log line: "127 posts (89 unique, 14 duplicate groups, 6 new clusters, 8 cluster updates)".
+
+## Resources
 
 Load evidence tier definitions for proper cluster evidence assessment:
+
 ```
 !cat skills/x-bug-triage/references/evidence-policy.md
 ```
 
 Load data model reference for BugCandidate fields and cluster schemas:
+
 ```
 !cat skills/x-bug-triage/references/schemas.md
 ```
