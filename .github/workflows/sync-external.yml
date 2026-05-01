@@ -96,46 +96,60 @@ jobs:
 
       - name: Create Pull Request
         if: steps.changes.outputs.has_changes == 'true' && inputs.dry_run != true
-        # HUSKY=0 disables the husky pre-commit hook for the action's internal
-        # `git commit`. The hook (installed by PR #629) runs lint-staged →
-        # `bunx @biomejs/biome` (bun isn't on the runner — ENOENT) and
-        # `pnpm prettier --write` (gets SIGKILL trying to format thousands of
-        # synced files). The auto-PR is reviewable, so skipping pre-commit
-        # here is safe — actual quality gates run on the PR via CI.
+        # Hand-rolled commit + push + PR-create instead of peter-evans/create-pull-request.
+        #
+        # Why: sync diffs are large (hundreds of files / 100K+ lines from upstream
+        # restructures). peter-evans triggers the repo's husky pre-commit hook, which
+        # runs prettier across the whole staged set and either OOMs or hangs for 15+
+        # minutes. The HUSKY=0 env var doesn't reliably suppress git hooks — and
+        # `git commit --no-verify` does, with no extra moving parts. Six bash lines
+        # are easier to debug than a third-party action's internal commit pipeline.
         env:
-          HUSKY: 0
-        uses: peter-evans/create-pull-request@v8
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: |
-            chore(sync): update external plugins from upstream
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          BRANCH="sync/external-plugins"
 
-            Automated sync from external plugin sources.
-            See sources.yaml for configured sources.
+          # Configure committer identity for the automated commit
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-            🤖 Generated with [Claude Code](https://claude.ai/claude-code)
-          title: "🔄 Sync external plugins"
-          body: |
-            ## Automated External Plugin Sync
+          # Branch from current main, force-push (idempotent across re-runs)
+          git checkout -B "$BRANCH"
 
-            This PR syncs the latest changes from external plugin sources.
+          # Stage everything the sync wrote, then commit WITHOUT running pre-commit
+          # hooks (--no-verify). The auto-PR runs through normal CI on the PR side.
+          git add -A
+          git commit --no-verify -m "chore(sync): update external plugins from upstream
 
-            ### Sources
-            See `sources.yaml` for the list of synced repositories.
+          Automated sync from external plugin sources.
+          See sources.yaml for configured sources."
 
-            ### Review Checklist
-            - [ ] Changes look correct
-            - [ ] No sensitive data included
-            - [ ] Plugin validation passes
+          git push --force-with-lease origin "$BRANCH"
 
-            ---
-            *This PR was automatically created by the sync-external workflow.*
-          branch: sync/external-plugins
-          delete-branch: true
-          labels: |
-            automated
-            sync
-            external-plugins
+          # Create the PR if one doesn't exist on this branch yet; otherwise the
+          # branch update above is enough — the existing PR shows the new commits.
+          if ! gh pr view "$BRANCH" --json number >/dev/null 2>&1; then
+            gh pr create \
+              --title "🔄 Sync external plugins" \
+              --head "$BRANCH" \
+              --base main \
+              --label "automated,sync,external-plugins" \
+              --body "## Automated External Plugin Sync
+
+          This PR syncs the latest changes from external plugin sources.
+
+          ### Sources
+          See [\`sources.yaml\`](../blob/main/sources.yaml) for the list of synced repositories.
+
+          ### Review Checklist
+          - [ ] Changes look correct
+          - [ ] No sensitive data included
+          - [ ] Plugin validation passes
+
+          ---
+          *This PR was automatically created by the \`Sync External Plugins\` workflow.*"
+          fi
 
       - name: Summary
         run: |
