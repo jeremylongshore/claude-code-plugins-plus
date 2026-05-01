@@ -86,8 +86,12 @@ jobs:
 
       - name: Sync marketplace catalog
         if: steps.changes.outputs.has_changes == 'true' && inputs.dry_run != true
+        # Use --no-frozen-lockfile here intentionally: the sync step above can
+        # overwrite synced plugins' package.json from upstream, which legitimately
+        # diverges from the committed pnpm-lock.yaml. The auto-PR this workflow
+        # creates is reviewable, so allowing lockfile updates is safe.
         run: |
-          pnpm install --frozen-lockfile
+          pnpm install --no-frozen-lockfile
           node scripts/sync-marketplace.cjs
 
       - name: Create Pull Request
