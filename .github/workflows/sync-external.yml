@@ -49,7 +49,10 @@ jobs:
         # to error with ERR_PNPM_BAD_PM_VERSION)
 
       - name: Install dependencies
-        run: pnpm add js-yaml
+        # js-yaml is already in devDependencies; just install the workspace.
+        # Previously this was `pnpm add js-yaml` which fails with
+        # ERR_PNPM_ADDING_TO_ROOT once the repo is a real workspace.
+        run: pnpm install --frozen-lockfile
 
       - name: Run sync script
         id: sync
