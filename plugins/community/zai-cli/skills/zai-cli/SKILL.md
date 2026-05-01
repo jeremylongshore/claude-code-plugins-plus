@@ -10,7 +10,7 @@ allowed-tools: Read, Write, Edit, Bash(cmd:*), WebFetch
 version: 1.0.0
 license: Apache-2.0
 author: Numman Ali <numman.ali@gmail.com>
-compatible-with: claude-code, codex, openclaw
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 tags: [community, zai-cli]
 ---
 # Zai Cli

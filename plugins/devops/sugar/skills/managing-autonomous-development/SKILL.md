@@ -6,7 +6,7 @@ allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
 author: Steven Leggett <contact@roboticforce.io>
 license: MIT
-compatible-with: claude-code, codex, openclaw
+compatibility: Designed for Claude Code, also compatible with Codex and OpenClaw
 tags: [devops, workflow, autonomous-development]
 ---
 # Managing Autonomous Development
