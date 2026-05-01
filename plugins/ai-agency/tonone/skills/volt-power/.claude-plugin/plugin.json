@@ -1,0 +1,16 @@
+{
+  "name": "volt-power",
+  "version": "0.9.7",
+  "description": "Power management audit \u2014 analyze sleep modes, wake sources, power state machines, radio duty cycles, and battery life estimates. Use when asked to \"audit power usage\", \"optimize battery life\", \"review power management\", \"why is my battery draining\", \"power budget analysis\", or \"sleep mode review\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "volt",
+    "skill"
+  ]
+}

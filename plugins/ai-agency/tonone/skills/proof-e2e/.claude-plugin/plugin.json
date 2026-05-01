@@ -1,0 +1,16 @@
+{
+  "name": "proof-e2e",
+  "version": "0.9.7",
+  "description": "Build E2E test specs for critical user journeys \u2014 Playwright or Cypress, page objects, setup/teardown, CI config. Use when asked to \"write E2E tests\", \"end-to-end testing\", \"browser tests\", \"UI tests\", or \"Playwright tests\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "proof",
+    "skill"
+  ]
+}

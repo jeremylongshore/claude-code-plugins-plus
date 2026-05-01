@@ -1,0 +1,16 @@
+{
+  "name": "atlas-present",
+  "version": "0.9.7",
+  "description": "Generate a polished HTML presentation page and Obsidian Canvas for big releases \u2014 new products, takeovers, major migrations. Non-technical audience. Use when asked to \"present this\", \"release announcement\", \"show what we built\", or \"stakeholder update\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "atlas",
+    "skill"
+  ]
+}

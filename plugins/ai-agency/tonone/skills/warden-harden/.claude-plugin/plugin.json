@@ -1,0 +1,16 @@
+{
+  "name": "warden-harden",
+  "version": "0.9.7",
+  "description": "Produce a hardening spec and implement it \u2014 auth patterns, security headers, rate limiting, input validation, secrets management, dependency hygiene. Use when asked to \"harden this\", \"add security to this service\", \"what security do I need\", or \"secure this before launch\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "warden",
+    "skill"
+  ]
+}

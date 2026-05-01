@@ -1,0 +1,16 @@
+{
+  "name": "spine-review",
+  "version": "0.9.7",
+  "description": "API and backend code review \u2014 REST conventions, auth, validation, error handling, pagination, rate limiting, test coverage. Use when asked to \"review this API\", \"code review\", \"review backend\", or \"pre-launch backend check\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "spine",
+    "skill"
+  ]
+}

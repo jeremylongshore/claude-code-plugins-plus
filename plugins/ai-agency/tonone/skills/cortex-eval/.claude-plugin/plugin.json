@@ -1,0 +1,16 @@
+{
+  "name": "cortex-eval",
+  "version": "0.9.7",
+  "description": "Evaluate model performance \u2014 check for accuracy drops, data drift, and error patterns. Use when asked about \"model accuracy dropped\", \"evaluate the model\", \"check for drift\", or \"model performance\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "cortex",
+    "skill"
+  ]
+}

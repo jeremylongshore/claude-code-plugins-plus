@@ -1,0 +1,16 @@
+{
+  "name": "pave-golden",
+  "version": "0.9.7",
+  "description": "Define a golden path \u2014 the opinionated, supported way to do a common developer task (create a new service, set up an environment, deploy a feature). Produces concrete steps, templates, and tooling. Use when asked to \"golden path\", \"create project template\", \"scaffold a new service\", \"how should we create services\", or \"standardize our setup\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "pave",
+    "skill"
+  ]
+}

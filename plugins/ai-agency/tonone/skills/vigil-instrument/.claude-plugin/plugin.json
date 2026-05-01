@@ -1,0 +1,16 @@
+{
+  "name": "vigil-instrument",
+  "version": "0.9.7",
+  "description": "Instrument a service with OpenTelemetry \u2014 RED metrics, structured logs, distributed tracing, and health checks. Outputs actual code and config, not a plan. Use when asked to \"add monitoring\", \"instrument this\", \"add logging\", \"set up tracing\", or \"observability\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "vigil",
+    "skill"
+  ]
+}

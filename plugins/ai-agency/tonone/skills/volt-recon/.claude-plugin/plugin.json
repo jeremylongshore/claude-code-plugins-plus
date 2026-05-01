@@ -1,0 +1,16 @@
+{
+  "name": "volt-recon",
+  "version": "0.9.7",
+  "description": "Firmware reconnaissance for takeover \u2014 inventory the MCU, peripherals, RTOS, protocols, OTA, power management, and assess code quality with risk flags. Use when asked to \"understand this firmware\", \"device inventory\", or \"embedded assessment\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "volt",
+    "skill"
+  ]
+}

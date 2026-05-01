@@ -1,0 +1,16 @@
+{
+  "name": "echo-recon",
+  "version": "0.9.7",
+  "description": "User research reconnaissance \u2014 survey existing personas, research docs, interview notes, and feedback artifacts to establish what is already known about users. Use when asked to \"what research exists\", \"review existing personas\", \"what do we know about our users\", or before starting new research or synthesis work.",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "echo",
+    "skill"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "name": "lens-metrics",
+  "version": "0.9.7",
+  "description": "Produce a complete metrics definition doc \u2014 metric name, formula, data source, segmentation, SQL or event tracking spec, and what good/bad looks like. Given a product area, outputs the full metrics spec. Use when asked to \"define KPIs\", \"metrics framework\", \"what should we measure\", \"north star metric\", or \"instrument this feature\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "lens",
+    "skill"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "name": "helm-arbiter",
+  "version": "0.9.7",
+  "description": "Scope arbitration \u2014 resolve disagreements between product and engineering on what is in or out of scope, with a decision log and escalation path. Use when asked to \"resolve this scope disagreement\", \"arbitrate between product and eng\", \"scope is creeping\", \"we can't agree on what's in scope\", or \"help us decide what to cut\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "helm",
+    "skill"
+  ]
+}

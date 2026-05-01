@@ -1,0 +1,16 @@
+{
+  "name": "spine-design",
+  "version": "0.9.7",
+  "description": "Produce a system design doc \u2014 components, data flow, decisions made, tradeoffs, failure modes. Not a list of options. An actual design with calls made. Use when asked for \"system design for\", \"architect this\", \"how should we build\", or \"design the backend\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "spine",
+    "skill"
+  ]
+}

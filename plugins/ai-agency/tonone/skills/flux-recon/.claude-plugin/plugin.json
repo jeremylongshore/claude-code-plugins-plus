@@ -1,0 +1,16 @@
+{
+  "name": "flux-recon",
+  "version": "0.9.7",
+  "description": "Database reconnaissance \u2014 full inventory of schema, migrations, data volume, backups, connection pooling, and query patterns. Use when asked to \"assess this database\", \"understand the schema\", or \"database health check\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "flux",
+    "skill"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "name": "touch-app",
+  "version": "0.9.7",
+  "description": "Produce a complete mobile app architecture design \u2014 platform choice, navigation structure, state management, data layer, key screens. Use when asked to \"build a mobile app\", \"new app\", \"create iOS/Android app\", \"app architecture\", or \"cross-platform app\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "touch",
+    "skill"
+  ]
+}

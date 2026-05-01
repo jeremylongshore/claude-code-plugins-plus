@@ -1,0 +1,16 @@
+{
+  "name": "proof-api",
+  "version": "0.9.7",
+  "description": "Build API test suites \u2014 endpoint testing, contract testing, load testing for REST/GraphQL/gRPC APIs. Use when asked to \"test this API\", \"API tests\", \"endpoint testing\", \"contract tests\", or \"load test\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "proof",
+    "skill"
+  ]
+}

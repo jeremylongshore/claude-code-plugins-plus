@@ -1,0 +1,16 @@
+{
+  "name": "warden-audit",
+  "version": "0.9.7",
+  "description": "Full security audit \u2014 secrets, dependencies, IAM, auth, injection, XSS, HTTPS, rate limiting, public storage. Use when asked for \"security audit\", \"check for vulnerabilities\", \"security review\", or \"are we secure\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "warden",
+    "skill"
+  ]
+}

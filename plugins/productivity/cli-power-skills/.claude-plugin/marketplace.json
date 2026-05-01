@@ -1,0 +1,19 @@
+{
+  "name": "cli-power-skills",
+  "owner": {
+    "name": "ykotik"
+  },
+  "metadata": {
+    "description": "Agentic CLI tool skills for Claude Code — 7 domain-grouped skills covering 27 CLI tools"
+  },
+  "plugins": [
+    {
+      "name": "cli-power-skills",
+      "source": "./",
+      "description": "Agentic CLI tool skills — data processing, security scanning, API testing, web crawling, research, Python tooling, and CI automation",
+      "version": "1.0.0",
+      "keywords": ["cli-tools", "agentic-skills", "data-processing", "security", "web-crawling", "python", "ci-cd"],
+      "category": "productivity"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "name": "flux-query",
+  "version": "0.9.7",
+  "description": "Optimize slow database queries \u2014 analyze execution plans, add indexes, rewrite queries. Use when asked about \"slow query\", \"optimize SQL\", \"query performance\", or \"explain this query\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "flux",
+    "skill"
+  ]
+}

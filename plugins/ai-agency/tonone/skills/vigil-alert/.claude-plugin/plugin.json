@@ -1,0 +1,16 @@
+{
+  "name": "vigil-alert",
+  "version": "0.9.7",
+  "description": "Write SLO-based alert rules with burn rate thresholds and paired runbooks. Outputs actual alert configs, not a strategy doc. Use when asked to \"set up alerts\", \"create runbooks\", \"define SLOs\", or \"alerting strategy\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "vigil",
+    "skill"
+  ]
+}

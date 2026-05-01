@@ -1,0 +1,16 @@
+{
+  "name": "draft-ia",
+  "version": "0.9.7",
+  "description": "Information architecture \u2014 design navigation structure, content hierarchy, sitemap, and taxonomy for a product or feature set. Use when asked to \"organize the navigation\", \"information architecture\", \"how should content be structured\", \"sitemap\", \"nav redesign\", \"where should X live\", or \"content hierarchy\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "draft",
+    "skill"
+  ]
+}

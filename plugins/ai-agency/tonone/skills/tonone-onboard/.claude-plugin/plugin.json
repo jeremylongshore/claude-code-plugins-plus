@@ -1,0 +1,17 @@
+{
+  "name": "tonone-onboard",
+  "version": "0.9.7",
+  "description": "First-run onboarding tour \u2014 guided walkthrough of tonone's 23 agents, key skills, and worktree sessions. Two paths: expert (~90 sec) and newcomer (~8 min). Use when asked \"how do I use tonone\", \"what can tonone do\", \"show me around\", or \"first steps\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "tonone",
+    "skill",
+    "onboarding"
+  ]
+}

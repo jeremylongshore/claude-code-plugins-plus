@@ -1,0 +1,16 @@
+{
+  "name": "proof-audit",
+  "version": "0.9.7",
+  "description": "Audit test suite health \u2014 find flaky tests, slow tests, coverage gaps, and testing anti-patterns. Use when asked to \"audit tests\", \"fix flaky tests\", \"why are tests slow\", \"test health\", or \"improve test suite\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "proof",
+    "skill"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "name": "atlas-changelog",
+  "version": "0.9.7",
+  "description": "Maintain per-repo and cross-repo changelogs \u2014 append structured entries after agent work. Use when asked to \"log this change\", \"update changelog\", \"what changed\", \"change history\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "atlas",
+    "skill"
+  ]
+}

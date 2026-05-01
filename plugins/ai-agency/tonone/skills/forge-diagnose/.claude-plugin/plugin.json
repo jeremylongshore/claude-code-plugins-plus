@@ -1,0 +1,16 @@
+{
+  "name": "forge-diagnose",
+  "version": "0.9.7",
+  "description": "Diagnose runtime infrastructure issues \u2014 cold starts, timeouts, scaling problems, network failures. Use when asked about \"infra is slow\", \"cold starts\", \"network issues\", \"why is this timing out\", \"scaling problem\", \"latency spikes\", or \"service is down\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "forge",
+    "skill"
+  ]
+}

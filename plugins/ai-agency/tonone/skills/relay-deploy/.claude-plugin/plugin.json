@@ -1,0 +1,16 @@
+{
+  "name": "relay-deploy",
+  "version": "0.9.7",
+  "description": "Set up a complete deployment configuration \u2014 Dockerfile, deployment manifest, environment config, and rollback procedure. Use when asked about \"deployment setup\", \"how do I deploy this\", \"deployment strategy\", or \"rollback plan\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "relay",
+    "skill"
+  ]
+}

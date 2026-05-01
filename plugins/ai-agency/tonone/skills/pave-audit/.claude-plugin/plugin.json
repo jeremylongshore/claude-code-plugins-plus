@@ -1,0 +1,16 @@
+{
+  "name": "pave-audit",
+  "version": "0.9.7",
+  "description": "Audit developer experience \u2014 measure onboarding time, build speed, deployment friction, and developer satisfaction. Use when asked to \"DX audit\", \"developer experience review\", \"why is development slow\", \"onboarding assessment\", or \"DORA metrics\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "pave",
+    "skill"
+  ]
+}

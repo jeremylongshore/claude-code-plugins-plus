@@ -1,0 +1,16 @@
+{
+  "name": "echo-interview",
+  "version": "0.9.7",
+  "description": "Run a user interview \u2014 produce an interview guide and synthesize the output into an actionable insight report. Use when asked to \"run a user interview\", \"synthesize these interview notes\", \"what do users actually want\", \"build a persona from this feedback\", \"find the JTBD in these transcripts\", or \"analyze this interview data\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "echo",
+    "skill"
+  ]
+}

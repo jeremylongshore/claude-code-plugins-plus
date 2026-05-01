@@ -1,0 +1,16 @@
+{
+  "name": "prism-component",
+  "version": "0.9.7",
+  "description": "Implement a reusable, accessible, typed component from a design spec. Use when asked to \"create a component\", \"build a widget\", \"implement this design\", or \"reusable UI element\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "prism",
+    "skill"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "name": "crest-narrative",
+  "version": "0.9.7",
+  "description": "Strategic narrative \u2014 write a standalone strategy memo that frames product direction, bets, and rationale for a planning horizon. Use when asked to \"write a strategy doc\", \"product vision\", \"strategic narrative\", \"company strategy memo\", \"planning memo\", or \"explain our product direction\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "crest",
+    "skill"
+  ]
+}

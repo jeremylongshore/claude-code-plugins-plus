@@ -1,0 +1,16 @@
+{
+  "name": "pitch-position",
+  "version": "0.9.7",
+  "description": "Produce a complete positioning document using the Dunford framework \u2014 competitive alternatives, unique attributes, value, best-fit customer, market category, positioning statement, and tagline. Use when asked to \"write our positioning\", \"define our value prop\", \"positioning statement\", \"what market are we in\", \"how do we position against X\", \"what's our tagline\", or \"write our messaging foundation\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "pitch",
+    "skill"
+  ]
+}

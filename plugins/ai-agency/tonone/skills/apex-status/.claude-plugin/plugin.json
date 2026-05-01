@@ -1,0 +1,16 @@
+{
+  "name": "apex-status",
+  "version": "0.9.7",
+  "description": "CTO-level project status from git and codebase state. Use when asked \"where are we\", \"project status\", \"what's done\", or at the start of a work session.",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "apex",
+    "skill"
+  ]
+}

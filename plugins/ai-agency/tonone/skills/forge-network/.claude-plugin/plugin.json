@@ -1,0 +1,16 @@
+{
+  "name": "forge-network",
+  "version": "0.9.7",
+  "description": "Design and build networking infrastructure \u2014 VPCs, subnets, DNS, load balancers, firewall rules. Use when asked to \"set up networking\", \"VPC design\", \"configure DNS\", \"load balancer setup\", \"network architecture\", or \"firewall rules\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "forge",
+    "skill"
+  ]
+}

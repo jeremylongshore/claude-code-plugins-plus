@@ -1,0 +1,16 @@
+{
+  "name": "atlas-onboard",
+  "version": "0.9.7",
+  "description": "Generate onboarding documentation \u2014 what this project does, how to set up locally, where things live, key decisions, how to deploy. Written for day-one engineers who know nothing. Use when asked for \"onboarding docs\", \"new engineer guide\", \"how to get started\", or \"developer setup\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "atlas",
+    "skill"
+  ]
+}

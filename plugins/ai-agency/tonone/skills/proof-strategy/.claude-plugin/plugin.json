@@ -1,0 +1,16 @@
+{
+  "name": "proof-strategy",
+  "version": "0.9.7",
+  "description": "Produce a test strategy for a project or feature \u2014 risk map, test type decisions, coverage targets, CI config. Use when asked to \"create test strategy\", \"what should we test\", \"testing plan\", or \"improve test coverage\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "proof",
+    "skill"
+  ]
+}

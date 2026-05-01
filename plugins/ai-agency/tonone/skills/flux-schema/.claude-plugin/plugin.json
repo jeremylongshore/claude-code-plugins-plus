@@ -1,0 +1,16 @@
+{
+  "name": "flux-schema",
+  "version": "0.9.7",
+  "description": "Design and build database schema \u2014 tables, columns, types, indexes, constraints, relationships. Given a domain description, output the schema and write the files. Use when asked to \"design schema\", \"database design\", \"create tables\", or \"data model\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "flux",
+    "skill"
+  ]
+}

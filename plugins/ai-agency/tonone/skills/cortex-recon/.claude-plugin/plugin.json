@@ -1,0 +1,16 @@
+{
+  "name": "cortex-recon",
+  "version": "0.9.7",
+  "description": "ML reconnaissance \u2014 inventory all models, pipelines, data sources, and monitoring. Use when asked \"what ML do we have\", \"model inventory\", or \"ML assessment\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "cortex",
+    "skill"
+  ]
+}

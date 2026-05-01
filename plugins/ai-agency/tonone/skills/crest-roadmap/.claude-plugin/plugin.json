@@ -1,0 +1,16 @@
+{
+  "name": "crest-roadmap",
+  "version": "0.9.7",
+  "description": "Build a product roadmap with sequenced bets and explicit tradeoffs. Use when asked to \"build a roadmap\", \"prioritize the backlog strategically\", \"what do we build next quarter\", \"sequence our bets\", \"what should we focus on\", or \"product strategy for the next N months\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "crest",
+    "skill"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "name": "flux-health",
+  "version": "0.9.7",
+  "description": "Data quality and pipeline health check \u2014 freshness, schema drift, null rates, orphaned records, pipeline status. Use when asked about \"data quality check\", \"pipeline health\", \"is our data fresh\", or \"schema drift\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "flux",
+    "skill"
+  ]
+}

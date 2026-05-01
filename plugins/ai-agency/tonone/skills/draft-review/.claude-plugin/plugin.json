@@ -1,0 +1,16 @@
+{
+  "name": "draft-review",
+  "version": "0.9.7",
+  "description": "Usability review \u2014 evaluate an existing flow or UI against usability heuristics, flag friction points, and recommend fixes. Use when asked to \"review the UX\", \"usability audit\", \"what's wrong with this flow\", \"UX feedback\", \"critique this design\", or \"why are users dropping off here\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "draft",
+    "skill"
+  ]
+}

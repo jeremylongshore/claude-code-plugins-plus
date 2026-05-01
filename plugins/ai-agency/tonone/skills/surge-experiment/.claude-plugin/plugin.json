@@ -1,0 +1,16 @@
+{
+  "name": "surge-experiment",
+  "version": "0.9.7",
+  "description": "Growth experiment design \u2014 structure a growth hypothesis, define metric, baseline, expected lift, and kill condition for a single experiment. Use when asked to \"design a growth experiment\", \"test this growth idea\", \"experiment framework\", \"how do we test if this works\", or \"growth hypothesis\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "surge",
+    "skill"
+  ]
+}

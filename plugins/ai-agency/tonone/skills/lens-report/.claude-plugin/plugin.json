@@ -1,0 +1,16 @@
+{
+  "name": "lens-report",
+  "version": "0.9.7",
+  "description": "Build a reporting pipeline \u2014 scheduled reports with SQL queries, delivery via Slack or email, threshold alerts, and historical comparison. Use when asked for \"automated reports\", \"scheduled report\", \"email digest\", or \"Slack alerts for metrics\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "lens",
+    "skill"
+  ]
+}

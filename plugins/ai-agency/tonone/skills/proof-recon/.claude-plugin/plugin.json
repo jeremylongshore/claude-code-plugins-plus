@@ -1,0 +1,16 @@
+{
+  "name": "proof-recon",
+  "version": "0.9.7",
+  "description": "Testing reconnaissance \u2014 inventory all tests, frameworks, coverage, CI integration, and assess testing maturity for project takeover. Use when asked to \"understand the tests\", \"testing assessment\", \"what's tested\", or \"test inventory\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "proof",
+    "skill"
+  ]
+}

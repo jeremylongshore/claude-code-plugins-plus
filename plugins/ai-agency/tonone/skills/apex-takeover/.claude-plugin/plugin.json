@@ -1,0 +1,16 @@
+{
+  "name": "apex-takeover",
+  "version": "0.9.7",
+  "description": "System takeover \u2014 take ownership of an existing codebase or inherited system. Use when \"we acquired this\", \"previous team left\", \"take over this system\", \"inherited this codebase\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "apex",
+    "skill"
+  ]
+}

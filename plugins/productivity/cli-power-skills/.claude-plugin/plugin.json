@@ -1,0 +1,9 @@
+{
+  "name": "cli-power-skills",
+  "version": "1.0.0",
+  "description": "Agentic CLI tool skills for Claude Code — 7 domain-grouped skills covering 26 CLI tools",
+  "author": "Yuriy Kotik <ykotik@github.com>",
+  "repository": "https://github.com/ykotik/cli-power-skills",
+  "license": "MIT",
+  "keywords": ["cli-tools", "agentic-skills", "data-processing", "security", "web-crawling", "python", "ci-cd"]
+}

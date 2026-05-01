@@ -1,0 +1,16 @@
+{
+  "name": "draft-wireframe",
+  "version": "0.9.7",
+  "description": "Text and Mermaid wireframes \u2014 produce screen-level layouts with content hierarchy, component placement, and interaction annotations. Use when asked to \"wireframe this\", \"sketch the UI\", \"layout for this screen\", \"lo-fi mockup\", \"screen design\", or \"what should this page look like\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "draft",
+    "skill"
+  ]
+}

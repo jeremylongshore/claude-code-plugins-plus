@@ -1,0 +1,16 @@
+{
+  "name": "helm-recon",
+  "version": "0.9.7",
+  "description": "Product landscape reconnaissance \u2014 survey existing briefs, research, strategy, and team output before writing new briefs or dispatching specialists. Use when asked to \"understand the product state\", \"what briefs exist\", \"what has the team produced\", \"orient me on this product\", or before starting a new product initiative.",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "helm",
+    "skill"
+  ]
+}

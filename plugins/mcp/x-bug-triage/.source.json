@@ -1,6 +1,15 @@
 {
-  "source": "jeremylongshore/x-bug-triage-plugin",
-  "synced_at": "2026-03-24T00:00:00Z",
-  "source_path": ".",
-  "commit": "manual-sync"
+  "synced_from": {
+    "repo": "jeremylongshore/x-bug-triage-plugin",
+    "path": ".",
+    "branch": "main"
+  },
+  "last_sync": "2026-05-01T05:55:42.555Z",
+  "author": {
+    "name": "Jeremy Longshore",
+    "github": "jeremylongshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "license": "MIT",
+  "files_synced": 67
 }

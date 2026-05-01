@@ -1,0 +1,15 @@
+{
+  "synced_from": {
+    "repo": "roboticforce/sugar",
+    "path": ".claude-plugin",
+    "branch": "main"
+  },
+  "last_sync": "2026-05-01T05:54:44.313Z",
+  "author": {
+    "name": "Steven Leggett",
+    "github": "cdnsteve",
+    "email": "contact@roboticforce.io"
+  },
+  "license": "MIT",
+  "files_synced": 15
+}

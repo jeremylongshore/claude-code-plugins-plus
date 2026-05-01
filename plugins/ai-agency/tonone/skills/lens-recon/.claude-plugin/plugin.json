@@ -1,0 +1,16 @@
+{
+  "name": "lens-recon",
+  "version": "0.9.7",
+  "description": "Analytics reconnaissance for takeover \u2014 find all analytics tools, inventory what's tracked and dashboarded, assess data freshness and metric definitions, and present a coverage map. Use when asked \"what analytics exist\", \"BI assessment\", or \"what do we track\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "lens",
+    "skill"
+  ]
+}

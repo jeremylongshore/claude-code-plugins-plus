@@ -1,0 +1,16 @@
+{
+  "name": "apex-plan",
+  "version": "0.9.7",
+  "description": "Plan and scope a project \u2014 discovery, challenge assumptions, present S/M/L options with token and cost estimates. Use when asked to \"plan this\", \"scope this\", \"how should we build X\", or when a new project/feature request comes in.",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "apex",
+    "skill"
+  ]
+}

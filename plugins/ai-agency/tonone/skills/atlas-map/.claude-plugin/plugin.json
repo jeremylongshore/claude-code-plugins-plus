@@ -1,0 +1,16 @@
+{
+  "name": "atlas-map",
+  "version": "0.9.7",
+  "description": "Map the system architecture \u2014 read the codebase, identify services and connections, output a C4-level architecture map as Mermaid diagrams with component descriptions. Use when asked to \"map the architecture\", \"system diagram\", \"how does this work\", or \"architecture overview\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "atlas",
+    "skill"
+  ]
+}

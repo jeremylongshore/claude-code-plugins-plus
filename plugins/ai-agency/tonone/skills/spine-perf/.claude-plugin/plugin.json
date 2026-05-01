@@ -1,0 +1,16 @@
+{
+  "name": "spine-perf",
+  "version": "0.9.7",
+  "description": "Find and fix performance bottlenecks \u2014 N+1 queries, missing indexes, sync bottlenecks, caching gaps. Use when asked \"why is this slow\", \"performance issue\", \"optimize this endpoint\", or \"N+1 queries\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "spine",
+    "skill"
+  ]
+}

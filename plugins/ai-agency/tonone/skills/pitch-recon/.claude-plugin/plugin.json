@@ -1,0 +1,16 @@
+{
+  "name": "pitch-recon",
+  "version": "0.9.7",
+  "description": "Marketing and messaging reconnaissance \u2014 read existing landing pages, copy, positioning docs, and marketing materials to understand the current messaging state. Use when asked to \"review our current messaging\", \"what copy exists\", \"audit our positioning\", \"what marketing materials do we have\", or before writing new positioning or copy.",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "pitch",
+    "skill"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "name": "cortex-prompt",
+  "version": "0.9.7",
+  "description": "Build a production-ready prompt package \u2014 system prompt, few-shot examples, output format, edge case handling, eval criteria. Use when asked to \"prompt engineering\", \"build a prompt\", \"write a system prompt\", or \"improve this prompt\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "cortex",
+    "skill"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "name": "spine-service",
+  "version": "0.9.7",
+  "description": "Build a new production-ready service from scratch \u2014 config management, health checks, graceful shutdown, structured logging. Use when asked to \"new service\", \"scaffold a backend\", \"bootstrap service\", or \"create microservice\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "spine",
+    "skill"
+  ]
+}

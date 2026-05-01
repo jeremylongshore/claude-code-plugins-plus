@@ -1,0 +1,16 @@
+{
+  "name": "touch-recon",
+  "version": "0.9.7",
+  "description": "Mobile reconnaissance \u2014 understand the app's tech stack, architecture, dependencies, and health for takeover. Use when asked to \"understand this app\", \"mobile assessment\", or \"app health\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "touch",
+    "skill"
+  ]
+}

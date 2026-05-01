@@ -1,0 +1,16 @@
+{
+  "name": "pitch-launch",
+  "version": "0.9.7",
+  "description": "Produce an actual launch plan with announcement copy, channel sequence, and day-1 checklist. Use when asked to \"plan a launch\", \"GTM strategy\", \"how do we announce this\", \"launch plan for [feature]\", \"go-to-market\", \"write our Product Hunt post\", or \"how do we get people to notice this\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "pitch",
+    "skill"
+  ]
+}

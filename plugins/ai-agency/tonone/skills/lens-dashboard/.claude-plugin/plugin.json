@@ -1,0 +1,16 @@
+{
+  "name": "lens-dashboard",
+  "version": "0.9.7",
+  "description": "Design and spec an analytical dashboard \u2014 define the question each chart answers, write the SQL queries, spec the layout and refresh cadence. Produces a complete dashboard spec ready to implement. Use when asked to \"build a dashboard\", \"analytics dashboard\", \"BI dashboard\", \"weekly product health\", or \"visualize this data\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "lens",
+    "skill"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "name": "pave-env",
+  "version": "0.9.7",
+  "description": "Set up local development environments \u2014 devcontainers, Docker Compose, one-command setup, dev/prod parity. Use when asked to \"set up dev environment\", \"devcontainer\", \"docker compose for dev\", \"local development setup\", or \"one command to run\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "pave",
+    "skill"
+  ]
+}

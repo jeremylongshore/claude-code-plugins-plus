@@ -1,0 +1,16 @@
+{
+  "name": "surge-recon",
+  "version": "0.9.7",
+  "description": "Growth state reconnaissance \u2014 scan existing onboarding flows, acquisition channels, conversion funnels, and growth experiment logs to understand current growth state. Use when asked to \"what's our growth state\", \"audit the funnel\", \"what growth experiments have we run\", \"acquisition channel inventory\", or before designing new growth experiments.",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "surge",
+    "skill"
+  ]
+}

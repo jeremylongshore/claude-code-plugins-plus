@@ -1,0 +1,16 @@
+{
+  "name": "pitch-copy",
+  "version": "0.9.7",
+  "description": "Landing page and marketing copy \u2014 write hero section, problem/solution blocks, proof points, and CTAs. Use when asked to \"write landing page copy\", \"write the homepage\", \"marketing copy for this feature\", \"product page copy\", \"write the hero section\", or \"write copy for [surface]\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "pitch",
+    "skill"
+  ]
+}

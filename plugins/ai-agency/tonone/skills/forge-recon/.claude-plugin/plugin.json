@@ -1,0 +1,16 @@
+{
+  "name": "forge-recon",
+  "version": "0.9.7",
+  "description": "Infrastructure reconnaissance \u2014 inventory all cloud resources, map connections, flag risks. Use when asked to \"inventory our infra\", \"what infrastructure do we have\", \"map our cloud resources\", \"infra discovery\", or \"what's running in our cloud\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "forge",
+    "skill"
+  ]
+}

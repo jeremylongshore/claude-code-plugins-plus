@@ -1,0 +1,16 @@
+{
+  "name": "touch-feature",
+  "version": "0.9.7",
+  "description": "Produce a mobile feature spec \u2014 user story, technical approach, component breakdown, platform-specific considerations, edge cases. Use when asked to \"add a screen\", \"spec this feature\", \"mobile feature\", \"new tab\", \"push notifications\", or \"deep link\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "touch",
+    "skill"
+  ]
+}

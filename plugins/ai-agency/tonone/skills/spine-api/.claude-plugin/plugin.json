@@ -1,0 +1,16 @@
+{
+  "name": "spine-api",
+  "version": "0.9.7",
+  "description": "Design and spec an API \u2014 endpoints, request/response shapes, error codes, auth pattern, pagination. Applies Stripe's consistency principles. Use when asked to \"design an API\", \"build API endpoints\", \"create REST API\", or \"API for this feature\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "spine",
+    "skill"
+  ]
+}

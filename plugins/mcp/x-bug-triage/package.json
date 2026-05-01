@@ -1,6 +1,6 @@
 {
   "name": "x-bug-triage-plugin",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "private": true,
   "description": "Closed-loop bug triage: X complaints → clusters → repo evidence → owner routing → terminal review → filed issues",
   "author": "Jeremy Longshore <jeremy@intentsolutions.io>",

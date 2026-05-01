@@ -1,0 +1,16 @@
+{
+  "name": "draft-recon",
+  "version": "0.9.7",
+  "description": "UI and UX reconnaissance \u2014 scan existing frontend routes, components, navigation, and flows to understand the current UX state before designing. Use when asked to \"understand the current UI\", \"what UX patterns exist\", \"map the navigation\", \"what screens exist\", or before starting any flow or wireframe work.",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "draft",
+    "skill"
+  ]
+}

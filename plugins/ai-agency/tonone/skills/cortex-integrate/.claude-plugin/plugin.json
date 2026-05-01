@@ -1,0 +1,16 @@
+{
+  "name": "cortex-integrate",
+  "version": "0.9.7",
+  "description": "Design and implement an AI feature integration \u2014 model selection, architecture pattern, system prompt, data flow, error handling, cost estimate. Use when asked to \"add AI to this\", \"LLM integration\", \"add Claude/GPT\", or \"AI-powered feature\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "cortex",
+    "skill"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "name": "warden-threat",
+  "version": "0.9.7",
+  "description": "Produce a threat model \u2014 assets, ranked threats, mitigations, accepted risks. Use when asked to \"threat model this\", \"what could go wrong security-wise\", \"map our attack surface\", or before designing any security-sensitive feature.",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "warden",
+    "skill"
+  ]
+}

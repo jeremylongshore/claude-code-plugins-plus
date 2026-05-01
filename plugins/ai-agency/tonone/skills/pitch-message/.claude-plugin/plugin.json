@@ -1,0 +1,16 @@
+{
+  "name": "pitch-message",
+  "version": "0.9.7",
+  "description": "Messaging framework \u2014 produce a full headline, subheadline, proof points, and CTA hierarchy for use across all surfaces. Use when asked to \"write our messaging\", \"messaging framework\", \"what should our headline say\", \"copy hierarchy\", \"tagline and messaging\", or \"how do we talk about the product\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "pitch",
+    "skill"
+  ]
+}

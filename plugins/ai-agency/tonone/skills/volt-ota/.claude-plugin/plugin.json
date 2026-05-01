@@ -1,0 +1,16 @@
+{
+  "name": "volt-ota",
+  "version": "0.9.7",
+  "description": "Produce a complete OTA update system design \u2014 partition layout, update flow, rollback conditions, validation checks, fleet management approach, failure modes and recovery. Use when asked about \"OTA updates\", \"firmware updates over the air\", \"how do I update devices in the field\", \"OTA strategy\", or \"remote firmware update design\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "volt",
+    "skill"
+  ]
+}

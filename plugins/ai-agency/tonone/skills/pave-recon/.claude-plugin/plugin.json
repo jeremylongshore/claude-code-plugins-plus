@@ -1,0 +1,16 @@
+{
+  "name": "pave-recon",
+  "version": "0.9.7",
+  "description": "Platform reconnaissance \u2014 inventory all developer tooling, environments, build systems, and developer workflows for project takeover. Use when asked to \"understand the dev setup\", \"developer tooling assessment\", \"platform assessment\", or \"how do developers work here\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "pave",
+    "skill"
+  ]
+}

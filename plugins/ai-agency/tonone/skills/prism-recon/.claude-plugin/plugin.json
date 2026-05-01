@@ -1,0 +1,16 @@
+{
+  "name": "prism-recon",
+  "version": "0.9.7",
+  "description": "Frontend reconnaissance \u2014 map the component tree, routing, state management, build config, and assess quality. Use when asked to \"understand this frontend\", \"frontend assessment\", or \"what's the UI built with\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "prism",
+    "skill"
+  ]
+}

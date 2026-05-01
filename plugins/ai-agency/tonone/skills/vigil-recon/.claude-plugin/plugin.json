@@ -1,0 +1,16 @@
+{
+  "name": "vigil-recon",
+  "version": "0.9.7",
+  "description": "Observability reconnaissance \u2014 inventory what monitoring exists, map coverage, highlight blind spots. Use when asked \"what monitoring exists\", \"observability assessment\", or \"what can we see\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "vigil",
+    "skill"
+  ]
+}

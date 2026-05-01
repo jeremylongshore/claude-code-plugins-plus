@@ -1,0 +1,16 @@
+{
+  "name": "atlas-recon",
+  "version": "0.9.7",
+  "description": "Documentation reconnaissance for takeover \u2014 find all docs, assess accuracy, freshness, coverage, and discoverability, and identify critical knowledge gaps. Use when asked \"what docs exist\", \"documentation assessment\", or \"knowledge gaps\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "atlas",
+    "skill"
+  ]
+}

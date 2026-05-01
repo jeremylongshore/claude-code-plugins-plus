@@ -1,0 +1,16 @@
+{
+  "name": "touch-release",
+  "version": "0.9.7",
+  "description": "Set up mobile release pipeline \u2014 Fastlane, code signing, CI, beta distribution, versioning. Use when asked about \"app store setup\", \"release pipeline\", \"fastlane\", \"beta distribution\", or \"signing\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "touch",
+    "skill"
+  ]
+}

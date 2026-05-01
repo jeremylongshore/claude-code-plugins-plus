@@ -1,0 +1,16 @@
+{
+  "name": "form-component",
+  "version": "0.9.7",
+  "description": "|",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "form",
+    "skill"
+  ]
+}

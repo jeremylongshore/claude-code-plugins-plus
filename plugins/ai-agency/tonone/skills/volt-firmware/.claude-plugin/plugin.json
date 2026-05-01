@@ -1,0 +1,16 @@
+{
+  "name": "volt-firmware",
+  "version": "0.9.7",
+  "description": "Produce a complete firmware architecture spec for a described device \u2014 layer diagram, module responsibilities, HAL interface definitions, key state machines, RTOS decision. Use when asked to \"design firmware architecture\", \"plan embedded firmware\", \"architect an IoT device\", \"how should I structure this firmware\", or given a device description and asked what the firmware should look like.",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "volt",
+    "skill"
+  ]
+}

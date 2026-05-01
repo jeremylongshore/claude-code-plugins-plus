@@ -1,0 +1,16 @@
+{
+  "name": "echo-segment",
+  "version": "0.9.7",
+  "description": "User segmentation and persona creation from mixed data sources \u2014 analytics, CRM, support tickets, reviews, or any combination. Use when asked to \"build personas\", \"who are our users\", \"segment our users\", \"create user profiles\", \"define user archetypes\", or \"who is the target user\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "echo",
+    "skill"
+  ]
+}

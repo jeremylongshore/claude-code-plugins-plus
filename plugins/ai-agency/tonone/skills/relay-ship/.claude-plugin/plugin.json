@@ -1,0 +1,16 @@
+{
+  "name": "relay-ship",
+  "version": "0.9.7",
+  "description": "End-to-end ship workflow \u2014 merge base, run tests, review diff, bump version, commit, push, create PR. Use when asked to \"ship\", \"push to main\", \"create a PR\", \"get this merged\", or \"deploy this branch\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "relay",
+    "skill"
+  ]
+}

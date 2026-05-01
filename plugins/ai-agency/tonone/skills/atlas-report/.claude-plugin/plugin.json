@@ -1,0 +1,16 @@
+{
+  "name": "atlas-report",
+  "version": "0.9.7",
+  "description": "Render agent findings as a styled HTML report in the browser. Use when asked for \"full report\", \"detailed report\", \"show in browser\", or when CLI output exceeds the 40-line budget.",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "atlas",
+    "skill"
+  ]
+}

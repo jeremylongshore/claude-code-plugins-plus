@@ -1,0 +1,16 @@
+{
+  "name": "cortex-model",
+  "version": "0.9.7",
+  "description": "Build an ML pipeline \u2014 from data to trained model to serving endpoint. Use when asked to \"build ML model\", \"train a model\", \"prediction pipeline\", \"classification\", or \"regression\".",
+  "author": {
+    "name": "tonone-ai",
+    "url": "https://tonone.ai"
+  },
+  "repository": "https://github.com/tonone-ai/tonone",
+  "license": "MIT",
+  "type": "skill",
+  "keywords": [
+    "cortex",
+    "skill"
+  ]
+}
