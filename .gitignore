@@ -56,8 +56,19 @@ build/
 coverage/
 
 # Private documentation and business documents (NEVER commit)
-000-docs/
-# EXCEPT: 6767 canonical standards (cross-repo standards)
+#
+# Two-part rule because git can't re-include files inside an excluded *directory*:
+# 1) Ignore nested 000-docs/ everywhere (e.g. plugins/saas-packs/*/000-docs/)
+#    — these are per-pack private docs, never tracked.
+# 2) For ROOT-level 000-docs/, ignore at file level so we can re-include the
+#    canonical cross-repo standards via `!` rules below.
+**/000-docs/
+000-docs/*
+000-docs/**/*
+# EXCEPT root-level canonical cross-repo standards:
+#   v4.3 standard: 000-* prefix (current — see 000-DR-STND-document-filing-system.md)
+#   v3.x legacy:   6767-* prefix (kept tracked during transition; will deprecate)
+!000-docs/000-*.md
 !000-docs/6767*.md
 website/
 
