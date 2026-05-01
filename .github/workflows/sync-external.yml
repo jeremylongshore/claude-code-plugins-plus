@@ -96,6 +96,14 @@ jobs:
 
       - name: Create Pull Request
         if: steps.changes.outputs.has_changes == 'true' && inputs.dry_run != true
+        # HUSKY=0 disables the husky pre-commit hook for the action's internal
+        # `git commit`. The hook (installed by PR #629) runs lint-staged →
+        # `bunx @biomejs/biome` (bun isn't on the runner — ENOENT) and
+        # `pnpm prettier --write` (gets SIGKILL trying to format thousands of
+        # synced files). The auto-PR is reviewable, so skipping pre-commit
+        # here is safe — actual quality gates run on the PR via CI.
+        env:
+          HUSKY: 0
         uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
