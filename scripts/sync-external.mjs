@@ -80,15 +80,20 @@ async function fetchFromGitHub(repo, filePath, branch = 'main') {
         if (res.statusCode === 200) {
           try {
             const json = JSON.parse(data);
-            if (json.content) {
-              // Decode base64 content
-              const content = Buffer.from(json.content, 'base64').toString('utf8');
+            // File response — `content` may be an empty string for 0-byte
+            // files (e.g. .gitkeep, blank __init__.py) which is still a valid
+            // file we want to copy. Use type === 'file' as the truth-source.
+            if (json.type === 'file' || typeof json.content === 'string') {
+              const content = Buffer.from(json.content || '', 'base64').toString('utf8');
               resolve({ content, sha: json.sha, path: json.path });
             } else if (Array.isArray(json)) {
               // Directory listing
               resolve({ type: 'directory', files: json });
+            } else if (json.type === 'submodule' || json.type === 'symlink') {
+              // Skip submodules and symlinks — can't safely mirror these as plain files
+              resolve(null);
             } else {
-              reject(new Error(`Unexpected response format for ${filePath}`));
+              reject(new Error(`Unexpected response format for ${filePath} (type=${json.type ?? 'none'})`));
             }
           } catch (e) {
             reject(new Error(`Failed to parse response: ${e.message}`));
@@ -327,7 +332,11 @@ async function main() {
   }
 
   log('\n');
-  process.exit(errors.length > 0 ? 1 : 0);
+  // Exit 1 only on TOTAL failure (no source succeeded). Partial failures
+  // print warnings and are surfaced via the GitHub Actions summary, but they
+  // shouldn't block downstream steps that need to commit the partial sync.
+  const totalFailures = errors.length === sourcesToSync.length;
+  process.exit(totalFailures ? 1 : 0);
 }
 
 // Run
