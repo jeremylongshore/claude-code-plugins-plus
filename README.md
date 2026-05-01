@@ -1,13 +1,13 @@
 # Tons of Skills — Claude Code Plugins Marketplace
 
 [![CLI](https://img.shields.io/badge/CLI-ccpi-blueviolet?logo=npm)](https://www.npmjs.com/package/@intentsolutionsio/ccpi)
-[![Plugins](https://img.shields.io/badge/plugins-423-blue)](https://tonsofskills.com/explore)
-[![Skills](https://img.shields.io/badge/skills-2%2C849-green)](https://tonsofskills.com/skills)
+[![Plugins](https://img.shields.io/badge/plugins-425-blue)](https://tonsofskills.com/explore)
+[![Skills](https://img.shields.io/badge/skills-2%2C851-green)](https://tonsofskills.com/skills)
 [![GitHub Stars](https://img.shields.io/github/stars/jeremylongshore/claude-code-plugins-plus-skills?style=social)](https://github.com/jeremylongshore/claude-code-plugins-plus-skills)
 [![Sponsor: Nixtla](https://img.shields.io/badge/Sponsor-nixtla.io-ff6b35)](https://nixtla.io)
 [![Buy me a monster](https://img.shields.io/badge/Buy%20me%20a-Monster-FFDD00?logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/jeremylongshore)
 
-423 plugins, 2,849 skills, 177 agents, 16 community contributors — validated and ready to install.
+425 plugins, 2,851 skills, 177 agents, 16 community contributors — validated and ready to install.
 
 ```bash
 pnpm add -g @intentsolutionsio/ccpi    # Install the CLI
@@ -100,7 +100,7 @@ Jump to any of the 18 categories below. Plugin counts are catalog totals — aut
 
 |   | Category | Plugins |
 |---|----------|--------:|
-| 🤖 | [AI & Machine Learning](#ai--machine-learning) | 34 |
+| 🤖 | [AI & Machine Learning](#ai--machine-learning) | 36 |
 | 🎭 | [AI Agents & Agency](#ai-agents--agency) | 7 |
 | 🔌 | [API Development](#api-development) | 25 |
 | 💼 | [Business Tools](#business-tools) | 21 |
@@ -121,7 +121,7 @@ Jump to any of the 18 categories below. Plugin counts are catalog totals — aut
 
 ### AI & Machine Learning
 
-🤖 **34 plugins** · category slug: `ai-ml`
+🤖 **36 plugins** · category slug: `ai-ml`
 
 | Plugin | Description |
 |--------|-------------|
@@ -143,6 +143,8 @@ Jump to any of the 18 categories below. Plugin counts are catalog totals — aut
 | `jeremy-adk-software-engineer` | ADK software engineer for creating production-ready agents (placeholder - to be implemented) |
 | `jeremy-gcp-starter-examples` | Google Cloud starter kits and example code aggregator with ADK samples |
 | `jeremy-genkit-pro` | Firebase Genkit expert for production-ready AI workflows with RAG and tool calling |
+| `jeremy-google-adk` | Google Agent Development Kit (ADK) starter for building production AI agents — ReAct single-agent or multi-agent orchestration… |
+| `jeremy-vertex-ai` | Build and deploy generative AI agents on Vertex AI: Gemini model selection, RAG with grounded retrieval, function calling, multimodal… |
 | `jeremy-vertex-engine` | Vertex AI Agent Engine deployment inspector and runtime validator |
 | `jeremy-vertex-validator` | Production readiness validator for Vertex AI deployments and configurations |
 | `local-tts` | Offline text-to-speech via VoxCPM2 — 30 languages, voice design, voice cloning. Runs locally on Apple Silicon. |

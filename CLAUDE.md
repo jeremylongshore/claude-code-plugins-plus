@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-Tons of Skills — Claude Code plugins marketplace (423 plugins, 2,849 skills, 177 agents). Live at https://tonsofskills.com
+Tons of Skills — Claude Code plugins marketplace (425 plugins, 2,851 skills, 177 agents). Live at https://tonsofskills.com
 
 **Monorepo structure:** pnpm workspaces (v9.15.9+)
 - `plugins/[category]/*` - AI instruction plugins (Markdown, ~98% of plugins)

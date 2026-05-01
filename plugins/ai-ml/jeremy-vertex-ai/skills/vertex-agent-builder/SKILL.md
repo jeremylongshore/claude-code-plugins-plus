@@ -1,11 +1,12 @@
 ---
 name: vertex-agent-builder
-description: 'Build and deploy production-ready generative AI agents using Vertex
-  AI, Gemini models, and Google Cloud infrastructure with RAG, function calling, and
-  multi-modal capabilities. Use when appropriate context detected. Trigger with relevant
-  phrases based on skill purpose.
-
-  '
+description: |
+  Build and deploy generative AI agents on Vertex AI: Gemini model selection,
+  RAG with grounded retrieval, function calling, multimodal extraction, evaluation,
+  and Agent Engine deployment with operational guardrails (logs, alerts, cost
+  controls). Use when designing, deploying, or operating Vertex AI agents on
+  Google Cloud. Trigger with "build a Vertex agent", "deploy to Agent Engine",
+  or "wire up RAG on Vertex AI".
 allowed-tools: Read, Write, Edit, Grep, Bash(cmd:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -67,9 +68,9 @@ Build and deploy production-ready agents on Vertex AI with Gemini models, retrie
 
 ## Resources
 
-- Full detailed guide (kept for reference): `${CLAUDE_SKILL_DIR}/references/SKILL.full.md`
-- Repo standards (source of truth):
-  - `000-docs/6767-a-SPEC-DR-STND-claude-code-plugins-standard.md`
-  - `000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md`
+- Implementation patterns (model selection, RAG wiring, deployment config): `${CLAUDE_SKILL_DIR}/references/implementation.md`
+- Worked examples (RAG support agent, multimodal extraction): `${CLAUDE_SKILL_DIR}/references/examples.md`
+- Error-handling and recovery patterns: `${CLAUDE_SKILL_DIR}/references/errors.md`
+- Product / architecture context: `${CLAUDE_SKILL_DIR}/PRD.md`, `${CLAUDE_SKILL_DIR}/ARD.md`
 - Vertex AI docs: https://cloud.google.com/vertex-ai/docs
 - Agent Engine docs: https://cloud.google.com/vertex-ai/docs/agent-engine

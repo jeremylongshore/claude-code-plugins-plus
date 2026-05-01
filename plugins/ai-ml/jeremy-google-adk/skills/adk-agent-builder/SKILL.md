@@ -1,11 +1,12 @@
 ---
 name: adk-agent-builder
-description: 'Build production-ready AI agents using Google''s Agent Development Kit
-  with AI assistant integration, React patterns, multi-agent orchestration, and comprehensive
-  tool libraries. Use when appropriate context detected. Trigger with relevant phrases
-  based on skill purpose.
-
-  '
+description: |
+  Scaffold production-ready AI agents on Google's Agent Development Kit (ADK):
+  ReAct-style single agents, multi-agent orchestration (Sequential/Parallel/Loop),
+  tool wiring, evaluation, and optional Vertex AI Agent Engine deployment.
+  Use when building, scaffolding, or deploying ADK agents on Google Cloud, or
+  when wiring ADK tools and orchestration patterns. Trigger with "build an ADK
+  agent", "scaffold an agent on ADK", or "deploy to Agent Engine".
 allowed-tools: Read, Write, Edit, Grep, Bash(cmd:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -70,8 +71,8 @@ Build production-ready agents with Google’s Agent Development Kit (ADK): scaff
 
 ## Resources
 
-- Full detailed guide (kept for reference): `${CLAUDE_SKILL_DIR}/references/SKILL.full.md`
-- Repo standards (source of truth):
-  - `000-docs/6767-a-SPEC-DR-STND-claude-code-plugins-standard.md`
-  - `000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md`
+- Implementation patterns (scaffolds, tool wiring, orchestration): `${CLAUDE_SKILL_DIR}/references/implementation.md`
+- Worked examples (single-agent + multi-agent): `${CLAUDE_SKILL_DIR}/references/examples.md`
+- Error-handling and recovery patterns: `${CLAUDE_SKILL_DIR}/references/errors.md`
+- Product / architecture context: `${CLAUDE_SKILL_DIR}/PRD.md`, `${CLAUDE_SKILL_DIR}/ARD.md`
 - ADK / Agent Engine docs: https://cloud.google.com/vertex-ai/docs/agent-engine

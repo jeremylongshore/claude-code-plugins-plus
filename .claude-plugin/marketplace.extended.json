@@ -6197,6 +6197,55 @@
       }
     },
     {
+      "name": "jeremy-google-adk",
+      "source": "./plugins/ai-ml/jeremy-google-adk",
+      "description": "Google Agent Development Kit (ADK) starter for building production AI agents \u2014 ReAct single-agent or multi-agent orchestration (Sequential/Parallel/Loop), tool wiring, evaluation harness, and optional Vertex AI Agent Engine deployment.",
+      "version": "2.0.0",
+      "category": "ai-ml",
+      "keywords": [
+        "google",
+        "adk",
+        "agent-development-kit",
+        "ai-agents",
+        "react-pattern",
+        "multi-agent",
+        "vertex-ai",
+        "agent-engine"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "components": {
+        "skills": 1,
+        "commands": 1
+      }
+    },
+    {
+      "name": "jeremy-vertex-ai",
+      "source": "./plugins/ai-ml/jeremy-vertex-ai",
+      "description": "Build and deploy generative AI agents on Vertex AI: Gemini model selection, RAG with grounded retrieval, function calling, multimodal extraction, evaluation, and Agent Engine deployment with operational guardrails.",
+      "version": "2.0.0",
+      "category": "ai-ml",
+      "keywords": [
+        "vertex-ai",
+        "gemini",
+        "google-cloud",
+        "generative-ai",
+        "rag",
+        "agent-engine",
+        "function-calling",
+        "multimodal"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "components": {
+        "skills": 1
+      }
+    },
+    {
       "name": "jeremy-genkit-terraform",
       "source": "./plugins/devops/jeremy-genkit-terraform",
       "description": "Terraform modules for Firebase Genkit infrastructure and deployments",
@@ -7461,7 +7510,7 @@
     {
       "name": "langchain-pack",
       "source": "./plugins/saas-packs/langchain-pack",
-      "description": "Legacy LangChain integration skill pack with 24 skills covering chains, agents, RAG pipelines, memory, and LLM application development. Deprecated — use langchain-py-pack or langchain-ts-pack.",
+      "description": "Legacy LangChain integration skill pack with 24 skills covering chains, agents, RAG pipelines, memory, and LLM application development. Deprecated \u2014 use langchain-py-pack or langchain-ts-pack.",
       "version": "1.0.0",
       "category": "saas-packs",
       "keywords": [
