@@ -74,6 +74,9 @@ jobs:
       - name: Verify README TOC is in sync with catalog
         run: node scripts/generate-readme-toc.mjs --check
 
+      - name: Verify README Killer-Skill block is in sync with spotlights.json
+        run: node scripts/render-spotlight.mjs --check
+
       - name: Validate JSON files
         run: |
           echo "Validating JSON files..."

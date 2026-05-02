@@ -82,8 +82,42 @@ Run `pnpm run sync-marketplace` after editing `.extended.json`. CI fails if out 
 | `marketplace/src/data/unified-search-index.json` | `generate-unified-search.mjs` (build step 3) |
 | `marketplace/src/data/cowork-manifest.json` | `build-cowork-zips.mjs` (build step 4) |
 | `README.md` TOC block (between `AUTO-TOC:START`/`AUTO-TOC:END` sentinels) | `node scripts/generate-readme-toc.mjs` (CI-enforced via `--check`) |
+| `README.md` Killer-Skill block (between `KILLER-SKILL:START`/`KILLER-SKILL:END` sentinels) | `node scripts/render-spotlight.mjs` (CI-enforced via `--check`); source of truth = `marketplace/src/data/spotlights.json` |
 | `marketplace/src/data/npm-stats.json` + `README.md` NPM-STATS block | `node scripts/fetch-npm-stats.mjs` (daily cron via `update-npm-stats.yml`) |
 | Per-plugin `plugins/**/package.json` (for npm tracking) | `node scripts/generate-plugin-package-jsons.mjs` (idempotent; touches only plugins without one) |
+
+## Killer Skill of the Week — Editorial Workflow
+
+Single source of truth: **`marketplace/src/data/spotlights.json`** (drives both `KillerSkills.astro` on the homepage and the `KILLER-SKILL` block in README).
+
+**Picking is editorial — not automated.** You decide who/when. The tooling just removes the rotation tedium.
+
+### Promote a new spotlight
+
+1. Write a JSON file (or pipe via stdin) with the new spotlight content. Required fields: `pluginSlug`, `headline`, `author`, `authorGithub`, `grade`, `category`, `link`. Optional: `whyKiller`, `quote`, `skillCount`.
+2. Run the promote script:
+
+   ```bash
+   node scripts/promote-spotlight.mjs path/to/new-spotlight.json
+   # or
+   node scripts/promote-spotlight.mjs --stdin < new-spotlight.json
+   ```
+
+3. The script atomically rotates: previous `spotlight` → top of `hallOfFame` (tagged with the previous week's ISO label), new content → `spotlight`, `week` → today's ISO week, `meta.lastUpdated` → today, `meta.version` minor-bumped. Then it regenerates the README block via `render-spotlight.mjs`.
+4. Commit + PR + merge. CI (`Verify README Killer-Skill block is in sync`) blocks any drift.
+
+### Render-only (no rotation)
+
+Use when you hand-edit `spotlights.json` and just want the README block synced:
+
+```bash
+node scripts/render-spotlight.mjs           # write README
+node scripts/render-spotlight.mjs --check   # CI: exit 1 if README is out of sync
+```
+
+### Why not Changesets / weekly cron / auto-pick
+
+Marketing surface — taste-driven, not metric-driven. The "auto-pick by stars / by latest A-grade / by GitHub star delta" patterns lose editorial control. Tooling here only removes drift between the two render surfaces and the manual JSON-array surgery; humans still curate.
 
 ## npm Publish Pipeline
 

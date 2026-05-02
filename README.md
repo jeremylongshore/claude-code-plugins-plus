@@ -21,17 +21,19 @@ Or use Claude's built-in command:
 
 **[Browse the marketplace](https://tonsofskills.com)** | **[Explore plugins](https://tonsofskills.com/explore)** | **[Download bundles](https://tonsofskills.com/cowork)**
 
-> **Killer Skill of the Week** — [skyvern](https://github.com/Skyvern-AI/skyvern) by Skyvern-AI ([@Skyvern-AI](https://github.com/Skyvern-AI)). Sourced into the catalog by [@mark1ian](https://github.com/mark1ian).
+<!-- KILLER-SKILL:START — do not edit; run `node scripts/render-spotlight.mjs` -->
+> **Killer Skill of the Week** — [skyvern](https://github.com/Skyvern-AI/skyvern) by [Skyvern-AI](https://github.com/Skyvern-AI)
 >
 > **AI agents that drive your browser. 21,000 stars of Selenium-killer.**
 >
-> Skyvern automates browser-based workflows with vision-language models — point it at a page, describe the goal, and the agent navigates, fills forms, handles 2FA, and extracts data. Where Selenium and Playwright break the moment a page redesigns, Skyvern adapts because it sees the page like a human would. The CLI skill exposes Skyvern's task runner inside Claude Code: navigate, fill forms, extract data, handle logins, and stream back structured results. Pulled into the marketplace via daily external sync from [Skyvern-AI/skyvern](https://github.com/Skyvern-AI/skyvern) (AGPL-3.0).
+> Skyvern automates browser-based workflows with vision-language models — point it at a page, describe the goal, and the agent navigates, fills forms, handles 2FA, and extracts data. Where Selenium and Playwright break the moment a page redesigns, Skyvern adapts because it sees the page like a human would. The CLI skill exposes Skyvern's task runner inside Claude Code: navigate, fill forms, extract data, handle logins, and stream back structured results. Pulled into the marketplace via daily external sync from Skyvern-AI/skyvern (AGPL-3.0). Sourced into the catalog by community contributor @mark1ian.
 >
 > *"Automate browser-based workflows using LLMs and computer vision."* — Skyvern-AI
 >
 > Grade: A | Week of May 2, 2026 (W18) | [View on GitHub](https://github.com/Skyvern-AI/skyvern)
 >
 > Previous picks: [code-cleanup](https://tonsofskills.com/plugins/code-cleanup), [web-analytics](https://tonsofskills.com/plugins/web-analytics), [token-optimizer](https://github.com/alexgreensh/token-optimizer), [executive-assistant-skills](https://tonsofskills.com/plugins/executive-assistant-skills), [skill-creator](https://tonsofskills.com/plugins/skill-creator), [cursor-pack](https://tonsofskills.com/plugins/cursor-pack), [crypto-portfolio-tracker](https://tonsofskills.com/plugins/crypto-portfolio-tracker). See all at [tonsofskills.com](https://tonsofskills.com).
+<!-- KILLER-SKILL:END -->
 
 ---
 
