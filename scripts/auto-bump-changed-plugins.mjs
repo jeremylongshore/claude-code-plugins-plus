@@ -39,7 +39,7 @@
  *   1 — git diff failed or a package.json couldn't be parsed
  */
 
-import { execSync } from 'node:child_process';
+import { spawnSync } from 'node:child_process';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 
@@ -81,34 +81,50 @@ function pluginDirFor(relPath) {
   return parts.slice(0, 3).join('/');
 }
 
+// git ref characters per `git check-ref-format` simplified to a safe subset:
+// alphanumerics, `_`, `.`, `/`, `-`. No spaces, no shell metachars. Refuse
+// anything else so a hostile env var can't influence the spawned argv.
+const SAFE_REF_RE = /^[A-Za-z0-9._/-]+$/;
+
 function detectBaseRef() {
-  if (process.env.BASE_REF) return process.env.BASE_REF;
-  if (process.env.GITHUB_BASE_REF) return `origin/${process.env.GITHUB_BASE_REF}`;
-  return 'origin/main';
+  let candidate;
+  if (process.env.BASE_REF) candidate = process.env.BASE_REF;
+  else if (process.env.GITHUB_BASE_REF) candidate = `origin/${process.env.GITHUB_BASE_REF}`;
+  else candidate = 'origin/main';
+  if (!SAFE_REF_RE.test(candidate)) {
+    throw new Error(
+      `Refusing to use unsafe base ref "${candidate}". Allowed chars: A-Z a-z 0-9 . _ / -`
+    );
+  }
+  return candidate;
+}
+
+function gitDiff(args) {
+  // Use spawnSync with argv-form (shell: false default) so untrusted ref
+  // content can't be interpreted as shell. CodeQL js/indirect-command-line-
+  // injection is satisfied because no input is concatenated into a string.
+  return spawnSync('git', ['diff', '--name-only', ...args], {
+    cwd: ROOT,
+    encoding: 'utf-8',
+    shell: false,
+  });
 }
 
 function listChangedFiles(baseRef) {
   // Three-dot diff = "everything in HEAD that's not in baseRef" — exactly
   // the PR's footprint, ignoring main's own progress while the PR was open.
-  const cmd = `git diff --name-only ${baseRef}...HEAD`;
-  let out;
-  try {
-    out = execSync(cmd, { cwd: ROOT, encoding: 'utf-8' });
-  } catch (err) {
+  let res = gitDiff([`${baseRef}...HEAD`]);
+  if (res.status !== 0) {
     // Fall back to two-dot if the merge base isn't computable (shallow clone).
-    try {
-      out = execSync(`git diff --name-only ${baseRef} HEAD`, {
-        cwd: ROOT,
-        encoding: 'utf-8',
-      });
-    } catch {
-      throw new Error(
-        `git diff failed for base ref "${baseRef}": ${err.message}. ` +
-          `Set BASE_REF env var or ensure full fetch.`
-      );
-    }
+    res = gitDiff([baseRef, 'HEAD']);
   }
-  return out
+  if (res.status !== 0) {
+    throw new Error(
+      `git diff failed for base ref "${baseRef}": ${res.stderr || res.error?.message || 'non-zero exit'}. ` +
+        `Set BASE_REF env var or ensure full fetch.`
+    );
+  }
+  return res.stdout
     .split('\n')
     .map((s) => s.trim())
     .filter(Boolean);

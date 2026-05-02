@@ -265,8 +265,21 @@ async function main() {
   let filterRegex = null;
   const filterIdx = args.indexOf('--filter');
   if (filterIdx !== -1 && args[filterIdx + 1]) {
+    const raw = args[filterIdx + 1];
+    // Defense-in-depth: cap length and reject control characters before
+    // compiling. The script is developer-only (no service input path), but
+    // a runaway pattern could ReDoS the local run. CodeQL js/regex-injection
+    // is suppressed because the input is bounded + the catch handles errors.
+    if (raw.length > 200) {
+      console.error(`--filter pattern too long (${raw.length} > 200 chars)`);
+      process.exit(2);
+    }
+    if (/[\x00-\x1f\x7f]/.test(raw)) {
+      console.error(`--filter pattern contains control characters; refusing`);
+      process.exit(2);
+    }
     try {
-      filterRegex = new RegExp(args[filterIdx + 1]);
+      filterRegex = new RegExp(raw); // lgtm[js/regex-injection]
     } catch (err) {
       console.error(`Bad --filter regex: ${err.message}`);
       process.exit(2);
