@@ -21,17 +21,19 @@ Or use Claude's built-in command:
 
 **[Browse the marketplace](https://tonsofskills.com)** | **[Explore plugins](https://tonsofskills.com/explore)** | **[Download bundles](https://tonsofskills.com/cowork)**
 
-> **Killer Skill of the Week** — [web-analytics](https://tonsofskills.com/plugins/web-analytics) by Jeremy Longshore ([@jeremylongshore](https://github.com/jeremylongshore))
+<!-- KILLER-SKILL:START — do not edit; run `node scripts/render-spotlight.mjs` -->
+> **Killer Skill of the Week** — [skyvern](https://github.com/Skyvern-AI/skyvern) by [Skyvern-AI](https://github.com/Skyvern-AI)
 >
-> **Your dashboards don't talk. This skill does.**
+> **AI agents that drive your browser. 21,000 stars of Selenium-killer.**
 >
-> A push-based analytics intelligence team — 9 specialist agents that fetch your data, detect anomalies, analyze funnels, verify claims, and deliver narrative reports. Powered by self-hosted [Umami](https://umami.is/) via MCP (Model Context Protocol) — agents call the Umami API in real time to pull visitor counts, pageviews, referrers, events, and session data across your entire site portfolio. GA4 as fallback. Not a dashboard you check. An analytics team that finds you. Three tiers: `/analytics` for a 30-second pulse, `/analytics medium` for a daily brief with traffic + content + anomaly detection, `/analytics full` for a deep dive across all sites with adversarial verification. One config file — swap your sites and it works for any portfolio.
+> Skyvern automates browser-based workflows with vision-language models — point it at a page, describe the goal, and the agent navigates, fills forms, handles 2FA, and extracts data. Where Selenium and Playwright break the moment a page redesigns, Skyvern adapts because it sees the page like a human would. The CLI skill exposes Skyvern's task runner inside Claude Code: navigate, fill forms, extract data, handle logins, and stream back structured results. Pulled into the marketplace via daily external sync from Skyvern-AI/skyvern (AGPL-3.0). Sourced into the catalog by community contributor @mark1ian.
 >
-> *"I stopped checking dashboards. Now my analytics team wakes me up when something matters."* — Jeremy Longshore
+> *"Automate browser-based workflows using LLMs and computer vision."* — Skyvern-AI
 >
-> Grade: A | Week of April 17, 2026 | [Browse on Marketplace](https://tonsofskills.com/plugins/web-analytics)
+> Grade: A | Week of May 2, 2026 (W18) | [View on GitHub](https://github.com/Skyvern-AI/skyvern)
 >
-> Previous picks: [token-optimizer](https://github.com/alexgreensh/token-optimizer), [executive-assistant-skills](https://tonsofskills.com/plugins/executive-assistant-skills), [skill-creator](https://tonsofskills.com/plugins/skill-creator), [cursor-pack](https://tonsofskills.com/plugins/cursor-pack), [crypto-portfolio-tracker](https://tonsofskills.com/plugins/crypto-portfolio-tracker). See all at [tonsofskills.com](https://tonsofskills.com).
+> Previous picks: [code-cleanup](https://tonsofskills.com/plugins/code-cleanup), [web-analytics](https://tonsofskills.com/plugins/web-analytics), [token-optimizer](https://github.com/alexgreensh/token-optimizer), [executive-assistant-skills](https://tonsofskills.com/plugins/executive-assistant-skills), [skill-creator](https://tonsofskills.com/plugins/skill-creator), [cursor-pack](https://tonsofskills.com/plugins/cursor-pack), [crypto-portfolio-tracker](https://tonsofskills.com/plugins/crypto-portfolio-tracker). See all at [tonsofskills.com](https://tonsofskills.com).
+<!-- KILLER-SKILL:END -->
 
 ---
 
@@ -62,31 +64,31 @@ ccpi update                     # Pull latest versions
 
 ### 📦 Live npm Downloads
 
-Across **26 published packages** in the 
+Across **340 published packages** in the 
 [claude-code-plugins](https://www.npmjs.com/~jeremylongshore) namespace. Updated daily by GitHub Actions.
 
 | Window | Downloads |
 |--------|----------:|
-| Last 24 hours | 11 |
-| Last 7 days | 117 |
-| Last 30 days | 665 |
+| Last 24 hours | 366 |
+| Last 7 days | 3,937 |
+| Last 30 days | 41,975 |
 
 **Top 10 by last 30 days:**
 
 | # | Package | Last 30d |
 |---|---------|---------:|
-| 1 | [`@intentsolutionsio/ccpi`](https://www.npmjs.com/package/@intentsolutionsio/ccpi) | 274 |
-| 2 | [`@intentsolutionsio/langchain-pack`](https://www.npmjs.com/package/@intentsolutionsio/langchain-pack) | 56 |
-| 3 | [`@intentsolutionsio/openrouter-pack`](https://www.npmjs.com/package/@intentsolutionsio/openrouter-pack) | 52 |
-| 4 | [`@intentsolutionsio/retellai-pack`](https://www.npmjs.com/package/@intentsolutionsio/retellai-pack) | 33 |
-| 5 | [`@intentsolutionsio/windsurf-pack`](https://www.npmjs.com/package/@intentsolutionsio/windsurf-pack) | 33 |
-| 6 | [`@intentsolutionsio/firecrawl-pack`](https://www.npmjs.com/package/@intentsolutionsio/firecrawl-pack) | 22 |
-| 7 | [`@intentsolutionsio/sentry-pack`](https://www.npmjs.com/package/@intentsolutionsio/sentry-pack) | 20 |
-| 8 | [`@intentsolutionsio/supabase-pack`](https://www.npmjs.com/package/@intentsolutionsio/supabase-pack) | 17 |
-| 9 | [`@intentsolutionsio/vercel-pack`](https://www.npmjs.com/package/@intentsolutionsio/vercel-pack) | 13 |
-| 10 | [`@intentsolutionsio/customerio-pack`](https://www.npmjs.com/package/@intentsolutionsio/customerio-pack) | 12 |
+| 1 | [`@intentsolutionsio/ccpi`](https://www.npmjs.com/package/@intentsolutionsio/ccpi) | 339 |
+| 2 | [`@intentsolutionsio/market-price-tracker`](https://www.npmjs.com/package/@intentsolutionsio/market-price-tracker) | 202 |
+| 3 | [`@intentsolutionsio/excel-analyst-pro`](https://www.npmjs.com/package/@intentsolutionsio/excel-analyst-pro) | 181 |
+| 4 | [`@intentsolutionsio/openbb-terminal`](https://www.npmjs.com/package/@intentsolutionsio/openbb-terminal) | 166 |
+| 5 | [`@intentsolutionsio/crypto-portfolio-tracker`](https://www.npmjs.com/package/@intentsolutionsio/crypto-portfolio-tracker) | 161 |
+| 6 | [`@intentsolutionsio/skill-creator`](https://www.npmjs.com/package/@intentsolutionsio/skill-creator) | 155 |
+| 7 | [`@intentsolutionsio/crypto-tax-calculator`](https://www.npmjs.com/package/@intentsolutionsio/crypto-tax-calculator) | 154 |
+| 8 | [`@intentsolutionsio/blockchain-explorer-cli`](https://www.npmjs.com/package/@intentsolutionsio/blockchain-explorer-cli) | 153 |
+| 9 | [`@intentsolutionsio/ml-model-trainer`](https://www.npmjs.com/package/@intentsolutionsio/ml-model-trainer) | 153 |
+| 10 | [`@intentsolutionsio/compliance-checker`](https://www.npmjs.com/package/@intentsolutionsio/compliance-checker) | 152 |
 
-<sub>Last refreshed 2026-04-21T01:30:15.018Z.</sub>
+<sub>Last refreshed 2026-05-02T04:09:18.799Z.</sub>
 
 <!-- NPM-STATS:END -->
 
