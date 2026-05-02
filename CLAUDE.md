@@ -87,15 +87,22 @@ Run `pnpm run sync-marketplace` after editing `.extended.json`. CI fails if out 
 
 ## npm Publish Pipeline
 
+Full operator-facing flow lives in [`RELEASING.md`](./RELEASING.md). Quick reference:
+
 | Workflow | Trigger | What it does |
 |----------|---------|--------------|
-| `.github/workflows/cli-publish.yml` | Tag push `cli-v*.*.*` | Publishes `@intentsolutionsio/ccpi` only |
-| `.github/workflows/publish-all-packages.yml` | Manual dispatch with `confirm="publish all"` | One-shot mass publish of every `@intentsolutionsio/*` package; idempotent |
-| `.github/workflows/publish-changed-packages.yml` | Push to main touching `plugins/**` | Publishes each changed `@intentsolutionsio/*` package whose declared version isn't on npm yet |
-| `.github/workflows/update-npm-stats.yml` | Daily cron (00:15 UTC) | Refreshes `marketplace/src/data/npm-stats.json` + README NPM-STATS block |
-| `.github/workflows/slack-daily-downloads.yml` | Daily cron (18:00 UTC = 1pm Central) | Posts totals + top-5 to #operation-hired (pings `<@U099CBRE7CL>`) via `SLACK_OPERATION_HIRED_WEBHOOK_URL` secret — per `/slack` skill conventions |
+| `.github/workflows/auto-bump-on-pr.yml` | `pull_request` touching `plugins/**` or `packages/**` | For every plugin whose source changed, bumps `package.json` patch (X.Y.Z → X.Y.Z+1) and commits back to the PR branch. Skipped on `automation/*` branches and PRs marked `[skip auto-bump]`. |
+| `.github/workflows/publish-changed-packages.yml` | Push to main touching `plugins/**` | For each changed plugin where the declared version isn't yet on npm: `npm publish --provenance` + annotated git tag `@scope/name@version` + GitHub Release with auto-generated notes. |
+| `.github/workflows/cli-publish.yml` | Tag push `cli-v*.*.*` | Publishes `@intentsolutionsio/ccpi` only (parallel system; not auto-bumped). |
+| `.github/workflows/publish-all-packages.yml` | Manual dispatch with `confirm="publish all"` | One-shot mass publish of every `@intentsolutionsio/*` package; idempotent. Use only for the freeze-fix sweep or recovery. |
+| `.github/workflows/update-npm-stats.yml` | Daily cron (00:15 UTC) | Refreshes `marketplace/src/data/npm-stats.json` + README NPM-STATS block. Pushes to `automation/npm-stats` and opens a PR (main is branch-protected). |
+| `.github/workflows/slack-daily-downloads.yml` | Daily cron (18:00 UTC = 1pm Central) | Posts totals + top-5 to #operation-hired (pings `<@U099CBRE7CL>`) via `SLACK_OPERATION_HIRED_WEBHOOK_URL` secret — per `/slack` skill conventions. |
 
-Versioning is manual: bump a plugin's `package.json` `version` when you want a new release. The incremental publish workflow mirrors the declared version; it never auto-bumps.
+**Versioning is now automated by default.** A code-touching PR auto-bumps the affected plugins' patch versions; merge to main publishes + tags + releases. **For minor or major bumps, hand-edit the version in the same PR** (auto-bumper steps aside when the PR's only plugin-dir change is to its own `package.json`).
+
+**Tag convention:** per-package tags use `@scope/name@version` (e.g. `@intentsolutionsio/langchain-pack@1.1.0`). Repo-wide `vX.Y.Z` tags from before this pipeline (e.g. `v4.28.0`) are left in place but not extended.
+
+**Freeze fix utility:** `scripts/bulk-bump-versions.mjs` is a one-time minor sweep (1.0.0 → 1.1.0 across every package whose declared version matches npm-latest). Used to break the historical 1.0.0 freeze; re-runs are no-ops once everything's bumped.
 
 After editing the catalog (`marketplace.extended.json`), run both syncs:
 ```bash

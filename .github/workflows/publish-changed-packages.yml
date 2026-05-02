@@ -1,9 +1,20 @@
 name: Publish changed @intentsolutionsio packages
 
 # Runs on every push to main that touches a plugin directory. For each
-# changed plugin whose package.json `version` is not yet on npm, publish it.
-# No auto-bumping — authors are expected to bump the version in their plugin's
-# package.json when they want a new release. This workflow just mirrors intent.
+# changed plugin whose package.json `version` is not yet on npm:
+#   1. Publishes to npm with provenance.
+#   2. Creates an annotated git tag of the form `<scope>/<name>@<version>`.
+#   3. Opens a GitHub Release linked to that tag with auto-generated notes.
+#
+# The version-bump trigger is provided by `auto-bump-on-pr.yml` — it runs on
+# every PR, detects which plugins' source files changed, bumps each plugin's
+# patch version, and commits back to the PR branch. So the loop is:
+#   PR opened → CI auto-bumps changed plugins → merge to main → this
+#   workflow publishes + tags + releases.
+#
+# For intentional minor / major bumps, a human edits the version manually
+# in the PR; the auto-bump bumper is idempotent (it skips PRs where only
+# package.json changed) so the manual bump rides through clean.
 #
 # Only handles @intentsolutionsio/* scoped packages. Other packages (the 12
 # pre-existing heterogeneous ones, plus packages/cli which has its own
@@ -16,8 +27,8 @@ on:
       - 'plugins/**'
 
 permissions:
-  contents: read
-  id-token: write
+  contents: write       # tag push + release creation
+  id-token: write       # npm provenance
 
 concurrency:
   group: npm-publish-main
@@ -94,17 +105,30 @@ jobs:
           node-version: 20
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Publish each changed package
+      - name: Configure git author for tag push
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Publish each changed package + tag + release
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PACKAGES_JSON: ${{ needs.detect.outputs.packages_json }}
         run: |
           set -euo pipefail
           PUBLISHED=0; SKIPPED=0; FAILED=0
-          echo "$PACKAGES_JSON" | jq -c '.[]' | while read -r row; do
+          PUBLISHED_LIST=""
+
+          # Use a process-substitution loop so subshell counters survive.
+          while read -r row; do
             NAME=$(echo "$row" | jq -r '.name')
             DIR=$(echo "$row" | jq -r '.dir')
             VERSION=$(echo "$row" | jq -r '.version')
+            # Tag form: `@scope/name@version` — the convention used by lerna,
+            # turborepo, and changesets-managed monorepos. Distinguishable
+            # from the legacy repo-wide `vN.M.O` tags.
+            TAG="${NAME}@${VERSION}"
 
             # Does this exact version already exist on npm?
             ENC=$(echo "$NAME" | sed 's/@/%40/;s|/|%2F|')
@@ -116,15 +140,55 @@ jobs:
               continue
             fi
 
-            if (cd "$DIR" && npm publish --access public --provenance); then
-              echo "✓ published: $NAME@$VERSION"
-              PUBLISHED=$((PUBLISHED+1))
-            else
-              echo "❌ FAILED: $NAME@$VERSION — investigate and bump patch to retry"
+            if ! (cd "$DIR" && npm publish --access public --provenance); then
+              echo "❌ FAILED publish: $NAME@$VERSION — investigate and bump patch to retry"
               FAILED=$((FAILED+1))
+              sleep 2
+              continue
             fi
+            echo "✓ published: $NAME@$VERSION"
+            PUBLISHED=$((PUBLISHED+1))
+            PUBLISHED_LIST="${PUBLISHED_LIST}\n  - ${NAME}@${VERSION}"
+
+            # Annotated tag with body that links to npm + the source dir.
+            TAG_MSG="Release ${NAME} ${VERSION}\n\nnpm: https://www.npmjs.com/package/${NAME}/v/${VERSION}\nsource: ${DIR}"
+            if git rev-parse "$TAG" >/dev/null 2>&1; then
+              echo "  ⊙ tag $TAG already exists locally; skipping tag step"
+            else
+              git tag -a "$TAG" -m "$(printf "%b" "$TAG_MSG")" || {
+                echo "  ⚠ failed to create tag $TAG"
+              }
+              git push origin "refs/tags/${TAG}" || {
+                echo "  ⚠ failed to push tag $TAG (network or perms)"
+              }
+            fi
+
+            # GitHub Release with auto-generated notes (PR + commit summaries
+            # since the previous tag for this package). `--generate-notes`
+            # uses the repo's release-notes config or falls back to default.
+            if gh release view "$TAG" >/dev/null 2>&1; then
+              echo "  ⊙ release $TAG already exists; skipping"
+            else
+              # Build the notes via printf to avoid multi-line YAML literal
+              # block scalar issues (blank-line-then-unindented breaks YAML
+              # parsing).
+              REL_NOTES=$(printf 'Released by `publish-changed-packages.yml` on push to `main`.\n\n**npm:** https://www.npmjs.com/package/%s/v/%s\n**Source:** `%s`\n**Install:** `pnpm add %s@%s` (or `/plugin install` via Claude Code marketplace)' "$NAME" "$VERSION" "$DIR" "$NAME" "$VERSION")
+              gh release create "$TAG" \
+                --title "$TAG" \
+                --notes "$REL_NOTES" \
+                --generate-notes || {
+                echo "  ⚠ failed to create GitHub release for $TAG"
+              }
+            fi
+
             sleep 2
-          done
+          done < <(echo "$PACKAGES_JSON" | jq -c '.[]')
+
           echo ""
           echo "Summary: published=$PUBLISHED skipped=$SKIPPED failed=$FAILED"
+          if [ "$PUBLISHED" -gt 0 ]; then
+            echo ""
+            echo "Published in this run:"
+            printf '%b\n' "$PUBLISHED_LIST"
+          fi
           [ "$FAILED" -eq 0 ] || exit 1
