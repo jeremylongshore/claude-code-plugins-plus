@@ -695,7 +695,24 @@ sources:
       - "tests/**"
       - "bun.lock"
       - "**/.gitkeep"
-
+  - name: skyvern
+    description: AI browser automation via CLI — navigate sites, fill forms, extract data, handle logins
+    repo: Skyvern-AI/skyvern
+    source_path: skyvern/cli/skills/skyvern
+    target_path: plugins/productivity/skyvern
+    author:
+      name: Skyvern-AI
+      github: Skyvern-AI
+    license: AGPL-3.0
+    category: productivity
+    include:
+      - "SKILL.md"
+      - "references/**"
+      - "examples/**"
+    exclude:
+      - "node_modules/**"
+      - ".git/**"
+      - "*.log"
   # ============================================================
   # Claudebase (Rohit Hazra / rohithzr)
   # https://github.com/rohithzr/claudebase
@@ -808,6 +825,32 @@ sources:
   #   license: MIT
   #   category: community
   #   verified: true
+
+  # ============================================================
+  # ali5ter's Claude Workflow Skills
+  # https://github.com/ali5ter/claude-workflow-skills
+  # ============================================================
+
+  - name: claude-workflow-skills
+    description: Common Claude Code workflow skills — promote, audit-plugin, audit-standards, improve, and triage
+    repo: ali5ter/claude-workflow-skills
+    source_path: .
+    target_path: plugins/productivity/claude-workflow-skills
+    author:
+      name: Alister Lewis-Bowen
+      github: ali5ter
+    license: MIT
+    category: productivity
+    verified: false
+    include:
+      - ".claude-plugin/**"
+      - "skills/**"
+      - README.md
+      - LICENSE
+    exclude:
+      - "node_modules/**"
+      - ".git/**"
+      - "*.log"
 
 # Sync configuration
 config:

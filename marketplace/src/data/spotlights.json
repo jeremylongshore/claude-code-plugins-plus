@@ -1,19 +1,45 @@
 {
-  "week": "2026-W16",
+  "week": "2026-W18",
   "title": "Killer Skill of the Week",
   "spotlight": {
-    "pluginSlug": "code-cleanup",
-    "headline": "11-dimensional codebase cleanup with confidence scoring and build verification gates.",
-    "whyKiller": "Born from a real cleanup session — 25,000 lines removed, 4 bugs caught — packaged into a reusable plugin. 11 specialized agents scan for dead code, AI slop, weak types, security vulnerabilities, N+1 queries, floating promises, circular deps, and more. Every finding gets a confidence score (HIGH/MEDIUM/LOW). LOW-risk dimensions auto-apply after build verification. HIGH-risk dimensions flag only — never touch your code without proof. One command, full codebase hygiene.",
-    "author": "Jeremy Longshore",
-    "authorGithub": "jeremylongshore",
+    "pluginSlug": "skyvern",
+    "headline": "AI agents that drive your browser. 21,000 stars of Selenium-killer.",
+    "whyKiller": "Skyvern automates browser-based workflows with vision-language models — point it at a page, describe the goal, and the agent navigates, fills forms, handles 2FA, and extracts data. Where Selenium and Playwright break the moment a page redesigns, Skyvern adapts because it sees the page like a human would. The CLI skill exposes Skyvern's task runner inside Claude Code: navigate, fill forms, extract data, handle logins, and stream back structured results. Pulled into the marketplace via daily external sync from Skyvern-AI/skyvern (AGPL-3.0). Sourced into the catalog by community contributor @mark1ian.",
+    "author": "Skyvern-AI",
+    "authorGithub": "Skyvern-AI",
     "grade": "A",
     "skillCount": 1,
-    "category": "code-quality",
-    "link": "/plugins/code-cleanup",
-    "quote": "8 parallel agents, 25K lines removed, 4 bugs found. Now it's a plugin anyone can run."
+    "category": "productivity",
+    "link": "https://github.com/Skyvern-AI/skyvern",
+    "quote": "Automate browser-based workflows using LLMs and computer vision."
   },
   "hallOfFame": [
+    {
+      "week": "2026-W17",
+      "pluginSlug": "code-cleanup",
+      "headline": "11-dimensional codebase cleanup with confidence scoring and build verification gates.",
+      "whyKiller": "Born from a real cleanup session — 25,000 lines removed, 4 bugs caught — packaged into a reusable plugin. 11 specialized agents scan for dead code, AI slop, weak types, security vulnerabilities, N+1 queries, floating promises, circular deps, and more. Every finding gets a confidence score (HIGH/MEDIUM/LOW). LOW-risk dimensions auto-apply after build verification. HIGH-risk dimensions flag only — never touch your code without proof. One command, full codebase hygiene.",
+      "author": "Jeremy Longshore",
+      "authorGithub": "jeremylongshore",
+      "grade": "A",
+      "skillCount": 1,
+      "category": "code-quality",
+      "link": "/plugins/code-cleanup",
+      "quote": "8 parallel agents, 25K lines removed, 4 bugs found. Now it's a plugin anyone can run."
+    },
+    {
+      "week": "2026-W16",
+      "pluginSlug": "web-analytics",
+      "headline": "Your dashboards don't talk. This skill does.",
+      "whyKiller": "A push-based analytics intelligence team — 9 specialist agents that fetch your data, detect anomalies, analyze funnels, verify claims, and deliver narrative reports. Powered by self-hosted Umami via MCP — agents call the Umami API in real time across your entire site portfolio. GA4 as fallback. Three tiers: /analytics for a 30-second pulse, /analytics medium for a daily brief, /analytics full for a deep cross-site dive with adversarial verification.",
+      "author": "Jeremy Longshore",
+      "authorGithub": "jeremylongshore",
+      "grade": "A",
+      "skillCount": 9,
+      "category": "analytics",
+      "link": "/plugins/web-analytics",
+      "quote": "I stopped checking dashboards. Now my analytics team wakes me up when something matters."
+    },
     {
       "week": "2026-W13",
       "pluginSlug": "token-optimizer",
@@ -74,8 +100,8 @@
     }
   ],
   "meta": {
-    "version": "2.1.0",
-    "lastUpdated": "2026-04-15",
+    "version": "2.2.0",
+    "lastUpdated": "2026-05-02",
     "curatedBy": "Jeremy Longshore"
   }
 }
