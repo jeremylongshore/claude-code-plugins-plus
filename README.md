@@ -21,17 +21,17 @@ Or use Claude's built-in command:
 
 **[Browse the marketplace](https://tonsofskills.com)** | **[Explore plugins](https://tonsofskills.com/explore)** | **[Download bundles](https://tonsofskills.com/cowork)**
 
-> **Killer Skill of the Week** — [web-analytics](https://tonsofskills.com/plugins/web-analytics) by Jeremy Longshore ([@jeremylongshore](https://github.com/jeremylongshore))
+> **Killer Skill of the Week** — [skyvern](https://github.com/Skyvern-AI/skyvern) by Skyvern-AI ([@Skyvern-AI](https://github.com/Skyvern-AI)). Sourced into the catalog by [@mark1ian](https://github.com/mark1ian).
 >
-> **Your dashboards don't talk. This skill does.**
+> **AI agents that drive your browser. 21,000 stars of Selenium-killer.**
 >
-> A push-based analytics intelligence team — 9 specialist agents that fetch your data, detect anomalies, analyze funnels, verify claims, and deliver narrative reports. Powered by self-hosted [Umami](https://umami.is/) via MCP (Model Context Protocol) — agents call the Umami API in real time to pull visitor counts, pageviews, referrers, events, and session data across your entire site portfolio. GA4 as fallback. Not a dashboard you check. An analytics team that finds you. Three tiers: `/analytics` for a 30-second pulse, `/analytics medium` for a daily brief with traffic + content + anomaly detection, `/analytics full` for a deep dive across all sites with adversarial verification. One config file — swap your sites and it works for any portfolio.
+> Skyvern automates browser-based workflows with vision-language models — point it at a page, describe the goal, and the agent navigates, fills forms, handles 2FA, and extracts data. Where Selenium and Playwright break the moment a page redesigns, Skyvern adapts because it sees the page like a human would. The CLI skill exposes Skyvern's task runner inside Claude Code: navigate, fill forms, extract data, handle logins, and stream back structured results. Pulled into the marketplace via daily external sync from [Skyvern-AI/skyvern](https://github.com/Skyvern-AI/skyvern) (AGPL-3.0).
 >
-> *"I stopped checking dashboards. Now my analytics team wakes me up when something matters."* — Jeremy Longshore
+> *"Automate browser-based workflows using LLMs and computer vision."* — Skyvern-AI
 >
-> Grade: A | Week of April 17, 2026 | [Browse on Marketplace](https://tonsofskills.com/plugins/web-analytics)
+> Grade: A | Week of May 2, 2026 (W18) | [View on GitHub](https://github.com/Skyvern-AI/skyvern)
 >
-> Previous picks: [token-optimizer](https://github.com/alexgreensh/token-optimizer), [executive-assistant-skills](https://tonsofskills.com/plugins/executive-assistant-skills), [skill-creator](https://tonsofskills.com/plugins/skill-creator), [cursor-pack](https://tonsofskills.com/plugins/cursor-pack), [crypto-portfolio-tracker](https://tonsofskills.com/plugins/crypto-portfolio-tracker). See all at [tonsofskills.com](https://tonsofskills.com).
+> Previous picks: [code-cleanup](https://tonsofskills.com/plugins/code-cleanup), [web-analytics](https://tonsofskills.com/plugins/web-analytics), [token-optimizer](https://github.com/alexgreensh/token-optimizer), [executive-assistant-skills](https://tonsofskills.com/plugins/executive-assistant-skills), [skill-creator](https://tonsofskills.com/plugins/skill-creator), [cursor-pack](https://tonsofskills.com/plugins/cursor-pack), [crypto-portfolio-tracker](https://tonsofskills.com/plugins/crypto-portfolio-tracker). See all at [tonsofskills.com](https://tonsofskills.com).
 
 ---
 
