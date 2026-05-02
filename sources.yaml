@@ -826,6 +826,32 @@ sources:
   #   category: community
   #   verified: true
 
+  # ============================================================
+  # ali5ter's Claude Workflow Skills
+  # https://github.com/ali5ter/claude-workflow-skills
+  # ============================================================
+
+  - name: claude-workflow-skills
+    description: Common Claude Code workflow skills — promote, audit-plugin, audit-standards, improve, and triage
+    repo: ali5ter/claude-workflow-skills
+    source_path: .
+    target_path: plugins/productivity/claude-workflow-skills
+    author:
+      name: Alister Lewis-Bowen
+      github: ali5ter
+    license: MIT
+    category: productivity
+    verified: false
+    include:
+      - ".claude-plugin/**"
+      - "skills/**"
+      - README.md
+      - LICENSE
+    exclude:
+      - "node_modules/**"
+      - ".git/**"
+      - "*.log"
+
 # Sync configuration
 config:
   # Branch to sync from (default: main)
