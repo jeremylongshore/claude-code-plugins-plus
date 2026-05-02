@@ -23,43 +23,61 @@ const EXTENDED_CATALOG_FILE = path.resolve(ROOT_DIR, '..', '.claude-plugin', 'ma
 
 console.log('🔍 Generating unified search index...\n');
 
-// Count agents and hooks across all plugins
+// Count agents and hooks across all plugins.
+//
+// We walk the entire plugins/ tree rather than the old fixed depth-3 walk
+// (plugins/<cat>/<plugin>/agents). The shipped surface area includes meta-packs
+// (devops-automation-pack, ai-ml-engineering-pack, etc.) that nest sub-plugins
+// at plugins/<cat>/<pack>/plugins/<sub>/agents — those agents ship to users
+// when the pack is installed, so the public-facing count must include them.
+// Skipped dirs: node_modules, dist, build, .git (build/dep noise).
 function countAgentsAndHooks() {
+  const SKIP = new Set(['node_modules', 'dist', 'build', '.git', '.next', '.astro']);
   let totalAgents = 0;
   let totalHooks = 0;
   let pluginsWithAgents = 0;
   let pluginsWithHooks = 0;
 
-  const categories = fs.readdirSync(PLUGINS_DIR, { withFileTypes: true })
-    .filter(d => d.isDirectory());
+  function walk(dir) {
+    let entries;
+    try {
+      entries = fs.readdirSync(dir, { withFileTypes: true });
+    } catch {
+      return;
+    }
 
-  for (const cat of categories) {
-    const catPath = path.join(PLUGINS_DIR, cat.name);
-    const plugins = fs.readdirSync(catPath, { withFileTypes: true })
-      .filter(d => d.isDirectory());
-
-    for (const plugin of plugins) {
-      const agentsDir = path.join(catPath, plugin.name, 'agents');
-      const hooksDir = path.join(catPath, plugin.name, 'hooks');
-
-      if (fs.existsSync(agentsDir)) {
-        const agentFiles = fs.readdirSync(agentsDir).filter(f => f.endsWith('.md'));
-        if (agentFiles.length > 0) {
-          totalAgents += agentFiles.length;
-          pluginsWithAgents++;
-        }
+    // If this dir contains agents/ or hooks/, count its files. Otherwise recurse.
+    const agentsDir = path.join(dir, 'agents');
+    if (fs.existsSync(agentsDir) && fs.statSync(agentsDir).isDirectory()) {
+      const agentFiles = fs.readdirSync(agentsDir).filter((f) => f.endsWith('.md'));
+      if (agentFiles.length > 0) {
+        totalAgents += agentFiles.length;
+        pluginsWithAgents++;
       }
-
-      if (fs.existsSync(hooksDir)) {
-        const hookFiles = fs.readdirSync(hooksDir).filter(f => f.endsWith('.json') || f.endsWith('.sh'));
-        if (hookFiles.length > 0) {
-          totalHooks += hookFiles.length;
-          pluginsWithHooks++;
-        }
+    }
+    const hooksDir = path.join(dir, 'hooks');
+    if (fs.existsSync(hooksDir) && fs.statSync(hooksDir).isDirectory()) {
+      const hookFiles = fs
+        .readdirSync(hooksDir)
+        .filter((f) => f.endsWith('.json') || f.endsWith('.sh'));
+      if (hookFiles.length > 0) {
+        totalHooks += hookFiles.length;
+        pluginsWithHooks++;
       }
+    }
+
+    // Recurse into subdirectories (skip noise dirs and the agents/hooks dirs
+    // we just counted — their contents are flat .md/.json/.sh files, not nested
+    // plugin trees).
+    for (const ent of entries) {
+      if (!ent.isDirectory()) continue;
+      if (SKIP.has(ent.name)) continue;
+      if (ent.name === 'agents' || ent.name === 'hooks') continue;
+      walk(path.join(dir, ent.name));
     }
   }
 
+  walk(PLUGINS_DIR);
   return { totalAgents, totalHooks, pluginsWithAgents, pluginsWithHooks };
 }
 

@@ -2,12 +2,12 @@
 
 [![CLI](https://img.shields.io/badge/CLI-ccpi-blueviolet?logo=npm)](https://www.npmjs.com/package/@intentsolutionsio/ccpi)
 [![Plugins](https://img.shields.io/badge/plugins-425-blue)](https://tonsofskills.com/explore)
-[![Skills](https://img.shields.io/badge/skills-2%2C851-green)](https://tonsofskills.com/skills)
+[![Skills](https://img.shields.io/badge/skills-2%2C810-green)](https://tonsofskills.com/skills)
 [![GitHub Stars](https://img.shields.io/github/stars/jeremylongshore/claude-code-plugins-plus-skills?style=social)](https://github.com/jeremylongshore/claude-code-plugins-plus-skills)
 [![Sponsor: Nixtla](https://img.shields.io/badge/Sponsor-nixtla.io-ff6b35)](https://nixtla.io)
 [![Buy me a monster](https://img.shields.io/badge/Buy%20me%20a-Monster-FFDD00?logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/jeremylongshore)
 
-425 plugins, 2,851 skills, 177 agents, 16 community contributors — validated and ready to install.
+425 plugins, 2,810 skills, 200 agents, 16 community contributors — validated and ready to install.
 
 ```bash
 pnpm add -g @intentsolutionsio/ccpi    # Install the CLI
@@ -757,23 +757,23 @@ Generates idempotent Ansible playbooks following infrastructure-as-code best pra
 
 | Metric | Count |
 |--------|-------|
-| Total skills | 2,811 |
-| Plugins (marketplace) | 415 |
-| Agents | 154 |
-| Plugin categories | 22 |
+| Total skills | 2,810 |
+| Plugins (marketplace) | 425 |
+| Agents | 200 |
+| Plugin categories | 18 |
 | Contributors | 16 |
 
 ---
 
 ## Plugin Types
 
-### AI Instruction Plugins (295 plugins)
+### AI Instruction Plugins (309 plugins)
 Markdown files that guide Claude's behavior through structured instructions, skills, commands, and agents. No external code — everything runs through Claude's built-in capabilities.
 
-### MCP Server Plugins (9 plugins)
+### MCP Server Plugins (10 plugins)
 TypeScript applications that run as separate Node.js processes. Claude communicates with them through the Model Context Protocol.
 
-### SaaS Skill Packs (111 plugins across 22 pack collections)
+### SaaS Skill Packs (106 plugins across 22 pack collections)
 Pre-built skill collections for specific platforms — Deepgram, LangChain, Linear, Gamma, and others. Each pack includes install/auth, core workflows, debugging, deployment, and advanced pattern skills.
 
 ---
@@ -971,4 +971,4 @@ MIT License — See [LICENSE](LICENSE) for details.
 
 ---
 
-**Version**: 4.20.0 | **Last Updated**: March 2026 | **Skills**: 2,811 | **Plugins**: 415
+**Version**: 4.20.0 | **Last Updated**: March 2026 | **Skills**: 2,810 | **Plugins**: 425

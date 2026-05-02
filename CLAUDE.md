@@ -6,13 +6,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Tons of Skills — Claude Code plugins marketplace (425 plugins, 2,851 skills, 177 agents). Live at https://tonsofskills.com
 
-**Monorepo structure:** pnpm workspaces (v9.15.9+)
-- `plugins/[category]/*` - AI instruction plugins (Markdown, ~98% of plugins)
+**Runtime:** Node `>=20.0.0`, pnpm `>=9.0.0` (pinned to `9.15.9` via `packageManager` field). Developers on Node 18 will hit silent workspace-resolution failures.
+
+**Monorepo structure:** pnpm workspaces (see `pnpm-workspace.yaml` — only 6 directories are actual workspace members)
+- `plugins/[category]/*` - AI instruction plugins (Markdown, ~98% of plugins). `plugins/` has 23 top-level entries; most are categories but a few are special: `mcp/`, `saas-packs/`, `packages/`, `examples/`, `jeremy-google-adk/`, `jeremy-vertex-ai/`. Only `mcp/*` and `saas-packs/*-pack` are pnpm workspace members — category dirs are flat collections of plugins.
 - `plugins/mcp/*` - MCP server plugins (TypeScript, ~2%)
 - `plugins/saas-packs/*-pack` - SaaS skill packs (pnpm workspace members)
 - `marketplace/` - Astro 5 website (**uses npm, not pnpm** - CI enforced)
 - `packages/cli` - `ccpi` CLI (`@intentsolutionsio/ccpi` on npm)
 - `packages/analytics-*` - Analytics daemon and dashboard
+
+> **Session protocol lives in `AGENTS.md`, not here.** Post-compaction recovery (`bd ready`), the mandatory end-of-session push checklist ("Landing the Plane"), and the beads workflow are all in `AGENTS.md`. Read it before starting work — those rules are load-bearing and intentionally not duplicated below.
 
 **Package manager policy (CI-enforced by `scripts/check-package-manager.mjs`):**
 - `pnpm` everywhere at root
@@ -29,6 +33,8 @@ pnpm run sync-marketplace           # Regenerate marketplace.json from .extended
 pnpm install && pnpm build          # Install and build all workspace packages
 pnpm test && pnpm typecheck         # Run vitest tests and TypeScript checks
 pnpm lint                           # ESLint across all packages
+pnpm run verify                     # Full verification pipeline (scripts/run-verification-pipeline.mjs) — what CI's `verify` job runs
+pnpm run update-metrics             # Refresh plugin/skill/agent counts in README + marketplace data
 
 # Single MCP plugin
 cd plugins/mcp/[name]/ && pnpm build && chmod +x dist/index.js
@@ -406,7 +412,7 @@ python3 freshie/scripts/batch-remediate.py --all --execute
 
 ## Task Tracking (Beads)
 
-See `AGENTS.md` for full protocol. Quick reference:
+See `AGENTS.md` for full protocol — including the mandatory post-compaction `bd ready` recovery step and "Landing the Plane" end-of-session push checklist. Quick reference:
 
 ```bash
 bd sync && bd ready                        # Session start: find work
@@ -414,3 +420,12 @@ bd update <id> --status in_progress        # Claim task BEFORE starting
 bd close <id> --reason "..."               # Complete with evidence
 bd sync && git push                        # Session end: MANDATORY
 ```
+
+## Legacy / Ancillary Files at Root
+
+These exist at repo root but are not part of the active build/deploy path. Do not assume they are live without checking git log:
+
+- `docker-compose.test.yml` + `Dockerfile.test` — test-harness containers (not referenced by any current CI workflow)
+- `firebase.json` + `firestore.rules` — Firebase config (marketplace deploys to GitHub Pages via `deploy-marketplace.yml`, not Firebase; these may be legacy)
+- `config.zcf.json` — ZCF tool config
+- `test_youtube_strategy.py`, `asset_generation*.log`, `setup.sh`, `create-tasks.sh`, `package.json.tmp` — scratch/legacy. If you're tempted to extend them, check whether they should move to `archive/` first.
