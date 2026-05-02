@@ -128,22 +128,23 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
         .hero-sponsor-marquee {
             margin-top: 0.5rem;
             overflow: hidden;
-            max-width: 400px;
+            max-width: 480px;
             animation: fadeInUp 0.7s var(--ease-out) 0.1s forwards;
             opacity: 0;
         }
         .hero-sponsor-label {
+            display: block;
             font-family: 'DM Mono', monospace;
-            font-size: 0.55rem;
+            font-size: 0.6rem;
             color: var(--text-3);
             text-transform: uppercase;
             letter-spacing: 0.12em;
-            margin-bottom: 0.35rem;
+            margin-bottom: 0.55rem;
         }
         .hero-sponsor-track {
             display: flex;
             gap: 3rem;
-            animation: sponsorScroll 18s linear infinite;
+            animation: sponsorScroll 11s linear infinite;
         }
         .hero-sponsor-link {
             flex-shrink: 0;
@@ -158,14 +159,20 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
             color: var(--primary);
             opacity: 1;
         }
-        /* Stats marquee (second row, under partners) — runs slightly slower
-           so the longer text strings stay readable. */
+        /* Stats marquee (second row, under partners). Visually separated from
+           the partner marquee with a subtle divider + breathing room — they
+           used to stack at margin-top: 0.35rem (~5.6px) which read as one
+           jammed element. Speed bumped from 28s → 16s per design feedback;
+           still slower than partners (11s) because the text strings are longer
+           and need to stay readable. */
         .hero-stats-marquee {
-            margin-top: 0.35rem;
+            margin-top: 1.25rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
             max-width: 520px;
         }
         .hero-stats-marquee .hero-sponsor-track {
-            animation-duration: 28s;
+            animation-duration: 16s;
         }
         .hero-stats-link .hero-sponsor-text {
             font-family: 'DM Mono', monospace;
