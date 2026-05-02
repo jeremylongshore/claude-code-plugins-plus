@@ -828,8 +828,8 @@ sources:
     include:
       - ".claude-plugin/**"
       - "skills/**"
-      - "README.md"
-      - "LICENSE"
+      - README.md
+      - LICENSE
     exclude:
       - "node_modules/**"
       - ".git/**"
