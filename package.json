@@ -26,6 +26,14 @@
   ],
   "author": "Intent Solutions IO",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git"
+  },
+  "homepage": "https://tonsofskills.com",
+  "bugs": {
+    "url": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues"
+  },
   "engines": {
     "node": ">=20.0.0",
     "pnpm": ">=9.0.0"

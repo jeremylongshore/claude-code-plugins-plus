@@ -1,5 +1,6 @@
 # Tons of Skills — Claude Code Plugins Marketplace
 
+[![Release](https://img.shields.io/badge/release-v4.29.0-green)](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/releases/tag/v4.29.0)
 [![CLI](https://img.shields.io/badge/CLI-ccpi-blueviolet?logo=npm)](https://www.npmjs.com/package/@intentsolutionsio/ccpi)
 [![Plugins](https://img.shields.io/badge/plugins-425-blue)](https://tonsofskills.com/explore)
 [![Skills](https://img.shields.io/badge/skills-2%2C810-green)](https://tonsofskills.com/skills)
@@ -142,7 +143,7 @@ Jump to any of the 18 categories below. Plugin counts are catalog totals — aut
 | `feature-engineering-toolkit` | Feature creation, selection, and transformation tools |
 | `hyperparameter-tuner` | Optimize hyperparameters using grid/random/bayesian search |
 | `jeremy-adk-orchestrator` | Production ADK orchestrator for A2A protocol and multi-agent coordination on Vertex AI |
-| `jeremy-adk-software-engineer` | ADK software engineer for creating production-ready agents (placeholder - to be implemented) |
+| `jeremy-adk-software-engineer` | ADK software engineer for creating production-ready Agent Development Kit agents with clean structure, testability, safe tool usage, and deployment automation |
 | `jeremy-gcp-starter-examples` | Google Cloud starter kits and example code aggregator with ADK samples |
 | `jeremy-genkit-pro` | Firebase Genkit expert for production-ready AI workflows with RAG and tool calling |
 | `jeremy-google-adk` | Google Agent Development Kit (ADK) starter for building production AI agents — ReAct single-agent or multi-agent orchestration… |

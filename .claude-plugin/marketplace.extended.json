@@ -6641,7 +6641,7 @@
     {
       "name": "jeremy-adk-software-engineer",
       "source": "./plugins/ai-ml/jeremy-adk-software-engineer",
-      "description": "ADK software engineer for creating production-ready agents (placeholder - to be implemented)",
+      "description": "ADK software engineer for creating production-ready Agent Development Kit agents with clean structure, testability, safe tool usage, and deployment automation",
       "version": "2.0.0",
       "category": "ai-ml",
       "keywords": [
