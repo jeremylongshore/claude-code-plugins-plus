@@ -22,6 +22,7 @@
 
 import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
+import prettier from 'prettier';
 
 const ROOT = resolve(dirname(new URL(import.meta.url).pathname), '..');
 const SPOTLIGHTS = join(ROOT, 'marketplace', 'src', 'data', 'spotlights.json');
@@ -121,12 +122,26 @@ function splice(readme, block) {
   return readme.slice(0, s) + block + readme.slice(e + END.length);
 }
 
-function main() {
+// Pipe the entire spliced README through Prettier so the generator owns both
+// the bounded block AND Prettier's surrounding-whitespace expectations.
+// Without this, `prettier --check README.md` and this script's `--check` mode
+// fight over blank lines around the sentinels (issue #657).
+//
+// resolveConfig() loads the repo's Prettier settings (.prettierrc and friends)
+// — without it, prettier.format() runs with library defaults and produces
+// output that disagrees with what `prettier --check` from the CLI expects.
+async function formatReadme(content) {
+  const options = (await prettier.resolveConfig(README)) || {};
+  return prettier.format(content, { ...options, filepath: README });
+}
+
+async function main() {
   const check = process.argv.includes('--check');
   const data = JSON.parse(readFileSync(SPOTLIGHTS, 'utf-8'));
   const block = renderBlock(data);
   const readme = readFileSync(README, 'utf-8');
-  const updated = splice(readme, block);
+  const spliced = splice(readme, block);
+  const updated = await formatReadme(spliced);
 
   if (updated === readme) {
     console.log('✓ README KILLER-SKILL block already in sync with spotlights.json');
@@ -143,9 +158,7 @@ function main() {
   console.log('✓ README KILLER-SKILL block regenerated from spotlights.json');
 }
 
-try {
-  main();
-} catch (err) {
+main().catch((err) => {
   console.error(err.message || err);
   process.exit(1);
-}
+});

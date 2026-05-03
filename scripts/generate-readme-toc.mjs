@@ -21,6 +21,7 @@
 
 import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
+import prettier from 'prettier';
 
 const ROOT = resolve(dirname(new URL(import.meta.url).pathname), '..');
 const EXTENDED = join(ROOT, '.claude-plugin', 'marketplace.extended.json');
@@ -169,14 +170,28 @@ function replaceBlock(readme, newBlock) {
   return before + newBlock + after;
 }
 
-function main() {
+// Pipe the entire updated README through Prettier so the generator owns both
+// the bounded block AND the surrounding-whitespace expectations Prettier has.
+// Without this, `prettier --check README.md` and this script's `--check` mode
+// fight over blank lines around the sentinels (issue #657).
+//
+// resolveConfig() loads the repo's Prettier settings (.prettierrc and friends)
+// — without it, prettier.format() runs with library defaults and produces
+// output that disagrees with what `prettier --check` from the CLI expects.
+async function formatReadme(content) {
+  const options = (await prettier.resolveConfig(README)) || {};
+  return prettier.format(content, { ...options, filepath: README });
+}
+
+async function main() {
   const args = process.argv.slice(2);
   const checkMode = args.includes('--check');
 
   const catalog = JSON.parse(readFileSync(EXTENDED, 'utf-8'));
   const block = buildBlock(catalog);
   const current = readFileSync(README, 'utf-8');
-  const updated = replaceBlock(current, block);
+  const spliced = replaceBlock(current, block);
+  const updated = await formatReadme(spliced);
 
   if (checkMode) {
     if (current !== updated) {
@@ -200,4 +215,7 @@ function main() {
   console.log(`README updated (${(newBytes / 1024).toFixed(1)} KB).`);
 }
 
-main();
+main().catch((err) => {
+  console.error(err.message || err);
+  process.exit(1);
+});
