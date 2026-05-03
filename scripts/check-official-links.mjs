@@ -135,7 +135,7 @@ function extractLinks(markdown) {
   }
 
   // Match raw URLs (http/https)
-  const rawUrlRegex = /(?<![\(\[])(https?:\/\/[^\s\)]+)/g;
+  const rawUrlRegex = /(?<![([])(https?:\/\/[^\s)]+)/g;
   while ((match = rawUrlRegex.exec(markdown)) !== null) {
     const url = match[1];
     // Avoid duplicates from markdown links

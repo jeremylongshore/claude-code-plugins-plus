@@ -274,6 +274,7 @@ async function main() {
       console.error(`--filter pattern too long (${raw.length} > 200 chars)`);
       process.exit(2);
     }
+    // eslint-disable-next-line no-control-regex -- intentional sanitization of control chars
     if (/[\x00-\x1f\x7f]/.test(raw)) {
       console.error(`--filter pattern contains control characters; refusing`);
       process.exit(2);
