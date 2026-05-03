@@ -19,42 +19,46 @@ export interface InstallOptions {
 
 // Known plugin packs (curated collections)
 const PLUGIN_PACKS: Record<string, string[]> = {
-  'devops': [
-    'terraform-specialist', 'kubernetes-architect', 'deployment-engineer',
-    'devops-troubleshooter', 'hybrid-cloud-architect', 'docker-pro'
+  devops: [
+    'terraform-specialist',
+    'kubernetes-architect',
+    'deployment-engineer',
+    'devops-troubleshooter',
+    'hybrid-cloud-architect',
+    'docker-pro',
   ],
-  'security': [
-    'security-auditor', 'backend-security-coder', 'frontend-security-coder',
-    'mobile-security-coder'
+  security: [
+    'security-auditor',
+    'backend-security-coder',
+    'frontend-security-coder',
+    'mobile-security-coder',
   ],
-  'api': [
-    'backend-architect', 'graphql-architect', 'fastapi-pro'
+  api: ['backend-architect', 'graphql-architect', 'fastapi-pro'],
+  'ai-ml': ['ai-engineer', 'ml-engineer', 'mlops-engineer', 'prompt-engineer'],
+  frontend: ['frontend-developer', 'flutter-expert', 'mobile-developer', 'ui-ux-designer'],
+  backend: [
+    'python-pro',
+    'golang-pro',
+    'rust-pro',
+    'java-pro',
+    'typescript-pro',
+    'csharp-pro',
+    'ruby-pro',
+    'php-pro',
+    'elixir-pro',
+    'scala-pro',
   ],
-  'ai-ml': [
-    'ai-engineer', 'ml-engineer', 'mlops-engineer', 'prompt-engineer'
-  ],
-  'frontend': [
-    'frontend-developer', 'flutter-expert', 'mobile-developer', 'ui-ux-designer'
-  ],
-  'backend': [
-    'python-pro', 'golang-pro', 'rust-pro', 'java-pro', 'typescript-pro',
-    'csharp-pro', 'ruby-pro', 'php-pro', 'elixir-pro', 'scala-pro'
-  ],
-  'database': [
-    'database-optimizer', 'database-admin', 'sql-pro', 'data-engineer'
-  ],
-  'testing': [
-    'test-automator', 'debugger', 'error-detective', 'performance-engineer'
-  ],
+  database: ['database-optimizer', 'database-admin', 'sql-pro', 'data-engineer'],
+  testing: ['test-automator', 'debugger', 'error-detective', 'performance-engineer'],
 };
 
 // Category aliases: when users pass --category X, redirect to Y if X was merged.
 // Keeps old command invocations working after scaffold consolidation (PR 1).
 const CATEGORY_ALIASES: Record<string, string> = {
-  'analytics': 'business-tools',
+  analytics: 'business-tools',
   'code-quality': 'testing',
-  'finance': 'business-tools',
-  'automation': 'devops',
+  finance: 'business-tools',
+  automation: 'devops',
 };
 
 /**
@@ -63,7 +67,7 @@ const CATEGORY_ALIASES: Record<string, string> = {
 export async function installPlugin(
   pluginName: string | undefined,
   paths: ClaudePaths,
-  options: InstallOptions
+  options: InstallOptions,
 ): Promise<void> {
   if (options.all) {
     await installAllPlugins(paths, options);
@@ -128,7 +132,6 @@ export async function installPlugin(
     }
 
     await guidePluginInstall(plugin, options);
-
   } catch (error) {
     console.log(chalk.red('\nInstallation failed\n'));
     if (error instanceof Error) {
@@ -181,7 +184,6 @@ async function installAllPlugins(paths: ClaudePaths, options: InstallOptions): P
     console.log(chalk.gray('\n' + '━'.repeat(60)));
     console.log(chalk.yellow('\nNote: This is a guided install - run each command in Claude Code'));
     console.log(chalk.gray('━'.repeat(60) + '\n'));
-
   } catch (error) {
     spinner.fail('Failed to fetch catalog');
     console.error(chalk.red(error instanceof Error ? error.message : String(error)));
@@ -204,7 +206,11 @@ async function installSkills(_paths: ClaudePaths, _options: InstallOptions): Pro
 /**
  * Install a plugin pack
  */
-async function installPack(packName: string, paths: ClaudePaths, options: InstallOptions): Promise<void> {
+async function installPack(
+  packName: string,
+  paths: ClaudePaths,
+  options: InstallOptions,
+): Promise<void> {
   console.log(chalk.bold(`\nInstalling Pack: ${packName}\n`));
 
   const packPlugins = PLUGIN_PACKS[packName.toLowerCase()];
@@ -235,15 +241,19 @@ async function installPack(packName: string, paths: ClaudePaths, options: Instal
 /**
  * Install plugins by category
  */
-async function installByCategory(category: string, paths: ClaudePaths, options: InstallOptions): Promise<void> {
+async function installByCategory(
+  category: string,
+  paths: ClaudePaths,
+  options: InstallOptions,
+): Promise<void> {
   const requested = category.toLowerCase();
   const aliased = CATEGORY_ALIASES[requested];
   const effective = aliased ?? requested;
 
   if (aliased) {
-    console.log(chalk.yellow(
-      `Note: category "${requested}" was merged into "${aliased}" — redirecting.\n`
-    ));
+    console.log(
+      chalk.yellow(`Note: category "${requested}" was merged into "${aliased}" — redirecting.\n`),
+    );
   }
 
   console.log(chalk.bold(`\nInstalling Category: ${effective}\n`));
@@ -258,7 +268,7 @@ async function installByCategory(category: string, paths: ClaudePaths, options: 
     }
 
     const plugins = (catalog.plugins || []).filter(
-      (p: PluginMetadata) => p.category?.toLowerCase() === effective
+      (p: PluginMetadata) => p.category?.toLowerCase() === effective,
     );
 
     if (plugins.length === 0) {
@@ -274,7 +284,9 @@ async function installByCategory(category: string, paths: ClaudePaths, options: 
 
       console.log(chalk.gray('\nAvailable categories:'));
       for (const cat of Array.from(categories).sort()) {
-        const count = (catalog.plugins || []).filter((p: PluginMetadata) => p.category === cat).length;
+        const count = (catalog.plugins || []).filter(
+          (p: PluginMetadata) => p.category === cat,
+        ).length;
         console.log(chalk.cyan(`  ${cat}`) + chalk.gray(` (${count} plugins)`));
       }
       console.log('');
@@ -293,7 +305,6 @@ async function installByCategory(category: string, paths: ClaudePaths, options: 
     console.log(chalk.gray('\n' + '━'.repeat(60)));
     console.log(chalk.gray('Run these commands in Claude Code to install'));
     console.log(chalk.gray('━'.repeat(60) + '\n'));
-
   } catch (error) {
     spinner.fail('Failed to fetch catalog');
     console.error(chalk.red(error instanceof Error ? error.message : String(error)));
@@ -329,7 +340,11 @@ async function checkPluginInstalled(paths: ClaudePaths, pluginName: string): Pro
 
     return pluginName in data.plugins;
   } catch (error) {
-    console.warn(chalk.yellow(`Warning: Could not read installed_plugins.json: ${error instanceof Error ? error.message : String(error)}`));
+    console.warn(
+      chalk.yellow(
+        `Warning: Could not read installed_plugins.json: ${error instanceof Error ? error.message : String(error)}`,
+      ),
+    );
     return false;
   }
 }
@@ -366,13 +381,19 @@ async function fetchCatalog(): Promise<{ plugins: PluginMetadata[] } | null> {
  */
 async function guideMarketplaceSetup(): Promise<void> {
   console.log(chalk.bold('First-time setup required\n'));
-  console.log(chalk.gray('The Claude Code Plugins marketplace needs to be added to your Claude installation.\n'));
+  console.log(
+    chalk.gray(
+      'The Claude Code Plugins marketplace needs to be added to your Claude installation.\n',
+    ),
+  );
 
   console.log(chalk.bold('Step 1: Add Marketplace\n'));
   console.log(chalk.gray('Open Claude Code and run this command:\n'));
   console.log(chalk.cyan(`   /plugin marketplace add ${MARKETPLACE_REPO}\n`));
 
-  console.log(chalk.gray('This will add access to all 259 plugins from https://tonsofskills.com\n'));
+  console.log(
+    chalk.gray('This will add access to all 259 plugins from https://tonsofskills.com\n'),
+  );
 
   console.log(chalk.bold('After adding the marketplace:\n'));
   console.log(chalk.gray('Run this command again to install your plugin:\n'));

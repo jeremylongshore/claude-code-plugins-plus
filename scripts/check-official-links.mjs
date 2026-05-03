@@ -66,9 +66,10 @@ function findMarkdownFiles() {
   // 1. Playbooks
   const playbooksDir = path.join(REPO_ROOT, 'playbooks');
   if (fs.existsSync(playbooksDir)) {
-    const playbookFiles = fs.readdirSync(playbooksDir)
-      .filter(f => f.endsWith('.md'))
-      .map(f => path.join(playbooksDir, f));
+    const playbookFiles = fs
+      .readdirSync(playbooksDir)
+      .filter((f) => f.endsWith('.md'))
+      .map((f) => path.join(playbooksDir, f));
     files.push(...playbookFiles);
   }
 
@@ -139,7 +140,7 @@ function extractLinks(markdown) {
   while ((match = rawUrlRegex.exec(markdown)) !== null) {
     const url = match[1];
     // Avoid duplicates from markdown links
-    if (!links.some(l => l.url === url)) {
+    if (!links.some((l) => l.url === url)) {
       links.push({ text: '', url, type: 'raw' });
     }
   }
@@ -256,7 +257,8 @@ function main() {
 
     for (const [domain, items] of Object.entries(byDomain)) {
       log(`\n  Domain: ${domain}`, 'yellow');
-      for (const item of items.slice(0, 5)) { // Show max 5 per domain
+      for (const item of items.slice(0, 5)) {
+        // Show max 5 per domain
         log(`    File: ${item.file}`, 'red');
         log(`    Link: ${item.link}`, 'red');
         if (item.text) {

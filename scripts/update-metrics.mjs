@@ -70,7 +70,9 @@ let readme = readFileSync(readmePath, 'utf-8');
 const original = readme;
 const contributorCount = countContributors(readme);
 
-console.log(`Plugins:        ${pluginCount}  (mcp=${mcpCount}, saas=${saasPackCount}, ai-instruction=${aiInstructionCount})`);
+console.log(
+  `Plugins:        ${pluginCount}  (mcp=${mcpCount}, saas=${saasPackCount}, ai-instruction=${aiInstructionCount})`,
+);
 console.log(`Skills:         ${skillCount}`);
 console.log(`Agents:         ${agentCount}`);
 console.log(`Categories:     ${categoryCount}`);

@@ -28,10 +28,10 @@ export async function detectClaudePaths(): Promise<ClaudePaths> {
   }
 
   // Verify config directory exists
-  if (!await fs.pathExists(configDir)) {
+  if (!(await fs.pathExists(configDir))) {
     throw new Error(
       `Claude Code config directory not found at ${configDir}. ` +
-      'Please ensure Claude Code is installed and has been run at least once.'
+        'Please ensure Claude Code is installed and has been run at least once.',
     );
   }
 
@@ -67,7 +67,7 @@ export function getMarketplaceCatalogPath(paths: ClaudePaths): string {
     paths.marketplacesDir,
     'claude-code-plugins-plus',
     '.claude-plugin',
-    'marketplace.json'
+    'marketplace.json',
   );
 }
 

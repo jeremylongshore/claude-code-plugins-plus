@@ -34,12 +34,7 @@ console.log(`\n${GREEN}🔍 Package Manager Policy Enforcement${RESET}\n`);
 function checkForbiddenLockfiles() {
   console.log('📦 Checking for forbidden lockfiles...');
 
-  const forbidden = [
-    'package-lock.json',
-    'yarn.lock',
-    'bun.lockb',
-    'bun.lock'
-  ];
+  const forbidden = ['package-lock.json', 'yarn.lock', 'bun.lockb', 'bun.lock'];
 
   const found = [];
 
@@ -59,8 +54,14 @@ function checkForbiddenLockfiles() {
       const relPath = join(relativePath, entry);
 
       // Skip node_modules, .git, backups, dist, build
-      if (entry === 'node_modules' || entry === '.git' || entry === 'backups' ||
-          entry === 'dist' || entry === 'build' || entry === '.next') {
+      if (
+        entry === 'node_modules' ||
+        entry === '.git' ||
+        entry === 'backups' ||
+        entry === 'dist' ||
+        entry === 'build' ||
+        entry === '.next'
+      ) {
         continue;
       }
 
@@ -80,7 +81,7 @@ function checkForbiddenLockfiles() {
 
   if (found.length > 0) {
     console.log(`${RED}❌ Found forbidden lockfiles:${RESET}`);
-    found.forEach(file => console.log(`   ${RED}• ${file}${RESET}`));
+    found.forEach((file) => console.log(`   ${RED}• ${file}${RESET}`));
     console.log(`\n${YELLOW}Fix: Remove these files and run 'pnpm install'${RESET}`);
     violations += found.length;
   } else {
@@ -147,12 +148,14 @@ function checkWorkflows() {
     return;
   }
 
-  const workflows = readdirSync(workflowsDir).filter(f => f.endsWith('.yml') || f.endsWith('.yaml'));
+  const workflows = readdirSync(workflowsDir).filter(
+    (f) => f.endsWith('.yml') || f.endsWith('.yaml'),
+  );
 
   const forbiddenPatterns = [
-    /^\s*run:\s*npm install(?!\s*#)/m,  // npm install (not in comment)
+    /^\s*run:\s*npm install(?!\s*#)/m, // npm install (not in comment)
     /^\s*run:\s*yarn install(?!\s*#)/m, // yarn install (not in comment)
-    /^\s*run:\s*bun install(?!\s*#)/m,  // bun install (not in comment)
+    /^\s*run:\s*bun install(?!\s*#)/m, // bun install (not in comment)
   ];
 
   // Exceptions: workflows that intentionally test package managers

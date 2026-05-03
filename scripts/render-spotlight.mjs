@@ -31,8 +31,18 @@ const START = '<!-- KILLER-SKILL:START — do not edit; run `node scripts/render
 const END = '<!-- KILLER-SKILL:END -->';
 
 const MONTHS = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December',
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
 ];
 
 // 2026-W18 → "Week of May 2, 2026 (W18)" — derived from the ISO week so
@@ -88,9 +98,7 @@ function renderBlock(data) {
   // Optional headline + quote — fall back gracefully if absent.
   const headlineLine = s.headline ? `> **${s.headline}**\n>\n` : '';
   const whyLine = s.whyKiller ? `> ${s.whyKiller}\n>\n` : '';
-  const quoteLine = s.quote
-    ? `> *"${s.quote}"* — ${s.author || 'Anonymous'}\n>\n`
-    : '';
+  const quoteLine = s.quote ? `> *"${s.quote}"* — ${s.author || 'Anonymous'}\n>\n` : '';
 
   const lines = [
     START,
@@ -108,9 +116,7 @@ function splice(readme, block) {
   const s = readme.indexOf(START);
   const e = readme.indexOf(END);
   if (s === -1 || e === -1) {
-    throw new Error(
-      `README.md missing KILLER-SKILL sentinels. Add:\n${START}\n${END}\n`
-    );
+    throw new Error(`README.md missing KILLER-SKILL sentinels. Add:\n${START}\n${END}\n`);
   }
   return readme.slice(0, s) + block + readme.slice(e + END.length);
 }

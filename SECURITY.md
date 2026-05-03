@@ -56,11 +56,11 @@ Plugin zip packages (cowork downloads) are built with:
 
 ## Plugin Trust Levels
 
-| Level | Requirements | Recommendation |
-|-------|-------------|----------------|
-| **Community** | Automated CI passed | Inspect before production use |
-| **Verified** | Full review + 2 maintainer approvals + 7-day public review | Safe for production |
-| **Featured** | Verified + active maintenance + community adoption | Recommended |
+| Level         | Requirements                                               | Recommendation                |
+| ------------- | ---------------------------------------------------------- | ----------------------------- |
+| **Community** | Automated CI passed                                        | Inspect before production use |
+| **Verified**  | Full review + 2 maintainer approvals + 7-day public review | Safe for production           |
+| **Featured**  | Verified + active maintenance + community adoption         | Recommended                   |
 
 ## For Plugin Developers
 
@@ -72,9 +72,9 @@ Plugin zip packages (cowork downloads) are built with:
 
 ## Supported Versions
 
-| Version | Supported |
-|---------|-----------|
-| Latest (`main`) | Yes |
+| Version           | Supported                    |
+| ----------------- | ---------------------------- |
+| Latest (`main`)   | Yes                          |
 | Previous releases | Best-effort security patches |
 
 ---

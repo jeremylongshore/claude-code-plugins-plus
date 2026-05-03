@@ -46,7 +46,7 @@ In the same PR that adds the feature, edit the affected plugin's `package.json` 
 + "version": "1.3.0",
 ```
 
-The auto-bumper detects that `package.json` changed *along with* source files and steps aside (it bumps a plugin only when the plugin's source changed *and* its package.json didn't change in the same PR). Your manual minor bump rides through and the publish workflow ships it as `@scope/name@1.3.0`.
+The auto-bumper detects that `package.json` changed _along with_ source files and steps aside (it bumps a plugin only when the plugin's source changed _and_ its package.json didn't change in the same PR). Your manual minor bump rides through and the publish workflow ships it as `@scope/name@1.3.0`.
 
 ### Major bump (breaking change)
 
@@ -70,18 +70,18 @@ Two ways:
 
 When `publish-changed-packages.yml` ships `@intentsolutionsio/langchain-pack@1.1.0`, here's what lands:
 
-| Artifact | Where |
-|---|---|
-| npm tarball | `https://www.npmjs.com/package/@intentsolutionsio/langchain-pack/v/1.1.0` |
-| Annotated git tag | `@intentsolutionsio/langchain-pack@1.1.0` (visible in `git tag --list`) |
-| GitHub Release | https://github.com/jeremylongshore/claude-code-plugins-plus-skills/releases/tag/@intentsolutionsio/langchain-pack@1.1.0 |
-| Provenance attestation | https://www.npmjs.com/package/@intentsolutionsio/langchain-pack/v/1.1.0?activeTab=provenance |
+| Artifact               | Where                                                                                                                   |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| npm tarball            | `https://www.npmjs.com/package/@intentsolutionsio/langchain-pack/v/1.1.0`                                               |
+| Annotated git tag      | `@intentsolutionsio/langchain-pack@1.1.0` (visible in `git tag --list`)                                                 |
+| GitHub Release         | https://github.com/jeremylongshore/claude-code-plugins-plus-skills/releases/tag/@intentsolutionsio/langchain-pack@1.1.0 |
+| Provenance attestation | https://www.npmjs.com/package/@intentsolutionsio/langchain-pack/v/1.1.0?activeTab=provenance                            |
 
 The GitHub Release auto-includes:
 
 - Install command: `pnpm add @intentsolutionsio/langchain-pack@1.1.0`
 - Source path within the monorepo
-- Auto-generated commit / PR summary since the previous tag for *this* package
+- Auto-generated commit / PR summary since the previous tag for _this_ package
 
 ## The freeze fix (one-time)
 
@@ -114,13 +114,13 @@ If the package mix shifts — fewer markdown plugins, more hand-curated APIs —
 
 ## Failure modes + recovery
 
-| Symptom | Cause | Fix |
-|---|---|---|
-| `auto-bump-on-pr` fails on `git push` to PR branch | Forked PR (no write access) | Author manually bumps `package.json` patch in their PR. The publish workflow then ships it on merge. |
-| `publish-changed-packages` fails on one package | Stale `npm publish` token, missing `provenance` perms, name collision | Check the workflow log. Fix root cause, then bump the affected package's patch in a follow-up PR to retry. |
-| Tag was created but publish failed | Order: publish first, then tag. If you see this, something raced. | Delete the orphan tag (`git push origin :refs/tags/<tag>`) and bump the patch to retry. |
-| `gh release create` fails | Permissions or transient API hiccup | The publish + tag still landed; create the release manually with `gh release create <tag> --generate-notes`. |
-| 429 rate-limit on `npm publish` (very rare) | Burst-publishing too many packages at once | The workflow sleeps 2s between publishes. If you hit this, split the merge into smaller batches. |
+| Symptom                                            | Cause                                                                 | Fix                                                                                                          |
+| -------------------------------------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `auto-bump-on-pr` fails on `git push` to PR branch | Forked PR (no write access)                                           | Author manually bumps `package.json` patch in their PR. The publish workflow then ships it on merge.         |
+| `publish-changed-packages` fails on one package    | Stale `npm publish` token, missing `provenance` perms, name collision | Check the workflow log. Fix root cause, then bump the affected package's patch in a follow-up PR to retry.   |
+| Tag was created but publish failed                 | Order: publish first, then tag. If you see this, something raced.     | Delete the orphan tag (`git push origin :refs/tags/<tag>`) and bump the patch to retry.                      |
+| `gh release create` fails                          | Permissions or transient API hiccup                                   | The publish + tag still landed; create the release manually with `gh release create <tag> --generate-notes`. |
+| 429 rate-limit on `npm publish` (very rare)        | Burst-publishing too many packages at once                            | The workflow sleeps 2s between publishes. If you hit this, split the merge into smaller batches.             |
 
 ## Operational guardrails
 

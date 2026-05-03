@@ -13,7 +13,7 @@ interface MarketplaceOptions {
  */
 export async function marketplaceCommand(
   paths: ClaudePaths,
-  options: MarketplaceOptions
+  options: MarketplaceOptions,
 ): Promise<void> {
   console.log(chalk.bold('\n📦 Claude Code Plugins Marketplace\n'));
 
@@ -126,7 +126,11 @@ export async function addMarketplace(paths: ClaudePaths): Promise<void> {
   const marketplacePath = path.join(paths.marketplacesDir, MARKETPLACE_SLUG);
   if (existsSync(marketplacePath)) {
     console.log(chalk.green('✓ Marketplace is already added!\n'));
-    console.log(chalk.gray('Run:') + chalk.cyan(' ccpi marketplace --verify') + chalk.gray(' to check status\n'));
+    console.log(
+      chalk.gray('Run:') +
+        chalk.cyan(' ccpi marketplace --verify') +
+        chalk.gray(' to check status\n'),
+    );
     return;
   }
 

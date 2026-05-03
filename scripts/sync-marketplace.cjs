@@ -20,7 +20,7 @@ const DISALLOWED_KEYS = new Set([
   'components',
   'zcf_metadata',
   'external_sync',
-  'verification'
+  'verification',
 ]);
 
 if (!fs.existsSync(extendedPath)) {
@@ -45,7 +45,7 @@ if (!Array.isArray(marketplace.plugins)) {
 
 const sanitized = {
   ...marketplace,
-  plugins: marketplace.plugins.map(plugin => {
+  plugins: marketplace.plugins.map((plugin) => {
     if (plugin === null || typeof plugin !== 'object') {
       return plugin;
     }
@@ -57,7 +57,7 @@ const sanitized = {
       }
     }
     return sanitizedPlugin;
-  })
+  }),
 };
 
 fs.writeFileSync(cliPath, JSON.stringify(sanitized, null, 2) + '\n');

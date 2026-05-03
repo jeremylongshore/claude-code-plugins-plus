@@ -31,7 +31,7 @@ const options = {
   force: args.includes('--force'),
   dryRun: args.includes('--dry-run'),
   verbose: args.includes('--verbose'),
-  source: args.find(a => a.startsWith('--source='))?.split('=')[1] || null,
+  source: args.find((a) => a.startsWith('--source='))?.split('=')[1] || null,
 };
 
 // Colors for terminal output
@@ -65,7 +65,7 @@ async function fetchFromGitHub(repo, filePath, branch = 'main') {
   return new Promise((resolve, reject) => {
     const headers = {
       'User-Agent': 'claude-code-plugins-sync',
-      'Accept': 'application/vnd.github.v3+json',
+      Accept: 'application/vnd.github.v3+json',
     };
 
     // Add auth token if available
@@ -73,38 +73,44 @@ async function fetchFromGitHub(repo, filePath, branch = 'main') {
       headers['Authorization'] = `token ${process.env.GITHUB_TOKEN}`;
     }
 
-    https.get(url, { headers }, (res) => {
-      let data = '';
-      res.on('data', chunk => data += chunk);
-      res.on('end', () => {
-        if (res.statusCode === 200) {
-          try {
-            const json = JSON.parse(data);
-            // File response — `content` may be an empty string for 0-byte
-            // files (e.g. .gitkeep, blank __init__.py) which is still a valid
-            // file we want to copy. Use type === 'file' as the truth-source.
-            if (json.type === 'file' || typeof json.content === 'string') {
-              const content = Buffer.from(json.content || '', 'base64').toString('utf8');
-              resolve({ content, sha: json.sha, path: json.path });
-            } else if (Array.isArray(json)) {
-              // Directory listing
-              resolve({ type: 'directory', files: json });
-            } else if (json.type === 'submodule' || json.type === 'symlink') {
-              // Skip submodules and symlinks — can't safely mirror these as plain files
-              resolve(null);
-            } else {
-              reject(new Error(`Unexpected response format for ${filePath} (type=${json.type ?? 'none'})`));
+    https
+      .get(url, { headers }, (res) => {
+        let data = '';
+        res.on('data', (chunk) => (data += chunk));
+        res.on('end', () => {
+          if (res.statusCode === 200) {
+            try {
+              const json = JSON.parse(data);
+              // File response — `content` may be an empty string for 0-byte
+              // files (e.g. .gitkeep, blank __init__.py) which is still a valid
+              // file we want to copy. Use type === 'file' as the truth-source.
+              if (json.type === 'file' || typeof json.content === 'string') {
+                const content = Buffer.from(json.content || '', 'base64').toString('utf8');
+                resolve({ content, sha: json.sha, path: json.path });
+              } else if (Array.isArray(json)) {
+                // Directory listing
+                resolve({ type: 'directory', files: json });
+              } else if (json.type === 'submodule' || json.type === 'symlink') {
+                // Skip submodules and symlinks — can't safely mirror these as plain files
+                resolve(null);
+              } else {
+                reject(
+                  new Error(
+                    `Unexpected response format for ${filePath} (type=${json.type ?? 'none'})`,
+                  ),
+                );
+              }
+            } catch (e) {
+              reject(new Error(`Failed to parse response: ${e.message}`));
             }
-          } catch (e) {
-            reject(new Error(`Failed to parse response: ${e.message}`));
+          } else if (res.statusCode === 404) {
+            resolve(null); // File not found
+          } else {
+            reject(new Error(`GitHub API error ${res.statusCode}: ${data}`));
           }
-        } else if (res.statusCode === 404) {
-          resolve(null); // File not found
-        } else {
-          reject(new Error(`GitHub API error ${res.statusCode}: ${data}`));
-        }
-      });
-    }).on('error', reject);
+        });
+      })
+      .on('error', reject);
   });
 }
 
@@ -132,10 +138,12 @@ async function fetchDirectory(repo, dirPath, branch = 'main') {
       }
     } else if (item.type === 'dir') {
       const subFiles = await fetchDirectory(repo, item.path, branch);
-      files.push(...subFiles.map(f => ({
-        ...f,
-        path: `${item.name}/${f.path}`,
-      })));
+      files.push(
+        ...subFiles.map((f) => ({
+          ...f,
+          path: `${item.name}/${f.path}`,
+        })),
+      );
     }
   }
 
@@ -148,14 +156,16 @@ async function fetchDirectory(repo, dirPath, branch = 'main') {
 function matchesPattern(filePath, patterns) {
   if (!patterns || patterns.length === 0) return true;
 
-  return patterns.some(pattern => {
+  return patterns.some((pattern) => {
     // Convert glob pattern to regex
     const regex = new RegExp(
-      '^' + pattern
-        .replace(/\*\*/g, '<<<DOUBLESTAR>>>')
-        .replace(/\*/g, '[^/]*')
-        .replace(/<<<DOUBLESTAR>>>/g, '.*')
-        .replace(/\?/g, '.') + '$'
+      '^' +
+        pattern
+          .replace(/\*\*/g, '<<<DOUBLESTAR>>>')
+          .replace(/\*/g, '[^/]*')
+          .replace(/<<<DOUBLESTAR>>>/g, '.*')
+          .replace(/\?/g, '.') +
+        '$',
     );
     return regex.test(filePath);
   });
@@ -184,7 +194,7 @@ async function syncSource(source, config) {
     logVerbose(`Found ${files.length} files in source`);
 
     // Filter files based on include/exclude patterns
-    const filteredFiles = files.filter(file => {
+    const filteredFiles = files.filter((file) => {
       const included = matchesPattern(file.path, source.include);
       const excluded = matchesPattern(file.path, source.exclude);
       return included && !excluded;
@@ -254,7 +264,6 @@ async function syncSource(source, config) {
     }
 
     return { source: source.name, changes, error: null };
-
   } catch (error) {
     log(`   ❌ Error: ${error.message}`, colors.red);
     return { source: source.name, changes: [], error: error.message };
@@ -266,7 +275,7 @@ async function syncSource(source, config) {
  */
 async function main() {
   log('\n🔄 External Plugin Sync', colors.bright + colors.blue);
-  log('=' .repeat(50), colors.blue);
+  log('='.repeat(50), colors.blue);
 
   if (options.dryRun) {
     log('DRY RUN MODE - No changes will be made\n', colors.yellow);
@@ -289,9 +298,7 @@ async function main() {
   log(`Found ${sources.length} source(s) to sync`, colors.dim);
 
   // Filter sources if --source option provided
-  const sourcesToSync = options.source
-    ? sources.filter(s => s.name === options.source)
-    : sources;
+  const sourcesToSync = options.source ? sources.filter((s) => s.name === options.source) : sources;
 
   if (options.source && sourcesToSync.length === 0) {
     log(`❌ Source "${options.source}" not found in sources.yaml`, colors.red);
@@ -310,7 +317,7 @@ async function main() {
   log('📊 Sync Summary', colors.bright + colors.blue);
 
   const totalChanges = results.reduce((acc, r) => acc + r.changes.length, 0);
-  const errors = results.filter(r => r.error);
+  const errors = results.filter((r) => r.error);
 
   if (totalChanges > 0) {
     log(`✅ ${totalChanges} file(s) ${options.dryRun ? 'would be ' : ''}synced`, colors.green);
@@ -320,14 +327,14 @@ async function main() {
 
   if (errors.length > 0) {
     log(`⚠️  ${errors.length} source(s) had errors`, colors.yellow);
-    errors.forEach(e => log(`   - ${e.source}: ${e.error}`, colors.red));
+    errors.forEach((e) => log(`   - ${e.source}: ${e.error}`, colors.red));
   }
 
   // Output for GitHub Actions
   if (process.env.GITHUB_OUTPUT) {
     const outputFile = process.env.GITHUB_OUTPUT;
     fs.appendFileSync(outputFile, `changes=${totalChanges}\n`);
-    fs.appendFileSync(outputFile, `sources=${results.map(r => r.source).join(',')}\n`);
+    fs.appendFileSync(outputFile, `sources=${results.map((r) => r.source).join(',')}\n`);
     fs.appendFileSync(outputFile, `has_changes=${totalChanges > 0}\n`);
   }
 
@@ -340,7 +347,7 @@ async function main() {
 }
 
 // Run
-main().catch(error => {
+main().catch((error) => {
   console.error('Fatal error:', error);
   process.exit(1);
 });

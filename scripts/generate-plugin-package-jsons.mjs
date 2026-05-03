@@ -113,9 +113,9 @@ function buildPackageJson(pluginDir, pluginJson) {
   const keywords = Array.from(
     new Set(
       [...baseKeywords, 'claude-code', 'claude-plugin', 'tonsofskills'].map((k) =>
-        String(k).toLowerCase().trim()
-      )
-    )
+        String(k).toLowerCase().trim(),
+      ),
+    ),
   ).slice(0, 20); // npm soft-limits keywords; keep it reasonable
 
   // Only include files that actually exist in the plugin directory.
@@ -136,9 +136,10 @@ function buildPackageJson(pluginDir, pluginJson) {
 
   const pkg = {
     name,
-    version: pluginJson.version && /^\d+\.\d+\.\d+/.test(pluginJson.version)
-      ? pluginJson.version
-      : '1.0.0',
+    version:
+      pluginJson.version && /^\d+\.\d+\.\d+/.test(pluginJson.version)
+        ? pluginJson.version
+        : '1.0.0',
     description,
     keywords,
     repository: {

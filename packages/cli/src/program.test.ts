@@ -18,4 +18,3 @@ describe('ccpi CLI program', () => {
     expect(commandNames).toContain('marketplace-remove');
   });
 });
-

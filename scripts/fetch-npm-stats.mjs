@@ -333,7 +333,7 @@ function updateReadme(block) {
   const e = readme.indexOf(END_SENTINEL);
   if (s === -1 || e === -1) {
     throw new Error(
-      `README.md missing NPM-STATS sentinels. Add:\n${START_SENTINEL}\n${END_SENTINEL}\nwhere the stats block belongs.`
+      `README.md missing NPM-STATS sentinels. Add:\n${START_SENTINEL}\n${END_SENTINEL}\nwhere the stats block belongs.`,
     );
   }
   return readme.slice(0, s) + block + readme.slice(e + END_SENTINEL.length);
@@ -365,7 +365,7 @@ async function main() {
   // 3. Aggregate
   const now = Date.now();
   const established = published.filter(
-    (p) => p.createdAt && now - p.createdAt > ESTABLISHED_THRESHOLD_MS
+    (p) => p.createdAt && now - p.createdAt > ESTABLISHED_THRESHOLD_MS,
   );
   const totalDay = published.reduce((s, p) => s + p.lastDay, 0);
   const totalWeek = published.reduce((s, p) => s + p.lastWeek, 0);
@@ -395,7 +395,7 @@ async function main() {
   console.log(
     `Telemetry: candidates=${counts.candidates} probed=${counts.probed} ` +
       `published=${counts.published} unpublished=${counts.unpublished} ` +
-      `foreign=${counts.foreign} rate-limited=${counts.rateLimited} errors=${counts.errors}`
+      `foreign=${counts.foreign} rate-limited=${counts.rateLimited} errors=${counts.errors}`,
   );
   if (rateLimitedNames.length) {
     console.warn(`\n⚠ Rate-limited (${rateLimitedNames.length}):`);
@@ -410,7 +410,7 @@ async function main() {
   console.log(`  day=${fmt(totalDay)}  week=${fmt(totalWeek)}  month=${fmt(totalMonth)}`);
   console.log(`Totals (established >30d, ${established.length} pkgs):`);
   console.log(
-    `  day=${fmt(establishedDay)}  week=${fmt(establishedWeek)}  month=${fmt(establishedMonth)}`
+    `  day=${fmt(establishedDay)}  week=${fmt(establishedWeek)}  month=${fmt(establishedMonth)}`,
   );
   console.log('\nTop 10:');
   for (const [i, p] of top.slice(0, 10).entries()) {
@@ -443,7 +443,7 @@ async function main() {
   //    of silently shipping stale data.
   if (counts.rateLimited > 0 || counts.errors > 0) {
     console.error(
-      `\n✗ ${counts.rateLimited} rate-limited, ${counts.errors} errored — counts unreliable.`
+      `\n✗ ${counts.rateLimited} rate-limited, ${counts.errors} errored — counts unreliable.`,
     );
     process.exit(1);
   }

@@ -251,9 +251,7 @@ function applyBump(item, newVersionStr) {
   const oldLine = `"version": "${item.pkg.version}"`;
   const newLine = `"version": "${newVersionStr}"`;
   if (!item.raw.includes(oldLine)) {
-    throw new Error(
-      `Cannot find exact "${oldLine}" line in ${item.path}; refusing to edit`
-    );
+    throw new Error(`Cannot find exact "${oldLine}" line in ${item.path}; refusing to edit`);
   }
   const updated = item.raw.replace(oldLine, newLine);
   writeFileSync(item.path, updated);
@@ -325,18 +323,18 @@ async function main() {
   if (buckets['first-publish'].length) {
     console.log('\n--- COVERAGE GAPS (no npm record) ---');
     for (const it of buckets['first-publish']) {
-      console.log(`  ${it.pkg.name.padEnd(50)}  declared ${it.pkg.version}  (${relative(ROOT, it.path)})`);
+      console.log(
+        `  ${it.pkg.name.padEnd(50)}  declared ${it.pkg.version}  (${relative(ROOT, it.path)})`,
+      );
     }
     console.log(
-      '  → Will publish on next merge to main. Run `node scripts/generate-plugin-package-jsons.mjs --probe` to confirm name availability.'
+      '  → Will publish on next merge to main. Run `node scripts/generate-plugin-package-jsons.mjs --probe` to confirm name availability.',
     );
   }
   if (buckets['skip-flag'].length) {
     console.log('\n--- FLAGGED (rate-limit / behind-npm / error) ---');
     for (const it of buckets['skip-flag']) {
-      console.log(
-        `  [${it.decision.flag}] ${it.pkg.name.padEnd(45)}  ${it.decision.reason}`
-      );
+      console.log(`  [${it.decision.flag}] ${it.pkg.name.padEnd(45)}  ${it.decision.reason}`);
     }
   }
   if (buckets.skip.length) {
@@ -349,12 +347,12 @@ async function main() {
   // Bail if any registry probe was unreliable. The bump set is partial in
   // that case and we'd ship inconsistent versions. Prefer a clean re-run.
   const hasUnreliable = buckets['skip-flag'].some(
-    (i) => i.decision.flag === 'rate-limited' || i.decision.flag === 'error'
+    (i) => i.decision.flag === 'rate-limited' || i.decision.flag === 'error',
   );
   if (hasUnreliable) {
     console.error(
       '\n✗ Registry probes were unreliable for at least one package. ' +
-        'Re-run when npm is responsive instead of writing a partial bump set.'
+        'Re-run when npm is responsive instead of writing a partial bump set.',
     );
     process.exit(1);
   }
@@ -372,7 +370,7 @@ async function main() {
   }
   console.log(`Wrote ${written} package.json updates.`);
   console.log(
-    '\nNext: commit, push, merge to main. publish-changed-packages.yml will publish each bumped package + each coverage-gap package.'
+    '\nNext: commit, push, merge to main. publish-changed-packages.yml will publish each bumped package + each coverage-gap package.',
   );
 }
 

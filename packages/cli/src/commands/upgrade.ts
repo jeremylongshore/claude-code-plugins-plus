@@ -16,10 +16,7 @@ interface UpgradeOptions {
 /**
  * Main upgrade command handler
  */
-export async function upgradeCommand(
-  paths: ClaudePaths,
-  options: UpgradeOptions
-): Promise<void> {
+export async function upgradeCommand(paths: ClaudePaths, options: UpgradeOptions): Promise<void> {
   console.log(chalk.bold('\n🔄 Plugin Upgrade Manager\n'));
 
   try {
@@ -74,7 +71,6 @@ export async function upgradeCommand(
       console.log(chalk.cyan('   npx @intentsolutionsio/ccpi upgrade --plugin <name>'));
       console.log(chalk.gray('   (Updates specific plugin)\n'));
     }
-
   } catch (error) {
     console.log(chalk.red('\n❌ Upgrade check failed\n'));
     if (error instanceof Error) {
@@ -107,7 +103,11 @@ async function getInstalledPlugins(paths: ClaudePaths): Promise<Record<string, I
     const data = JSON.parse(content);
     return data.plugins || {};
   } catch (error) {
-    console.warn(chalk.yellow(`Warning: Could not read installed_plugins.json: ${error instanceof Error ? error.message : String(error)}`));
+    console.warn(
+      chalk.yellow(
+        `Warning: Could not read installed_plugins.json: ${error instanceof Error ? error.message : String(error)}`,
+      ),
+    );
     return {};
   }
 }
@@ -129,12 +129,12 @@ async function fetchCatalog(): Promise<{ plugins: PluginMetadata[] } | null> {
  */
 function findAvailableUpdates(
   installed: Record<string, InstalledPlugin>,
-  catalog: PluginMetadata[]
+  catalog: PluginMetadata[],
 ): PluginUpdate[] {
   const updates: PluginUpdate[] = [];
 
   for (const [name, installedData] of Object.entries(installed)) {
-    const catalogPlugin = catalog.find(p => p.name === name);
+    const catalogPlugin = catalog.find((p) => p.name === name);
 
     if (!catalogPlugin) {
       continue; // Plugin not in catalog (might be from different marketplace)
@@ -180,7 +180,9 @@ async function showAvailableUpdates(updates: PluginUpdate[]): Promise<void> {
 
   for (const update of updates) {
     console.log(chalk.cyan(`  ${update.name}`));
-    console.log(chalk.gray(`    Current: ${update.currentVersion} → Latest: ${update.latestVersion}`));
+    console.log(
+      chalk.gray(`    Current: ${update.currentVersion} → Latest: ${update.latestVersion}`),
+    );
     if (update.description) {
       console.log(chalk.gray(`    ${update.description}`));
     }
@@ -198,7 +200,10 @@ async function guideUpgradeAll(updates: PluginUpdate[]): Promise<void> {
 
   for (let i = 0; i < updates.length; i++) {
     const update = updates[i];
-    console.log(chalk.bold(`${i + 1}. ${update.name}`) + chalk.gray(` (${update.currentVersion} → ${update.latestVersion})`));
+    console.log(
+      chalk.bold(`${i + 1}. ${update.name}`) +
+        chalk.gray(` (${update.currentVersion} → ${update.latestVersion})`),
+    );
     console.log('');
     console.log(chalk.gray('   Step 1: Uninstall current version:'));
     console.log(chalk.cyan(`   /plugin uninstall ${update.name}@${MARKETPLACE_SLUG}`));
@@ -209,19 +214,25 @@ async function guideUpgradeAll(updates: PluginUpdate[]): Promise<void> {
     console.log(chalk.gray('━'.repeat(60)));
   }
 
-  console.log(chalk.gray('\n💡 Note: Claude Code currently requires manual uninstall + reinstall for upgrades'));
+  console.log(
+    chalk.gray(
+      '\n💡 Note: Claude Code currently requires manual uninstall + reinstall for upgrades',
+    ),
+  );
   console.log(chalk.gray('   A native /plugin upgrade command may be added in the future.\n'));
 
   console.log(chalk.bold('📋 Version Pinning:\n'));
-  console.log(chalk.gray('To pin a plugin to a specific version, keep the current version installed.'));
-  console.log(chalk.gray('Only upgrade when you\'re ready for the latest features.\n'));
+  console.log(
+    chalk.gray('To pin a plugin to a specific version, keep the current version installed.'),
+  );
+  console.log(chalk.gray("Only upgrade when you're ready for the latest features.\n"));
 }
 
 /**
  * Guide user to upgrade specific plugin
  */
 async function guideUpgradePlugin(pluginName: string, updates: PluginUpdate[]): Promise<void> {
-  const update = updates.find(u => u.name === pluginName);
+  const update = updates.find((u) => u.name === pluginName);
 
   if (!update) {
     console.log(chalk.yellow(`⚠️  No update available for "${pluginName}"\n`));

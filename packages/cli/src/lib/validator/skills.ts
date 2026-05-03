@@ -14,9 +14,19 @@ import * as yaml from 'yaml';
 
 // Valid tools per Claude Code spec
 const VALID_TOOLS = new Set([
-  'Read', 'Write', 'Edit', 'Bash', 'Glob', 'Grep',
-  'WebFetch', 'WebSearch', 'Task', 'TodoWrite',
-  'NotebookEdit', 'AskUserQuestion', 'Skill'
+  'Read',
+  'Write',
+  'Edit',
+  'Bash',
+  'Glob',
+  'Grep',
+  'WebFetch',
+  'WebSearch',
+  'Task',
+  'TodoWrite',
+  'NotebookEdit',
+  'AskUserQuestion',
+  'Skill',
 ]);
 
 // Fields per Anthropic spec
@@ -27,8 +37,18 @@ const ENTERPRISE_REQUIRED = new Set(['allowed-tools', 'version', 'author', 'lice
 
 // Optional fields per Anthropic spec + AgentSkills.io
 const OPTIONAL_FIELDS = new Set([
-  'model', 'disable-model-invocation', 'mode', 'tags', 'metadata', 'compatible-with',
-  'argument-hint', 'context', 'agent', 'user-invocable', 'hooks', 'compatibility',
+  'model',
+  'disable-model-invocation',
+  'mode',
+  'tags',
+  'metadata',
+  'compatible-with',
+  'argument-hint',
+  'context',
+  'agent',
+  'user-invocable',
+  'hooks',
+  'compatibility',
 ]);
 
 const DEPRECATED_FIELDS = new Set(['when_to_use']);
@@ -75,7 +95,7 @@ function parseAllowedTools(toolsValue: unknown): string[] {
   if (Array.isArray(toolsValue)) {
     return toolsValue.map(String);
   } else if (typeof toolsValue === 'string') {
-    return toolsValue.split(',').map(t => t.trim());
+    return toolsValue.split(',').map((t) => t.trim());
   }
   return [];
 }
@@ -136,7 +156,7 @@ function checkHardcodedPaths(content: string): string[] {
 function estimateWordCount(content: string): number {
   // Remove frontmatter
   const contentBody = content.replace(/^---\n[\s\S]*?\n---\n?/, '');
-  return contentBody.split(/\s+/).filter(w => w.length > 0).length;
+  return contentBody.split(/\s+/).filter((w) => w.length > 0).length;
 }
 
 /**
@@ -180,10 +200,12 @@ export async function validateSkillFile(filePath: string): Promise<SkillValidati
     const folderName = path.basename(path.dirname(filePath));
 
     if (name !== folderName) {
-      result.info.push(`name '${name}' differs from folder '${folderName}' (best practice: match them)`);
+      result.info.push(
+        `name '${name}' differs from folder '${folderName}' (best practice: match them)`,
+      );
     }
 
-      if (name.length > 1 && !/^[a-z][a-z0-9-]*[a-z0-9]$/.test(name)) {
+    if (name.length > 1 && !/^[a-z][a-z0-9-]*[a-z0-9]$/.test(name)) {
       result.warnings.push(`name should be kebab-case: ${name}`);
     }
 
@@ -205,14 +227,28 @@ export async function validateSkillFile(filePath: string): Promise<SkillValidati
     }
 
     const imperativeStarts = [
-      'analyze', 'create', 'generate', 'build', 'debug',
-      'optimize', 'validate', 'test', 'deploy', 'monitor',
-      'fix', 'review', 'extract', 'convert', 'implement',
-      'this skill', 'use this', 'activates when'
+      'analyze',
+      'create',
+      'generate',
+      'build',
+      'debug',
+      'optimize',
+      'validate',
+      'test',
+      'deploy',
+      'monitor',
+      'fix',
+      'review',
+      'extract',
+      'convert',
+      'implement',
+      'this skill',
+      'use this',
+      'activates when',
     ];
     const descLower = desc.toLowerCase();
-    const hasImperative = imperativeStarts.some(v =>
-      descLower.startsWith(v) || descLower.includes(v)
+    const hasImperative = imperativeStarts.some(
+      (v) => descLower.startsWith(v) || descLower.includes(v),
     );
     if (!hasImperative) {
       result.info.push('Consider using imperative language in description');
@@ -279,7 +315,12 @@ export async function validateSkillFile(filePath: string): Promise<SkillValidati
 
   // === NON-SPEC FIELDS ===
 
-  const knownFields = new Set([...REQUIRED_FIELDS, ...ENTERPRISE_REQUIRED, ...OPTIONAL_FIELDS, ...DEPRECATED_FIELDS]);
+  const knownFields = new Set([
+    ...REQUIRED_FIELDS,
+    ...ENTERPRISE_REQUIRED,
+    ...OPTIONAL_FIELDS,
+    ...DEPRECATED_FIELDS,
+  ]);
   for (const field of Object.keys(frontmatter)) {
     if (!knownFields.has(field)) {
       result.info.push(`Non-spec field: ${field}`);

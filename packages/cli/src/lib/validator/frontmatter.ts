@@ -11,9 +11,21 @@ import * as path from 'path';
 import * as yaml from 'yaml';
 
 const VALID_CATEGORIES = [
-  'git', 'deployment', 'security', 'testing', 'documentation',
-  'database', 'api', 'frontend', 'backend', 'devops', 'forecasting',
-  'analytics', 'migration', 'monitoring', 'other'
+  'git',
+  'deployment',
+  'security',
+  'testing',
+  'documentation',
+  'database',
+  'api',
+  'frontend',
+  'backend',
+  'devops',
+  'forecasting',
+  'analytics',
+  'migration',
+  'monitoring',
+  'other',
 ];
 
 const VALID_DIFFICULTIES = ['beginner', 'intermediate', 'advanced', 'expert'];
@@ -45,7 +57,10 @@ export interface FrontmatterValidationSummary {
 /**
  * Extract YAML frontmatter from markdown file
  */
-function extractFrontmatter(content: string): { frontmatter: Record<string, unknown> | null; error: string | null } {
+function extractFrontmatter(content: string): {
+  frontmatter: Record<string, unknown> | null;
+  error: string | null;
+} {
   const match = content.match(/^---\s*\n([\s\S]*?)\n---\s*\n/);
   if (!match) {
     return { frontmatter: null, error: 'No frontmatter found' };
@@ -63,7 +78,10 @@ function extractFrontmatter(content: string): { frontmatter: Record<string, unkn
  * Validate frontmatter for command files
  * Matches nixtla/004-scripts/validate_command_agent_frontmatter.py
  */
-function validateCommandFrontmatter(frontmatter: Record<string, unknown>, filePath: string): string[] {
+function validateCommandFrontmatter(
+  frontmatter: Record<string, unknown>,
+  filePath: string,
+): string[] {
   const errors: string[] = [];
   const fileName = path.basename(filePath, '.md');
 
@@ -130,7 +148,10 @@ function validateCommandFrontmatter(frontmatter: Record<string, unknown>, filePa
  * Validate frontmatter for agent files
  * Matches nixtla/004-scripts/validate_command_agent_frontmatter.py
  */
-function validateAgentFrontmatter(frontmatter: Record<string, unknown>, filePath: string): string[] {
+function validateAgentFrontmatter(
+  frontmatter: Record<string, unknown>,
+  filePath: string,
+): string[] {
   const errors: string[] = [];
 
   if (!('name' in frontmatter)) {
@@ -197,7 +218,11 @@ function validateAgentFrontmatter(frontmatter: Record<string, unknown>, filePath
 
   // v2.1.78+: caps agentic loop iterations
   if ('maxTurns' in frontmatter) {
-    if (typeof frontmatter.maxTurns !== 'number' || !Number.isInteger(frontmatter.maxTurns) || frontmatter.maxTurns < 1) {
+    if (
+      typeof frontmatter.maxTurns !== 'number' ||
+      !Number.isInteger(frontmatter.maxTurns) ||
+      frontmatter.maxTurns < 1
+    ) {
       errors.push("Field 'maxTurns' must be a positive integer");
     }
   }
@@ -221,7 +246,9 @@ function validateAgentFrontmatter(frontmatter: Record<string, unknown>, filePath
 /**
  * Validate a single markdown file's frontmatter
  */
-export async function validateFrontmatterFile(filePath: string): Promise<FrontmatterValidationResult> {
+export async function validateFrontmatterFile(
+  filePath: string,
+): Promise<FrontmatterValidationResult> {
   const result: FrontmatterValidationResult = {
     file: filePath,
     fileType: 'unknown',
@@ -294,7 +321,10 @@ export async function findFrontmatterFiles(baseDir: string): Promise<string[]> {
 /**
  * Validate all frontmatter in a directory
  */
-export async function validateAllFrontmatter(baseDir: string, strict: boolean = false): Promise<FrontmatterValidationSummary> {
+export async function validateAllFrontmatter(
+  baseDir: string,
+  strict: boolean = false,
+): Promise<FrontmatterValidationSummary> {
   const files = await findFrontmatterFiles(baseDir);
   const results: FrontmatterValidationResult[] = [];
   let warnings = 0;

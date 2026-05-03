@@ -37,7 +37,9 @@ export function buildProgram() {
         await installPlugin(plugin, paths, options);
       } catch (error) {
         spinner.fail('Failed to detect Claude Code installation');
-        console.error(chalk.red(`Error: ${error instanceof Error ? error.message : String(error)}`));
+        console.error(
+          chalk.red(`Error: ${error instanceof Error ? error.message : String(error)}`),
+        );
         console.error(chalk.yellow('\nRun `ccpi doctor` for diagnostics'));
         process.exit(1);
       }
@@ -54,7 +56,9 @@ export function buildProgram() {
         const paths = await detectClaudePaths();
         await upgradeCommand(paths, options);
       } catch (error) {
-        console.error(chalk.red(`Error: ${error instanceof Error ? error.message : String(error)}`));
+        console.error(
+          chalk.red(`Error: ${error instanceof Error ? error.message : String(error)}`),
+        );
         process.exit(1);
       }
     });
@@ -68,7 +72,9 @@ export function buildProgram() {
         const paths = await detectClaudePaths();
         await listPlugins(paths, options);
       } catch (error) {
-        console.error(chalk.red(`Error: ${error instanceof Error ? error.message : String(error)}`));
+        console.error(
+          chalk.red(`Error: ${error instanceof Error ? error.message : String(error)}`),
+        );
         process.exit(1);
       }
     });
@@ -120,7 +126,9 @@ export function buildProgram() {
         const paths = await detectClaudePaths();
         await marketplaceCommand(paths, options);
       } catch (error) {
-        console.error(chalk.red(`Error: ${error instanceof Error ? error.message : String(error)}`));
+        console.error(
+          chalk.red(`Error: ${error instanceof Error ? error.message : String(error)}`),
+        );
         process.exit(1);
       }
     });
@@ -133,7 +141,9 @@ export function buildProgram() {
         const paths = await detectClaudePaths();
         await addMarketplace(paths);
       } catch (error) {
-        console.error(chalk.red(`Error: ${error instanceof Error ? error.message : String(error)}`));
+        console.error(
+          chalk.red(`Error: ${error instanceof Error ? error.message : String(error)}`),
+        );
         process.exit(1);
       }
     });
@@ -146,11 +156,12 @@ export function buildProgram() {
         const paths = await detectClaudePaths();
         await removeMarketplace(paths);
       } catch (error) {
-        console.error(chalk.red(`Error: ${error instanceof Error ? error.message : String(error)}`));
+        console.error(
+          chalk.red(`Error: ${error instanceof Error ? error.message : String(error)}`),
+        );
         process.exit(1);
       }
     });
 
   return program;
 }
-

@@ -329,7 +329,9 @@ async function runMarketplaceChecks(fixMode: boolean = false): Promise<Diagnosti
       // Fetch the latest catalog from GitHub Pages
       try {
         const catalogUrl = 'https://claudecodeplugins.io/catalog.json';
-        const { stdout: catalogJson } = await execAsync(`curl -sL "${catalogUrl}"`, { timeout: 15000 });
+        const { stdout: catalogJson } = await execAsync(`curl -sL "${catalogUrl}"`, {
+          timeout: 15000,
+        });
 
         // Validate it's real JSON
         JSON.parse(catalogJson);
@@ -376,7 +378,10 @@ async function runMarketplaceChecks(fixMode: boolean = false): Promise<Diagnosti
 /**
  * Check marketplace catalog integrity
  */
-async function checkMarketplaceIntegrity(paths: ClaudePaths, fixMode: boolean = false): Promise<CheckResult[]> {
+async function checkMarketplaceIntegrity(
+  paths: ClaudePaths,
+  fixMode: boolean = false,
+): Promise<CheckResult[]> {
   const checks: CheckResult[] = [];
   const marketplaceSlug = 'claude-code-plugins-plus';
   const marketplacePath = `${paths.marketplacesDir}/${marketplaceSlug}`;
@@ -411,7 +416,7 @@ async function checkMarketplaceIntegrity(paths: ClaudePaths, fixMode: boolean = 
         try {
           const { stdout: freshCatalog } = await execAsync(
             'curl -sL "https://claudecodeplugins.io/catalog.json"',
-            { timeout: 15000 }
+            { timeout: 15000 },
           );
           catalog = JSON.parse(freshCatalog);
           await fs.writeFile(catalogPath, freshCatalog);
@@ -490,7 +495,7 @@ async function checkMarketplaceIntegrity(paths: ClaudePaths, fixMode: boolean = 
         try {
           const { stdout: freshCatalog } = await execAsync(
             'curl -sL "https://claudecodeplugins.io/catalog.json"',
-            { timeout: 15000 }
+            { timeout: 15000 },
           );
           const freshData = JSON.parse(freshCatalog);
           const freshCount = freshData.plugins?.length || 0;
@@ -522,7 +527,10 @@ async function checkMarketplaceIntegrity(paths: ClaudePaths, fixMode: boolean = 
           name: 'Catalog Size',
           status: catalogCount >= 200 ? 'pass' : catalogCount >= 100 ? 'warn' : 'fail',
           message: `${catalogCount} plugins available`,
-          details: catalogCount < 200 ? 'Catalog may be incomplete or outdated. Run with --fix to refresh.' : undefined,
+          details:
+            catalogCount < 200
+              ? 'Catalog may be incomplete or outdated. Run with --fix to refresh.'
+              : undefined,
         });
       }
     }
@@ -530,7 +538,8 @@ async function checkMarketplaceIntegrity(paths: ClaudePaths, fixMode: boolean = 
     // Check for required fields in catalog
     const samplePlugin = catalog.plugins?.[0];
     if (samplePlugin) {
-      const hasRequiredFields = samplePlugin.name && samplePlugin.version && samplePlugin.description;
+      const hasRequiredFields =
+        samplePlugin.name && samplePlugin.version && samplePlugin.description;
       checks.push({
         name: 'Catalog Schema',
         status: hasRequiredFields ? 'pass' : 'warn',
@@ -538,7 +547,6 @@ async function checkMarketplaceIntegrity(paths: ClaudePaths, fixMode: boolean = 
         details: !hasRequiredFields ? 'Catalog may be corrupted or outdated' : undefined,
       });
     }
-
   } catch (error) {
     checks.push({
       name: 'Catalog Integrity',
@@ -566,7 +574,7 @@ async function runMCPChecks(): Promise<DiagnosticResult> {
         name: 'MCP Servers',
         status: 'pass',
         message: 'No MCP servers configured',
-        details: 'This is normal if you haven\'t installed MCP server plugins',
+        details: "This is normal if you haven't installed MCP server plugins",
       });
       return {
         category: 'MCP Servers',
@@ -585,7 +593,6 @@ async function runMCPChecks(): Promise<DiagnosticResult> {
       const serverChecks = await checkMCPServer(server);
       checks.push(...serverChecks);
     }
-
   } catch (error) {
     checks.push({
       name: 'MCP Server Check',
@@ -622,7 +629,8 @@ async function detectMCPServers(paths: ClaudePaths): Promise<MCPServerEntry[]> {
     };
 
     // MCP servers are typically in settings.mcp.servers or settings.mcpServers
-    const mcpConfig: Record<string, MCPServerConfig> = settings.mcp?.servers ?? settings.mcpServers ?? {};
+    const mcpConfig: Record<string, MCPServerConfig> =
+      settings.mcp?.servers ?? settings.mcpServers ?? {};
 
     for (const [name, config] of Object.entries(mcpConfig)) {
       servers.push({
@@ -630,7 +638,6 @@ async function detectMCPServers(paths: ClaudePaths): Promise<MCPServerEntry[]> {
         config,
       });
     }
-
   } catch {
     // settings.json may not exist yet — not an error condition
   }
@@ -673,7 +680,10 @@ async function checkMCPServer(server: MCPServerEntry): Promise<CheckResult[]> {
       } else {
         // Command in PATH - try which/where
         try {
-          const { stdout } = await execAsync(`which ${command} 2>/dev/null || where ${command} 2>nul`, { timeout: 2000 });
+          const { stdout } = await execAsync(
+            `which ${command} 2>/dev/null || where ${command} 2>nul`,
+            { timeout: 2000 },
+          );
           commandPath = stdout.trim();
           isAccessible = !!commandPath;
         } catch {
@@ -718,7 +728,6 @@ async function checkMCPServer(server: MCPServerEntry): Promise<CheckResult[]> {
       const logCheck = await checkMCPServerLogs(serverName, config.logPath);
       checks.push(logCheck);
     }
-
   } catch (error) {
     checks.push({
       name: `${serverName} [Health]`,
@@ -737,7 +746,9 @@ async function checkMCPServer(server: MCPServerEntry): Promise<CheckResult[]> {
 async function checkMCPServerProcess(serverName: string, command: string): Promise<CheckResult> {
   try {
     // Use ps to find running processes matching the command
-    const { stdout } = await execAsync(`ps aux | grep -v grep | grep "${command}"`, { timeout: 3000 });
+    const { stdout } = await execAsync(`ps aux | grep -v grep | grep "${command}"`, {
+      timeout: 3000,
+    });
 
     if (stdout.trim()) {
       const processCount = stdout.trim().split('\n').length;
@@ -777,7 +788,9 @@ async function checkMCPServerPort(serverName: string, port: number | string): Pr
       stdout = result.stdout;
     } catch {
       // Try netstat as fallback
-      const result = await execAsync(`netstat -an | grep LISTEN | grep ":${port}"`, { timeout: 2000 });
+      const result = await execAsync(`netstat -an | grep LISTEN | grep ":${port}"`, {
+        timeout: 2000,
+      });
       stdout = result.stdout;
     }
 
@@ -821,7 +834,10 @@ async function checkMCPServerLogs(serverName: string, logPath: string): Promise<
     }
 
     // Read last 100 lines of log file
-    const { stdout } = await execAsync(`tail -n 100 "${logPath}" | grep -i "error\\|exception\\|fatal" || echo ""`, { timeout: 3000 });
+    const { stdout } = await execAsync(
+      `tail -n 100 "${logPath}" | grep -i "error\\|exception\\|fatal" || echo ""`,
+      { timeout: 3000 },
+    );
 
     if (stdout.trim()) {
       const errorLines = stdout.trim().split('\n').length;
@@ -899,7 +915,6 @@ async function runEnvironmentChecks(): Promise<DiagnosticResult> {
     // Check plugin-specific requirements
     const pluginEnvChecks = checkPluginSpecificEnv(pluginNames);
     checks.push(...pluginEnvChecks);
-
   } catch (error) {
     checks.push({
       name: 'Environment Check',
@@ -962,8 +977,8 @@ function checkCommonAPIKeys(pluginNames: string[]): CheckResult[] {
 
   for (const apiKey of apiKeys) {
     // Check if any installed plugin requires this key
-    const requiresKey = pluginNames.some(plugin =>
-      apiKey.requiredBy.some(pattern => plugin.includes(pattern))
+    const requiresKey = pluginNames.some((plugin) =>
+      apiKey.requiredBy.some((pattern) => plugin.includes(pattern)),
     );
 
     if (requiresKey) {
@@ -973,7 +988,9 @@ function checkCommonAPIKeys(pluginNames: string[]): CheckResult[] {
         name: apiKey.name,
         status: isSet ? 'pass' : 'warn',
         message: isSet ? `${apiKey.key} is set` : `${apiKey.key} not found`,
-        details: !isSet ? `Set ${apiKey.key} in your environment. Get key from: ${apiKey.signupUrl}` : undefined,
+        details: !isSet
+          ? `Set ${apiKey.key} in your environment. Get key from: ${apiKey.signupUrl}`
+          : undefined,
       });
     }
   }
@@ -988,9 +1005,13 @@ function checkPluginSpecificEnv(pluginNames: string[]): CheckResult[] {
   const checks: CheckResult[] = [];
 
   // Check for database-related plugins
-  const dbPlugins = pluginNames.filter(p =>
-    p.includes('postgres') || p.includes('mysql') || p.includes('mongodb') ||
-    p.includes('redis') || p.includes('database')
+  const dbPlugins = pluginNames.filter(
+    (p) =>
+      p.includes('postgres') ||
+      p.includes('mysql') ||
+      p.includes('mongodb') ||
+      p.includes('redis') ||
+      p.includes('database'),
   );
 
   if (dbPlugins.length > 0) {
@@ -1014,8 +1035,8 @@ function checkPluginSpecificEnv(pluginNames: string[]): CheckResult[] {
   }
 
   // Check for payment/billing plugins
-  const paymentPlugins = pluginNames.filter(p =>
-    p.includes('stripe') || p.includes('paypal') || p.includes('payment')
+  const paymentPlugins = pluginNames.filter(
+    (p) => p.includes('stripe') || p.includes('paypal') || p.includes('payment'),
   );
 
   if (paymentPlugins.length > 0) {
@@ -1024,9 +1045,7 @@ function checkPluginSpecificEnv(pluginNames: string[]): CheckResult[] {
     checks.push({
       name: 'Payment Provider',
       status: hasPaymentKey ? 'pass' : 'warn',
-      message: hasPaymentKey
-        ? 'Payment API keys detected'
-        : 'No payment API keys found',
+      message: hasPaymentKey ? 'Payment API keys detected' : 'No payment API keys found',
       details: !hasPaymentKey
         ? `Plugins: ${paymentPlugins.join(', ')}. Set STRIPE_API_KEY or PAYPAL_CLIENT_ID.`
         : undefined,
@@ -1034,7 +1053,7 @@ function checkPluginSpecificEnv(pluginNames: string[]): CheckResult[] {
   }
 
   // Check for cloud provider plugins
-  const awsPlugins = pluginNames.filter(p => p.includes('aws-') || p.includes('amazon-'));
+  const awsPlugins = pluginNames.filter((p) => p.includes('aws-') || p.includes('amazon-'));
   if (awsPlugins.length > 0 && !process.env.AWS_ACCESS_KEY_ID) {
     checks.push({
       name: 'AWS Credentials',
@@ -1044,7 +1063,7 @@ function checkPluginSpecificEnv(pluginNames: string[]): CheckResult[] {
     });
   }
 
-  const azurePlugins = pluginNames.filter(p => p.includes('azure-'));
+  const azurePlugins = pluginNames.filter((p) => p.includes('azure-'));
   if (azurePlugins.length > 0 && !process.env.AZURE_CLIENT_ID) {
     checks.push({
       name: 'Azure Credentials',
@@ -1084,10 +1103,14 @@ function displayResults(results: DiagnosticResult[]): void {
     console.log(chalk.bold(`\n${category.category}:`));
 
     for (const check of category.checks) {
-      const icon = check.status === 'pass' ? chalk.green('✓') :
-                   check.status === 'fixed' ? chalk.cyan('🔧') :
-                   check.status === 'warn' ? chalk.yellow('⚠') :
-                   chalk.red('✗');
+      const icon =
+        check.status === 'pass'
+          ? chalk.green('✓')
+          : check.status === 'fixed'
+            ? chalk.cyan('🔧')
+            : check.status === 'warn'
+              ? chalk.yellow('⚠')
+              : chalk.red('✗');
 
       console.log(`  ${icon} ${check.name}: ${chalk.gray(check.message)}`);
 
@@ -1139,12 +1162,22 @@ function displaySummary(results: DiagnosticResult[], fixMode: boolean = false): 
   if (failCount === 0 && warnCount === 0) {
     console.log(chalk.green('\n✨ All checks passed! Your Claude Code setup is healthy.\n'));
   } else if (failCount === 0 && !fixMode && warnCount > 0) {
-    console.log(chalk.yellow(`\n⚠️  Some warnings detected. Run ${chalk.bold('ccpi doctor --fix')} to auto-fix what we can.\n`));
+    console.log(
+      chalk.yellow(
+        `\n⚠️  Some warnings detected. Run ${chalk.bold('ccpi doctor --fix')} to auto-fix what we can.\n`,
+      ),
+    );
   } else if (failCount === 0) {
     console.log(chalk.yellow('\n⚠️  Some warnings remain that require manual attention.\n'));
   } else if (!fixMode) {
-    console.log(chalk.red(`\n❌ Critical issues detected. Try ${chalk.bold('ccpi doctor --fix')} or address the failures above.\n`));
+    console.log(
+      chalk.red(
+        `\n❌ Critical issues detected. Try ${chalk.bold('ccpi doctor --fix')} or address the failures above.\n`,
+      ),
+    );
   } else {
-    console.log(chalk.red('\n❌ Some issues could not be auto-fixed. Please address the failures above.\n'));
+    console.log(
+      chalk.red('\n❌ Some issues could not be auto-fixed. Please address the failures above.\n'),
+    );
   }
 }

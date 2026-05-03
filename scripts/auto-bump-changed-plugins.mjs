@@ -93,7 +93,7 @@ function detectBaseRef() {
   else candidate = 'origin/main';
   if (!SAFE_REF_RE.test(candidate)) {
     throw new Error(
-      `Refusing to use unsafe base ref "${candidate}". Allowed chars: A-Z a-z 0-9 . _ / -`
+      `Refusing to use unsafe base ref "${candidate}". Allowed chars: A-Z a-z 0-9 . _ / -`,
     );
   }
   return candidate;
@@ -121,7 +121,7 @@ function listChangedFiles(baseRef) {
   if (res.status !== 0) {
     throw new Error(
       `git diff failed for base ref "${baseRef}": ${res.stderr || res.error?.message || 'non-zero exit'}. ` +
-        `Set BASE_REF env var or ensure full fetch.`
+        `Set BASE_REF env var or ensure full fetch.`,
     );
   }
   return res.stdout
@@ -145,9 +145,7 @@ function applyPatchBump(absPath, raw, oldVersion, newVersion) {
   const oldLine = `"version": "${oldVersion}"`;
   const newLine = `"version": "${newVersion}"`;
   if (!raw.includes(oldLine)) {
-    throw new Error(
-      `Cannot find exact "${oldLine}" line in ${absPath}; refusing to edit`
-    );
+    throw new Error(`Cannot find exact "${oldLine}" line in ${absPath}; refusing to edit`);
   }
   writeFileSync(absPath, raw.replace(oldLine, newLine));
 }

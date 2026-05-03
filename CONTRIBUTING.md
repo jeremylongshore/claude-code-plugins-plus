@@ -12,7 +12,7 @@ At Intent Solutions we ship the full-fledged capability. We don't publish half-i
 
 **That's our side of the contract.** Once a user acquires a plugin or skill from this marketplace, they own it — they can strip it down, fork it, gut it, simplify it, inline it into their own workflow, remove features they don't want, or rewrite it from scratch. That's their prerogative as the consumer.
 
-**But what we *publish* is the full-capability version.** The validators exist to enforce that bar. If your submission gets flagged, it's not personal — it's the same bar we hold ourselves to internally.
+**But what we _publish_ is the full-capability version.** The validators exist to enforce that bar. If your submission gets flagged, it's not personal — it's the same bar we hold ourselves to internally.
 
 ### What this means practically for your PR
 
@@ -27,7 +27,7 @@ At Intent Solutions we ship the full-fledged capability. We don't publish half-i
 
 ### "But I just want to submit a small skill"
 
-The bar isn't *size*, it's *completeness of what you do ship*. Start from `templates/minimal-plugin/` — even the minimum template passes enterprise validators. A one-command plugin with proper frontmatter, a real README, and a valid license is welcome. A sprawling plugin with placeholder text and bare `Bash` permissions is not.
+The bar isn't _size_, it's _completeness of what you do ship_. Start from `templates/minimal-plugin/` — even the minimum template passes enterprise validators. A one-command plugin with proper frontmatter, a real README, and a valid license is welcome. A sprawling plugin with placeholder text and bare `Bash` permissions is not.
 
 ### Now what
 

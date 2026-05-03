@@ -79,10 +79,10 @@ The IS enterprise standard (8 required fields at marketplace tier — `name`,
 
 ### Fixed (spec-compliance bugs)
 
-- **`allowed-tools` accepts YAML list** per `code.claude.com/docs/en/skills` ("Accepts a space-separated string or a YAML list"). Old validator rejected YAML lists with *"must be a comma-separated string (CSV)"*.
+- **`allowed-tools` accepts YAML list** per `code.claude.com/docs/en/skills` ("Accepts a space-separated string or a YAML list"). Old validator rejected YAML lists with _"must be a comma-separated string (CSV)"_.
 - **`allowed-tools` parses space-separated form** per Anthropic's canonical example `Bash(git add *) Bash(git commit *) Bash(git status *)`. Old parser only split on commas. New parser is paren-depth-aware so multi-word tools stay as one token.
 - **`when_to_use` reclassified as documented Anthropic optional** — earlier IS rubrics flagged it as deprecated, but Anthropic documents it explicitly. Validator now only warns when combined `description` + `when_to_use` exceeds the 1,536-char listing cap.
-- **`agent` field no longer triggers "missing" warning when defaulting** — Anthropic doc states *"If omitted, uses general-purpose"*. Old validator warned that `agent` was missing whenever `context: fork` was set.
+- **`agent` field no longer triggers "missing" warning when defaulting** — Anthropic doc states _"If omitted, uses general-purpose"_. Old validator warned that `agent` was missing whenever `context: fork` was set.
 - **`argument-hint` conditional** — was incorrectly suppressed by `disable-model-invocation: true`, but the user can still invoke via `/`, so the hint is still relevant. Now tied to `user-invocable=true` only.
 
 ### Added
@@ -131,6 +131,7 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 ## [4.28.0] - 2026-04-23
 
 ### Added
+
 - **Gemini PR Review revival** (#602) — Fixed a 4-month silent-fail regression. Workflow was running green on every PR but posting zero review comments because of a broken MCP bridge pattern. Full fix:
   - Switched trigger from `pull_request` → `pull_request_target` so fork-PRs actually get CI + Gemini feedback (previously fork PRs received zero feedback of any kind)
   - SHA-pinned checkout of PR HEAD with `persist-credentials: false` for safe fork-PR handling
@@ -147,12 +148,14 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
   - Credit to [xiaolai](https://github.com/xiaolai), author of [NLPM](https://github.com/xiaolai/nlpm-for-claude), for the audit and fix PRs (#535-#539)
 
 ### Changed
+
 - **PR template callout** (#602) — Top-of-file disclosure pointing first-time contributors at the CONTRIBUTING.md philosophy section
 - **`maintainer-ready-automerge.yml` triple-guarded** (#602) — Fires only on `labeled` event (not synchronize/reopened/ready_for_review), only when the label is exactly `maintainer-ready`, AND only when the sender is `jeremylongshore`
 - **Marketplace playbooks layout** (#601) — Wrapped in `BaseLayout`; retired `/spotlight` page
 - **`ccpi validate --strict` step** (#603, #604) — Temporarily degraded from `|| exit 1` to `|| true` in `validate-plugins.yml` to unblock CI while 177-agent pre-existing frontmatter debt is worked off over a multi-PR campaign. Reversal tracked in #604; hard gate returns once debt is cleared
 
 ### Fixed
+
 - **Frontmatter cleanup campaign — Phase 1** (#604, #605) — 5 pre-existing errors: 4 shipwright command categories (`ai-agency` → `deployment`) and 1 over-length `backup-strategy` description (158 → 80 chars). 182 → 177 `ccpi validate --strict` errors
 - **Frontmatter cleanup campaign — Phase 2A batch 1** (#604, #606) — 12 files in `fullstack-starter-pack` (6 top-level + 6 byte-identical nested mirrors) brought to production-grade frontmatter. 177 → 170
 - **Frontmatter cleanup campaign — Phase 2A batch 2** (#604, #607) — 11 agents in `testing/code-cleanup` backfilled with capabilities + model + expertise_level. 170 → 159
@@ -168,16 +171,19 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 - **Cloud Functions Slack webhook logging** — Webhook failures now surface in logs instead of silently swallowing
 
 ### Security
+
 - **Secret scanning hardened** — Replaced the previous regex-based secret scan in `validate-plugins.yml` with a dedicated workflow (`secret-scan.yml`) that runs `gitleaks` on every PR and push, plus a weekly `trufflehog` verified-credentials scan with Slack alerting. `.gitleaks.toml` adds rules for Anthropic, Groq, and Firebase/GCP credential shapes on top of the upstream defaults
 - **Gemini reviewer WIF binding narrowed** (#602) — Service account IAM binding tightened from `attribute.repository_owner/jeremylongshore` (org-wide) to `attribute.repository/jeremylongshore/claude-code-plugins-plus-skills` (this repo only). Fully standalone GCP isolation across every layer
 - **Branch protection hardened** (#602) — `require_code_owner_reviews: true`, `dismiss_stale_reviews: true`, 1 approval required. Combined with CODEOWNERS, no PR merges without Jeremy's approval
 
 ### Known issues
+
 - **171 pre-existing agent frontmatter errors** tracked in #604 as a multi-PR cleanup campaign. `ccpi validate --strict` is currently reporting-only (`|| true`) until the campaign completes; strict enforcement returns when the final campaign PR restores `|| exit 1`
 
 ## [4.27.0] - 2026-04-21
 
 ### Added
+
 - **LangChain Python Skill Pack v1.0** - Complete 33-skill pack for LangChain/LangGraph Python development:
   - Core skills (8): model-inference, embeddings-search, sdk-patterns, reference-architecture, multi-env-setup, debug-bundle, deep-agents, langgraph-basics
   - LangGraph advanced (10): agents, checkpointing, human-in-loop, streaming, subgraphs, middleware-patterns, content-blocks, otel-observability
@@ -188,14 +194,17 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
   - Reference architecture with pain-catalog documenting 25+ real-world failure modes
 
 ### Fixed
+
 - **Gemini PR Review workflow** - Added `workflow_dispatch` trigger for manual review runs on any PR (#546+)
 - **npm Publish** - Fixed repository.url for npm provenance compliance (#545)
 - **npm Publish** - Fixed SIGPIPE abort in mass-publish enumerate step (#544)
 
 ### Changed
+
 - **VERSION file sync** - Corrected VERSION file to match package.json (4.25.0 → 4.26.0)
 
 ### Metrics
+
 - Commits since v4.26.0: 4 (1 feature, 3 fixes)
 - New skills added: 33 (langchain-py-pack)
 - Total skills: 2,882 (+33)
@@ -206,8 +215,9 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 ## [4.26.0] - 2026-04-20
 
 ### Added
+
 - **npm Download Tracking Infrastructure** - Daily stats aggregation (`fetch-npm-stats.mjs`), hero marquee showing top 8 packages with 30-day counts, Slack digest at 1pm Central via #operation-hired webhook (#543)
-- **npm Publish Workflows** - Mass publish (`publish-all-packages.yml` with confirmation gate) and incremental publish (`publish-changed-packages.yml` on push to main) for all @intentsolutionsio/* packages (#542)
+- **npm Publish Workflows** - Mass publish (`publish-all-packages.yml` with confirmation gate) and incremental publish (`publish-changed-packages.yml` on push to main) for all @intentsolutionsio/\* packages (#542)
 - **Plugin Package.json Scaffolding** - Generated package.json for 305+ catalog plugins under @intentsolutionsio scope, enabling npm download tracking (#541)
 - **README Awesome-List TOC** - Auto-generated table of contents with category counts, enforced by CI via `generate-readme-toc.mjs --check` (#531)
 - **agent37.com Partner Integration** - Added to hero partner marquee alongside Nixtla (#532, #533)
@@ -216,6 +226,7 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 - **Killer Skill of the Week** - web-analytics skill with Umami MCP integration
 
 ### Fixed
+
 - **Marquee Symmetry** - Restored translateX(-50%) pattern duplication so agent37 actually renders in seamless loop (#533)
 - **Catalog Validation** - Removed phantom entries (tonone, claudebase), normalized 33 plugin author fields to object format
 - **SKILL.md Compliance** - Split 13 files exceeding 500-line limit into references/, removed XML tags from frontmatter
@@ -223,12 +234,14 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 - **CodeQL Finding** - Removed unused tableHeaderDone variable
 
 ### Changed
+
 - **Micro-Category Consolidation** - Merged analytics→business-tools, code-quality→testing, finance→business-tools, automation→devops with CLI aliases for backwards compatibility (#530)
 - **FS=Catalog Invariant** - Enforced filesystem path matching catalog category via `validate-catalog-invariants.py`
 - **SaaS Pack Display** - Individual cards on /cowork page for better discoverability
 - **Comprehensive Codebase Cleanup** - 8-parallel-agent refactor addressing code quality across repository
 
 ### Metrics
+
 - Commits since v4.25.0: 34 (10 features, 8 fixes, 3 chore)
 - Plugins with npm tracking: 305+ (newly scaffolded package.json files)
 - Categories consolidated: 4 (analytics, code-quality, finance, automation)
@@ -239,6 +252,7 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 ## [4.25.0] - 2026-04-14
 
 ### Added
+
 - **Shopify Skill Pack v2.0** - Complete overhaul: 30 → 38 skills, 116 reference files extracted. Added 8 new skills (metafields-metaobjects, functions, storefront-headless, checkout-extensions, theme-performance, graphql-cost-optimizer, b2b-wholesale, ai-toolkit-wrapper). Enterprise score: 81.9 → 93.1/100.
 - **Deep Evaluation Engine v1.0** - Intent Solutions 10-dimension skill quality assessment with coaching system and professional tier.
 - **CLI Power Skills** - External plugin sync for enhanced CLI automation workflows.
@@ -246,10 +260,12 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 - **Work Diary blog** - Added Apr 6-13 posts to tonsofskills.com/blog.
 
 ### Changed
+
 - **Shopify sdk-patterns rewrite** - Removed generic Zod/retry patterns, added codegen-typed operations, bulk operation helpers, and webhook registry.
 - **Marketplace data sync** - Updated plugin counts to 430 plugins, 2,838 skills.
 
 ### Metrics
+
 - Commits since v4.24.0: 10 (6 features, 2 chores, 2 merges)
 - Shopify skills upgraded: 30 → 38 (+8 new)
 - Reference files created: 116
@@ -260,6 +276,7 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 ## [4.24.0] - 2026-04-06
 
 ### Added
+
 - **SaaS pack skill upgrades** - Upgraded 232 D/F-grade skills to 70+ compliance (C+ or better). Expanded from ~30 lines to 90-150 lines each with Overview, Instructions, Error Handling tables, and product-specific TypeScript examples. Affected packs: appfolio, apple-notes, coreweave, fathom, glean, linktree, lucidchart, mindtickle, openevidence, together.
 - **Legal & Compliance collection** - Added to homepage and /collections page with curated legal toolkit plugins.
 - **General Legal Assistant plugin** - 12-skill, 5-agent legal toolkit (plugin #417) with contract analysis, compliance checking, and document drafting capabilities.
@@ -267,15 +284,18 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 - **Work Diary blog** - Added Apr 3-5 posts to tonsofskills.com/blog.
 
 ### Changed
+
 - **Legal plugin rename** - Renamed legal-assistant → general-legal-assistant for clarity.
 - **Freshie inventory cleanup** - Removed 530 stale DB rows (500 legacy skills/, 30 ghost paths). Accurate skill count now 2,834.
 
 ### Fixed
+
 - **CI deploy trigger** - Added pnpm-lock.yaml to deploy-firebase workflow trigger paths.
 - **Lockfile sync** - Added x-bug-triage to pnpm-lock.yaml, unblocking Firebase deploys.
 - **Homepage sponsor** - Restored scrolling marquee for sponsor section under byline.
 
 ### Metrics
+
 - Commits since v4.23.0: 11 (5 features, 4 fixes, 1 refactor, 1 chore)
 - Skills upgraded: 232 (D/F → C+)
 - SaaS packs improved: 10
@@ -286,14 +306,17 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 ## [4.23.0] - 2026-04-04
 
 ### Added
+
 - **Skill-creator Anthropic alignment** - Updated to 2026 AgentSkills.io spec and Anthropic best practices
 - **Work Diary blog** - Added intentcad-viewer-dwg-fastview-parity post to tonsofskills.com/blog
 
 ### Changed
+
 - **Homepage partner banner** - Moved strategic partners section above fold, replaced Agent37 with Nixtla sponsor
 - **CLAUDE.md accuracy** - Updated plugin/skill counts to 416/2,574, fixed build pipeline (6 steps), added verify CI job, corrected test file listing
 
 ### Fixed
+
 - **YAML frontmatter repairs** - Fixed 1,252 SKILL.md files across the plugin ecosystem:
   - 9 Wondelai skills: double-escaped quotes (`''` → `'`) in block scalars
   - 3 Grammarly pack skills: duplicate frontmatter keys dropping `Bash(curl:*)` access
@@ -305,6 +328,7 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 ## [4.22.0] - 2026-03-27
 
 ### Added
+
 - **Hooks `if` conditional upgrade** - 4 plugins upgraded to use Claude Code v2.1.85 native `if` field for in-process tool filtering, eliminating unnecessary subprocess spawns. (#496)
   - `jeremy-github-actions-gcp` - Replace non-standard `filePattern` with native `if` glob
   - `claude-reflect` - Add `if: "Bash(git commit*)"` to PostToolUse
@@ -315,9 +339,11 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 - **Work Diary blog** - /blog with 100 posts backfilled from startaitools.com, plus March 24-25 daily posts.
 
 ### Changed
+
 - **Navigation** - Renamed Blog to Work Diary, replaced Pro nav link with Work Diary link.
 
 ### Fixed
+
 - **Hooks schema normalization** - 2 plugins fixed to standard event-keyed format:
   - `prettier-markdown-hook` - Convert non-standard root-level array to standard schema
   - `travel-assistant` - Convert content-based matchers to standard `matcher: ".*"` (scripts handle detection)
@@ -325,6 +351,7 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 - **/pro page** - Deactivated with 301 redirect to homepage.
 
 ### Metrics
+
 - Commits since v4.21.0: 16 (7 features, 5 fixes, 2 chore)
 - Hook plugins upgraded: 6 (4 with `if` conditionals, 2 schema normalizations)
 - OneNote skills rewritten: 18
@@ -335,6 +362,7 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 ## [4.21.0] - 2026-03-23
 
 ### Added
+
 - **oraclecloud-pack rewrite** - All 26 OCI skills rewritten from stubs (61.3) to production quality (92.8/100). Pain-point-driven content covering auth config, capacity errors, IAM policies, SDK memory leaks, Terraform bugs. (#488)
 - **navan-pack rewrite** - All 25 Navan skills rewritten to 93.0/100 with Airbyte connector research, real API patterns. (#485, #486, #487)
 - **claude-pack hand-written** - Claude API skills at 95.3/100 with real SDK code. (#482)
@@ -348,17 +376,20 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 - **Slack channel plugin** - Added to ecosystem. (#375)
 
 ### Changed
+
 - **Performance budget** - Bumped to 40MB gzipped, 1MB largest file, 2800-4000 routes for 414 plugins + 63 SaaS packs.
 - **Freshie inventory system** - SQLite CMDB with 50 tables, versioned discovery runs, batch remediation.
 - **Gold standard docs** - PRD/ARD/references pattern established for 13 Jeremy plugins.
 
 ### Fixed
+
 - **Firebase forms** - Broken killer skill signup fixed. (#374)
 - **CI validation** - Python + pyyaml setup for validation-scripts job.
 - **Enterprise compliance** - 0 D/F grades after remediation rounds. (#384, #385)
 - **Bare except clauses** - Replaced with `except Exception`. (#387)
 
 ### Metrics
+
 - Commits since v4.20.0: 124 features, 25 fixes
 - Files changed: 5,161 (+large delta)
 - SaaS packs: 105 total (42 newly populated)
@@ -370,12 +401,14 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 ## [4.20.0] - 2026-03-20
 
 ### Added
+
 - **pr-to-spec MCP plugin** - Convert PRs and local diffs into structured, agent-consumable specs with intent drift detection. 6 MCP tools for agentic coding workflows.
 - **claude-memory-kit plugin** - Persistent agent memory system (#370, @seankim-android)
 - **prism-scanner plugin** - Added to ecosystem section (#369, @aidongise-cell)
 - **Content consistency validator improvements** - Enhanced skill structure validation with skill-review CI (#347, @fernandezbaptiste)
 
 ### Changed
+
 - **8 SaaS packs rewritten with production content** - 150+ skills upgraded:
   - MaintainX pack (24 skills) - CMMS API integration
   - Evernote pack (24 skills) - Note management workflows
@@ -389,6 +422,7 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 - **Performance budget** - Bumped to 19.5MB for 346+ plugins
 
 ### Fixed
+
 - **Homepage badges** - Removed redundant badges above Killer Skill and Jeremy's Stash headings
 - **Skill-review CI** - Removed insecure workflow dispatch, restored Overview + Examples sections
 - **HTML attribute sanitization** - Complete quote escaping in discover-skills.mjs
@@ -396,6 +430,7 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 - **Validation script** - Fixed duplicate tuple entry, added anchor skip
 
 ### Metrics
+
 - Commits since v4.19.0: 13
 - Files changed: 432 (+56,454 lines)
 - Contributors: Jeremy Longshore, fernandezbaptiste, aidongise-cell, seankim-android, intentsolutions.io
@@ -405,11 +440,13 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 ## [4.19.0] - 2026-03-17
 
 ### Added
+
 - **box-cloud-filesystem plugin** - Box cloud storage integration with file operations (#368)
 - **geepers plugin** - Added to catalog (#367)
 - **lumera-agent-memory plugin** - MCP server for persistent agent memory (#367)
 
 ### Fixed
+
 - **Content quality audit sweep** - Comprehensive remediation of stub files and boilerplate:
   - Final 3 audit findings resolved (2 stubs + 1 false positive) (#365)
   - Wondelai implementation.md stubs filled with methodology guides (#363)
@@ -427,6 +464,7 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
   - Audit content quality false positives addressed (#352)
 
 ### Metrics
+
 - Commits since v4.18.0: 46
 - Files changed: 376 (+37,973 / -2,436 lines)
 - Contributors: Jeremy Longshore, intentsolutions.io, Ahmed Khaled Mohamed
@@ -436,6 +474,7 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 ## [4.18.0] - 2026-03-16
 
 ### Added
+
 - **navigating-github plugin** - Interactive GitHub setup and learning companion with 6 modes (setup, learn, save, share, understand, fix), adaptive skill assessment, and 9 progressive hands-on lessons
 - **mgonto EA skills** - 5 executive assistant skills: action-items-todoist, email-drafting, executive-digest, meeting-prep, todoist-due-drafts
 - **Enhanced plugin & skill detail pages** - README section extraction, markdown-to-HTML rendering, FAQ accordions, and improved CTAs
@@ -443,16 +482,19 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 - **/github-learn slash command** - User-invocable entry point for navigating-github plugin
 
 ### Changed
+
 - **Full facelift Phase 2** - Terminal-Bold redesign across all pages with OKLCH color system
 - **Contributor cards redesigned** - Cross-page consistency with new card layout
 - **Performance budget bumped** - 16MB for 343+ plugins
 
 ### Fixed
+
 - **Mobile UX on /explore** - Card overlap, 480px breakpoint, filter bar improvements
 - **Firebase deploy** - Split targets to avoid serviceusage permission error
 - **run_eval.py** - Fixed 0% recall for already-installed plugin skills
 
 ### Metrics
+
 - Commits since v4.17.0: 27
 - Files changed: 41 (+7,331 / -1,665 lines)
 - Contributors: Jeremy Longshore, intentsolutions.io
@@ -462,6 +504,7 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 ## [4.17.0] - 2026-03-11
 
 ### Added
+
 - **Intent Solutions skill standard** - Updated all 5 tutorial notebooks to current standard
 - **Verified Plugins Program** - Badges, rubric, and /verification page (#326)
 - **Blog with changelog posts** - Astro content collections at /blog (#324)
@@ -474,6 +517,7 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 - **CONTRIBUTING.md** - Contributor guide with SEO meta tags (#320)
 
 ### Fixed
+
 - **4300+ validator warnings reduced to 258** - 94% reduction (#337)
 - **130 stub SKILL.md files replaced** - Substantive domain-specific content (#335)
 - **Skill counts corrected** - Add windsurf pack, fix cowork claims (#334)
@@ -482,12 +526,14 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 - **SECURITY.md added** - Security policy (#315)
 
 ### Changed
+
 - **Validator compliance** - Community page, PDA skill quality upgrade (#336)
 - **Playbooks converted** - 11 playbooks to Astro content collections (#325)
 - **18 jeremy-owned plugins** - Version bump 1.0.0 → 2.0.0 (#331)
 - **Performance budgets** - Bumped for 340+ plugins and dark mode CSS
 
 ### Metrics
+
 - Commits since v4.16.0: 33
 - Files changed: 2,956 (+272,838 / -215,356 lines)
 - Contributors: intentsolutions.io, Jeremy Longshore, Michal Jaskolski, Eugene Aseev
@@ -497,6 +543,7 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 ## [4.16.0] - 2026-03-07
 
 ### Added
+
 - **Domain migration to tonsofskills.com** - Primary domain with Firebase hosting and 301 redirects
 - **Homepage dark theme redesign** - Braves Booth-inspired dark theme with modern UI
 - **Production E2E tests** - Playwright tests for tonsofskills.com deployment validation
@@ -508,6 +555,7 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
   - Full test suite with 31 pytest tests
 
 ### Fixed
+
 - **Axiom submodule issue** - Converted broken submodule to regular directory, fixing CI on forks
 - Mobile horizontal overflow on `/explore` page
 - Badge text size and cowork plugin overflow on mobile
@@ -515,15 +563,18 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 - Skills link to cowork page, updated skills page title
 
 ### Changed
+
 - CI cron schedules disabled to reduce Actions minutes usage
 - Workflow dispatch trigger added to Validate Plugins workflow
 - Cowork zip integrity check now works without unzip (Node.js fallback)
 - Production E2E job now independent of marketplace-validation
 
 ### Reverted
+
 - Chainstack and deAPI plugins temporarily reverted pending review
 
 ### Metrics
+
 - Commits since v4.15.0: 50
 - Files changed: 183 (+25,792 / -1,584 lines)
 - Contributors: Jeremy Longshore, intentsolutions.io, clowreed, Eugene Aseev
@@ -533,6 +584,7 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 ## [4.15.0] - 2026-02-13
 
 ### Added
+
 - Products & Services section on homepage with Agent37 partner integration
 - Penetration testing plugin v2.0.0 with 3 real Python security scanners (~4,500 lines):
   - `security_scanner.py` - HTTP headers, SSL/TLS, endpoint probing, CORS analysis
@@ -541,6 +593,7 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 - Security reference documentation: OWASP Top 10, Security Headers, Remediation Playbook
 
 ### Fixed
+
 - Windows Defender false positive in penetration-tester plugin (#300) - removed literal PHP payloads
 - Sponsor page pricing tiers replaced with email-for-details contact form
 - stored-procedure-generator test functions renamed to avoid pytest collection conflicts
@@ -548,11 +601,13 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 - Explore page style preservation when filtering search results
 
 ### Changed
+
 - Copyrights updated to 2026 across all documentation
 - Opus model ID now allowed in skills schema validation
 - Schema references synced to 2026 spec
 
 ### Metrics
+
 - Commits since v4.14.0: 8
 - Files changed: 50+
 - New Python code: ~4,500 lines (security scanners)
@@ -563,6 +618,7 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 ## [4.14.0] - 2026-01-31
 
 ### Added
+
 - 17 additional SaaS skill packs (408 skills), completing the 42-pack SaaS collection:
   - **apollo-pack**: Sales engagement, sequences, analytics, CRM integration
   - **clerk-pack**: User authentication, session management, organization features
@@ -583,11 +639,13 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
   - **vastai-pack**: GPU marketplace, cloud compute, ML infrastructure
 
 ### Changed
+
 - Updated all skill counts in README.md (739 → 1,537 total skills)
 - SaaS pack summary: 42 packs with 1,086 skills total
 - Standalone skills: 1,298 (was 500)
 
 ### Metrics
+
 - New SaaS skill packs: 17 (408 skills)
 - Total SaaS packs: 42 (1,086 skills)
 - Total skills: 1,537 (previously 1,027)
@@ -598,6 +656,7 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 ## [4.13.0] - 2026-01-26
 
 ### Added
+
 - 12 complete SaaS skill packs with real, production-ready content (288 skills total):
   - **databricks-pack**: Delta Lake, MLflow, notebooks, clusters, data engineering workflows
   - **mistral-pack**: Mistral AI inference, embeddings, fine-tuning, production deployment
@@ -616,11 +675,13 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 - Brand strategy framework plugin integration (#292)
 
 ### Changed
+
 - Updated all 2025 schema/spec references to 2026 across documentation
 - Improved contributor ordering convention (newest first)
 - Marketplace catalog extended with 12 new SaaS packs
 
 ### Metrics
+
 - New SaaS skill packs: 12 (288 skills)
 - Total skills: 1,027 (previously 739)
 - Commits since v4.12.0: 15
@@ -631,22 +692,26 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 ## [4.12.0] - 2026-01-12
 
 ### Added
+
 - 5 crypto trading plugins to public repository
 - Validator content quality validation checks (#299)
 
 ### Fixed
+
 - creating-kubernetes-deployments skill quality (#298)
 - automating-database-backups skill quality (#297)
 - generating-stored-procedures skill quality (#296)
 - All 3 skills improved based on Richard Hightower's quality feedback
 
 ### Changed
+
 - Added Richard Hightower as contributor
 - Banner text and mobile spacing improvements
 
 ## [4.11.0] - 2026-01-18
 
 ### Added
+
 - 8 new crypto plugin skills with full PRD/ARD documentation and Python implementations:
   - **Blockchain & On-Chain**: blockchain-explorer-cli, on-chain-analytics, mempool-analyzer, whale-alert-monitor, gas-fee-optimizer
   - **NFT & Tokens**: nft-rarity-analyzer, token-launch-tracker
@@ -656,6 +721,7 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 - Google Secret Manager integration for secure Firebase config
 
 ### Fixed
+
 - Gemini code review feedback for all new crypto skills:
   - Timezone-naive datetime operations (now UTC)
   - Empty except clauses with explanatory comments
@@ -664,11 +730,13 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
   - Mock data fallback with explicit --demo flag
 
 ### Infrastructure
+
 - GitHub Actions workflow for Firebase Hosting deployment
 - Workload Identity Federation for keyless GCP authentication
 - All crypto skills follow nixtla enterprise PRD/ARD standard
 
 ### Metrics
+
 - New crypto skills: 8 (completing Batch 5 & 6)
 - Commits since v4.10.0: 29
 - PRs merged: 10
@@ -678,6 +746,7 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 ## [4.10.0] - 2026-01-15
 
 ### Added
+
 - 13 new crypto plugin skills with full PRD/ARD documentation and Python implementations:
   - **Market Data & Pricing**: market-price-tracker, market-movers-scanner, crypto-news-aggregator, market-sentiment-analyzer
   - **Portfolio & Tax**: crypto-portfolio-tracker, crypto-tax-calculator
@@ -687,16 +756,19 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 - Firebase Analytics for download tracking
 
 ### Changed
+
 - Updated skill validator compliance for backtester and signal generator skills
 - Unified theme colors across all marketplace pages (CSS consolidation)
 - Updated .gitignore for firebase cache and skill data files
 
 ### Infrastructure
+
 - All crypto skills follow nixtla enterprise PRD/ARD standard
 - Each skill includes: SKILL.md, PRD.md, ARD.md, Python scripts, references, config
 - Skills use DeFiLlama, CoinGecko, CryptoCompare APIs (free tiers)
 
 ### Metrics
+
 - New crypto skills: 13 (with full documentation)
 - Commits since v4.9.0: 50
 - PRs merged: 8 (crypto skill branches)
@@ -706,22 +778,26 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 ## [4.9.0] - 2026-01-08
 
 ### Added
+
 - 10 new SaaS vendor skill packs (Batch 3): Apollo, Deepgram, Juicebox, Customer.io, LangChain, Lindy, Granola, Gamma, Clerk, Linear
 - 240 new skills across Batch 3 vendors (24 skills per pack)
 - npm packages for all 30 SaaS packs with download tracking
 - Learn pages for all Batch 3 vendors on claudecodeplugins.io
 
 ### Changed
+
 - Updated marketplace.extended.json with 10 new pack entries
 - Updated vendor-packs.json with Batch 3 vendor metadata
 - Updated TRACKER.csv with Batch 3 completion status
 
 ### Infrastructure
+
 - All 30 SaaS packs now published to npm (@intentsolutionsio/{vendor}-pack)
 - Consistent naming across marketplace and npm registries
 - Website deployed with 642 pages including all vendor learn pages
 
 ### Metrics
+
 - Total SaaS skill packs: 30 (720 skills)
 - Batch 3 packs: 10 (240 skills)
 - npm packages published: 30
@@ -731,34 +807,40 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 ## [4.8.0] - 2026-01-06
 
 ### Added
+
 - Marketplace redirects for deleted learning pages
 - 14 new vendor skill packs with website pages
 
 ### Changed
+
 - Updated learn hub with all vendor icons
 - Synced marketplace catalogs
 
 ## [4.7.0] - 2026-01-06
 
 ### Added
+
 - Progressive Disclosure Architecture (PDA) pattern for all skills
 - Intent Solutions 100-point grading system integrated into validator
 - 348 reference files for detailed skill content extraction
 - `scripts/refactor-skills-pda.py` automation script for skill restructuring
 
 ### Changed
+
 - Refactored 98 skills to PDA pattern (SKILL.md files now <150 lines)
 - Merged `validate-frontmatter.py` into unified `validate-skills-schema.py` (v3.0)
 - Improved average skill score from 88.0/100 (B) to 92.5/100 (A)
 - All 957 skills now 100% production ready
 
 ### Fixed
+
 - Excel skills quality issues (GitHub Issues #250, #251, #252, #253)
 - OpenRouter pack skills grading (8 skills improved from 80 to 95+ points)
 - All C/D grade skills elevated to A/B grade
 - Kling AI common-errors skill malformed code fences
 
 ### Metrics
+
 - Skills validated: 957
 - A grade: 897 (93.7%)
 - B grade: 60 (6.3%)
@@ -770,19 +852,23 @@ The 3,385 public-repo `SKILL.md` files under `plugins/` are **not** migrated in 
 ## [4.6.0] - 2026-01-05
 
 ### Added
+
 - Batch 2 vendor skill databases (217 files)
 - Skill databases for 6 published SaaS packs
 - Kling AI flagship+ skill pack (30 skills)
 
 ### Fixed
+
 - OpenRouter pack skill quality improvements
 
 ## [4.5.0] - 2026-01-04
 
 ### Added
+
 - External plugin sync infrastructure
 - ZCF integration
 - 50-vendor SaaS skill packs initiative
 
 ### Changed
+
 - Skill quality improvements to 99.9% compliance

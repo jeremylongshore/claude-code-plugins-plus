@@ -23,7 +23,10 @@ export interface ValidationSummary {
 /**
  * Run all validators on a plugin directory
  */
-export async function validateAll(baseDir: string, strict: boolean = false): Promise<ValidationSummary> {
+export async function validateAll(
+  baseDir: string,
+  strict: boolean = false,
+): Promise<ValidationSummary> {
   const skills = await validateAllSkills(baseDir);
   const frontmatter = await validateAllFrontmatter(baseDir, strict);
 

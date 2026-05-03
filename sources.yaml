@@ -28,14 +28,14 @@ sources:
     verified: true
     # Files to sync (relative to source_path)
     include:
-      - "SKILL.md"
-      - "README.md"
-      - "references/**"
+      - 'SKILL.md'
+      - 'README.md'
+      - 'references/**'
     # Files to exclude
     exclude:
-      - "node_modules/**"
-      - ".git/**"
-      - "*.log"
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
 
   - name: zai-cli
     description: Z.AI vision, search, reader, and GitHub exploration
@@ -50,13 +50,13 @@ sources:
     category: community
     verified: true
     include:
-      - "SKILL.md"
-      - "README.md"
-      - "references/**"
+      - 'SKILL.md'
+      - 'README.md'
+      - 'references/**'
     exclude:
-      - "node_modules/**"
-      - ".git/**"
-      - "*.log"
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
 
   # ============================================================
   # Sugar (Steven Leggett / Robotic Force)
@@ -76,18 +76,17 @@ sources:
     category: devops
     verified: true
     include:
-      - "plugin.json"
-      - "README.md"
-      - "PLUGIN_OVERVIEW.md"
-      - "commands/**"
-      - "agents/**"
-      - "hooks/**"
-      - "mcp-server/**"
+      - 'plugin.json'
+      - 'README.md'
+      - 'PLUGIN_OVERVIEW.md'
+      - 'commands/**'
+      - 'agents/**'
+      - 'hooks/**'
+      - 'mcp-server/**'
     exclude:
-      - "node_modules/**"
-      - ".git/**"
-      - "*.log"
-
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
 
   # ============================================================
   # Wondel.ai Skills (Michal Jaskolski / wondelai)
@@ -108,12 +107,12 @@ sources:
     category: business-tools
     verified: true
     include:
-      - "SKILL.md"
-      - "references/**"
+      - 'SKILL.md'
+      - 'references/**'
     exclude:
-      - "node_modules/**"
-      - ".git/**"
-      - "*.log"
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
 
   - name: wondelai-contagious
     description: Word-of-mouth and virality framework using the STEPPS model
@@ -127,12 +126,12 @@ sources:
     category: business-tools
     verified: true
     include:
-      - "SKILL.md"
-      - "references/**"
+      - 'SKILL.md'
+      - 'references/**'
     exclude:
-      - "node_modules/**"
-      - ".git/**"
-      - "*.log"
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
 
   - name: wondelai-cro-methodology
     description: Customer-centric conversion rate optimization methodology
@@ -146,12 +145,12 @@ sources:
     category: business-tools
     verified: true
     include:
-      - "SKILL.md"
-      - "references/**"
+      - 'SKILL.md'
+      - 'references/**'
     exclude:
-      - "node_modules/**"
-      - ".git/**"
-      - "*.log"
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
 
   - name: wondelai-crossing-the-chasm
     description: Technology adoption and go-to-market strategy for mainstream markets
@@ -165,12 +164,12 @@ sources:
     category: business-tools
     verified: true
     include:
-      - "SKILL.md"
-      - "references/**"
+      - 'SKILL.md'
+      - 'references/**'
     exclude:
-      - "node_modules/**"
-      - ".git/**"
-      - "*.log"
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
 
   - name: wondelai-design-everyday-things
     description: Fundamental design principles for intuitive interfaces
@@ -184,12 +183,12 @@ sources:
     category: design
     verified: true
     include:
-      - "SKILL.md"
-      - "references/**"
+      - 'SKILL.md'
+      - 'references/**'
     exclude:
-      - "node_modules/**"
-      - ".git/**"
-      - "*.log"
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
 
   - name: wondelai-design-sprint
     description: Google Ventures Design Sprint methodology for rapid prototyping
@@ -203,12 +202,12 @@ sources:
     category: productivity
     verified: true
     include:
-      - "SKILL.md"
-      - "references/**"
+      - 'SKILL.md'
+      - 'references/**'
     exclude:
-      - "node_modules/**"
-      - ".git/**"
-      - "*.log"
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
 
   - name: wondelai-drive-motivation
     description: Intrinsic motivation science framework (Autonomy, Mastery, Purpose)
@@ -222,12 +221,12 @@ sources:
     category: business-tools
     verified: true
     include:
-      - "SKILL.md"
-      - "references/**"
+      - 'SKILL.md'
+      - 'references/**'
     exclude:
-      - "node_modules/**"
-      - ".git/**"
-      - "*.log"
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
 
   - name: wondelai-hooked-ux
     description: Hook Model framework for building habit-forming products
@@ -241,12 +240,12 @@ sources:
     category: design
     verified: true
     include:
-      - "SKILL.md"
-      - "references/**"
+      - 'SKILL.md'
+      - 'references/**'
     exclude:
-      - "node_modules/**"
-      - ".git/**"
-      - "*.log"
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
 
   - name: wondelai-hundred-million-offers
     description: Grand Slam Offer creation framework for irresistible pricing
@@ -260,12 +259,12 @@ sources:
     category: business-tools
     verified: true
     include:
-      - "SKILL.md"
-      - "references/**"
+      - 'SKILL.md'
+      - 'references/**'
     exclude:
-      - "node_modules/**"
-      - ".git/**"
-      - "*.log"
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
 
   - name: wondelai-influence-psychology
     description: Persuasion science framework based on Cialdini's six principles
@@ -279,12 +278,12 @@ sources:
     category: business-tools
     verified: true
     include:
-      - "SKILL.md"
-      - "references/**"
+      - 'SKILL.md'
+      - 'references/**'
     exclude:
-      - "node_modules/**"
-      - ".git/**"
-      - "*.log"
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
 
   - name: wondelai-ios-hig-design
     description: Native iOS app design following Apple Human Interface Guidelines
@@ -298,12 +297,12 @@ sources:
     category: design
     verified: true
     include:
-      - "SKILL.md"
-      - "references/**"
+      - 'SKILL.md'
+      - 'references/**'
     exclude:
-      - "node_modules/**"
-      - ".git/**"
-      - "*.log"
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
 
   - name: wondelai-jobs-to-be-done
     description: Strategic product innovation framework using JTBD theory
@@ -317,12 +316,12 @@ sources:
     category: business-tools
     verified: true
     include:
-      - "SKILL.md"
-      - "references/**"
+      - 'SKILL.md'
+      - 'references/**'
     exclude:
-      - "node_modules/**"
-      - ".git/**"
-      - "*.log"
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
 
   - name: wondelai-lean-startup
     description: Lean Startup methodology for validated learning and MVPs
@@ -336,12 +335,12 @@ sources:
     category: productivity
     verified: true
     include:
-      - "SKILL.md"
-      - "references/**"
+      - 'SKILL.md'
+      - 'references/**'
     exclude:
-      - "node_modules/**"
-      - ".git/**"
-      - "*.log"
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
 
   - name: wondelai-made-to-stick
     description: Sticky messaging framework using the SUCCESs model
@@ -355,12 +354,12 @@ sources:
     category: business-tools
     verified: true
     include:
-      - "SKILL.md"
-      - "references/**"
+      - 'SKILL.md'
+      - 'references/**'
     exclude:
-      - "node_modules/**"
-      - ".git/**"
-      - "*.log"
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
 
   - name: wondelai-negotiation
     description: Tactical negotiation framework based on Chris Voss's techniques
@@ -374,12 +373,12 @@ sources:
     category: business-tools
     verified: true
     include:
-      - "SKILL.md"
-      - "references/**"
+      - 'SKILL.md'
+      - 'references/**'
     exclude:
-      - "node_modules/**"
-      - ".git/**"
-      - "*.log"
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
 
   - name: wondelai-obviously-awesome
     description: Product positioning framework for competitive differentiation
@@ -393,12 +392,12 @@ sources:
     category: business-tools
     verified: true
     include:
-      - "SKILL.md"
-      - "references/**"
+      - 'SKILL.md'
+      - 'references/**'
     exclude:
-      - "node_modules/**"
-      - ".git/**"
-      - "*.log"
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
 
   - name: wondelai-one-page-marketing
     description: End-to-end marketing plan framework in a single page
@@ -412,12 +411,12 @@ sources:
     category: business-tools
     verified: true
     include:
-      - "SKILL.md"
-      - "references/**"
+      - 'SKILL.md'
+      - 'references/**'
     exclude:
-      - "node_modules/**"
-      - ".git/**"
-      - "*.log"
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
 
   - name: wondelai-predictable-revenue
     description: Outbound sales methodology for scalable B2B pipeline
@@ -431,12 +430,12 @@ sources:
     category: business-tools
     verified: true
     include:
-      - "SKILL.md"
-      - "references/**"
+      - 'SKILL.md'
+      - 'references/**'
     exclude:
-      - "node_modules/**"
-      - ".git/**"
-      - "*.log"
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
 
   - name: wondelai-refactoring-ui
     description: Practical UI design system for professional interfaces
@@ -450,12 +449,12 @@ sources:
     category: design
     verified: true
     include:
-      - "SKILL.md"
-      - "references/**"
+      - 'SKILL.md'
+      - 'references/**'
     exclude:
-      - "node_modules/**"
-      - ".git/**"
-      - "*.log"
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
 
   - name: wondelai-scorecard-marketing
     description: Lead generation framework using quiz and assessment funnels
@@ -469,12 +468,12 @@ sources:
     category: business-tools
     verified: true
     include:
-      - "SKILL.md"
-      - "references/**"
+      - 'SKILL.md'
+      - 'references/**'
     exclude:
-      - "node_modules/**"
-      - ".git/**"
-      - "*.log"
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
 
   - name: wondelai-storybrand-messaging
     description: StoryBrand messaging framework that positions customer as hero
@@ -488,12 +487,12 @@ sources:
     category: business-tools
     verified: true
     include:
-      - "SKILL.md"
-      - "references/**"
+      - 'SKILL.md'
+      - 'references/**'
     exclude:
-      - "node_modules/**"
-      - ".git/**"
-      - "*.log"
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
 
   - name: wondelai-top-design
     description: Award-winning web design framework for premium experiences
@@ -507,12 +506,12 @@ sources:
     category: design
     verified: true
     include:
-      - "SKILL.md"
-      - "references/**"
+      - 'SKILL.md'
+      - 'references/**'
     exclude:
-      - "node_modules/**"
-      - ".git/**"
-      - "*.log"
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
 
   - name: wondelai-traction-eos
     description: Entrepreneurial Operating System for business execution
@@ -526,12 +525,12 @@ sources:
     category: business-tools
     verified: true
     include:
-      - "SKILL.md"
-      - "references/**"
+      - 'SKILL.md'
+      - 'references/**'
     exclude:
-      - "node_modules/**"
-      - ".git/**"
-      - "*.log"
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
 
   - name: wondelai-ux-heuristics
     description: Usability heuristics and principles for UX audits
@@ -545,12 +544,12 @@ sources:
     category: design
     verified: true
     include:
-      - "SKILL.md"
-      - "references/**"
+      - 'SKILL.md'
+      - 'references/**'
     exclude:
-      - "node_modules/**"
-      - ".git/**"
-      - "*.log"
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
 
   - name: wondelai-web-typography
     description: Web typography framework for readable, beautiful type
@@ -564,12 +563,12 @@ sources:
     category: design
     verified: true
     include:
-      - "SKILL.md"
-      - "references/**"
+      - 'SKILL.md'
+      - 'references/**'
     exclude:
-      - "node_modules/**"
-      - ".git/**"
-      - "*.log"
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
 
   # ============================================================
   # Jeremy's Stash (Jeremy Longshore standalone repos)
@@ -588,16 +587,16 @@ sources:
     category: productivity
     verified: true
     include:
-      - ".claude-plugin/**"
-      - "hooks/**"
-      - "scripts/**"
-      - "skills/**"
-      - "README.md"
-      - "LICENSE"
+      - '.claude-plugin/**'
+      - 'hooks/**'
+      - 'scripts/**'
+      - 'skills/**'
+      - 'README.md'
+      - 'LICENSE'
     exclude:
-      - "node_modules/**"
-      - ".git/**"
-      - "*.log"
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
 
   - name: pr-to-spec
     description: The flight envelope for agentic coding — structured specs with intent drift detection
@@ -612,24 +611,24 @@ sources:
     category: code-quality
     verified: true
     include:
-      - ".claude-plugin/**"
-      - ".mcp.json"
-      - "src/servers/**"
-      - ".claude/skills/**"
-      - "dist/servers/**"
-      - "dist/index.js"
-      - "dist/index.d.ts"
-      - "dist/core/**"
-      - "README.md"
-      - "LICENSE"
+      - '.claude-plugin/**'
+      - '.mcp.json'
+      - 'src/servers/**'
+      - '.claude/skills/**'
+      - 'dist/servers/**'
+      - 'dist/index.js'
+      - 'dist/index.d.ts'
+      - 'dist/core/**'
+      - 'README.md'
+      - 'LICENSE'
     exclude:
-      - "node_modules/**"
-      - ".git/**"
-      - "*.log"
-      - "tests/**"
-      - "src/!(servers)/**"
-      - "dist/cli/**"
-      - "dist/action/**"
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
+      - 'tests/**'
+      - 'src/!(servers)/**'
+      - 'dist/cli/**'
+      - 'dist/action/**'
 
   - name: slack-channel
     description: Two-way Slack channel for Claude Code — chat from Slack DMs and channels via Socket Mode
@@ -644,20 +643,20 @@ sources:
     category: productivity
     verified: true
     include:
-      - ".claude-plugin/**"
-      - ".mcp.json"
-      - "server.ts"
-      - "lib.ts"
-      - "package.json"
-      - ".npmrc"
-      - "skills/**"
-      - "ACCESS.md"
-      - "README.md"
-      - "LICENSE"
+      - '.claude-plugin/**'
+      - '.mcp.json'
+      - 'server.ts'
+      - 'lib.ts'
+      - 'package.json'
+      - '.npmrc'
+      - 'skills/**'
+      - 'ACCESS.md'
+      - 'README.md'
+      - 'LICENSE'
     exclude:
-      - "node_modules/**"
-      - ".git/**"
-      - "*.log"
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
 
   - name: x-bug-triage
     description: Closed-loop bug triage — X complaints → clusters → repo evidence → owner routing → Slack review → filed issues
@@ -672,29 +671,29 @@ sources:
     category: devops
     verified: true
     include:
-      - ".claude-plugin/**"
-      - ".mcp.json"
-      - "skills/**"
-      - "agents/**"
-      - "hooks/**"
-      - "mcp/**"
-      - "lib/**"
-      - "config/**"
-      - "scripts/**"
-      - "integrations/**"
-      - "package.json"
-      - "tsconfig.base.json"
-      - "README.md"
-      - "LICENSE"
+      - '.claude-plugin/**'
+      - '.mcp.json'
+      - 'skills/**'
+      - 'agents/**'
+      - 'hooks/**'
+      - 'mcp/**'
+      - 'lib/**'
+      - 'config/**'
+      - 'scripts/**'
+      - 'integrations/**'
+      - 'package.json'
+      - 'tsconfig.base.json'
+      - 'README.md'
+      - 'LICENSE'
     exclude:
-      - "node_modules/**"
-      - ".git/**"
-      - "*.log"
-      - "db/**"
-      - "data/**"
-      - "tests/**"
-      - "bun.lock"
-      - "**/.gitkeep"
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
+      - 'db/**'
+      - 'data/**'
+      - 'tests/**'
+      - 'bun.lock'
+      - '**/.gitkeep'
   - name: skyvern
     description: AI browser automation via CLI — navigate sites, fill forms, extract data, handle logins
     repo: Skyvern-AI/skyvern
@@ -706,13 +705,13 @@ sources:
     license: AGPL-3.0
     category: productivity
     include:
-      - "SKILL.md"
-      - "references/**"
-      - "examples/**"
+      - 'SKILL.md'
+      - 'references/**'
+      - 'examples/**'
     exclude:
-      - "node_modules/**"
-      - ".git/**"
-      - "*.log"
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
   # ============================================================
   # Claudebase (Rohit Hazra / rohithzr)
   # https://github.com/rohithzr/claudebase
@@ -733,20 +732,20 @@ sources:
     category: productivity
     verified: false
     include:
-      - ".claude-plugin/**"
-      - "skills/**"
-      - "scripts/**"
-      - "hooks/**"
-      - ".sync-manifest.json"
-      - "README.md"
-      - "LICENSE"
+      - '.claude-plugin/**'
+      - 'skills/**'
+      - 'scripts/**'
+      - 'hooks/**'
+      - '.sync-manifest.json'
+      - 'README.md'
+      - 'LICENSE'
     exclude:
-      - "node_modules/**"
-      - ".git/**"
-      - ".agents/**"
-      - ".claude/**"
-      - "tests/**"
-      - "*.log"
+      - 'node_modules/**'
+      - '.git/**'
+      - '.agents/**'
+      - '.claude/**'
+      - 'tests/**'
+      - '*.log'
 
   # ============================================================
   # tonone (thisisfatih)
@@ -766,19 +765,19 @@ sources:
     category: ai-agency
     verified: false
     include:
-      - ".claude-plugin/**"
-      - "agents/**"
-      - "skills/**"
-      - "README.md"
-      - "LICENSE"
+      - '.claude-plugin/**'
+      - 'agents/**'
+      - 'skills/**'
+      - 'README.md'
+      - 'LICENSE'
     exclude:
-      - "node_modules/**"
-      - ".git/**"
-      - "*.log"
-      - "team/**"
-      - "docs/**"
-      - "templates/**"
-      - ".github/**"
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
+      - 'team/**'
+      - 'docs/**'
+      - 'templates/**'
+      - '.github/**'
 
   # ============================================================
   # CLI Power Skills (Yuriy Kotik)
@@ -797,17 +796,17 @@ sources:
     category: productivity
     verified: false
     include:
-      - ".claude-plugin/**"
-      - "skills/**"
-      - "package.json"
-      - "README.md"
-      - "INSTALL.md"
-      - "LICENSE"
+      - '.claude-plugin/**'
+      - 'skills/**'
+      - 'package.json'
+      - 'README.md'
+      - 'INSTALL.md'
+      - 'LICENSE'
     exclude:
-      - "node_modules/**"
-      - ".git/**"
-      - "*.log"
-      - "docs/**"
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
+      - 'docs/**'
 
   # ============================================================
   # Add more external sources below
@@ -843,14 +842,14 @@ sources:
     category: productivity
     verified: false
     include:
-      - ".claude-plugin/**"
-      - "skills/**"
+      - '.claude-plugin/**'
+      - 'skills/**'
       - README.md
       - LICENSE
     exclude:
-      - "node_modules/**"
-      - ".git/**"
-      - "*.log"
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
 
 # Sync configuration
 config:
@@ -867,10 +866,10 @@ config:
     - external-plugins
 
   # Commit message template
-  commit_message: "chore(sync): update external plugins from upstream"
+  commit_message: 'chore(sync): update external plugins from upstream'
 
   # PR title template
-  pr_title: "🔄 Sync external plugins"
+  pr_title: '🔄 Sync external plugins'
 
   # PR body template (supports {sources} placeholder)
   pr_body: |

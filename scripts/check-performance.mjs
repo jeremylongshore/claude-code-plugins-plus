@@ -24,12 +24,12 @@ const EXCLUDE_DIRS = ['downloads'];
 
 // Performance budgets (calibrated for 414+ plugin marketplace with 63 SaaS packs, 2026-03)
 const BUDGETS = {
-  totalSize: 40 * 1024 * 1024,  // 40MB gzipped (414 plugins + 63 SaaS packs + 2,788 skills + dark/light theme CSS)
-  largestFile: 1024 * 1024,     // 1MB gzipped (explore page lists all plugins + keyword filter + install buttons)
-  buildTime: 30 * 1000,         // 30 seconds (ms) — more pages = longer build
+  totalSize: 40 * 1024 * 1024, // 40MB gzipped (414 plugins + 63 SaaS packs + 2,788 skills + dark/light theme CSS)
+  largestFile: 1024 * 1024, // 1MB gzipped (explore page lists all plugins + keyword filter + install buttons)
+  buildTime: 30 * 1000, // 30 seconds (ms) — more pages = longer build
   routeCount: {
     min: 2800,
-    max: 4000,  // 414 plugins × multiple page types + core pages + SaaS pack pages
+    max: 4000, // 414 plugins × multiple page types + core pages + SaaS pack pages
   },
 };
 

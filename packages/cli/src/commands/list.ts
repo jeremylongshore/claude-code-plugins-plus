@@ -19,10 +19,7 @@ interface PluginInfo {
 /**
  * List installed plugins or all available plugins
  */
-export async function listPlugins(
-  paths: ClaudePaths,
-  options: ListOptions
-): Promise<void> {
+export async function listPlugins(paths: ClaudePaths, options: ListOptions): Promise<void> {
   if (options.all) {
     await listAllPlugins(paths);
   } else {
@@ -77,7 +74,7 @@ async function listInstalledPlugins(paths: ClaudePaths): Promise<void> {
  * List all available plugins from marketplace
  */
 async function listAllPlugins(paths: ClaudePaths): Promise<void> {
-  if (!await isMarketplaceInstalled(paths)) {
+  if (!(await isMarketplaceInstalled(paths))) {
     console.log(chalk.yellow('Marketplace catalog not installed'));
     console.log(chalk.gray('Run `ccpi install <plugin>` to install the marketplace first'));
     return;
@@ -120,10 +117,7 @@ async function listAllPlugins(paths: ClaudePaths): Promise<void> {
 /**
  * Get plugins from a directory
  */
-async function getPluginsFromDir(
-  dir: string,
-  location: string
-): Promise<PluginInfo[]> {
+async function getPluginsFromDir(dir: string, location: string): Promise<PluginInfo[]> {
   const plugins: PluginInfo[] = [];
 
   try {

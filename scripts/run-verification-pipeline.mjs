@@ -58,10 +58,11 @@ function runValidator() {
 
   let stdout;
   try {
-    stdout = execSync(
-      `python3 "${validatorScript}" --json --skills-only`,
-      { cwd: repoRoot, encoding: 'utf-8', maxBuffer: 50 * 1024 * 1024 }
-    );
+    stdout = execSync(`python3 "${validatorScript}" --json --skills-only`, {
+      cwd: repoRoot,
+      encoding: 'utf-8',
+      maxBuffer: 50 * 1024 * 1024,
+    });
   } catch (err) {
     // The validator may exit non-zero on errors, but still produce JSON on stdout
     if (err.stdout) {
@@ -129,9 +130,7 @@ function aggregateByPlugin(skillResults) {
   // Calculate per-plugin aggregates
   const pluginVerifications = new Map();
   for (const [source, scores] of pluginScores) {
-    const avgScore = Math.round(
-      scores.reduce((sum, s) => sum + s.score, 0) / scores.length
-    );
+    const avgScore = Math.round(scores.reduce((sum, s) => sum + s.score, 0) / scores.length);
     pluginVerifications.set(source, {
       score: avgScore,
       grade: scoreToGrade(avgScore),
@@ -234,7 +233,7 @@ function printSummary(pluginVerifications, catalogStats) {
     const pct = pluginVerifications.size
       ? ((count / pluginVerifications.size) * 100).toFixed(1)
       : '0.0';
-    const bar = '#'.repeat(Math.round(count / Math.max(pluginVerifications.size, 1) * 30));
+    const bar = '#'.repeat(Math.round((count / Math.max(pluginVerifications.size, 1)) * 30));
     console.log(`  ${letter}: ${String(count).padStart(4)} (${pct.padStart(5)}%)  ${bar}`);
   }
 

@@ -49,8 +49,8 @@ if (!existsSync(PLUGINS_ZIP_DIR)) {
 }
 
 const allZips = readdirSync(PLUGINS_ZIP_DIR)
-  .filter(f => f.endsWith('.zip'))
-  .map(f => join(PLUGINS_ZIP_DIR, f));
+  .filter((f) => f.endsWith('.zip'))
+  .map((f) => join(PLUGINS_ZIP_DIR, f));
 
 if (allZips.length === 0) {
   console.log('⚠️  No .zip files found in downloads/plugins/. Skipping.');
@@ -59,9 +59,7 @@ if (allZips.length === 0) {
 
 // Sample up to 30 zips (or all if fewer)
 const SAMPLE_SIZE = Math.min(30, allZips.length);
-const sample = allZips
-  .sort(() => Math.random() - 0.5)
-  .slice(0, SAMPLE_SIZE);
+const sample = allZips.sort(() => Math.random() - 0.5).slice(0, SAMPLE_SIZE);
 
 console.log(`Sampling ${sample.length} of ${allZips.length} plugin zips\n`);
 
@@ -126,7 +124,7 @@ for (const zipPath of sample) {
     }
   }
 
-  const files = listing.split('\n').filter(f => f.trim());
+  const files = listing.split('\n').filter((f) => f.trim());
   for (const file of files) {
     // For unzip -l lines, path is the last whitespace-delimited token;
     // for zipinfo -1 lines, the whole trimmed line is the path.
@@ -216,10 +214,13 @@ function isValidZipFile(filePath) {
     if (buf[0] !== 0x50 || buf[1] !== 0x4b || buf[2] !== 0x03 || buf[3] !== 0x04) return false;
     // Check end of central directory record exists (PK\x05\x06)
     for (let i = buf.length - 22; i >= Math.max(0, buf.length - 65557); i--) {
-      if (buf[i] === 0x50 && buf[i+1] === 0x4b && buf[i+2] === 0x05 && buf[i+3] === 0x06) return true;
+      if (buf[i] === 0x50 && buf[i + 1] === 0x4b && buf[i + 2] === 0x05 && buf[i + 3] === 0x06)
+        return true;
     }
     return false;
-  } catch { return false; }
+  } catch {
+    return false;
+  }
 }
 
 for (const zipPath of sample) {

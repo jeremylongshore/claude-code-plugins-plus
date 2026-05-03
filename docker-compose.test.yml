@@ -14,7 +14,7 @@ services:
     container_name: claude-plugins-test-full
     environment:
       NODE_ENV: test
-      CI: "true"
+      CI: 'true'
     volumes:
       - ./test-results:/app/test-results
     command: >
@@ -39,7 +39,7 @@ services:
     volumes:
       - ./test-results:/app/test-results
     healthcheck:
-      test: ["CMD", "pnpm", "--version"]
+      test: ['CMD', 'pnpm', '--version']
       interval: 30s
       timeout: 10s
       retries: 3

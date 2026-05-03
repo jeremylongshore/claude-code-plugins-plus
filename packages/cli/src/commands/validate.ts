@@ -28,10 +28,14 @@ export interface ValidateOptions {
  */
 export async function validateCommand(
   targetPath: string | undefined,
-  options: ValidateOptions
+  options: ValidateOptions,
 ): Promise<void> {
   // Deprecation notice: universal validator is the source of truth
-  console.log(chalk.yellow('Note: For authoritative validation, use: python3 scripts/validate-skills-schema.py --enterprise'));
+  console.log(
+    chalk.yellow(
+      'Note: For authoritative validation, use: python3 scripts/validate-skills-schema.py --enterprise',
+    ),
+  );
   console.log('');
 
   // Determine base directory
@@ -48,10 +52,8 @@ export async function validateCommand(
   }
 
   // Check if it's a single file
-  const isSingleFile = targetPath && (
-    targetPath.endsWith('.md') ||
-    targetPath.endsWith('SKILL.md')
-  );
+  const isSingleFile =
+    targetPath && (targetPath.endsWith('.md') || targetPath.endsWith('SKILL.md'));
 
   if (isSingleFile) {
     await validateSingleFile(baseDir, options);
@@ -228,7 +230,10 @@ function displaySkillsResult(result: SkillValidationSummary, options: ValidateOp
 /**
  * Display frontmatter validation result
  */
-function displayFrontmatterResult(result: FrontmatterValidationSummary, options: ValidateOptions): void {
+function displayFrontmatterResult(
+  result: FrontmatterValidationSummary,
+  options: ValidateOptions,
+): void {
   if (options.json) {
     console.log(JSON.stringify(result, null, 2));
     return;

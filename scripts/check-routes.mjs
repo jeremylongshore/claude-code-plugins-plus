@@ -117,11 +117,10 @@ function generateExpectedRoutes() {
   const playbooksDir = path.join(DIST_DIR, 'playbooks');
   if (fs.existsSync(playbooksDir)) {
     routes.add('/playbooks');
-    const playbooks = fs.readdirSync(playbooksDir)
-      .filter(item => {
-        const itemPath = path.join(playbooksDir, item);
-        return fs.statSync(itemPath).isDirectory();
-      });
+    const playbooks = fs.readdirSync(playbooksDir).filter((item) => {
+      const itemPath = path.join(playbooksDir, item);
+      return fs.statSync(itemPath).isDirectory();
+    });
 
     for (const playbook of playbooks) {
       routes.add(`/playbooks/${playbook}`);
@@ -182,7 +181,10 @@ function main() {
       log(`  - ${route}`, 'red');
     }
 
-    log(`\nFound: ${expectedRoutes.length - missingRoutes.length}/${expectedRoutes.length}`, 'yellow');
+    log(
+      `\nFound: ${expectedRoutes.length - missingRoutes.length}/${expectedRoutes.length}`,
+      'yellow',
+    );
     log(`Missing: ${missingRoutes.length}/${expectedRoutes.length}`, 'red');
     log(`Execution time: ${elapsedTime}s\n`, 'blue');
 

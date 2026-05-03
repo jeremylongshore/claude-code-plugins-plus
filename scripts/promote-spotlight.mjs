@@ -77,7 +77,7 @@ function readNewSpotlight(args) {
   if (positional.length !== 1) {
     throw new Error(
       'Pass a path to the new-spotlight JSON file, or use --stdin to pipe it in.\n' +
-        'Example: node scripts/promote-spotlight.mjs new-spotlight.json'
+        'Example: node scripts/promote-spotlight.mjs new-spotlight.json',
     );
   }
   const path = resolve(positional[0]);

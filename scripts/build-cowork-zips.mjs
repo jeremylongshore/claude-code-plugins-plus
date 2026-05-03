@@ -13,7 +13,16 @@
  *   manifest.json - Sizes, counts, checksums
  */
 
-import { createWriteStream, existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
+import {
+  createWriteStream,
+  existsSync,
+  lstatSync,
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+  statSync,
+  writeFileSync,
+} from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { createHash } from 'node:crypto';
 import { createRequire } from 'node:module';
@@ -41,20 +50,20 @@ const CATEGORY_LABELS = {
   'ai-agency': 'AI Agents & Agency',
   'api-development': 'API Development',
   'business-tools': 'Business Tools',
-  'community': 'Community',
-  'crypto': 'Crypto & Web3',
-  'database': 'Database',
-  'design': 'Design',
-  'devops': 'DevOps & Infrastructure',
-  'examples': 'Examples & Templates',
-  'mcp': 'MCP Servers',
-  'packages': 'Packages',
-  'performance': 'Performance',
-  'productivity': 'Productivity',
+  community: 'Community',
+  crypto: 'Crypto & Web3',
+  database: 'Database',
+  design: 'Design',
+  devops: 'DevOps & Infrastructure',
+  examples: 'Examples & Templates',
+  mcp: 'MCP Servers',
+  packages: 'Packages',
+  performance: 'Performance',
+  productivity: 'Productivity',
   'saas-packs': 'SaaS Skill Packs',
-  'security': 'Security',
+  security: 'Security',
   'skill-enhancers': 'Skill Enhancers',
-  'testing': 'Testing',
+  testing: 'Testing',
 };
 
 // Fallback: auto-title from slug when CATEGORY_LABELS has no entry.
@@ -93,7 +102,9 @@ function countSkills(pluginDir) {
         if (existsSync(skillMd)) count++;
       }
     }
-  } catch (err) { console.warn(`  Warning: Could not count skills in ${skillsDir}: ${err.message}`); }
+  } catch (err) {
+    console.warn(`  Warning: Could not count skills in ${skillsDir}: ${err.message}`);
+  }
   return count;
 }
 
@@ -101,21 +112,28 @@ function countCommands(pluginDir) {
   const cmdDir = join(pluginDir, 'commands');
   if (!existsSync(cmdDir)) return 0;
   try {
-    return readdirSync(cmdDir).filter(f => f.endsWith('.md')).length;
-  } catch (err) { console.warn(`  Warning: Could not count commands in ${cmdDir}: ${err.message}`); return 0; }
+    return readdirSync(cmdDir).filter((f) => f.endsWith('.md')).length;
+  } catch (err) {
+    console.warn(`  Warning: Could not count commands in ${cmdDir}: ${err.message}`);
+    return 0;
+  }
 }
 
 function countAgents(pluginDir) {
   const agentDir = join(pluginDir, 'agents');
   if (!existsSync(agentDir)) return 0;
   try {
-    return readdirSync(agentDir).filter(f => f.endsWith('.md')).length;
-  } catch (err) { console.warn(`  Warning: Could not count agents in ${agentDir}: ${err.message}`); return 0; }
+    return readdirSync(agentDir).filter((f) => f.endsWith('.md')).length;
+  } catch (err) {
+    console.warn(`  Warning: Could not count agents in ${agentDir}: ${err.message}`);
+    return 0;
+  }
 }
 
 function shouldInclude(entryName) {
-  if (SKIP_DIRS.has(entryName) || SKIP_FILES.has(entryName) || entryName.startsWith('.')) return false;
-  if (SKIP_PATTERNS.some(p => p.test(entryName))) return false;
+  if (SKIP_DIRS.has(entryName) || SKIP_FILES.has(entryName) || entryName.startsWith('.'))
+    return false;
+  if (SKIP_PATTERNS.some((p) => p.test(entryName))) return false;
   return true;
 }
 
@@ -141,7 +159,10 @@ function addDirToArchive(archive, dirPath, archivePrefix, archiveName) {
     try {
       const stats = lstatSync(fullPath);
       if (stats.isSymbolicLink()) continue;
-    } catch (err) { console.warn(`  Warning: Could not stat ${fullPath}: ${err.message}`); continue; }
+    } catch (err) {
+      console.warn(`  Warning: Could not stat ${fullPath}: ${err.message}`);
+      continue;
+    }
 
     if (entry.isDirectory()) {
       addDirToArchive(archive, fullPath, archivePath, archiveName);
@@ -269,7 +290,7 @@ async function main() {
 
     // Detect category from directory structure if not in JSON
     const dirParts = source.replace(/^\.?\/?plugins\//, '').split('/');
-    const dirCategory = dirParts.length > 1 ? dirParts[0] : (category || 'uncategorized');
+    const dirCategory = dirParts.length > 1 ? dirParts[0] : category || 'uncategorized';
 
     // Skip MCP plugins
     if (SKIP_CATEGORIES.has(dirCategory)) {
@@ -425,7 +446,7 @@ async function main() {
   }
 }
 
-main().catch(err => {
+main().catch((err) => {
   console.error('Fatal error:', err);
   process.exit(1);
 });
