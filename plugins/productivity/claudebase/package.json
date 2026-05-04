@@ -1,0 +1,41 @@
+{
+  "name": "@intentsolutionsio/claudebase",
+  "version": "0.2.0",
+  "description": "Back up and restore your entire Claude Code environment to a private GitHub repo",
+  "keywords": [
+    "github",
+    "sync",
+    "backup",
+    "config",
+    "profiles",
+    "settings",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/productivity/claudebase"
+  },
+  "homepage": "https://tonsofskills.com/plugins/claudebase",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Rohit Hazra",
+    "url": "https://github.com/rohithzr"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills",
+    "hooks",
+    "scripts"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install claudebase\\\\n  or /plugin install claudebase@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

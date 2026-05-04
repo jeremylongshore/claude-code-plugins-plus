@@ -1,0 +1,42 @@
+{
+  "name": "@intentsolutionsio/contributing-clanker",
+  "version": "0.1.1",
+  "description": "Local-only OSS contribution command center with 41 deterministic gates against AI-slop failure modes",
+  "keywords": [
+    "oss",
+    "contributions",
+    "github",
+    "ai-slop-prevention",
+    "code-review",
+    "open-source",
+    "gates",
+    "deterministic",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/community/contributing-clanker"
+  },
+  "homepage": "https://tonsofskills.com/plugins/contributing-clanker",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io",
+    "url": "https://github.com/jeremylongshore"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    "skills",
+    "hooks"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install contributing-clanker\\\\n  or /plugin install contributing-clanker@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}
