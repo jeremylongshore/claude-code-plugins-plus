@@ -1,0 +1,41 @@
+#!/bin/sh
+# Pre-push: warn (do not block) when local branch is behind origin/main.
+#
+# Catches the failure mode where a long-running PR branch falls behind main
+# while we work, leading to "patch contents already upstream" surprises during
+# rebase or merge conflicts at push time.
+#
+# Skipped when pushing main itself (no comparison target) or when running in
+# CI (pushes from bots like auto-bump-on-pr).
+
+# Skip when pushing main — there's no upstream to compare to
+LOCAL_BRANCH=$(git symbolic-ref --short HEAD 2>/dev/null)
+if [ "$LOCAL_BRANCH" = "main" ] || [ "$LOCAL_BRANCH" = "" ]; then
+  exit 0
+fi
+
+# Skip in CI — bots don't need humans-only ergonomic warnings
+if [ -n "$CI" ] || [ -n "$GITHUB_ACTIONS" ]; then
+  exit 0
+fi
+
+# Quietly fetch the latest origin/main without blocking the push on network errors
+if ! git fetch -q origin main 2>/dev/null; then
+  # Network failure or no remote — don't block the push
+  exit 0
+fi
+
+# Check whether origin/main has commits this branch doesn't have
+if ! git merge-base --is-ancestor origin/main HEAD 2>/dev/null; then
+  BEHIND=$(git rev-list --count HEAD..origin/main 2>/dev/null)
+  if [ "$BEHIND" -gt 0 ] 2>/dev/null; then
+    printf '\n'
+    printf '\033[33m⚠  Branch %s is %s commit(s) behind origin/main.\033[0m\n' "$LOCAL_BRANCH" "$BEHIND"
+    printf '   Pushing now risks merge conflicts or "patch already upstream"\n'
+    printf '   surprises. Consider rebasing first:\n\n'
+    printf '     git pull --rebase origin main && git push --force-with-lease\n\n'
+    printf '   Push will continue. (This is informational only.)\n\n'
+  fi
+fi
+
+exit 0

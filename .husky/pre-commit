@@ -1,1 +1,32 @@
+#!/bin/sh
+# Pre-commit checks for claude-code-plugins.
+#
+# 1. If the catalog source-of-truth (.claude-plugin/marketplace.extended.json)
+#    is staged, regenerate ALL derived artifacts BEFORE lint-staged runs:
+#      - .claude-plugin/marketplace.json     (CLI catalog, auto-stripped fields)
+#      - plugins/**/package.json             (npm tracking artifacts for new plugins)
+#      - README.md AUTO-TOC sentinel block   (browse-by-category nav)
+#    Then auto-stage any newly-modified files so the commit stays consistent.
+#
+#    Catches the failure mode that bit PR #665 three times: catalog edit lands
+#    without the derived regeneration, CI gates fail one-by-one across multiple
+#    rounds.
+#
+# 2. Standard pre-commit gates after the regen: lint-staged + audit-harness.
+
+# Step 1: Catalog-edit auto-regen
+if git diff --cached --name-only | grep -qx '.claude-plugin/marketplace.extended.json'; then
+  echo "→ marketplace.extended.json is staged; regenerating derived files..."
+  pnpm run sync-marketplace || {
+    echo "✗ sync-marketplace failed. Fix the error and re-stage."
+    exit 1
+  }
+  # Stage any files the regen touched (idempotent — git ignores no-op stages).
+  git add .claude-plugin/marketplace.json README.md 2>/dev/null
+  # Plugin package.json files only get created for NEW plugins; safe to stage all.
+  git add 'plugins/**/package.json' 2>/dev/null
+  echo "✓ Derived files regenerated and staged."
+fi
+
+# Step 2: Standard gates
 pnpm exec lint-staged && pnpm exec audit-harness verify
