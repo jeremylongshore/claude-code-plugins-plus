@@ -92,14 +92,34 @@ gh auth status >/dev/null 2>&1 && echo "gh: ok" || echo "gh: NOT logged in"
 Before answering anything contribution-related, surface current state. Run these in **parallel** with the Bash tool:
 
 ```bash
-# Live PR / issue state from GitHub
-gh pr list --author=@me --state=all --limit=50 \
-  --json number,title,state,url,repository,createdAt,closedAt,merged,isDraft
+# Upstream PRs in flight (filtered to outside-org repos only —
+# the system tracks contributions INTO repos the user does not own;
+# own-repo PRs are out of scope and must be excluded).
+#
+# OWN_ORGS is the prefix list of repos to exclude. Update if the user
+# adds a new org. (Discoverable via `gh api user/orgs --jq '.[].login'`
+# plus the user's own login from `gh api user --jq '.login'`.)
+OWN_ORGS='jeremylongshore/ intent-solutions-io/'
+gh search prs --author=@me --state=open --limit=50 \
+  --json number,title,url,repository,isDraft,createdAt | \
+  jq --arg own "$OWN_ORGS" '
+    ($own | split(" ")) as $excl |
+    map(select(.repository.nameWithOwner as $r |
+               ($excl | map(. as $p | $r | startswith($p)) | any) | not))
+  '
 
-gh issue list --author=@me --state=all --limit=50 \
-  --json number,title,state,url,repository
+# Recently-merged + closed upstream PRs (last 30, same scope filter)
+gh search prs --author=@me --state=closed --limit=30 \
+  --json number,title,url,repository,closedAt,createdAt | \
+  jq --arg own "$OWN_ORGS" '
+    ($own | split(" ")) as $excl |
+    map(select(.repository.nameWithOwner as $r |
+               ($excl | map(. as $p | $r | startswith($p)) | any) | not))
+  '
 
-# Local candidate tracker — markdown frontmatter is the queryable layer
+# Local candidate tracker — markdown frontmatter is the queryable layer.
+# Candidates are upstream-only by construction (scout never enqueues
+# own-repo issues), so no scope filter needed here.
 for f in ~/.contribute-system/candidates/*.md; do
   awk -v f="$(basename "$f" .md)" '
     /^---$/ { fm = !fm ? 1 : 2; next }
@@ -111,6 +131,8 @@ done 2>/dev/null
 tail -50 ~/.contribute-system/log.jsonl 2>/dev/null \
   | jq -c "select(.event | test(\"transition_|gate_|researcher_|scout_\"))" 2>/dev/null
 ```
+
+**Scope rule (non-negotiable)**: this skill applies *only* to contributions made INTO repos the user does not own. Own-org PRs (`jeremylongshore/*`, `intent-solutions-io/*`) are out of scope — they are personal-project work, not anti-slop OSS contributions. The whole architecture (gates, dossiers, lifecycle) exists because upstream maintainers need protection from low-quality AI work; that concern doesn't apply to the user's own repos. If a candidate file ever references an own-org repo, it's a scout bug — flag it.
 
 Then summarize for the user:
 
