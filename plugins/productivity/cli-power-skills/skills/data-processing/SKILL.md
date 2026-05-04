@@ -5,6 +5,8 @@ allowed-tools: [Bash(jq*), Bash(yq*), Bash(gron*), Bash(mlr*), Bash(xsv*), Bash(
 version: 1.0.0
 author: ykotik
 license: MIT
+tags: ["productivity", "cli-power-skills"]
+compatibility: "Designed for Claude Code"
 ---
 
 # Data Processing

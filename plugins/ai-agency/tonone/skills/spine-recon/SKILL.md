@@ -5,6 +5,8 @@ allowed-tools: Read, Bash, Glob, Grep, WebFetch, WebSearch, AskUserQuestion
 version: 0.6.4
 author: tonone-ai <hello@tonone.ai>
 license: MIT
+tags: ["ai-agency", "tonone"]
+compatibility: "Designed for Claude Code"
 ---
 
 # Backend Reconnaissance

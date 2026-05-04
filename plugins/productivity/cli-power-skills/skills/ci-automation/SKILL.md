@@ -5,6 +5,8 @@ allowed-tools: [Bash(gh*), Bash(just*), Bash(act*), Bash(git-cliff*), Bash(resti
 version: 1.0.0
 author: ykotik
 license: MIT
+tags: ["productivity", "cli-power-skills"]
+compatibility: "Designed for Claude Code"
 ---
 
 # CI Automation

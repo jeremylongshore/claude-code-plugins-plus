@@ -5,6 +5,8 @@ allowed-tools: [Bash(hurl*), Bash(httpx*), Read, Write, Glob]
 version: 1.0.0
 author: ykotik
 license: MIT
+tags: ["productivity", "cli-power-skills"]
+compatibility: "Designed for Claude Code"
 ---
 
 # API Testing

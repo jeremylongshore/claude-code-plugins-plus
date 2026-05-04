@@ -5,6 +5,8 @@ allowed-tools: [Bash(node*), Bash(python3*), Bash(scrapy*), Bash(katana*), Read,
 version: 1.0.0
 author: ykotik
 license: MIT
+tags: ["productivity", "cli-power-skills"]
+compatibility: "Designed for Claude Code"
 ---
 
 # Web Crawling

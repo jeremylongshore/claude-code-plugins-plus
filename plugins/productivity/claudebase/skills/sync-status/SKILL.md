@@ -6,6 +6,8 @@ allowed-tools: Bash(bash "${CLAUDE_PLUGIN_ROOT}/scripts/*"), Bash(gh *), Bash(gi
 version: 0.2.0
 author: Rohit Hazra
 license: MIT
+tags: ["productivity", "claudebase"]
+compatibility: "Designed for Claude Code"
 ---
 
 # Config Sync Status

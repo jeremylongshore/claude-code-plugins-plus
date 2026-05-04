@@ -6,6 +6,8 @@ allowed-tools: Read, Write, Edit, Bash, Glob, Grep, WebFetch, WebSearch, Task, T
 version: 0.6.4
 author: tonone-ai <hello@tonone.ai>
 license: MIT
+tags: ["ai-agency", "tonone"]
+compatibility: "Designed for Claude Code"
 ---
 
 # Form Mobile
