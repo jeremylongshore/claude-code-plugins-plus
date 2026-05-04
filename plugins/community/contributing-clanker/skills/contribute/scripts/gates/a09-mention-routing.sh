@@ -38,8 +38,23 @@ if [[ -z "$DRAFT" ]]; then
   gate_skip "no draft section found in candidate"
 fi
 
-# Count @-mentions, excluding @me, @everyone, @channel
-MENTIONS=$(/usr/bin/printf '%s' "$DRAFT" | /usr/bin/grep -oE "@[a-zA-Z0-9-]{2,}" | /usr/bin/grep -viE "^@(me|everyone|channel)$" | /usr/bin/wc -l | /usr/bin/tr -d ' ')
+# Count @-mentions, excluding @me, @everyone, @channel.
+# Use awk (single pass, no pipeline-failure surface) instead of a chained
+# grep | grep | wc — under set -uo pipefail, an empty `grep -oE` returns
+# exit 1, killing the whole pipeline, even though "no mentions" is the
+# correct/expected answer for most drafts.
+MENTIONS=$(/usr/bin/printf '%s' "$DRAFT" | /usr/bin/awk '
+  {
+    for (i = 1; i <= NF; i++) {
+      tok = $i
+      gsub(/[,.;:!?)\]"\x27]+$/, "", tok)
+      if (tok ~ /^@[a-zA-Z0-9-]{2,}$/ && tok !~ /^@(me|everyone|channel)$/) {
+        c++
+      }
+    }
+  }
+  END { print c + 0 }
+')
 
 if [[ "${MENTIONS:-0}" -ge 1 ]]; then
   gate_warn "$MENTIONS @-mention(s) in draft despite CODEOWNERS routing" "this repo uses CODEOWNERS; explicit @-mentions are usually noise. Drop them unless you have a specific reason to ping someone."

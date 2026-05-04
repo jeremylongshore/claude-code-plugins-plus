@@ -1,11 +1,18 @@
 #!/usr/bin/env bash
 # researcher-build.sh — build a per-repo dossier of contribution rules.
 #
-# Usage: researcher-build.sh <owner>/<repo> [--no-link-follow]
+# Usage:
+#   researcher-build.sh <owner>/<repo> [--no-link-follow] [--stdout]
 #
-# Outputs a markdown dossier to stdout. The orchestrator (researcher subagent)
-# writes it to ~/.contribute-system/research/<owner>__<repo>.md and bumps
-# its last_refreshed timestamp.
+# Default behavior: writes the dossier to
+#   ~/.contribute-system/research/<owner>__<repo>.md
+# and prints "→ wrote dossier to <path>" to stderr so the caller has feedback.
+#
+# Override the output path via CONTRIBUTE_RESEARCH_DIR env var (the dossier
+# lands at $CONTRIBUTE_RESEARCH_DIR/<owner>__<repo>.md).
+#
+# Pass --stdout to write the dossier to stdout instead — useful for piping
+# (jq, less, diff against an existing dossier).
 #
 # What it pulls:
 #   - Repo metadata (stars, default branch, archived, push activity)
@@ -25,10 +32,21 @@
 
 set -uo pipefail
 
-REPO="${1:-}"
-NO_LINK_FOLLOW="${2:-}"
+REPO=""
+NO_LINK_FOLLOW=""
+TO_STDOUT=0
+for arg in "$@"; do
+  case "$arg" in
+    --no-link-follow) NO_LINK_FOLLOW="--no-link-follow" ;;
+    --stdout)         TO_STDOUT=1 ;;
+    -h|--help)        /usr/bin/sed -n '2,16p' "$0" | /usr/bin/sed 's/^# \{0,1\}//'; exit 0 ;;
+    -*)               /usr/bin/echo "unknown flag: $arg" >&2; exit 64 ;;
+    *)                if [[ -z "$REPO" ]]; then REPO="$arg"; else /usr/bin/echo "extra arg: $arg" >&2; exit 64; fi ;;
+  esac
+done
+
 if [[ -z "$REPO" || "$REPO" != */* ]]; then
-  echo "usage: $0 <owner>/<repo> [--no-link-follow]" >&2
+  /usr/bin/echo "usage: $0 <owner>/<repo> [--no-link-follow] [--stdout]" >&2
   exit 64
 fi
 
@@ -88,8 +106,38 @@ do
   KEY="${entry##*:}"
   # Skip if we already found this kind of file
   [[ -n "${POLICY_FILES[$KEY]:-}" ]] && continue
-  EXISTS=$(gh api "repos/$REPO/contents/$PATH_PART" --jq '.path // empty' 2>/dev/null)
-  if [[ -n "$EXISTS" ]] ; then
+
+  # Probe by exit code, not by output. Earlier implementation captured stdout
+  # and tested for non-empty — but `gh api` on 404 prints the error-shaped
+  # JSON body ("{\"message\":\"Not Found\",...}") to stdout BEFORE jq runs,
+  # and the existing `2>/dev/null` only silences stderr. Net effect: EXISTS
+  # was non-empty for every probe, so every candidate file was claimed to
+  # exist regardless of reality. Fix: redirect stdout to /dev/null too and
+  # rely on the gh exit code as the existence signal.
+  if gh api "repos/$REPO/contents/$PATH_PART" >/dev/null 2>&1 ; then
+    POLICY_FILES[$KEY]="$PATH_PART"
+  fi
+done
+
+# Also probe `docs/` subdir for projects (like secureblue) that house policy
+# docs there instead of at the repo root. Only fills in slots that are still
+# empty after the root + .github/ probes above.
+for entry in \
+  "docs/CONTRIBUTING.md:CONTRIBUTING" \
+  "docs/CODE_OF_CONDUCT.md:CODE_OF_CONDUCT" \
+  "docs/SECURITY.md:SECURITY" \
+  "docs/CLA.md:CLA" \
+  "docs/DCO.md:DCO" \
+  "docs/AI_POLICY.md:AI_POLICY" \
+  "docs/GOVERNANCE.md:GOVERNANCE" \
+  "docs/SETUP.md:SETUP" \
+  "docs/DEVELOPMENT.md:DEVELOPMENT" \
+  "docs/PULL_REQUEST_TEMPLATE.md:PR_TEMPLATE"
+do
+  PATH_PART="${entry%:*}"
+  KEY="${entry##*:}"
+  [[ -n "${POLICY_FILES[$KEY]:-}" ]] && continue
+  if gh api "repos/$REPO/contents/$PATH_PART" >/dev/null 2>&1 ; then
     POLICY_FILES[$KEY]="$PATH_PART"
   fi
 done
@@ -273,6 +321,23 @@ linked_sources_yaml() {
   fi
 }
 
+# Resolve the output path. Default: ~/.contribute-system/research/<owner>__<repo>.md.
+# Override via CONTRIBUTE_RESEARCH_DIR. The path is stable per repo so refresh
+# overwrites the previous dossier — engineer-curated sections (## Pet peeves,
+# ## Failure log, ## Notes) survive because the agent layer copies them
+# forward; this script does not preserve them across refresh.
+RESEARCH_DIR="${CONTRIBUTE_RESEARCH_DIR:-$HOME/.contribute-system/research}"
+OUTPUT_FILE="$RESEARCH_DIR/$(/usr/bin/echo "$REPO" | /usr/bin/sed 's|/|__|').md"
+
+# When not in --stdout mode, redirect all subsequent stdout to the dossier
+# file. The two heredocs (DOSSIER and TAIL) and the awk excerpt block in
+# between all write to stdout — `exec` here points stdout at the file once,
+# so every subsequent emission lands in the right place.
+if [[ "$TO_STDOUT" -eq 0 ]]; then
+  /usr/bin/mkdir -p "$RESEARCH_DIR"
+  exec > "$OUTPUT_FILE"
+fi
+
 /usr/bin/cat <<DOSSIER
 ---
 repo: $REPO
@@ -382,3 +447,10 @@ _Chronological record of past closures with reasons at this repo. Auto-appended 
 _Free-form area for the human to leave per-repo intuition. Survives refresh._
 
 TAIL
+
+# Success message goes to stderr so it's visible when stdout was redirected
+# to the file. In --stdout mode, the user sees it inline before the dossier
+# content (no — actually after, since heredocs flush before the script exits).
+if [[ "$TO_STDOUT" -eq 0 ]]; then
+  log "→ wrote dossier to $OUTPUT_FILE"
+fi
