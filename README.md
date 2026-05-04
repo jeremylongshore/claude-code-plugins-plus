@@ -116,7 +116,7 @@ Jump to any of the 18 categories below. Plugin counts are catalog totals — aut
 | ₿   | [Crypto & Web3](#crypto--web3)                     |      26 |
 | 💾  | [Database](#database)                              |      26 |
 | 🎨  | [Design](#design)                                  |       7 |
-| 🔧  | [DevOps & Infrastructure](#devops--infrastructure) |      35 |
+| 🔧  | [DevOps & Infrastructure](#devops--infrastructure) |      36 |
 | 📚  | [Examples & Templates](#examples--templates)       |       5 |
 | 🧩  | [MCP Servers](#mcp-servers)                        |      10 |
 | 📦  | [Packages](#packages)                              |       5 |
@@ -362,45 +362,46 @@ Jump to any of the 18 categories below. Plugin counts are catalog totals — aut
 
 ### DevOps & Infrastructure
 
-🔧 **35 plugins** · category slug: `devops`
+🔧 **36 plugins** · category slug: `devops`
 
-| Plugin                             | Description                                                                                                                              |
-| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| `ansible-playbook-creator`         | Create Ansible playbooks for configuration management                                                                                    |
-| `auto-scaling-configurator`        | Configure auto-scaling policies for applications and infrastructure                                                                      |
-| `backup-strategy-implementor`      | Implement backup strategies for databases and applications                                                                               |
-| `ci-cd-pipeline-builder`           | Build CI/CD pipelines for GitHub Actions, GitLab CI, Jenkins, and more                                                                   |
-| `cloud-cost-optimizer`             | Optimize cloud costs and generate cost reports                                                                                           |
-| `compliance-checker`               | Check infrastructure compliance (SOC2, HIPAA, PCI-DSS)                                                                                   |
-| `container-registry-manager`       | Manage container registries (ECR, GCR, Harbor)                                                                                           |
-| `container-security-scanner`       | Scan containers for vulnerabilities using Trivy, Snyk, and other security tools                                                          |
-| `deployment-pipeline-orchestrator` | Orchestrate complex multi-stage deployment pipelines                                                                                     |
-| `deployment-rollback-manager`      | Manage and execute deployment rollbacks with safety checks                                                                               |
-| `disaster-recovery-planner`        | Plan and implement disaster recovery procedures                                                                                          |
-| `docker-compose-generator`         | Generate Docker Compose configurations for multi-container applications with best practices                                              |
-| `environment-config-manager`       | Manage environment configurations and secrets across deployments                                                                         |
-| `fairdb-operations-kit`            | Complete operations kit for FairDB PostgreSQL as a Service - VPS setup, PostgreSQL management, customer provisioning, monitoring, and…   |
-| `gh-dash`                          | GitHub PR dashboard for Claude Code. View PR status, CI/CD progress, bot comments, and merge PRs directly from your terminal.            |
-| `git-commit-smart`                 | AI-powered conventional commit message generator with smart analysis                                                                     |
-| `gitops-workflow-builder`          | Build GitOps workflows with ArgoCD and Flux                                                                                              |
-| `helm-chart-generator`             | Generate Helm charts for Kubernetes applications                                                                                         |
-| `infrastructure-as-code-generator` | Generate Infrastructure as Code for Terraform, CloudFormation, Pulumi, and more                                                          |
-| `infrastructure-drift-detector`    | Detect infrastructure drift from desired state                                                                                           |
-| `jeremy-adk-terraform`             | Terraform infrastructure as code for ADK and Vertex AI Agent Engine deployments                                                          |
-| `jeremy-genkit-terraform`          | Terraform modules for Firebase Genkit infrastructure and deployments                                                                     |
-| `jeremy-github-actions-gcp`        | GitHub Actions CI/CD workflows for Google Cloud and Vertex AI deployments                                                                |
-| `jeremy-vertex-terraform`          | Terraform configurations for Vertex AI platform and Agent Engine                                                                         |
-| `kubernetes-deployment-creator`    | Create Kubernetes deployments, services, and configurations with best practices                                                          |
-| `load-balancer-configurator`       | Configure load balancers (ALB, NLB, Nginx, HAProxy)                                                                                      |
-| `log-aggregation-setup`            | Set up log aggregation (ELK, Loki, Splunk)                                                                                               |
-| `mattyp-changelog`                 | Automates changelog generation from git history with config validation and quality scoring. Use when publishing weekly updates, release… |
-| `monitoring-stack-deployer`        | Deploy monitoring stacks (Prometheus, Grafana, Datadog)                                                                                  |
-| `network-policy-manager`           | Manage Kubernetes network policies and firewall rules                                                                                    |
-| `secrets-manager-integrator`       | Integrate with secrets managers (Vault, AWS Secrets Manager, etc)                                                                        |
-| `service-mesh-configurator`        | Configure service mesh (Istio, Linkerd) for microservices                                                                                |
-| `sugar`                            | Transform Claude Code into an autonomous AI development powerhouse with rich task context, specialized agents, and intelligent workflow… |
-| `terraform-module-builder`         | Build reusable Terraform modules                                                                                                         |
-| `tweetclaw`                        | X/Twitter automation - post, reply, like, retweet, follow, DM, search, extract data, monitor accounts, run giveaways. 121 endpoints via… |
+| Plugin                             | Description                                                                                                                                 |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ansible-playbook-creator`         | Create Ansible playbooks for configuration management                                                                                       |
+| `auto-scaling-configurator`        | Configure auto-scaling policies for applications and infrastructure                                                                         |
+| `backup-strategy-implementor`      | Implement backup strategies for databases and applications                                                                                  |
+| `ci-cd-pipeline-builder`           | Build CI/CD pipelines for GitHub Actions, GitLab CI, Jenkins, and more                                                                      |
+| `cloud-cost-optimizer`             | Optimize cloud costs and generate cost reports                                                                                              |
+| `compliance-checker`               | Check infrastructure compliance (SOC2, HIPAA, PCI-DSS)                                                                                      |
+| `container-registry-manager`       | Manage container registries (ECR, GCR, Harbor)                                                                                              |
+| `container-security-scanner`       | Scan containers for vulnerabilities using Trivy, Snyk, and other security tools                                                             |
+| `deployment-pipeline-orchestrator` | Orchestrate complex multi-stage deployment pipelines                                                                                        |
+| `deployment-rollback-manager`      | Manage and execute deployment rollbacks with safety checks                                                                                  |
+| `disaster-recovery-planner`        | Plan and implement disaster recovery procedures                                                                                             |
+| `docker-compose-generator`         | Generate Docker Compose configurations for multi-container applications with best practices                                                 |
+| `engineer-design-diagram`          | Generate production-grade engineering design diagrams (architecture, sequence, delta, drift) as self-contained dark-themed HTML files with… |
+| `environment-config-manager`       | Manage environment configurations and secrets across deployments                                                                            |
+| `fairdb-operations-kit`            | Complete operations kit for FairDB PostgreSQL as a Service - VPS setup, PostgreSQL management, customer provisioning, monitoring, and…      |
+| `gh-dash`                          | GitHub PR dashboard for Claude Code. View PR status, CI/CD progress, bot comments, and merge PRs directly from your terminal.               |
+| `git-commit-smart`                 | AI-powered conventional commit message generator with smart analysis                                                                        |
+| `gitops-workflow-builder`          | Build GitOps workflows with ArgoCD and Flux                                                                                                 |
+| `helm-chart-generator`             | Generate Helm charts for Kubernetes applications                                                                                            |
+| `infrastructure-as-code-generator` | Generate Infrastructure as Code for Terraform, CloudFormation, Pulumi, and more                                                             |
+| `infrastructure-drift-detector`    | Detect infrastructure drift from desired state                                                                                              |
+| `jeremy-adk-terraform`             | Terraform infrastructure as code for ADK and Vertex AI Agent Engine deployments                                                             |
+| `jeremy-genkit-terraform`          | Terraform modules for Firebase Genkit infrastructure and deployments                                                                        |
+| `jeremy-github-actions-gcp`        | GitHub Actions CI/CD workflows for Google Cloud and Vertex AI deployments                                                                   |
+| `jeremy-vertex-terraform`          | Terraform configurations for Vertex AI platform and Agent Engine                                                                            |
+| `kubernetes-deployment-creator`    | Create Kubernetes deployments, services, and configurations with best practices                                                             |
+| `load-balancer-configurator`       | Configure load balancers (ALB, NLB, Nginx, HAProxy)                                                                                         |
+| `log-aggregation-setup`            | Set up log aggregation (ELK, Loki, Splunk)                                                                                                  |
+| `mattyp-changelog`                 | Automates changelog generation from git history with config validation and quality scoring. Use when publishing weekly updates, release…    |
+| `monitoring-stack-deployer`        | Deploy monitoring stacks (Prometheus, Grafana, Datadog)                                                                                     |
+| `network-policy-manager`           | Manage Kubernetes network policies and firewall rules                                                                                       |
+| `secrets-manager-integrator`       | Integrate with secrets managers (Vault, AWS Secrets Manager, etc)                                                                           |
+| `service-mesh-configurator`        | Configure service mesh (Istio, Linkerd) for microservices                                                                                   |
+| `sugar`                            | Transform Claude Code into an autonomous AI development powerhouse with rich task context, specialized agents, and intelligent workflow…    |
+| `terraform-module-builder`         | Build reusable Terraform modules                                                                                                            |
+| `tweetclaw`                        | X/Twitter automation - post, reply, like, retweet, follow, DM, search, extract data, monitor accounts, run giveaways. 121 endpoints via…    |
 
 <sub>⬆ [Back to category index](#browse-plugins-by-category)</sub>
 
