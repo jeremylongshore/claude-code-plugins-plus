@@ -851,6 +851,112 @@ sources:
       - '.git/**'
       - '*.log'
 
+  # ============================================================
+  # ali5ter's Over-50s Health Advisor
+  # https://github.com/ali5ter/over-50s-health-advisor
+  # ============================================================
+
+  - name: over-50s-health
+    description: Evidence-based health, fitness, nutrition, and longevity guidance for adults 50+
+    repo: ali5ter/over-50s-health-advisor
+    source_path: .
+    target_path: plugins/productivity/over-50s-health
+    author:
+      name: Alister Lewis-Bowen
+      github: ali5ter
+    license: MIT
+    category: productivity
+    verified: false
+    include:
+      - '.claude-plugin/**'
+      - 'agents/**'
+      - README.md
+      - LICENSE
+    exclude:
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
+
+  # ============================================================
+  # ali5ter's Obsidian Project Documentation
+  # https://github.com/ali5ter/obsidian-project-assistant
+  # ============================================================
+
+  - name: obsidian-project-documentation
+    description: Automatically documents technical projects in Obsidian vaults during Claude Code sessions
+    repo: ali5ter/obsidian-project-assistant
+    source_path: .
+    target_path: plugins/productivity/obsidian-project-documentation
+    author:
+      name: Alister Lewis-Bowen
+      github: ali5ter
+    license: MIT
+    category: productivity
+    verified: false
+    include:
+      - '.claude-plugin/**'
+      - 'agents/**'
+      - 'skills/**'
+      - README.md
+      - LICENSE
+    exclude:
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
+
+  # ============================================================
+  # ali5ter's Pair Programmer
+  # https://github.com/ali5ter/pair-programmer
+  # ============================================================
+
+  - name: pair-programmer
+    description: Graduated assistance framework to prevent skill atrophy when coding with AI
+    repo: ali5ter/pair-programmer
+    source_path: .
+    target_path: plugins/productivity/pair-programmer
+    author:
+      name: Alister Lewis-Bowen
+      github: ali5ter
+    license: MIT
+    category: productivity
+    verified: false
+    include:
+      - '.claude-plugin/**'
+      - 'agents/**'
+      - README.md
+      - LICENSE
+    exclude:
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
+
+  # ============================================================
+  # ali5ter's CLI UX Tester
+  # https://github.com/ali5ter/claude-cli-ux-skill
+  # ============================================================
+
+  - name: cli-ux-tester
+    description: Expert UX evaluator for CLIs and developer APIs — rates usability across 11 criteria with parallel evaluation agents
+    repo: ali5ter/claude-cli-ux-skill
+    source_path: .
+    target_path: plugins/testing/cli-ux-tester
+    author:
+      name: Alister Lewis-Bowen
+      github: ali5ter
+    license: MIT
+    category: testing
+    verified: false
+    include:
+      - '.claude-plugin/**'
+      - 'agents/**'
+      - 'skills/**'
+      - README.md
+      - LICENSE
+    exclude:
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
+
 # Sync configuration
 config:
   # Branch to sync from (default: main)
