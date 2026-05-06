@@ -307,6 +307,33 @@
       }
     },
     {
+      "name": "aomi-transact",
+      "source": "./plugins/crypto/aomi-transact",
+      "description": "Drive the Aomi CLI from natural-language prompts — chat, simulate, sign with account-abstraction-first execution across swaps, lending, bridges, staking, perps, and CEX read on EVM mainnets and L2s.",
+      "version": "0.10",
+      "category": "crypto",
+      "keywords": [
+        "aomi",
+        "defi",
+        "account-abstraction",
+        "evm",
+        "swaps",
+        "bridges",
+        "lending",
+        "staking",
+        "perps",
+        "wallet",
+        "eip-712",
+        "l2",
+        "ai-agents",
+        "natural-language"
+      ],
+      "author": {
+        "name": "aomi-labs",
+        "url": "https://aomi.dev"
+      }
+    },
+    {
       "name": "ansible-playbook-creator",
       "source": "./plugins/devops/ansible-playbook-creator",
       "description": "Create Ansible playbooks for configuration management",

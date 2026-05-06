@@ -851,6 +851,39 @@ sources:
       - '.git/**'
       - '*.log'
 
+  # ============================================================
+  # aomi-transact (aomi-labs)
+  # https://github.com/aomi-labs/skills
+  # Drive the Aomi CLI from natural-language prompts: chat,
+  # simulate, sign with account-abstraction-first execution
+  # across 25+ DeFi apps on EVM mainnets and L2s.
+  # ============================================================
+
+  - name: aomi-transact
+    description: Drive the Aomi CLI from natural-language prompts — chat, simulate, sign with account-abstraction-first execution across swaps, lending, bridges, staking, perps, and CEX read on EVM mainnets and L2s.
+    repo: aomi-labs/skills
+    source_path: aomi-transact
+    target_path: plugins/crypto/aomi-transact
+    author:
+      name: aomi-labs
+      github: aomi-labs
+    license: MIT
+    category: crypto
+    verified: false
+    include:
+      - 'SKILL.md'
+      - 'README.md'
+      - 'LICENSE'
+      - 'SECURITY.md'
+      - '.claude-plugin/**'
+      - 'agents/**'
+      - 'references/**'
+      - 'templates/**'
+    exclude:
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
+
 # Sync configuration
 config:
   # Branch to sync from (default: main)
