@@ -78,7 +78,9 @@ async function fetchRegistryMetadata(name) {
   const enc = encodeURIComponent(name);
   const url = `https://registry.npmjs.org/${enc}`;
   let lastError = null;
-  for (let i = 0; i < 4; i++) {
+  // 6 retries with exponential backoff up to ~64 s, so we ride through
+  // brief 429 waves instead of giving up at 15 s.
+  for (let i = 0; i < 6; i++) {
     let res;
     try {
       res = await fetch(url);
@@ -89,18 +91,15 @@ async function fetchRegistryMetadata(name) {
     }
     if (res.status === 404) return { kind: 'not-found' };
     if (res.status === 429) {
-      // Backoff. If we exhaust retries we'll fall through to rate-limited.
-      await new Promise((r) => setTimeout(r, 1000 * Math.pow(2, i)));
+      await new Promise((r) => setTimeout(r, 2000 * Math.pow(2, i)));
       continue;
     }
     if (res.status >= 500) {
-      // Server hiccups; retry too, but keep the status for diagnostics.
       lastError = new Error(`HTTP ${res.status}`);
       await new Promise((r) => setTimeout(r, 500 * (i + 1)));
       continue;
     }
     if (!res.ok) {
-      // 401/403 etc. — treat as not-ours; surface but don't kill the run.
       return { kind: 'forbidden', status: res.status };
     }
     try {
@@ -122,7 +121,8 @@ async function fetchDownloadsPoint(name, window) {
   const enc = encodeURIComponent(name);
   const url = `https://api.npmjs.org/downloads/point/${window}/${enc}`;
   let lastError = null;
-  for (let i = 0; i < 4; i++) {
+  // 6 retries with exponential backoff up to ~64 s.
+  for (let i = 0; i < 6; i++) {
     let res;
     try {
       res = await fetch(url);
@@ -133,7 +133,7 @@ async function fetchDownloadsPoint(name, window) {
     }
     if (res.status === 404) return { kind: 'not-found' };
     if (res.status === 429) {
-      await new Promise((r) => setTimeout(r, 1000 * Math.pow(2, i)));
+      await new Promise((r) => setTimeout(r, 2000 * Math.pow(2, i)));
       continue;
     }
     if (res.status >= 500) {
@@ -233,7 +233,7 @@ async function statsFor(name) {
   };
 }
 
-async function collectStats(pkgNames, concurrency = 4) {
+async function collectStats(pkgNames, { concurrency = 1, throttleMs = 250 } = {}) {
   const counts = {
     candidates: pkgNames.length,
     probed: 0,
@@ -259,6 +259,7 @@ async function collectStats(pkgNames, concurrency = 4) {
         counts.probed += 1;
         counts.errors += 1;
         errorDetails.push({ name, detail: err.message });
+        if (throttleMs) await new Promise((r) => setTimeout(r, throttleMs));
         continue;
       }
       counts.probed += 1;
@@ -282,6 +283,10 @@ async function collectStats(pkgNames, concurrency = 4) {
           errorDetails.push({ name, detail: result.detail });
           break;
       }
+      // Inter-request throttle so we stay under npm's per-IP cap. With
+      // concurrency=1 + 250ms = 4 req/sec, well below the observed
+      // rate-limit threshold (~280 req/min in CI).
+      if (throttleMs) await new Promise((r) => setTimeout(r, throttleMs));
     }
   }
 
