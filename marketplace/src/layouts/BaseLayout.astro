@@ -227,40 +227,12 @@ const currentPath = Astro.url.pathname;
             font-family: 'Inter', system-ui, sans-serif;
         }
 
-        .logo-text {
-            display: flex;
-            flex-direction: column;
-            line-height: 1.2;
-        }
-
         .logo-title {
             font-family: 'Inter Tight', system-ui, sans-serif;
             font-weight: 700;
             font-size: 1.2rem;
             letter-spacing: -0.01em;
             color: var(--ink);
-        }
-
-        .logo-subtitle {
-            font-size: 0.65rem;
-            font-weight: 400;
-            color: var(--ink-3);
-            letter-spacing: 0.02em;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .logo-icon {
-            width: 36px;
-            height: 36px;
-            background: var(--panel);
-            border: 1px solid var(--rule);
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--ink);
-            font-weight: 700;
-            font-size: 1.2rem;
         }
 
         .nav-links {
@@ -576,10 +548,6 @@ const currentPath = Astro.url.pathname;
                 padding-top: 64px;
             }
 
-            .logo-subtitle {
-                display: none;
-            }
-
             .footer-columns {
                 grid-template-columns: repeat(2, 1fr);
                 gap: var(--space-5);
@@ -611,10 +579,7 @@ const currentPath = Astro.url.pathname;
     <!-- Navigation -->
     <nav>
         <a href="/" class="logo">
-            <div class="logo-icon">&#8984;</div>
-            <div class="logo-text">
-                <span class="logo-title">Tons of Skills</span>
-            </div>
+            <span class="logo-title">Tons of Skills</span>
         </a>
         <div class="nav-right">
         <button class="theme-toggle" aria-label="Toggle theme" title="Toggle light/dark mode">
