@@ -66,36 +66,6 @@ const currentPath = Astro.url.pathname;
       gtag('config', 'G-9Z1DTMTT44');
     </script>
 
-    <!-- Firebase Analytics -->
-    <script type="module" is:inline define:vars={{ firebaseConfigJson: import.meta.env.PUBLIC_FIREBASE_CONFIG || '{}' }}>
-      import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js';
-      import { getAnalytics, logEvent } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-analytics.js';
-
-      // Config injected from Secret Manager at build time
-      const firebaseConfig = JSON.parse(firebaseConfigJson);
-
-      if (firebaseConfig.apiKey) {
-        const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
-
-        // Log page view with UTM attribution
-        const urlParams = new URLSearchParams(window.location.search);
-        const pageViewParams = {
-          page_path: window.location.pathname,
-          page_title: document.title
-        };
-        const utmSource = urlParams.get('utm_source');
-        const utmMedium = urlParams.get('utm_medium');
-        if (utmSource) pageViewParams.source = utmSource;
-        if (utmMedium) pageViewParams.medium = utmMedium;
-        logEvent(analytics, 'page_view', pageViewParams);
-
-        // Make analytics available globally for custom events
-        window.firebaseAnalytics = analytics;
-        window.logFirebaseEvent = (eventName, params) => logEvent(analytics, eventName, params);
-      }
-    </script>
-
     <!-- Unified Analytics Helper -->
     <script is:inline src="/scripts/analytics.js"></script>
 
@@ -750,136 +720,35 @@ const currentPath = Astro.url.pathname;
         }
     </style>
 
-    <!-- Email Signup Form Handler -->
-    <script type="module" is:inline>
-      import { getFunctions, httpsCallable } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-functions.js';
-      import { getApp } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js';
-
-      function initSignupForms() {
-        var functions;
-        try {
-          functions = getFunctions(getApp());
-        } catch (e) {
-          console.warn('[TonsOfSkills] Firebase not initialized — signup forms disabled:', e.message);
-          document.querySelectorAll('[data-signup-form] button').forEach(function(btn) {
+    <!-- Email Signup + Nomination Form Handlers — temporarily stubbed
+         Firebase Functions backend removed during VPS migration off Firebase
+         (2026-05-06). VPS-hosted form endpoints land in a follow-up PR. Form
+         HTML stays so layout is preserved; submit is a no-op with a "coming
+         back" message. -->
+    <script is:inline>
+      (function() {
+        function disableForm(form, message) {
+          form.addEventListener('submit', function(e) { e.preventDefault(); });
+          var btn = form.querySelector('button');
+          if (btn) {
             btn.disabled = true;
-            btn.textContent = 'Unavailable';
+            btn.textContent = message;
             btn.style.opacity = '0.5';
             btn.style.cursor = 'not-allowed';
-          });
-          return;
+          }
         }
-        var subscribeEmail = httpsCallable(functions, 'subscribeEmail');
-
-        document.querySelectorAll('[data-signup-form]').forEach(function(form) {
-          form.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            var input = form.querySelector('input[type="email"]');
-            const honeypot = form.querySelector('input[name="website"]');
-            var btn = form.querySelector('button');
-            var originalText = btn.textContent;
-            btn.textContent = 'Subscribing...';
-            btn.disabled = true;
-
-            try {
-              var result = await subscribeEmail({
-                email: input.value,
-                source: form.dataset.signupForm,
-                website: honeypot ? honeypot.value : ''
-              });
-              if (result.data.status === 'already_subscribed') {
-                btn.textContent = 'Already on it!';
-              } else {
-                btn.textContent = 'You\'re in!';
-              }
-              btn.style.opacity = '0.85';
-              input.value = '';
-              if (window.logFirebaseEvent) {
-                window.logFirebaseEvent('email_signup', { source: form.dataset.signupForm });
-              }
-            } catch (err) {
-              if (err.code === 'invalid-argument' && (!input.value || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value))) {
-                btn.textContent = 'Invalid Email';
-              } else {
-                btn.textContent = 'Something went wrong';
-              }
-              setTimeout(function() { btn.textContent = originalText; btn.disabled = false; btn.style.opacity = ''; }, 3000);
-            }
+        function init() {
+          document.querySelectorAll('[data-signup-form]').forEach(function(f) {
+            disableForm(f, 'Coming back soon');
           });
-        });
-      }
-
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initSignupForms);
-      } else {
-        initSignupForms();
-      }
-    </script>
-
-    <!-- Nomination Form Handler -->
-    <script type="module" is:inline>
-      import { getFunctions, httpsCallable } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-functions.js';
-      import { getApp } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js';
-
-      function initNominationForms() {
-        var functions;
-        try { functions = getFunctions(getApp()); }
-        catch (e) {
-          document.querySelectorAll('[data-nomination-form] button').forEach(function(btn) {
-            btn.disabled = true;
-            btn.textContent = 'Unavailable';
-            btn.style.opacity = '0.5';
-            btn.style.cursor = 'not-allowed';
+          document.querySelectorAll('[data-nomination-form]').forEach(function(f) {
+            disableForm(f, 'Coming back soon');
           });
-          return;
         }
-        var submitNomination = httpsCallable(functions, 'submitNomination');
-        var ghPattern = /^https:\/\/github\.com\/[^\/]+\/[^\/\s]+/;
-
-        document.querySelectorAll('[data-nomination-form]').forEach(function(form) {
-          form.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            var input = form.querySelector('input[name="repo"]');
-            var honeypot = form.querySelector('input[name="website"]');
-            var btn = form.querySelector('button');
-            var originalText = btn.textContent;
-
-            if (!ghPattern.test(input.value)) {
-              btn.textContent = 'GitHub URLs only';
-              setTimeout(function() { btn.textContent = originalText; btn.disabled = false; }, 3000);
-              return;
-            }
-
-            btn.textContent = 'Submitting...';
-            btn.disabled = true;
-
-            try {
-              var result = await submitNomination({
-                repoUrl: input.value,
-                source: form.dataset.nominationForm,
-                website: honeypot ? honeypot.value : ''
-              });
-              btn.textContent = result.data.status === 'already_nominated'
-                ? 'Already submitted!' : 'Submitted!';
-              btn.style.opacity = '0.85';
-              input.value = '';
-              if (window.logFirebaseEvent) {
-                window.logFirebaseEvent('killer_skill_nomination', {
-                  source: form.dataset.nominationForm
-                });
-              }
-            } catch (err) {
-              btn.textContent = 'Something went wrong';
-              setTimeout(function() {
-                btn.textContent = originalText; btn.disabled = false; btn.style.opacity = '';
-              }, 3000);
-            }
-          });
-        });
-      }
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initNominationForms);
-      } else { initNominationForms(); }
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', init);
+        } else { init(); }
+      })();
     </script>
 
     <!-- Theme Toggle Script -->

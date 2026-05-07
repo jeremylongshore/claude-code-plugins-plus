@@ -507,6 +507,6 @@ bd sync && git push                        # Session end: MANDATORY
 These exist at repo root but are not part of the active build/deploy path. Do not assume they are live without checking git log:
 
 - `docker-compose.test.yml` + `Dockerfile.test` — test-harness containers (not referenced by any current CI workflow)
-- `firebase.json` + `firestore.rules` — Firebase config (marketplace deploys to GitHub Pages via `deploy-marketplace.yml`, not Firebase; these may be legacy)
+- `firebase.json` + `firestore.rules` — legacy Firebase Hosting config. tonsofskills.com migrated off Firebase to the Contabo VPS on 2026-05-06 (served from `/srv/tonsofskills/dist` by Caddy via `.github/workflows/deploy-vps.yml`). The old `deploy-firebase.yml` is renamed to `.disabled`. Forms (subscribeEmail / submitNomination) are stubbed pending VPS-hosted endpoints.
 - `config.zcf.json` — ZCF tool config
 - `test_youtube_strategy.py`, `asset_generation*.log`, `setup.sh`, `create-tasks.sh`, `package.json.tmp` — scratch/legacy. If you're tempted to extend them, check whether they should move to `archive/` first.

@@ -1,0 +1,81 @@
+name: Deploy tonsofskills.com to VPS
+
+# Push to main → CI → Tailscale OIDC → SSH to intentsolutions VPS →
+# rsync marketplace/dist → /srv/tonsofskills/dist → smoke check passes.
+#
+# Replaces deploy-firebase.yml (disabled). See VPS-as-the-home Priority 7 Stage B
+# and intentsolutions-vps-runbook/docs/onboard-new-repo-deploy.md.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'marketplace/**'
+      - '.github/workflows/deploy-vps.yml'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  id-token: write   # required for Tailscale OIDC
+
+concurrency:
+  group: deploy-vps-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  test:
+    name: pre-deploy gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies (root pnpm)
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Astro site
+        run: pnpm -C marketplace build
+
+      - name: Verify build artifacts
+        run: |
+          test -f marketplace/dist/index.html
+          test -f marketplace/dist/healthz
+          # Compressed-HTML guardrail (iOS Safari fails on > 5000-char lines)
+          MAX_LINE=$(wc -L marketplace/dist/index.html | awk '{print $1}')
+          if [ "$MAX_LINE" -gt 5000 ]; then
+            echo "ERROR: HTML line too long ($MAX_LINE chars)."
+            exit 1
+          fi
+          echo "build artifacts present (max line: $MAX_LINE chars)"
+
+      - name: Upload dist as workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: marketplace-dist
+          path: marketplace/dist
+          retention-days: 1
+
+  deploy:
+    needs: test
+    uses: jeremylongshore/.github/.github/workflows/vps-deploy.yml@709a07fbebb1d51806e171204e63f5332abcb0da
+    with:
+      variant: static
+      srv-path: /srv/tonsofskills
+      health-check-url: https://tonsofskills.com/healthz
+      vps-tailnet-ip: 100.88.144.55
+      vps-public-ip: 167.86.106.29
+      vps-host: intentsolutions
+      vps-user: intentsolutions
+      smoke-validation: '.ok == true'
+    secrets:
+      TS_OIDC_CLIENT_ID: ${{ secrets.TS_OIDC_CLIENT_ID }}
+      TS_AUDIENCE: ${{ secrets.TS_AUDIENCE }}
+      VPS_DEPLOY_KEY: ${{ secrets.VPS_DEPLOY_KEY }}
+      VPS_HOST_KEY: ${{ secrets.VPS_HOST_KEY }}
