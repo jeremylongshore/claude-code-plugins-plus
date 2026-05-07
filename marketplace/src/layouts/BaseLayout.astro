@@ -725,26 +725,22 @@ const currentPath = Astro.url.pathname;
          (2026-05-06). VPS-hosted form endpoints land in a follow-up PR. Form
          HTML stays so layout is preserved; submit is a no-op with a "coming
          back" message. -->
-    <script is:inline>
-      (function() {
-        function disableForm(form, message) {
-          form.addEventListener('submit', function(e) { e.preventDefault(); });
-          var btn = form.querySelector('button');
-          if (btn) {
+    <script type="module" is:inline>
+      (() => {
+        const disableForm = (form, message) => {
+          form.addEventListener('submit', (e) => e.preventDefault());
+          form.querySelectorAll('button').forEach((btn) => {
             btn.disabled = true;
             btn.textContent = message;
             btn.style.opacity = '0.5';
             btn.style.cursor = 'not-allowed';
-          }
-        }
-        function init() {
-          document.querySelectorAll('[data-signup-form]').forEach(function(f) {
-            disableForm(f, 'Coming back soon');
           });
-          document.querySelectorAll('[data-nomination-form]').forEach(function(f) {
-            disableForm(f, 'Coming back soon');
-          });
-        }
+        };
+        const init = () => {
+          document
+            .querySelectorAll('[data-signup-form], [data-nomination-form]')
+            .forEach((f) => disableForm(f, 'Coming back soon'));
+        };
         if (document.readyState === 'loading') {
           document.addEventListener('DOMContentLoaded', init);
         } else { init(); }
