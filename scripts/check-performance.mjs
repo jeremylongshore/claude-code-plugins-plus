@@ -19,8 +19,10 @@ const __dirname = path.dirname(__filename);
 const REPO_ROOT = path.resolve(__dirname, '..');
 const DIST_DIR = path.join(REPO_ROOT, 'marketplace', 'dist');
 
-// Directories to exclude from performance analysis (binary downloads, not web assets)
-const EXCLUDE_DIRS = ['downloads'];
+// Directories to exclude from performance analysis.
+// 'downloads' — binary plugin zips, not web assets.
+// 'data'      — large JSON data files served as runtime-fetched static assets; not inlined HTML.
+const EXCLUDE_DIRS = ['downloads', 'data'];
 
 // Performance budgets (calibrated for 414+ plugin marketplace with 63 SaaS packs, 2026-03)
 const BUDGETS = {
@@ -157,8 +159,66 @@ async function analyzeBundleSize() {
   };
 }
 
+// Mobile budget: max gzipped HTML size for /explore and /skills pages (no lazy-fetched data)
+const MOBILE_BUDGETS = {
+  exploreHtml: 250 * 1024,  // 250 KB gzipped
+  skillsHtml: 250 * 1024,   // 250 KB gzipped
+};
+
+async function checkMobileBudgets() {
+  log('\n=== Mobile Performance Budget Validation ===\n', 'bold');
+  log('Mobile budgets measure only the gzipped HTML for /explore and /skills.', 'blue');
+  log('Lazy-fetched data files (/data/*.json) are excluded — they load after first paint.\n', 'blue');
+
+  const violations = [];
+
+  const targets = [
+    { label: '/explore', file: path.join(DIST_DIR, 'explore', 'index.html'), budget: MOBILE_BUDGETS.exploreHtml },
+    { label: '/skills', file: path.join(DIST_DIR, 'skills', 'index.html'), budget: MOBILE_BUDGETS.skillsHtml },
+  ];
+
+  for (const target of targets) {
+    if (!fs.existsSync(target.file)) {
+      log(`  ${target.label}: file not found at ${target.file}`, 'yellow');
+      continue;
+    }
+    const gz = await gzipSize(target.file);
+    const raw = fs.statSync(target.file).size;
+    if (gz <= target.budget) {
+      const remaining = target.budget - gz;
+      log(`  ✓ ${target.label}: ${formatBytes(gz)} gzipped (under budget by ${formatBytes(remaining)})`, 'green');
+    } else {
+      const overage = gz - target.budget;
+      log(`  ✗ ${target.label}: ${formatBytes(gz)} gzipped — over ${formatBytes(target.budget)} budget by ${formatBytes(overage)}`, 'red');
+      violations.push({ check: `Mobile HTML ${target.label}`, budget: formatBytes(target.budget), actual: formatBytes(gz), overage: formatBytes(overage) });
+    }
+  }
+
+  if (violations.length === 0) {
+    log('\n✓ All mobile budgets met\n', 'green');
+    process.exit(0);
+  } else {
+    log(`\n✗ ${violations.length} mobile budget violation(s):\n`, 'red');
+    for (const v of violations) {
+      log(`  ${v.check}: budget ${v.budget}, actual ${v.actual}, over by ${v.overage}`, 'red');
+    }
+    log('');
+    process.exit(1);
+  }
+}
+
 async function main() {
   const startTime = Date.now();
+
+  // --mobile flag: check only the mobile HTML budgets for /explore and /skills
+  if (process.argv.includes('--mobile')) {
+    if (!fs.existsSync(DIST_DIR)) {
+      log(`Error: Dist directory not found at ${DIST_DIR}`, 'red');
+      log('Run "cd marketplace && npm run build" first', 'yellow');
+      process.exit(1);
+    }
+    return checkMobileBudgets();
+  }
 
   log('\n=== Performance Budget Validation Gate ===\n', 'bold');
 

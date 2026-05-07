@@ -1,0 +1,133 @@
+---
+/**
+ * PartnerBar — homepage hero partner row.
+ *
+ * Source of truth: src/data/partners.json.
+ * Renders 3-up at desktop, 2-up at mobile. NO marquee / infinite scroll —
+ * with <5 partners, looping is a sparseness illusion.
+ *
+ * Each partner gets a 44×44 minimum touch target on mobile.
+ */
+import partnersData from '../data/partners.json';
+
+const { partners } = partnersData;
+---
+
+<div class="partner-bar" aria-label="Strategic partners">
+  <span class="partner-bar-label">Strategic partners funding plugin innovation</span>
+  <div class={`partner-bar-row partner-bar-count-${partners.length}`}>
+    {partners.map((p) => (
+      <a
+        class="partner-link"
+        href={p.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={`${p.name} (opens in new tab)`}
+      >
+        <span class="partner-wordmark">{p.wordmark}</span>
+        {p.tagline && <span class="partner-tagline">{p.tagline}</span>}
+      </a>
+    ))}
+  </div>
+</div>
+
+<style>
+  .partner-bar {
+    width: 100%;
+    margin-top: var(--space-6);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--rule);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    align-items: center;
+  }
+
+  .partner-bar-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-3);
+  }
+
+  .partner-bar-row {
+    display: grid;
+    gap: var(--space-3);
+    width: 100%;
+    max-width: 720px;
+  }
+
+  /* 1, 2, 3, 4+ count layouts — explicit, never marquee */
+  .partner-bar-count-1 { grid-template-columns: 1fr; }
+  .partner-bar-count-2 { grid-template-columns: repeat(2, 1fr); }
+  .partner-bar-count-3 { grid-template-columns: repeat(3, 1fr); }
+  .partner-bar-count-4 { grid-template-columns: repeat(4, 1fr); }
+
+  .partner-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    min-height: 44px;
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-sm);
+    background: var(--panel);
+    color: var(--ink);
+    text-decoration: none;
+    transition: border-color var(--duration-fast) var(--ease-out),
+                background-color var(--duration-fast) var(--ease-out),
+                transform var(--duration-fast) var(--ease-out);
+  }
+
+  .partner-link:hover {
+    border-color: var(--signal-edge);
+    background: var(--panel-2);
+    color: var(--ink);
+    transform: translateY(-1px);
+    text-decoration: none;
+  }
+
+  .partner-wordmark {
+    font-family: 'Inter Tight', system-ui, sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+
+  .partner-tagline {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--ink-3);
+    letter-spacing: 0.04em;
+  }
+
+  /* Tablet — keep 3-up if 3 partners, else collapse to 2 */
+  @media (max-width: 1024px) {
+    .partner-bar-count-4 { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* Mobile — 2-up regardless of partner count, except n=1 stays 1-up */
+  @media (max-width: 768px) {
+    .partner-bar-row {
+      max-width: 100%;
+    }
+    .partner-bar-count-3,
+    .partner-bar-count-4 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .partner-link {
+      padding: var(--space-3);
+    }
+    .partner-wordmark {
+      font-size: 0.85rem;
+    }
+    .partner-tagline {
+      display: none;
+    }
+  }
+</style>

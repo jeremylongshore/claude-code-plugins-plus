@@ -6,6 +6,7 @@ import CollectionsGrid from '../components/CollectionsGrid.astro';
 import CoworkGrid from '../components/CoworkGrid.astro';
 import KillerSkills from '../components/KillerSkills.astro';
 import JeremysStash from '../components/JeremysStash.astro';
+import PartnerBar from '../components/PartnerBar.astro';
 import searchIndex from '../data/unified-search-index.json';
 
 // Dynamic stats from search index (updated at build time)
@@ -89,9 +90,9 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
             gap: 0;
         }
 
-        /* H1 — Instrument Sans, large, split color */
+        /* H1 — Inter Tight, large, split color */
         .hero h1 {
-            font-family: 'Instrument Sans', system-ui, sans-serif;
+            font-family: 'Inter Tight', system-ui, sans-serif;
             font-size: var(--text-4xl);
             font-weight: 700;
             line-height: 0.95;
@@ -106,7 +107,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
         .hero-text-primary { color: var(--primary); }
 
         .hero-byline {
-            font-family: 'DM Mono', monospace;
+            font-family: 'JetBrains Mono', monospace;
             font-size: 0.7rem;
             color: var(--text-3);
             margin: -1rem 0 1.5rem;
@@ -134,7 +135,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
         }
         .hero-sponsor-label {
             display: block;
-            font-family: 'DM Mono', monospace;
+            font-family: 'JetBrains Mono', monospace;
             font-size: 0.6rem;
             color: var(--text-3);
             text-transform: uppercase;
@@ -175,12 +176,12 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
             animation-duration: 16s;
         }
         .hero-stats-link .hero-sponsor-text {
-            font-family: 'DM Mono', monospace;
+            font-family: 'JetBrains Mono', monospace;
             font-size: 0.7rem;
             letter-spacing: 0.01em;
         }
         .hero-sponsor-text {
-            font-family: 'Source Sans 3', system-ui, sans-serif;
+            font-family: 'Inter', system-ui, sans-serif;
             font-weight: 700;
             font-size: 0.95rem;
             letter-spacing: 0.02em;
@@ -193,7 +194,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
         /* Spotlight eyebrow pill */
         .spotlight-badge {
             display: inline-block;
-            font-family: 'DM Mono', monospace;
+            font-family: 'JetBrains Mono', monospace;
             font-size: 0.75rem;
             font-weight: 600;
             text-transform: uppercase;
@@ -208,7 +209,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
 
         /* Subtitle */
         .hero-subtitle {
-            font-family: 'Source Sans 3', system-ui, sans-serif;
+            font-family: 'Inter', system-ui, sans-serif;
             font-size: var(--text-lg);
             color: var(--text-2);
             max-width: 500px;
@@ -264,7 +265,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
 
         .search-container:focus-within {
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px oklch(62% 0.16 35 / 0.12);
+            box-shadow: 0 0 0 3px rgb(250 255 105 / 0.12);
         }
 
         .search-icon {
@@ -282,7 +283,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
             border: none;
             background: transparent;
             font-size: 1rem;
-            font-family: 'Source Sans 3', system-ui, sans-serif;
+            font-family: 'Inter', system-ui, sans-serif;
             color: var(--text);
             outline: none;
         }
@@ -323,7 +324,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
             border: none;
             background: transparent;
             color: var(--text-3);
-            font-family: 'Source Sans 3', system-ui, sans-serif;
+            font-family: 'Inter', system-ui, sans-serif;
             font-size: 0.875rem;
             font-weight: 500;
             border-radius: 6px;
@@ -384,7 +385,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
             font-weight: 600;
             text-transform: uppercase;
             margin-bottom: 0.5rem;
-            font-family: 'DM Mono', monospace;
+            font-family: 'JetBrains Mono', monospace;
             letter-spacing: 0.05em;
         }
 
@@ -431,7 +432,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
         }
 
         .install-label {
-            font-family: 'DM Mono', monospace;
+            font-family: 'JetBrains Mono', monospace;
             color: var(--text-3);
             font-size: 0.75rem;
             font-weight: 500;
@@ -441,7 +442,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
         }
 
         .install-command {
-            font-family: 'DM Mono', 'SF Mono', 'Fira Code', monospace;
+            font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
             color: var(--text);
             font-size: 0.95rem;
             user-select: all;
@@ -462,7 +463,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
         }
 
         .section-label {
-            font-family: 'DM Mono', monospace;
+            font-family: 'JetBrains Mono', monospace;
             color: var(--primary);
             font-size: 0.75rem;
             font-weight: 500;
@@ -529,7 +530,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
             justify-content: center;
             width: 44px;
             height: 44px;
-            background: oklch(62% 0.16 35 / 0.1);
+            background: rgb(250 255 105 / 0.1);
             border-radius: 10px;
             margin-left: auto;
             margin-right: auto;
@@ -569,7 +570,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
         }
 
         .saas-badge {
-            background: oklch(62% 0.16 35 / 0.12);
+            background: rgb(250 255 105 / 0.12);
             color: var(--primary);
             padding: 0.4rem 1rem;
             border-radius: 20px;
@@ -578,7 +579,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
             text-transform: uppercase;
             letter-spacing: 0.5px;
             display: inline-block;
-            font-family: 'DM Mono', monospace;
+            font-family: 'JetBrains Mono', monospace;
         }
 
         .saas-title {
@@ -642,7 +643,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
             font-size: 0.85rem;
             font-weight: 600;
             color: var(--gold);
-            font-family: 'DM Mono', monospace;
+            font-family: 'JetBrains Mono', monospace;
         }
 
         .saas-desc {
@@ -667,7 +668,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
             cursor: pointer;
             transition: background 0.2s;
             border: none;
-            font-family: 'DM Mono', monospace;
+            font-family: 'JetBrains Mono', monospace;
             text-align: left;
         }
 
@@ -727,7 +728,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
             font-weight: 700;
             text-decoration: none;
             font-size: 1rem;
-            font-family: 'Source Sans 3', system-ui, sans-serif;
+            font-family: 'Inter', system-ui, sans-serif;
             transition: transform 0.2s, box-shadow 0.2s;
         }
 
@@ -770,7 +771,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
             text-transform: uppercase;
             letter-spacing: 0.5px;
             display: inline-block;
-            font-family: 'DM Mono', monospace;
+            font-family: 'JetBrains Mono', monospace;
         }
 
         .cowork-home-title {
@@ -803,7 +804,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
             font-weight: 700;
             text-decoration: none;
             font-size: 1.1rem;
-            font-family: 'Source Sans 3', system-ui, sans-serif;
+            font-family: 'Inter', system-ui, sans-serif;
             transition: transform var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
         }
 
@@ -860,7 +861,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
             border-radius: 8px;
             color: var(--text);
             font-size: 0.95rem;
-            font-family: 'Source Sans 3', system-ui, sans-serif;
+            font-family: 'Inter', system-ui, sans-serif;
             outline: none;
             transition: border-color 0.2s;
         }
@@ -878,7 +879,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
             font-weight: 700;
             font-size: 0.95rem;
             cursor: pointer;
-            font-family: 'Source Sans 3', system-ui, sans-serif;
+            font-family: 'Inter', system-ui, sans-serif;
             transition: all 0.2s;
             white-space: nowrap;
         }
@@ -892,7 +893,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
             margin-top: 1rem;
             font-size: 0.75rem;
             color: var(--text-3);
-            font-family: 'DM Mono', monospace;
+            font-family: 'JetBrains Mono', monospace;
         }
 
         /* ========================================
@@ -984,7 +985,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
             background: rgba(249, 115, 22, 0.15);
             padding: 2px 8px;
             border-radius: 4px;
-            font-family: 'DM Mono', monospace;
+            font-family: 'JetBrains Mono', monospace;
         }
 
         .service-card .product-price .label {
@@ -1196,17 +1197,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
         <div class="hero-inner">
             <h1><span class="hero-text-muted">TONS OF</span><br/><span class="hero-text-primary">SKILLS</span></h1>
             <p class="hero-byline">by <a href="https://jeremylongshore.com" target="_blank" rel="noopener">Jeremy Longshore</a></p>
-            <div class="hero-sponsor-marquee">
-                <span class="hero-sponsor-label">strategic partners funding plugin innovation</span>
-                <div class="hero-sponsor-track">
-                    <a href="https://nixtla.io" target="_blank" rel="noopener noreferrer" class="hero-sponsor-link"><svg width="90" height="16" viewBox="0 0 115 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M49.1185 1.82227V18.1763H45.2484L38.5142 5.8072H37.9645V18.1763H35.3535V1.82227H39.2239L45.958 14.1914H46.5075V1.82227H49.1185Z" fill="currentColor"/><path d="M54.8645 1.82227V18.1763H52.1152V1.82227H54.8645Z" fill="currentColor"/><path d="M64.5741 11.0984H63.7954L59.947 18.1763H56.9688L61.6648 9.56438L57.6342 1.82227H60.5202L63.8189 8.07589H64.5976L67.964 1.82227H70.8278L66.7282 9.47327L71.4243 18.1778H68.3328L64.5772 11.0999L64.5741 11.0984Z" fill="currentColor"/><path d="M85.0296 4.24966H79.8073V18.1763H77.0583V4.24966H71.8125V1.82227H85.028V4.24966H85.0296Z" fill="currentColor"/><path d="M98.1543 15.5888V18.1778H86.4961V1.82227H89.2454V15.5888H98.1556H98.1543Z" fill="currentColor"/><path d="M110.478 13.4803H103.767L102.278 18.1763H99.5293L104.957 1.82227H109.355L114.806 18.1763H111.989L110.478 13.4803ZM104.546 11.0293H109.677L107.592 4.50093H106.607L104.546 11.0293Z" fill="currentColor"/><path d="M2.17981 17.8359L13.801 6.2146C13.9098 6.10586 14.0861 6.10586 14.1934 6.2146L19.7623 11.8305C19.871 11.9393 20.0459 11.9393 20.1546 11.8305L27.8924 4.09283C28.001 3.9841 28.001 3.80925 27.8924 3.70051L26.207 2.01514C26.0981 1.90641 25.9233 1.90641 25.8147 2.01514L20.2001 7.62961C20.0914 7.73835 19.9166 7.73835 19.8078 7.62961L14.1934 2.01808C14.0846 1.90935 13.9098 1.90935 13.801 2.01808L8.18659 7.63255C8.07785 7.74129 7.903 7.74129 7.79426 7.63255L2.17981 2.01808C2.07108 1.90935 1.89622 1.90935 1.78749 2.01808L0.08155 3.72402C-0.0271833 3.83275 -0.0271833 4.00761 0.08155 4.11634L5.69602 9.73081C5.80473 9.83953 5.80473 10.0144 5.69602 10.1231L0.08155 15.7376C-0.0271833 15.8463 -0.0271833 16.0212 0.08155 16.1299L1.78749 17.8359C1.89622 17.9446 2.07108 17.9446 2.17981 17.8359Z" fill="currentColor"/><path d="M18.9078 13.0792L18.9504 13.0366L17.0696 11.1558C16.9609 11.047 16.786 11.047 16.6773 11.1558L14.194 13.639C14.0853 13.7477 13.9104 13.7477 13.8017 13.639L11.3185 11.1558C11.2098 11.047 11.0349 11.047 10.9262 11.1558L9.22023 12.8617C9.11149 12.9704 9.11149 13.1453 9.22023 13.254L13.8017 17.8355C13.9104 17.9443 14.0853 17.9443 14.194 17.8355L18.9298 13.0997L18.9092 13.0792H18.9078Z" fill="currentColor"/><path d="M22.8938 11.1087L21.1888 12.8137C21.0803 12.9221 21.0803 13.098 21.1888 13.2064L25.8154 17.8331C25.9238 17.9416 26.0996 17.9416 26.2082 17.8331L27.913 16.1281C28.0217 16.0196 28.0217 15.8438 27.913 15.7354L23.2865 11.1087C23.178 11.0002 23.0022 11.0002 22.8938 11.1087Z" fill="currentColor"/></svg></a>
-                    <a href="https://nixtla.io" target="_blank" rel="noopener noreferrer" class="hero-sponsor-link"><span class="hero-sponsor-text">nixtla.io</span></a>
-                    <a href="https://agent37.com" target="_blank" rel="noopener noreferrer" class="hero-sponsor-link"><span class="hero-sponsor-text">agent37.com</span></a>
-                    <a href="https://nixtla.io" target="_blank" rel="noopener noreferrer" class="hero-sponsor-link"><svg width="90" height="16" viewBox="0 0 115 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M49.1185 1.82227V18.1763H45.2484L38.5142 5.8072H37.9645V18.1763H35.3535V1.82227H39.2239L45.958 14.1914H46.5075V1.82227H49.1185Z" fill="currentColor"/><path d="M54.8645 1.82227V18.1763H52.1152V1.82227H54.8645Z" fill="currentColor"/><path d="M64.5741 11.0984H63.7954L59.947 18.1763H56.9688L61.6648 9.56438L57.6342 1.82227H60.5202L63.8189 8.07589H64.5976L67.964 1.82227H70.8278L66.7282 9.47327L71.4243 18.1778H68.3328L64.5772 11.0999L64.5741 11.0984Z" fill="currentColor"/><path d="M85.0296 4.24966H79.8073V18.1763H77.0583V4.24966H71.8125V1.82227H85.028V4.24966H85.0296Z" fill="currentColor"/><path d="M98.1543 15.5888V18.1778H86.4961V1.82227H89.2454V15.5888H98.1556H98.1543Z" fill="currentColor"/><path d="M110.478 13.4803H103.767L102.278 18.1763H99.5293L104.957 1.82227H109.355L114.806 18.1763H111.989L110.478 13.4803ZM104.546 11.0293H109.677L107.592 4.50093H106.607L104.546 11.0293Z" fill="currentColor"/><path d="M2.17981 17.8359L13.801 6.2146C13.9098 6.10586 14.0861 6.10586 14.1934 6.2146L19.7623 11.8305C19.871 11.9393 20.0459 11.9393 20.1546 11.8305L27.8924 4.09283C28.001 3.9841 28.001 3.80925 27.8924 3.70051L26.207 2.01514C26.0981 1.90641 25.9233 1.90641 25.8147 2.01514L20.2001 7.62961C20.0914 7.73835 19.9166 7.73835 19.8078 7.62961L14.1934 2.01808C14.0846 1.90935 13.9098 1.90935 13.801 2.01808L8.18659 7.63255C8.07785 7.74129 7.903 7.74129 7.79426 7.63255L2.17981 2.01808C2.07108 1.90935 1.89622 1.90935 1.78749 2.01808L0.08155 3.72402C-0.0271833 3.83275 -0.0271833 4.00761 0.08155 4.11634L5.69602 9.73081C5.80473 9.83953 5.80473 10.0144 5.69602 10.1231L0.08155 15.7376C-0.0271833 15.8463 -0.0271833 16.0212 0.08155 16.1299L1.78749 17.8359C1.89622 17.9446 2.07108 17.9446 2.17981 17.8359Z" fill="currentColor"/><path d="M18.9078 13.0792L18.9504 13.0366L17.0696 11.1558C16.9609 11.047 16.786 11.047 16.6773 11.1558L14.194 13.639C14.0853 13.7477 13.9104 13.7477 13.8017 13.639L11.3185 11.1558C11.2098 11.047 11.0349 11.047 10.9262 11.1558L9.22023 12.8617C9.11149 12.9704 9.11149 13.1453 9.22023 13.254L13.8017 17.8355C13.9104 17.9443 14.0853 17.9443 14.194 17.8355L18.9298 13.0997L18.9092 13.0792H18.9078Z" fill="currentColor"/><path d="M22.8938 11.1087L21.1888 12.8137C21.0803 12.9221 21.0803 13.098 21.1888 13.2064L25.8154 17.8331C25.9238 17.9416 26.0996 17.9416 26.2082 17.8331L27.913 16.1281C28.0217 16.0196 28.0217 15.8438 27.913 15.7354L23.2865 11.1087C23.178 11.0002 23.0022 11.0002 22.8938 11.1087Z" fill="currentColor"/></svg></a>
-                    <a href="https://nixtla.io" target="_blank" rel="noopener noreferrer" class="hero-sponsor-link"><span class="hero-sponsor-text">nixtla.io</span></a>
-                    <a href="https://agent37.com" target="_blank" rel="noopener noreferrer" class="hero-sponsor-link"><span class="hero-sponsor-text">agent37.com</span></a>
-                </div>
-            </div>
+            <PartnerBar />
 
             {npmPublished > 0 && (
                 <div class="hero-sponsor-marquee hero-stats-marquee">
@@ -1274,28 +1265,28 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
             <!-- Installation Instructions -->
             <div class="install-box">
                 <div style="text-align: center; margin-bottom: 1.5rem;">
-                    <span style="display: inline-block; background: rgba(234,170,0,0.15); color: var(--gold); padding: 0.35rem 0.75rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; font-family: 'DM Mono', monospace;">Get Started in 30 Seconds</span>
+                    <span style="display: inline-block; background: var(--signal-tint); border: 1px solid var(--signal-edge); color: var(--gold); padding: 0.35rem 0.75rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; font-family: 'JetBrains Mono', monospace;">Get Started in 30 Seconds</span>
                 </div>
 
                 <!-- CLI Install - PRIMARY -->
                 <div style="margin-bottom: 1.5rem;">
-                    <h3 style="margin: 0 0 0.5rem 0; font-size: 0.75rem; font-weight: 600; color: var(--gold); text-transform: uppercase; letter-spacing: 0.1em; font-family: 'DM Mono', monospace;">Install CLI (Recommended)</h3>
-                    <pre class="install-command" data-copy="pnpm add -g @intentsolutionsio/ccpi" style="margin: 0; padding: 1rem 1.25rem; background: rgba(234,170,0,0.06); border: 1px solid rgba(234,170,0,0.2); border-radius: 8px; font-size: 1rem; color: var(--text); overflow-x: auto; cursor: pointer;"><code style="font-family: 'DM Mono', monospace;">pnpm add -g @intentsolutionsio/ccpi</code></pre>
-                    <p style="margin: 0.5rem 0 0; font-size: 0.75rem; color: var(--text-3); font-family: 'DM Mono', monospace;">Click to copy &bull; Also works with npm, yarn, or bun</p>
+                    <h3 style="margin: 0 0 0.5rem 0; font-size: 0.75rem; font-weight: 600; color: var(--gold); text-transform: uppercase; letter-spacing: 0.1em; font-family: 'JetBrains Mono', monospace;">Install CLI (Recommended)</h3>
+                    <pre class="install-command" data-copy="pnpm add -g @intentsolutionsio/ccpi" style="margin: 0; padding: 1rem 1.25rem; background: var(--panel); border: 1px solid var(--rule); border-radius: 8px; font-size: 1rem; color: var(--text); overflow-x: auto; cursor: pointer;"><code style="font-family: 'JetBrains Mono', monospace;">pnpm add -g @intentsolutionsio/ccpi</code></pre>
+                    <p style="margin: 0.5rem 0 0; font-size: 0.75rem; color: var(--text-3); font-family: 'JetBrains Mono', monospace;">Click to copy &bull; Also works with npm, yarn, or bun</p>
                 </div>
 
                 <!-- Claude Code Install - SECONDARY -->
                 <div style="padding-top: 1rem; border-top: 1px solid var(--border);">
-                    <h3 style="margin: 0 0 0.5rem 0; font-size: 0.75rem; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em; font-family: 'DM Mono', monospace;">Or Add Marketplace in Claude Code</h3>
-                    <pre class="install-command" data-copy="/plugin marketplace add jeremylongshore/claude-code-plugins" style="margin: 0; padding: 0.75rem 1rem; background: var(--surface-3); border: 1px solid var(--border); border-radius: 6px; font-size: 0.85rem; color: var(--text-2); overflow-x: auto; cursor: pointer;"><code style="font-family: 'DM Mono', monospace;">/plugin marketplace add jeremylongshore/claude-code-plugins</code></pre>
+                    <h3 style="margin: 0 0 0.5rem 0; font-size: 0.75rem; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em; font-family: 'JetBrains Mono', monospace;">Or Add Marketplace in Claude Code</h3>
+                    <pre class="install-command" data-copy="/plugin marketplace add jeremylongshore/claude-code-plugins" style="margin: 0; padding: 0.75rem 1rem; background: var(--surface-3); border: 1px solid var(--border); border-radius: 6px; font-size: 0.85rem; color: var(--text-2); overflow-x: auto; cursor: pointer;"><code style="font-family: 'JetBrains Mono', monospace;">/plugin marketplace add jeremylongshore/claude-code-plugins</code></pre>
                 </div>
 
                 <!-- What's Next -->
                 <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border);">
-                    <h4 style="margin: 0 0 0.75rem 0; font-size: 0.7rem; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em; font-family: 'DM Mono', monospace;">Then</h4>
+                    <h4 style="margin: 0 0 0.75rem 0; font-size: 0.7rem; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em; font-family: 'JetBrains Mono', monospace;">Then</h4>
                     <div style="display: flex; gap: 1rem; flex-wrap: wrap; font-size: 0.85rem; color: var(--text-2);">
                         <span style="display: flex; align-items: center; gap: 0.5rem;"><span style="color: var(--gold);">1.</span> <a href="/explore" style="color: var(--text); text-decoration: underline;">Browse</a> plugins &amp; skills</span>
-                        <span style="display: flex; align-items: center; gap: 0.5rem;"><span style="color: var(--gold);">2.</span> Install with <code style="background: var(--surface-3); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.75rem; font-family: 'DM Mono', monospace;">/plugin install [name]</code></span>
+                        <span style="display: flex; align-items: center; gap: 0.5rem;"><span style="color: var(--gold);">2.</span> Install with <code style="background: var(--surface-3); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.75rem; font-family: 'JetBrains Mono', monospace;">/plugin install [name]</code></span>
                         <span style="display: flex; align-items: center; gap: 0.5rem;"><span style="color: var(--gold);">3.</span> Skills auto-activate</span>
                     </div>
                 </div>
@@ -1595,7 +1586,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
         </div>
 
         <div style="text-align: center; margin-top: 2rem;">
-            <a href="/collections/" class="primary-button" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: var(--gold); color: var(--navy); text-decoration: none; border-radius: 8px; font-weight: 700; font-family: 'Source Sans 3', system-ui, sans-serif;">
+            <a href="/collections/" class="primary-button" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: var(--gold); color: var(--navy); text-decoration: none; border-radius: 8px; font-weight: 700; font-family: 'Inter', system-ui, sans-serif;">
                 View All Collections &rarr;
             </a>
         </div>

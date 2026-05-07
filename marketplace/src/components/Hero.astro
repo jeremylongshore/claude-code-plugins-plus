@@ -82,7 +82,7 @@ const { totalPlugins, totalCategories } = Astro.props;
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(ellipse at top left, oklch(62% 0.16 35 / 0.10) 0%, transparent 65%);
+    background: radial-gradient(ellipse at top left, rgb(250 255 105 / 0.10) 0%, transparent 65%);
     pointer-events: none;
   }
 
@@ -107,7 +107,7 @@ const { totalPlugins, totalCategories } = Astro.props;
   }
 
   .hero-title {
-    font-family: 'Instrument Sans', sans-serif;
+    font-family: 'Inter Tight', sans-serif;
     font-size: var(--text-3xl);
     font-weight: 900;
     letter-spacing: -0.025em;
@@ -121,7 +121,7 @@ const { totalPlugins, totalCategories } = Astro.props;
   }
 
   .hero-subtitle {
-    font-family: 'Source Sans 3', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-size: var(--text-lg);
     color: var(--brand-mid-gray);
     margin-bottom: 2.5rem;
@@ -143,7 +143,7 @@ const { totalPlugins, totalCategories } = Astro.props;
   }
 
   .stat-number {
-    font-family: 'Instrument Sans', sans-serif;
+    font-family: 'Inter Tight', sans-serif;
     font-size: 2.5rem;
     font-weight: 900;
     color: var(--primary);
@@ -152,7 +152,7 @@ const { totalPlugins, totalCategories } = Astro.props;
   }
 
   .stat-label {
-    font-family: 'Source Sans 3', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-size: 0.875rem;
     color: var(--brand-mid-gray);
     text-transform: uppercase;
@@ -171,7 +171,7 @@ const { totalPlugins, totalCategories } = Astro.props;
   }
 
   .install-label {
-    font-family: 'Source Sans 3', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-size: 0.875rem;
     font-weight: 600;
     color: var(--brand-mid-gray);
@@ -227,7 +227,7 @@ const { totalPlugins, totalCategories } = Astro.props;
     font-weight: 600;
     font-size: 0.875rem;
     cursor: pointer;
-    font-family: 'Source Sans 3', sans-serif;
+    font-family: 'Inter', sans-serif;
     transition: background var(--duration-fast) var(--ease-out),
                 transform var(--duration-fast) var(--ease-out),
                 box-shadow var(--duration-fast) var(--ease-out);
@@ -236,7 +236,7 @@ const { totalPlugins, totalCategories } = Astro.props;
   .copy-btn:hover {
     background: var(--primary-dark);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px oklch(62% 0.16 35 / 0.30);
+    box-shadow: 0 4px 12px rgb(250 255 105 / 0.30);
   }
 
   .copy-btn:active {
@@ -246,7 +246,7 @@ const { totalPlugins, totalCategories } = Astro.props;
   .install-note,
   .intent-note {
     margin-top: 1rem;
-    font-family: 'Source Sans 3', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-size: 0.875rem;
     color: var(--brand-mid-gray);
     line-height: 1.6;
@@ -264,12 +264,12 @@ const { totalPlugins, totalCategories } = Astro.props;
     color: var(--primary);
     font-weight: 600;
     text-decoration: none;
-    border-bottom: 1px solid oklch(62% 0.16 35 / 0.40);
+    border-bottom: 1px solid rgb(250 255 105 / 0.40);
     transition: border-color var(--duration-fast) var(--ease-out);
   }
 
   .intent-note a:hover {
-    border-bottom-color: oklch(62% 0.16 35 / 0.80);
+    border-bottom-color: rgb(250 255 105 / 0.80);
   }
 
   @media (max-width: 640px) {

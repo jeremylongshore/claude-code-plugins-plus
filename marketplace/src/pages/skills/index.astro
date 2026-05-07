@@ -1,22 +1,29 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import skillsCatalog from '../../data/skills-catalog.json';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 
-const pageTitle = 'Skills (Embedded in Plugins)';
-const pageDescription = `Browse ${skillsCatalog.count} agent skills embedded in plugins across ${skillsCatalog.categories.length} categories`;
+// Read only the metadata fields from skills-catalog.json at build time.
+// The full 22.8 MB catalog is NOT inlined into HTML — it is fetched lazily at
+// runtime from /data/skills-catalog.json (copied to public/data/ during build).
+const _rawCatalog = JSON.parse(
+  readFileSync(resolve(process.cwd(), 'src/data/skills-catalog.json'), 'utf-8')
+);
 
-// Get unique allowed tools for filtering
-const allTools = skillsCatalog.allowedToolsUsed;
-
-// Lightweight skills for client-side search (exclude heavy 'content' field)
-const lightweightSkills = skillsCatalog.skills.map(skill => ({
+const PAGE_SIZE = 24;
+const firstPageSkills = _rawCatalog.skills.slice(0, PAGE_SIZE).map((skill: any) => ({
   slug: skill.slug,
   name: skill.name,
   description: skill.description,
   allowedTools: skill.allowedTools,
   version: skill.version,
-  parentPlugin: skill.parentPlugin
+  parentPlugin: skill.parentPlugin,
 }));
+
+const pageTitle = 'Skills (Embedded in Plugins)';
+const pageDescription = `Browse ${_rawCatalog.count} agent skills embedded in plugins across ${_rawCatalog.categories.length} categories`;
+
+const allTools = _rawCatalog.allowedToolsUsed;
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription}>
@@ -43,7 +50,7 @@ const lightweightSkills = skillsCatalog.skills.map(skill => ({
     .skills-subtitle {
       color: var(--text-2);
       font-size: 1rem;
-      font-family: 'DM Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
     }
 
     .filters-section {
@@ -66,7 +73,7 @@ const lightweightSkills = skillsCatalog.skills.map(skill => ({
 
     .filter-group label {
       display: block;
-      font-family: 'Source Sans 3', system-ui, sans-serif;
+      font-family: 'Inter', system-ui, sans-serif;
       font-size: 0.875rem;
       font-weight: 600;
       color: var(--text);
@@ -79,14 +86,14 @@ const lightweightSkills = skillsCatalog.skills.map(skill => ({
       border: 2px solid var(--border);
       border-radius: var(--radius-md);
       font-size: 0.95rem;
-      font-family: 'Source Sans 3', system-ui, sans-serif;
+      font-family: 'Inter', system-ui, sans-serif;
       transition: all var(--duration-fast) var(--ease-out);
     }
 
     .filter-input:focus {
       outline: none;
       border-color: var(--primary);
-      box-shadow: 0 0 0 3px oklch(62% 0.16 35 / 0.1);
+      box-shadow: 0 0 0 3px rgb(250 255 105 / 0.1);
     }
 
     .filter-input::placeholder {
@@ -105,7 +112,7 @@ const lightweightSkills = skillsCatalog.skills.map(skill => ({
     }
 
     .clear-filters-btn {
-      font-family: 'Source Sans 3', system-ui, sans-serif;
+      font-family: 'Inter', system-ui, sans-serif;
       background: transparent;
       border: none;
       color: var(--primary);
@@ -144,7 +151,7 @@ const lightweightSkills = skillsCatalog.skills.map(skill => ({
     .skill-card:hover {
       border-color: var(--primary);
       transform: translateY(-4px);
-      box-shadow: 0 8px 24px oklch(62% 0.16 35 / 0.12);
+      box-shadow: 0 8px 24px rgb(250 255 105 / 0.12);
     }
 
     .skill-name {
@@ -174,12 +181,12 @@ const lightweightSkills = skillsCatalog.skills.map(skill => ({
 
     .tool-badge {
       padding: 0.25rem 0.75rem;
-      background: oklch(62% 0.16 35 / 0.1);
+      background: rgb(250 255 105 / 0.1);
       color: var(--primary-dark);
       font-size: 0.75rem;
       font-weight: 600;
       border-radius: var(--radius-sm);
-      font-family: 'Source Sans 3', system-ui, sans-serif;
+      font-family: 'Inter', system-ui, sans-serif;
     }
 
     .tool-badge-more {
@@ -224,7 +231,7 @@ const lightweightSkills = skillsCatalog.skills.map(skill => ({
     }
 
     .no-results button {
-      font-family: 'Source Sans 3', system-ui, sans-serif;
+      font-family: 'Inter', system-ui, sans-serif;
       padding: 0.75rem 1.5rem;
       background: var(--primary);
       color: white;
@@ -270,7 +277,7 @@ const lightweightSkills = skillsCatalog.skills.map(skill => ({
   <div class="skills-header">
     <div class="skills-header-content">
       <h1 class="skills-title">Skills Directory</h1>
-      <p class="skills-subtitle"><strong style="font-family: 'DM Mono', monospace; color: var(--primary);">{skillsCatalog.count}</strong> skills across {skillsCatalog.categories.length} categories. Download plugins with <a href="/cowork" style="color: var(--primary); text-decoration: underline;">Cowork</a> or install via CLI.</p>
+      <p class="skills-subtitle"><strong style="font-family: 'JetBrains Mono', monospace; color: var(--primary);">{_rawCatalog.count}</strong> skills across {_rawCatalog.categories.length} categories. Download plugins with <a href="/cowork" style="color: var(--primary); text-decoration: underline;">Cowork</a> or install via CLI.</p>
     </div>
   </div>
 
@@ -294,9 +301,9 @@ const lightweightSkills = skillsCatalog.skills.map(skill => ({
           <label for="category-filter">Filter by Category</label>
           <select id="category-filter" class="filter-input">
             <option value="">All Categories</option>
-            {skillsCatalog.categories.map(category => (
+            {_rawCatalog.categories.map((category: string) => (
               <option value={category}>
-                {category.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                {category.replace(/-/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())}
               </option>
             ))}
           </select>
@@ -316,7 +323,7 @@ const lightweightSkills = skillsCatalog.skills.map(skill => ({
 
       <div class="filters-footer">
         <p id="results-count" class="results-count">
-          Showing {skillsCatalog.count} of {skillsCatalog.count} skills
+          Showing {_rawCatalog.count} of {_rawCatalog.count} skills
         </p>
         <button onclick="clearFilters()" class="clear-filters-btn">
           Clear Filters
@@ -325,13 +332,14 @@ const lightweightSkills = skillsCatalog.skills.map(skill => ({
     </div>
   </div>
 
-  <!-- Skills Grid -->
+  <!-- Skills Grid — first 24 server-rendered for fast paint; remaining loaded via JS fetch -->
   <div class="skills-grid-section">
-    <div id="skills-grid" class="skills-grid">
-      {skillsCatalog.skills.map(skill => (
+    <div id="skills-grid" class="skills-grid" aria-live="polite">
+      {firstPageSkills.map((skill: any) => (
         <a
           href={`/skills/${skill.slug}/`}
           class="skill-card"
+          data-slug={skill.slug}
         >
           <h3 class="skill-name">{skill.name}</h3>
           <p class="skill-description">
@@ -339,7 +347,7 @@ const lightweightSkills = skillsCatalog.skills.map(skill => ({
           </p>
 
           <div class="skill-tools">
-            {skill.allowedTools.slice(0, 3).map(tool => (
+            {skill.allowedTools.slice(0, 3).map((tool: string) => (
               <span class="tool-badge">{tool}</span>
             ))}
             {skill.allowedTools.length > 3 && (
@@ -362,6 +370,10 @@ const lightweightSkills = skillsCatalog.skills.map(skill => ({
           </div>
         </a>
       ))}
+      <!-- Remaining skills appended by JS after /data/skills-catalog.json fetch -->
+      <div id="skills-loading-more" style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: var(--text-2); font-size: 0.9rem;">
+        Loading remaining skills&hellip;
+      </div>
     </div>
   </div>
 
@@ -369,13 +381,75 @@ const lightweightSkills = skillsCatalog.skills.map(skill => ({
   <script type="module">
     import Fuse from 'https://cdn.jsdelivr.net/npm/fuse.js@7.1.0/+esm';
 
-    const skills = window.__SKILLS_DATA__;
+    // Full skills catalog fetched lazily — not inlined into HTML.
+    // First 24 cards are already server-rendered for instant paint.
+    let allSkills = [];
+    let fuse = null;
+    let dataReady = false;
 
-    const fuse = new Fuse(skills, {
-      keys: ['name', 'description', 'parentPlugin.category', 'allowedTools'],
-      threshold: 0.3,
-      includeScore: true
-    });
+    const grid = document.getElementById('skills-grid');
+    const loadingMoreEl = document.getElementById('skills-loading-more');
+
+    // Begin fetch immediately; append remaining cards + enable search when ready
+    fetch('/data/skills-catalog.json')
+      .then(r => r.json())
+      .then(catalog => {
+        // Build lightweight skill objects (skip heavy 'content' field)
+        allSkills = catalog.skills.map(s => ({
+          slug: s.slug,
+          name: s.name,
+          description: s.description,
+          allowedTools: s.allowedTools || [],
+          version: s.version,
+          parentPlugin: s.parentPlugin,
+        }));
+        fuse = new Fuse(allSkills, {
+          keys: ['name', 'description', 'parentPlugin.category', 'allowedTools'],
+          threshold: 0.3,
+          includeScore: true
+        });
+        dataReady = true;
+        // Remove the loading indicator
+        if (loadingMoreEl) loadingMoreEl.remove();
+        // Render remaining skills beyond the server-rendered first page
+        appendRemainingSkills(allSkills.slice(24));
+        updateResultsCount(allSkills.length, allSkills.length);
+      })
+      .catch(err => {
+        console.error('Failed to load skills catalog:', err);
+        if (loadingMoreEl) loadingMoreEl.textContent = 'Failed to load additional skills. Please refresh.';
+      });
+
+    function escHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function skillCardHtml(skill) {
+      const tools = skill.allowedTools || [];
+      return `<a href="/skills/${escHtml(skill.slug)}/" class="skill-card" data-slug="${escHtml(skill.slug)}">
+        <h3 class="skill-name">${escHtml(skill.name)}</h3>
+        <p class="skill-description">${escHtml(skill.description || 'No description available')}</p>
+        <div class="skill-tools">
+          ${tools.slice(0, 3).map(t => `<span class="tool-badge">${escHtml(t)}</span>`).join('')}
+          ${tools.length > 3 ? `<span class="tool-badge tool-badge-more">+${tools.length - 3} more</span>` : ''}
+        </div>
+        <div class="skill-meta">
+          <span class="skill-category">${escHtml((skill.parentPlugin.category || '').replace(/-/g,' '))}</span>
+          <span>${escHtml(skill.version)}</span>
+        </div>
+      </a>`;
+    }
+
+    function appendRemainingSkills(skills) {
+      const frag = document.createDocumentFragment();
+      skills.forEach(skill => {
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = skillCardHtml(skill);
+        frag.appendChild(wrapper.firstChild);
+      });
+      grid.appendChild(frag);
+    }
 
     let activeFilters = {
       category: null,
@@ -384,31 +458,28 @@ const lightweightSkills = skillsCatalog.skills.map(skill => ({
     };
 
     function filterSkills() {
-      let filtered = skills;
+      if (!dataReady) return;
 
-      // Apply search
-      if (activeFilters.search) {
+      let filtered = allSkills;
+
+      if (activeFilters.search && fuse) {
         const results = fuse.search(activeFilters.search);
         filtered = results.map(r => r.item);
       }
 
-      // Apply category filter
       if (activeFilters.category) {
         filtered = filtered.filter(s => s.parentPlugin.category === activeFilters.category);
       }
 
-      // Apply tool filter
       if (activeFilters.tool) {
         filtered = filtered.filter(s => s.allowedTools.includes(activeFilters.tool));
       }
 
       renderSkills(filtered);
-      updateResultsCount(filtered.length);
+      updateResultsCount(filtered.length, allSkills.length);
     }
 
     function renderSkills(skills) {
-      const grid = document.getElementById('skills-grid');
-
       if (skills.length === 0) {
         grid.innerHTML = `
           <div class="no-results" style="grid-column: 1 / -1;">
@@ -419,52 +490,31 @@ const lightweightSkills = skillsCatalog.skills.map(skill => ({
         return;
       }
 
-      grid.innerHTML = skills.map(skill => `
-        <a href="/skills/${skill.slug}/" class="skill-card">
-          <h3 class="skill-name">${skill.name}</h3>
-          <p class="skill-description">${skill.description || 'No description available'}</p>
-
-          <div class="skill-tools">
-            ${skill.allowedTools.slice(0, 3).map(tool => `
-              <span class="tool-badge">${tool}</span>
-            `).join('')}
-            ${skill.allowedTools.length > 3 ? `<span class="tool-badge tool-badge-more">+${skill.allowedTools.length - 3} more</span>` : ''}
-          </div>
-
-          <div class="skill-meta">
-            <span class="skill-category">${skill.parentPlugin.category.replace(/-/g, ' ')}</span>
-            <span>${skill.version}</span>
-          </div>
-        </a>
-      `).join('');
+      grid.innerHTML = skills.map(skill => skillCardHtml(skill)).join('');
     }
 
-    function updateResultsCount(count) {
-      document.getElementById('results-count').textContent =
-        `Showing ${count} of ${skills.length} skills`;
+    function updateResultsCount(shown, total) {
+      const el = document.getElementById('results-count');
+      if (el) el.textContent = `Showing ${shown} of ${total} skills`;
     }
 
     // Event listeners
     document.addEventListener('DOMContentLoaded', () => {
-      // Search input
       document.getElementById('search-input').addEventListener('input', (e) => {
         activeFilters.search = e.target.value;
         filterSkills();
       });
 
-      // Category filter
       document.getElementById('category-filter').addEventListener('change', (e) => {
         activeFilters.category = e.target.value || null;
         filterSkills();
       });
 
-      // Tool filter
       document.getElementById('tool-filter').addEventListener('change', (e) => {
         activeFilters.tool = e.target.value || null;
         filterSkills();
       });
 
-      // Clear filters button
       window.clearFilters = () => {
         activeFilters = { category: null, tool: null, search: '' };
         document.getElementById('search-input').value = '';
@@ -473,9 +523,5 @@ const lightweightSkills = skillsCatalog.skills.map(skill => ({
         filterSkills();
       };
     });
-  </script>
-
-  <script define:vars={{ skills: lightweightSkills }}>
-    window.__SKILLS_DATA__ = skills;
   </script>
 </BaseLayout>

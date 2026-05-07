@@ -1,10 +1,18 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CompareBar from '../components/CompareBar.astro';
-import searchIndex from '../data/unified-search-index.json';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+
+// Read only the stats from the search index at build time — the full items array
+// (~2.5 MB JSON) is NOT inlined into HTML. It is fetched lazily at runtime from
+// /data/unified-search-index.json (copied to public/data/ during build).
+const _rawStats = JSON.parse(
+  readFileSync(resolve(process.cwd(), 'src/data/unified-search-index.json'), 'utf-8')
+).stats;
 
 const pageTitle = 'Explore Plugins & Skills';
-const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins and ${searchIndex.stats.totalSkills} skills in one place. Find exactly what you need with instant fuzzy search.`;
+const pageDescription = `Search all ${_rawStats.totalPlugins} plugins and ${_rawStats.totalSkills} skills in one place. Find exactly what you need with instant fuzzy search.`;
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription}>
@@ -29,7 +37,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       content: '';
       position: absolute;
       inset: 0;
-      background: radial-gradient(ellipse at 20% 0%, oklch(62% 0.16 35 / 0.08) 0%, transparent 60%);
+      background: radial-gradient(ellipse at 20% 0%, rgb(250 255 105 / 0.08) 0%, transparent 60%);
       pointer-events: none;
     }
 
@@ -59,7 +67,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       font-size: 1.1rem;
       border: 1px solid var(--border);
       border-radius: 12px;
-      font-family: 'Source Sans 3', system-ui, sans-serif;
+      font-family: 'Inter', system-ui, sans-serif;
       background: var(--surface-1);
       color: var(--text);
       box-shadow: 0 8px 32px rgba(0,0,0,0.2);
@@ -87,7 +95,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       font-weight: 700;
       font-size: 1.2rem;
       display: block;
-      font-family: 'DM Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
     }
 
     /* Filters Section */
@@ -118,7 +126,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
     }
 
     .type-btn {
-      font-family: 'Source Sans 3', system-ui, sans-serif;
+      font-family: 'Inter', system-ui, sans-serif;
       padding: 0.5rem 1.25rem;
       border: none;
       background: transparent;
@@ -141,7 +149,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       border: 2px solid var(--brand-light-gray);
       border-radius: 8px;
       font-size: 0.9rem;
-      font-family: 'Source Sans 3', system-ui, sans-serif;
+      font-family: 'Inter', system-ui, sans-serif;
       background: var(--surface-2);
       color: var(--text);
       cursor: pointer;
@@ -172,7 +180,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       border: 1px solid var(--brand-light-gray);
       border-radius: 4px;
       padding: 0.15rem 0.4rem;
-      font-family: 'DM Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 0.7rem;
     }
 
@@ -237,7 +245,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       color: var(--surface);
       cursor: pointer;
       transition: all 0.2s;
-      font-family: 'Source Sans 3', system-ui, sans-serif;
+      font-family: 'Inter', system-ui, sans-serif;
     }
 
     .install-copy-btn:hover {
@@ -260,7 +268,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       color: var(--brand-mid-gray);
       cursor: pointer;
       transition: all 0.2s;
-      font-family: 'Source Sans 3', system-ui, sans-serif;
+      font-family: 'Inter', system-ui, sans-serif;
       position: static;
     }
 
@@ -289,7 +297,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       border-radius: 4px;
       font-size: 0.65rem;
       font-weight: 700;
-      font-family: 'DM Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       text-transform: uppercase;
       white-space: nowrap;
       letter-spacing: 0.03em;
@@ -360,7 +368,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       padding: 0.35rem 0.75rem;
       font-size: 0.7rem;
       font-weight: 700;
-      font-family: 'DM Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
       text-transform: uppercase;
       letter-spacing: 0.05em;
       border-radius: 6px;
@@ -423,7 +431,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       border-radius: 6px;
       color: var(--gold);
       font-weight: 600;
-      font-family: 'Source Sans 3', system-ui, sans-serif;
+      font-family: 'Inter', system-ui, sans-serif;
     }
 
     .result-category {
@@ -444,7 +452,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       font-size: 0.7rem;
       font-weight: 600;
       border-radius: 4px;
-      font-family: 'DM Mono', monospace;
+      font-family: 'JetBrains Mono', monospace;
     }
 
     .keyword-tag {
@@ -454,7 +462,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       font-size: 0.7rem;
       font-weight: 600;
       border-radius: 4px;
-      font-family: 'Source Sans 3', system-ui, sans-serif;
+      font-family: 'Inter', system-ui, sans-serif;
     }
 
     .no-results {
@@ -475,7 +483,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
     }
 
     .no-results button {
-      font-family: 'Source Sans 3', system-ui, sans-serif;
+      font-family: 'Inter', system-ui, sans-serif;
       padding: 0.75rem 1.5rem;
       background: var(--gold);
       color: var(--surface);
@@ -637,7 +645,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
   <section class="explorer-hero">
     <h1 class="explorer-title">Explore Everything</h1>
     <p class="explorer-subtitle">
-      Search {searchIndex.stats.totalPlugins} plugins and {searchIndex.stats.totalSkills} skills in one unified catalog
+      Search {_rawStats.totalPlugins} plugins and {_rawStats.totalSkills} skills in one unified catalog
     </p>
 
     <div class="hero-search-box">
@@ -652,15 +660,15 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
 
     <div class="hero-stats">
       <div class="hero-stat">
-        <span>{searchIndex.stats.totalPlugins}</span>
+        <span>{_rawStats.totalPlugins}</span>
         Plugins
       </div>
       <div class="hero-stat">
-        <span>{searchIndex.stats.totalSkills}</span>
+        <span>{_rawStats.totalSkills}</span>
         Skills
       </div>
       <div class="hero-stat">
-        <span>{searchIndex.stats.categories.length}</span>
+        <span>{_rawStats.categories.length}</span>
         Categories
       </div>
     </div>
@@ -684,7 +692,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
 
       <select id="category-filter" class="filter-select">
         <option value="">All Categories</option>
-        {searchIndex.stats.categories.map(category => (
+        {_rawStats.categories.map(category => (
           <option value={category}>
             {category.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
           </option>
@@ -693,14 +701,14 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
 
       <select id="keyword-filter" class="filter-select">
         <option value="">All Keywords</option>
-        {(searchIndex.stats.allKeywords || []).map(kw => (
+        {(_rawStats.allKeywords || []).map(kw => (
           <option value={kw}>{kw.replace(/-/g, ' ')}</option>
         ))}
       </select>
 
       <select id="tool-filter" class="filter-select">
         <option value="">All Tools</option>
-        {searchIndex.stats.skillTools.map(tool => (
+        {_rawStats.skillTools.map(tool => (
           <option value={tool}>{tool}</option>
         ))}
       </select>
@@ -713,7 +721,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       </select>
 
       <span id="results-info" class="results-info">
-        Showing {searchIndex.stats.totalItems} items
+        Showing {_rawStats.totalItems} items
       </span>
 
       <span class="keyboard-hint" title="Keyboard shortcuts: / search, j/k navigate, Enter open, c compare, f favorite">
@@ -722,96 +730,14 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
     </div>
   </div>
 
-  <!-- Results Grid -->
+  <!-- Results Grid — populated by client-side JS after lazy fetch of /data/unified-search-index.json -->
   <div class="results-section">
-    <div id="results-grid" class="results-grid">
-      {searchIndex.items.map(item => (
-        <div
-          class="result-card"
-          data-type={item.type}
-          data-category={item.category}
-          data-tools={item.type === 'skill' ? JSON.stringify(item.allowedTools) : '[]'}
-          data-keywords={JSON.stringify(item.keywords || [])}
-          data-item-id={item.id || item.name}
-          data-item-name={item.displayName || item.name}
-          data-featured={item.isFeatured || false}
-          data-new={item.isNew || false}
-          data-skill-count={item.skillCount || 0}
-          data-author-type={item.authorType || 'official'}
-        >
-          <button
-            class="bookmark-btn"
-            data-bookmark-id={item.id || item.name}
-            title="Add to favorites"
-          >♡</button>
-
-          <a
-            href={item.type === 'plugin' ? `/plugins/${item.name}/` : (item.parentPlugin ? `/cowork` : `/skills/${item.slug}/`)}
-            class="result-card-link"
-          >
-            <span class={`result-type-badge ${item.type}`}>
-              {item.type}
-            </span>
-
-            <h3 class="result-name">{item.type === 'plugin' && item.displayName ? item.displayName : item.name}</h3>
-            <p class="result-description">{item.description}</p>
-
-            <div class="result-meta">
-              {item.type === 'skill' && item.parentPlugin && (
-                <div class="parent-plugin">
-                  <span>📦</span>
-                  <span>Provided by {item.parentPlugin.name}</span>
-                </div>
-              )}
-              <div class="result-meta-row">
-                <span class="result-category">{item.category.replace(/-/g, ' ')}</span>
-                {item.skillCount > 0 && <span class="card-badge has-skills">{item.skillCount} skills</span>}
-              </div>
-            </div>
-
-            {item.type === 'plugin' && item.keywords && item.keywords.length > 0 && (
-              <div class="result-tools">
-                {item.keywords.slice(0, 3).map(kw => (
-                  <span class="keyword-tag">{kw.replace(/-/g, ' ')}</span>
-                ))}
-                {item.keywords.length > 3 && (
-                  <span class="keyword-tag">+{item.keywords.length - 3} more</span>
-                )}
-              </div>
-            )}
-
-            {item.type === 'skill' && item.allowedTools && item.allowedTools.length > 0 && (
-              <div class="result-tools">
-                {item.allowedTools.slice(0, 3).map(tool => (
-                  <span class="tool-tag">{tool}</span>
-                ))}
-                {item.allowedTools.length > 3 && (
-                  <span class="tool-tag">+{item.allowedTools.length - 3} more</span>
-                )}
-              </div>
-            )}
-          </a>
-
-          <div class="card-actions">
-            <button
-              class="install-copy-btn"
-              data-install-cmd={`/plugin install ${item.type === 'plugin' ? item.name : (item.parentPlugin?.name || item.name)}@claude-code-plugins-plus`}
-              title="Copy install command"
-            >
-              Install
-            </button>
-            <button
-              class="compare-toggle-btn"
-              data-compare-id={item.id || item.name}
-              data-compare-name={item.displayName || item.name}
-              data-compare-type={item.type}
-              title="Add to comparison"
-            >
-              + Compare
-            </button>
-          </div>
-        </div>
-      ))}
+    <div id="results-grid" class="results-grid" aria-live="polite" aria-busy="true">
+      <!-- Loading skeleton shown until search index fetches -->
+      <div id="explore-loading" style="grid-column: 1 / -1; text-align: center; padding: 4rem 2rem; color: var(--text-2);">
+        <div style="font-size: 1.1rem; margin-bottom: 0.5rem;">Loading catalog&hellip;</div>
+        <div style="font-size: 0.85rem; color: var(--text-3);">Fetching search index</div>
+      </div>
     </div>
   </div>
 
@@ -819,15 +745,36 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
   <script type="module">
     import Fuse from 'https://cdn.jsdelivr.net/npm/fuse.js@7.1.0/+esm';
 
-    const allItems = window.__SEARCH_INDEX__;
     const grid = document.getElementById('results-grid');
     const resultsInfo = document.getElementById('results-info');
+    const loadingEl = document.getElementById('explore-loading');
 
-    const fuse = new Fuse(allItems, {
-      keys: ['name', 'description', 'category', 'keywords', 'searchText'],
-      threshold: 0.3,
-      includeScore: true
-    });
+    // Search index is fetched lazily — not inlined into HTML.
+    // Fetch begins immediately on page load but cards render once data arrives.
+    let allItems = [];
+    let fuse = null;
+    let dataReady = false;
+
+    const indexPromise = fetch('/data/unified-search-index.json')
+      .then(r => r.json())
+      .then(data => {
+        allItems = data.items;
+        fuse = new Fuse(allItems, {
+          keys: ['name', 'description', 'category', 'keywords', 'searchText'],
+          threshold: 0.3,
+          includeScore: true
+        });
+        dataReady = true;
+        // Remove loading indicator
+        if (loadingEl) loadingEl.remove();
+        grid.setAttribute('aria-busy', 'false');
+        // Render initial view (respecting any pre-set URL params)
+        applyFilters();
+      })
+      .catch(err => {
+        console.error('Failed to load search index:', err);
+        if (loadingEl) loadingEl.innerHTML = '<div style="color: var(--brand-mid-gray)">Failed to load catalog. Please refresh.</div>';
+      });
 
     let activeFilters = {
       type: 'all',
@@ -840,10 +787,13 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
     };
 
     function applyFilters() {
+      // Don't attempt to render before the fetch completes
+      if (!dataReady) return;
+
       let filtered = allItems;
 
       // Apply search
-      if (activeFilters.search) {
+      if (activeFilters.search && fuse) {
         const results = fuse.search(activeFilters.search);
         filtered = results.map(r => r.item);
       }
@@ -919,6 +869,105 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       window.history.replaceState({}, '', newURL);
     }
 
+    function escHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function renderCard(item) {
+      const id = escHtml(item.id || item.name);
+      const displayName = escHtml(item.type === 'plugin' && item.displayName ? item.displayName : item.name);
+      const href = item.type === 'plugin'
+        ? `/plugins/${escHtml(item.name)}/`
+        : (item.parentPlugin ? `/cowork` : `/skills/${escHtml(item.slug)}/`);
+      const installName = item.type === 'plugin' ? item.name : (item.parentPlugin?.name || item.name);
+      const installCmd = `/plugin install ${escHtml(installName)}@claude-code-plugins-plus`;
+      const favs = window.BookmarkManager ? window.BookmarkManager.getAll() : [];
+      const isFav = favs.includes(item.id || item.name);
+
+      const tagsHtml = item.type === 'plugin' && item.keywords && item.keywords.length > 0
+        ? `<div class="result-tools">
+            ${item.keywords.slice(0, 3).map(kw => `<span class="keyword-tag">${escHtml(kw.replace(/-/g,' '))}</span>`).join('')}
+            ${item.keywords.length > 3 ? `<span class="keyword-tag">+${item.keywords.length - 3} more</span>` : ''}
+          </div>`
+        : item.type === 'skill' && item.allowedTools && item.allowedTools.length > 0
+          ? `<div class="result-tools">
+              ${item.allowedTools.slice(0, 3).map(t => `<span class="tool-tag">${escHtml(t)}</span>`).join('')}
+              ${item.allowedTools.length > 3 ? `<span class="tool-tag">+${item.allowedTools.length - 3} more</span>` : ''}
+            </div>`
+          : '';
+
+      const parentHtml = item.type === 'skill' && item.parentPlugin
+        ? `<div class="parent-plugin"><span>📦</span><span>Provided by ${escHtml(item.parentPlugin.name)}</span></div>`
+        : '';
+
+      return `<div class="result-card"
+          data-type="${escHtml(item.type)}"
+          data-category="${escHtml(item.category)}"
+          data-item-id="${id}"
+          data-item-name="${displayName}"
+          data-author-type="${escHtml(item.authorType || 'official')}">
+          <button class="bookmark-btn${isFav ? ' active' : ''}" data-bookmark-id="${id}" title="${isFav ? 'Remove from favorites' : 'Add to favorites'}">${isFav ? '♥' : '♡'}</button>
+          <a href="${href}" class="result-card-link">
+            <span class="result-type-badge ${escHtml(item.type)}">${escHtml(item.type)}</span>
+            <h3 class="result-name">${displayName}</h3>
+            <p class="result-description">${escHtml(item.description)}</p>
+            <div class="result-meta">
+              ${parentHtml}
+              <div class="result-meta-row">
+                <span class="result-category">${escHtml(item.category.replace(/-/g,' '))}</span>
+                ${item.skillCount > 0 ? `<span class="card-badge has-skills">${item.skillCount} skills</span>` : ''}
+              </div>
+            </div>
+            ${tagsHtml}
+          </a>
+          <div class="card-actions">
+            <button class="install-copy-btn" data-install-cmd="${installCmd}" title="Copy install command">Install</button>
+            <button class="compare-toggle-btn" data-compare-id="${id}" data-compare-name="${displayName}" data-compare-type="${escHtml(item.type)}" title="Add to comparison">+ Compare</button>
+          </div>
+        </div>`;
+    }
+
+    function attachCardListeners(container) {
+      // Install copy buttons
+      container.querySelectorAll('.install-copy-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault(); e.stopPropagation();
+          const cmd = btn.dataset.installCmd;
+          navigator.clipboard.writeText(cmd).then(() => {
+            const orig = btn.textContent;
+            btn.textContent = 'Copied!';
+            btn.classList.add('copied');
+            setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 1500);
+            if (window.trackEvent) window.trackEvent('install_copied', { plugin_name: cmd, source: 'explore_card' });
+          });
+        });
+      });
+      // Compare buttons
+      container.querySelectorAll('.compare-toggle-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault(); e.stopPropagation();
+          const { compareId: id, compareName: name, compareType: type } = btn.dataset;
+          if (window.CompareManager) {
+            if (window.CompareManager.has(id)) {
+              window.CompareManager.remove(id);
+              if (window.trackEvent) window.trackEvent('compare_action', { action: 'remove', plugin_name: name });
+            } else {
+              window.CompareManager.add({ id, name, type });
+              if (window.trackEvent) window.trackEvent('compare_action', { action: 'add', plugin_name: name });
+            }
+          }
+        });
+      });
+      // Bookmark buttons
+      container.querySelectorAll('.bookmark-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault(); e.stopPropagation();
+          if (window.BookmarkManager) window.BookmarkManager.toggle(btn.dataset.bookmarkId);
+        });
+      });
+    }
+
     function renderResults(items) {
       if (items.length === 0) {
         grid.innerHTML = `
@@ -931,32 +980,10 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
         return;
       }
 
-      // Instead of replacing innerHTML, show/hide existing cards
-      const allCards = document.querySelectorAll('.result-card[data-item-id]');
-      const visibleIds = new Set(items.map(item => item.id || item.name));
-
-      allCards.forEach(card => {
-        const itemId = card.dataset.itemId;
-        if (visibleIds.has(itemId)) {
-          card.style.display = '';
-        } else {
-          card.style.display = 'none';
-        }
-      });
-
-      // Reorder visible cards to match search result order
-      const visibleCards = Array.from(allCards).filter(card => visibleIds.has(card.dataset.itemId));
-      const cardOrder = new Map(items.map((item, index) => [item.id || item.name, index]));
-      visibleCards.sort((a, b) => {
-        const orderA = cardOrder.get(a.dataset.itemId) ?? 999999;
-        const orderB = cardOrder.get(b.dataset.itemId) ?? 999999;
-        return orderA - orderB;
-      });
-
-      // Move cards to correct order
-      visibleCards.forEach(card => {
-        grid.appendChild(card);
-      });
+      // Render cards client-side (data not server-rendered to avoid 25 MB HTML payload)
+      grid.innerHTML = items.map(item => renderCard(item)).join('');
+      attachCardListeners(grid);
+      if (window.CompareManager) window.CompareManager.updateCardStates();
     }
 
     function updateResultsInfo(count) {
@@ -1190,58 +1217,6 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       // Listen for reapply-filters event (from BookmarkManager)
       window.addEventListener('reapply-filters', () => {
         applyFilters();
-      });
-    });
-  </script>
-
-  <script define:vars={{ items: searchIndex.items }}>
-    window.__SEARCH_INDEX__ = items;
-  </script>
-
-  <!-- Compare button event listeners -->
-  <script is:inline>
-    document.addEventListener('DOMContentLoaded', () => {
-      // Initialize compare button states
-      if (window.CompareManager) {
-        window.CompareManager.updateCardStates();
-      }
-
-      // Add click handlers to install buttons
-      document.querySelectorAll('.install-copy-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          const cmd = btn.dataset.installCmd;
-          navigator.clipboard.writeText(cmd).then(() => {
-            const original = btn.textContent;
-            btn.textContent = 'Copied!';
-            btn.classList.add('copied');
-            setTimeout(() => { btn.textContent = original; btn.classList.remove('copied'); }, 1500);
-            if (window.trackEvent) window.trackEvent('install_copied', { plugin_name: cmd, source: 'explore_card' });
-          });
-        });
-      });
-
-      // Add click handlers to compare buttons
-      document.querySelectorAll('.compare-toggle-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-
-          const id = btn.dataset.compareId;
-          const name = btn.dataset.compareName;
-          const type = btn.dataset.compareType;
-
-          if (window.CompareManager) {
-            if (window.CompareManager.has(id)) {
-              window.CompareManager.remove(id);
-              if (window.trackEvent) window.trackEvent('compare_action', { action: 'remove', plugin_name: name });
-            } else {
-              window.CompareManager.add({ id, name, type });
-              if (window.trackEvent) window.trackEvent('compare_action', { action: 'add', plugin_name: name });
-            }
-          }
-        });
       });
     });
   </script>

@@ -18,7 +18,7 @@ const currentPath = Astro.url.pathname;
     <title>{title}</title>
     <meta name="description" content={description}>
     <meta name="author" content="Intent Solutions IO">
-    <meta name="theme-color" content="#1a1816">
+    <meta name="theme-color" content="#0a0a0c">
     <link rel="canonical" content={`https://tonsofskills.com${Astro.url.pathname}`}>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 
@@ -99,105 +99,92 @@ const currentPath = Astro.url.pathname;
     <!-- Unified Analytics Helper -->
     <script is:inline src="/scripts/analytics.js"></script>
 
-    <!-- Fonts: Instrument Sans (display), Source Sans 3 (body), DM Mono (mono/labels) -->
+    <!-- Fonts: Inter Tight (display), Inter (body, with tnum), JetBrains Mono (mono).
+         Family: Data-Dense Pro. See marketplace/DESIGN.md § Typography. -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
     <style>
         @import '../styles/tokens.css';
 
         /* ========================================
-           DARK THEME (default)
+           DARK THEME (default) — Data-Dense Pro
+           Surface aliases map to the new --bg / --panel system in tokens.css.
+           Components referencing --surface*, --text*, --border* keep working.
            ======================================== */
         :root {
-            /* Core surface palette — warm-tinted, never pure black */
-            --surface:   oklch(12% 0.010 60);
-            --surface-1: oklch(14% 0.010 60);
-            --surface-2: oklch(18% 0.010 60);
-            --surface-3: oklch(22% 0.010 60);
+            /* Surface aliases → new family tokens */
+            --surface:   var(--bg);          /* page canvas */
+            --surface-1: var(--panel);       /* card / panel */
+            --surface-2: var(--panel-2);     /* hover state */
+            --surface-3: var(--panel-2);     /* unused tertiary; mapped to panel-2 */
 
-            /* Legacy accent aliases — map to new OKLCH tokens */
-            --navy:  oklch(20% 0.010 60);
-            --red:   var(--danger);
-            --gold:  var(--primary);
+            /* Legacy accent aliases */
+            --navy:  var(--panel);
+            --red:   var(--alert);
+            --gold:  var(--signal);
 
-            /* Borders */
-            --border:        oklch(30% 0.008 60);
-            --border-bright: oklch(38% 0.008 60);
+            /* Borders → rule */
+            --border:        var(--rule);
+            --border-bright: var(--rule-bright);
 
-            /* Text */
-            --text:   oklch(92% 0.005 60);
-            --text-2: oklch(65% 0.008 60);
-            --text-3: oklch(50% 0.008 60);
+            /* Text aliases → ink scale */
+            --text:   var(--ink);
+            --text-2: var(--ink-2);
+            --text-3: var(--ink-3);
 
             /* Cards */
-            --card: oklch(18% 0.010 60);
-            --card-hover: oklch(22% 0.010 60);
+            --card:       var(--panel);
+            --card-hover: var(--panel-2);
 
-            /* Status */
-            --positive: oklch(65% 0.18 145);
-            --warning:  oklch(75% 0.15 85);
-            --danger:   oklch(60% 0.20 25);
-
-            /* Legacy brand-* aliases */
-            --brand-dark:         oklch(12% 0.010 60);
-            --brand-light:        oklch(92% 0.005 60);
-            --brand-mid-gray:     oklch(65% 0.008 60);
-            --brand-light-gray:   oklch(30% 0.008 60);
-            --brand-orange:       oklch(62% 0.16 35);
-            --brand-orange-dark:  oklch(48% 0.14 35);
-            --brand-orange-light: oklch(78% 0.10 35);
-            --brand-blue:         oklch(62% 0.15 250);
-            --brand-green:        oklch(65% 0.18 145);
+            /* Legacy brand-* aliases (also defined in global.css) */
+            --brand-dark:         var(--bg);
+            --brand-light:        var(--ink);
+            --brand-mid-gray:     var(--ink-2);
+            --brand-light-gray:   var(--rule);
+            --brand-orange:       var(--signal);
+            --brand-orange-dark:  var(--signal-deep);
+            --brand-orange-light: var(--signal-edge);
+            --brand-blue:         var(--ink-link);
+            --brand-green:        var(--positive);
 
             --transition-smooth: var(--ease-out);
-
-            /* Dark mode: lighter font weight */
-            --body-weight: 350;
+            --body-weight: 400;
         }
 
         /* ========================================
-           LIGHT THEME
+           LIGHT THEME — high-contrast off-white reskin
            ======================================== */
         :global([data-theme="light"]) {
-            /* Core surface palette */
-            --surface:   oklch(94% 0.005 60);
-            --surface-1: oklch(99% 0.002 60);
-            --surface-2: oklch(97% 0.004 60);
-            --surface-3: oklch(93% 0.005 60);
+            --surface:   var(--bg);
+            --surface-1: var(--panel);
+            --surface-2: var(--panel-2);
+            --surface-3: var(--panel-2);
 
-            /* Accent adjustment for light bg */
-            --gold:  oklch(52% 0.14 35);
+            --navy:  var(--panel);
+            --red:   var(--alert);
+            --gold:  var(--signal-deep);
 
-            /* Borders */
-            --border:        oklch(82% 0.005 60);
-            --border-bright: oklch(72% 0.005 60);
+            --border:        var(--rule);
+            --border-bright: var(--rule-bright);
 
-            /* Text */
-            --text:   oklch(18% 0.010 60);
-            --text-2: oklch(45% 0.008 60);
-            --text-3: oklch(58% 0.008 60);
+            --text:   var(--ink);
+            --text-2: var(--ink-2);
+            --text-3: var(--ink-3);
 
-            /* Cards */
-            --card: oklch(99% 0.002 60);
-            --card-hover: oklch(97% 0.004 60);
+            --card:       var(--panel);
+            --card-hover: var(--panel-2);
 
-            /* Status (vibrant on light) */
-            --positive: oklch(48% 0.18 145);
-            --warning:  oklch(55% 0.15 85);
-            --danger:   oklch(50% 0.22 25);
-
-            /* Legacy brand-* aliases for light */
-            --brand-dark:         oklch(18% 0.010 60);
-            --brand-light:        oklch(99% 0.002 60);
-            --brand-mid-gray:     oklch(45% 0.008 60);
-            --brand-light-gray:   oklch(82% 0.005 60);
-            --brand-orange:       oklch(55% 0.16 35);
-            --brand-orange-dark:  oklch(45% 0.14 35);
-            --brand-orange-light: oklch(70% 0.10 35);
-            --brand-blue:         oklch(50% 0.15 250);
-            --brand-green:        oklch(48% 0.18 145);
+            --brand-dark:         var(--ink);
+            --brand-light:        var(--panel);
+            --brand-mid-gray:     var(--ink-2);
+            --brand-light-gray:   var(--rule);
+            --brand-orange:       var(--signal-deep);
+            --brand-orange-dark:  #a3a302;
+            --brand-orange-light: var(--signal-edge);
+            --brand-blue:         var(--ink-link);
+            --brand-green:        var(--positive);
 
             --body-weight: 400;
         }
@@ -216,7 +203,7 @@ const currentPath = Astro.url.pathname;
         }
 
         body {
-            font-family: 'Source Sans 3', system-ui, sans-serif;
+            font-family: 'Inter', system-ui, sans-serif;
             font-weight: var(--body-weight, 400);
             background-color: var(--surface-1);
             color: var(--text);
@@ -224,13 +211,13 @@ const currentPath = Astro.url.pathname;
         }
 
         h1, h2 {
-            font-family: 'Instrument Sans', system-ui, sans-serif;
+            font-family: 'Inter Tight', system-ui, sans-serif;
             font-weight: 700;
             letter-spacing: -0.02em;
         }
 
         h3, h4, h5, h6 {
-            font-family: 'Instrument Sans', system-ui, sans-serif;
+            font-family: 'Inter Tight', system-ui, sans-serif;
             font-weight: 600;
         }
 
@@ -267,7 +254,7 @@ const currentPath = Astro.url.pathname;
             letter-spacing: -0.02em;
             color: var(--text);
             text-decoration: none;
-            font-family: 'Source Sans 3', system-ui, sans-serif;
+            font-family: 'Inter', system-ui, sans-serif;
         }
 
         .logo-text {
@@ -277,30 +264,31 @@ const currentPath = Astro.url.pathname;
         }
 
         .logo-title {
-            font-family: 'Instrument Sans', system-ui, sans-serif;
+            font-family: 'Inter Tight', system-ui, sans-serif;
             font-weight: 700;
             font-size: 1.2rem;
             letter-spacing: -0.01em;
-            color: var(--primary);
+            color: var(--ink);
         }
 
         .logo-subtitle {
             font-size: 0.65rem;
             font-weight: 400;
-            color: var(--text-3);
+            color: var(--ink-3);
             letter-spacing: 0.02em;
-            font-family: 'DM Mono', monospace;
+            font-family: 'JetBrains Mono', monospace;
         }
 
         .logo-icon {
             width: 36px;
             height: 36px;
-            background: var(--primary);
-            border-radius: 10px;
+            background: var(--panel);
+            border: 1px solid var(--rule);
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--surface);
+            color: var(--ink);
             font-weight: 700;
             font-size: 1.2rem;
         }
@@ -310,7 +298,7 @@ const currentPath = Astro.url.pathname;
             gap: 2rem;
             list-style: none;
             align-items: center;
-            font-family: 'Source Sans 3', system-ui, sans-serif;
+            font-family: 'Inter', system-ui, sans-serif;
         }
 
         .nav-links a {
@@ -326,21 +314,27 @@ const currentPath = Astro.url.pathname;
         }
 
         .nav-links a[aria-current="page"] {
-            color: var(--primary);
+            color: var(--ink);
+            border-bottom: 1px solid var(--signal);
+            padding-bottom: 2px;
         }
 
+        /* nav-cta is the canonical primary CTA — signal yellow on near-black */
         .nav-cta {
-            background: var(--accent);
-            color: var(--surface);
+            background: var(--signal);
+            color: #0a0a0c;
             padding: 0.5rem 1.25rem;
             border-radius: 6px;
             font-weight: 600;
+            min-height: 44px;
+            display: inline-flex;
+            align-items: center;
             transition: all var(--duration-fast) var(--ease-out);
         }
 
         .nav-cta:hover {
-            opacity: 0.9;
-            color: var(--surface);
+            background: #ffffa1;
+            color: #0a0a0c;
             transform: translateY(-1px);
         }
 
@@ -367,9 +361,9 @@ const currentPath = Astro.url.pathname;
         }
 
         .theme-toggle:hover {
-            color: var(--primary);
-            border-color: var(--primary);
-            background: oklch(62% 0.16 35 / 0.1);
+            color: var(--ink);
+            border-color: var(--rule-bright);
+            background: var(--panel-2);
         }
 
         /* Show sun in dark mode, moon in light mode */
@@ -423,12 +417,12 @@ const currentPath = Astro.url.pathname;
         }
 
         .footer-signup-row h4 {
-            color: var(--primary);
+            color: var(--ink-2);
             font-size: 0.7rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.1em;
-            font-family: 'DM Mono', monospace;
+            font-family: 'JetBrains Mono', monospace;
             margin-bottom: 0.75rem;
         }
 
@@ -447,38 +441,40 @@ const currentPath = Astro.url.pathname;
             border-radius: 6px;
             color: var(--text);
             font-size: 0.85rem;
-            font-family: 'Source Sans 3', system-ui, sans-serif;
+            font-family: 'Inter', system-ui, sans-serif;
             outline: none;
             transition: border-color var(--duration-fast);
         }
 
         .footer-signup-form input:focus {
-            border-color: var(--primary);
+            border-color: var(--signal);
         }
 
         .footer-signup-form button {
             padding: 0.6rem 1rem;
-            background: var(--primary);
-            color: white;
+            background: var(--signal);
+            color: #0a0a0c;
             border: none;
             border-radius: 6px;
-            font-weight: 700;
+            font-weight: 600;
             font-size: 0.85rem;
+            min-height: 44px;
             cursor: pointer;
-            font-family: 'Source Sans 3', system-ui, sans-serif;
+            font-family: 'Inter', system-ui, sans-serif;
             transition: all var(--duration-fast);
             white-space: nowrap;
         }
 
         .footer-signup-form button:hover {
-            opacity: 0.9;
+            background: #ffffa1;
+            color: #0a0a0c;
         }
 
         .footer-form-note {
             margin-top: 0.5rem;
             font-size: 0.7rem;
             color: var(--text-3);
-            font-family: 'DM Mono', monospace;
+            font-family: 'JetBrains Mono', monospace;
             text-align: center;
         }
 
@@ -490,7 +486,7 @@ const currentPath = Astro.url.pathname;
         }
 
         .footer-col h5 {
-            font-family: 'DM Mono', monospace;
+            font-family: 'JetBrains Mono', monospace;
             font-size: 0.7rem;
             font-weight: 600;
             text-transform: uppercase;
@@ -897,7 +893,7 @@ const currentPath = Astro.url.pathname;
                     document.documentElement.setAttribute('data-theme', next);
                     localStorage.setItem('theme', next);
                     var meta = document.querySelector('meta[name="theme-color"]');
-                    if (meta) meta.setAttribute('content', next === 'dark' ? '#1a1816' : '#f5f3f0');
+                    if (meta) meta.setAttribute('content', next === 'dark' ? '#0a0a0c' : '#fafaf9');
                 });
             }
             window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', function(e) {

@@ -233,13 +233,19 @@ Largest pages: `explore/index.html` (~860KB), `skills/index.html` (~300KB), `com
 
 ## Marketplace Design System
 
-**Tokens** (`marketplace/src/styles/tokens.css`): OKLCH color system with warm terracotta primary (`oklch(62% 0.16 35)`). Fluid typography via `clamp()` (`--text-xs` through `--text-4xl`). 4pt spacing grid (`--space-1` through `--space-12`). Three card tiers (compact/standard/featured). Motion presets with `prefers-reduced-motion` support.
+**Constitution: [`marketplace/DESIGN.md`](marketplace/DESIGN.md)** — single source of truth for visual treatment. Family: Data-Dense Pro (locked 2026-05-06). Read it before any UI work; if a component disagrees with it, the component is wrong.
 
-**Theme system** (`BaseLayout.astro`): Dark theme default, light via `[data-theme="light"]` on `<html>`. FOUC prevented by inline script before first paint. Legacy `--brand-*` / `--gold` / `--navy` aliases map to OKLCH tokens.
+**Tokens** (`marketplace/src/styles/tokens.css`): values are Data-Dense Pro (`#0a0a0c` canvas / `#181818` panel / `#f4f4f5` ink / `#faff69` signal / `#ff3d6e` alert / `#2a2a2e` rule). Token *names* preserved across the rebrand (`--primary`, `--neutral-900`, `--card-featured-radius`, etc.) so existing components keep compiling. Fluid type via `clamp()` (`--text-xs` through `--text-4xl`). 4pt spacing grid (`--space-1` through `--space-12`). Three card tiers (compact/standard/featured). Motion presets with `prefers-reduced-motion`. Newly explicit breakpoints: `--breakpoint-tablet: 1024px` (was missing).
 
-**Font stack**: Instrument Sans (display h1/h2), Source Sans 3 (body), DM Mono (labels/stats/code). All via Google Fonts.
+**Theme system** (`BaseLayout.astro`): Dark default; light via `[data-theme="light"]` on `<html>`. FOUC prevented by inline script before first paint. Legacy `--surface*` / `--brand-*` / `--gold` / `--navy` / `--text*` aliases all map to the new family tokens (`--bg`, `--panel`, `--ink`, `--signal`).
 
-**Key tokens for UI work**: `--primary`, `--primary-border`, `--primary-tint`, `--surface` through `--surface-3`, `--text` / `--text-2` / `--text-3`, `--border` / `--border-bright`, `--card`.
+**Font stack**: Inter Tight (display h1/h2), Inter (body, with `font-feature-settings: 'tnum' 1` for tabular numerals), JetBrains Mono (labels/stats/code). All via Google Fonts.
+
+**Key tokens for UI work**: `--bg`, `--panel`, `--rule`, `--ink`, `--ink-2`, `--signal`, `--signal-tint`, `--signal-edge`, `--ink-link`. Old aliases (`--primary`, `--surface`, `--text`, `--border`) remain mapped for back-compat.
+
+**3-viewport screenshot convention**: `marketplace/DESIGN_AUDIT_2026-05-06_before/{desktop,tablet,mobile}/` and `..._after/{desktop,tablet,mobile}/` — every visually significant change captures both states across 1440 / 1024 / 375 px. Validator (Playwright + ui-visual-validator agent) brackets each PR.
+
+**Anti-Slop discipline**: see DESIGN.md § 8 Reject Table. Reject gradients on cards, glassmorphism, drop-shadow stacks, multi-accent palettes, and `hover:scale-105` lift on whole cards. The site reads against Linear / Vercel / Bloomberg, not against Tailwind starters.
 
 ## Plugin Structure
 

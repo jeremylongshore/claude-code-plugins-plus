@@ -1,0 +1,27 @@
+{
+  "$schema": "./partners.schema.json",
+  "_doc": "Partners shown on the homepage hero partner bar. Source of truth — edited by hand. Order matters (left-to-right).",
+  "partners": [
+    {
+      "slug": "kobiton",
+      "name": "Kobiton",
+      "url": "https://kobiton.com",
+      "wordmark": "Kobiton",
+      "tagline": "Mobile testing platform"
+    },
+    {
+      "slug": "nixtla",
+      "name": "Nixtla",
+      "url": "https://nixtla.io",
+      "wordmark": "nixtla.io",
+      "tagline": "Time-series forecasting"
+    },
+    {
+      "slug": "agent37",
+      "name": "Agent 37",
+      "url": "https://agent37.com",
+      "wordmark": "agent37.com",
+      "tagline": ""
+    }
+  ]
+}
