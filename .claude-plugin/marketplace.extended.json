@@ -384,9 +384,9 @@
       }
     },
     {
-      "name": "aomi-transact",
-      "source": "./plugins/crypto/aomi-transact",
-      "description": "Drive the Aomi CLI from natural-language prompts — chat, simulate, sign with account-abstraction-first execution across swaps, lending, bridges, staking, perps, and CEX read on EVM mainnets and L2s.",
+      "name": "aomi",
+      "source": "./plugins/crypto/aomi",
+      "description": "Aomi for AI agents — drive the Aomi CLI from natural-language prompts (chat, simulate, sign on-chain transactions with account-abstraction-first execution) and scaffold new Aomi apps from API specs. Bundle ships two skills: aomi-transact (run on-chain across 25+ DeFi apps on EVM mainnets and L2s) and aomi-build (scaffold Rust SDK crates from OpenAPI/Swagger specs).",
       "version": "0.10",
       "category": "crypto",
       "keywords": [
@@ -403,7 +403,11 @@
         "eip-712",
         "l2",
         "ai-agents",
-        "natural-language"
+        "natural-language",
+        "sdk",
+        "scaffold",
+        "openapi",
+        "rust"
       ],
       "author": {
         "name": "aomi-labs",

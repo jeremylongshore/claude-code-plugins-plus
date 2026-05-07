@@ -852,18 +852,17 @@ sources:
       - '*.log'
 
   # ============================================================
-  # aomi-transact (aomi-labs)
+  # aomi (aomi-labs)
   # https://github.com/aomi-labs/skills
-  # Drive the Aomi CLI from natural-language prompts: chat,
-  # simulate, sign with account-abstraction-first execution
-  # across 25+ DeFi apps on EVM mainnets and L2s.
+  # Bundle: aomi-transact (drive the Aomi CLI on-chain) and
+  # aomi-build (scaffold Rust SDK crates from OpenAPI specs).
   # ============================================================
 
-  - name: aomi-transact
-    description: Drive the Aomi CLI from natural-language prompts — chat, simulate, sign with account-abstraction-first execution across swaps, lending, bridges, staking, perps, and CEX read on EVM mainnets and L2s.
+  - name: aomi
+    description: 'Aomi for AI agents — drive the Aomi CLI from natural-language prompts (chat, simulate, sign on-chain transactions with account-abstraction-first execution) and scaffold new Aomi apps from API specs. Bundle ships two skills: aomi-transact (run on-chain across 25+ DeFi apps on EVM mainnets and L2s) and aomi-build (scaffold Rust SDK crates from OpenAPI/Swagger specs).'
     repo: aomi-labs/skills
-    source_path: aomi-transact
-    target_path: plugins/crypto/aomi-transact
+    source_path: bundle/aomi
+    target_path: plugins/crypto/aomi
     author:
       name: aomi-labs
       github: aomi-labs
@@ -876,9 +875,7 @@ sources:
       - 'LICENSE'
       - 'SECURITY.md'
       - '.claude-plugin/**'
-      - 'agents/**'
-      - 'references/**'
-      - 'templates/**'
+      - 'skills/**'
     exclude:
       - 'node_modules/**'
       - '.git/**'
