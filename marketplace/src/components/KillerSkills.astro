@@ -15,7 +15,6 @@ const isExternal = skill.link.startsWith('http');
   data-external={isExternal ? 'true' : 'false'}
 >
   <div class="killer-top">
-    <span class="killer-grade">{skill.grade}</span>
     <span class="killer-category">{skill.category}</span>
   </div>
 
@@ -97,29 +96,13 @@ const isExternal = skill.link.startsWith('http');
   .killer-card:hover {
     transform: translateY(-3px);
     border-color: var(--primary-border);
-    box-shadow: 0 8px 24px oklch(0% 0 0 / 0.25), 0 0 0 1px var(--primary-tint);
+    
   }
 
   .killer-top {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-  }
-
-  .killer-grade {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    background: var(--primary);
-    color: white;
-    font-family: 'Inter Tight', system-ui, sans-serif;
-    font-size: 1.1rem;
-    font-weight: 700;
-    border-radius: 8px;
-    letter-spacing: 0.02em;
-    flex-shrink: 0;
   }
 
   .killer-category {

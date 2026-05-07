@@ -192,21 +192,6 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
         }
 
         /* Spotlight eyebrow pill */
-        .spotlight-badge {
-            display: inline-block;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--primary);
-            background: var(--primary-tint);
-            border: 1px solid var(--primary-tint-border);
-            padding: 0.35rem 0.75rem;
-            border-radius: 9999px;
-            margin-bottom: 1rem;
-        }
-
         /* Subtitle */
         .hero-subtitle {
             font-family: 'Inter', system-ui, sans-serif;
@@ -265,7 +250,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
 
         .search-container:focus-within {
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgb(250 255 105 / 0.12);
+            
         }
 
         .search-icon {
@@ -349,7 +334,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
             background: var(--surface-2);
             border: 1.5px solid var(--border);
             border-radius: 12px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+            
             max-height: 400px;
             overflow-y: auto;
             z-index: 100;
@@ -462,15 +447,6 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
             background: var(--surface);
         }
 
-        .section-label {
-            font-family: 'JetBrains Mono', monospace;
-            color: var(--primary);
-            font-size: 0.75rem;
-            font-weight: 500;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            margin-bottom: 1rem;
-        }
 
         .section-title {
             font-size: clamp(1.8rem, 3vw, 2.5rem);
@@ -515,7 +491,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
         .feature-card:hover {
             transform: translateY(-6px);
             border-color: var(--border-bright);
-            box-shadow: 0 16px 48px rgba(234, 170, 0, 0.08);
+            
         }
 
         .feature-card:hover::before {
@@ -569,19 +545,6 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
             margin-bottom: 3rem;
         }
 
-        .saas-badge {
-            background: rgb(250 255 105 / 0.12);
-            color: var(--primary);
-            padding: 0.4rem 1rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            display: inline-block;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
         .saas-title {
             color: var(--text);
             font-size: clamp(2rem, 4vw, 2.8rem);
@@ -613,7 +576,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
 
         .saas-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+            
         }
 
         .saas-card-header {
@@ -734,7 +697,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
 
         .saas-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            
         }
 
         @media (max-width: 768px) {
@@ -759,19 +722,6 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
             max-width: 1200px;
             margin: 0 auto;
             text-align: center;
-        }
-
-        .cowork-home-badge {
-            background: oklch(72% 0.18 160 / 0.12);
-            color: var(--accent);
-            padding: 0.4rem 1rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            display: inline-block;
-            font-family: 'JetBrains Mono', monospace;
         }
 
         .cowork-home-title {
@@ -810,7 +760,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
 
         .cowork-home-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+            
             color: var(--surface);
         }
 
@@ -886,7 +836,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
 
         .signup-form button:hover {
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(234, 170, 0, 0.3);
+            
         }
 
         .signup-note {
@@ -941,12 +891,12 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
         .product-card:hover {
             border-color: rgba(249, 115, 22, 0.3);
             transform: translateY(-4px);
-            box-shadow: 0 12px 40px rgba(249, 115, 22, 0.1);
+            
         }
 
         .product-card.service-card:hover {
             border-color: rgba(63, 185, 80, 0.3);
-            box-shadow: 0 12px 40px rgba(63, 185, 80, 0.1);
+            
         }
 
         .product-card:hover::before {
@@ -1036,7 +986,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
 
         .product-cta:hover {
             transform: translateY(-1px);
-            box-shadow: 0 4px 20px rgba(249, 115, 22, 0.4);
+            
         }
 
         .product-cta.service-cta {
@@ -1044,7 +994,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
         }
 
         .product-cta.service-cta:hover {
-            box-shadow: 0 4px 20px rgba(63, 185, 80, 0.4);
+            
         }
 
         @media (max-width: 768px) {
@@ -1264,9 +1214,6 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
 
             <!-- Installation Instructions -->
             <div class="install-box">
-                <div style="text-align: center; margin-bottom: 1.5rem;">
-                    <span style="display: inline-block; background: var(--signal-tint); border: 1px solid var(--signal-edge); color: var(--gold); padding: 0.35rem 0.75rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; font-family: 'JetBrains Mono', monospace;">Get Started in 30 Seconds</span>
-                </div>
 
                 <!-- CLI Install - PRIMARY -->
                 <div style="margin-bottom: 1.5rem;">
@@ -1306,7 +1253,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
                 <form data-signup-form="killer-skills" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
                     <input type="email" name="email" placeholder="you@example.com" required style="padding: 0.5rem 0.75rem; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); font-size: 0.85rem; min-width: 200px;" />
                     <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0;width:0;" />
-                    <button type="submit" style="padding: 0.5rem 1rem; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 0.85rem; cursor: pointer;">Subscribe</button>
+                    <button type="submit" style="padding: 0.5rem 1rem; background: var(--primary); color: #0a0a0c; border: none; border-radius: 8px; font-weight: 600; font-size: 0.85rem; cursor: pointer;">Subscribe</button>
                 </form>
             </div>
 
@@ -1323,7 +1270,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
                     <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true"
                         style="position:absolute;left:-9999px;opacity:0;height:0;width:0;" />
                     <button type="submit"
-                        style="padding: 0.5rem 1rem; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 0.85rem; cursor: pointer; white-space: nowrap;">Submit</button>
+                        style="padding: 0.5rem 1rem; background: var(--primary); color: #0a0a0c; border: none; border-radius: 8px; font-weight: 600; font-size: 0.85rem; cursor: pointer; white-space: nowrap;">Submit</button>
                 </form>
             </div>
         </div>
@@ -1341,7 +1288,6 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
     <!-- Cowork Downloads Section -->
     <section class="cowork-home-section">
         <div class="cowork-home-container">
-            <span class="cowork-home-badge">NEW - For Cowork Users</span>
             <h2 class="cowork-home-title">Download Plugin Packs</h2>
             <p class="cowork-home-subtitle">One-click downloads for Claude Cowork. No terminal needed.</p>
 
@@ -1362,7 +1308,6 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
     <section class="saas-packs-section">
         <div class="saas-packs-container">
             <div class="saas-packs-header">
-                <span class="saas-badge">New Release</span>
                 <h2 class="saas-title">SaaS Skill Packs</h2>
                 <p class="saas-subtitle">
                     Deep integration packs for your favorite platforms. 24-30 skills each for complete coverage.
@@ -1378,7 +1323,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
                         </div>
                         <div>
                             <h3>Supabase</h3>
-                            <span class="saas-tier" style="color: #3ECF8E;">Flagship+ &bull; 30 Skills</span>
+                            <span class="saas-tier" style="color: #3ECF8E;">30 Skills</span>
                         </div>
                     </div>
                     <p class="saas-desc">
@@ -1398,7 +1343,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
                         </div>
                         <div>
                             <h3>Vercel</h3>
-                            <span class="saas-tier">Flagship+ &bull; 30 Skills</span>
+                            <span class="saas-tier">30 Skills</span>
                         </div>
                     </div>
                     <p class="saas-desc">
@@ -1418,7 +1363,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
                         </div>
                         <div>
                             <h3>Sentry</h3>
-                            <span class="saas-tier" style="color: #8b5cf6;">Flagship+ &bull; 30 Skills</span>
+                            <span class="saas-tier" style="color: #8b5cf6;">30 Skills</span>
                         </div>
                     </div>
                     <p class="saas-desc">
@@ -1438,7 +1383,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
                         </div>
                         <div>
                             <h3>Cursor</h3>
-                            <span class="saas-tier" style="color: #8b5cf6;">Flagship+ &bull; 30 Skills</span>
+                            <span class="saas-tier" style="color: #8b5cf6;">30 Skills</span>
                         </div>
                     </div>
                     <p class="saas-desc">
@@ -1458,7 +1403,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
                         </div>
                         <div>
                             <h3>OpenRouter</h3>
-                            <span class="saas-tier" style="color: #6366f1;">Flagship+ &bull; 30 Skills</span>
+                            <span class="saas-tier" style="color: #6366f1;">30 Skills</span>
                         </div>
                     </div>
                     <p class="saas-desc">
@@ -1478,7 +1423,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
                         </div>
                         <div>
                             <h3>Groq</h3>
-                            <span class="saas-tier" style="color: #f55036;">Flagship &bull; 24 Skills</span>
+                            <span class="saas-tier" style="color: #f55036;">24 Skills</span>
                         </div>
                     </div>
                     <p class="saas-desc">
@@ -1497,7 +1442,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
                         </div>
                         <div>
                             <h3>LangChain</h3>
-                            <span class="saas-tier" style="color: #3ECF8E;">Flagship &bull; 24 Skills</span>
+                            <span class="saas-tier" style="color: #3ECF8E;">24 Skills</span>
                         </div>
                     </div>
                     <p class="saas-desc">
@@ -1516,7 +1461,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
                         </div>
                         <div>
                             <h3>PostHog</h3>
-                            <span class="saas-tier" style="color: #1d4aff;">Flagship &bull; 24 Skills</span>
+                            <span class="saas-tier" style="color: #1d4aff;">24 Skills</span>
                         </div>
                     </div>
                     <p class="saas-desc">
@@ -1550,7 +1495,6 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
     <!-- Learn with Jeremy -->
     <section class="products-section" id="training" style="padding: 3rem 2rem;">
         <div style="text-align: center;">
-            <div class="section-label">Learn with Jeremy</div>
             <h2 class="section-title" style="margin-left: auto; margin-right: auto;">Level Up Your Claude Code Skills</h2>
         </div>
 
@@ -1575,7 +1519,6 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
 
     <!-- Quick-Start Collections -->
     <section class="features" style="padding: 3rem 2rem;">
-        <div class="section-label">Quick Start</div>
         <h2 class="section-title">Curated Plugin Collections</h2>
         <p style="color: var(--text-2); margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">
             Pre-built bundles for common use cases. One-click install for instant productivity.
@@ -1594,7 +1537,6 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
 
     <!-- Features Section -->
     <section class="features" id="features">
-        <div class="section-label">Why Choose Our Marketplace</div>
         <h2 class="section-title">Community-driven, production-ready plugins</h2>
 
         <div class="features-grid reveal-stagger">
@@ -1634,7 +1576,6 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
     <!-- Email Signup -->
     <section class="signup-section">
         <div class="signup-inner reveal">
-            <div class="section-label">STAY SHARP</div>
             <h2 class="section-title signup-title">Agent Skills in Your Inbox</h2>
             <p class="signup-desc">Weekly deep-dives on agent skills, new plugin drops, and workflow tips.</p>
             <form data-signup-form="homepage" class="signup-form">
@@ -1649,7 +1590,6 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
     <!-- Products for Sale -->
     <section class="products-section" id="products">
         <div style="text-align: center;">
-            <div class="section-label">Products</div>
             <h2 class="section-title" style="margin-left: auto; margin-right: auto;">Pre-Built AI Agents</h2>
         </div>
 

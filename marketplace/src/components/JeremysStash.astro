@@ -8,8 +8,6 @@ const items = stashData.items;
   {items.map((item) => (
     <div class="stash-card" data-slug={item.slug}>
       <div class="stash-top">
-        <span class="stash-grade">{item.grade}</span>
-        {item.new && <span class="stash-new-badge">NEW</span>}
         <div class="stash-tags">
           {item.tags.map((tag) => (
             <span class="stash-tag">{tag}</span>
@@ -54,20 +52,10 @@ const items = stashData.items;
     overflow: hidden;
   }
 
-  .stash-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(90deg, var(--primary) 0%, oklch(70% 0.14 45) 100%);
-  }
-
   .stash-card:hover {
     transform: translateY(-2px);
     border-color: var(--primary-border);
-    box-shadow: 0 6px 20px oklch(0% 0 0 / 0.2);
+    
   }
 
   .stash-top {
@@ -77,32 +65,6 @@ const items = stashData.items;
     flex-wrap: wrap;
   }
 
-  .stash-grade {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 30px;
-    height: 30px;
-    background: var(--primary);
-    color: white;
-    font-family: 'Inter Tight', system-ui, sans-serif;
-    font-size: 0.95rem;
-    font-weight: 700;
-    border-radius: 6px;
-    flex-shrink: 0;
-  }
-
-  .stash-new-badge {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.6rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: oklch(95% 0 0);
-    background: oklch(55% 0.2 145);
-    padding: 0.15rem 0.45rem;
-    border-radius: 4px;
-  }
 
   .stash-tags {
     display: flex;

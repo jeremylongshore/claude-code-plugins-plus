@@ -33,14 +33,6 @@ const pageDescription = `Search all ${_rawStats.totalPlugins} plugins and ${_raw
       position: relative;
     }
 
-    .explorer-hero::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse at 20% 0%, rgb(250 255 105 / 0.08) 0%, transparent 60%);
-      pointer-events: none;
-    }
-
     .explorer-title {
       font-size: clamp(2.5rem, 5vw, 3.5rem);
       font-weight: 700;
@@ -70,12 +62,12 @@ const pageDescription = `Search all ${_rawStats.totalPlugins} plugins and ${_raw
       font-family: 'Inter', system-ui, sans-serif;
       background: var(--surface-1);
       color: var(--text);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+      
     }
 
     .hero-search-input:focus {
       outline: none;
-      box-shadow: 0 8px 40px rgba(0,0,0,0.3);
+      
     }
 
     .hero-search-input::placeholder {
@@ -141,7 +133,7 @@ const pageDescription = `Search all ${_rawStats.totalPlugins} plugins and ${_raw
     .type-btn.active {
       background: var(--surface-1);
       color: var(--gold);
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      
     }
 
     .filter-select {
@@ -210,14 +202,14 @@ const pageDescription = `Search all ${_rawStats.totalPlugins} plugins and ${_raw
       background: var(--surface-2);
       border-radius: 12px;
       border: none;
-      box-shadow: 0 2px 8px oklch(0% 0 0 / 0.12), 0 1px 3px oklch(0% 0 0 / 0.08);
+      
       transition: all 0.3s var(--transition-smooth);
       position: relative;
     }
 
     .result-card:hover {
       transform: translateY(-3px);
-      box-shadow: 0 12px 32px oklch(0% 0 0 / 0.2), 0 4px 12px oklch(0% 0 0 / 0.1);
+      
     }
 
     .result-card-link {
@@ -281,7 +273,7 @@ const pageDescription = `Search all ${_rawStats.totalPlugins} plugins and ${_raw
     .compare-toggle-btn.active {
       background: var(--brand-orange);
       border-color: var(--brand-orange);
-      color: white;
+      color: #0a0a0c;
     }
 
     .compare-toggle-btn.active:hover {
@@ -358,7 +350,7 @@ const pageDescription = `Search all ${_rawStats.totalPlugins} plugins and ${_raw
     .result-card.keyboard-focused {
       outline: 3px solid var(--gold);
       outline-offset: 2px;
-      box-shadow: 0 0 0 6px rgba(234, 170, 0, 0.2);
+      
     }
 
     .result-type-badge {

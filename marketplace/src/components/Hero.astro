@@ -75,17 +75,6 @@ const { totalPlugins, totalCategories } = Astro.props;
     overflow: hidden;
   }
 
-  .hero::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(ellipse at top left, rgb(250 255 105 / 0.10) 0%, transparent 65%);
-    pointer-events: none;
-  }
-
   .hero-content {
     position: relative;
     z-index: 1;
@@ -195,7 +184,7 @@ const { totalPlugins, totalCategories } = Astro.props;
 
   .install-code-wrapper:hover {
     border-color: var(--primary);
-    box-shadow: 0 0 0 1px var(--primary);
+    
   }
 
   .install-code {
@@ -220,7 +209,7 @@ const { totalPlugins, totalCategories } = Astro.props;
   .copy-btn {
     flex-shrink: 0;
     background: var(--primary);
-    color: white;
+    color: #0a0a0c;
     border: none;
     padding: 0.5rem 1rem;
     border-radius: 0.5rem;
@@ -236,7 +225,7 @@ const { totalPlugins, totalCategories } = Astro.props;
   .copy-btn:hover {
     background: var(--primary-dark);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgb(250 255 105 / 0.30);
+    
   }
 
   .copy-btn:active {
