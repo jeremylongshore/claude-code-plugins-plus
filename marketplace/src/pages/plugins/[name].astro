@@ -7,6 +7,7 @@ import FaqAccordion from '../../components/FaqAccordion.astro';
 import DetailCta from '../../components/DetailCta.astro';
 import skillsCatalog from '../../data/skills-catalog.json';
 import readmeSections from '../../data/readme-sections.json';
+import jrigData from '../../data/jrig-data.json';
 
 export async function getStaticPaths() {
   const catalogPath = join(process.cwd(), '../.claude-plugin/marketplace.extended.json');
@@ -18,7 +19,15 @@ export async function getStaticPaths() {
   }));
 }
 
-const { plugin } = Astro.props;
+const { plugin: rawPlugin } = Astro.props;
+
+// Overlay JRig behavioral-eval results from forge_proofs (joined at build
+// time by `scripts/enrich-jrig-data.mjs`). Detail page renders the
+// JRig-Verified badge from `plugin.jrig`; absent entries leave the badge
+// hidden via the existing `plugin.jrig?.verified` optional chain.
+const plugin = (jrigData as Record<string, any>)[rawPlugin.name]
+  ? { ...rawPlugin, jrig: (jrigData as Record<string, any>)[rawPlugin.name] }
+  : rawPlugin;
 
 const MARKETPLACE_SLUG = 'claude-code-plugins-plus';
 const installCommand = `/plugin install ${plugin.name}@${MARKETPLACE_SLUG}`;
