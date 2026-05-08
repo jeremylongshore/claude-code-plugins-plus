@@ -2507,6 +2507,260 @@ def check_line_character_length(body: str) -> Tuple[List[str], List[str]]:
     return errors, warnings
 
 
+# ============================================================================
+# Tier 2: Static Production Gate
+# ============================================================================
+# Five binary checks beyond the 100-point rubric, framed as production-readiness
+# gates. Run alongside the standard tier checks; surface as errors at marketplace
+# tier when they fail. See `~/.claude/skills/validate-skillmd/SKILL.md` § Tier 2
+# for the consumer-side framing. The plan reference is "Use the Printing Press
+# to Learn" Phase 2.
+#
+# Each check is intentionally conservative — false-negatives are preferred to
+# false-positives so legitimate skills don't get blocked by an over-eager gate.
+
+# Tools that, when declared without scoping AND combined with file-write or
+# network-fetch, raise a tool-safety concern. Skills that legitimately need
+# unscoped Bash + Write/WebFetch should justify with a "Safety Justification"
+# section in the body (the heuristic checks for one).
+TIER2_DANGEROUS_BASH_COMBOS = ("Write", "WebFetch")
+TIER2_AUTH_INDICATORS = (
+    "curl ",
+    "fetch(",
+    "API_KEY",
+    "TOKEN",
+    "OAuth",
+    "Bearer ",
+    "mcp__",
+)
+TIER2_AUTH_DOCS_MARKERS = (
+    "authentication",
+    "auth method",
+    "api key",
+    "bearer token",
+    "oauth flow",
+    "credentials",
+    "x-api-key",
+)
+TIER2_ORCHESTRATION_SMELLS = (
+    "spawn another skill",
+    "delegate to /",
+    "orchestrate across",
+    "self-coordinate",
+    "spawns multiple skills",
+    "invokes other skills as primary",
+)
+TIER2_BASE_TOOL_PATTERN = re.compile(r"\b(Read|Write|Edit|Bash|Glob|Grep|WebFetch|WebSearch|Task|TodoWrite|NotebookEdit|AskUserQuestion|Skill)\b")
+TIER2_LITERAL_FALSE_PATTERN = re.compile(r"^\s*(if false|if \[ false \]|elif false)\b", re.MULTILINE)
+
+
+def _tier2_extract_declared_base_tools(fm: dict) -> set:
+    """Return the set of base tool names declared in allowed-tools.
+
+    Handles all three accepted forms (CSV string, space-separated string, YAML
+    list) per schema 3.3.1. Strips Bash() scoping wrappers to get just the
+    base tool name (`Bash(git:*)` → `Bash`).
+    """
+    tools_value = fm.get("allowed-tools") if fm else None
+    if not tools_value:
+        return set()
+    parsed = parse_allowed_tools(tools_value)
+    base_tools: set = set()
+    for tool in parsed:
+        m = TIER2_BASE_TOOL_PATTERN.match(tool)
+        if m:
+            base_tools.add(m.group(1))
+    return base_tools
+
+
+def tier2_check_allowed_tools_accuracy(body: str, fm: dict) -> Tuple[List[str], List[str]]:
+    """Tier 2.1: every declared tool is actually referenced in the skill body.
+
+    Over-permissive declarations are an attack-surface concern. Returns
+    (errors, warnings) where any unused declared tool is a warning (not an
+    error — refactors can briefly leave declarations dangling without breaking
+    the skill).
+    """
+    errors: List[str] = []
+    warnings: List[str] = []
+    declared = _tier2_extract_declared_base_tools(fm)
+    for tool in sorted(declared):
+        # Each declared tool should appear somewhere in the body. We grep for
+        # the bare token, allowing tool name to be referenced in code snippets,
+        # prose, or examples. Bash is special-cased — virtually every skill
+        # body mentions "bash" in code fences.
+        if tool == "Bash":
+            continue
+        if tool not in body:
+            warnings.append(
+                f"[tier2:allowed-tools-accuracy] Tool '{tool}' is declared in allowed-tools "
+                f"but never referenced in the skill body — over-permissive or stale declaration"
+            )
+    return errors, warnings
+
+
+def tier2_check_auth_documented(body: str) -> Tuple[List[str], List[str]]:
+    """Tier 2.2: if the skill mentions an external API, an auth method must be documented.
+
+    Heuristic: presence of API indicators (curl, fetch, MCP server, OAuth,
+    bearer tokens) requires at least one documentation marker
+    (authentication / auth method / api key / etc.) somewhere in the body.
+    """
+    errors: List[str] = []
+    warnings: List[str] = []
+    body_lower = body.lower()
+    has_api_indicator = any(ind.lower() in body_lower for ind in TIER2_AUTH_INDICATORS)
+    if not has_api_indicator:
+        return errors, warnings
+    has_auth_doc = any(marker in body_lower for marker in TIER2_AUTH_DOCS_MARKERS)
+    if not has_auth_doc:
+        warnings.append(
+            "[tier2:auth-documented] External API surface referenced (curl/fetch/MCP/OAuth/etc.) "
+            "but no authentication method documented — add an Auth section or reference auth.md"
+        )
+    return errors, warnings
+
+
+def tier2_check_dead_code(body: str) -> Tuple[List[str], List[str]]:
+    """Tier 2.3: detect literal-false branches and unreachable conditionals.
+
+    Conservative — only flags syntactically-obvious dead code. Real
+    unreachable-branch analysis would require parsing the bash AST, which
+    is out of scope for a deterministic gate.
+    """
+    errors: List[str] = []
+    warnings: List[str] = []
+    matches = list(TIER2_LITERAL_FALSE_PATTERN.finditer(body))
+    for m in matches[:3]:  # Cap surfacing to 3
+        line_no = body[: m.start()].count("\n") + 1
+        warnings.append(
+            f"[tier2:dead-code] Literal-false branch found at line ~{line_no}: '{m.group(0).strip()}'"
+        )
+    return errors, warnings
+
+
+def tier2_check_tool_safety(body: str, fm: dict) -> Tuple[List[str], List[str]]:
+    """Tier 2.4: dangerous tool combos require a Safety Justification.
+
+    Unscoped Bash + Write/WebFetch is the canonical curl-pipe-shell exploit
+    surface. Skills that need this combo legitimately should explain why
+    in a body section so reviewers can audit.
+    """
+    errors: List[str] = []
+    warnings: List[str] = []
+    tools_value = fm.get("allowed-tools") if fm else None
+    if not tools_value:
+        return errors, warnings
+    parsed = parse_allowed_tools(tools_value)
+
+    # Detect unscoped Bash (presence of "Bash" without paren-scoping)
+    has_unscoped_bash = any(t.strip() == "Bash" for t in parsed)
+    if not has_unscoped_bash:
+        return errors, warnings
+
+    # Check companion dangerous tools
+    has_dangerous_companion = any(
+        any(t.strip().startswith(combo) for combo in TIER2_DANGEROUS_BASH_COMBOS)
+        for t in parsed
+    )
+    if not has_dangerous_companion:
+        return errors, warnings
+
+    # Look for safety justification in body
+    body_lower = body.lower()
+    has_justification = (
+        "safety justification" in body_lower
+        or "why unscoped bash" in body_lower
+        or "why bash + " in body_lower
+    )
+    if not has_justification:
+        errors.append(
+            "[tier2:tool-safety] Unscoped Bash + Write/WebFetch declared without a Safety "
+            "Justification section — high-risk combo. Add `## Safety Justification` explaining why."
+        )
+    return errors, warnings
+
+
+def tier2_check_orchestration_bounds(body: str) -> Tuple[List[str], List[str]]:
+    """Tier 2.5: skills should not orchestrate other skills as primary control flow.
+
+    Skills do one job. Cross-skill orchestration is plugin-layer concern.
+    This check flags claims of multi-skill orchestration — multi-agent
+    synthesis WITHIN one skill invocation (calling subagents to specialize)
+    is fine and expected.
+
+    False-positive avoidance:
+    - Skip lines inside code fences (descriptive examples, not actual claims)
+    - Skip lines with negation markers ('not', 'never', 'avoid', "don't",
+      'must not', 'should not', 'NOT', 'forbidden', 'disallow') — these are
+      documenting the anti-pattern, not committing it
+    - Skip lines starting with '>' (block quotes — typically didactic)
+    """
+    errors: List[str] = []
+    warnings: List[str] = []
+    negation_markers = (
+        " not ",
+        "never",
+        "avoid",
+        "don't",
+        "do not",
+        "must not",
+        "should not",
+        "forbidden",
+        "disallow",
+        "anti-pattern",
+        "antipattern",
+        "wrong:",
+        "bad:",
+    )
+    in_fence = False
+    for line in body.splitlines():
+        if CODE_FENCE_PATTERN.match(line):
+            in_fence = not in_fence
+            continue
+        if in_fence:
+            continue
+        stripped = line.strip()
+        if stripped.startswith(">") or stripped.startswith("|"):
+            # Block quotes and table cells often discuss anti-patterns descriptively
+            continue
+        line_lower = line.lower()
+        # Skip negated lines
+        if any(neg in line_lower for neg in negation_markers):
+            continue
+        for smell in TIER2_ORCHESTRATION_SMELLS:
+            if smell in line_lower:
+                errors.append(
+                    f"[tier2:orchestration-bounds] Body contains orchestration smell '{smell}' — "
+                    f"cross-skill orchestration is plugin-layer concern, not skill-layer"
+                )
+                return errors, warnings  # one is enough
+    return errors, warnings
+
+
+def validate_tier2_production_gate(
+    path: Path, body: str, fm: dict
+) -> Tuple[List[str], List[str], List[str]]:
+    """Run all 5 Tier 2 production-gate checks and aggregate results.
+
+    Returns (errors, warnings, infos). Infos report which checks ran (always
+    5) for transparency in the validator output.
+    """
+    errors: List[str] = []
+    warnings: List[str] = []
+    infos: List[str] = ["[tier2] Production gate ran 5 checks: allowed-tools accuracy, auth documented, dead code, tool safety, orchestration bounds"]
+
+    e1, w1 = tier2_check_allowed_tools_accuracy(body, fm)
+    e2, w2 = tier2_check_auth_documented(body)
+    e3, w3 = tier2_check_dead_code(body)
+    e4, w4 = tier2_check_tool_safety(body, fm)
+    e5, w5 = tier2_check_orchestration_bounds(body)
+
+    errors.extend(e1 + e2 + e3 + e4 + e5)
+    warnings.extend(w1 + w2 + w3 + w4 + w5)
+    return errors, warnings, infos
+
+
 def detect_stub_sections(body: str) -> Tuple[List[str], List[str]]:
     """
     Detect stub or empty sections in SKILL.md body.
@@ -2903,6 +3157,21 @@ def validate_skill(path: Path, tier: str = TIER_STANDARD) -> Dict[str, Any]:
     errors.extend(body_errors)
     warnings.extend(body_warnings)
     infos.extend(body_infos)
+
+    # Tier 2 — static production gate (5 binary checks).
+    # At marketplace tier these contribute errors/warnings; at standard tier
+    # they're info-only (visibility without blocking). Plan reference:
+    # "Use the Printing Press to Learn" Phase 2.
+    t2_errors, t2_warnings, t2_infos = validate_tier2_production_gate(path, body, fm)
+    if tier in (TIER_MARKETPLACE,):
+        errors.extend(t2_errors)
+        warnings.extend(t2_warnings)
+    else:
+        # Standard tier: surface as warnings instead of errors so the spec
+        # floor stays permissive per Anthropic.
+        warnings.extend(t2_errors)
+        warnings.extend(t2_warnings)
+    infos.extend(t2_infos)
 
     # Validate scripts
     script_errors, script_warnings = validate_scripts_exist(path, body)
@@ -4158,8 +4427,10 @@ def main() -> int:
     if total_errors > 0:
         print(f"\n❌ Validation FAILED with {total_errors} errors ({tier} tier)")
         if tier == TIER_MARKETPLACE:
-            print("\nTo fix: Address errors above. Marketplace polish fields are warnings, not errors.")
-            print("Use --standard for Anthropic-spec-only validation.")
+            print("\nTo fix: Address errors above. The IS marketplace tier requires the 8-field")
+            print("enterprise set (name, description, allowed-tools, version, author, license,")
+            print("compatibility, tags) per schema 3.3.0+ — missing fields are errors, not warnings.")
+            print("Use --standard for Anthropic-spec-only validation (name + description only).")
         return 1
     elif total_warnings > 0 and args.fail_on_warn:
         print(f"\n❌ Validation FAILED due to {total_warnings} warning(s) (--fail-on-warn)")
