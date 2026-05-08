@@ -8,6 +8,7 @@ import KillerSkills from '../components/KillerSkills.astro';
 import JeremysStash from '../components/JeremysStash.astro';
 import PartnerBar from '../components/PartnerBar.astro';
 import searchIndex from '../data/unified-search-index.json';
+import starterPack from '../data/starter-pack.json';
 
 // Dynamic stats from search index (updated at build time)
 const totalSkills = searchIndex.stats.totalSkills;
@@ -771,6 +772,149 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
         }
 
         /* ========================================
+           STARTER PACK SECTION (Phase 4C)
+           ======================================== */
+        .starter-pack-section {
+            padding: 4rem 2rem;
+            background: var(--surface);
+            border-top: 1px solid var(--border, var(--rule));
+            border-bottom: 1px solid var(--border, var(--rule));
+        }
+
+        .starter-pack-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .starter-pack-header {
+            text-align: left;
+            margin-bottom: 2.5rem;
+            max-width: 720px;
+        }
+
+        .starter-pack-title {
+            color: var(--text, var(--ink));
+            font-size: clamp(1.75rem, 3vw, 2.25rem);
+            font-weight: 700;
+            margin: 0 0 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .starter-pack-subtitle {
+            color: var(--text-2, var(--ink-2));
+            font-size: 1.05rem;
+            line-height: 1.55;
+            margin: 0;
+        }
+
+        .starter-pack-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .starter-card {
+            background: var(--surface-2, var(--panel));
+            border: 1px solid var(--border, var(--rule));
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            transition: border-color var(--duration-fast) var(--ease-out);
+        }
+
+        .starter-card:hover {
+            border-color: var(--accent, var(--signal));
+        }
+
+        .starter-card-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .starter-card-name {
+            color: var(--text, var(--ink));
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .starter-card-name:hover {
+            color: var(--accent, var(--signal));
+        }
+
+        .starter-card-category {
+            color: var(--text-3, var(--ink-2));
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+        }
+
+        .starter-card-tagline {
+            color: var(--text, var(--ink));
+            font-size: 1rem;
+            font-weight: 500;
+            font-style: italic;
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .starter-card-why {
+            color: var(--text-2, var(--ink-2));
+            font-size: 0.92rem;
+            line-height: 1.55;
+            margin: 0;
+        }
+
+        .starter-card-install {
+            margin-top: auto;
+            padding-top: 0.75rem;
+            border-top: 1px dashed var(--border, var(--rule));
+        }
+
+        .starter-card-install code {
+            color: var(--accent, var(--signal));
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.82rem;
+            user-select: all;
+            display: block;
+            word-break: break-all;
+            line-height: 1.4;
+        }
+
+        .starter-pack-meta {
+            color: var(--text-3, var(--ink-2));
+            font-size: 0.85rem;
+            margin: 0;
+        }
+
+        .starter-pack-explore-link {
+            color: var(--accent, var(--signal));
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .starter-pack-explore-link:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .starter-pack-section {
+                padding: 3rem 1.5rem;
+            }
+            .starter-pack-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ========================================
            EMAIL SIGNUP SECTION
            ======================================== */
         .signup-section {
@@ -1273,6 +1417,35 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
                         style="padding: 0.5rem 1rem; background: var(--primary); color: #0a0a0c; border: none; border-radius: 8px; font-weight: 600; font-size: 0.85rem; cursor: pointer; white-space: nowrap;">Submit</button>
                 </form>
             </div>
+        </div>
+    </section>
+
+    <!-- Start here — curated 5-plugin onboarding pack (Phase 4C) -->
+    <section class="starter-pack-section">
+        <div class="starter-pack-container">
+            <div class="starter-pack-header">
+                <h2 class="starter-pack-title">{starterPack.title}</h2>
+                <p class="starter-pack-subtitle">{starterPack.subtitle}</p>
+            </div>
+            <div class="starter-pack-grid">
+                {starterPack.plugins.map((plugin) => (
+                    <article class="starter-card">
+                        <header class="starter-card-header">
+                            <a href={`/plugins/${plugin.slug}`} class="starter-card-name">{plugin.name}</a>
+                            <span class="starter-card-category">{plugin.category}</span>
+                        </header>
+                        <p class="starter-card-tagline">{plugin.tagline}</p>
+                        <p class="starter-card-why">{plugin.why}</p>
+                        <div class="starter-card-install">
+                            <code>{plugin.install}</code>
+                        </div>
+                    </article>
+                ))}
+            </div>
+            <p class="starter-pack-meta">
+                Curated by {starterPack.meta.curated_by} · last updated {starterPack.meta.last_updated} ·
+                <a href="/explore" class="starter-pack-explore-link">explore all {totalPlugins} plugins →</a>
+            </p>
         </div>
     </section>
 
