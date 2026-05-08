@@ -1,0 +1,40 @@
+{
+  "name": "@intentsolutionsio/plane",
+  "version": "0.1.0",
+  "description": "Plane is a team behavior observatory — synthesize Plane API data into observations about how teams actually behave under pressure (cycle velocity vs. plan, ownership churn, reviewer gate strength, pri",
+  "keywords": [
+    "plane",
+    "project-management",
+    "team-behavior",
+    "observability",
+    "productivity",
+    "agent-skills",
+    "forge-generated",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/productivity/plane"
+  },
+  "homepage": "https://tonsofskills.com/plugins/plane",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install plane\\\\n  or /plugin install plane@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

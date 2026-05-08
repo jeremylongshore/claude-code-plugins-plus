@@ -123,7 +123,7 @@ Jump to any of the 18 categories below. Plugin counts are catalog totals — aut
 | 🧩  | [MCP Servers](#mcp-servers)                        |      10 |
 | 📦  | [Packages](#packages)                              |       5 |
 | ⚡  | [Performance](#performance)                        |      25 |
-| ✅  | [Productivity](#productivity)                      |      18 |
+| ✅  | [Productivity](#productivity)                      |      19 |
 | 🎁  | [SaaS Skill Packs](#saas-skill-packs)              |     106 |
 | 🔐  | [Security](#security)                              |      26 |
 | ✨  | [Skill Enhancers](#skill-enhancers)                |       8 |
@@ -490,7 +490,7 @@ Jump to any of the 18 categories below. Plugin counts are catalog totals — aut
 
 ### Productivity
 
-✅ **18 plugins** · category slug: `productivity`
+✅ **19 plugins** · category slug: `productivity`
 
 | Plugin                                     | Description                                                                                                                                 |
 | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -505,6 +505,7 @@ Jump to any of the 18 categories below. Plugin counts are catalog totals — aut
 | `navigating-github`                        | First-time GitHub setup and interactive git learning. Walks users from zero to a working GitHub repo, then teaches git through 9 hands-on…  |
 | `neurodivergent-visual-org`                | Create ADHD-friendly visual organizational tools (Mermaid diagrams) optimized for neurodivergent thinking patterns with accessibility modes |
 | `overnight-dev`                            | Run Claude autonomously for 6-8 hours overnight using Git hooks that enforce TDD - wake up to fully tested features                         |
+| `plane`                                    | Plane is a team behavior observatory — synthesizes Plane API data into observations about how teams actually behave under pressure (cycle…  |
 | `pm-ai-partner`                            | 12 PM-specific agent skills, 6 workflow commands, 3 automation hooks for Product Managers                                                   |
 | `prettier-markdown-hook`                   | Automatically format markdown files with prettier when Claude stops responding, with configurable organization and path exclusions          |
 | `travel-assistant`                         | Intelligent travel assistant with real-time weather, currency conversion, timezone info, and AI-powered itinerary planning. Your complete…  |

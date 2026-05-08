@@ -8184,6 +8184,26 @@
       "license": "MIT"
     },
     {
+      "name": "plane",
+      "source": "./plugins/productivity/plane",
+      "description": "Plane is a team behavior observatory — synthesizes Plane API data into observations about how teams actually behave under pressure (cycle velocity vs. plan, ownership churn, reviewer gate strength, priority drift, cross-project load). Reads from the live mcp__plane MCP server.",
+      "version": "0.1.0",
+      "category": "productivity",
+      "keywords": [
+        "plane",
+        "project-management",
+        "team-behavior",
+        "observability",
+        "productivity",
+        "agent-skills",
+        "forge-generated"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      }
+    },
+    {
       "name": "local-tts",
       "source": "./plugins/ai-ml/local-tts",
       "description": "Offline text-to-speech via VoxCPM2 — 30 languages, voice design, voice cloning. Runs locally on Apple Silicon.",

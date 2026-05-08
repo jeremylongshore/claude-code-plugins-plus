@@ -2804,7 +2804,7 @@
     {
       "name": "engineer-design-diagram",
       "source": "./plugins/devops/engineer-design-diagram",
-      "description": "Generate production-grade engineering design diagrams (architecture, sequence, delta, drift) as self-contained dark-themed HTML files with accessible inline SVG. Grounds every diagram in real repo topology via DCI — package manifests, docker-compose, k8s, terraform, import graph. Four modes: generate, diff, trace, watch. Semantic OKLCH palette; Mermaid fallback for large graphs.",
+      "description": "Generate production-grade engineering design diagrams (architecture, sequence, delta, drift) as self-contained dark-themed HTML files with accessible inline SVG. Grounds every diagram in real repo topology via DCI \u2014 package manifests, docker-compose, k8s, terraform, import graph. Four modes: generate, diff, trace, watch. Semantic OKLCH palette; Mermaid fallback for large graphs.",
       "version": "0.2.0",
       "category": "devops",
       "keywords": [
@@ -3104,7 +3104,7 @@
     {
       "name": "freshie-inventory-manager",
       "source": "./plugins/database/freshie-inventory-manager",
-      "description": "Interactive command center for the freshie ecosystem inventory database — conversational wizard with subagents for discovery scans, compliance grading, batch remediation, querying, reporting, and email PDF delivery across 50 tables of plugin/skill/pack metadata",
+      "description": "Interactive command center for the freshie ecosystem inventory database \u2014 conversational wizard with subagents for discovery scans, compliance grading, batch remediation, querying, reporting, and email PDF delivery across 50 tables of plugin/skill/pack metadata",
       "version": "1.0.0",
       "category": "database",
       "keywords": [
@@ -4566,7 +4566,7 @@
     {
       "name": "code-cleanup",
       "source": "./plugins/testing/code-cleanup",
-      "description": "Comprehensive codebase cleanup across 11 quality dimensions — dead code, duplication, weak types, circular deps, defensive cruft, legacy code, AI slop, type consolidation, security, performance, and async patterns. Confidence scoring and build verification gates.",
+      "description": "Comprehensive codebase cleanup across 11 quality dimensions \u2014 dead code, duplication, weak types, circular deps, defensive cruft, legacy code, AI slop, type consolidation, security, performance, and async patterns. Confidence scoring and build verification gates.",
       "version": "1.0.0",
       "category": "testing",
       "keywords": [
@@ -4622,7 +4622,7 @@
     {
       "name": "promptbook",
       "source": "./plugins/business-tools/promptbook",
-      "description": "Opt-in session analytics for Claude Code. After setup consent, tracks prompts, tokens, build time, and lines changed per session. Publishes shareable build cards on promptbook.gg. Strict consent gating — no data transmitted without explicit opt-in. Background submission after session end.",
+      "description": "Opt-in session analytics for Claude Code. After setup consent, tracks prompts, tokens, build time, and lines changed per session. Publishes shareable build cards on promptbook.gg. Strict consent gating \u2014 no data transmitted without explicit opt-in. Background submission after session end.",
       "version": "1.4.0",
       "category": "business-tools",
       "keywords": [
@@ -6226,7 +6226,7 @@
     {
       "name": "jeremy-google-adk",
       "source": "./plugins/ai-ml/jeremy-google-adk",
-      "description": "Google Agent Development Kit (ADK) starter for building production AI agents — ReAct single-agent or multi-agent orchestration (Sequential/Parallel/Loop), tool wiring, evaluation harness, and optional Vertex AI Agent Engine deployment.",
+      "description": "Google Agent Development Kit (ADK) starter for building production AI agents \u2014 ReAct single-agent or multi-agent orchestration (Sequential/Parallel/Loop), tool wiring, evaluation harness, and optional Vertex AI Agent Engine deployment.",
       "version": "2.0.0",
       "category": "ai-ml",
       "keywords": [
@@ -7537,7 +7537,7 @@
     {
       "name": "langchain-pack",
       "source": "./plugins/saas-packs/langchain-pack",
-      "description": "Legacy LangChain integration skill pack with 24 skills covering chains, agents, RAG pipelines, memory, and LLM application development. Deprecated — use langchain-py-pack or langchain-ts-pack.",
+      "description": "Legacy LangChain integration skill pack with 24 skills covering chains, agents, RAG pipelines, memory, and LLM application development. Deprecated \u2014 use langchain-py-pack or langchain-ts-pack.",
       "version": "1.0.0",
       "category": "saas-packs",
       "keywords": [
@@ -8296,7 +8296,7 @@
     {
       "name": "b12-claude-plugin",
       "source": "./plugins/community/b12-claude-plugin",
-      "description": "B12 Website Generator — an official plugin by B12.io. Ships a single auto-activating skill (website-generator) that collects a business name and description, then generates a production-ready B12 website signup link instantly.",
+      "description": "B12 Website Generator \u2014 an official plugin by B12.io. Ships a single auto-activating skill (website-generator) that collects a business name and description, then generates a production-ready B12 website signup link instantly.",
       "version": "1.0.0",
       "category": "community",
       "keywords": [
@@ -11112,7 +11112,7 @@
     {
       "name": "pr-to-spec",
       "source": "./plugins/mcp/pr-to-spec",
-      "description": "The flight envelope for agentic coding — convert PRs and local diffs into structured, agent-consumable specs with intent drift detection",
+      "description": "The flight envelope for agentic coding \u2014 convert PRs and local diffs into structured, agent-consumable specs with intent drift detection",
       "version": "0.8.0",
       "category": "mcp",
       "repository": "https://github.com/jeremylongshore/pr-to-prompt",
@@ -11135,7 +11135,7 @@
     {
       "name": "slack-channel",
       "source": "./plugins/mcp/slack-channel",
-      "description": "Two-way Slack channel for Claude Code — chat from Slack DMs and channels via Socket Mode",
+      "description": "Two-way Slack channel for Claude Code \u2014 chat from Slack DMs and channels via Socket Mode",
       "version": "0.1.0",
       "category": "mcp",
       "keywords": [
@@ -11164,7 +11164,7 @@
     {
       "name": "x-bug-triage-plugin",
       "source": "./plugins/mcp/x-bug-triage",
-      "description": "Closed-loop bug triage: X complaints → clusters → repo evidence → owner routing → Slack review → filed issues",
+      "description": "Closed-loop bug triage: X complaints \u2192 clusters \u2192 repo evidence \u2192 owner routing \u2192 Slack review \u2192 filed issues",
       "version": "0.3.0",
       "category": "mcp",
       "author": {
@@ -11246,7 +11246,7 @@
     {
       "name": "shipwright",
       "source": "./plugins/ai-agency/shipwright",
-      "description": "Describe your app in plain English — Shipwright builds, tests, and deploys it autonomously via a 9-phase pipeline.",
+      "description": "Describe your app in plain English \u2014 Shipwright builds, tests, and deploys it autonomously via a 9-phase pipeline.",
       "version": "1.0.0",
       "category": "ai-agency",
       "author": {
@@ -11304,9 +11304,36 @@
       }
     },
     {
+      "name": "plane",
+      "source": "./plugins/productivity/plane",
+      "description": "Plane is a team behavior observatory \u2014 synthesizes Plane API data into observations about how teams actually behave under pressure (cycle velocity vs. plan, ownership churn, reviewer gate strength, priority drift, cross-project load). Reads from the live mcp__plane MCP server.",
+      "tagline": "Team behavior observatory for Plane workspaces",
+      "version": "0.1.0",
+      "category": "productivity",
+      "keywords": [
+        "plane",
+        "project-management",
+        "team-behavior",
+        "observability",
+        "productivity",
+        "agent-skills",
+        "forge-generated"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "components": {
+        "skills": 1,
+        "agents": 2
+      },
+      "generated": true,
+      "author_type": "forge"
+    },
+    {
       "name": "local-tts",
       "source": "./plugins/ai-ml/local-tts",
-      "description": "Offline text-to-speech via VoxCPM2 — 30 languages, voice design, voice cloning. Runs locally on Apple Silicon.",
+      "description": "Offline text-to-speech via VoxCPM2 \u2014 30 languages, voice design, voice cloning. Runs locally on Apple Silicon.",
       "version": "1.0.0",
       "category": "ai-ml",
       "keywords": [
