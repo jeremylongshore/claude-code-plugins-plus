@@ -3,17 +3,7 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../../components/Breadcrumbs.astro';
-
-// Lazy import — jrig-data.json may not yet exist in environments that haven't
-// run the marketplace build pipeline (PR #700 adds it). Falls back to empty
-// map so this route renders the "not yet evaluated" state for every plugin
-// until forge_proofs starts populating.
-let jrigData: Record<string, any> = {};
-try {
-  jrigData = (await import('../../../data/jrig-data.json')).default as Record<string, any>;
-} catch {
-  jrigData = {};
-}
+import jrigData from '../../../data/jrig-data.json';
 
 export async function getStaticPaths() {
   const catalogPath = join(process.cwd(), '../.claude-plugin/marketplace.extended.json');
