@@ -70,6 +70,9 @@ coverage/
 #   v3.x legacy:   6767-* prefix (kept tracked during transition; will deprecate)
 !000-docs/000-*.md
 !000-docs/6767*.md
+# Spec snapshots read by JRig Tier 3A (refreshed quarterly via PR, NOT live-fetch)
+!000-docs/anthropic-skills-spec-snapshot.md
+!000-docs/agentskills-spec-snapshot.md
 website/
 
 # Internal planning and research documents (do not commit to public repo)
