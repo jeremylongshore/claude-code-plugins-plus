@@ -4,7 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-Tons of Skills — Claude Code plugins marketplace (425 plugins, 2,851 skills, 177 agents). Live at https://tonsofskills.com
+Tons of Skills — Claude Code plugins marketplace (427 plugins, 2,851+ skills, 177+ agents). Live at https://tonsofskills.com
+
+The current count regenerates on every catalog edit; treat numbers as snapshots, not contracts. The authoritative live counts come from `marketplace.extended.json` (`jq '.plugins | length'`) and `marketplace/src/data/skills-catalog.json`.
 
 **Runtime:** Node `>=20.0.0`, pnpm `>=9.0.0` (pinned to `9.15.9` via `packageManager` field). Developers on Node 18 will hit silent workspace-resolution failures.
 
@@ -42,16 +44,21 @@ pnpm run update-metrics             # Refresh plugin/skill/agent counts in READM
 # Single MCP plugin
 cd plugins/mcp/[name]/ && pnpm build && chmod +x dist/index.js
 
-# Universal validator v7.0 / schema 3.0.0 (single source of truth — see 000-docs/SCHEMA_CHANGELOG.md)
-python3 scripts/validate-skills-schema.py --verbose                  # Standard tier (Anthropic spec exactly: name + description required)
-python3 scripts/validate-skills-schema.py --marketplace --verbose    # Marketplace tier (Anthropic spec + IS polish recommendations + 100-point rubric)
-python3 scripts/validate-skills-schema.py --marketplace --populate-db freshie/inventory.sqlite  # Write to DB
+# Universal validator v7.0 / schema 3.3.1 (single source of truth — see 000-docs/SCHEMA_CHANGELOG.md)
+python3 scripts/validate-skills-schema.py --verbose                  # Standard tier (Anthropic spec floor: name + description required; Tier 2 surfaces as warnings)
+python3 scripts/validate-skills-schema.py --marketplace --verbose    # Marketplace tier (8-field IS enterprise required set + 100-point rubric + Tier 2 production gate as errors)
+python3 scripts/validate-skills-schema.py --marketplace --populate-db freshie/inventory.sqlite  # Write to DB; idempotent ALTER migration adds JRig columns + forge_proofs table
 python3 scripts/validate-skills-schema.py --marketplace --show-low-grades  # Show D/F skills
 python3 scripts/validate-skills-schema.py --skills-only              # SKILL.md files only
 python3 scripts/validate-skills-schema.py --commands-only            # commands/*.md only
 python3 scripts/validate-skills-schema.py --agents-only              # agents/*.md only
 # Migration tool: legacy compatible-with → spec-aligned compatibility (per agentskills.io/specification)
 python3 scripts/batch-remediate.py --migrate-compatible-with --root .  # Add --dry-run to preview
+
+# JRig CLI (behavioral evaluation — opt-in; see j-rig-skill-binary-eval/ repo)
+j-rig check <skill-dir>                              # Tier 3A: deterministic package integrity (~seconds, free)
+j-rig eval <skill-dir> --models haiku,sonnet,opus    # Tier 3B: 7-layer behavioral eval (~10-30 min, ~$2-5/skill)
+j-rig eval <skill-dir> --db ~/000-projects/claude-code-plugins/freshie/inventory.sqlite  # Persist to Freshie
 
 # Ecosystem inventory (freshie)
 python3 freshie/scripts/rebuild-inventory.py              # Full repo scan → new discovery run
@@ -97,7 +104,8 @@ For the rare case where you only want the JSON-strip step (e.g., debugging the s
 | `marketplace/src/data/catalog.json`                                                        | `sync-catalog.mjs` (build step 2)                                                                                         |
 | `marketplace/src/data/skills-catalog.json`                                                 | `discover-skills.mjs` (build step 1)                                                                                      |
 | `marketplace/src/data/unified-search-index.json`                                           | `generate-unified-search.mjs` (build step 3)                                                                              |
-| `marketplace/src/data/cowork-manifest.json`                                                | `build-cowork-zips.mjs` (build step 4)                                                                                    |
+| `marketplace/src/data/cowork-manifest.json`                                                | `build-cowork-zips.mjs` (build step 6)                                                                                    |
+| `marketplace/src/data/jrig-data.json`                                                      | `enrich-jrig-data.mjs` (build step 4) — JOINs `forge_proofs` from `freshie/inventory.sqlite` for the JRig-Verified badge data feed; writes `{}` when no rows exist |
 | `README.md` Killer-Skill block (between `KILLER-SKILL:START`/`KILLER-SKILL:END` sentinels) | `node scripts/render-spotlight.mjs` (CI-enforced via `--check`); source of truth = `marketplace/src/data/spotlights.json` |
 | `marketplace/src/data/npm-stats.json` + `README.md` NPM-STATS block                        | `node scripts/fetch-npm-stats.mjs` (daily cron via `update-npm-stats.yml`)                                                |
 | Per-plugin `plugins/**/package.json` (for npm tracking)                                    | `node scripts/generate-plugin-package-jsons.mjs` (idempotent; touches only plugins without one)                           |
@@ -175,14 +183,15 @@ ccpi CLI fetches and caches locally
 
 ## Marketplace Build Pipeline
 
-`npm run build` in `marketplace/` runs 6 steps sequentially via `scripts/build.mjs`:
+`npm run build` in `marketplace/` runs 7 steps sequentially via `scripts/build.mjs`:
 
 1. `discover-skills.mjs` - Scans all plugins, extracts SKILL.md data into `src/data/`
 2. `extract-readme-sections.mjs` - Extracts README sections for plugin pages
 3. `sync-catalog.mjs` - Copies catalog JSON into marketplace data
-4. `generate-unified-search.mjs` - Builds Fuse.js search index
-5. `build-cowork-zips.mjs` - Generates plugin zips, category bundles, mega-zip, and manifest for `/cowork` downloads
-6. `astro build` - Static site generation
+4. `enrich-jrig-data.mjs` - Reads `forge_proofs` from `freshie/inventory.sqlite` (via `sqlite3` CLI), writes `src/data/jrig-data.json` mapping plugin name → JRig verdict. Empty `{}` when no forge runs have populated `forge_proofs` yet
+5. `generate-unified-search.mjs` - Builds Fuse.js search index
+6. `build-cowork-zips.mjs` - Generates plugin zips, category bundles, mega-zip, and manifest for `/cowork` downloads
+7. `astro build` - Static site generation
 
 **Gotcha:** `compressHTML` is disabled in `astro.config.mjs` because iOS Safari fails to render lines > 5000 chars. CI enforces this with a smoke test.
 
@@ -271,7 +280,30 @@ plugins/mcp/[plugin-name]/
 └── .mcp.json
 ```
 
-`plugin.json` only allows these fields: `name`, `version`, `description`, `author`, `repository`, `homepage`, `license`, `keywords`. CI rejects any others.
+### Forge-Generated Plugins
+
+Plugins produced by `/skill-creator --forge <api-name>` carry an additional `.forge/` audit trail beside the standard scaffold. Canonical example: `plugins/productivity/plane/`.
+
+```
+plugins/[category]/[plugin-name]/
+├── .claude-plugin/plugin.json    # carries "generated": true + "author_type": "forge"
+├── .forge/                       # BUILD AUDIT TRAIL (read once, never at runtime)
+│   ├── research.md                 # NOI rationale + gate-by-gate notes
+│   ├── ecosystem.md                # competitor catalog + gap analysis
+│   └── proofs.md                   # validation evidence (Tier 1/2/3 results)
+├── README.md
+└── skills/<plugin-name>/
+    ├── SKILL.md                    # orchestrator
+    ├── agents/                     # nested expert + analyst agents
+    ├── references/                 # noi.md, api-surface.md, compound-commands.md
+    └── scripts/
+```
+
+The `.forge/` dir is build-time audit material — read at retrospective / reforge time, not at skill activation. Runtime documentation lives in `references/` (NOI as design anchor, API surface, compound-command playbooks). See `/skill-creator` SKILL.md § Forge Mode Workflow for the 8 generation gates.
+
+### plugin.json Fields
+
+`plugin.json` accepts the 15 Anthropic spec fields (`name`, `version`, `description`, `author`, `repository`, `homepage`, `license`, `keywords`, `commands`, `agents`, `skills`, `hooks`, `mcpServers`, `outputStyles`, `lspServers`) plus 2 IS-extension provenance fields (`generated`: boolean, `author_type`: 'human' | 'forge'). The IS extensions are stripped from `marketplace.json` by `scripts/sync-marketplace.cjs` (the CLI catalog never sees them). See `plugins/skill-enhancers/validate-plugin/skills/validate-plugin/references/plugin-schema.md` for the canonical reference.
 
 ### SKILL.md Frontmatter (IS Enterprise Standard, Schema v3.3.1)
 
@@ -381,11 +413,24 @@ capabilities: ['capability1', 'capability2']
 
 ## Adding a New Plugin
 
+**Hand-authored** (use for simple skills, ports of existing tools, narrow utilities):
+
 1. Copy from `templates/` (minimal, command, agent, skill, or full)
 2. Create `.claude-plugin/plugin.json` with required fields
 3. Add entry to `.claude-plugin/marketplace.extended.json`
 4. `pnpm run sync-marketplace`
-5. `python3 scripts/validate-skills-schema.py --enterprise plugins/[category]/[name]/`
+5. `python3 scripts/validate-skills-schema.py --marketplace plugins/[category]/[name]/skills/<name>/SKILL.md`
+
+**Forge-generated** (use when generating from a documented API surface — produces a Grade-A skill with NOI gate, ecosystem absorb, mandatory validation, and `.forge/` audit trail):
+
+1. `/skill-creator --forge <api-name>` — invokes the 8-gate workflow per `~/.claude/skills/skill-creator/SKILL.md` § Forge Mode Workflow
+2. Provide a NOI (the API's "secret identity" — a 6–10 word reframe more powerful than the API's claimed identity); `/skill-creator` blocks until you name it
+3. Skill walks the gates: NOI → ecosystem absorb → API surface → archetype → compound commands → generation → mandatory `/validate-skillmd --thorough` → PR
+4. Output is a complete plugin scaffold with `.forge/` audit trail, marketplace catalog entry, and Grade-A validation
+
+Canonical example: `plugins/productivity/plane/` (NOI: "Plane is a team behavior observatory"). Read its `.forge/research.md` to see what a passing forge run produces.
+
+To regenerate an existing forge plugin against a current API surface (catalog rot fight): `/skill-creator --reforge <plugin-name>` — preserves NOI from `references/noi.md`, re-runs gates 3–7, auto-bumps version per detected change scope.
 
 ## CI Pipeline (validate-plugins.yml)
 
@@ -484,12 +529,24 @@ python3 freshie/scripts/batch-remediate.py --all --execute
 
 | Table                        | Purpose                                           |
 | ---------------------------- | ------------------------------------------------- |
-| `skill_compliance`           | 100-point rubric scores, grades, stub flags       |
+| `skill_compliance`           | 100-point rubric scores, grades, stub flags. **JRig integration columns**: `jrig_passed` (boolean), `jrig_tier_blocked` (1–7), `jrig_baseline_delta` (real) — populated by `j-rig eval --db` runs |
 | `agent_compliance`           | Anthropic field analysis, invalid field detection |
 | `plugin_compliance`          | Roll-up scores, license/changelog checks          |
 | `content_signals`            | Word count, code blocks, placeholder density      |
 | `plugins`, `skills`, `packs` | Core entity inventory (versioned by run_id)       |
 | `discovery_runs`             | Run history with timestamps and commit hashes     |
+| `forge_proofs`               | Per-plugin verification evidence from `/skill-creator --forge` runs. Columns: `plugin_name`, `verification_type` ('tier1' / 'tier2' / 'tier3-jrig' / 'dogfood'), `passed`, `evidence`, `layers_passed`, `total_layers`, `baseline_delta`. Read by `marketplace/scripts/enrich-jrig-data.mjs` to drive JRig-Verified badges |
+
+## JRig — Behavioral Evaluation Integration
+
+JRig (`~/000-projects/j-rig-binary-eval/`, npm `@j-rig/cli` v0.14.0+) is the IS binary evaluation harness for Claude Skills. CLI: `j-rig` (with hyphen). Two surfaces this repo consumes:
+
+- **Tier 3A** — `j-rig check <skill-dir>` runs deterministic package integrity checks (~12 checks, seconds, free). Wired as the optional gate in `/validate-skillmd --thorough`.
+- **Tier 3B** — `j-rig eval <skill-dir> --models haiku,sonnet,opus` runs the 7-layer behavioral evaluation (~10–30 min, ~$2–$5/skill). Opt-in only; results post to `forge_proofs` when `--db ~/000-projects/claude-code-plugins/freshie/inventory.sqlite` is passed.
+
+Spec snapshots in `000-docs/anthropic-skills-spec-snapshot.md` and `000-docs/agentskills-spec-snapshot.md` are JRig's source-of-truth for spec compliance. Refresh quarterly via PR; matching copies live in `j-rig-binary-eval/references/specs/` and the JRig core consumes them via `loadSpecAuthority()` in `packages/core/src/governance/spec-sources.ts`.
+
+The marketplace data flow is: `j-rig eval --db` writes `forge_proofs` rows → `enrich-jrig-data.mjs` (build step 4) reads them via `sqlite3` CLI → writes `marketplace/src/data/jrig-data.json` → `[name].astro` overlays onto `plugin.jrig` → JRig-Verified badge renders on detail page → click-through to `/plugins/<name>/verification`.
 
 ## Task Tracking (Beads)
 
