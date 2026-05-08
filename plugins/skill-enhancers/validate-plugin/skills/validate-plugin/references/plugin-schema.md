@@ -40,6 +40,24 @@ Seven optional fields provide discovery, attribution, and versioning metadata.
 
 ---
 
+## 2.5 Intent Solutions Extension Fields (Optional)
+
+Two provenance fields outside Anthropic's spec, set by `/skill-creator --forge` to flag the plugin's origin. These are NOT part of Anthropic's published spec — they are an Intent Solutions extension. CI accepts them; CLI consumers ignore them.
+
+| Field | Type | Set by | Purpose |
+|---|---|---|---|
+| `generated` | boolean | `/skill-creator --forge` | `true` when the plugin was produced by the forge pipeline (NOI gate + ecosystem absorb + mandatory validation). Hand-authored plugins omit this field or set `false`. |
+| `author_type` | enum (`"human"` \| `"forge"`) | `/skill-creator --forge` (sets `"forge"`) | Coarser provenance — same information as `generated`, in enum form. The marketplace renders a "Forge-generated" pill when either flag indicates forge origin. |
+
+**Anti-spam moat (rationale):** the marketplace surfaces a visual provenance flag for forge-generated plugins so reviewers and end users can distinguish them from human-authored work. Combined with the rate-limit + human-review-queue gating in the contribution workflow, this is the quality moat against the failure mode where a public `--forge` flag floods the catalog with low-quality wrappers.
+
+**NOT in plugin.json** (intentional separation of concerns):
+
+- `tagline` — marketplace-website display field. Lives in `marketplace.extended.json` per-plugin entry, NOT in `plugin.json`. Stripped from `marketplace.json` (CLI-safe) by `scripts/sync-marketplace.cjs`.
+- `jrig` — JRig behavioral-eval verdict. Computed by JRig CLI, persisted to `freshie/inventory.sqlite` `forge_proofs` table, joined into the marketplace data at build time. Not authored by hand and not stored in `plugin.json`.
+
+---
+
 ## 3. Component Path Fields (Optional)
 
 Seven fields define where Claude discovers plugin components. Each accepts flexible types to support single-directory, multi-directory, and inline-object configurations.
@@ -78,7 +96,7 @@ When component path fields are omitted, Claude auto-discovers components using t
 | 14 | `outputStyles` | No | string \| array | Component Path |
 | 15 | `lspServers` | No | string \| array \| object | Component Path |
 
-**No other fields are permitted.** CI rejects any field not in this list.
+**Anthropic spec floor**: only the 15 fields above are part of Anthropic's published `plugin.json` spec. Two additional fields are valid as Intent Solutions extensions and are documented in section 2.5: `generated` (boolean) and `author_type` (`"human"` | `"forge"`). Both are forge-provenance flags set by `/skill-creator --forge`.
 
 ---
 
@@ -128,7 +146,7 @@ These fields are **not** part of the official Anthropic spec and will be rejecte
 ## 7. Validation Rules
 
 ### Structural rules
-- Only the 15 fields listed in section 4 are allowed. Unknown fields cause validation failure.
+- The 15 Anthropic spec fields (section 4) and the 2 IS-extension fields (section 2.5) are accepted. Other unknown fields are flagged but not currently rejected by CI — see `.github/workflows/validate-plugins.yml` for the current enforced gate (JSON validity + README existence + script executability + source path existence).
 - `plugin.json` must be valid JSON (no trailing commas, no comments).
 - File must be located at `.claude-plugin/plugin.json` relative to plugin root.
 
