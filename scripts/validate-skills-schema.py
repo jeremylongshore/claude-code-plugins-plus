@@ -3190,8 +3190,26 @@ def populate_compliance_db(db_path: str, skill_results: list, agent_results: lis
         has_implementation_md INTEGER DEFAULT 0,
         reference_file_count INTEGER DEFAULT 0,
         has_config_dir INTEGER DEFAULT 0,
-        gold_standard_pct INTEGER DEFAULT 0
+        gold_standard_pct INTEGER DEFAULT 0,
+        jrig_passed INTEGER DEFAULT NULL,
+        jrig_tier_blocked INTEGER DEFAULT NULL,
+        jrig_baseline_delta REAL DEFAULT NULL
     )''')
+
+    # Idempotent migration: add JRig integration columns to pre-existing tables
+    # that were created before these columns were part of the schema. Phase 5
+    # of "Use the Printing Press to Learn" plan — JRig behavioral-eval results
+    # join into skill_compliance so reports unify spec rubric + behavioral
+    # verdict in one query.
+    c.execute("PRAGMA table_info(skill_compliance)")
+    existing_cols = {row[1] for row in c.fetchall()}
+    for col_name, col_def in (
+        ("jrig_passed", "INTEGER DEFAULT NULL"),
+        ("jrig_tier_blocked", "INTEGER DEFAULT NULL"),
+        ("jrig_baseline_delta", "REAL DEFAULT NULL"),
+    ):
+        if col_name not in existing_cols:
+            c.execute(f"ALTER TABLE skill_compliance ADD COLUMN {col_name} {col_def}")
 
     c.execute('''CREATE TABLE IF NOT EXISTS agent_compliance (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -3229,10 +3247,31 @@ def populate_compliance_db(db_path: str, skill_results: list, agent_results: lis
         run_id INTEGER
     )''')
 
+    # Forge proofs table — Phase 4A of the "Use the Printing Press to Learn"
+    # plan. Stores per-plugin verification evidence produced during the
+    # /skill-creator --forge generation pipeline (Tier 1+2+3 results) and
+    # joined into the marketplace build at render time so the JRig-Verified
+    # badge surfaces real evidence on plugin detail pages.
+    c.execute('''CREATE TABLE IF NOT EXISTS forge_proofs (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        plugin_name TEXT NOT NULL,
+        run_id INTEGER,
+        verification_type TEXT NOT NULL,
+        passed INTEGER NOT NULL,
+        evidence TEXT,
+        layers_passed INTEGER DEFAULT NULL,
+        total_layers INTEGER DEFAULT 7,
+        baseline_delta REAL DEFAULT NULL,
+        verified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE(plugin_name, verification_type, run_id)
+    )''')
+
     # Helpful index for run-scoped queries.
     c.execute('CREATE INDEX IF NOT EXISTS idx_skill_compliance_run_id ON skill_compliance(run_id)')
     c.execute('CREATE INDEX IF NOT EXISTS idx_agent_compliance_run_id ON agent_compliance(run_id)')
     c.execute('CREATE INDEX IF NOT EXISTS idx_plugin_compliance_run_id ON plugin_compliance(run_id)')
+    c.execute('CREATE INDEX IF NOT EXISTS idx_forge_proofs_plugin ON forge_proofs(plugin_name)')
+    c.execute('CREATE INDEX IF NOT EXISTS idx_forge_proofs_passed ON forge_proofs(passed)')
 
     # Purge legacy rows that pre-date run_id tagging. These rows have NULL
     # run_id and absolute /SKILL.md paths, and cannot be joined against
