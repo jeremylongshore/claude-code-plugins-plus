@@ -1,12 +1,12 @@
 # Global Master Standard – Claude Skills Specification
 
 **Document ID**: 6767-b-SPEC-DR-STND-claude-skills-standard.md
-**Version**: 3.1.0
-**Status**: AUTHORITATIVE - Single Source of Truth (realigned to Anthropic published sources 2026-04-28)
+**Version**: 3.3.1
+**Status**: AUTHORITATIVE - Single Source of Truth (8-field enterprise standard restored 2026-04-28; spec-compliance bug fixes 2026-04-28)
 **Created**: 2025-12-06
-**Updated**: 2026-04-28
+**Updated**: 2026-05-07
 **Schema log**: `000-docs/SCHEMA_CHANGELOG.md`
-**Changelog**: 3.1.0 corrects v3.0.0's misclassification of `when_to_use` as deprecated and adds the `arguments`, `paths`, `shell` fields and `effort: xhigh` value documented at `code.claude.com/docs/en/skills#frontmatter-reference`.
+**Changelog**: 3.3.1 absorbs three spec-compliance bug fixes (YAML-list `allowed-tools`, space-separated `allowed-tools` parsing, `agent` field default, `argument-hint` conditional) on top of 3.3.0's restoration of the 8-field enterprise required set (`name, description, allowed-tools, version, author, license, compatibility, tags`). The 3.0.0–3.2.0 experiments that demoted enterprise fields to "marketplace polish (warn)" were reverted in 3.3.0; this document reflects the restored enterprise standard.
 
 **Sources** (every required-field claim in this document cites one of these — verified 2026-04-28):
 
@@ -200,11 +200,13 @@ Links to bundled files using {baseDir} variable.
 
 The frontmatter schema is split into three layers:
 
-1. **Required (Anthropic spec)** — `name`, `description`. Citations: sources 1, 2, 5, 6, 7 above.
-2. **Optional (Anthropic + AgentSkills.io spec)** — `allowed-tools`, `model`, `effort`, `argument-hint`, `context`, `agent`, `user-invocable`, `disable-model-invocation`, `hooks`, `compatibility`, `metadata`, `license`. Optional everywhere; validated only when present.
-3. **Marketplace polish (Intent Solutions extension)** — `version`, `author`, `tags`. Not in any Anthropic spec. Optional. Validator warns at marketplace tier when missing; never errors.
+1. **Required at Anthropic spec floor** — `name`, `description`. Citations: sources 1, 2, 5, 6, 7 above. These are the only two fields Anthropic itself requires; every other layer below is an Intent Solutions enterprise addition that sits on top of (not under) Anthropic's spec.
+2. **Required at IS enterprise / marketplace tier** — the 8-field set: `name`, `description`, `allowed-tools`, `version`, `author`, `license`, `compatibility`, `tags`. Missing any of these = ERROR at marketplace tier. The IS marketplace is intentionally stricter than Anthropic's permissive spec floor — every shipped skill carries full tracking + governance metadata. Restored in schema 3.3.0 after the 3.0.0–3.2.0 experiments tried to demote them to "polish".
+3. **Optional Anthropic + AgentSkills.io fields** — `model`, `effort`, `argument-hint`, `arguments`, `paths`, `shell`, `context`, `agent`, `user-invocable`, `disable-model-invocation`, `hooks`, `metadata`, `when_to_use`. Validated only when present; never required.
 
-### 4.1 Required Fields (Anthropic Spec)
+> **NON-NEGOTIABLE**: the IS enterprise required-field set is `{name, description, allowed-tools, version, author, license, compatibility, tags}` — full stop. Reframing tracking metadata (`version`, `author`, `license`) as "optional polish" is the bad direction that 3.3.0 explicitly reverted. See `000-docs/SCHEMA_CHANGELOG.md` § NON-NEGOTIABLES.
+
+### 4.1 Anthropic Spec Floor — `name` and `description`
 
 #### `name`
 
@@ -263,16 +265,26 @@ description: You can use this for data     # Wrong voice (second person)
 
 #### `allowed-tools`
 
-**Type**: CSV string
-**Required**: No
+**Type**: comma-separated string, space-separated string, or YAML list (all three forms accepted; v3.3.1)
+**Required**: YES at IS enterprise / marketplace tier; optional at Anthropic spec floor
 **Default**: No pre-approved tools (user prompted for each)
 
 **Purpose**: Pre-approves tools **scoped to skill execution only**. Tools revert to normal permissions after skill completes.
 
-**Syntax Examples**:
+**Syntax Examples** — Anthropic accepts all three forms ([code.claude.com/docs/en/skills](https://code.claude.com/docs/en/skills): *"Accepts a space-separated string or a YAML list."*):
 ```yaml
-# Multiple tools (comma-separated)
+# Comma-separated string (legacy IS form)
 allowed-tools: "Read,Write,Glob,Grep,Edit"
+
+# Space-separated string (Anthropic canonical form — paren-depth aware)
+allowed-tools: Bash(git add *) Bash(git commit *) Bash(git status *)
+
+# YAML list (Anthropic-documented form, v3.3.1 fix)
+allowed-tools:
+  - Read
+  - Write
+  - Bash(npm:*)
+  - Edit
 
 # Scoped bash commands (restrict to specific commands)
 allowed-tools: "Bash(git status:*),Bash(git diff:*),Read,Grep"
@@ -283,6 +295,8 @@ allowed-tools: "Bash(npm:*),Bash(npx:*),Read,Write"
 # Read-only audit
 allowed-tools: "Read,Glob,Grep"
 ```
+
+**v3.3.1 parser note**: prior to schema 3.3.1 the IS validator rejected the YAML-list form with *"must be a comma-separated string (CSV), not a YAML array"* — that was a divergence from Anthropic's documented behavior. 3.3.1 accepts all three forms; existing CSV skills still pass unchanged.
 
 **Security Principle**: Grant ONLY tools the skill actually requires. Over-specifying creates unnecessary attack surface.
 
@@ -299,37 +313,16 @@ allowed-tools: "Read,Glob,Grep"
 **Examples**:
 ```yaml
 model: inherit                           # Use current session model (default)
-model: "claude-opus-4-20250514"          # Force specific model
-model: "claude-sonnet-4-20250514"        # Use Sonnet
+model: opus                              # Force Opus shorthand
+model: sonnet                            # Force Sonnet shorthand
+model: haiku                             # Force Haiku shorthand
 ```
 
 **Guidance**: Reserve model overrides for genuinely complex tasks. Higher-capability models increase cost and latency.
 
-#### `version`
+**Use shorthand model values** (`opus` / `sonnet` / `haiku` / `inherit`) — full model IDs (e.g., `claude-opus-4-5-20251101`) bind a skill to a specific dated release and break silently when that release is retired. Shorthand values resolve to whichever model is currently the default for that family.
 
-**Type**: string (semver)
-**Required**: No
-**Purpose**: Version tracking for skill evolution.
-
-**Examples**:
-```yaml
-version: "1.0.0"    # Initial release
-version: "1.1.0"    # New features
-version: "2.0.0"    # Breaking changes
-```
-
-#### `license`
-
-**Type**: string
-**Required**: No
-**Purpose**: License terms reference.
-
-**Examples**:
-```yaml
-license: "MIT"
-license: "Proprietary - See LICENSE.txt"
-license: "Apache-2.0"
-```
+> **`version` and `license` moved**: prior to schema 3.3.0 these fields were duplicated here under "Optional Fields" with `Required: No`. Schema 3.3.0 restored them to the IS enterprise required-field set; their canonical specification now lives in **section 4.6 IS Enterprise Required Fields** below alongside `author`, `tags`, and `compatibility`. Anthropic's spec floor still treats these as optional — they are required only at the IS enterprise / marketplace tier.
 
 #### `mode`
 
@@ -484,14 +477,16 @@ The validator accepts both top-level (e.g. `version: "1.2.0"`) and `metadata.*`-
 
 ---
 
-## 4.6 Marketplace Polish Recommendations (Intent Solutions Extension)
+## 4.6 IS Enterprise Required Fields (Intent Solutions Extension)
 
-These fields are **not** part of Anthropic's published spec. They are recommended (not required) when submitting a skill to the Intent Solutions marketplace for richer discovery, governance, and attribution. The validator emits warnings (not errors) when they are missing at marketplace tier (`--marketplace`). At standard tier, missing polish fields are silent.
+These fields are **not** part of Anthropic's published spec — they are an Intent Solutions extension that **sits on top of** Anthropic's permissive spec floor. They are **required at the IS enterprise / marketplace tier** for richer discovery, governance, attribution, and lifecycle tracking. The validator emits **errors** (not warnings) when they are missing at marketplace tier (`--marketplace`). At standard tier (which mirrors Anthropic's spec floor of `name` + `description` only), these fields are validated when present but not required.
+
+> **Anti-pattern (reverted in 3.3.0)**: schema versions 3.0.0–3.2.0 demoted these fields to "marketplace polish" with warning-only enforcement. That direction broke the marketplace gate — the IS rubric is intentionally stricter than Anthropic's spec floor, not aligned to it. See `000-docs/SCHEMA_CHANGELOG.md` § NON-NEGOTIABLES for the full post-mortem.
 
 #### `version`
 
 **Type**: string (semver: `MAJOR.MINOR.PATCH`)
-**Required**: NO (marketplace polish)
+**Required**: YES at IS enterprise / marketplace tier
 
 ```yaml
 version: "1.0.0"
@@ -500,37 +495,49 @@ version: "1.0.0"
 #### `author`
 
 **Type**: string
-**Required**: NO (marketplace polish)
+**Required**: YES at IS enterprise / marketplace tier
 **Format**: `Name <email>` or `Name`
 
 ```yaml
 author: "Jeremy Longshore <jeremy@intentsolutions.io>"
 ```
 
+#### `license`
+
+**Type**: string
+**Required**: YES at IS enterprise / marketplace tier
+**Purpose**: License terms reference (SPDX identifier or human-readable description).
+
+```yaml
+license: "MIT"
+license: "Proprietary - See LICENSE.txt"
+license: "Apache-2.0"
+```
+
 #### `tags`
 
 **Type**: array of strings
-**Required**: NO (marketplace polish — improves marketplace discovery)
+**Required**: YES at IS enterprise / marketplace tier (improves marketplace discovery + categorization)
 
 ```yaml
 tags: ["security", "audit", "compliance"]
 ```
 
-#### Marketplace Polish Recommendations Summary
+#### IS Enterprise / Marketplace Required-Fields Summary
 
 | Field | Anthropic spec | AgentSkills.io spec | IS marketplace tier |
 |-------|---------------|---------------------|---------------------|
-| `name` | Required | Required | Required |
-| `description` | Required | Required | Required |
-| `allowed-tools` | Optional | Optional | Recommended (warn) |
-| `version` | Not in spec | Optional under `metadata` | Recommended (warn) |
-| `author` | Not in spec | Optional under `metadata` | Recommended (warn) |
-| `license` | Not in spec | Optional | Recommended (warn) |
-| `compatibility` | Not in spec | Optional (max 500 chars) | Recommended (warn) |
-| `tags` | Not in spec | Not in spec | Recommended (warn) |
-| `compatible-with` | Not in spec | Not in spec | **Deprecated** — migrate to `compatibility` |
+| `name` | Required | Required | Required (error) |
+| `description` | Required | Required | Required (error) |
+| `allowed-tools` | Optional | Optional | **Required (error)** |
+| `version` | Not in spec | Optional under `metadata` | **Required (error)** |
+| `author` | Not in spec | Optional under `metadata` | **Required (error)** |
+| `license` | Not in spec | Optional | **Required (error)** |
+| `compatibility` | Not in spec | Optional (max 500 chars) | **Required (error)** |
+| `tags` | Not in spec | Not in spec | **Required (error)** |
+| `compatible-with` | Not in spec | Not in spec | **Deprecated** — migrate to `compatibility` (parsed as alias, warns) |
 
-> Every "Required" cell above is anchored to a specific source in the Sources block at the top of this document. Every "Optional" cell is anchored to either Anthropic or AgentSkills.io. The "Recommended (warn)" column reflects Intent Solutions marketplace polish — not a published external standard.
+> Every "Required" cell in the Anthropic / AgentSkills.io columns is anchored to a specific source in the Sources block at the top of this document. The IS marketplace tier sits intentionally **on top of** the Anthropic spec floor — Anthropic's spec is permissive (only `name` + `description` required); the IS marketplace is strict (full 8-field tracking + governance metadata required). Demoting any of these eight fields back to "warn" or "polish" breaks the marketplace gate; see `000-docs/SCHEMA_CHANGELOG.md` § NON-NEGOTIABLES for the post-mortem of the 3.0.0–3.2.0 experiments that did exactly that and were reverted in 3.3.0.
 
 ---
 
