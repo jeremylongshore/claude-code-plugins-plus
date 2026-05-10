@@ -999,12 +999,12 @@ statsItems.push({ label: 'Pricing', value: formatPricing(plugin.pricing) });
   /* Related plugins — grid layout only; card styling lives in PluginCard. */
   .related-plugins {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   @media (min-width: 768px) {
     .related-plugins {
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
       gap: 1rem;
     }
   }

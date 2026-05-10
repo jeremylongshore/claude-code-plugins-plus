@@ -195,15 +195,17 @@ const pageDescription = `Search all ${_rawStats.totalPlugins} plugins and ${_raw
       padding: 3rem 4rem;
     }
 
-    /* Results grid — layout only; card styling lives in PluginCard. */
+    /* Results grid — layout only; card styling lives in PluginCard.
+       minmax(0, 1fr) lets columns shrink below content min-content so long
+       install commands in .pcard code don't overflow the viewport. */
     .results-grid {
       display: grid;
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
     }
 
     @media (min-width: 768px) {
       .results-grid {
-        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr));
         gap: 1rem;
       }
     }

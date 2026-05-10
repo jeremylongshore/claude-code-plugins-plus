@@ -136,12 +136,12 @@ const allTools = _rawCatalog.allowedToolsUsed;
     /* Skills grid — layout only; card styling lives in PluginCard. */
     .skills-grid {
       display: grid;
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
     }
 
     @media (min-width: 768px) {
       .skills-grid {
-        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr));
         gap: 1rem;
       }
     }
@@ -178,7 +178,7 @@ const allTools = _rawCatalog.allowedToolsUsed;
     /* Mobile Responsive */
     @media (max-width: 1024px) {
       .skills-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
 
@@ -195,7 +195,7 @@ const allTools = _rawCatalog.allowedToolsUsed;
       }
 
       .skills-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
       }
     }
   </style>

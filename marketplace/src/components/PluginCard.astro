@@ -43,6 +43,11 @@ const showMeta = Boolean(author) || Boolean(skillCount);
     color: inherit;
     text-decoration: none;
     transition: var(--card-transition);
+    /* Defense against grid-item min-content overflow: long install commands
+       inside .pcard code can force the card wider than its grid track unless
+       this clamps it. Pair with minmax(0, 1fr) on the parent grid. */
+    min-width: 0;
+    max-width: 100%;
   }
   .pcard:hover { background: var(--panel-2); }
   .pcard:focus-visible {

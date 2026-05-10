@@ -10,15 +10,14 @@ import { test, expect } from '@playwright/test';
 test.describe('Cowork Integration', () => {
 
   test.describe('Homepage Cowork Section', () => {
-    test('should display cowork section with badge and title', async ({ page }) => {
+    test('should display cowork section with title', async ({ page }) => {
       await page.goto('/');
 
       const section = page.locator('.cowork-home-section');
       await expect(section).toBeVisible();
 
-      const badge = page.locator('.cowork-home-badge');
-      await expect(badge).toBeVisible();
-
+      // Eyebrow `.cowork-home-badge` was removed in the homepage simplification;
+      // section + title are the load-bearing affordances.
       const title = page.locator('.cowork-home-title');
       await expect(title).toBeVisible();
       await expect(title).toContainText('Download Plugin Packs');

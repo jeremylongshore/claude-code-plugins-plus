@@ -810,13 +810,13 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
 
         .starter-pack-grid {
             display: grid;
-            grid-template-columns: 1fr;
+            grid-template-columns: minmax(0, 1fr);
             margin-bottom: 2rem;
         }
 
         @media (min-width: 768px) {
             .starter-pack-grid {
-                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+                grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr));
                 gap: 1.25rem;
             }
         }

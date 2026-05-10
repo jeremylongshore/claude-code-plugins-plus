@@ -258,13 +258,13 @@ function getContributionSummary(plugins: any[]): string {
     /* ── Community Plugin Grid ── */
     .plugins-grid {
       display: grid;
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
       margin-bottom: 4rem;
     }
 
     @media (min-width: 768px) {
       .plugins-grid {
-        grid-template-columns: repeat(auto-fill, minmax(var(--grid-min-card, 300px), 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(min(var(--grid-min-card, 300px), 100%), 1fr));
         gap: var(--grid-gap, 1rem);
       }
     }
@@ -487,7 +487,7 @@ function getContributionSummary(plugins: any[]): string {
       .contributor-card { padding: 1rem 1.25rem; }
       .contributor-name { font-size: 1rem; }
       .contributor-summary { font-size: 0.8rem; }
-      .plugins-grid { grid-template-columns: 1fr; }
+      .plugins-grid { grid-template-columns: minmax(0, 1fr); }
       .hof-grid { grid-template-columns: 1fr; }
     }
   </style>

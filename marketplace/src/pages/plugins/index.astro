@@ -98,12 +98,12 @@ const pageDescription = `Explore all ${catalog.plugins.length} plugins for Claud
 
     .plugins-grid {
       display: grid;
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
     }
 
     @media (min-width: 768px) {
       .plugins-grid {
-        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr));
         gap: 1rem;
       }
     }
