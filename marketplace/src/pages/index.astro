@@ -7,6 +7,7 @@ import CoworkGrid from '../components/CoworkGrid.astro';
 import KillerSkills from '../components/KillerSkills.astro';
 import JeremysStash from '../components/JeremysStash.astro';
 import PartnerBar from '../components/PartnerBar.astro';
+import PluginCard from '../components/PluginCard.astro';
 import searchIndex from '../data/unified-search-index.json';
 import starterPack from '../data/starter-pack.json';
 
@@ -809,84 +810,15 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
 
         .starter-pack-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 1.25rem;
+            grid-template-columns: 1fr;
             margin-bottom: 2rem;
         }
 
-        .starter-card {
-            background: var(--surface-2, var(--panel));
-            border: 1px solid var(--border, var(--rule));
-            border-radius: 12px;
-            padding: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-            transition: border-color var(--duration-fast) var(--ease-out);
-        }
-
-        .starter-card:hover {
-            border-color: var(--accent, var(--signal));
-        }
-
-        .starter-card-header {
-            display: flex;
-            align-items: baseline;
-            justify-content: space-between;
-            gap: 0.75rem;
-            flex-wrap: wrap;
-        }
-
-        .starter-card-name {
-            color: var(--text, var(--ink));
-            font-family: 'JetBrains Mono', 'Fira Code', monospace;
-            font-size: 1.1rem;
-            font-weight: 600;
-            text-decoration: none;
-        }
-
-        .starter-card-name:hover {
-            color: var(--accent, var(--signal));
-        }
-
-        .starter-card-category {
-            color: var(--text-3, var(--ink-2));
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            font-weight: 600;
-        }
-
-        .starter-card-tagline {
-            color: var(--text, var(--ink));
-            font-size: 1rem;
-            font-weight: 500;
-            font-style: italic;
-            margin: 0;
-            line-height: 1.4;
-        }
-
-        .starter-card-why {
-            color: var(--text-2, var(--ink-2));
-            font-size: 0.92rem;
-            line-height: 1.55;
-            margin: 0;
-        }
-
-        .starter-card-install {
-            margin-top: auto;
-            padding-top: 0.75rem;
-            border-top: 1px dashed var(--border, var(--rule));
-        }
-
-        .starter-card-install code {
-            color: var(--accent, var(--signal));
-            font-family: 'JetBrains Mono', 'Fira Code', monospace;
-            font-size: 0.82rem;
-            user-select: all;
-            display: block;
-            word-break: break-all;
-            line-height: 1.4;
+        @media (min-width: 768px) {
+            .starter-pack-grid {
+                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+                gap: 1.25rem;
+            }
         }
 
         .starter-pack-meta {
@@ -908,9 +840,6 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
         @media (max-width: 768px) {
             .starter-pack-section {
                 padding: 3rem 1.5rem;
-            }
-            .starter-pack-grid {
-                grid-template-columns: 1fr;
             }
         }
 
@@ -1429,17 +1358,12 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
             </div>
             <div class="starter-pack-grid">
                 {starterPack.plugins.map((plugin) => (
-                    <article class="starter-card">
-                        <header class="starter-card-header">
-                            <a href={`/plugins/${plugin.slug}`} class="starter-card-name">{plugin.name}</a>
-                            <span class="starter-card-category">{plugin.category}</span>
-                        </header>
-                        <p class="starter-card-tagline">{plugin.tagline}</p>
-                        <p class="starter-card-why">{plugin.why}</p>
-                        <div class="starter-card-install">
-                            <code>{plugin.install}</code>
-                        </div>
-                    </article>
+                    <PluginCard
+                        name={plugin.name}
+                        description={plugin.why || plugin.tagline}
+                        installCommand={plugin.install}
+                        href={`/plugins/${plugin.slug}`}
+                    />
                 ))}
             </div>
             <p class="starter-pack-meta">

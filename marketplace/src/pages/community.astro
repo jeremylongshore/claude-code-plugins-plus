@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import PluginCard from '../components/PluginCard.astro';
 import searchIndex from '../data/unified-search-index.json';
 import spotlightData from '../data/spotlights.json';
 const hallOfFame = spotlightData.hallOfFame || [];
@@ -257,56 +258,15 @@ function getContributionSummary(plugins: any[]): string {
     /* ── Community Plugin Grid ── */
     .plugins-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(var(--grid-min-card, 300px), 1fr));
-      gap: var(--grid-gap, 1.5rem);
+      grid-template-columns: 1fr;
       margin-bottom: 4rem;
     }
 
-    .plugin-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--card-standard-radius, 12px);
-      padding: var(--card-standard-padding, 1.5rem);
-      text-decoration: none;
-      color: inherit;
-      display: block;
-      transition: var(--card-transition, border-color 0.2s ease);
-    }
-
-    .plugin-card:hover {
-      border-color: var(--gold);
-      transform: var(--card-hover-lift, translateY(-2px));
-      
-    }
-
-    .plugin-card-name {
-      font-size: var(--text-card-title, 1.1rem);
-      font-weight: 600;
-      color: var(--text);
-      margin-bottom: 0.5rem;
-    }
-
-    .plugin-card-desc {
-      font-size: var(--text-card-desc, 0.875rem);
-      color: var(--text-2);
-      line-height: var(--text-line-height, 1.5);
-      margin-bottom: 0.75rem;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .plugin-card-meta {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: var(--text-card-meta, 0.8rem);
-      color: var(--text-3);
-    }
-
-    .plugin-card-category {
-      text-transform: capitalize;
+    @media (min-width: 768px) {
+      .plugins-grid {
+        grid-template-columns: repeat(auto-fill, minmax(var(--grid-min-card, 300px), 1fr));
+        gap: var(--grid-gap, 1rem);
+      }
     }
 
     /* ── CTA Section ── */
@@ -628,14 +588,13 @@ function getContributionSummary(plugins: any[]): string {
     <h2 class="section-heading">Community Plugins</h2>
     <div class="plugins-grid">
       {communityPlugins.map(plugin => (
-        <a href={`/plugins/${plugin.name}/`} class="plugin-card">
-          <div class="plugin-card-name">{plugin.displayName || plugin.name}</div>
-          <p class="plugin-card-desc">{plugin.description}</p>
-          <div class="plugin-card-meta">
-            <span class="plugin-card-category">{plugin.category?.replace(/-/g, ' ')}</span>
-            <span>{plugin.author?.name || 'Community'}</span>
-          </div>
-        </a>
+        <PluginCard
+          name={plugin.displayName || plugin.name}
+          description={plugin.description}
+          installCommand={`/plugin install ${plugin.name}@claude-code-plugins-plus`}
+          author={plugin.author?.name || 'Community'}
+          href={`/plugins/${plugin.name}/`}
+        />
       ))}
     </div>
 

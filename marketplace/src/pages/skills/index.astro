@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import PluginCard from '../../components/PluginCard.astro';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
@@ -132,91 +133,17 @@ const allTools = _rawCatalog.allowedToolsUsed;
       padding: 3rem 4rem;
     }
 
+    /* Skills grid — layout only; card styling lives in PluginCard. */
     .skills-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.5rem;
+      grid-template-columns: 1fr;
     }
 
-    .skill-card {
-      display: block;
-      padding: 1.5rem;
-      background: var(--card);
-      border-radius: var(--radius-lg);
-      border: 2px solid var(--border);
-      text-decoration: none;
-      transition: all var(--duration-normal) var(--ease-out);
-    }
-
-    .skill-card:hover {
-      border-color: var(--primary);
-      transform: translateY(-4px);
-      
-    }
-
-    .skill-name {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: var(--text);
-      margin-bottom: 0.5rem;
-    }
-
-    .skill-description {
-      font-size: 0.9rem;
-      color: var(--text-2);
-      line-height: 1.6;
-      margin-bottom: 1rem;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .skill-tools {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-bottom: 0.75rem;
-    }
-
-    .tool-badge {
-      padding: 0.25rem 0.75rem;
-      background: rgb(250 255 105 / 0.1);
-      color: var(--primary-dark);
-      font-size: 0.75rem;
-      font-weight: 600;
-      border-radius: var(--radius-sm);
-      font-family: 'Inter', system-ui, sans-serif;
-    }
-
-    .tool-badge-more {
-      background: var(--border);
-      color: var(--text-2);
-    }
-
-    .skill-meta {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 0.75rem;
-      color: var(--text-2);
-    }
-
-    .skill-category {
-      text-transform: capitalize;
-    }
-
-    .skill-plugin-info {
-      margin-top: 0.75rem;
-      padding-top: 0.75rem;
-      border-top: 1px solid var(--border);
-      font-size: 0.8125rem;
-      color: var(--text-2);
-    }
-
-    .skill-plugin-info strong {
-      color: var(--primary);
-      font-weight: 600;
+    @media (min-width: 768px) {
+      .skills-grid {
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 1rem;
+      }
     }
 
     .no-results {
@@ -336,39 +263,15 @@ const allTools = _rawCatalog.allowedToolsUsed;
   <div class="skills-grid-section">
     <div id="skills-grid" class="skills-grid" aria-live="polite">
       {firstPageSkills.map((skill: any) => (
-        <a
-          href={`/skills/${skill.slug}/`}
-          class="skill-card"
-          data-slug={skill.slug}
-        >
-          <h3 class="skill-name">{skill.name}</h3>
-          <p class="skill-description">
-            {skill.description || 'No description available'}
-          </p>
-
-          <div class="skill-tools">
-            {skill.allowedTools.slice(0, 3).map((tool: string) => (
-              <span class="tool-badge">{tool}</span>
-            ))}
-            {skill.allowedTools.length > 3 && (
-              <span class="tool-badge tool-badge-more">
-                +{skill.allowedTools.length - 3} more
-              </span>
-            )}
-          </div>
-
-          <div class="skill-meta">
-            <span class="skill-category">{skill.parentPlugin.category.replace(/-/g, ' ')}</span>
-            <span>{skill.version}</span>
-          </div>
-
-          <div class="skill-plugin-info">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline; vertical-align: middle; margin-right: 4px;">
-              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-            </svg>
-            Provided by <strong>{skill.parentPlugin.name}</strong>
-          </div>
-        </a>
+        <div data-slug={skill.slug}>
+          <PluginCard
+            name={skill.name}
+            description={skill.description || 'No description available'}
+            installCommand={`/plugin install ${skill.parentPlugin.name}@claude-code-plugins-plus`}
+            author={`Provided by ${skill.parentPlugin.name}`}
+            href={`/skills/${skill.slug}/`}
+          />
+        </div>
       ))}
       <!-- Remaining skills appended by JS after /data/skills-catalog.json fetch -->
       <div id="skills-loading-more" style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: var(--text-2); font-size: 0.9rem;">
@@ -426,19 +329,14 @@ const allTools = _rawCatalog.allowedToolsUsed;
     }
 
     function skillCardHtml(skill) {
-      const tools = skill.allowedTools || [];
-      return `<a href="/skills/${escHtml(skill.slug)}/" class="skill-card" data-slug="${escHtml(skill.slug)}">
-        <h3 class="skill-name">${escHtml(skill.name)}</h3>
-        <p class="skill-description">${escHtml(skill.description || 'No description available')}</p>
-        <div class="skill-tools">
-          ${tools.slice(0, 3).map(t => `<span class="tool-badge">${escHtml(t)}</span>`).join('')}
-          ${tools.length > 3 ? `<span class="tool-badge tool-badge-more">+${tools.length - 3} more</span>` : ''}
-        </div>
-        <div class="skill-meta">
-          <span class="skill-category">${escHtml((skill.parentPlugin.category || '').replace(/-/g,' '))}</span>
-          <span>${escHtml(skill.version)}</span>
-        </div>
-      </a>`;
+      const parent = (skill.parentPlugin && skill.parentPlugin.name) || '';
+      const installCmd = parent ? `/plugin install ${parent}@claude-code-plugins-plus` : '';
+      return `<div data-slug="${escHtml(skill.slug)}"><a class="pcard" href="/skills/${escHtml(skill.slug)}/">
+        <h3>${escHtml(skill.name)}</h3>
+        <p>${escHtml(skill.description || 'No description available')}</p>
+        ${installCmd ? `<code>${escHtml(installCmd)}</code>` : ''}
+        ${parent ? `<small><span>Provided by ${escHtml(parent)}</span></small>` : ''}
+      </a></div>`;
     }
 
     function appendRemainingSkills(skills) {

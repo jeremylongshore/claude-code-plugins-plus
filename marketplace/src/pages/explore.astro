@@ -1,8 +1,14 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CompareBar from '../components/CompareBar.astro';
+import PluginCard from '../components/PluginCard.astro';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+
+// PluginCard is imported for the side-effect of registering the global
+// `.pcard` stylesheet — the cards on this page are rendered client-side from
+// the unified-search-index, so we apply the class via JS-built HTML below.
+void PluginCard;
 
 // Read only the stats from the search index at build time — the full items array
 // (~2.5 MB JSON) is NOT inlined into HTML. It is fetched lazily at runtime from
@@ -189,272 +195,27 @@ const pageDescription = `Search all ${_rawStats.totalPlugins} plugins and ${_raw
       padding: 3rem 4rem;
     }
 
+    /* Results grid — layout only; card styling lives in PluginCard. */
     .results-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.5rem;
+      grid-template-columns: 1fr;
     }
 
-    .result-card {
-      display: flex;
-      flex-direction: column;
-      padding: 1.75rem;
-      background: var(--surface-2);
-      border-radius: 12px;
-      border: none;
-      
-      transition: all 0.3s var(--transition-smooth);
-      position: relative;
-    }
-
-    .result-card:hover {
-      transform: translateY(-3px);
-      
-    }
-
-    .result-card-link {
-      display: block;
-      text-decoration: none;
-      color: inherit;
-      flex: 1;
-    }
-
-    .card-actions {
-      display: flex;
-      gap: 0.5rem;
-      justify-content: flex-end;
-      margin-top: auto;
-      padding-top: 1rem;
-    }
-
-    .install-copy-btn {
-      padding: 0.4rem 0.75rem;
-      background: var(--gold);
-      border: 1px solid var(--gold);
-      border-radius: 6px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--surface);
-      cursor: pointer;
-      transition: all 0.2s;
-      font-family: 'Inter', system-ui, sans-serif;
-    }
-
-    .install-copy-btn:hover {
-      background: var(--brand-orange-dark);
-      border-color: var(--brand-orange-dark);
-    }
-
-    .install-copy-btn.copied {
-      background: #10b981;
-      border-color: #10b981;
-    }
-
-    .compare-toggle-btn {
-      padding: 0.4rem 0.75rem;
-      background: var(--surface-3);
-      border: 1px solid var(--brand-light-gray);
-      border-radius: 6px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--brand-mid-gray);
-      cursor: pointer;
-      transition: all 0.2s;
-      font-family: 'Inter', system-ui, sans-serif;
-      position: static;
-    }
-
-    .compare-toggle-btn:hover {
-      border-color: var(--gold);
-      color: var(--gold);
-      background: rgba(234, 170, 0, 0.1);
-    }
-
-    .compare-toggle-btn.active {
-      background: var(--brand-orange);
-      border-color: var(--brand-orange);
-      color: #0a0a0c;
-    }
-
-    .compare-toggle-btn.active:hover {
-      background: var(--brand-orange-dark);
-    }
-
-    /* Inline badges */
-    .card-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.2rem;
-      padding: 0.15rem 0.45rem;
-      border-radius: 4px;
-      font-size: 0.65rem;
-      font-weight: 700;
-      font-family: 'JetBrains Mono', monospace;
-      text-transform: uppercase;
-      white-space: nowrap;
-      letter-spacing: 0.03em;
-    }
-
-    .card-badge.featured {
-      background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-      color: #78350f;
-    }
-
-    .card-badge.new {
-      background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
-      color: #064e3b;
-    }
-
-    .card-badge.has-skills {
-      background: rgba(234, 170, 0, 0.15);
-      color: var(--gold);
-    }
-
-    /* Bookmark button */
-    .bookmark-btn {
-      position: absolute;
-      top: 0.75rem;
-      left: 0.75rem;
-      width: 28px;
-      height: 28px;
-      background: var(--surface-3);
-      border: 1px solid var(--brand-light-gray);
-      border-radius: 6px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.9rem;
-      transition: all 0.2s;
-      opacity: 0;
-      z-index: 2;
-    }
-
-    .result-card:hover .bookmark-btn {
-      opacity: 1;
-    }
-
-    .bookmark-btn:hover {
-      border-color: #ef4444;
-      background: rgba(248, 81, 73, 0.15);
-    }
-
-    .bookmark-btn.active {
-      opacity: 1;
-      background: rgba(248, 81, 73, 0.15);
-      border-color: #ef4444;
-      color: #ef4444;
+    @media (min-width: 768px) {
+      .results-grid {
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 1rem;
+      }
     }
 
     /* Keyboard navigation focus state */
-    .result-card.keyboard-focused {
-      outline: 3px solid var(--gold);
-      outline-offset: 2px;
-      
-    }
-
-    .result-type-badge {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      padding: 0.35rem 0.75rem;
-      font-size: 0.7rem;
-      font-weight: 700;
-      font-family: 'JetBrains Mono', monospace;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      border-radius: 6px;
-    }
-
-    .result-type-badge.plugin {
-      background: rgba(106, 155, 204, 0.15);
-      color: var(--brand-blue);
-    }
-
-    .result-type-badge.skill {
-      background: rgba(234, 170, 0, 0.15);
-      color: var(--gold);
+    .pcard.keyboard-focused {
+      outline: 2px solid var(--signal);
+      outline-offset: -2px;
     }
 
     .author-toggle {
       margin-left: 0;
-    }
-
-    .result-name {
-      font-size: 1.15rem;
-      font-weight: 600;
-      color: var(--text);
-      margin-bottom: 0.75rem;
-      padding-right: 4.5rem;
-    }
-
-    .result-description {
-      font-size: 0.9rem;
-      color: var(--text-2);
-      line-height: 1.6;
-      margin-bottom: 1rem;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .result-meta {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      font-size: 0.8rem;
-      color: var(--text-3);
-    }
-
-    .result-meta-row {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-    }
-
-    .parent-plugin {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.5rem 0.75rem;
-      background: var(--surface-3);
-      border-radius: 6px;
-      color: var(--gold);
-      font-weight: 600;
-      font-family: 'Inter', system-ui, sans-serif;
-    }
-
-    .result-category {
-      text-transform: capitalize;
-    }
-
-    .result-tools {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.4rem;
-      margin-top: 0.75rem;
-    }
-
-    .tool-tag {
-      padding: 0.25rem 0.6rem;
-      background: rgba(234, 170, 0, 0.1);
-      color: var(--gold);
-      font-size: 0.7rem;
-      font-weight: 600;
-      border-radius: 4px;
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    .keyword-tag {
-      padding: 0.25rem 0.6rem;
-      background: rgba(106, 155, 204, 0.1);
-      color: var(--brand-blue);
-      font-size: 0.7rem;
-      font-weight: 600;
-      border-radius: 4px;
-      font-family: 'Inter', system-ui, sans-serif;
     }
 
     .no-results {
@@ -492,12 +253,6 @@ const pageDescription = `Search all ${_rawStats.totalPlugins} plugins and ${_raw
     }
 
     /* Mobile Responsive */
-    @media (max-width: 1024px) {
-      .results-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
     @media (max-width: 768px) {
       .explorer-hero {
         padding: 2.5rem 2rem 2rem;
@@ -541,34 +296,9 @@ const pageDescription = `Search all ${_rawStats.totalPlugins} plugins and ${_raw
         text-align: center;
       }
 
-      .results-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .result-card {
-        padding: 1.25rem;
-      }
-
-      .result-name {
-        padding-right: 3.5rem;
-      }
-
-      .result-meta-row {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.35rem;
-      }
-
       .hero-stats {
         flex-direction: column;
         gap: 1rem;
-      }
-
-      .card-badge,
-      .result-type-badge,
-      .tool-tag,
-      .keyword-tag {
-        font-size: 0.75rem;
       }
     }
 
@@ -595,28 +325,6 @@ const pageDescription = `Search all ${_rawStats.totalPlugins} plugins and ${_raw
       .hero-search-input {
         font-size: 0.95rem;
         padding: 0.75rem 1rem;
-      }
-
-      .result-card {
-        padding: 1rem;
-      }
-
-      .result-name {
-        font-size: 1rem;
-        padding-right: 3rem;
-      }
-
-      .result-description {
-        font-size: 0.85rem;
-      }
-
-      .result-type-badge {
-        padding: 0.25rem 0.5rem;
-        font-size: 0.65rem;
-      }
-
-      .card-actions {
-        flex-wrap: wrap;
       }
 
       .hero-stats {
@@ -716,7 +424,7 @@ const pageDescription = `Search all ${_rawStats.totalPlugins} plugins and ${_raw
         Showing {_rawStats.totalItems} items
       </span>
 
-      <span class="keyboard-hint" title="Keyboard shortcuts: / search, j/k navigate, Enter open, c compare, f favorite">
+      <span class="keyboard-hint" title="Keyboard shortcuts: / search, j/k navigate, Enter open">
         <kbd>/</kbd> <kbd>j</kbd><kbd>k</kbd> <kbd>↵</kbd>
       </span>
     </div>
@@ -874,90 +582,36 @@ const pageDescription = `Search all ${_rawStats.totalPlugins} plugins and ${_raw
         : (item.parentPlugin ? `/cowork` : `/skills/${escHtml(item.slug)}/`);
       const installName = item.type === 'plugin' ? item.name : (item.parentPlugin?.name || item.name);
       const installCmd = `/plugin install ${escHtml(installName)}@claude-code-plugins-plus`;
-      const favs = window.BookmarkManager ? window.BookmarkManager.getAll() : [];
-      const isFav = favs.includes(item.id || item.name);
 
-      const tagsHtml = item.type === 'plugin' && item.keywords && item.keywords.length > 0
-        ? `<div class="result-tools">
-            ${item.keywords.slice(0, 3).map(kw => `<span class="keyword-tag">${escHtml(kw.replace(/-/g,' '))}</span>`).join('')}
-            ${item.keywords.length > 3 ? `<span class="keyword-tag">+${item.keywords.length - 3} more</span>` : ''}
-          </div>`
-        : item.type === 'skill' && item.allowedTools && item.allowedTools.length > 0
-          ? `<div class="result-tools">
-              ${item.allowedTools.slice(0, 3).map(t => `<span class="tool-tag">${escHtml(t)}</span>`).join('')}
-              ${item.allowedTools.length > 3 ? `<span class="tool-tag">+${item.allowedTools.length - 3} more</span>` : ''}
-            </div>`
-          : '';
-
-      const parentHtml = item.type === 'skill' && item.parentPlugin
-        ? `<div class="parent-plugin"><span>📦</span><span>Provided by ${escHtml(item.parentPlugin.name)}</span></div>`
+      const metaParts = [];
+      if (item.type === 'skill' && item.parentPlugin) {
+        metaParts.push(`<span>Provided by ${escHtml(item.parentPlugin.name)}</span>`);
+      }
+      if (item.skillCount > 0) {
+        metaParts.push(`<span>${item.skillCount} skills</span>`);
+      }
+      const metaHtml = metaParts.length
+        ? `<small>${metaParts.join(' · ')}</small>`
         : '';
 
-      return `<div class="result-card"
+      return `<div
           data-type="${escHtml(item.type)}"
           data-category="${escHtml(item.category)}"
           data-item-id="${id}"
           data-item-name="${displayName}"
           data-author-type="${escHtml(item.authorType || 'official')}">
-          <button class="bookmark-btn${isFav ? ' active' : ''}" data-bookmark-id="${id}" title="${isFav ? 'Remove from favorites' : 'Add to favorites'}">${isFav ? '♥' : '♡'}</button>
-          <a href="${href}" class="result-card-link">
-            <span class="result-type-badge ${escHtml(item.type)}">${escHtml(item.type)}</span>
-            <h3 class="result-name">${displayName}</h3>
-            <p class="result-description">${escHtml(item.description)}</p>
-            <div class="result-meta">
-              ${parentHtml}
-              <div class="result-meta-row">
-                <span class="result-category">${escHtml(item.category.replace(/-/g,' '))}</span>
-                ${item.skillCount > 0 ? `<span class="card-badge has-skills">${item.skillCount} skills</span>` : ''}
-              </div>
-            </div>
-            ${tagsHtml}
+          <a class="pcard" href="${href}">
+            <h3>${displayName}</h3>
+            <p>${escHtml(item.description)}</p>
+            <code>${installCmd}</code>
+            ${metaHtml}
           </a>
-          <div class="card-actions">
-            <button class="install-copy-btn" data-install-cmd="${installCmd}" title="Copy install command">Install</button>
-            <button class="compare-toggle-btn" data-compare-id="${id}" data-compare-name="${displayName}" data-compare-type="${escHtml(item.type)}" title="Add to comparison">+ Compare</button>
-          </div>
         </div>`;
     }
 
-    function attachCardListeners(container) {
-      // Install copy buttons
-      container.querySelectorAll('.install-copy-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.preventDefault(); e.stopPropagation();
-          const cmd = btn.dataset.installCmd;
-          navigator.clipboard.writeText(cmd).then(() => {
-            const orig = btn.textContent;
-            btn.textContent = 'Copied!';
-            btn.classList.add('copied');
-            setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 1500);
-            if (window.trackEvent) window.trackEvent('install_copied', { plugin_name: cmd, source: 'explore_card' });
-          });
-        });
-      });
-      // Compare buttons
-      container.querySelectorAll('.compare-toggle-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.preventDefault(); e.stopPropagation();
-          const { compareId: id, compareName: name, compareType: type } = btn.dataset;
-          if (window.CompareManager) {
-            if (window.CompareManager.has(id)) {
-              window.CompareManager.remove(id);
-              if (window.trackEvent) window.trackEvent('compare_action', { action: 'remove', plugin_name: name });
-            } else {
-              window.CompareManager.add({ id, name, type });
-              if (window.trackEvent) window.trackEvent('compare_action', { action: 'add', plugin_name: name });
-            }
-          }
-        });
-      });
-      // Bookmark buttons
-      container.querySelectorAll('.bookmark-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.preventDefault(); e.stopPropagation();
-          if (window.BookmarkManager) window.BookmarkManager.toggle(btn.dataset.bookmarkId);
-        });
-      });
+    function attachCardListeners(_container) {
+      // Cards are now plain links — bookmark/compare toggles moved off the
+      // cards (filter rail / detail page own them).
     }
 
     function renderResults(items) {
@@ -1109,18 +763,15 @@ const pageDescription = `Search all ${_rawStats.totalPlugins} plugins and ${_raw
       let focusedCardIndex = -1;
 
       function updateCardFocus(newIndex) {
-        const cards = document.querySelectorAll('.result-card:not([style*="display: none"])');
+        const cards = document.querySelectorAll('.pcard');
         if (cards.length === 0) return;
 
-        // Remove focus from previous card
         if (focusedCardIndex >= 0 && focusedCardIndex < cards.length) {
           cards[focusedCardIndex].classList.remove('keyboard-focused');
         }
 
-        // Clamp to valid range
         focusedCardIndex = Math.max(0, Math.min(newIndex, cards.length - 1));
 
-        // Add focus to new card
         const focusedCard = cards[focusedCardIndex];
         focusedCard.classList.add('keyboard-focused');
         focusedCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -1129,13 +780,11 @@ const pageDescription = `Search all ${_rawStats.totalPlugins} plugins and ${_raw
       document.addEventListener('keydown', (e) => {
         const inInput = ['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName);
 
-        // Focus search on / (unless already in input)
         if (e.key === '/' && !inInput) {
           e.preventDefault();
           document.getElementById('main-search').focus();
         }
 
-        // Clear search on Escape
         if (e.key === 'Escape') {
           if (document.activeElement.id === 'main-search') {
             document.getElementById('main-search').blur();
@@ -1145,15 +794,13 @@ const pageDescription = `Search all ${_rawStats.totalPlugins} plugins and ${_raw
               applyFilters();
             }
           }
-          // Clear card focus on Escape
-          const focusedCard = document.querySelector('.result-card.keyboard-focused');
+          const focusedCard = document.querySelector('.pcard.keyboard-focused');
           if (focusedCard) {
             focusedCard.classList.remove('keyboard-focused');
             focusedCardIndex = -1;
           }
         }
 
-        // j/k navigation (only when not in input)
         if (!inInput) {
           if (e.key === 'j' || e.key === 'ArrowDown') {
             e.preventDefault();
@@ -1163,31 +810,11 @@ const pageDescription = `Search all ${_rawStats.totalPlugins} plugins and ${_raw
             e.preventDefault();
             updateCardFocus(focusedCardIndex - 1);
           }
-          // Enter to open focused card
           if (e.key === 'Enter') {
-            const focusedCard = document.querySelector('.result-card.keyboard-focused');
+            const focusedCard = document.querySelector('.pcard.keyboard-focused');
             if (focusedCard) {
-              const link = focusedCard.querySelector('.result-card-link');
-              if (link) {
-                e.preventDefault();
-                window.location.href = link.href;
-              }
-            }
-          }
-          // c to add to compare
-          if (e.key === 'c') {
-            const focusedCard = document.querySelector('.result-card.keyboard-focused');
-            if (focusedCard) {
-              const compareBtn = focusedCard.querySelector('.compare-toggle-btn');
-              if (compareBtn) compareBtn.click();
-            }
-          }
-          // f to toggle favorite
-          if (e.key === 'f') {
-            const focusedCard = document.querySelector('.result-card.keyboard-focused');
-            if (focusedCard) {
-              const bookmarkBtn = focusedCard.querySelector('.bookmark-btn');
-              if (bookmarkBtn) bookmarkBtn.click();
+              e.preventDefault();
+              window.location.href = focusedCard.href;
             }
           }
         }

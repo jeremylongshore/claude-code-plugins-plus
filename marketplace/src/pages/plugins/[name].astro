@@ -5,6 +5,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import FaqAccordion from '../../components/FaqAccordion.astro';
 import DetailCta from '../../components/DetailCta.astro';
+import PluginCard from '../../components/PluginCard.astro';
 import skillsCatalog from '../../data/skills-catalog.json';
 import readmeSections from '../../data/readme-sections.json';
 import jrigData from '../../data/jrig-data.json';
@@ -295,10 +296,12 @@ statsItems.push({ label: 'Pricing', value: formatPricing(plugin.pricing) });
           <h2>Related Plugins</h2>
           <div class="related-plugins">
             {relatedPlugins.map((related: any) => (
-              <a href={`/plugins/${related.name}`} class="related-card">
-                <h3>{related.name}</h3>
-                <p>{related.description}</p>
-              </a>
+              <PluginCard
+                name={related.name}
+                description={related.description}
+                installCommand={`/plugin install ${related.name}@claude-code-plugins-plus`}
+                href={`/plugins/${related.name}`}
+              />
             ))}
           </div>
         </div>
@@ -993,46 +996,17 @@ statsItems.push({ label: 'Pricing', value: formatPricing(plugin.pricing) });
     font-weight: 600;
   }
 
-  /* Related plugins */
+  /* Related plugins — grid layout only; card styling lives in PluginCard. */
   .related-plugins {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1rem;
+    grid-template-columns: 1fr;
   }
 
-  .related-card {
-    background: var(--surface-2, var(--brand-light));
-    border: 1px solid var(--border, var(--brand-light-gray));
-    border-radius: var(--radius-md);
-    padding: 1rem;
-    text-decoration: none;
-    color: var(--text, var(--brand-dark));
-    transition: all var(--duration-fast) var(--ease-out);
-  }
-
-  .related-card:hover {
-    border-color: var(--brand-orange);
-    transform: translateY(-2px);
-    
-  }
-
-  .related-card h3 {
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    color: var(--brand-orange);
-    font-family: 'Inter', system-ui, sans-serif;
-  }
-
-  .related-card p {
-    font-size: 0.85rem;
-    color: var(--text-2, var(--brand-mid-gray));
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    line-height: 1.5;
+  @media (min-width: 768px) {
+    .related-plugins {
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
   }
 
   /* Tags footer (moved keywords) */
@@ -1101,10 +1075,6 @@ statsItems.push({ label: 'Pricing', value: formatPricing(plugin.pricing) });
 
     .info-grid {
       grid-template-columns: 1fr 1fr;
-    }
-
-    .related-plugins {
-      grid-template-columns: 1fr;
     }
 
     .gist-header {

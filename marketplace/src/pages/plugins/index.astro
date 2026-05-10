@@ -2,6 +2,7 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import PluginCard from '../../components/PluginCard.astro';
 
 // Load plugin catalog
 const catalogPath = join(process.cwd(), '../.claude-plugin/marketplace.extended.json');
@@ -34,10 +35,12 @@ const pageDescription = `Explore all ${catalog.plugins.length} plugins for Claud
           <h2>{category.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</h2>
           <div class="plugins-grid">
             {plugins.map((plugin: any) => (
-              <a href={`/plugins/${plugin.name}/`} class="plugin-card">
-                <h3>{plugin.name}</h3>
-                <p>{plugin.description}</p>
-              </a>
+              <PluginCard
+                name={plugin.name}
+                description={plugin.description}
+                installCommand={`/plugin install ${plugin.name}@claude-code-plugins-plus`}
+                href={`/plugins/${plugin.name}/`}
+              />
             ))}
           </div>
         </div>
@@ -60,18 +63,18 @@ const pageDescription = `Explore all ${catalog.plugins.length} plugins for Claud
     .header h1 {
       font-size: 2.5rem;
       font-weight: 700;
-      color: var(--brand-dark);
+      color: var(--ink);
       margin-bottom: 1rem;
     }
 
     .subtitle {
       font-size: 1.1rem;
-      color: var(--brand-mid-gray);
+      color: var(--ink-2);
       margin-bottom: 1.5rem;
     }
 
     .explore-link a {
-      color: var(--brand-orange);
+      color: var(--ink-link);
       font-weight: 600;
       text-decoration: none;
     }
@@ -87,49 +90,22 @@ const pageDescription = `Explore all ${catalog.plugins.length} plugins for Claud
     .category-section h2 {
       font-size: 1.5rem;
       font-weight: 600;
-      color: var(--brand-dark);
+      color: var(--ink);
       margin-bottom: 1.5rem;
       padding-bottom: 0.5rem;
-      border-bottom: 2px solid var(--brand-orange);
+      border-bottom: 1px solid var(--rule);
     }
 
     .plugins-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 1.5rem;
+      grid-template-columns: 1fr;
     }
 
-    .plugin-card {
-      display: block;
-      padding: 1.5rem;
-      background: var(--card);
-      border: 2px solid var(--brand-light-gray);
-      border-radius: 12px;
-      text-decoration: none;
-      transition: all 0.3s var(--transition-smooth);
-    }
-
-    .plugin-card:hover {
-      border-color: var(--brand-orange);
-      transform: translateY(-4px);
-      
-    }
-
-    .plugin-card h3 {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: var(--brand-dark);
-      margin-bottom: 0.5rem;
-    }
-
-    .plugin-card p {
-      font-size: 0.9rem;
-      color: var(--brand-mid-gray);
-      line-height: 1.6;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
+    @media (min-width: 768px) {
+      .plugins-grid {
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 1rem;
+      }
     }
 
     @media (max-width: 768px) {
@@ -139,10 +115,6 @@ const pageDescription = `Explore all ${catalog.plugins.length} plugins for Claud
 
       .header h1 {
         font-size: 2rem;
-      }
-
-      .plugins-grid {
-        grid-template-columns: 1fr;
       }
     }
   </style>
