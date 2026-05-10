@@ -936,7 +936,7 @@ sources:
   # ============================================================
 
   - name: cli-ux-tester
-    description: Expert UX evaluator for CLIs and developer APIs — rates usability across 11 criteria with parallel evaluation agents
+    description: Expert UX evaluator for CLIs and developer APIs, rates usability across 11 criteria with parallel evaluation agents
     repo: ali5ter/claude-cli-ux-skill
     source_path: .
     target_path: plugins/testing/cli-ux-tester
