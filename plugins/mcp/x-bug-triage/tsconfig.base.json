@@ -17,7 +17,7 @@
     "paths": {
       "@lib/*": ["./lib/*"]
     },
-    "types": ["bun-types"]
+    "types": ["bun"]
   },
   "include": ["lib/**/*.ts", "db/**/*.ts"],
   "exclude": ["node_modules", "dist", "**/*.test.ts"]
