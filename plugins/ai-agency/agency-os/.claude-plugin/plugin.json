@@ -1,0 +1,22 @@
+{
+  "name": "agency-os",
+  "version": "0.1.6",
+  "description": "Run your work like an AI agency, from a single Notion board. Agents discuss, plan, and execute tasks in parallel with dependency ordering and model routing.",
+  "author": {
+    "name": "AutomateLab",
+    "url": "https://github.com/ratamaha-git"
+  },
+  "repository": "https://github.com/ratamaha-git/agency-os",
+  "homepage": "https://github.com/ratamaha-git/agency-os",
+  "license": "MIT",
+  "keywords": [
+    "notion",
+    "task-management",
+    "ai-agency",
+    "autonomous-agent",
+    "workflow",
+    "project-management",
+    "mcp",
+    "claude-code"
+  ]
+}
