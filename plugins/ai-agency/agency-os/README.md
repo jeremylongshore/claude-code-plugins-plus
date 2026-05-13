@@ -13,10 +13,11 @@ Turn Notion into the dashboard of your own AI agency. You discuss ideas with the
 
 ## Quick Start
 
-1. Duplicate the [public Notion template](https://www.notion.so/35dd01a02a8081dea01cd8d42617f0c8) into your workspace.
-2. Create a Notion integration at https://www.notion.so/my-integrations and share it with the duplicated page.
-3. Add `NOTION_KEY=secret_...` to your `.env`.
-4. Run `/agency-os scaffold` to wire the board.
+1. Install the plugin: `ccpi install agency-os`
+2. Duplicate the [public Notion template](https://www.notion.so/35dd01a02a8081dea01cd8d42617f0c8) into your workspace.
+3. Create a Notion integration at https://www.notion.so/my-integrations and share it with the duplicated page.
+4. Add `NOTION_KEY=secret_...` to your `.env` (and ensure `.env` is in your `.gitignore`).
+5. Run `/agency-os scaffold` to wire the board.
 
 Full setup guide: https://github.com/ratamaha-git/agency-os/blob/main/docs/harnesses/claude-code.md
 
@@ -32,7 +33,7 @@ Full setup guide: https://github.com/ratamaha-git/agency-os/blob/main/docs/harne
 ## Learn more
 
 - GitHub: https://github.com/ratamaha-git/agency-os
-- Launch post: https://automatelab.tech/p/b3e8d44b-dd98-4e16-a888-9b1be7e9829c/
+- Launch post: https://automatelab.tech/agency-os-launch/
 
 ## License
 
