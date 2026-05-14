@@ -1,13 +1,13 @@
 {
   "meta": {
     "version": "1.0.0",
-    "generated": "2026-05-07T01:12:00.796Z",
+    "generated": "2026-05-14T20:46:21.446Z",
     "generator": "scripts/generate-unified-search.mjs"
   },
   "stats": {
-    "totalPlugins": 426,
-    "totalSkills": 2798,
-    "totalItems": 3224,
+    "totalPlugins": 427,
+    "totalSkills": 2770,
+    "totalItems": 3197,
     "categories": [
       "ai-agency",
       "ai-ml",
@@ -44,6 +44,7 @@
       "\"Bash(cmd:chmod)\"]",
       "\"Read",
       "AskUserQuestion",
+      "AskUserQuestion\"",
       "Bash",
       "Bash(age:*)",
       "Bash(aio:*)",
@@ -133,6 +134,7 @@
       "Bash(gog:*)",
       "Bash(gradle:*)",
       "Bash(grep:*)",
+      "Bash(gzip:*)",
       "Bash(helm:*)",
       "Bash(heroku:*)",
       "Bash(iac-check:*)",
@@ -766,6 +768,7 @@
       "font-pairing",
       "forecasting",
       "forex",
+      "forge-generated",
       "formatting",
       "framer",
       "free-ai",
@@ -1149,6 +1152,7 @@
       "pivot",
       "pivot-tables",
       "pkm",
+      "plane",
       "playbooks",
       "playwright",
       "plots",
@@ -1434,6 +1438,7 @@
       "tasks",
       "tax",
       "tdd",
+      "team-behavior",
       "team-collaboration",
       "team-management",
       "tech-debt",
@@ -1609,11 +1614,11 @@
       "zero-cost",
       "zod"
     ],
-    "totalAgents": 205,
+    "totalAgents": 288,
     "totalHooks": 18,
-    "pluginsWithAgents": 73,
+    "pluginsWithAgents": 78,
     "pluginsWithHooks": 14,
-    "officialPlugins": 375,
+    "officialPlugins": 376,
     "communityPlugins": 51,
     "communityContributors": 23
   },
@@ -14046,7 +14051,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 31,
+      "skillCount": 10,
       "verificationScore": 79,
       "verificationGrade": "C",
       "verificationBadge": "silver",
@@ -14463,10 +14468,10 @@
       "badges": [
         "new"
       ],
-      "skillCount": 18,
-      "verificationScore": 79,
-      "verificationGrade": "C",
-      "verificationBadge": "silver",
+      "skillCount": 10,
+      "verificationScore": 93,
+      "verificationGrade": "A",
+      "verificationBadge": "gold",
       "searchText": "podium pack claude code skill pack for podium (18 skills) business-tools podium saas sdk integration"
     },
     {
@@ -14752,9 +14757,9 @@
         "new"
       ],
       "skillCount": 38,
-      "verificationScore": 79,
-      "verificationGrade": "C",
-      "verificationBadge": "silver",
+      "verificationScore": 93,
+      "verificationGrade": "A",
+      "verificationBadge": "gold",
       "searchText": "shopify pack claude code skill pack for shopify (30 skills) business-tools shopify saas sdk integration"
     },
     {
@@ -15498,6 +15503,37 @@
       ],
       "skillCount": 33,
       "searchText": "langchain py pack langchain 1.0 + langgraph 1.0 skill pack for python. pain-first skills anchored to a 68-entry pain catalog covering content blocks, streaming token accounting, structured-output, vector stores, checkpointing, hitl, middleware, deep agents, and native otel. expanding toward 34 skills across four epics. saas-packs langchain langgraph python llm agents rag checkpointing streaming middleware langsmith"
+    },
+    {
+      "type": "plugin",
+      "id": "plane",
+      "slug": "plane",
+      "name": "plane",
+      "displayName": "plane",
+      "description": "Plane is a team behavior observatory — synthesizes Plane API data into observations about how teams actually behave under pressure (cycle velocity vs. plan, ownership churn, reviewer gate strength, priority drift, cross-project load). Reads from the live mcp__plane MCP server.",
+      "category": "productivity",
+      "keywords": [
+        "plane",
+        "project-management",
+        "team-behavior",
+        "observability",
+        "productivity",
+        "agent-skills",
+        "forge-generated"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "authorType": "official",
+      "version": "0.1.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
+      "searchText": "plane plane is a team behavior observatory — synthesizes plane api data into observations about how teams actually behave under pressure (cycle velocity vs. plan, ownership churn, reviewer gate strength, priority drift, cross-project load). reads from the live mcp__plane mcp server. productivity plane project-management team-behavior observability productivity agent-skills forge-generated"
     },
     {
       "type": "skill",
@@ -42419,51 +42455,32 @@
     },
     {
       "type": "skill",
-      "id": "hubspot-advanced-troubleshooting",
-      "slug": "hubspot-advanced-troubleshooting",
-      "name": "hubspot-advanced-troubleshooting",
-      "description": "'Debug complex HubSpot API issues with systematic isolation and evidence",
+      "id": "hubspot-agency-multi-portal",
+      "slug": "hubspot-agency-multi-portal",
+      "name": "hubspot-agency-multi-portal",
+      "description": "Manage 10-100 HubSpot portals for agency clients with credential isolation that prevents cross-portal data contamination, per-portal audit trails for billing and GDPR/CCPA attribution, and a scriptable bulk-onboarding workflow that eliminates one-at-a-time credential setup. Use when onboarding new client portals, building a compliant per-client API call log, rotating tokens across a full agency fleet, or generating per-client compliance reports. Trigger with \"hubspot agency\", \"multi-portal management\", \"hubspot credential isolation\", \"per-portal audit log\", \"hubspot compliance report\", \"bulk portal onboarding\", \"token rotation cascade\", \"hubspot client portals\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
-        "Grep",
-        "Bash(kubectl:*)",
+        "Write",
         "Bash(curl:*)",
-        "Bash(tcpdump:*)"
+        "Bash(jq:*)",
+        "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "1.0.0",
+      "version": "2.0.0",
       "parentPlugin": {
         "name": "hubspot-pack",
         "category": "saas-packs"
       },
-      "searchText": "hubspot-advanced-troubleshooting 'debug complex hubspot api issues with systematic isolation and evidence saas-packs read grep bash(kubectl:*) bash(curl:*) bash(tcpdump:*) "
-    },
-    {
-      "type": "skill",
-      "id": "hubspot-architecture-variants",
-      "slug": "hubspot-architecture-variants",
-      "name": "hubspot-architecture-variants",
-      "description": "'Choose and implement HubSpot integration architecture for different",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Grep"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "hubspot-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "hubspot-architecture-variants 'choose and implement hubspot integration architecture for different saas-packs read grep "
+      "searchText": "hubspot-agency-multi-portal manage 10-100 hubspot portals for agency clients with credential isolation that prevents cross-portal data contamination, per-portal audit trails for billing and gdpr/ccpa attribution, and a scriptable bulk-onboarding workflow that eliminates one-at-a-time credential setup. use when onboarding new client portals, building a compliant per-client api call log, rotating tokens across a full agency fleet, or generating per-client compliance reports. trigger with \"hubspot agency\", \"multi-portal management\", \"hubspot credential isolation\", \"per-portal audit log\", \"hubspot compliance report\", \"bulk portal onboarding\", \"token rotation cascade\", \"hubspot client portals\". saas-packs read write bash(curl:*) bash(jq:*) bash(python3:*) "
     },
     {
       "type": "skill",
       "id": "hubspot-auth",
       "slug": "hubspot-auth",
       "name": "hubspot-auth",
-      "description": "Authenticate HubSpot integrations and survive auth-side production failures — 30-minute token expiry storms, 50-portal credential routing without leaks, scope drift, OAuth refresh-token decay, and the public-commit token-leak incident. Use when wiring a private-app token, building OAuth for a public app, routing credentials across many client portals, or hardening secret rotation. Trigger with \"hubspot auth\", \"hubspot token\", \"hubspot oauth\", \"hubspot private app\", \"hubspot multi portal\", \"hubspot scope\", \"hubspot rotate secret\", \"hubspot pat-na1\".",
+      "description": "Authenticate production HubSpot integrations and survive the auth-side",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -42471,9 +42488,7 @@
         "Edit",
         "Bash(curl:*)",
         "Bash(jq:*)",
-        "Bash(node:*)",
-        "Bash(npm:*)",
-        "Bash(sops:*)",
+        "Bash(openssl:*)",
         "Grep"
       ],
       "compatibleWith": [],
@@ -42482,594 +42497,188 @@
         "name": "hubspot-pack",
         "category": "saas-packs"
       },
-      "searchText": "hubspot-auth authenticate hubspot integrations and survive auth-side production failures — 30-minute token expiry storms, 50-portal credential routing without leaks, scope drift, oauth refresh-token decay, and the public-commit token-leak incident. use when wiring a private-app token, building oauth for a public app, routing credentials across many client portals, or hardening secret rotation. trigger with \"hubspot auth\", \"hubspot token\", \"hubspot oauth\", \"hubspot private app\", \"hubspot multi portal\", \"hubspot scope\", \"hubspot rotate secret\", \"hubspot pat-na1\". saas-packs read write edit bash(curl:*) bash(jq:*) bash(node:*) bash(npm:*) bash(sops:*) grep "
+      "searchText": "hubspot-auth authenticate production hubspot integrations and survive the auth-side saas-packs read write edit bash(curl:*) bash(jq:*) bash(openssl:*) grep "
     },
     {
       "type": "skill",
-      "id": "hubspot-ci-integration",
-      "slug": "hubspot-ci-integration",
-      "name": "hubspot-ci-integration",
-      "description": "'Configure CI/CD pipelines for HubSpot integrations with GitHub Actions.",
+      "id": "hubspot-bulk-migration",
+      "slug": "hubspot-bulk-migration",
+      "name": "hubspot-bulk-migration",
+      "description": "Bulk-migrate CRM data into HubSpot from Salesforce, Pipedrive, or Copper — or export off HubSpot — with field mapping, ID continuity, association re-linking, dedup safety, rate-limit budgeting, and rollback mitigation across 100K+ record datasets. Use when migrating any source CRM to HubSpot, recovering from a failed import with duplicate or unlinked records, or exporting out of HubSpot before switching platforms. Trigger with \"hubspot bulk migration\", \"salesforce to hubspot\", \"pipedrive to hubspot\", \"copper to hubspot\", \"migrate off hubspot\", \"hubspot import dedup\", \"hubspot association relink\", \"hubspot field mapping\", \"hubspot id continuity\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
-        "Write",
-        "Edit",
-        "Bash(gh:*)"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "hubspot-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "hubspot-ci-integration 'configure ci/cd pipelines for hubspot integrations with github actions. saas-packs read write edit bash(gh:*) "
-    },
-    {
-      "type": "skill",
-      "id": "hubspot-common-errors",
-      "slug": "hubspot-common-errors",
-      "name": "hubspot-common-errors",
-      "description": "'Diagnose and fix common HubSpot API errors with real error responses.",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Grep",
-        "Bash(curl:*)"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "hubspot-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "hubspot-common-errors 'diagnose and fix common hubspot api errors with real error responses. saas-packs read grep bash(curl:*) "
-    },
-    {
-      "type": "skill",
-      "id": "hubspot-core-workflow-a",
-      "slug": "hubspot-core-workflow-a",
-      "name": "hubspot-core-workflow-a",
-      "description": "'Build a complete HubSpot CRM contact-to-deal pipeline workflow.",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(npm:*)",
-        "Grep"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "hubspot-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "hubspot-core-workflow-a 'build a complete hubspot crm contact-to-deal pipeline workflow. saas-packs read write edit bash(npm:*) grep "
-    },
-    {
-      "type": "skill",
-      "id": "hubspot-core-workflow-b",
-      "slug": "hubspot-core-workflow-b",
-      "name": "hubspot-core-workflow-b",
-      "description": "'Build HubSpot marketing automation with emails, forms, lists, and tickets.",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(npm:*)",
-        "Grep"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "hubspot-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "hubspot-core-workflow-b 'build hubspot marketing automation with emails, forms, lists, and tickets. saas-packs read write edit bash(npm:*) grep "
-    },
-    {
-      "type": "skill",
-      "id": "hubspot-cost-tuning",
-      "slug": "hubspot-cost-tuning",
-      "name": "hubspot-cost-tuning",
-      "description": "'Optimize HubSpot costs through API call reduction, plan selection, and",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Grep"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "hubspot-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "hubspot-cost-tuning 'optimize hubspot costs through api call reduction, plan selection, and saas-packs read grep "
-    },
-    {
-      "type": "skill",
-      "id": "hubspot-data-handling",
-      "slug": "hubspot-data-handling",
-      "name": "hubspot-data-handling",
-      "description": "'Implement HubSpot GDPR compliance, data export, and contact privacy",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "hubspot-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "hubspot-data-handling 'implement hubspot gdpr compliance, data export, and contact privacy saas-packs read write edit "
-    },
-    {
-      "type": "skill",
-      "id": "hubspot-debug-bundle",
-      "slug": "hubspot-debug-bundle",
-      "name": "hubspot-debug-bundle",
-      "description": "'Collect HubSpot debug evidence for support tickets and troubleshooting.",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Bash(grep:*)",
         "Bash(curl:*)",
-        "Bash(tar:*)",
-        "Grep"
+        "Bash(jq:*)",
+        "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "1.0.0",
+      "version": "2.0.0",
       "parentPlugin": {
         "name": "hubspot-pack",
         "category": "saas-packs"
       },
-      "searchText": "hubspot-debug-bundle 'collect hubspot debug evidence for support tickets and troubleshooting. saas-packs read bash(grep:*) bash(curl:*) bash(tar:*) grep "
+      "searchText": "hubspot-bulk-migration bulk-migrate crm data into hubspot from salesforce, pipedrive, or copper — or export off hubspot — with field mapping, id continuity, association re-linking, dedup safety, rate-limit budgeting, and rollback mitigation across 100k+ record datasets. use when migrating any source crm to hubspot, recovering from a failed import with duplicate or unlinked records, or exporting out of hubspot before switching platforms. trigger with \"hubspot bulk migration\", \"salesforce to hubspot\", \"pipedrive to hubspot\", \"copper to hubspot\", \"migrate off hubspot\", \"hubspot import dedup\", \"hubspot association relink\", \"hubspot field mapping\", \"hubspot id continuity\". saas-packs read bash(curl:*) bash(jq:*) bash(python3:*) "
     },
     {
       "type": "skill",
-      "id": "hubspot-deploy-integration",
-      "slug": "hubspot-deploy-integration",
-      "name": "hubspot-deploy-integration",
-      "description": "'Deploy HubSpot integrations to Vercel, Fly.io, and Cloud Run platforms.",
+      "id": "hubspot-contact-dedup",
+      "slug": "hubspot-contact-dedup",
+      "name": "hubspot-contact-dedup",
+      "description": "Deduplicate HubSpot contacts at production scale — surviving import storms, wrong-winner merges, fuzzy-match blind spots, association orphans, rate-limit exhaustion, and silent merge failures on conflicting lifecycle or opt-out status. Use when cleaning a CRM after a bulk import, running a nightly dedup pipeline on millions of records, recovering from a merge that destroyed the wrong timeline, or building fuzzy matching beyond HubSpot's native email-uniqueness. Trigger with \"hubspot dedup\", \"hubspot merge contacts\", \"hubspot duplicate contacts\", \"hubspot contact cleanup\", \"hubspot import duplicates\", \"hubspot fuzzy match contacts\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
-        "Write",
-        "Edit",
-        "Bash(vercel:*)",
-        "Bash(fly:*)",
-        "Bash(gcloud:*)"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "hubspot-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "hubspot-deploy-integration 'deploy hubspot integrations to vercel, fly.io, and cloud run platforms. saas-packs read write edit bash(vercel:*) bash(fly:*) bash(gcloud:*) "
-    },
-    {
-      "type": "skill",
-      "id": "hubspot-enterprise-rbac",
-      "slug": "hubspot-enterprise-rbac",
-      "name": "hubspot-enterprise-rbac",
-      "description": "'Configure HubSpot enterprise access control with OAuth scopes and team",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "hubspot-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "hubspot-enterprise-rbac 'configure hubspot enterprise access control with oauth scopes and team saas-packs read write edit "
-    },
-    {
-      "type": "skill",
-      "id": "hubspot-hello-world",
-      "slug": "hubspot-hello-world",
-      "name": "hubspot-hello-world",
-      "description": "'Create a working HubSpot CRM example with contacts, companies, and deals.",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "hubspot-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "hubspot-hello-world 'create a working hubspot crm example with contacts, companies, and deals. saas-packs read write edit "
-    },
-    {
-      "type": "skill",
-      "id": "hubspot-incident-runbook",
-      "slug": "hubspot-incident-runbook",
-      "name": "hubspot-incident-runbook",
-      "description": "'Execute HubSpot incident response with triage, mitigation, and postmortem.",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Grep",
-        "Bash(kubectl:*)",
-        "Bash(curl:*)"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "hubspot-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "hubspot-incident-runbook 'execute hubspot incident response with triage, mitigation, and postmortem. saas-packs read grep bash(kubectl:*) bash(curl:*) "
-    },
-    {
-      "type": "skill",
-      "id": "hubspot-install-auth",
-      "slug": "hubspot-install-auth",
-      "name": "hubspot-install-auth",
-      "description": "'Install and configure HubSpot API client with authentication.",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(npm:*)",
-        "Bash(pip:*)",
-        "Grep"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "hubspot-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "hubspot-install-auth 'install and configure hubspot api client with authentication. saas-packs read write edit bash(npm:*) bash(pip:*) grep "
-    },
-    {
-      "type": "skill",
-      "id": "hubspot-known-pitfalls",
-      "slug": "hubspot-known-pitfalls",
-      "name": "hubspot-known-pitfalls",
-      "description": "'Identify and avoid HubSpot API anti-patterns and common integration",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Grep"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "hubspot-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "hubspot-known-pitfalls 'identify and avoid hubspot api anti-patterns and common integration saas-packs read grep "
-    },
-    {
-      "type": "skill",
-      "id": "hubspot-load-scale",
-      "slug": "hubspot-load-scale",
-      "name": "hubspot-load-scale",
-      "description": "'Load test HubSpot integrations and plan capacity around API rate limits.",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(k6:*)",
-        "Bash(kubectl:*)"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "hubspot-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "hubspot-load-scale 'load test hubspot integrations and plan capacity around api rate limits. saas-packs read write edit bash(k6:*) bash(kubectl:*) "
-    },
-    {
-      "type": "skill",
-      "id": "hubspot-local-dev-loop",
-      "slug": "hubspot-local-dev-loop",
-      "name": "hubspot-local-dev-loop",
-      "description": "'Configure HubSpot local development with testing and sandbox accounts.",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(npm:*)",
-        "Bash(pnpm:*)",
-        "Grep"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "hubspot-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "hubspot-local-dev-loop 'configure hubspot local development with testing and sandbox accounts. saas-packs read write edit bash(npm:*) bash(pnpm:*) grep "
-    },
-    {
-      "type": "skill",
-      "id": "hubspot-migration-deep-dive",
-      "slug": "hubspot-migration-deep-dive",
-      "name": "hubspot-migration-deep-dive",
-      "description": "'Execute CRM data migration to HubSpot with batch imports and validation.",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(npm:*)",
-        "Bash(node:*)",
-        "Bash(kubectl:*)"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "hubspot-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "hubspot-migration-deep-dive 'execute crm data migration to hubspot with batch imports and validation. saas-packs read write edit bash(npm:*) bash(node:*) bash(kubectl:*) "
-    },
-    {
-      "type": "skill",
-      "id": "hubspot-multi-env-setup",
-      "slug": "hubspot-multi-env-setup",
-      "name": "hubspot-multi-env-setup",
-      "description": "'Configure HubSpot across development, staging, and production environments.",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(aws:*)",
-        "Bash(gcloud:*)",
-        "Bash(vault:*)"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "hubspot-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "hubspot-multi-env-setup 'configure hubspot across development, staging, and production environments. saas-packs read write edit bash(aws:*) bash(gcloud:*) bash(vault:*) "
-    },
-    {
-      "type": "skill",
-      "id": "hubspot-observability",
-      "slug": "hubspot-observability",
-      "name": "hubspot-observability",
-      "description": "'Set up observability for HubSpot integrations with metrics, traces,",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "hubspot-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "hubspot-observability 'set up observability for hubspot integrations with metrics, traces, saas-packs read write edit "
-    },
-    {
-      "type": "skill",
-      "id": "hubspot-performance-tuning",
-      "slug": "hubspot-performance-tuning",
-      "name": "hubspot-performance-tuning",
-      "description": "'Optimize HubSpot API performance with caching, batching, and search",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "hubspot-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "hubspot-performance-tuning 'optimize hubspot api performance with caching, batching, and search saas-packs read write edit "
-    },
-    {
-      "type": "skill",
-      "id": "hubspot-policy-guardrails",
-      "slug": "hubspot-policy-guardrails",
-      "name": "hubspot-policy-guardrails",
-      "description": "'Implement HubSpot lint rules, secret scanning, and CI policy checks.",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(npx:*)"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "hubspot-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "hubspot-policy-guardrails 'implement hubspot lint rules, secret scanning, and ci policy checks. saas-packs read write edit bash(npx:*) "
-    },
-    {
-      "type": "skill",
-      "id": "hubspot-prod-checklist",
-      "slug": "hubspot-prod-checklist",
-      "name": "hubspot-prod-checklist",
-      "description": "'Execute HubSpot production deployment checklist and go-live procedures.",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Bash(kubectl:*)",
         "Bash(curl:*)",
-        "Grep"
+        "Bash(jq:*)",
+        "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "1.0.0",
+      "version": "2.0.0",
       "parentPlugin": {
         "name": "hubspot-pack",
         "category": "saas-packs"
       },
-      "searchText": "hubspot-prod-checklist 'execute hubspot production deployment checklist and go-live procedures. saas-packs read bash(kubectl:*) bash(curl:*) grep "
+      "searchText": "hubspot-contact-dedup deduplicate hubspot contacts at production scale — surviving import storms, wrong-winner merges, fuzzy-match blind spots, association orphans, rate-limit exhaustion, and silent merge failures on conflicting lifecycle or opt-out status. use when cleaning a crm after a bulk import, running a nightly dedup pipeline on millions of records, recovering from a merge that destroyed the wrong timeline, or building fuzzy matching beyond hubspot's native email-uniqueness. trigger with \"hubspot dedup\", \"hubspot merge contacts\", \"hubspot duplicate contacts\", \"hubspot contact cleanup\", \"hubspot import duplicates\", \"hubspot fuzzy match contacts\". saas-packs read bash(curl:*) bash(jq:*) bash(python3:*) "
     },
     {
       "type": "skill",
-      "id": "hubspot-rate-limits",
-      "slug": "hubspot-rate-limits",
-      "name": "hubspot-rate-limits",
-      "description": "'Implement HubSpot rate limiting, backoff, and request queuing patterns.",
+      "id": "hubspot-deal-pipeline-automation",
+      "slug": "hubspot-deal-pipeline-automation",
+      "name": "hubspot-deal-pipeline-automation",
+      "description": "Automate and audit HubSpot deal pipeline operations without destroying real pipeline — covering stage automation loops, stale-deal safe-close logic, forecast reconciliation, custom property drift detection, quota dashboard cache-busting, and multi-pipeline duplicate detection. Use when writing or debugging workflow automations that move deals between stages, auditing pipelines for stale or duplicated opportunities, reconciling forecast numbers that disagree across reports, or hardening RevOps dashboards against property deletions and reporting-cache lag. Trigger with \"hubspot deal pipeline\", \"hubspot stage automation\", \"hubspot stale deals\", \"hubspot forecast reconciliation\", \"hubspot quota dashboard\", \"hubspot duplicate deals\", \"revops pipeline audit\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
         "Write",
-        "Edit"
+        "Bash(curl:*)",
+        "Bash(jq:*)",
+        "Bash(python3:*)"
       ],
       "compatibleWith": [],
-      "version": "1.0.0",
+      "version": "2.0.0",
       "parentPlugin": {
         "name": "hubspot-pack",
         "category": "saas-packs"
       },
-      "searchText": "hubspot-rate-limits 'implement hubspot rate limiting, backoff, and request queuing patterns. saas-packs read write edit "
+      "searchText": "hubspot-deal-pipeline-automation automate and audit hubspot deal pipeline operations without destroying real pipeline — covering stage automation loops, stale-deal safe-close logic, forecast reconciliation, custom property drift detection, quota dashboard cache-busting, and multi-pipeline duplicate detection. use when writing or debugging workflow automations that move deals between stages, auditing pipelines for stale or duplicated opportunities, reconciling forecast numbers that disagree across reports, or hardening revops dashboards against property deletions and reporting-cache lag. trigger with \"hubspot deal pipeline\", \"hubspot stage automation\", \"hubspot stale deals\", \"hubspot forecast reconciliation\", \"hubspot quota dashboard\", \"hubspot duplicate deals\", \"revops pipeline audit\". saas-packs read write bash(curl:*) bash(jq:*) bash(python3:*) "
     },
     {
       "type": "skill",
-      "id": "hubspot-reference-architecture",
-      "slug": "hubspot-reference-architecture",
-      "name": "hubspot-reference-architecture",
-      "description": "'Implement a production-ready HubSpot integration architecture with layered",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Grep"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "hubspot-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "hubspot-reference-architecture 'implement a production-ready hubspot integration architecture with layered saas-packs read grep "
-    },
-    {
-      "type": "skill",
-      "id": "hubspot-reliability-patterns",
-      "slug": "hubspot-reliability-patterns",
-      "name": "hubspot-reliability-patterns",
-      "description": "'Implement HubSpot reliability patterns: circuit breakers, retries, and",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "hubspot-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "hubspot-reliability-patterns 'implement hubspot reliability patterns: circuit breakers, retries, and saas-packs read write edit "
-    },
-    {
-      "type": "skill",
-      "id": "hubspot-sdk-patterns",
-      "slug": "hubspot-sdk-patterns",
-      "name": "hubspot-sdk-patterns",
-      "description": "'Apply production-ready @hubspot/api-client SDK patterns for TypeScript.",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "hubspot-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "hubspot-sdk-patterns 'apply production-ready @hubspot/api-client sdk patterns for typescript. saas-packs read write edit "
-    },
-    {
-      "type": "skill",
-      "id": "hubspot-security-basics",
-      "slug": "hubspot-security-basics",
-      "name": "hubspot-security-basics",
-      "description": "'Apply HubSpot security best practices for tokens, scopes, and webhook",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Grep"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "hubspot-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "hubspot-security-basics 'apply hubspot security best practices for tokens, scopes, and webhook saas-packs read write grep "
-    },
-    {
-      "type": "skill",
-      "id": "hubspot-upgrade-migration",
-      "slug": "hubspot-upgrade-migration",
-      "name": "hubspot-upgrade-migration",
-      "description": "'Upgrade @hubspot/api-client SDK versions and migrate between API versions.",
+      "id": "hubspot-lifecycle-and-lists",
+      "slug": "hubspot-lifecycle-and-lists",
+      "name": "hubspot-lifecycle-and-lists",
+      "description": "Manage HubSpot lifecycle stages and list segmentation in production without silently destroying CRM trust. Covers lifecycle stage progression guards that prevent regression, dynamic list criteria drift, static list orphan detection, lead-scoring source-of-truth conflicts, webhook-missed-event recovery, and cross-portal list sync. Use when moving contacts through the funnel, building segment-based nurture flows, auditing list membership integrity, reconciling external lead scores with HubSpot native scoring, or standing up a webhook consumer that must never lose a membership-change event. Trigger with \"hubspot lifecycle\", \"hubspot list segmentation\", \"hubspot dynamic list\", \"hubspot static list\", \"hubspot lead scoring conflict\", \"lifecycle regression\", \"list membership webhook\", \"cross-portal list sync\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
         "Write",
         "Edit",
-        "Bash(npm:*)",
-        "Bash(git:*)"
+        "Bash(curl:*)",
+        "Bash(jq:*)",
+        "Bash(python3:*)",
+        "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.0.0",
+      "version": "2.0.0",
       "parentPlugin": {
         "name": "hubspot-pack",
         "category": "saas-packs"
       },
-      "searchText": "hubspot-upgrade-migration 'upgrade @hubspot/api-client sdk versions and migrate between api versions. saas-packs read write edit bash(npm:*) bash(git:*) "
+      "searchText": "hubspot-lifecycle-and-lists manage hubspot lifecycle stages and list segmentation in production without silently destroying crm trust. covers lifecycle stage progression guards that prevent regression, dynamic list criteria drift, static list orphan detection, lead-scoring source-of-truth conflicts, webhook-missed-event recovery, and cross-portal list sync. use when moving contacts through the funnel, building segment-based nurture flows, auditing list membership integrity, reconciling external lead scores with hubspot native scoring, or standing up a webhook consumer that must never lose a membership-change event. trigger with \"hubspot lifecycle\", \"hubspot list segmentation\", \"hubspot dynamic list\", \"hubspot static list\", \"hubspot lead scoring conflict\", \"lifecycle regression\", \"list membership webhook\", \"cross-portal list sync\". saas-packs read write edit bash(curl:*) bash(jq:*) bash(python3:*) grep "
     },
     {
       "type": "skill",
-      "id": "hubspot-webhooks-events",
-      "slug": "hubspot-webhooks-events",
-      "name": "hubspot-webhooks-events",
-      "description": "'Implement HubSpot webhook subscriptions and CRM event handling.",
+      "id": "hubspot-product-event-sync",
+      "slug": "hubspot-product-event-sync",
+      "name": "hubspot-product-event-sync",
+      "description": "Sync backend product events into HubSpot contact and company custom properties using idempotent batched updates — the Segment integration pattern without Segment. Use when you need to push server-side behavioral signals (feature usage, session counts, last-seen timestamps, trial milestones) into HubSpot CRM properties so sales and marketing can act on product data without a CDP in the stack. Trigger with \"hubspot product events\", \"sync events to hubspot\", \"hubspot custom properties\", \"hubspot event pipeline\", \"hubspot segment alternative\", \"push usage data to hubspot\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
         "Write",
         "Edit",
-        "Bash(curl:*)"
+        "Bash(curl:*)",
+        "Bash(jq:*)",
+        "Bash(python3:*)",
+        "Grep"
       ],
       "compatibleWith": [],
-      "version": "1.0.0",
+      "version": "2.0.0",
       "parentPlugin": {
         "name": "hubspot-pack",
         "category": "saas-packs"
       },
-      "searchText": "hubspot-webhooks-events 'implement hubspot webhook subscriptions and crm event handling. saas-packs read write edit bash(curl:*) "
+      "searchText": "hubspot-product-event-sync sync backend product events into hubspot contact and company custom properties using idempotent batched updates — the segment integration pattern without segment. use when you need to push server-side behavioral signals (feature usage, session counts, last-seen timestamps, trial milestones) into hubspot crm properties so sales and marketing can act on product data without a cdp in the stack. trigger with \"hubspot product events\", \"sync events to hubspot\", \"hubspot custom properties\", \"hubspot event pipeline\", \"hubspot segment alternative\", \"push usage data to hubspot\". saas-packs read write edit bash(curl:*) bash(jq:*) bash(python3:*) grep "
+    },
+    {
+      "type": "skill",
+      "id": "hubspot-rate-limit-survival",
+      "slug": "hubspot-rate-limit-survival",
+      "name": "hubspot-rate-limit-survival",
+      "description": "Survive HubSpot API rate limits at production scale. Covers daily 500K portal quota, per-10s burst limits, batch API efficiency (100x), token bucket pattern, queue-based worker architecture, and Retry-After header parsing. Use when a sync job burns the daily quota before 8am, when a parallelized batch job retry-storms on 429s, when single-record reads waste 99% of available throughput, or when instrumenting a rate-limit dashboard for an Ops Hub Enterprise portal. Trigger with \"hubspot rate limit\", \"hubspot quota\", \"hubspot 429\", \"hubspot batch API\", \"hubspot token bucket\", \"hubspot throttle\", \"hubspot daily limit exhausted\", \"hubspot Ops Hub rate limit\".",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Bash(curl:*)",
+        "Bash(jq:*)",
+        "Bash(python3:*)"
+      ],
+      "compatibleWith": [],
+      "version": "2.0.0",
+      "parentPlugin": {
+        "name": "hubspot-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "hubspot-rate-limit-survival survive hubspot api rate limits at production scale. covers daily 500k portal quota, per-10s burst limits, batch api efficiency (100x), token bucket pattern, queue-based worker architecture, and retry-after header parsing. use when a sync job burns the daily quota before 8am, when a parallelized batch job retry-storms on 429s, when single-record reads waste 99% of available throughput, or when instrumenting a rate-limit dashboard for an ops hub enterprise portal. trigger with \"hubspot rate limit\", \"hubspot quota\", \"hubspot 429\", \"hubspot batch api\", \"hubspot token bucket\", \"hubspot throttle\", \"hubspot daily limit exhausted\", \"hubspot ops hub rate limit\". saas-packs read bash(curl:*) bash(jq:*) bash(python3:*) "
+    },
+    {
+      "type": "skill",
+      "id": "hubspot-warehouse-sync",
+      "slug": "hubspot-warehouse-sync",
+      "name": "hubspot-warehouse-sync",
+      "description": "Sync HubSpot CRM data to a data warehouse (BigQuery, Snowflake, or Postgres) for analytics and reporting. Covers initial backfill of millions of records under the 500K/day rate limit, incremental CDC polling via hs_lastmodifieddate, schema-drift detection with ALTER TABLE generation, association sync for contacts/deals/companies, and idempotent upsert patterns that prevent duplicate rows on retry. Use when building a HubSpot → warehouse pipeline, resyncing after a schema change, debugging duplicate rows or missing CDC updates, or recovering from a rate-limit burnout mid-backfill. Trigger with \"hubspot warehouse sync\", \"hubspot bigquery\", \"hubspot snowflake\", \"hubspot postgres etl\", \"hubspot backfill\", \"hubspot cdc\", \"hubspot schema drift\", \"hubspot duplicate rows\", \"hubspot to data warehouse\".",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit",
+        "Bash(curl:*)",
+        "Bash(jq:*)",
+        "Bash(python3:*)",
+        "Grep"
+      ],
+      "compatibleWith": [],
+      "version": "2.0.0",
+      "parentPlugin": {
+        "name": "hubspot-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "hubspot-warehouse-sync sync hubspot crm data to a data warehouse (bigquery, snowflake, or postgres) for analytics and reporting. covers initial backfill of millions of records under the 500k/day rate limit, incremental cdc polling via hs_lastmodifieddate, schema-drift detection with alter table generation, association sync for contacts/deals/companies, and idempotent upsert patterns that prevent duplicate rows on retry. use when building a hubspot → warehouse pipeline, resyncing after a schema change, debugging duplicate rows or missing cdc updates, or recovering from a rate-limit burnout mid-backfill. trigger with \"hubspot warehouse sync\", \"hubspot bigquery\", \"hubspot snowflake\", \"hubspot postgres etl\", \"hubspot backfill\", \"hubspot cdc\", \"hubspot schema drift\", \"hubspot duplicate rows\", \"hubspot to data warehouse\". saas-packs read write edit bash(curl:*) bash(jq:*) bash(python3:*) grep "
+    },
+    {
+      "type": "skill",
+      "id": "hubspot-webhook-handlers",
+      "slug": "hubspot-webhook-handlers",
+      "name": "hubspot-webhook-handlers",
+      "description": "Build and harden HubSpot v3 webhook handlers that survive production: HMAC-SHA256 signature verification, Redis SET NX deduplication, async batch processing with immediate 200 ACK, dead-letter queuing for permanent failures, and event-ordering guards for property-change streams. Use when implementing HubSpot webhooks for the first time, hardening an existing handler against retry storms or duplicate processing, debugging signature verification failures, or designing a reliable event pipeline for contact, company, or deal change events. Trigger with \"hubspot webhook\", \"hubspot signature verification\", \"hubspot webhook dedup\", \"hubspot webhook retry storm\", \"hubspot event handler\", \"hubspot property change webhook\", \"hubspot list membership webhook\", \"hubspot dead letter queue\".",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit",
+        "Bash(curl:*)",
+        "Bash(jq:*)",
+        "Bash(python3:*)",
+        "Grep"
+      ],
+      "compatibleWith": [],
+      "version": "2.0.0",
+      "parentPlugin": {
+        "name": "hubspot-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "hubspot-webhook-handlers build and harden hubspot v3 webhook handlers that survive production: hmac-sha256 signature verification, redis set nx deduplication, async batch processing with immediate 200 ack, dead-letter queuing for permanent failures, and event-ordering guards for property-change streams. use when implementing hubspot webhooks for the first time, hardening an existing handler against retry storms or duplicate processing, debugging signature verification failures, or designing a reliable event pipeline for contact, company, or deal change events. trigger with \"hubspot webhook\", \"hubspot signature verification\", \"hubspot webhook dedup\", \"hubspot webhook retry storm\", \"hubspot event handler\", \"hubspot property change webhook\", \"hubspot list membership webhook\", \"hubspot dead letter queue\". saas-packs read write edit bash(curl:*) bash(jq:*) bash(python3:*) grep "
     },
     {
       "type": "skill",
@@ -59286,6 +58895,27 @@
     },
     {
       "type": "skill",
+      "id": "plane",
+      "slug": "plane",
+      "name": "plane",
+      "description": "Plane is a team behavior observatory — synthesize Plane API data into observations about how teams actually behave under pressure, not just ticket state. Five compound commands surface cycle velocity vs. plan, stale-ticket ownership churn, reviewer gate strength, stated-vs-actual priority drift, and cross-project workload concentration. Reads from the live mcp__plane MCP server when present; documentation-only otherwise. Use when investigating \"why is this team's plan diverging from reality\", auditing cycle health, finding orphan tickets, identifying review bottlenecks, or onboarding to a new project. Trigger with \"/plane-cycle-velocity\", \"/plane-stale-tickets\", \"/plane-reviewer-gate-strength\", \"/plane-priority-drift\", \"/plane-cross-project-load\", \"audit Plane cycle\", \"team behavior plane\", \"how is my team behaving\".",
+      "category": "productivity",
+      "allowedTools": [
+        "\"Read",
+        "Bash(jq:*)",
+        "Bash(date:*)",
+        "AskUserQuestion\""
+      ],
+      "compatibleWith": [],
+      "version": "0.1.0",
+      "parentPlugin": {
+        "name": "plane",
+        "category": "productivity"
+      },
+      "searchText": "plane plane is a team behavior observatory — synthesize plane api data into observations about how teams actually behave under pressure, not just ticket state. five compound commands surface cycle velocity vs. plan, stale-ticket ownership churn, reviewer gate strength, stated-vs-actual priority drift, and cross-project workload concentration. reads from the live mcp__plane mcp server when present; documentation-only otherwise. use when investigating \"why is this team's plan diverging from reality\", auditing cycle health, finding orphan tickets, identifying review bottlenecks, or onboarding to a new project. trigger with \"/plane-cycle-velocity\", \"/plane-stale-tickets\", \"/plane-reviewer-gate-strength\", \"/plane-priority-drift\", \"/plane-cross-project-load\", \"audit plane cycle\", \"team behavior plane\", \"how is my team behaving\". productivity \"read bash(jq:*) bash(date:*) askuserquestion\" "
+    },
+    {
+      "type": "skill",
       "id": "planning-disaster-recovery",
       "slug": "planning-disaster-recovery",
       "name": "planning-disaster-recovery",
@@ -59372,17 +59002,19 @@
     },
     {
       "type": "skill",
-      "id": "podium-ci-integration",
-      "slug": "podium-ci-integration",
-      "name": "podium-ci-integration",
-      "description": "\"Podium ci integration \\u2014 business messaging and communication platform\\",
+      "id": "podium-auth",
+      "slug": "podium-auth",
+      "name": "podium-auth",
+      "description": "Authenticate production Podium integrations and survive the auth-side failures —",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
         "Write",
         "Edit",
-        "Bash(npm:*)",
         "Bash(curl:*)",
+        "Bash(jq:*)",
+        "Bash(python3:*)",
+        "Bash(openssl:*)",
         "Grep"
       ],
       "compatibleWith": [],
@@ -59391,21 +59023,23 @@
         "name": "podium-pack",
         "category": "saas-packs"
       },
-      "searchText": "podium-ci-integration \"podium ci integration \\u2014 business messaging and communication platform\\ saas-packs read write edit bash(npm:*) bash(curl:*) grep "
+      "searchText": "podium-auth authenticate production podium integrations and survive the auth-side failures — saas-packs read write edit bash(curl:*) bash(jq:*) bash(python3:*) bash(openssl:*) grep "
     },
     {
       "type": "skill",
-      "id": "podium-common-errors",
-      "slug": "podium-common-errors",
-      "name": "podium-common-errors",
-      "description": "\"Podium common errors \\u2014 business messaging and communication platform\\",
+      "id": "podium-call-transcript-pipeline",
+      "slug": "podium-call-transcript-pipeline",
+      "name": "podium-call-transcript-pipeline",
+      "description": "Durable, idempotent ingest pipeline for Podium call transcripts — the layer between",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
         "Write",
         "Edit",
-        "Bash(npm:*)",
         "Bash(curl:*)",
+        "Bash(jq:*)",
+        "Bash(python3:*)",
+        "Bash(redis-cli:*)",
         "Grep"
       ],
       "compatibleWith": [],
@@ -59414,21 +59048,23 @@
         "name": "podium-pack",
         "category": "saas-packs"
       },
-      "searchText": "podium-common-errors \"podium common errors \\u2014 business messaging and communication platform\\ saas-packs read write edit bash(npm:*) bash(curl:*) grep "
+      "searchText": "podium-call-transcript-pipeline durable, idempotent ingest pipeline for podium call transcripts — the layer between saas-packs read write edit bash(curl:*) bash(jq:*) bash(python3:*) bash(redis-cli:*) grep "
     },
     {
       "type": "skill",
-      "id": "podium-core-workflow-a",
-      "slug": "podium-core-workflow-a",
-      "name": "podium-core-workflow-a",
-      "description": "\"Podium core workflow a \\u2014 business messaging and communication platform\\",
+      "id": "podium-contact-dedup",
+      "slug": "podium-contact-dedup",
+      "name": "podium-contact-dedup",
+      "description": "Deduplicate Podium contacts in production and survive the data-quality failures —",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
         "Write",
         "Edit",
-        "Bash(npm:*)",
         "Bash(curl:*)",
+        "Bash(jq:*)",
+        "Bash(python3:*)",
+        "Bash(sqlite3:*)",
         "Grep"
       ],
       "compatibleWith": [],
@@ -59437,21 +59073,24 @@
         "name": "podium-pack",
         "category": "saas-packs"
       },
-      "searchText": "podium-core-workflow-a \"podium core workflow a \\u2014 business messaging and communication platform\\ saas-packs read write edit bash(npm:*) bash(curl:*) grep "
+      "searchText": "podium-contact-dedup deduplicate podium contacts in production and survive the data-quality failures — saas-packs read write edit bash(curl:*) bash(jq:*) bash(python3:*) bash(sqlite3:*) grep "
     },
     {
       "type": "skill",
-      "id": "podium-core-workflow-b",
-      "slug": "podium-core-workflow-b",
-      "name": "podium-core-workflow-b",
-      "description": "\"Podium core workflow b \\u2014 business messaging and communication platform\\",
+      "id": "podium-conversation-history-export",
+      "slug": "podium-conversation-history-export",
+      "name": "podium-conversation-history-export",
+      "description": "Bulk-export Podium conversation, review, and contact history into a vector-store-ready",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
         "Write",
         "Edit",
-        "Bash(npm:*)",
         "Bash(curl:*)",
+        "Bash(jq:*)",
+        "Bash(python3:*)",
+        "Bash(sqlite3:*)",
+        "Bash(gzip:*)",
         "Grep"
       ],
       "compatibleWith": [],
@@ -59460,21 +59099,23 @@
         "name": "podium-pack",
         "category": "saas-packs"
       },
-      "searchText": "podium-core-workflow-b \"podium core workflow b \\u2014 business messaging and communication platform\\ saas-packs read write edit bash(npm:*) bash(curl:*) grep "
+      "searchText": "podium-conversation-history-export bulk-export podium conversation, review, and contact history into a vector-store-ready saas-packs read write edit bash(curl:*) bash(jq:*) bash(python3:*) bash(sqlite3:*) bash(gzip:*) grep "
     },
     {
       "type": "skill",
-      "id": "podium-cost-tuning",
-      "slug": "podium-cost-tuning",
-      "name": "podium-cost-tuning",
-      "description": "\"Podium cost tuning \\u2014 business messaging and communication platform\\",
+      "id": "podium-multi-location-router",
+      "slug": "podium-multi-location-router",
+      "name": "podium-multi-location-router",
+      "description": "Route Podium API calls across multiple physical locations with strict",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
         "Write",
         "Edit",
-        "Bash(npm:*)",
         "Bash(curl:*)",
+        "Bash(jq:*)",
+        "Bash(python3:*)",
+        "Bash(sqlite3:*)",
         "Grep"
       ],
       "compatibleWith": [],
@@ -59483,21 +59124,23 @@
         "name": "podium-pack",
         "category": "saas-packs"
       },
-      "searchText": "podium-cost-tuning \"podium cost tuning \\u2014 business messaging and communication platform\\ saas-packs read write edit bash(npm:*) bash(curl:*) grep "
+      "searchText": "podium-multi-location-router route podium api calls across multiple physical locations with strict saas-packs read write edit bash(curl:*) bash(jq:*) bash(python3:*) bash(sqlite3:*) grep "
     },
     {
       "type": "skill",
-      "id": "podium-debug-bundle",
-      "slug": "podium-debug-bundle",
-      "name": "podium-debug-bundle",
-      "description": "\"Podium debug bundle \\u2014 business messaging and communication platform\\",
+      "id": "podium-rag-context-bridge",
+      "slug": "podium-rag-context-bridge",
+      "name": "podium-rag-context-bridge",
+      "description": "Bridge a live Podium call transcript or webchat turn to an LLM by fetching relevant",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
         "Write",
         "Edit",
-        "Bash(npm:*)",
         "Bash(curl:*)",
+        "Bash(jq:*)",
+        "Bash(python3:*)",
+        "Bash(psql:*)",
         "Grep"
       ],
       "compatibleWith": [],
@@ -59506,21 +59149,23 @@
         "name": "podium-pack",
         "category": "saas-packs"
       },
-      "searchText": "podium-debug-bundle \"podium debug bundle \\u2014 business messaging and communication platform\\ saas-packs read write edit bash(npm:*) bash(curl:*) grep "
+      "searchText": "podium-rag-context-bridge bridge a live podium call transcript or webchat turn to an llm by fetching relevant saas-packs read write edit bash(curl:*) bash(jq:*) bash(python3:*) bash(psql:*) grep "
     },
     {
       "type": "skill",
-      "id": "podium-deploy-integration",
-      "slug": "podium-deploy-integration",
-      "name": "podium-deploy-integration",
-      "description": "\"Podium deploy integration \\u2014 business messaging and communication\\",
+      "id": "podium-rate-limit-survival",
+      "slug": "podium-rate-limit-survival",
+      "name": "podium-rate-limit-survival",
+      "description": "Survive the rate-limit failure modes that crater production Podium integrations —",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
         "Write",
         "Edit",
-        "Bash(npm:*)",
         "Bash(curl:*)",
+        "Bash(jq:*)",
+        "Bash(python3:*)",
+        "Bash(redis-cli:*)",
         "Grep"
       ],
       "compatibleWith": [],
@@ -59529,21 +59174,23 @@
         "name": "podium-pack",
         "category": "saas-packs"
       },
-      "searchText": "podium-deploy-integration \"podium deploy integration \\u2014 business messaging and communication\\ saas-packs read write edit bash(npm:*) bash(curl:*) grep "
+      "searchText": "podium-rate-limit-survival survive the rate-limit failure modes that crater production podium integrations — saas-packs read write edit bash(curl:*) bash(jq:*) bash(python3:*) bash(redis-cli:*) grep "
     },
     {
       "type": "skill",
-      "id": "podium-hello-world",
-      "slug": "podium-hello-world",
-      "name": "podium-hello-world",
-      "description": "\"Podium hello world \\u2014 business messaging and communication platform\\",
+      "id": "podium-review-request-automation",
+      "slug": "podium-review-request-automation",
+      "name": "podium-review-request-automation",
+      "description": "Trigger Podium review requests from Shopify order-shipped events and survive the",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
         "Write",
         "Edit",
-        "Bash(npm:*)",
         "Bash(curl:*)",
+        "Bash(jq:*)",
+        "Bash(python3:*)",
+        "Bash(redis-cli:*)",
         "Grep"
       ],
       "compatibleWith": [],
@@ -59552,21 +59199,22 @@
         "name": "podium-pack",
         "category": "saas-packs"
       },
-      "searchText": "podium-hello-world \"podium hello world \\u2014 business messaging and communication platform\\ saas-packs read write edit bash(npm:*) bash(curl:*) grep "
+      "searchText": "podium-review-request-automation trigger podium review requests from shopify order-shipped events and survive the saas-packs read write edit bash(curl:*) bash(jq:*) bash(python3:*) bash(redis-cli:*) grep "
     },
     {
       "type": "skill",
-      "id": "podium-install-auth",
-      "slug": "podium-install-auth",
-      "name": "podium-install-auth",
-      "description": "\"Podium install auth \\u2014 business messaging and communication platform\\",
+      "id": "podium-webchat-handler",
+      "slug": "podium-webchat-handler",
+      "name": "podium-webchat-handler",
+      "description": "Ingest Podium webchat messages in production and survive the webchat-side failures —",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
         "Write",
         "Edit",
-        "Bash(npm:*)",
         "Bash(curl:*)",
+        "Bash(jq:*)",
+        "Bash(python3:*)",
         "Grep"
       ],
       "compatibleWith": [],
@@ -59575,21 +59223,23 @@
         "name": "podium-pack",
         "category": "saas-packs"
       },
-      "searchText": "podium-install-auth \"podium install auth \\u2014 business messaging and communication platform\\ saas-packs read write edit bash(npm:*) bash(curl:*) grep "
+      "searchText": "podium-webchat-handler ingest podium webchat messages in production and survive the webchat-side failures — saas-packs read write edit bash(curl:*) bash(jq:*) bash(python3:*) grep "
     },
     {
       "type": "skill",
-      "id": "podium-local-dev-loop",
-      "slug": "podium-local-dev-loop",
-      "name": "podium-local-dev-loop",
-      "description": "\"Podium local dev loop \\u2014 business messaging and communication platform\\",
+      "id": "podium-webhook-reliability",
+      "slug": "podium-webhook-reliability",
+      "name": "podium-webhook-reliability",
+      "description": "Operate a Podium webhook receiver that survives the delivery-side failures —",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
         "Write",
         "Edit",
-        "Bash(npm:*)",
         "Bash(curl:*)",
+        "Bash(jq:*)",
+        "Bash(python3:*)",
+        "Bash(redis-cli:*)",
         "Grep"
       ],
       "compatibleWith": [],
@@ -59598,191 +59248,7 @@
         "name": "podium-pack",
         "category": "saas-packs"
       },
-      "searchText": "podium-local-dev-loop \"podium local dev loop \\u2014 business messaging and communication platform\\ saas-packs read write edit bash(npm:*) bash(curl:*) grep "
-    },
-    {
-      "type": "skill",
-      "id": "podium-performance-tuning",
-      "slug": "podium-performance-tuning",
-      "name": "podium-performance-tuning",
-      "description": "\"Podium performance tuning \\u2014 business messaging and communication\\",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(npm:*)",
-        "Bash(curl:*)",
-        "Grep"
-      ],
-      "compatibleWith": [],
-      "version": "2.0.0",
-      "parentPlugin": {
-        "name": "podium-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "podium-performance-tuning \"podium performance tuning \\u2014 business messaging and communication\\ saas-packs read write edit bash(npm:*) bash(curl:*) grep "
-    },
-    {
-      "type": "skill",
-      "id": "podium-prod-checklist",
-      "slug": "podium-prod-checklist",
-      "name": "podium-prod-checklist",
-      "description": "\"Podium prod checklist \\u2014 business messaging and communication platform\\",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(npm:*)",
-        "Bash(curl:*)",
-        "Grep"
-      ],
-      "compatibleWith": [],
-      "version": "2.0.0",
-      "parentPlugin": {
-        "name": "podium-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "podium-prod-checklist \"podium prod checklist \\u2014 business messaging and communication platform\\ saas-packs read write edit bash(npm:*) bash(curl:*) grep "
-    },
-    {
-      "type": "skill",
-      "id": "podium-rate-limits",
-      "slug": "podium-rate-limits",
-      "name": "podium-rate-limits",
-      "description": "\"Podium rate limits \\u2014 business messaging and communication platform\\",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(npm:*)",
-        "Bash(curl:*)",
-        "Grep"
-      ],
-      "compatibleWith": [],
-      "version": "2.0.0",
-      "parentPlugin": {
-        "name": "podium-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "podium-rate-limits \"podium rate limits \\u2014 business messaging and communication platform\\ saas-packs read write edit bash(npm:*) bash(curl:*) grep "
-    },
-    {
-      "type": "skill",
-      "id": "podium-reference-architecture",
-      "slug": "podium-reference-architecture",
-      "name": "podium-reference-architecture",
-      "description": "\"Podium reference architecture \\u2014 business messaging and communication\\",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(npm:*)",
-        "Bash(curl:*)",
-        "Grep"
-      ],
-      "compatibleWith": [],
-      "version": "2.0.0",
-      "parentPlugin": {
-        "name": "podium-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "podium-reference-architecture \"podium reference architecture \\u2014 business messaging and communication\\ saas-packs read write edit bash(npm:*) bash(curl:*) grep "
-    },
-    {
-      "type": "skill",
-      "id": "podium-sdk-patterns",
-      "slug": "podium-sdk-patterns",
-      "name": "podium-sdk-patterns",
-      "description": "\"Podium sdk patterns \\u2014 business messaging and communication platform\\",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(npm:*)",
-        "Bash(curl:*)",
-        "Grep"
-      ],
-      "compatibleWith": [],
-      "version": "2.0.0",
-      "parentPlugin": {
-        "name": "podium-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "podium-sdk-patterns \"podium sdk patterns \\u2014 business messaging and communication platform\\ saas-packs read write edit bash(npm:*) bash(curl:*) grep "
-    },
-    {
-      "type": "skill",
-      "id": "podium-security-basics",
-      "slug": "podium-security-basics",
-      "name": "podium-security-basics",
-      "description": "\"Podium security basics \\u2014 business messaging and communication platform\\",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(npm:*)",
-        "Bash(curl:*)",
-        "Grep"
-      ],
-      "compatibleWith": [],
-      "version": "2.0.0",
-      "parentPlugin": {
-        "name": "podium-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "podium-security-basics \"podium security basics \\u2014 business messaging and communication platform\\ saas-packs read write edit bash(npm:*) bash(curl:*) grep "
-    },
-    {
-      "type": "skill",
-      "id": "podium-upgrade-migration",
-      "slug": "podium-upgrade-migration",
-      "name": "podium-upgrade-migration",
-      "description": "\"Podium upgrade migration \\u2014 business messaging and communication\\",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(npm:*)",
-        "Bash(curl:*)",
-        "Grep"
-      ],
-      "compatibleWith": [],
-      "version": "2.0.0",
-      "parentPlugin": {
-        "name": "podium-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "podium-upgrade-migration \"podium upgrade migration \\u2014 business messaging and communication\\ saas-packs read write edit bash(npm:*) bash(curl:*) grep "
-    },
-    {
-      "type": "skill",
-      "id": "podium-webhooks-events",
-      "slug": "podium-webhooks-events",
-      "name": "podium-webhooks-events",
-      "description": "\"Podium webhooks events \\u2014 business messaging and communication platform\\",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(npm:*)",
-        "Bash(curl:*)",
-        "Grep"
-      ],
-      "compatibleWith": [],
-      "version": "2.0.0",
-      "parentPlugin": {
-        "name": "podium-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "podium-webhooks-events \"podium webhooks events \\u2014 business messaging and communication platform\\ saas-packs read write edit bash(npm:*) bash(curl:*) grep "
+      "searchText": "podium-webhook-reliability operate a podium webhook receiver that survives the delivery-side failures — saas-packs read write edit bash(curl:*) bash(jq:*) bash(python3:*) bash(redis-cli:*) grep "
     },
     {
       "type": "skill",
