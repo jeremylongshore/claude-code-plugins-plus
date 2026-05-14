@@ -1,12 +1,12 @@
 # Global Master Standard – Claude Skills Specification
 
 **Document ID**: 6767-b-SPEC-DR-STND-claude-skills-standard.md
-**Version**: 3.4.0
-**Status**: AUTHORITATIVE - Single Source of Truth (8-field enterprise standard; progressive-disclosure catalog protocol added 2026-05-14)
+**Version**: 3.5.0
+**Status**: AUTHORITATIVE - Single Source of Truth (8-field enterprise standard; progressive-disclosure catalog protocol + conditional visibility added 2026-05-14)
 **Created**: 2025-12-06
 **Updated**: 2026-05-14
 **Schema log**: `000-docs/SCHEMA_CHANGELOG.md`
-**Changelog**: 3.4.0 adds the 3-tier progressive-disclosure catalog-output protocol — `discover-skills.mjs` always emits an L0 metadata index (`skills-index.json`, ~97 KB gzipped at our scale) alongside the existing L1 full catalog (`skills-catalog.json`, ~5.5 MB gzipped). The SKILL.md frontmatter format and required-field set are **unchanged** — 3.4.0 is purely additive at the build-output / consumer-protocol layer. See `SCHEMA_CHANGELOG.md` § [3.4.0] for the full contract. Prior: 3.3.2 (agent-field bug fixes for `color` + `initialPrompt`), 3.3.1 (allowed-tools YAML-list parsing), 3.3.0 (restored 8-field enterprise required set).
+**Changelog**: 3.5.0 adds four optional visibility frontmatter fields (`requires_env`, `requires_tools`, `fallback_for_env`, `fallback_for_tools`) so skills can self-declare environment / tooling dependencies; consumers hide skills whose prereqs are absent and surface fallback alternatives. Required-field set unchanged. 3.4.0 added the 3-tier progressive-disclosure catalog protocol — `discover-skills.mjs` emits an L0 metadata index alongside the L1 full catalog (57× smaller gzipped). See `SCHEMA_CHANGELOG.md` for full contracts. Prior: 3.3.2 (agent-field bug fixes), 3.3.1 (allowed-tools YAML-list parsing), 3.3.0 (restored 8-field enterprise required set).
 
 **Sources** (every required-field claim in this document cites one of these — verified 2026-04-28):
 

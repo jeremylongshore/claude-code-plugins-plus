@@ -70,9 +70,11 @@ function parseFrontmatter(content) {
 
     if (!trimmed) continue;
 
-    // Handle list items (allowed-tools)
+    // Handle list items — generalized in schema 3.5.0 from the allowed-tools-only
+    // special case so that visibility fields (requires_env, requires_tools,
+    // fallback_for_env, fallback_for_tools) and tags can use block-list form.
     if (trimmed.startsWith('-')) {
-      if (currentKey === 'allowed-tools') {
+      if (currentKey) {
         if (!Array.isArray(metadata[currentKey])) {
           metadata[currentKey] = [];
         }
@@ -226,10 +228,31 @@ function findSkillFiles(dir, skillFiles = []) {
 }
 
 /**
+ * Normalize a frontmatter list-of-strings field. Accepts three forms:
+ *   1. Real array (from block-list `- item` syntax) — returned as-is.
+ *   2. Inline-array string `[a, b, c]` — bracket-stripped + comma-split.
+ *   3. CSV string `a, b, c` — comma-split.
+ * Each item is trimmed; surrounding quotes are stripped. Empty entries dropped.
+ * Returns [] for missing/empty values.
+ */
+function normalizeListField(value) {
+  if (value === undefined || value === null || value === '') return [];
+  if (Array.isArray(value)) return value.map(v => String(v).trim().replace(/^['"]|['"]$/g, '')).filter(Boolean);
+  if (typeof value === 'string') {
+    let s = value.trim();
+    if (s.startsWith('[') && s.endsWith(']')) s = s.slice(1, -1);
+    return s.split(',').map(p => p.trim().replace(/^['"]|['"]$/g, '')).filter(Boolean);
+  }
+  return [];
+}
+
+/**
  * Project a full skill record down to its L0 metadata view.
- * Fields chosen for trigger-match / catalog browse — no body, no HTML.
+ * Fields chosen for trigger-match / catalog browse + client-side visibility
+ * filtering — no body, no HTML.
  */
 function projectL0(skill) {
+  const v = skill.visibility || {};
   return {
     slug: skill.slug,
     name: skill.name,
@@ -237,6 +260,12 @@ function projectL0(skill) {
     version: skill.version,
     category: skill.parentPlugin.category,
     parentPlugin: skill.parentPlugin.name,
+    // Visibility (schema 3.5.0). Empty arrays preserved so client code can
+    // pattern-match without null-checking; absent fields default to [].
+    requires_env: v.requires_env || [],
+    requires_tools: v.requires_tools || [],
+    fallback_for_env: v.fallback_for_env || [],
+    fallback_for_tools: v.fallback_for_tools || [],
   };
 }
 
@@ -327,12 +356,22 @@ function processSkillFile(filePath, opts = {}) {
       compatibleWith = [];
     }
 
+    // Visibility fields (schema 3.5.0) — normalized to JS arrays from any of
+    // block-list / inline-array / CSV forms. All optional; default [].
+    const visibility = {
+      requires_env: normalizeListField(frontmatter.requires_env),
+      requires_tools: normalizeListField(frontmatter.requires_tools),
+      fallback_for_env: normalizeListField(frontmatter.fallback_for_env),
+      fallback_for_tools: normalizeListField(frontmatter.fallback_for_tools),
+    };
+
     return {
       slug,
       name: frontmatter.name || 'Unnamed Skill',
       description: frontmatter.description || '',
       allowedTools,
       compatibleWith,
+      visibility,
       version: frontmatter.version || '1.0.0',
       author: authorStr,
       license: frontmatter.license || 'MIT',
@@ -450,7 +489,7 @@ function main() {
   // scale. Schema v3.4.0 contract: clients load this first for trigger match
   // / catalog browse, then fetch L1 (skills-catalog.json) only on demand.
   const index = {
-    schemaVersion: '3.4.0',
+    schemaVersion: '3.5.0',
     level: 'metadata',
     skills: skills.map(projectL0),
     count: skills.length,
@@ -463,7 +502,7 @@ function main() {
   // L1 catalog — only emitted at level=full. Heavy artifact with body HTML.
   if (!metadataOnly) {
     const catalog = {
-      schemaVersion: '3.4.0',
+      schemaVersion: '3.5.0',
       level: 'full',
       skills,
       count: skills.length,

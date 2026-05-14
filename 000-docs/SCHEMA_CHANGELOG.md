@@ -124,6 +124,64 @@ compliance are welcome; structural changes to the IS rubric are not.
 
 ---
 
+## [3.5.0] — 2026-05-14 — Conditional skill visibility (additive, no architectural changes)
+
+Adds four optional frontmatter fields so skills can self-declare their environment / tooling dependencies. Consumers (the marketplace UI, the Claude Code skill loader) can then hide skills whose deps are absent, and surface fallback alternatives when a primary tool isn't available. **No validator rule changes** — the `ALWAYS_REQUIRED` 8-field set is untouched.
+
+### Added — four optional list-of-strings fields
+
+```yaml
+# Hidden unless every listed env var is set.
+requires_env: [GITHUB_TOKEN, OPENAI_API_KEY]
+
+# Hidden unless every listed tool is available on PATH.
+requires_tools: [docker, kubectl]
+
+# Shown ONLY when these env vars are NOT set (the skill is the fallback).
+fallback_for_env: [FIRECRAWL_API_KEY]
+
+# Shown ONLY when these tools are NOT available (fallback pattern).
+fallback_for_tools: [rg]
+```
+
+All four accept three input forms (the parser normalizes):
+
+| Form | Example |
+|---|---|
+| Block list | `requires_env:`<br>`  - GITHUB_TOKEN`<br>`  - OPENAI_API_KEY` |
+| Inline array | `requires_env: [GITHUB_TOKEN, OPENAI_API_KEY]` |
+| CSV string | `requires_env: GITHUB_TOKEN, OPENAI_API_KEY` |
+
+### Concrete examples from our catalog (illustrative — not auto-populated)
+
+- `/gemini-pr-review` would set `requires_env: [GCP_PROJECT]` so it hides on accounts without GCP auth.
+- `/whop-deployment-specialist` would set `requires_env: [WHOP_API_KEY]`.
+- A generic web-search skill would set `fallback_for_env: [FIRECRAWL_API_KEY]` so it surfaces only on accounts without Firecrawl configured.
+
+### Added — cross-field visibility-rule validation
+
+`validate-skills-schema.py` now rejects skills where the same identifier appears in both `requires_{scope}` and `fallback_for_{scope}` (per scope: env vs tools). A skill cannot simultaneously *require* X to be set AND be the *fallback* for X being absent — that's a contradiction. Validated as an ERROR (not warning) since it produces undefined visibility behavior.
+
+### Added — generalized YAML block-list parsing
+
+`marketplace/scripts/discover-skills.mjs` previously only honored block-list `- item` syntax for the hardcoded `allowed-tools` key. Generalized so any key (including the new visibility fields and existing `tags`) can use block-list form.
+
+### Added — visibility fields in L0 index
+
+`skills-index.json` (L0, schema 3.4.0) now includes `requires_env`, `requires_tools`, `fallback_for_env`, `fallback_for_tools` per skill — empty arrays for skills that don't declare them. Client-side filtering can run against the index without fetching the heavy L1 catalog.
+
+### Rationale
+
+At 2783 skills, the catalog surfaces many skills the user can never run — they require API keys, cloud auth, or local tools that aren't present. The conditional-visibility pattern is the open-standard convention (per `agentskills.io`) for letting skills describe their own preconditions. Pure additive: skills that don't declare these fields keep the current always-visible behavior.
+
+### Migration
+
+None required. Existing skills continue to validate cleanly. To opt a skill in, add one or more of the four fields to its frontmatter.
+
+Cross-refs: bead `claude-22cg`, GH issue `claude-code-plugins-plus-skills#712`, Plane CCP-22. Part of the self-improving-skills series — schema 3.4.0 progressive disclosure preceded this (PR #714); 3.6.0 self-declared env vars (#713) follows.
+
+---
+
 ## [3.4.0] — 2026-05-14 — Progressive disclosure: 3-tier skill catalog (additive, no architectural changes)
 
 Adds a load-tier contract for the skills catalog. The validator and required-fields set are **unchanged** — this is a build-pipeline / consumer-protocol additive change, not a schema rule change.

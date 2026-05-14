@@ -249,6 +249,16 @@ SKILL_FIELDS = {
     'version': {'type': 'string', 'source': 'enterprise', 'tier': 'enterprise'},
     'author': {'type': 'string', 'source': 'enterprise', 'tier': 'enterprise'},
     'tags': {'type': 'array', 'source': 'enterprise', 'tier': 'enterprise'},
+    # === Visibility fields (IS extension, schema 3.5.0) ===
+    # Conditional visibility — let a skill self-declare its env / tool deps
+    # so consumers (the marketplace UI, the Claude Code skill loader) can
+    # hide it when prereqs are absent, and surface fallbacks when a primary
+    # tool isn't available. All optional, all default to empty list, no
+    # behavior change for existing skills.
+    'requires_env': {'type': 'array', 'source': 'enterprise', 'tier': 'standard'},
+    'requires_tools': {'type': 'array', 'source': 'enterprise', 'tier': 'standard'},
+    'fallback_for_env': {'type': 'array', 'source': 'enterprise', 'tier': 'standard'},
+    'fallback_for_tools': {'type': 'array', 'source': 'enterprise', 'tier': 'standard'},
     # === Deprecated alias (kept for backward compat) ===
     # Was an IS-invented field with VALID_PLATFORMS allow-list. Not in any spec.
     # Validator emits deprecation warning + migration suggestion. Still parsed so
@@ -1843,6 +1853,54 @@ def validate_frontmatter(path: Path, fm: dict, tier: str = TIER_STANDARD) -> Tup
         hooks_val = fm['hooks']
         if not isinstance(hooks_val, dict):
             errors.append(f"[frontmatter] 'hooks' must be a mapping, got: {type(hooks_val).__name__}")
+
+    # ── Visibility fields (schema 3.5.0) ─────────────────────────────────
+    # Shape: each must be a list of strings (or absent). Authors may write
+    # block-list, inline-array `[a, b]`, or CSV form — discover-skills.mjs
+    # normalizes those. The validator accepts any of the three at parse-time
+    # and validates the *normalized* representation here.
+    VISIBILITY_FIELDS = ('requires_env', 'requires_tools',
+                         'fallback_for_env', 'fallback_for_tools')
+
+    def _normalize_visibility_list(val):
+        """Accept array / `[a,b]` string / CSV string. Return list[str]."""
+        if val is None:
+            return []
+        if isinstance(val, list):
+            return [str(x).strip().strip('"\'') for x in val if str(x).strip()]
+        if isinstance(val, str):
+            s = val.strip()
+            if s.startswith('[') and s.endswith(']'):
+                s = s[1:-1]
+            return [p.strip().strip('"\'') for p in s.split(',') if p.strip()]
+        return []
+
+    for field in VISIBILITY_FIELDS:
+        if field not in fm:
+            continue
+        val = fm[field]
+        if not isinstance(val, (list, str)):
+            errors.append(
+                f"[frontmatter] '{field}' must be a list of strings or a "
+                f"comma-separated string, got: {type(val).__name__}"
+            )
+
+    # Cross-field rule: same identifier MUST NOT appear in both `requires_*`
+    # and `fallback_for_*` for the same scope. A skill cannot simultaneously
+    # be "required when X is set" AND "the fallback when X is absent" — that's
+    # a contradiction. Validated per scope (env vs tools).
+    for scope in ('env', 'tools'):
+        req = set(_normalize_visibility_list(fm.get(f'requires_{scope}')))
+        fb = set(_normalize_visibility_list(fm.get(f'fallback_for_{scope}')))
+        overlap = req & fb
+        if overlap:
+            errors.append(
+                f"[frontmatter] contradictory visibility rule on "
+                f"requires_{scope} + fallback_for_{scope}: "
+                f"{sorted(overlap)} appears in both. A skill cannot "
+                f"simultaneously require and be the fallback for the same "
+                f"{scope[:-1] if scope.endswith('s') else scope} identifier."
+            )
 
     # Invalid fields — ERROR. Currently empty (see INVALID_SKILL_FIELDS comment),
     # but kept as an extension point.
