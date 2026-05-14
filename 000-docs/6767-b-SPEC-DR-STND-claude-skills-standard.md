@@ -1,12 +1,12 @@
 # Global Master Standard – Claude Skills Specification
 
 **Document ID**: 6767-b-SPEC-DR-STND-claude-skills-standard.md
-**Version**: 3.3.1
-**Status**: AUTHORITATIVE - Single Source of Truth (8-field enterprise standard restored 2026-04-28; spec-compliance bug fixes 2026-04-28)
+**Version**: 3.4.0
+**Status**: AUTHORITATIVE - Single Source of Truth (8-field enterprise standard; progressive-disclosure catalog protocol added 2026-05-14)
 **Created**: 2025-12-06
-**Updated**: 2026-05-07
+**Updated**: 2026-05-14
 **Schema log**: `000-docs/SCHEMA_CHANGELOG.md`
-**Changelog**: 3.3.1 absorbs three spec-compliance bug fixes (YAML-list `allowed-tools`, space-separated `allowed-tools` parsing, `agent` field default, `argument-hint` conditional) on top of 3.3.0's restoration of the 8-field enterprise required set (`name, description, allowed-tools, version, author, license, compatibility, tags`). The 3.0.0–3.2.0 experiments that demoted enterprise fields to "marketplace polish (warn)" were reverted in 3.3.0; this document reflects the restored enterprise standard.
+**Changelog**: 3.4.0 adds the 3-tier progressive-disclosure catalog-output protocol — `discover-skills.mjs` always emits an L0 metadata index (`skills-index.json`, ~97 KB gzipped at our scale) alongside the existing L1 full catalog (`skills-catalog.json`, ~5.5 MB gzipped). The SKILL.md frontmatter format and required-field set are **unchanged** — 3.4.0 is purely additive at the build-output / consumer-protocol layer. See `SCHEMA_CHANGELOG.md` § [3.4.0] for the full contract. Prior: 3.3.2 (agent-field bug fixes for `color` + `initialPrompt`), 3.3.1 (allowed-tools YAML-list parsing), 3.3.0 (restored 8-field enterprise required set).
 
 **Sources** (every required-field claim in this document cites one of these — verified 2026-04-28):
 

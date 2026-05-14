@@ -124,6 +124,44 @@ compliance are welcome; structural changes to the IS rubric are not.
 
 ---
 
+## [3.4.0] — 2026-05-14 — Progressive disclosure: 3-tier skill catalog (additive, no architectural changes)
+
+Adds a load-tier contract for the skills catalog. The validator and required-fields set are **unchanged** — this is a build-pipeline / consumer-protocol additive change, not a schema rule change.
+
+### Added
+
+- **L0 metadata index** at `marketplace/src/data/skills-index.json`. Schema:
+  ```json
+  {
+    "schemaVersion": "3.4.0",
+    "level": "metadata",
+    "skills": [{ "slug", "name", "description", "version", "category", "parentPlugin" }],
+    "count": <n>,
+    "generatedAt": "<ISO>",
+    "categories": [...]
+  }
+  ```
+  Always emitted by `discover-skills.mjs`. ~150 bytes per skill — for the current 2770-skill catalog, the artifact is 817 KB raw / **97 KB gzipped**, vs the existing L1 catalog at 23 MB raw / 5.5 MB gzipped. 56× reduction for trigger-match / browse-list use cases.
+
+- **`--level=metadata|full|file`** CLI flag on `marketplace/scripts/discover-skills.mjs`:
+  - `--level=full` (default) — emits both L0 index and L1 catalog. Backward compat with current marketplace UI build.
+  - `--level=metadata` — emits L0 only. Skips `mdToHtml(body)` per-skill; 3× build speedup (~0.5s vs ~1.6s on the current catalog).
+  - `--level=file` — runtime-only concept (client-side single-reference-file read). Build step errors with guidance.
+
+- **`schemaVersion` + `level` fields** in both L0 (`skills-index.json`) and L1 (`skills-catalog.json`) outputs so consumers can pin behavior.
+
+### Rationale
+
+At 2770 skills (and growing toward 4000+ per the route-count budget) the existing single-tier load forced every consumer of the catalog to pull 5.5 MB of gzipped body HTML even when they only needed name+description for trigger matching. The progressive-disclosure pattern is the open-standard convention (per `agentskills.io`) and is purely additive: existing consumers that read `skills-catalog.json` get the same artifact with two new top-level metadata fields; new consumers that only need browse/match data fetch the dramatically smaller `skills-index.json`.
+
+### Migration
+
+None required. Existing build invocations (`node marketplace/scripts/discover-skills.mjs` with no args) continue to produce `skills-catalog.json` exactly as before, plus the new `skills-index.json` alongside.
+
+Cross-refs: bead `claude-nwdy`, GH issue `claude-code-plugins-plus-skills#711`, Plane CCP-21. Followed by the conditional-visibility (#712) and self-declared-env (#713) issues in the same schema 3.4.0 series.
+
+---
+
 ## [3.3.2] — 2026-05-12 — Agent field spec-compliance bug fixes (no architectural changes)
 
 Discovered while triaging two external-contributor PRs (#679 from `CeciliaZ030` for `aomi-labs/skills`, #680 from `ali5ter` for four external plugins): the IS agent validator was flagging two fields that ARE documented Anthropic spec fields, leading to wrong review feedback on legitimate agent submissions.

@@ -1,22 +1,22 @@
 {
   "meta": {
     "version": "1.0.0",
-    "generated": "2026-04-21T01:10:01.053Z",
+    "generated": "2026-05-14T20:06:56.571Z",
     "source": "marketplace.extended.json",
     "generator": "scripts/sync-catalog.mjs"
   },
   "stats": {
-    "totalPlugins": 422,
-    "totalSkills": 2787,
-    "totalCommands": 80,
-    "pluginsWithSkills": 395,
+    "totalPlugins": 427,
+    "totalSkills": 2783,
+    "totalCommands": 81,
+    "pluginsWithSkills": 400,
     "byCategory": {
-      "productivity": 42,
+      "productivity": 43,
       "security": 29,
       "testing": 25,
-      "ai-ml": 75,
+      "ai-ml": 77,
       "performance": 25,
-      "devops": 40,
+      "devops": 41,
       "api-development": 25,
       "crypto": 26,
       "skill-enhancers": 8,
@@ -35,15 +35,16 @@
       "development": 1,
       "data-engineering": 2,
       "enterprise": 2,
-      "analytics": 2
+      "analytics": 2,
+      "saas-packs": 1
     },
     "byStatus": {
-      "active": 403,
+      "active": 408,
       "maintained": 19
     },
     "featured": 7,
-    "new": 401,
-    "generatedAt": "2026-04-21T01:10:01.053Z"
+    "new": 406,
+    "generatedAt": "2026-05-14T20:06:56.571Z"
   },
   "plugins": [
     {
@@ -9615,7 +9616,7 @@
         "enterprise"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 10,
       "commandCount": 0,
       "installCommand": "/plugin install guidewire-pack",
       "sourcePath": "./plugins/saas-packs/guidewire-pack",
@@ -11867,7 +11868,7 @@
         "claude-code"
       ],
       "hasSkills": true,
-      "skillCount": 2,
+      "skillCount": 3,
       "commandCount": 0,
       "installCommand": "/plugin install slack-channel",
       "sourcePath": "./plugins/mcp/slack-channel",
@@ -12959,7 +12960,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 30,
+      "skillCount": 10,
       "commandCount": 0,
       "installCommand": "/plugin install hubspot-pack",
       "sourcePath": "./plugins/saas-packs/hubspot-pack",
@@ -13389,7 +13390,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 18,
+      "skillCount": 10,
       "commandCount": 0,
       "installCommand": "/plugin install podium-pack",
       "sourcePath": "./plugins/saas-packs/podium-pack",
@@ -14362,6 +14363,191 @@
       "author": {
         "name": "Bubble Invest",
         "email": "contact@bubbleinvest.com"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "engineer-design-diagram",
+      "name": "engineer-design-diagram",
+      "displayName": "engineer design diagram",
+      "description": "Generate production-grade engineering design diagrams (architecture, sequence, delta, drift) as self-contained dark-themed HTML files with accessible inline SVG. Grounds every diagram in real repo topology via DCI — package manifests, docker-compose, k8s, terraform, import graph. Four modes: generate, diff, trace, watch. Semantic OKLCH palette; Mermaid fallback for large graphs.",
+      "version": "0.2.0",
+      "category": "devops",
+      "keywords": [
+        "architecture",
+        "diagram",
+        "visualization",
+        "svg",
+        "html",
+        "pr-review",
+        "drift-detection",
+        "sequence-diagram",
+        "engineering-design",
+        "documentation",
+        "onboarding"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 0,
+      "installCommand": "/plugin install engineer-design-diagram",
+      "sourcePath": "./plugins/devops/engineer-design-diagram",
+      "lastUpdatedEpoch": 1778789216,
+      "lastUpdatedDate": "2026-05-14T20:06:56.571Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "jeremy-google-adk",
+      "name": "jeremy-google-adk",
+      "displayName": "jeremy google adk",
+      "description": "Google Agent Development Kit (ADK) starter for building production AI agents — ReAct single-agent or multi-agent orchestration (Sequential/Parallel/Loop), tool wiring, evaluation harness, and optional Vertex AI Agent Engine deployment.",
+      "version": "2.0.0",
+      "category": "ai-ml",
+      "keywords": [
+        "google",
+        "adk",
+        "agent-development-kit",
+        "ai-agents",
+        "react-pattern",
+        "multi-agent",
+        "vertex-ai",
+        "agent-engine"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 1,
+      "installCommand": "/plugin install jeremy-google-adk",
+      "sourcePath": "./plugins/ai-ml/jeremy-google-adk",
+      "lastUpdatedEpoch": 1778789216,
+      "lastUpdatedDate": "2026-05-14T20:06:56.571Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "jeremy-vertex-ai",
+      "name": "jeremy-vertex-ai",
+      "displayName": "jeremy vertex ai",
+      "description": "Build and deploy generative AI agents on Vertex AI: Gemini model selection, RAG with grounded retrieval, function calling, multimodal extraction, evaluation, and Agent Engine deployment with operational guardrails.",
+      "version": "2.0.0",
+      "category": "ai-ml",
+      "keywords": [
+        "vertex-ai",
+        "gemini",
+        "google-cloud",
+        "generative-ai",
+        "rag",
+        "agent-engine",
+        "function-calling",
+        "multimodal"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 0,
+      "installCommand": "/plugin install jeremy-vertex-ai",
+      "sourcePath": "./plugins/ai-ml/jeremy-vertex-ai",
+      "lastUpdatedEpoch": 1778789216,
+      "lastUpdatedDate": "2026-05-14T20:06:56.571Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "langchain-py-pack",
+      "name": "langchain-py-pack",
+      "displayName": "langchain py pack",
+      "description": "LangChain 1.0 + LangGraph 1.0 skill pack for Python. Pain-first skills anchored to a 68-entry pain catalog covering content blocks, streaming token accounting, structured-output, vector stores, checkpointing, HITL, middleware, Deep Agents, and native OTEL. Expanding toward 34 skills across four epics.",
+      "version": "2.0.0",
+      "category": "saas-packs",
+      "keywords": [
+        "langchain",
+        "langgraph",
+        "python",
+        "llm",
+        "agents",
+        "rag",
+        "checkpointing",
+        "streaming",
+        "middleware",
+        "langsmith"
+      ],
+      "hasSkills": true,
+      "skillCount": 33,
+      "commandCount": 0,
+      "installCommand": "/plugin install langchain-py-pack",
+      "sourcePath": "./plugins/saas-packs/langchain-py-pack",
+      "lastUpdatedEpoch": 1778789216,
+      "lastUpdatedDate": "2026-05-14T20:06:56.571Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io",
+        "url": "https://github.com/jeremylongshore"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "plane",
+      "name": "plane",
+      "displayName": "plane",
+      "description": "Plane is a team behavior observatory — synthesizes Plane API data into observations about how teams actually behave under pressure (cycle velocity vs. plan, ownership churn, reviewer gate strength, priority drift, cross-project load). Reads from the live mcp__plane MCP server.",
+      "version": "0.1.0",
+      "category": "productivity",
+      "keywords": [
+        "plane",
+        "project-management",
+        "team-behavior",
+        "observability",
+        "productivity",
+        "agent-skills",
+        "forge-generated"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 0,
+      "installCommand": "/plugin install plane",
+      "sourcePath": "./plugins/productivity/plane",
+      "lastUpdatedEpoch": 1778789216,
+      "lastUpdatedDate": "2026-05-14T20:06:56.571Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
       },
       "type": "instruction-plugin"
     }
