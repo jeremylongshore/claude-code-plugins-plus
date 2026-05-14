@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "3.5.0",
+  "schemaVersion": "3.6.0",
   "level": "metadata",
   "skills": [
     {
@@ -33244,7 +33244,7 @@
     }
   ],
   "count": 2770,
-  "generatedAt": "2026-05-14T21:10:01.267Z",
+  "generatedAt": "2026-05-14T21:52:33.799Z",
   "categories": [
     "ai-agency",
     "ai-ml",

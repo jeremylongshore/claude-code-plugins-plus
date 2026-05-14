@@ -489,7 +489,7 @@ function main() {
   // scale. Schema v3.4.0 contract: clients load this first for trigger match
   // / catalog browse, then fetch L1 (skills-catalog.json) only on demand.
   const index = {
-    schemaVersion: '3.5.0',
+    schemaVersion: '3.6.0',
     level: 'metadata',
     skills: skills.map(projectL0),
     count: skills.length,
@@ -502,7 +502,7 @@ function main() {
   // L1 catalog — only emitted at level=full. Heavy artifact with body HTML.
   if (!metadataOnly) {
     const catalog = {
-      schemaVersion: '3.5.0',
+      schemaVersion: '3.6.0',
       level: 'full',
       skills,
       count: skills.length,

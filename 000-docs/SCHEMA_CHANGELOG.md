@@ -124,6 +124,66 @@ compliance are welcome; structural changes to the IS rubric are not.
 
 ---
 
+## [3.6.0] — 2026-05-14 — Self-declared config surface (additive, no architectural changes)
+
+Adds two optional frontmatter blocks so skills self-describe the secrets and config keys they consume. The installer / runtime helper can then prompt the user on first run instead of letting them hit a runtime error mid-task. **No validator rule changes** — `ALWAYS_REQUIRED` 8-field set is untouched.
+
+### Added — `required_environment_variables` (top-level, list of objects)
+
+```yaml
+required_environment_variables:
+  - name: GITHUB_TOKEN
+    prompt: "Personal access token (repo + write:packages scopes)"
+    help: "Create at https://github.com/settings/tokens"
+    required_for: "PR comment + release operations"
+```
+
+Shape: each entry must be a mapping with at least `name` + `prompt`. Missing either is an ERROR. `help` and `required_for` are optional.
+
+### Added — `metadata.intent-solutions.config` (nested under existing `metadata`, list of objects)
+
+```yaml
+metadata:
+  intent-solutions:
+    config:
+      - key: default_branch
+        description: "Branch to target for new PRs"
+        default: main
+        prompt: "What branch should PRs target?"
+```
+
+Shape: each entry must be a mapping with at least `key` + `description` + `default`. Missing any is an ERROR. `prompt` is optional (helper falls back to "Set `<key>`?").
+
+### Added — cross-field consistency with `requires_env` (schema 3.5.0)
+
+If a skill declares `requires_env: [X]` for visibility gating but doesn't have a matching `required_environment_variables` entry with `name: X`, the validator emits a WARNING. Reason: the user installing the skill needs to know *what* X should contain, not just that it must be set. Non-blocking — declaration alone is still useful for visibility, not every skill needs installer copy.
+
+### Storage convention
+
+Resolved values from the installer land in `~/.claude/skill-config/<skill-name>.yaml` (mode 600, plain YAML). The marketplace does NOT enforce a specific loader — Python / bash / Node skills each read this file with whatever YAML library suits them. The contract is the file path and the YAML shape, not the language.
+
+### Documentation
+
+New: `000-docs/264-DR-GUID-skill-config-pattern.md` — full reference with examples, validation rules, migration notes, and explicit non-goals.
+
+### Rationale
+
+At 2783 skills, the first-run UX is wildly inconsistent — some prompt cleanly, most throw `KeyError` partway into a task when they discover an env var isn't set. Self-declaration lets the installer prompt uniformly across the catalog without forcing every skill author to ship custom onboarding code. The pattern is the open-standard convention (agentskills.io) for skill installers.
+
+### Migration
+
+None required. Existing skills that hardcode env reads continue to work. To opt in, add one or both blocks to the skill's frontmatter. For skills already using `requires_env` (3.5.0), adding the matching `required_environment_variables` entries silences the cross-field warning.
+
+### Out of scope (intentional non-goals — see `264-DR-GUID-skill-config-pattern.md`)
+
+- Grep-the-body heuristic for undeclared env-var reads (too noisy at scale, false-positive prone)
+- Automatic secret-value format validation (skill-specific concern)
+- Runtime config-file watcher
+
+Cross-refs: bead `claude-la6s`, GH issue `claude-code-plugins-plus-skills#713`, Plane CCP-23. Completes the self-improving-skills series: #714 (3.4.0 progressive disclosure) → #715 (3.5.0 conditional visibility) → this (3.6.0 self-declared config).
+
+---
+
 ## [3.5.0] — 2026-05-14 — Conditional skill visibility (additive, no architectural changes)
 
 Adds four optional frontmatter fields so skills can self-declare their environment / tooling dependencies. Consumers (the marketplace UI, the Claude Code skill loader) can then hide skills whose deps are absent, and surface fallback alternatives when a primary tool isn't available. **No validator rule changes** — the `ALWAYS_REQUIRED` 8-field set is untouched.

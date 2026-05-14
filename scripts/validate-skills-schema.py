@@ -259,6 +259,13 @@ SKILL_FIELDS = {
     'requires_tools': {'type': 'array', 'source': 'enterprise', 'tier': 'standard'},
     'fallback_for_env': {'type': 'array', 'source': 'enterprise', 'tier': 'standard'},
     'fallback_for_tools': {'type': 'array', 'source': 'enterprise', 'tier': 'standard'},
+    # === Self-declared config surface (IS extension, schema 3.6.0) ===
+    # Skills self-describe the secrets and config keys they consume so the
+    # installer / helper can prompt the user on first run instead of letting
+    # them hit a runtime error. Each entry is an object — shape validated in
+    # the frontmatter checks. The companion config keys live nested under
+    # `metadata.intent-solutions.config` (no separate top-level field).
+    'required_environment_variables': {'type': 'array', 'source': 'enterprise', 'tier': 'standard'},
     # === Deprecated alias (kept for backward compat) ===
     # Was an IS-invented field with VALID_PLATFORMS allow-list. Not in any spec.
     # Validator emits deprecation warning + migration suggestion. Still parsed so
@@ -1901,6 +1908,91 @@ def validate_frontmatter(path: Path, fm: dict, tier: str = TIER_STANDARD) -> Tup
                 f"simultaneously require and be the fallback for the same "
                 f"{scope[:-1] if scope.endswith('s') else scope} identifier."
             )
+
+    # ── Self-declared config surface (schema 3.6.0) ──────────────────────
+    # required_environment_variables — list of objects describing each env
+    # var the skill consumes. Shape:
+    #   - name: ENV_VAR_NAME    (required, string, UPPER_SNAKE_CASE)
+    #     prompt: "..."          (required, string — shown to user on first run)
+    #     help: "..."            (optional, string — extra context)
+    #     required_for: "..."    (optional, string — what the var unlocks)
+    rev = fm.get('required_environment_variables')
+    rev_declared_names = set()
+    if rev is not None:
+        if not isinstance(rev, list):
+            errors.append(
+                f"[frontmatter] 'required_environment_variables' must be a "
+                f"list of objects, got: {type(rev).__name__}"
+            )
+        else:
+            for i, entry in enumerate(rev):
+                if not isinstance(entry, dict):
+                    errors.append(
+                        f"[frontmatter] required_environment_variables[{i}] "
+                        f"must be a mapping with at least 'name' + 'prompt', "
+                        f"got: {type(entry).__name__}"
+                    )
+                    continue
+                if not entry.get('name'):
+                    errors.append(
+                        f"[frontmatter] required_environment_variables[{i}] "
+                        f"missing required key 'name'"
+                    )
+                else:
+                    rev_declared_names.add(str(entry['name']).strip())
+                if not entry.get('prompt'):
+                    errors.append(
+                        f"[frontmatter] required_environment_variables[{i}] "
+                        f"(name={entry.get('name', '?')}) missing required "
+                        f"key 'prompt'"
+                    )
+
+    # Cross-field consistency with `requires_env` (schema 3.5.0). If a skill
+    # declares it needs an env var for visibility, it should also describe
+    # that var in `required_environment_variables` so the installer can
+    # prompt the user. WARN (not error) — the visibility field alone is
+    # still useful even without prompt metadata.
+    req_env = set(_normalize_visibility_list(fm.get('requires_env')))
+    missing_descriptions = req_env - rev_declared_names
+    if missing_descriptions and rev is not None:
+        warnings.append(
+            f"[frontmatter] requires_env declares "
+            f"{sorted(missing_descriptions)} but they have no matching entry "
+            f"in required_environment_variables. Add a prompt/help entry so "
+            f"the installer can guide the user on first run."
+        )
+
+    # metadata.intent-solutions.config — list of per-skill config keys.
+    # Shape: each entry is { key, description, default, prompt? }.
+    md = fm.get('metadata')
+    if isinstance(md, dict):
+        is_ns = md.get('intent-solutions') or md.get('intent_solutions')
+        if isinstance(is_ns, dict):
+            cfg = is_ns.get('config')
+            if cfg is not None:
+                if not isinstance(cfg, list):
+                    errors.append(
+                        f"[frontmatter] 'metadata.intent-solutions.config' "
+                        f"must be a list of objects, got: "
+                        f"{type(cfg).__name__}"
+                    )
+                else:
+                    for i, entry in enumerate(cfg):
+                        if not isinstance(entry, dict):
+                            errors.append(
+                                f"[frontmatter] metadata.intent-solutions."
+                                f"config[{i}] must be a mapping, got: "
+                                f"{type(entry).__name__}"
+                            )
+                            continue
+                        for required in ('key', 'description', 'default'):
+                            if required not in entry:
+                                errors.append(
+                                    f"[frontmatter] metadata.intent-"
+                                    f"solutions.config[{i}] "
+                                    f"(key={entry.get('key', '?')}) missing "
+                                    f"required key '{required}'"
+                                )
 
     # Invalid fields — ERROR. Currently empty (see INVALID_SKILL_FIELDS comment),
     # but kept as an extension point.
