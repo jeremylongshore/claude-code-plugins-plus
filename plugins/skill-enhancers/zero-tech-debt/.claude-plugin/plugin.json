@@ -1,0 +1,19 @@
+{
+  "name": "zero-tech-debt",
+  "version": "1.0.0",
+  "description": "Rebuild a feature as if the correct product architecture existed from day one. Removes compatibility cruft, dead abstractions, and historical compromises instead of preserving them. Methodology-only — no destructive actions without operator approval.",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills",
+  "license": "MIT",
+  "keywords": [
+    "refactoring",
+    "tech-debt",
+    "architecture",
+    "cleanup",
+    "modernization",
+    "code-quality"
+  ]
+}

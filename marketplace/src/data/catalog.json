@@ -1,15 +1,15 @@
 {
   "meta": {
     "version": "1.0.0",
-    "generated": "2026-05-14T21:52:34.542Z",
+    "generated": "2026-05-15T18:34:53.646Z",
     "source": "marketplace.extended.json",
     "generator": "scripts/sync-catalog.mjs"
   },
   "stats": {
-    "totalPlugins": 427,
-    "totalSkills": 2783,
+    "totalPlugins": 428,
+    "totalSkills": 2784,
     "totalCommands": 81,
-    "pluginsWithSkills": 400,
+    "pluginsWithSkills": 401,
     "byCategory": {
       "productivity": 43,
       "security": 29,
@@ -19,7 +19,7 @@
       "devops": 41,
       "api-development": 25,
       "crypto": 26,
-      "skill-enhancers": 8,
+      "skill-enhancers": 9,
       "debugging": 1,
       "packages": 1,
       "database": 31,
@@ -39,12 +39,12 @@
       "saas-packs": 1
     },
     "byStatus": {
-      "active": 408,
+      "active": 409,
       "maintained": 19
     },
     "featured": 7,
-    "new": 406,
-    "generatedAt": "2026-05-14T21:52:34.542Z"
+    "new": 407,
+    "generatedAt": "2026-05-15T18:34:53.646Z"
   },
   "plugins": [
     {
@@ -14539,6 +14539,40 @@
       "sourcePath": "./plugins/productivity/plane",
       "lastUpdatedEpoch": 1778789216,
       "lastUpdatedDate": "2026-05-14T20:06:56.571Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "zero-tech-debt",
+      "name": "zero-tech-debt",
+      "displayName": "zero tech debt",
+      "description": "Rebuild a feature as if the correct product architecture existed from day one. Removes compatibility cruft, dead abstractions, and historical compromises instead of preserving them. Methodology-only — surfaces refactor candidates and walks a 7-step workflow before any deletion.",
+      "version": "1.0.0",
+      "category": "skill-enhancers",
+      "keywords": [
+        "refactoring",
+        "tech-debt",
+        "architecture",
+        "cleanup",
+        "modernization",
+        "code-quality"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 0,
+      "installCommand": "/plugin install zero-tech-debt",
+      "sourcePath": "./plugins/skill-enhancers/zero-tech-debt",
+      "lastUpdatedEpoch": 1778870093,
+      "lastUpdatedDate": "2026-05-15T18:34:53.646Z",
       "status": "active",
       "badges": [
         "new"

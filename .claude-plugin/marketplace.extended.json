@@ -11052,6 +11052,31 @@
       }
     },
     {
+      "name": "zero-tech-debt",
+      "source": "./plugins/skill-enhancers/zero-tech-debt",
+      "description": "Rebuild a feature as if the correct product architecture existed from day one. Removes compatibility cruft, dead abstractions, and historical compromises instead of preserving them. Methodology-only — surfaces refactor candidates and walks a 7-step workflow before any deletion.",
+      "version": "1.0.0",
+      "category": "skill-enhancers",
+      "keywords": [
+        "refactoring",
+        "tech-debt",
+        "architecture",
+        "cleanup",
+        "modernization",
+        "code-quality"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "components": {
+        "skills": 1,
+        "commands": 0,
+        "agents": 0,
+        "total": 1
+      }
+    },
+    {
       "name": "executive-assistant-skills",
       "source": "./plugins/business-tools/executive-assistant-skills",
       "version": "1.0.0",

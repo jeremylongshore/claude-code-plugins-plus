@@ -126,7 +126,7 @@ Jump to any of the 18 categories below. Plugin counts are catalog totals — aut
 | ✅  | [Productivity](#productivity)                      |      19 |
 | 🎁  | [SaaS Skill Packs](#saas-skill-packs)              |     106 |
 | 🔐  | [Security](#security)                              |      26 |
-| ✨  | [Skill Enhancers](#skill-enhancers)                |       8 |
+| ✨  | [Skill Enhancers](#skill-enhancers)                |       9 |
 | 🧪  | [Testing](#testing)                                |      26 |
 
 ### AI & Machine Learning
@@ -668,7 +668,7 @@ Jump to any of the 18 categories below. Plugin counts are catalog totals — aut
 
 ### Skill Enhancers
 
-✨ **8 plugins** · category slug: `skill-enhancers`
+✨ **9 plugins** · category slug: `skill-enhancers`
 
 | Plugin                 | Description                                                                                                                                |
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -680,6 +680,7 @@ Jump to any of the 18 categories below. Plugin counts are catalog totals — aut
 | `skill-creator`        | Create and validate production-grade agent skills with 100-point marketplace grading. Supports creation workflows, eval-driven…            |
 | `validate-plugin`      | Validate Claude Code plugin structure against official Anthropic spec and Intent Solutions enterprise standard with 100-point grading.     |
 | `web-to-github-issue`  | Enhances web_search Skill by automatically creating GitHub issues from research findings. Research topics, extract key insights, and…      |
+| `zero-tech-debt`       | Rebuild a feature as if the correct product architecture existed from day one. Removes compatibility cruft, dead abstractions, and…        |
 
 <sub>⬆ [Back to category index](#browse-plugins-by-category)</sub>
 

@@ -1,13 +1,13 @@
 {
   "meta": {
     "version": "1.0.0",
-    "generated": "2026-05-14T21:52:35.042Z",
+    "generated": "2026-05-15T18:34:54.361Z",
     "generator": "scripts/generate-unified-search.mjs"
   },
   "stats": {
-    "totalPlugins": 427,
-    "totalSkills": 2770,
-    "totalItems": 3197,
+    "totalPlugins": 428,
+    "totalSkills": 2771,
+    "totalItems": 3199,
     "categories": [
       "ai-agency",
       "ai-ml",
@@ -120,6 +120,7 @@
       "Bash(docker:*)",
       "Bash(docker:redis:*)",
       "Bash(du:*)",
+      "Bash(fd:*)",
       "Bash(ffmpeg:*)",
       "Bash(ffprobe:*)",
       "Bash(file:*)",
@@ -201,6 +202,7 @@
       "Bash(railway:*)",
       "Bash(redis-cli:*)",
       "Bash(report-gen:*)",
+      "Bash(rg:*)",
       "Bash(rm:*)",
       "Bash(rsync:*)",
       "Bash(rum:*)",
@@ -1039,6 +1041,7 @@
       "model-garden",
       "model-selection",
       "models",
+      "modernization",
       "modules",
       "monitor",
       "monitoring",
@@ -1618,7 +1621,7 @@
     "totalHooks": 18,
     "pluginsWithAgents": 78,
     "pluginsWithHooks": 14,
-    "officialPlugins": 376,
+    "officialPlugins": 377,
     "communityPlugins": 51,
     "communityContributors": 23
   },
@@ -15534,6 +15537,36 @@
       ],
       "skillCount": 1,
       "searchText": "plane plane is a team behavior observatory — synthesizes plane api data into observations about how teams actually behave under pressure (cycle velocity vs. plan, ownership churn, reviewer gate strength, priority drift, cross-project load). reads from the live mcp__plane mcp server. productivity plane project-management team-behavior observability productivity agent-skills forge-generated"
+    },
+    {
+      "type": "plugin",
+      "id": "zero-tech-debt",
+      "slug": "zero-tech-debt",
+      "name": "zero-tech-debt",
+      "displayName": "zero tech debt",
+      "description": "Rebuild a feature as if the correct product architecture existed from day one. Removes compatibility cruft, dead abstractions, and historical compromises instead of preserving them. Methodology-only — surfaces refactor candidates and walks a 7-step workflow before any deletion.",
+      "category": "skill-enhancers",
+      "keywords": [
+        "refactoring",
+        "tech-debt",
+        "architecture",
+        "cleanup",
+        "modernization",
+        "code-quality"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "authorType": "official",
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
+      "searchText": "zero tech debt rebuild a feature as if the correct product architecture existed from day one. removes compatibility cruft, dead abstractions, and historical compromises instead of preserving them. methodology-only — surfaces refactor candidates and walks a 7-step workflow before any deletion. skill-enhancers refactoring tech-debt architecture cleanup modernization code-quality"
     },
     {
       "type": "skill",
@@ -75750,6 +75783,30 @@
         "category": "community"
       },
       "searchText": "zai-cli execute z.ai cli providing vision, search, reader, and github exploration via cli and mcp. use when user needs image/video analysis, ocr, ui-to-code conversion, error diagnosis, real-time web search, web page to markdown extraction, or github code exploration. trigger with phrases like \"analyze this image\", \"search the web for\", \"read this page\", \"explore this repo\", or \"use zai\". requires z_ai_api_key. community read write edit bash(cmd:*) webfetch "
+    },
+    {
+      "type": "skill",
+      "id": "zero-tech-debt",
+      "slug": "zero-tech-debt",
+      "name": "zero-tech-debt",
+      "description": "Rebuild a feature as if the correct product architecture existed from day one — remove compatibility cruft, dead abstractions, and historical compromises instead of preserving them. Use when the operator says \"refactor properly,\" \"clean up,\" \"rewrite,\" \"modernize,\" \"remove legacy,\" \"simplify,\" \"rethink,\" \"pay down tech debt,\" or signals frustration with accumulated complexity. Do NOT use for hotfixes, bug repros, surgical patches, or security backports — blast-radius minimization wins there. Trigger with \"/zero-tech-debt\", \"do it right this time\", \"the way it should have been built\", \"refactor toward intent\".",
+      "category": "skill-enhancers",
+      "allowedTools": [
+        "Read",
+        "Edit",
+        "Glob",
+        "Grep",
+        "Bash(git:*)",
+        "Bash(rg:*)",
+        "Bash(fd:*)"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "zero-tech-debt",
+        "category": "skill-enhancers"
+      },
+      "searchText": "zero-tech-debt rebuild a feature as if the correct product architecture existed from day one — remove compatibility cruft, dead abstractions, and historical compromises instead of preserving them. use when the operator says \"refactor properly,\" \"clean up,\" \"rewrite,\" \"modernize,\" \"remove legacy,\" \"simplify,\" \"rethink,\" \"pay down tech debt,\" or signals frustration with accumulated complexity. do not use for hotfixes, bug repros, surgical patches, or security backports — blast-radius minimization wins there. trigger with \"/zero-tech-debt\", \"do it right this time\", \"the way it should have been built\", \"refactor toward intent\". skill-enhancers read edit glob grep bash(git:*) bash(rg:*) bash(fd:*) "
     }
   ]
 }

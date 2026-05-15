@@ -33241,10 +33241,22 @@
       "requires_tools": [],
       "fallback_for_env": [],
       "fallback_for_tools": []
+    },
+    {
+      "slug": "zero-tech-debt",
+      "name": "zero-tech-debt",
+      "description": "Rebuild a feature as if the correct product architecture existed from day one — remove compatibility cruft, dead abstractions, and historical compromises instead of preserving them. Use when the operator says \"refactor properly,\" \"clean up,\" \"rewrite,\" \"modernize,\" \"remove legacy,\" \"simplify,\" \"rethink,\" \"pay down tech debt,\" or signals frustration with accumulated complexity. Do NOT use for hotfixes, bug repros, surgical patches, or security backports — blast-radius minimization wins there. Trigger with \"/zero-tech-debt\", \"do it right this time\", \"the way it should have been built\", \"refactor toward intent\".",
+      "version": "1.0.0",
+      "category": "skill-enhancers",
+      "parentPlugin": "zero-tech-debt",
+      "requires_env": [],
+      "requires_tools": [],
+      "fallback_for_env": [],
+      "fallback_for_tools": []
     }
   ],
-  "count": 2770,
-  "generatedAt": "2026-05-14T21:52:33.799Z",
+  "count": 2771,
+  "generatedAt": "2026-05-15T18:34:52.757Z",
   "categories": [
     "ai-agency",
     "ai-ml",
