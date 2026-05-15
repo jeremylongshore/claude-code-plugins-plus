@@ -803,16 +803,11 @@ sources:
       - '.claude-plugin/**'
       - 'skills/**'
       - 'hooks/**'
+      - 'package.json'
       - 'README.md'
       - 'LICENSE'
     exclude:
-      - 'node_modules/**'
-      - '.git/**'
-      - '*.log'
-      - 'docs/**'
-      - 'templates/**'
-      - '.github/**'
-      - 'scripts/**'
+      - '**/*.log'
 
   # ============================================================
   # CLI Power Skills (Yuriy Kotik)
