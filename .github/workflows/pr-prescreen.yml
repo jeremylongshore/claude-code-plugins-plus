@@ -194,6 +194,25 @@ jobs:
           echo "=== verdict ===" >&2
           jq . /tmp/verdict.json >&2
 
+      # Groq LLM screener — advisory, never blocking. Single attempt, 5s
+      # deadline. Any failure (missing key, non-2xx, timeout, malformed
+      # response) leaves /tmp/verdict.json untouched-but-augmented with a
+      # deterministic fallback summary and an llm_status field. The Groq
+      # call is contained: it sees the validator's JSON output, NOT the
+      # PR diff or any PR-controlled text.
+      - name: Groq LLM summary
+        id: groq
+        continue-on-error: true
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: |
+          set -euo pipefail
+          mv /tmp/verdict.json /tmp/verdict.pre-groq.json
+          python3 base/scripts/pr-prescreen/summarize.py /tmp/verdict.pre-groq.json \
+            > /tmp/verdict.json
+          jq -r '.llm_status // "unknown"' /tmp/verdict.json >&2
+          jq -r '.summary_lines // ""' /tmp/verdict.json >&2
+
       - name: Build PR comment body
         id: comment
         run: |
@@ -204,6 +223,10 @@ jobs:
           verdict = v['verdict']
           icon = {'PASS': '✅', 'CHANGES_REQUESTED': '⚠️', 'HARD_BLOCK': '🛑'}[verdict]
           lines = [f"## {icon} PR pre-screen: **{verdict}**", "", f"_{v['summary']}_", ""]
+          if v.get('summary_lines'):
+              lines += ["### Reviewer summary", "", "```", v['summary_lines'], "```", ""]
+              if v.get('llm_status') and v['llm_status'] != 'ok':
+                  lines += [f"_LLM status: {v['llm_status']}_", ""]
           if v.get('blockers'):
               lines += ["### Blockers", ""]
               lines += [f"- {b}" for b in v['blockers']]
@@ -278,7 +301,11 @@ jobs:
           PR_URL="https://github.com/${REPO}/pull/${PR_NUMBER}"
           # Read blockers (if HARD_BLOCK) for inline display.
           BLOCKERS=$(jq -r 'if .blockers and (.blockers|length>0) then "Blockers: " + (.blockers | join(", ")) else "" end' /tmp/verdict.json)
+          GROQ_LINES=$(jq -r '.summary_lines // ""' /tmp/verdict.json)
           TEXT="${ICON} PR #${PR_NUMBER} from @${PR_AUTHOR} — *${VERDICT}*\n${PR_TITLE}\n${SUMMARY}"
+          if [ -n "$GROQ_LINES" ]; then
+            TEXT="${TEXT}\n\`\`\`\n${GROQ_LINES}\n\`\`\`"
+          fi
           if [ -n "$BLOCKERS" ]; then
             TEXT="${TEXT}\n${BLOCKERS}"
           fi
