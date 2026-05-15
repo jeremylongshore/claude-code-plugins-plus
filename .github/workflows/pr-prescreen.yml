@@ -1,0 +1,288 @@
+name: 'PR Pre-screen'
+
+# SAFE-FOR-FORKS design — pull_request_target runs in the BASE branch context
+# so secrets are available even on forked PRs. Two rules keep this safe:
+#
+#   1. Checkout uses the PR HEAD SHA with persist-credentials: false. Using
+#      the SHA (not the ref) prevents TOCTOU on force-pushes.
+#   2. We never execute PR-controlled code — only read the diff + run the
+#      repo's pinned validator (from main, not from the PR) against PR
+#      content.
+#
+# This pattern is copied verbatim from gemini-code-review.yml:23-79 (which
+# this workflow replaces in Phase 3 of the PR pre-screen system).
+#
+# Advisory only. Never a required check. Failures here NEVER block merges.
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number to pre-screen'
+        required: true
+        type: number
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: 'pr-prescreen-${{ github.event.pull_request.number || inputs.pr_number }}'
+  cancel-in-progress: true
+
+jobs:
+  prescreen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    if: ${{ vars.ENABLE_PR_PRESCREEN == 'true' }}
+    steps:
+      - name: Resolve PR number
+        id: pr
+        run: |
+          if [ -n "${{ github.event.pull_request.number }}" ]; then
+            echo "number=${{ github.event.pull_request.number }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "number=${{ inputs.pr_number }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Fetch PR metadata
+        id: meta
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          PR_DATA=$(gh api "repos/${{ github.repository }}/pulls/${{ steps.pr.outputs.number }}")
+          echo "head_sha=$(echo "$PR_DATA" | jq -r '.head.sha')" >> "$GITHUB_OUTPUT"
+          echo "author=$(echo "$PR_DATA" | jq -r '.user.login')" >> "$GITHUB_OUTPUT"
+          echo "title<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$PR_DATA" | jq -r '.title' >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+      # Check out the BASE (main) first — we run the validator and classifier
+      # FROM main, not from the PR. The PR's content is checked out into a
+      # subdirectory and inspected, never executed.
+      - name: Checkout base (validator source)
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
+          path: base
+
+      - name: Checkout PR HEAD into ./pr (read-only inspection target)
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ steps.meta.outputs.head_sha }}
+          persist-credentials: false
+          fetch-depth: 0
+          path: pr
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install validator deps
+        run: |
+          python -m pip install --upgrade pip pyyaml
+
+      - name: Compute changed plugin paths
+        id: diff
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          # Use the GitHub API to list changed files — safer than running git
+          # against fork content.
+          gh api --paginate \
+            "repos/${{ github.repository }}/pulls/${{ steps.pr.outputs.number }}/files" \
+            --jq '.[].filename' > /tmp/pr-files.txt || true
+          # Plugin dirs: plugins/<category>/<name>/...
+          grep '^plugins/' /tmp/pr-files.txt 2>/dev/null \
+            | awk -F/ '{print $1"/"$2"/"$3}' \
+            | sort -u > /tmp/changed-plugins.txt || true
+          echo "Changed plugin dirs:" >&2
+          cat /tmp/changed-plugins.txt >&2 || true
+          {
+            echo "count=$(wc -l < /tmp/changed-plugins.txt | tr -d ' ')"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Run validator against PR tree (full --json sweep)
+        id: validate
+        working-directory: pr
+        env:
+          CI: 'true'
+        run: |
+          set -euo pipefail
+          # We deliberately run the validator FROM the PR tree so the schema
+          # version + rubric matches what the PR ships against. The validator
+          # is pure read — no exec, no install. If the PR ships a malicious
+          # validator script, the catalog check below will flag it as a
+          # structural concern (validator path modified).
+          python3 ../base/scripts/validate-skills-schema.py --marketplace --json \
+            > /tmp/validator-results.json 2>/tmp/validator.log || true
+          echo "Validator stderr/info:" >&2
+          tail -50 /tmp/validator.log >&2 || true
+          # Filter to only changed plugin paths (if any). Otherwise we pass
+          # through all results, which keeps PASS behavior meaningful on
+          # PRs that don't touch plugin dirs.
+          python3 - <<'PY'
+          import json, pathlib
+          all_results = json.loads(pathlib.Path('/tmp/validator-results.json').read_text() or '[]')
+          changed_lines = pathlib.Path('/tmp/changed-plugins.txt').read_text().splitlines()
+          changed = [c.strip() for c in changed_lines if c.strip()]
+          if not changed:
+              filtered = all_results
+          else:
+              # Validator emits absolute paths. Match via substring on the
+              # plugins/<cat>/<name>/ fragment — robust to both absolute and
+              # repo-relative path encodings.
+              filtered = [r for r in all_results
+                          if any((c + '/') in r.get('path', '') for c in changed)]
+          # Make paths repo-relative for clean display in the comment.
+          for r in filtered:
+              p = r.get('path', '')
+              idx = p.find('/plugins/')
+              if idx >= 0:
+                  r['path'] = p[idx + 1:]
+          pathlib.Path('/tmp/filtered-results.json').write_text(json.dumps(filtered))
+          print(f"validator total: {len(all_results)}, filtered to PR: {len(filtered)}")
+          PY
+
+      - name: Detect structural hard-block signals
+        id: signals
+        working-directory: pr
+        run: |
+          set -euo pipefail
+          : > /tmp/hard-blocks.txt
+          # No catalog entry for any changed plugin?
+          if [ -s /tmp/changed-plugins.txt ]; then
+            while read -r plug; do
+              [ -z "$plug" ] && continue
+              # Look up the plugin in the source catalog.
+              if [ -f .claude-plugin/marketplace.extended.json ]; then
+                if ! grep -q "\"$plug\"\|/$(basename "$plug")\"" .claude-plugin/marketplace.extended.json; then
+                  echo "Missing catalog entry for $plug in marketplace.extended.json" >> /tmp/hard-blocks.txt
+                fi
+              fi
+              # No implementation files (only docs/metadata)?
+              if [ -d "$plug" ]; then
+                if [ -z "$(find "$plug" -type f \( -name 'SKILL.md' -o -name 'plugin.json' \) -print -quit)" ]; then
+                  echo "Plugin dir $plug has no SKILL.md or plugin.json" >> /tmp/hard-blocks.txt
+                fi
+              fi
+            done < /tmp/changed-plugins.txt
+          fi
+          echo "Detected hard-block signals:" >&2
+          cat /tmp/hard-blocks.txt >&2 || true
+
+      - name: Classify
+        id: classify
+        env:
+          PR_PRESCREEN_HARD_BLOCKS: ''  # populated below
+        run: |
+          set -euo pipefail
+          # Pass hard-block signals via the env var the classifier reads.
+          PR_PRESCREEN_HARD_BLOCKS="$(cat /tmp/hard-blocks.txt)" \
+            python3 base/scripts/pr-prescreen/classify.py /tmp/filtered-results.json \
+            > /tmp/verdict.json
+          VERDICT=$(jq -r '.verdict' /tmp/verdict.json)
+          SUMMARY=$(jq -r '.summary' /tmp/verdict.json)
+          echo "verdict=$VERDICT" >> "$GITHUB_OUTPUT"
+          echo "summary=$SUMMARY" >> "$GITHUB_OUTPUT"
+          echo "=== verdict ===" >&2
+          jq . /tmp/verdict.json >&2
+
+      - name: Build PR comment body
+        id: comment
+        run: |
+          set -euo pipefail
+          python3 - > /tmp/pr-comment.md <<'PY'
+          import json, pathlib
+          v = json.loads(pathlib.Path('/tmp/verdict.json').read_text())
+          verdict = v['verdict']
+          icon = {'PASS': '✅', 'CHANGES_REQUESTED': '⚠️', 'HARD_BLOCK': '🛑'}[verdict]
+          lines = [f"## {icon} PR pre-screen: **{verdict}**", "", f"_{v['summary']}_", ""]
+          if v.get('blockers'):
+              lines += ["### Blockers", ""]
+              lines += [f"- {b}" for b in v['blockers']]
+              lines.append("")
+          if v.get('warnings'):
+              lines += ["### Warnings", ""]
+              lines += [f"- {w}" for w in v['warnings']]
+              lines.append("")
+          if v.get('results'):
+              lines += ["### Per-skill results", "", "| Path | Grade | Score | Errors | Warnings |", "|---|---|---|---|---|"]
+              for r in v['results']:
+                  if 'fatal' in r:
+                      lines.append(f"| `{r.get('path','?')}` | — | — | FATAL | {r['fatal']} |")
+                  else:
+                      lines.append(
+                          f"| `{r.get('path','?')}` | {r.get('grade','?')} | "
+                          f"{r.get('score','?')} | {r.get('errors',0)} | {r.get('warnings',0)} |"
+                      )
+              lines.append("")
+          lines += [
+              "---",
+              "_This is an **advisory** pre-screen, not a required check. Required "
+              "checks: `validate`, `marketplace-validation`._",
+          ]
+          print("\n".join(lines))
+          PY
+          echo "Wrote PR comment body to /tmp/pr-comment.md"
+
+      - name: Post PR comment / review
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+          VERDICT: ${{ steps.classify.outputs.verdict }}
+        run: |
+          set -euo pipefail
+          if [ "$VERDICT" = "CHANGES_REQUESTED" ] || [ "$VERDICT" = "HARD_BLOCK" ]; then
+            # Structured review on the PR — visible to contributor as a review,
+            # not just a comment. The contributor is the audience here.
+            gh pr review "$PR_NUMBER" --repo "${{ github.repository }}" \
+              --request-changes \
+              --body-file /tmp/pr-comment.md
+          else
+            # PASS: regular comment so we don't approve in a way that could
+            # be confused with editorial approval.
+            gh pr comment "$PR_NUMBER" --repo "${{ github.repository }}" \
+              --body-file /tmp/pr-comment.md
+          fi
+
+      - name: Notify Slack (PASS / HARD_BLOCK only)
+        if: steps.classify.outputs.verdict == 'PASS' || steps.classify.outputs.verdict == 'HARD_BLOCK'
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_OPERATION_HIRED_WEBHOOK_URL }}
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+          PR_TITLE: ${{ steps.meta.outputs.title }}
+          PR_AUTHOR: ${{ steps.meta.outputs.author }}
+          REPO: ${{ github.repository }}
+          VERDICT: ${{ steps.classify.outputs.verdict }}
+          SUMMARY: ${{ steps.classify.outputs.summary }}
+        run: |
+          set -euo pipefail
+          if [ -z "${SLACK_WEBHOOK:-}" ]; then
+            echo "No Slack webhook configured; skipping notification."
+            exit 0
+          fi
+          if [ "$VERDICT" = "PASS" ]; then
+            ICON=":white_check_mark:"
+            CTA="ready for editorial review"
+          else
+            ICON=":warning:"
+            CTA="needs your attention"
+          fi
+          PR_URL="https://github.com/${REPO}/pull/${PR_NUMBER}"
+          # Read blockers (if HARD_BLOCK) for inline display.
+          BLOCKERS=$(jq -r 'if .blockers and (.blockers|length>0) then "Blockers: " + (.blockers | join(", ")) else "" end' /tmp/verdict.json)
+          TEXT="${ICON} PR #${PR_NUMBER} from @${PR_AUTHOR} — *${VERDICT}*\n${PR_TITLE}\n${SUMMARY}"
+          if [ -n "$BLOCKERS" ]; then
+            TEXT="${TEXT}\n${BLOCKERS}"
+          fi
+          TEXT="${TEXT}\n<@U099CBRE7CL> ${CTA} · ${PR_URL}"
+          payload=$(jq -n --arg text "$(printf '%b' "$TEXT")" '{text: $text}')
+          curl -sS --fail -X POST -H 'Content-type: application/json' \
+            --data "$payload" "$SLACK_WEBHOOK"
