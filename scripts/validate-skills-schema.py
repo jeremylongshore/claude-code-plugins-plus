@@ -33,7 +33,6 @@ Usage:
     python scripts/validate-skills-schema.py --enterprise                # Deprecated alias for --marketplace
     python scripts/validate-skills-schema.py --standard [--verbose]      # Explicit standard
     python scripts/validate-skills-schema.py --deep [--verbose]          # Deep Evaluation Engine
-    python scripts/validate-skills-schema.py --deep --thorough           # Deep + LLM (Groq)
     python scripts/validate-skills-schema.py --skills-only
     python scripts/validate-skills-schema.py --commands-only
     python scripts/validate-skills-schema.py --agents-only
@@ -4049,11 +4048,6 @@ def main() -> int:
         help="Run Intent Solutions Deep Evaluation Engine (10 dimensions, badges, rankings)",
     )
     parser.add_argument(
-        "--thorough",
-        action="store_true",
-        help="With --deep: enable LLM quality assessment via Groq (requires GROQ_API_KEY)",
-    )
-    parser.add_argument(
         "--report-format",
         type=str,
         default="terminal",
@@ -4176,7 +4170,10 @@ def main() -> int:
 
                     content = target.read_text(encoding='utf-8')
                     fm, body = parse_frontmatter(content)
-                    engine = DeepEvalEngine(use_llm=args.thorough, verbose=verbose)
+                    # LLM judging now lives at the workflow layer (see
+                    # scripts/pr-prescreen/summarize.py). Validator stays
+                    # deterministic.
+                    engine = DeepEvalEngine(use_llm=False, verbose=verbose)
                     deep_result = engine.evaluate_skill(
                         target, body, fm,
                         letter_grade=letter, deterministic_score=score,
@@ -4193,7 +4190,7 @@ def main() -> int:
                         from deep_eval.db import populate_deep_eval_db
                         run_id = populate_deep_eval_db(
                             args.populate_db, [deep_result], deep_summary,
-                            run_config={'single_file': True, 'use_llm': args.thorough},
+                            run_config={'single_file': True, 'use_llm': False},
                         )
                         print(f"📊 Deep eval written to {args.populate_db} (run_id={run_id})")
 
@@ -4464,7 +4461,9 @@ def main() -> int:
             print(f"🔬 INTENT SOLUTIONS DEEP EVALUATION ENGINE v1.0")
             print(f"{'=' * 70}\n")
 
-            use_llm = args.thorough
+            # LLM judging now lives at the workflow layer (see
+            # scripts/pr-prescreen/summarize.py). Validator stays deterministic.
+            use_llm = False
             engine = DeepEvalEngine(use_llm=use_llm, verbose=verbose)
 
             # Build skill data for deep eval from already-validated skills
@@ -4517,7 +4516,7 @@ def main() -> int:
                             deep_results,
                             deep_summary,
                             rankings=deep_rankings,
-                            run_config={'use_llm': use_llm, 'thorough': args.thorough},
+                            run_config={'use_llm': use_llm},
                         )
                         print(f"\n📊 Deep eval data written to {args.populate_db} (run_id={run_id})")
                         print(f"   deep_eval_results: {len(deep_results)} rows")

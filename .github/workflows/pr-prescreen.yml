@@ -9,10 +9,8 @@ name: 'PR Pre-screen'
 #      repo's pinned validator (from main, not from the PR) against PR
 #      content.
 #
-# This pattern is copied verbatim from gemini-code-review.yml:23-79 (which
-# this workflow replaces in Phase 3 of the PR pre-screen system).
-#
 # Advisory only. Never a required check. Failures here NEVER block merges.
+# Runbook: 000-docs/265-DR-GUID-pr-prescreen-system.md
 
 on:
   pull_request_target:
@@ -39,6 +37,10 @@ jobs:
     timeout-minutes: 8
     if: ${{ vars.ENABLE_PR_PRESCREEN == 'true' }}
     steps:
+      - name: Record start time
+        id: start
+        run: echo "epoch_ms=$(date +%s%3N)" >> "$GITHUB_OUTPUT"
+
       - name: Resolve PR number
         id: pr
         run: |
@@ -313,3 +315,22 @@ jobs:
           payload=$(jq -n --arg text "$(printf '%b' "$TEXT")" '{text: $text}')
           curl -sS --fail -X POST -H 'Content-type: application/json' \
             --data "$payload" "$SLACK_WEBHOOK"
+
+      # Audit log — write one row per pre-screen run to freshie/inventory.sqlite.
+      # Best-effort: continue-on-error so a DB write failure cannot mask the
+      # primary signal (the PR comment + Slack ping already fired).
+      - name: Append audit log row
+        if: always() && steps.classify.outcome == 'success'
+        continue-on-error: true
+        env:
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+          START_EPOCH_MS: ${{ steps.start.outputs.epoch_ms }}
+        run: |
+          set -euo pipefail
+          END_EPOCH_MS=$(date +%s%3N)
+          LATENCY_MS=$((END_EPOCH_MS - START_EPOCH_MS))
+          python3 base/scripts/pr-prescreen/audit.py \
+            --db base/freshie/inventory.sqlite \
+            --pr-number "$PR_NUMBER" \
+            --verdict-file /tmp/verdict.json \
+            --latency-ms "$LATENCY_MS"
