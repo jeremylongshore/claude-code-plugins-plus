@@ -112,7 +112,7 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 |     | Category                                           | Plugins |
 | --- | -------------------------------------------------- | ------: |
 | 🤖  | [AI & Machine Learning](#ai--machine-learning)     |      36 |
-| 🎭  | [AI Agents & Agency](#ai-agents--agency)           |       7 |
+| 🎭  | [AI Agents & Agency](#ai-agents--agency)           |       8 |
 | 🔌  | [API Development](#api-development)                |      25 |
 | 💼  | [Business Tools](#business-tools)                  |      21 |
 | 👥  | [Community](#community)                            |      13 |
@@ -178,17 +178,18 @@ Jump to any of the 19 categories below. Plugin counts are catalog totals — aut
 
 ### AI Agents & Agency
 
-🎭 **7 plugins** · category slug: `ai-agency`
+🎭 **8 plugins** · category slug: `ai-agency`
 
-| Plugin                    | Description                                                                                                        |
-| ------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| `discovery-questionnaire` | Generate custom discovery questionnaires for AI agency prospects                                                   |
-| `make-scenario-builder`   | Create Make.com (Integromat) scenarios with AI assistance                                                          |
-| `n8n-workflow-designer`   | Design complex n8n workflows with AI assistance - loops, branching, error handling                                 |
-| `roi-calculator`          | Calculate and present ROI for AI automation projects                                                               |
-| `shipwright`              | Describe your app in plain English — Shipwright builds, tests, and deploys it autonomously via a 9-phase pipeline. |
-| `sow-generator`           | Generate professional Statements of Work for AI projects                                                           |
-| `zapier-zap-builder`      | Create multi-step Zapier Zaps with filters, paths, and formatters                                                  |
+| Plugin                    | Description                                                                                                                                |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `agency-os`               | Run your work like an AI agency, from a single Notion board. Agents discuss, plan, and execute tasks in parallel with dependency ordering… |
+| `discovery-questionnaire` | Generate custom discovery questionnaires for AI agency prospects                                                                           |
+| `make-scenario-builder`   | Create Make.com (Integromat) scenarios with AI assistance                                                                                  |
+| `n8n-workflow-designer`   | Design complex n8n workflows with AI assistance - loops, branching, error handling                                                         |
+| `roi-calculator`          | Calculate and present ROI for AI automation projects                                                                                       |
+| `shipwright`              | Describe your app in plain English — Shipwright builds, tests, and deploys it autonomously via a 9-phase pipeline.                         |
+| `sow-generator`           | Generate professional Statements of Work for AI projects                                                                                   |
+| `zapier-zap-builder`      | Create multi-step Zapier Zaps with filters, paths, and formatters                                                                          |
 
 <sub>⬆ [Back to category index](#browse-plugins-by-category)</sub>
 

@@ -23,6 +23,7 @@ Full setup guide: https://github.com/ratamaha-git/agency-os/blob/main/docs/harne
 
 ## Skills
 
+- `/agency-os scaffold` - Build the Hub, Tasks DB, corpus pages, and linked views (run once after install)
 - `/agency-os suggest` - Drop an idea into the Notion inbox
 - `/agency-os discuss` - Open a task for clarification with the agent
 - `/agency-os approve` - Promote to To-Do (cascades subtasks)

@@ -1,0 +1,39 @@
+{
+  "name": "@intentsolutionsio/agency-os",
+  "version": "0.1.10",
+  "description": "Run your work like an AI agency, from a single Notion board. Agents discuss, plan, and execute tasks in parallel with dependency ordering and model routing.",
+  "keywords": [
+    "notion",
+    "task-management",
+    "ai-agency",
+    "autonomous-agent",
+    "workflow",
+    "project-management",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/ai-agency/agency-os"
+  },
+  "homepage": "https://tonsofskills.com/plugins/agency-os",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "AutomateLab",
+    "url": "https://github.com/ratamaha-git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install agency-os\\\\n  or /plugin install agency-os@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

@@ -169,6 +169,26 @@
       }
     },
     {
+      "name": "agency-os",
+      "source": "./plugins/ai-agency/agency-os",
+      "description": "Run your work like an AI agency, from a single Notion board. Agents discuss, plan, and execute tasks in parallel with dependency ordering and model routing.",
+      "version": "0.1.10",
+      "category": "ai-agency",
+      "keywords": [
+        "notion",
+        "task-management",
+        "ai-agency",
+        "autonomous-agent",
+        "workflow",
+        "project-management",
+        "claude-code"
+      ],
+      "author": {
+        "name": "AutomateLab",
+        "url": "https://github.com/ratamaha-git"
+      }
+    },
+    {
       "name": "ai-commit-gen",
       "source": "./plugins/productivity/ai-commit-gen",
       "description": "AI-powered commit message generator - analyzes your git diff and creates conventional commit messages instantly",
