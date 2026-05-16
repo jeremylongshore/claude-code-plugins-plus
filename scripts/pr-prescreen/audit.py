@@ -34,7 +34,6 @@ from __future__ import annotations
 import argparse
 import datetime as _dt
 import json
-import os
 import pathlib
 import sqlite3
 import sys
@@ -63,7 +62,10 @@ CREATE INDEX IF NOT EXISTS pr_prescreen_log_verdict_idx
 
 
 def _avg_score(results: list[dict]) -> Optional[float]:
-    scores = [int(r["score"]) for r in results if "score" in r]
+    # Column is REAL; preserve precision and handle JSON null + numeric
+    # strings ("4.5") cleanly. `r.get("score") is not None` guards both
+    # the missing-key case and an explicit null.
+    scores = [float(r["score"]) for r in results if r.get("score") is not None]
     return (sum(scores) / len(scores)) if scores else None
 
 
