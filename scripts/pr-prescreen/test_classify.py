@@ -70,6 +70,25 @@ class ClassifyTests(unittest.TestCase):
             out["blockers"],
         )
 
+    def test_hard_block_signal_iterator_not_exhausted(self):
+        # Regression: a generator passed as hard_block_signals must not be
+        # consumed by an intermediate loop before the verdict check runs.
+        signals = (s for s in ["secret leaked"])
+        out = classify([_r("plugins/x/SKILL.md", 95, "A")], hard_block_signals=signals)
+        self.assertEqual(out["verdict"], "HARD_BLOCK")
+        self.assertIn("secret leaked", out["blockers"])
+
+    def test_null_errors_does_not_crash(self):
+        # Regression: validator can emit {"errors": null} on partial results.
+        out = classify([{"path": "p", "score": 90, "grade": "A", "errors": None, "warnings": None}])
+        self.assertEqual(out["verdict"], "PASS")
+
+    def test_null_score_does_not_crash_in_summary(self):
+        out = classify([{"path": "p", "score": None, "grade": "F", "errors": 1}])
+        # Verdict is CHANGES_REQUESTED due to errors; summary shouldn't crash.
+        self.assertEqual(out["verdict"], "CHANGES_REQUESTED")
+        self.assertIn("CHANGES_REQUESTED", out["summary"])
+
     def test_mixed_results_picks_worst(self):
         out = classify(
             [

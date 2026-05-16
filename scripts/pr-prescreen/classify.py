@@ -17,11 +17,11 @@ Output:
     }
 
 Verdicts:
-    HARD_BLOCK         - structural issues a human absolutely must see
-                         (any fatal entry, any path-level hard-block signal
-                         injected by the caller, or any errors on an A/B
-                         skill that drops below D).
-    CHANGES_REQUESTED  - validator errors or any skill below grade C.
+    HARD_BLOCK         - any fatal entry, or any caller-supplied
+                         hard-block signal (no catalog entry, no
+                         implementation files, license mismatch, secret
+                         in diff, etc.).
+    CHANGES_REQUESTED  - validator errors OR any skill graded D/F.
     PASS               - zero errors AND every skill graded C or better.
 
 No I/O, no network, no dependencies beyond stdlib. Designed for unit-testing.
@@ -54,16 +54,14 @@ def classify(
     Returns:
         dict with keys verdict, blockers, warnings, summary, results.
     """
-    blockers: list[str] = []
+    # Materialize once — a generator gets exhausted by the loop below and
+    # the later truthiness check would silently see an empty iterator.
+    signals = [s for s in hard_block_signals if s]
+    blockers: list[str] = list(signals)
     warnings: list[str] = []
 
-    for reason in hard_block_signals:
-        if reason:
-            blockers.append(reason)
-
     fatal_count = 0
-    error_count = 0
-    failing_skills: list[tuple[str, str]] = []  # (path, grade) for D/F
+    failing_skills: list[tuple[str, str]] = []  # (path, grade) for errors or D/F
     weak_skills: list[tuple[str, str]] = []     # (path, grade) for C
 
     for entry in validator_results:
@@ -72,20 +70,19 @@ def classify(
             fatal_count += 1
             blockers.append(f"{path}: fatal — {entry['fatal']}")
             continue
-        errors = int(entry.get("errors", 0))
+        # `or 0` handles JSON null explicitly; .get default only fires on missing key.
+        errors = int(entry.get("errors") or 0)
         grade = entry.get("grade", "F")
-        if errors:
-            error_count += errors
-            failing_skills.append((path, grade))
-        if grade in ("D", "F"):
+        if errors or grade in ("D", "F"):
             if (path, grade) not in failing_skills:
                 failing_skills.append((path, grade))
         elif grade == "C":
-            weak_skills.append((path, grade))
+            if (path, grade) not in weak_skills:
+                weak_skills.append((path, grade))
 
-    if fatal_count or any(hard_block_signals):
+    if fatal_count or signals:
         verdict = "HARD_BLOCK"
-    elif error_count or failing_skills:
+    elif failing_skills:
         verdict = "CHANGES_REQUESTED"
     else:
         verdict = "PASS"
@@ -113,7 +110,8 @@ def _summarize(verdict: str, results: list[dict], blockers: list[str], warnings:
     n = len(results)
     if n == 0:
         return f"{verdict}: no plugin paths matched the PR diff."
-    scores = [int(r["score"]) for r in results if "score" in r]
+    # Null-safe: validator can emit "score": null on partial results.
+    scores = [int(r["score"]) for r in results if r.get("score") is not None]
     avg = (sum(scores) / len(scores)) if scores else 0
     parts = [f"{verdict}: {n} skill(s) inspected"]
     if scores:
