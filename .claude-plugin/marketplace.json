@@ -8257,6 +8257,167 @@
       },
       "license": "MIT",
       "repository": "https://github.com/vdk888/boycott-filter"
+    },
+    {
+      "name": "commit-narrator",
+      "source": "./plugins/devops/commit-narrator",
+      "description": "Generate semantic commit messages from staged diffs, including the why behind changes. Deterministic Python helper (stdlib only) wrapped as a slash command.",
+      "version": "0.1.0",
+      "category": "devops",
+      "keywords": [
+        "git",
+        "commit",
+        "conventional-commits",
+        "devops"
+      ],
+      "author": {
+        "name": "Mehmet Turac",
+        "url": "https://github.com/mturac"
+      }
+    },
+    {
+      "name": "pr-storyteller",
+      "source": "./plugins/devops/pr-storyteller",
+      "description": "Generate PR title, body, and test plan from commits and diff vs base branch.",
+      "version": "0.1.0",
+      "category": "devops",
+      "keywords": [
+        "git",
+        "pr",
+        "pull-request",
+        "devops"
+      ],
+      "author": {
+        "name": "Mehmet Turac",
+        "url": "https://github.com/mturac"
+      }
+    },
+    {
+      "name": "test-gap",
+      "source": "./plugins/testing/test-gap",
+      "description": "Identify lines in your diff lacking test coverage from Cobertura, lcov, or coverage.json formats.",
+      "version": "0.1.0",
+      "category": "testing",
+      "keywords": [
+        "testing",
+        "coverage"
+      ],
+      "author": {
+        "name": "Mehmet Turac",
+        "url": "https://github.com/mturac"
+      }
+    },
+    {
+      "name": "deps-doctor",
+      "source": "./plugins/security/deps-doctor",
+      "description": "Multi-ecosystem dependency audit covering npm, pip, cargo, and go in one unified report.",
+      "version": "0.1.0",
+      "category": "security",
+      "keywords": [
+        "security",
+        "dependencies",
+        "audit"
+      ],
+      "author": {
+        "name": "Mehmet Turac",
+        "url": "https://github.com/mturac"
+      }
+    },
+    {
+      "name": "env-lint",
+      "source": "./plugins/testing/env-lint",
+      "description": "Compare .env vs .env.example key parity without ever printing values.",
+      "version": "0.1.0",
+      "category": "testing",
+      "keywords": [
+        "env",
+        "config",
+        "testing"
+      ],
+      "author": {
+        "name": "Mehmet Turac",
+        "url": "https://github.com/mturac"
+      }
+    },
+    {
+      "name": "secret-guard",
+      "source": "./plugins/security/secret-guard",
+      "description": "Pre-commit secret scanner using pattern and entropy detection with redacted output.",
+      "version": "0.1.0",
+      "category": "security",
+      "keywords": [
+        "security",
+        "secrets",
+        "pre-commit"
+      ],
+      "author": {
+        "name": "Mehmet Turac",
+        "url": "https://github.com/mturac"
+      }
+    },
+    {
+      "name": "standup-gen",
+      "source": "./plugins/productivity/standup-gen",
+      "description": "Generate daily standup notes from git activity across one or many repositories.",
+      "version": "0.1.0",
+      "category": "productivity",
+      "keywords": [
+        "productivity",
+        "git",
+        "standup"
+      ],
+      "author": {
+        "name": "Mehmet Turac",
+        "url": "https://github.com/mturac"
+      }
+    },
+    {
+      "name": "todo-harvest",
+      "source": "./plugins/testing/todo-harvest",
+      "description": "Scan codebase for TODO, FIXME, and HACK comments with git blame author and age.",
+      "version": "0.1.0",
+      "category": "testing",
+      "keywords": [
+        "testing",
+        "todo",
+        "code-quality"
+      ],
+      "author": {
+        "name": "Mehmet Turac",
+        "url": "https://github.com/mturac"
+      }
+    },
+    {
+      "name": "flaky-detector",
+      "source": "./plugins/testing/flaky-detector",
+      "description": "Run a test command N times and report per-test flakiness percentage.",
+      "version": "0.1.0",
+      "category": "testing",
+      "keywords": [
+        "testing",
+        "flaky",
+        "reliability"
+      ],
+      "author": {
+        "name": "Mehmet Turac",
+        "url": "https://github.com/mturac"
+      }
+    },
+    {
+      "name": "changelog-forge",
+      "source": "./plugins/productivity/changelog-forge",
+      "description": "Convert conventional commits into a CHANGELOG section with semver bump suggestion.",
+      "version": "0.1.0",
+      "category": "productivity",
+      "keywords": [
+        "productivity",
+        "changelog",
+        "semver"
+      ],
+      "author": {
+        "name": "Mehmet Turac",
+        "url": "https://github.com/mturac"
+      }
     }
   ]
 }

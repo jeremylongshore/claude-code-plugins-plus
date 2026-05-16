@@ -118,16 +118,16 @@ Jump to any of the 18 categories below. Plugin counts are catalog totals — aut
 | ₿   | [Crypto & Web3](#crypto--web3)                     |      26 |
 | 💾  | [Database](#database)                              |      26 |
 | 🎨  | [Design](#design)                                  |       7 |
-| 🔧  | [DevOps & Infrastructure](#devops--infrastructure) |      36 |
+| 🔧  | [DevOps & Infrastructure](#devops--infrastructure) |      38 |
 | 📚  | [Examples & Templates](#examples--templates)       |       5 |
 | 🧩  | [MCP Servers](#mcp-servers)                        |      10 |
 | 📦  | [Packages](#packages)                              |       5 |
 | ⚡  | [Performance](#performance)                        |      25 |
-| ✅  | [Productivity](#productivity)                      |      19 |
+| ✅  | [Productivity](#productivity)                      |      21 |
 | 🎁  | [SaaS Skill Packs](#saas-skill-packs)              |     106 |
-| 🔐  | [Security](#security)                              |      26 |
+| 🔐  | [Security](#security)                              |      28 |
 | ✨  | [Skill Enhancers](#skill-enhancers)                |       8 |
-| 🧪  | [Testing](#testing)                                |      26 |
+| 🧪  | [Testing](#testing)                                |      30 |
 
 ### AI & Machine Learning
 
@@ -364,7 +364,7 @@ Jump to any of the 18 categories below. Plugin counts are catalog totals — aut
 
 ### DevOps & Infrastructure
 
-🔧 **36 plugins** · category slug: `devops`
+🔧 **38 plugins** · category slug: `devops`
 
 | Plugin                             | Description                                                                                                                                 |
 | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -373,6 +373,7 @@ Jump to any of the 18 categories below. Plugin counts are catalog totals — aut
 | `backup-strategy-implementor`      | Implement backup strategies for databases and applications                                                                                  |
 | `ci-cd-pipeline-builder`           | Build CI/CD pipelines for GitHub Actions, GitLab CI, Jenkins, and more                                                                      |
 | `cloud-cost-optimizer`             | Optimize cloud costs and generate cost reports                                                                                              |
+| `commit-narrator`                  | Generate semantic commit messages from staged diffs, including the why behind changes. Deterministic Python helper (stdlib only) wrapped…   |
 | `compliance-checker`               | Check infrastructure compliance (SOC2, HIPAA, PCI-DSS)                                                                                      |
 | `container-registry-manager`       | Manage container registries (ECR, GCR, Harbor)                                                                                              |
 | `container-security-scanner`       | Scan containers for vulnerabilities using Trivy, Snyk, and other security tools                                                             |
@@ -399,6 +400,7 @@ Jump to any of the 18 categories below. Plugin counts are catalog totals — aut
 | `mattyp-changelog`                 | Automates changelog generation from git history with config validation and quality scoring. Use when publishing weekly updates, release…    |
 | `monitoring-stack-deployer`        | Deploy monitoring stacks (Prometheus, Grafana, Datadog)                                                                                     |
 | `network-policy-manager`           | Manage Kubernetes network policies and firewall rules                                                                                       |
+| `pr-storyteller`                   | Generate PR title, body, and test plan from commits and diff vs base branch.                                                                |
 | `secrets-manager-integrator`       | Integrate with secrets managers (Vault, AWS Secrets Manager, etc)                                                                           |
 | `service-mesh-configurator`        | Configure service mesh (Istio, Linkerd) for microservices                                                                                   |
 | `sugar`                            | Transform Claude Code into an autonomous AI development powerhouse with rich task context, specialized agents, and intelligent workflow…    |
@@ -490,7 +492,7 @@ Jump to any of the 18 categories below. Plugin counts are catalog totals — aut
 
 ### Productivity
 
-✅ **19 plugins** · category slug: `productivity`
+✅ **21 plugins** · category slug: `productivity`
 
 | Plugin                                     | Description                                                                                                                                 |
 | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -501,6 +503,7 @@ Jump to any of the 18 categories below. Plugin counts are catalog totals — aut
 | `agent-context-manager`                    | Automatically detects and loads AGENTS.md files to provide agent-specific instructions                                                      |
 | `ai-commit-gen`                            | AI-powered commit message generator - analyzes your git diff and creates conventional commit messages instantly                             |
 | `box-cloud-filesystem`                     | Transparent cloud filesystem for AI agents using Box CLI (@box/cli). Upload, download, search, share, and sync files to Box cloud storage…  |
+| `changelog-forge`                          | Convert conventional commits into a CHANGELOG section with semver bump suggestion.                                                          |
 | `hyperfocus`                               | ADHD-friendly output formatting for Claude Code. Restructures responses with evidence-based cognitive accessibility: chunking, visual…      |
 | `navigating-github`                        | First-time GitHub setup and interactive git learning. Walks users from zero to a working GitHub repo, then teaches git through 9 hands-on…  |
 | `neurodivergent-visual-org`                | Create ADHD-friendly visual organizational tools (Mermaid diagrams) optimized for neurodivergent thinking patterns with accessibility modes |
@@ -508,6 +511,7 @@ Jump to any of the 18 categories below. Plugin counts are catalog totals — aut
 | `plane`                                    | Plane is a team behavior observatory — synthesizes Plane API data into observations about how teams actually behave under pressure (cycle…  |
 | `pm-ai-partner`                            | 12 PM-specific agent skills, 6 workflow commands, 3 automation hooks for Product Managers                                                   |
 | `prettier-markdown-hook`                   | Automatically format markdown files with prettier when Claude stops responding, with configurable organization and path exclusions          |
+| `standup-gen`                              | Generate daily standup notes from git activity across one or many repositories.                                                             |
 | `travel-assistant`                         | Intelligent travel assistant with real-time weather, currency conversion, timezone info, and AI-powered itinerary planning. Your complete…  |
 | `vibe-guide`                               | Non-technical progress summaries for Claude Code work (hides diffs/log noise).                                                              |
 | `wondelai-design-sprint`                   | Google Ventures Design Sprint methodology. Validate product ideas in 5 days with rapid prototyping, user testing, and structured…           |
@@ -633,7 +637,7 @@ Jump to any of the 18 categories below. Plugin counts are catalog totals — aut
 
 ### Security
 
-🔐 **26 plugins** · category slug: `security`
+🔐 **28 plugins** · category slug: `security`
 
 | Plugin                             | Description                                                                                                                              |
 | ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
@@ -644,6 +648,7 @@ Jump to any of the 18 categories below. Plugin counts are catalog totals — aut
 | `csrf-protection-validator`        | Validate CSRF protection                                                                                                                 |
 | `data-privacy-scanner`             | Scan for data privacy issues                                                                                                             |
 | `dependency-checker`               | Check dependencies for known vulnerabilities, outdated packages, and license compliance                                                  |
+| `deps-doctor`                      | Multi-ecosystem dependency audit covering npm, pip, cargo, and go in one unified report.                                                 |
 | `encryption-tool`                  | Encrypt and decrypt data with various algorithms                                                                                         |
 | `gdpr-compliance-scanner`          | Scan for GDPR compliance issues                                                                                                          |
 | `hipaa-compliance-checker`         | Check HIPAA compliance                                                                                                                   |
@@ -651,6 +656,7 @@ Jump to any of the 18 categories below. Plugin counts are catalog totals — aut
 | `owasp-compliance-checker`         | Check OWASP Top 10 compliance                                                                                                            |
 | `pci-dss-validator`                | Validate PCI DSS compliance                                                                                                              |
 | `penetration-tester`               | Automated penetration testing for web applications with OWASP Top 10 coverage                                                            |
+| `secret-guard`                     | Pre-commit secret scanner using pattern and entropy detection with redacted output.                                                      |
 | `secret-scanner`                   | Scan codebase for exposed secrets, API keys, passwords, and sensitive credentials                                                        |
 | `security-audit-reporter`          | Generate comprehensive security audit reports                                                                                            |
 | `security-headers-analyzer`        | Analyze HTTP security headers                                                                                                            |
@@ -685,7 +691,7 @@ Jump to any of the 18 categories below. Plugin counts are catalog totals — aut
 
 ### Testing
 
-🧪 **26 plugins** · category slug: `testing`
+🧪 **30 plugins** · category slug: `testing`
 
 | Plugin                         | Description                                                                                                                               |
 | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
@@ -698,6 +704,8 @@ Jump to any of the 18 categories below. Plugin counts are catalog totals — aut
 | `contract-test-validator`      | API contract testing with Pact, OpenAPI validation, and consumer-driven contract verification                                             |
 | `database-test-manager`        | Database testing utilities with test data setup, transaction rollback, and schema validation                                              |
 | `e2e-test-framework`           | End-to-end test automation with Playwright, Cypress, and Selenium for browser-based testing                                               |
+| `env-lint`                     | Compare .env vs .env.example key parity without ever printing values.                                                                     |
+| `flaky-detector`               | Run a test command N times and report per-test flakiness percentage.                                                                      |
 | `integration-test-runner`      | Run and manage integration test suites with environment setup, database seeding, and cleanup                                              |
 | `load-balancer-tester`         | Test load balancing strategies with traffic distribution validation and failover testing                                                  |
 | `mobile-app-tester`            | Mobile app test automation with Appium, Detox, XCUITest - test iOS and Android apps                                                       |
@@ -711,8 +719,10 @@ Jump to any of the 18 categories below. Plugin counts are catalog totals — aut
 | `test-data-generator`          | Generate realistic test data including users, products, orders, and custom schemas for comprehensive testing                              |
 | `test-doubles-generator`       | Generate mocks, stubs, spies, and fakes for unit testing with Jest, Sinon, and test frameworks                                            |
 | `test-environment-manager`     | Manage test environments with Docker Compose, Testcontainers, and environment isolation                                                   |
+| `test-gap`                     | Identify lines in your diff lacking test coverage from Cobertura, lcov, or coverage.json formats.                                         |
 | `test-orchestrator`            | Orchestrate complex test workflows with dependencies, parallel execution, and smart test selection                                        |
 | `test-report-generator`        | Generate comprehensive test reports with coverage, trends, and stakeholder-friendly formats                                               |
+| `todo-harvest`                 | Scan codebase for TODO, FIXME, and HACK comments with git blame author and age.                                                           |
 | `unit-test-generator`          | Automatically generate comprehensive unit tests from source code with multiple testing framework support                                  |
 | `visual-regression-tester`     | Visual diff testing with Percy, Chromatic, BackstopJS - catch unintended UI changes                                                       |
 

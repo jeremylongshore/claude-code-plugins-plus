@@ -1,0 +1,19 @@
+{
+  "name": "pr-storyteller",
+  "version": "0.1.0",
+  "description": "Generate PR story data from commits and diffs.",
+  "author": {
+    "name": "Mehmet Turac",
+    "url": "https://github.com/mturac"
+  },
+  "repository": "https://github.com/mturac/pluginpool-pr-storyteller",
+  "license": "MIT",
+  "keywords": [
+    "git",
+    "pr",
+    "pull-request",
+    "devops",
+    "agent-skills"
+  ],
+  "homepage": "https://github.com/mturac/pluginpool-pr-storyteller"
+}

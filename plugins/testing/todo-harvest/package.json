@@ -1,0 +1,38 @@
+{
+  "name": "@intentsolutionsio/todo-harvest",
+  "version": "0.1.0",
+  "description": "Find TODO/FIXME/HACK comments with git-blame author and age.",
+  "keywords": [
+    "testing",
+    "todo",
+    "code-quality",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/testing/todo-harvest"
+  },
+  "homepage": "https://tonsofskills.com/plugins/todo-harvest",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Mehmet Turac",
+    "url": "https://github.com/mturac"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "commands",
+    "scripts"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install todo-harvest\\\\n  or /plugin install todo-harvest@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

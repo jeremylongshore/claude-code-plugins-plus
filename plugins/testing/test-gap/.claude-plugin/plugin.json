@@ -1,0 +1,17 @@
+{
+  "name": "test-gap",
+  "version": "0.1.0",
+  "description": "/test-gap surfaces lines added or changed in the current git diff that are not covered by tests.",
+  "author": {
+    "name": "Mehmet Turac",
+    "url": "https://github.com/mturac"
+  },
+  "repository": "https://github.com/mturac/pluginpool-test-gap",
+  "license": "MIT",
+  "keywords": [
+    "testing",
+    "coverage",
+    "agent-skills"
+  ],
+  "homepage": "https://github.com/mturac/pluginpool-test-gap"
+}

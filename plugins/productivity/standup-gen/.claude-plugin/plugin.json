@@ -1,0 +1,18 @@
+{
+  "name": "standup-gen",
+  "version": "0.1.0",
+  "description": "Generate daily standup notes from git activity across one or many repos.",
+  "author": {
+    "name": "Mehmet Turac",
+    "url": "https://github.com/mturac"
+  },
+  "repository": "https://github.com/mturac/pluginpool-standup-gen",
+  "license": "MIT",
+  "keywords": [
+    "productivity",
+    "git",
+    "standup",
+    "agent-skills"
+  ],
+  "homepage": "https://github.com/mturac/pluginpool-standup-gen"
+}

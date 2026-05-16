@@ -1,0 +1,18 @@
+{
+  "name": "deps-doctor",
+  "version": "0.1.0",
+  "description": "/deps-doctor runs dependency health audits across supported ecosystems.",
+  "author": {
+    "name": "Mehmet Turac",
+    "url": "https://github.com/mturac"
+  },
+  "repository": "https://github.com/mturac/pluginpool-deps-doctor",
+  "license": "MIT",
+  "keywords": [
+    "security",
+    "dependencies",
+    "audit",
+    "agent-skills"
+  ],
+  "homepage": "https://github.com/mturac/pluginpool-deps-doctor"
+}

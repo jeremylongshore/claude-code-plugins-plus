@@ -1,0 +1,18 @@
+{
+  "name": "todo-harvest",
+  "version": "0.1.0",
+  "description": "Find TODO/FIXME/HACK comments with git-blame author and age.",
+  "author": {
+    "name": "Mehmet Turac",
+    "url": "https://github.com/mturac"
+  },
+  "repository": "https://github.com/mturac/pluginpool-todo-harvest",
+  "license": "MIT",
+  "keywords": [
+    "testing",
+    "todo",
+    "code-quality",
+    "agent-skills"
+  ],
+  "homepage": "https://github.com/mturac/pluginpool-todo-harvest"
+}

@@ -1,0 +1,19 @@
+{
+  "name": "commit-narrator",
+  "version": "0.1.0",
+  "description": "Generate conventional commit messages from staged diffs.",
+  "author": {
+    "name": "Mehmet Turac",
+    "url": "https://github.com/mturac"
+  },
+  "repository": "https://github.com/mturac/pluginpool-commit-narrator",
+  "license": "MIT",
+  "keywords": [
+    "git",
+    "commit",
+    "conventional",
+    "devops",
+    "agent-skills"
+  ],
+  "homepage": "https://github.com/mturac/pluginpool-commit-narrator"
+}
