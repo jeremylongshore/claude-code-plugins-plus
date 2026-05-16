@@ -134,8 +134,13 @@ jobs:
           all_results = json.loads(pathlib.Path('/tmp/validator-results.json').read_text() or '[]')
           changed_lines = pathlib.Path('/tmp/changed-plugins.txt').read_text().splitlines()
           changed = [c.strip() for c in changed_lines if c.strip()]
+          # If the PR doesn't touch any plugins/ dir, we have nothing to
+          # pre-screen. Emit an empty list — the classifier reports PASS
+          # with "no plugin paths matched", which is the correct signal.
+          # The prior behavior (pass-through ALL results) blew past
+          # GitHub's 64KB review-body cap on PRs that touch e.g. sources.yaml.
           if not changed:
-              filtered = all_results
+              filtered = []
           else:
               # Validator emits absolute paths. Match via substring on the
               # plugins/<cat>/<name>/ fragment — robust to both absolute and
@@ -221,6 +226,12 @@ jobs:
           set -euo pipefail
           python3 - > /tmp/pr-comment.md <<'PY'
           import json, pathlib
+          # GitHub caps PR review bodies at 65536 chars. Reserve headroom
+          # for the header + summary + blockers + footer so we never
+          # overshoot even on pathological diffs.
+          GITHUB_BODY_MAX = 65000
+          MAX_TABLE_ROWS = 100
+
           v = json.loads(pathlib.Path('/tmp/verdict.json').read_text())
           verdict = v['verdict']
           icon = {'PASS': '✅', 'CHANGES_REQUESTED': '⚠️', 'HARD_BLOCK': '🛑'}[verdict]
@@ -237,9 +248,12 @@ jobs:
               lines += ["### Warnings", ""]
               lines += [f"- {w}" for w in v['warnings']]
               lines.append("")
-          if v.get('results'):
+          results = v.get('results') or []
+          if results:
+              truncated = len(results) > MAX_TABLE_ROWS
+              shown = results[:MAX_TABLE_ROWS]
               lines += ["### Per-skill results", "", "| Path | Grade | Score | Errors | Warnings |", "|---|---|---|---|---|"]
-              for r in v['results']:
+              for r in shown:
                   if 'fatal' in r:
                       lines.append(f"| `{r.get('path','?')}` | — | — | FATAL | {r['fatal']} |")
                   else:
@@ -247,17 +261,29 @@ jobs:
                           f"| `{r.get('path','?')}` | {r.get('grade','?')} | "
                           f"{r.get('score','?')} | {r.get('errors',0)} | {r.get('warnings',0)} |"
                       )
+              if truncated:
+                  lines.append(f"| _(+{len(results) - MAX_TABLE_ROWS} more skills not shown — see workflow logs for full list)_ |||||")
               lines.append("")
           lines += [
               "---",
               "_This is an **advisory** pre-screen, not a required check. Required "
               "checks: `validate`, `marketplace-validation`._",
           ]
-          print("\n".join(lines))
+          body = "\n".join(lines)
+          # Final safety: if we somehow still exceed the cap, truncate
+          # the *body* with a clear marker rather than letting the API
+          # reject the whole payload.
+          if len(body) > GITHUB_BODY_MAX:
+              body = body[:GITHUB_BODY_MAX - 200] + "\n\n_…body truncated to fit GitHub's 64KB review-body cap._\n"
+          print(body)
           PY
           echo "Wrote PR comment body to /tmp/pr-comment.md"
 
       - name: Post PR comment / review
+        # Skip entirely when the PR doesn't touch any plugins — there's
+        # nothing useful to say. Avoids comment-spam on every infra /
+        # docs / sources.yaml PR.
+        if: steps.diff.outputs.count != '0'
         env:
           GH_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ steps.pr.outputs.number }}
@@ -278,7 +304,7 @@ jobs:
           fi
 
       - name: Notify Slack (PASS / HARD_BLOCK only)
-        if: steps.classify.outputs.verdict == 'PASS' || steps.classify.outputs.verdict == 'HARD_BLOCK'
+        if: (steps.classify.outputs.verdict == 'PASS' || steps.classify.outputs.verdict == 'HARD_BLOCK') && steps.diff.outputs.count != '0'
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_OPERATION_HIRED_WEBHOOK_URL }}
           PR_NUMBER: ${{ steps.pr.outputs.number }}
