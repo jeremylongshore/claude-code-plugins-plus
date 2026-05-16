@@ -79,11 +79,30 @@ class SummarizeTests(unittest.TestCase):
         self.assertIn("LLM screener unavailable", out["summary_lines"])
 
     def test_timeout_falls_back(self):
+        # OSError covers timeouts across Python versions (TimeoutError is a
+        # builtin only since 3.11; urllib raises socket.timeout/OSError
+        # subclasses on older runners).
         with patch.dict(os.environ, {"GROQ_API_KEY": "test"}), \
-             patch("summarize.urllib.request.urlopen", side_effect=TimeoutError("timed out")):
+             patch("summarize.urllib.request.urlopen", side_effect=OSError("timed out")):
             out = summarize.summarize(SAMPLE_CLASSIFIER_OUT)
         self.assertTrue(out["llm_status"].startswith("failed:"))
         self.assertIn("LLM screener unavailable", out["summary_lines"])
+
+    def test_unexpected_exception_falls_back(self):
+        # Regression for the "never block" contract: even an unforeseen
+        # exception class (e.g. KeyError from a schema change) must
+        # degrade to the deterministic fallback, not propagate.
+        with patch.dict(os.environ, {"GROQ_API_KEY": "test"}), \
+             patch("summarize.urllib.request.urlopen", side_effect=KeyError("schema drift")):
+            out = summarize.summarize(SAMPLE_CLASSIFIER_OUT)
+        self.assertEqual(out["llm_status"], "failed: KeyError")
+
+    def test_main_rejects_invalid_json(self):
+        # Regression: malformed JSON on stdin must exit 2 cleanly, not
+        # propagate the JSONDecodeError traceback into the CI log.
+        with patch("sys.stdin", io.StringIO("{not json")):
+            rc = summarize.main(["summarize.py", "-"])
+        self.assertEqual(rc, 2)
 
     def test_malformed_response_falls_back(self):
         with patch.dict(os.environ, {"GROQ_API_KEY": "test"}), \
