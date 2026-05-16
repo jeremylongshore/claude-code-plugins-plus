@@ -150,7 +150,13 @@ def summarize(classifier_output: dict) -> dict:
         out["summary_lines"] = _fallback_summary(out, f"Groq HTTP {exc.code}")
         out["llm_status"] = f"failed: http {exc.code}"
         return out
-    except (urllib.error.URLError, TimeoutError, RuntimeError, json.JSONDecodeError) as exc:
+    except Exception as exc:
+        # Deliberately broad: the workflow contract is "NEVER block on
+        # Groq". Anything from socket errors to malformed responses to
+        # unforeseen AttributeError/KeyError must degrade to the
+        # deterministic fallback, not propagate and kill the workflow.
+        # Also avoids the Python 3.11 TimeoutError-builtin issue on
+        # older runners.
         out["summary_lines"] = _fallback_summary(out, str(exc) or exc.__class__.__name__)
         out["llm_status"] = f"failed: {exc.__class__.__name__}"
         return out
@@ -172,7 +178,11 @@ def main(argv: list[str]) -> int:
     if not raw:
         print("summarize.py: expected classifier JSON on stdin", file=sys.stderr)
         return 2
-    classifier_output = json.loads(raw)
+    try:
+        classifier_output = json.loads(raw)
+    except json.JSONDecodeError as exc:
+        print(f"summarize.py: invalid JSON on stdin — {exc}", file=sys.stderr)
+        return 2
     if not isinstance(classifier_output, dict):
         print("summarize.py: expected a JSON object (classifier output)", file=sys.stderr)
         return 2
