@@ -110,7 +110,7 @@ Jump to any of the 18 categories below. Plugin counts are catalog totals — aut
 
 |     | Category                                           | Plugins |
 | --- | -------------------------------------------------- | ------: |
-| 🤖  | [AI & Machine Learning](#ai--machine-learning)     |      36 |
+| 🤖  | [AI & Machine Learning](#ai--machine-learning)     |      37 |
 | 🎭  | [AI Agents & Agency](#ai-agents--agency)           |       7 |
 | 🔌  | [API Development](#api-development)                |      25 |
 | 💼  | [Business Tools](#business-tools)                  |      21 |
@@ -131,7 +131,7 @@ Jump to any of the 18 categories below. Plugin counts are catalog totals — aut
 
 ### AI & Machine Learning
 
-🤖 **36 plugins** · category slug: `ai-ml`
+🤖 **37 plugins** · category slug: `ai-ml`
 
 | Plugin                         | Description                                                                                                                               |
 | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
@@ -167,6 +167,7 @@ Jump to any of the 18 categories below. Plugin counts are catalog totals — aut
 | `nlp-text-analyzer`            | Natural language processing and text analysis                                                                                             |
 | `ollama-local-ai`              | Run AI models locally with Ollama - free alternative to OpenAI, Anthropic, and other paid LLM APIs. Zero-cost, privacy-first AI…          |
 | `recommendation-engine`        | Build recommendation systems and engines                                                                                                  |
+| `recsys-pipeline-architect`    | Designs composable recommendation, ranking, and feed pipelines using the six-stage Source→Hydrator→Filter→Scorer→Selector→SideEffect…     |
 | `regression-analysis-tool`     | Regression analysis and modeling                                                                                                          |
 | `sentiment-analysis-tool`      | Sentiment analysis on text data                                                                                                           |
 | `time-series-forecaster`       | Time series forecasting and analysis                                                                                                      |

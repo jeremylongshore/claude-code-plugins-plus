@@ -1,0 +1,24 @@
+{
+  "name": "recsys-pipeline-architect",
+  "version": "1.0.0",
+  "description": "Design composable recommendation, ranking, and feed pipelines using the six-stage Source→Hydrator→Filter→Scorer→Selector→SideEffect framework",
+  "author": {
+    "name": "Mehmet Turac",
+    "email": "noreply@github.com"
+  },
+  "repository": "https://github.com/mturac/recsys-pipeline-architect",
+  "license": "MIT",
+  "keywords": [
+    "recsys",
+    "recommendation-system",
+    "ranking",
+    "feed-algorithm",
+    "personalization",
+    "for-you-feed",
+    "rag-reranker",
+    "pipeline-architecture",
+    "ai",
+    "ml",
+    "agent-skills"
+  ]
+}

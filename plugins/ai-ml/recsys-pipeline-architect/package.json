@@ -1,0 +1,44 @@
+{
+  "name": "@intentsolutionsio/recsys-pipeline-architect",
+  "version": "1.0.0",
+  "description": "Design composable recommendation, ranking, and feed pipelines using the six-stage Source→Hydrator→Filter→Scorer→Selector→SideEffect framework",
+  "keywords": [
+    "recsys",
+    "recommendation-system",
+    "ranking",
+    "feed-algorithm",
+    "personalization",
+    "for-you-feed",
+    "rag-reranker",
+    "pipeline-architecture",
+    "ai",
+    "ml",
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/ai-ml/recsys-pipeline-architect"
+  },
+  "homepage": "https://tonsofskills.com/plugins/recsys-pipeline-architect",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Mehmet Turac",
+    "email": "noreply@github.com"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md",
+    ".claude-plugin",
+    "skills"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install recsys-pipeline-architect\\\\n  or /plugin install recsys-pipeline-architect@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}
