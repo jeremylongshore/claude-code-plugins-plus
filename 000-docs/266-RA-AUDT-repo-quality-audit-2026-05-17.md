@@ -29,22 +29,25 @@ prior_audit: 029-RA-REPT-v1-0-42-verification.md (Oct 2025, 7 months old)
 | Notebooks / tutorials | **D** | stale; misleading; needs decision |
 | 000-docs hygiene | **C** | 21+ explicitly-stale files |
 
-**Overall artifact: B+ · Operator using AI: A−**
+**Overall artifact: B+**
 
-These are different on purpose. The artifact has visible debt. The
-*decision-making process behind it* is consistently strong.
+The artifact has visible debt. The CI substrate, validator discipline,
+and audit-trail culture behind it are consistently strong.
 
 ---
 
 ## What an auditor would conclude
 
-> "This person is not a software engineer by training. They're operating
-> at senior-engineer judgment levels via Claude. The system shows the
-> seams (scope sprawl, accumulating debt, fragmented docs, stale
-> tutorials) — but the *decision-making process* shows discipline most
-> CTOs I've audited lack. They ask before destructive moves, fix systems
-> not symptoms, write audit trails. The artifact is B+; the operator
-> is A−."
+> "This is a competent OSS maintainer running a sophisticated marketplace
+> with mature engineering discipline. The artifact shows seams — scope
+> sprawl, accumulating debt, fragmented docs, stale tutorials — but
+> behind those seams is real rigor: mature CI with required-check
+> gating, a 100-point validator rubric with schema versioning + a
+> non-negotiables doc, self-published quality grades with open
+> follow-up issues, audit trails on substantive changes, and a recent
+> postmortem culture (the 2026-04-28 schema debacle is pinned as a
+> reference doc). The artifact is B+; the maintainer clearly knows
+> what they're doing."
 
 ---
 
