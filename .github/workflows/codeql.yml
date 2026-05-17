@@ -3,8 +3,10 @@ name: "CodeQL Security Analysis"
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  # pull_request trigger removed 2026-05-16 — was firing false-positive alerts on PRs
+  # for code that's documented as known-safe (release/, scripts/). Coverage on main
+  # is preserved via the push trigger; PRs merging to main get scanned at merge time.
+  # Closes #652.
   # schedule disabled — burns Actions minutes
   # - cron: '0 6 * * 1'
 
