@@ -96,18 +96,41 @@ jobs:
         run: |
           set -euo pipefail
           # Use the GitHub API to list changed files — safer than running git
-          # against fork content.
+          # against fork content. NOTE: do NOT combine `--paginate` with `--jq`
+          # in one call — observed to return empty stdout on the runner even
+          # when the underlying API returns files (caused the 2026-05-16
+          # false-PASS bug on #726/#728). Fetch raw JSON pages, parse with a
+          # separate `jq` invocation. No `|| true` either — we want a real
+          # failure to surface rather than silently emit "no plugin paths".
           gh api --paginate \
             "repos/${{ github.repository }}/pulls/${{ steps.pr.outputs.number }}/files" \
-            --jq '.[].filename' > /tmp/pr-files.txt || true
+            > /tmp/pr-files.json
+          jq -r '.[].filename' /tmp/pr-files.json > /tmp/pr-files.txt
+          echo "All changed files (count=$(wc -l < /tmp/pr-files.txt | tr -d ' ')):" >&2
+          head -50 /tmp/pr-files.txt >&2
           # Plugin dirs: plugins/<category>/<name>/...
-          grep '^plugins/' /tmp/pr-files.txt 2>/dev/null \
+          # `grep || true` is intentional here — empty match is a legit case
+          # (infra-only PR). awk + sort -u handle the rest.
+          { grep '^plugins/' /tmp/pr-files.txt || true; } \
             | awk -F/ '{print $1"/"$2"/"$3}' \
-            | sort -u > /tmp/changed-plugins.txt || true
+            | sort -u > /tmp/changed-plugins.txt
           echo "Changed plugin dirs:" >&2
-          cat /tmp/changed-plugins.txt >&2 || true
+          cat /tmp/changed-plugins.txt >&2
+          PLUGIN_LINES=$({ grep -c '^plugins/' /tmp/pr-files.txt || true; })
+          CHANGED_DIRS=$(wc -l < /tmp/changed-plugins.txt | tr -d ' ')
+          # Sanity guard: if the diff clearly touched plugin files but our
+          # dir-extraction came back empty, that's an internal bug, not a
+          # clean PR. Surface it so the verdict isn't a silent false PASS.
+          # Write our sanity-check signal to a separate file — the next step
+          # truncates /tmp/hard-blocks.txt at start, so we'd lose anything
+          # written here. The Classify step concatenates both files.
+          : > /tmp/diff-step-signals.txt
+          if [ "$PLUGIN_LINES" -gt 0 ] && [ "$CHANGED_DIRS" = "0" ]; then
+            echo "prescreen-internal-error: diff contained $PLUGIN_LINES plugin file(s) but extraction produced 0 dirs" >> /tmp/diff-step-signals.txt
+            echo "::error::pr-prescreen internal: plugin lines present but no dirs extracted (see /tmp/pr-files.txt)"
+          fi
           {
-            echo "count=$(wc -l < /tmp/changed-plugins.txt | tr -d ' ')"
+            echo "count=$CHANGED_DIRS"
           } >> "$GITHUB_OUTPUT"
 
       - name: Run validator against PR tree (full --json sweep)
@@ -191,7 +214,11 @@ jobs:
         run: |
           set -euo pipefail
           # Pass hard-block signals via the env var the classifier reads.
-          PR_PRESCREEN_HARD_BLOCKS="$(cat /tmp/hard-blocks.txt)" \
+          # Combine signals from the structural-detection step + the
+          # diff-step sanity check (each writes to its own file so neither
+          # step can clobber the other).
+          ALL_SIGNALS="$(cat /tmp/hard-blocks.txt /tmp/diff-step-signals.txt 2>/dev/null || true)"
+          PR_PRESCREEN_HARD_BLOCKS="$ALL_SIGNALS" \
             python3 base/scripts/pr-prescreen/classify.py /tmp/filtered-results.json \
             > /tmp/verdict.json
           VERDICT=$(jq -r '.verdict' /tmp/verdict.json)

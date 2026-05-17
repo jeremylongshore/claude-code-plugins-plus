@@ -36,6 +36,11 @@ marketplace/src/data/unified-search-index.json
 marketplace/src/data/cowork-manifest.json
 marketplace/src/data/npm-stats.json
 
+# Source of truth — DO NOT reformat. Hand-edit only, formatting is load-bearing.
+# A CI guard (scripts/check-catalog-format.py) rejects PRs that collapse the
+# multi-line keyword arrays or otherwise reformat existing entries.
+.claude-plugin/marketplace.extended.json
+
 
 # Out-of-scope subtrees (own formatters / large surface area — handle in follow-up PRs)
 marketplace/

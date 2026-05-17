@@ -71,6 +71,18 @@ jobs:
       - name: Validate catalog invariants (FS path = category)
         run: python3 scripts/validate-catalog-invariants.py
 
+      # Reject PRs that reformat .claude-plugin/marketplace.extended.json beyond
+      # the line budget implied by added/modified entries. Prevents prettier or
+      # IDE format-on-save passes from rewriting the whole catalog and wrecking
+      # merge bases for every other in-flight PR. Pulls origin/main for the
+      # comparison; safe-skips on push to main (no useful base).
+      - name: Catalog format guard (no whole-file reformat)
+        if: github.event_name == 'pull_request'
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --depth=1 origin "${{ github.base_ref }}"
+          python3 scripts/check-catalog-format.py "origin/${{ github.base_ref }}"
+
       - name: Verify README TOC is in sync with catalog
         run: node scripts/generate-readme-toc.mjs --check
 
