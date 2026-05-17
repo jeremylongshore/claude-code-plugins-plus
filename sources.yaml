@@ -645,8 +645,10 @@ sources:
     include:
       - '.claude-plugin/**'
       - '.mcp.json'
-      - 'server.ts'
-      - 'lib.ts'
+      # '*.ts' (not explicit server.ts/lib.ts) — server.ts imports
+      # journal.ts, manifest.ts, policy.ts. Listing files explicitly drops
+      # the imports and produces a non-functional mirror (see #645).
+      - '*.ts'
       - 'package.json'
       - '.npmrc'
       - 'skills/**'
@@ -657,6 +659,8 @@ sources:
       - 'node_modules/**'
       - '.git/**'
       - '*.log'
+      - '*.test.ts'
+      - '*.spec.ts'
 
   - name: x-bug-triage
     description: Closed-loop bug triage — X complaints → clusters → repo evidence → owner routing → Slack review → filed issues

@@ -9,7 +9,7 @@ import {
   writeFileSync,
 } from 'node:fs'
 import { homedir } from 'node:os'
-import { join, resolve } from 'node:path'
+import { basename, join, resolve } from 'node:path'
 /**
  * Slack Channel for Claude Code
  *
@@ -983,6 +983,7 @@ async function executeReply(args: Record<string, any>, ctx: ToolContext): Promis
       const uploadArgs: Record<string, any> = {
         channel_id: chatId,
         file: resolved,
+        filename: basename(resolved),
       }
       if (threadTs) uploadArgs.thread_ts = threadTs
       await ctx.web.filesUploadV2(uploadArgs as any)

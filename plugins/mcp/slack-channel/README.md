@@ -1,4 +1,4 @@
-# claude-code-slack-channel v0.8.0
+# claude-code-slack-channel v0.9.1
 
 Two-way Slack ↔ Claude Code bridge. Chat with Claude from Slack DMs and channels, just like you'd chat in the terminal. Per-thread session isolation, hash-chained tamper-evident audit journal with optional per-channel Slack projection, policy-gated tools, five-layer prompt-injection defense.
 
@@ -6,7 +6,7 @@ Two-way Slack ↔ Claude Code bridge. Chat with Claude from Slack DMs and channe
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/jeremylongshore/claude-code-slack-channel/badge)](https://scorecard.dev/viewer/?uri=github.com/jeremylongshore/claude-code-slack-channel)
 
-**Links:** [Gist One-Pager](https://gist.github.com/jeremylongshore/2bef9c630d4269d2858a666ae75fca53) · [GitHub Pages](https://jeremylongshore.github.io/claude-code-slack-channel/) · [Release Notes](https://github.com/jeremylongshore/claude-code-slack-channel/releases/tag/v0.8.0)
+**Links:** [Gist One-Pager](https://gist.github.com/jeremylongshore/2bef9c630d4269d2858a666ae75fca53) · [GitHub Pages](https://jeremylongshore.github.io/claude-code-slack-channel/) · [Release Notes](https://github.com/jeremylongshore/claude-code-slack-channel/releases/tag/v0.9.1)
 
 > **Research Preview** — Channels require Claude Code v2.1.80+ and `claude.ai` login.
 

@@ -45,6 +45,12 @@ logs/
 .env.local
 .env.*.local
 .mcp.json
+# Re-include MCP server configs for plugins that ship them — required for
+# Claude Code to know how to spawn the server. Without this, mirrored
+# plugins under plugins/mcp/* end up missing .mcp.json in the install
+# artifact and the MCP handshake fails (see #645).
+!plugins/mcp/*/.mcp.json
+!plugins/**/.mcp.json
 
 # Build outputs
 dist/
