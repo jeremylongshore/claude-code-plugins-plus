@@ -5,6 +5,46 @@
  *
  * Scans the plugins directory for all SKILL.md files, parses their frontmatter,
  * and generates a comprehensive skills catalog for the Astro marketplace.
+ *
+ * ── Three-surface skill-count funnel (per #660 item 2) ────────────────────
+ *
+ * Three different skill counts exist across surfaces; the difference is
+ * intentional filtering at each stage. Documenting here so future
+ * maintainers don't re-investigate.
+ *
+ *   1) Filesystem            (~3,060 SKILL.md files found by `find plugins`)
+ *      Raw count of every SKILL.md on disk, including those in:
+ *        - Excluded subtrees (skill-databases/windsurf is intentionally
+ *          excluded by sync-marketplace.cjs as a "personal-prefix or known
+ *          duplicate")
+ *        - Nested per-skill manifest dirs (synced packs like tonone ship
+ *          a per-skill .claude-plugin/plugin.json — those skills still
+ *          live under the outer tonone plugin, not as separate plugins)
+ *
+ *   2) Freshie discovery      (~3,000, freshie/scripts/rebuild-inventory.py)
+ *      Subset of (1) after frontmatter validation. Skills with missing or
+ *      malformed YAML headers fall out — they can't be classified.
+ *
+ *   3) Marketplace catalog    (~2,750, this script's main output)
+ *      Subset of (2) where the parent plugin has a catalog entry in
+ *      .claude-plugin/marketplace.extended.json. Skills whose parent isn't
+ *      in the catalog are reported as "orphaned" — they exist on disk and
+ *      validate cleanly but are not surfaced to users because the parent
+ *      plugin was never registered with the marketplace.
+ *
+ *      As of 2026-05-17, the orphan list is dominated by synced packs
+ *      (tonone, claude-pack, windsurf, general-legal-assistant,
+ *      cli-power-skills, claudebase, claude-workflow-skills) that exist
+ *      in sources.yaml but have no top-level entry in
+ *      marketplace.extended.json. Resolution path: add catalog entries
+ *      for the synced packs that should be user-visible; leave intentional
+ *      exclusions (windsurf nested under skill-databases) as orphans.
+ *
+ * Parent-plugin attribution: skills/<skill-name>/.claude-plugin/plugin.json
+ * is NOT treated as the parent — the walk-up logic skips any plugin.json
+ * found inside a `/skills/` subtree and continues to the outer plugin
+ * manifest. Mirrors the `-maxdepth 4` filter in
+ * .github/workflows/validate-plugins.yml's "Check plugin structure" step.
  */
 
 import { readFileSync, writeFileSync, readdirSync, statSync, existsSync } from 'fs';
@@ -295,14 +335,36 @@ function processSkillFile(filePath, opts = {}) {
       : content.match(/^---\n[\s\S]*?\n---\n([\s\S]*)$/);
     const markdownContent = contentMatch ? contentMatch[1].trim() : '';
 
-    // Find parent plugin directory (go up until we find .claude-plugin)
+    // Find parent plugin directory (go up until we find .claude-plugin).
+    // CRITICAL: skip any .claude-plugin/plugin.json found INSIDE a /skills/
+    // subtree. Some synced upstreams (notably tonone, claude-pack, windsurf)
+    // ship a per-skill .claude-plugin/plugin.json so each skill can be
+    // installed standalone. Treating those as the "parent plugin" leaves
+    // 250+ skills mis-attributed to non-existent parents (each shows up as
+    // an orphan because the per-skill manifest's `name` isn't in
+    // marketplace.extended.json). Mirrors the `-maxdepth 4` filter already
+    // applied in .github/workflows/validate-plugins.yml's "Check plugin
+    // structure" step and in CLAUDE.md guidance. See #660 item 2.
     let currentDir = dirname(filePath);
     let pluginDir = null;
 
     for (let i = 0; i < 10; i++) { // Max 10 levels up
       if (existsSync(join(currentDir, '.claude-plugin', 'plugin.json'))) {
-        pluginDir = currentDir;
-        break;
+        // Only accept this plugin.json if it's NOT inside a /skills/ subtree.
+        // The split-on-/skills/ test catches every form:
+        //   .../plugin/skills/foo/...               → reject (inside skills/)
+        //   .../plugin/skills/foo/sub/...           → reject
+        //   .../plugin/                             → accept (no skills/ above)
+        const relFromRoot = relative(ROOT_DIR, currentDir);
+        const skillsIdx = relFromRoot.split('/').indexOf('skills');
+        // Reject if `skills` appears anywhere BEFORE the leaf — that means
+        // we're inside the skills/ subtree of a higher-level plugin.
+        const insideSkillsSubtree = skillsIdx >= 0 && skillsIdx < relFromRoot.split('/').length - 1;
+        if (!insideSkillsSubtree) {
+          pluginDir = currentDir;
+          break;
+        }
+        // Otherwise keep walking up — we want the OUTER plugin manifest.
       }
       currentDir = dirname(currentDir);
     }
