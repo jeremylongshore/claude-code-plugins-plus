@@ -100,11 +100,32 @@ Both contradict current spec (schema 3.6.0):
 **Net effect**: a new contributor following these notebooks will write
 skills that *fail* the current validator. This is actively misleading.
 
-### 3. GitHub Wiki — enabled but empty
+### 3. GitHub Wiki — rich but stale ~~(initially mis-flagged as empty)~~
 
-`repos/.../wiki` returns 404. Wiki feature is ON but no pages exist.
-This is the worst of both worlds: feature surface visible (tab present in
-GitHub UI) but content absent. Either populate or disable.
+**Correction (2026-05-17 mid-audit):** initial probe used
+`gh api repos/.../wiki` which returned 404 — wrong proxy. Wiki actually
+contains **47 pages** (Home, FAQ, Glossary, 11 Playbooks, 5 Lab
+tutorials, full SKILL-md-Specification, etc.). Real finding: rich
+content, stale data.
+
+Numeric staleness fixed in-place 2026-05-17:
+- Plugin count: 343 → 427 (across 12 pages)
+- Skill count: 1,900+ → 2,747 (across 15 pages)
+- Version: v4.17.0 → v4.30.0 (3 pages)
+- Categories: 22 / 26 → 18 (3 pages)
+
+**Architectural staleness fixed** (the dangerous kind — wiki was
+teaching rules that would cause new contributors to fail validation):
+- `allowed-tools` documented as CSV-only — now correctly says CSV
+  string OR YAML list (both valid per schema 3.6.0). Fixed in 8 pages.
+- "6 required fields" documented everywhere — now correctly says 8
+  marketplace-tier fields including `compatibility` and `tags`. Fixed
+  in 6 pages.
+- `compatible-with` documented as the current field — added
+  deprecation note pointing at `compatibility` (deprecated in schema
+  3.4.0). Fixed in 4 pages.
+
+23 pages touched, 1 commit on the wiki repo (`dd09eb1`).
 
 ### 4. `000-docs/` — 299 files
 
