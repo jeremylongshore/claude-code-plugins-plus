@@ -11054,7 +11054,7 @@
     {
       "name": "zero-tech-debt",
       "source": "./plugins/skill-enhancers/zero-tech-debt",
-      "description": "Rebuild a feature as if the correct product architecture existed from day one. Removes compatibility cruft, dead abstractions, and historical compromises instead of preserving them. Methodology-only — surfaces refactor candidates and walks a 7-step workflow before any deletion.",
+      "description": "Rebuild a feature as if the correct product architecture existed from day one. Removes compatibility cruft, dead abstractions, and historical compromises instead of preserving them. Methodology-only \u2014 surfaces refactor candidates and walks a 7-step workflow before any deletion.",
       "version": "1.0.0",
       "category": "skill-enhancers",
       "keywords": [
@@ -11409,6 +11409,36 @@
       },
       "license": "MIT",
       "repository": "https://github.com/vdk888/boycott-filter"
+    },
+    {
+      "name": "aomi",
+      "source": "./plugins/crypto/aomi",
+      "description": "Natural-language crypto/DeFi agent bundle \u2014 aomi-transact drives wallet-signed transactions across 40+ EVM protocols (Uniswap, Aave, GMX, Polymarket, Hyperliquid, Binance), aomi-build scaffolds new Aomi SDK crates from OpenAPI specs.",
+      "version": "0.10.0",
+      "category": "crypto",
+      "keywords": [
+        "crypto",
+        "defi",
+        "web3",
+        "evm",
+        "ethereum",
+        "wallet",
+        "account-abstraction",
+        "trading",
+        "agent",
+        "mcp"
+      ],
+      "author": {
+        "name": "aomi-labs",
+        "email": "hello@aomi.dev"
+      },
+      "featured": false,
+      "verification": {
+        "score": 94,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-05-17T00:00:00.000Z"
+      }
     }
   ]
 }
