@@ -17021,18 +17021,6 @@
     {
       "slug": "langchain-ci-integration",
       "name": "langchain-ci-integration",
-      "description": "'Configure CI/CD for LangChain with GitHub Actions, mocked unit tests,",
-      "version": "1.0.0",
-      "category": "saas-packs",
-      "parentPlugin": "langchain-pack",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
-      "slug": "langchain-ci-integration-2",
-      "name": "langchain-ci-integration",
       "description": "\"Wire LangChain 1.0 / LangGraph 1.0 tests into a GitHub Actions pipeline\\",
       "version": "2.0.0",
       "category": "saas-packs",
@@ -17044,18 +17032,6 @@
     },
     {
       "slug": "langchain-common-errors",
-      "name": "langchain-common-errors",
-      "description": "'Diagnose and fix common LangChain errors and exceptions.",
-      "version": "1.0.0",
-      "category": "saas-packs",
-      "parentPlugin": "langchain-pack",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
-      "slug": "langchain-common-errors-2",
       "name": "langchain-common-errors",
       "description": "\"Paste-match catalog of 14 real LangChain 1.0 / LangGraph 1.0 exceptions\\",
       "version": "2.0.0",
@@ -17091,43 +17067,7 @@
       "fallback_for_tools": []
     },
     {
-      "slug": "langchain-core-workflow-a",
-      "name": "langchain-core-workflow-a",
-      "description": "'Build LangChain LCEL chains with prompts, parsers, and composition.",
-      "version": "1.0.0",
-      "category": "saas-packs",
-      "parentPlugin": "langchain-pack",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
-      "slug": "langchain-core-workflow-b",
-      "name": "langchain-core-workflow-b",
-      "description": "'Build LangChain agents with tool calling for autonomous task execution.",
-      "version": "1.0.0",
-      "category": "saas-packs",
-      "parentPlugin": "langchain-pack",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
       "slug": "langchain-cost-tuning",
-      "name": "langchain-cost-tuning",
-      "description": "'Optimize LangChain API costs with token tracking, model tiering,",
-      "version": "1.0.0",
-      "category": "saas-packs",
-      "parentPlugin": "langchain-pack",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
-      "slug": "langchain-cost-tuning-2",
       "name": "langchain-cost-tuning",
       "description": "'Control LangChain 1.0 AI spend with accurate streaming token accounting,",
       "version": "2.0.0",
@@ -17141,18 +17081,6 @@
     {
       "slug": "langchain-data-handling",
       "name": "langchain-data-handling",
-      "description": "'Implement LangChain RAG pipelines with document loaders, text splitters,",
-      "version": "1.0.0",
-      "category": "saas-packs",
-      "parentPlugin": "langchain-pack",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
-      "slug": "langchain-data-handling-2",
-      "name": "langchain-data-handling",
       "description": "\"Load and chunk documents for LangChain 1.0 RAG pipelines correctly \\u2014\\",
       "version": "2.0.0",
       "category": "saas-packs",
@@ -17164,18 +17092,6 @@
     },
     {
       "slug": "langchain-debug-bundle",
-      "name": "langchain-debug-bundle",
-      "description": "'Collect LangChain debug evidence for troubleshooting and bug reports.",
-      "version": "1.0.0",
-      "category": "saas-packs",
-      "parentPlugin": "langchain-pack",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
-      "slug": "langchain-debug-bundle-2",
       "name": "langchain-debug-bundle",
       "description": "\"Produce a reproducible, sanitized diagnostic bundle for a LangChain\\",
       "version": "2.0.0",
@@ -17201,18 +17117,6 @@
     {
       "slug": "langchain-deploy-integration",
       "name": "langchain-deploy-integration",
-      "description": "'Deploy LangChain applications to production with LangServe,",
-      "version": "1.0.0",
-      "category": "saas-packs",
-      "parentPlugin": "langchain-pack",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
-      "slug": "langchain-deploy-integration-2",
-      "name": "langchain-deploy-integration",
       "description": "\"Deploy a LangChain 1.0 / LangGraph 1.0 app to Cloud Run, Vercel, or\\",
       "version": "2.0.0",
       "category": "saas-packs",
@@ -17237,18 +17141,6 @@
     {
       "slug": "langchain-enterprise-rbac",
       "name": "langchain-enterprise-rbac",
-      "description": "'Implement role-based access control for LangChain applications",
-      "version": "1.0.0",
-      "category": "saas-packs",
-      "parentPlugin": "langchain-pack",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
-      "slug": "langchain-enterprise-rbac-2",
-      "name": "langchain-enterprise-rbac",
       "description": "\"Enforce tenant isolation and role-based access across LangChain 1.0\\",
       "version": "2.0.0",
       "category": "saas-packs",
@@ -17271,48 +17163,12 @@
       "fallback_for_tools": []
     },
     {
-      "slug": "langchain-hello-world",
-      "name": "langchain-hello-world",
-      "description": "'Create a minimal working LangChain example with LCEL chains.",
-      "version": "1.0.0",
-      "category": "saas-packs",
-      "parentPlugin": "langchain-pack",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
       "slug": "langchain-incident-runbook",
-      "name": "langchain-incident-runbook",
-      "description": "'Incident response procedures for LangChain production issues:",
-      "version": "1.0.0",
-      "category": "saas-packs",
-      "parentPlugin": "langchain-pack",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
-      "slug": "langchain-incident-runbook-2",
       "name": "langchain-incident-runbook",
       "description": "\"Triage LangChain 1.0 / LangGraph 1.0 production incidents \\u2014 LLM-specific\\",
       "version": "2.0.0",
       "category": "saas-packs",
       "parentPlugin": "langchain-py-pack",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
-      "slug": "langchain-install-auth",
-      "name": "langchain-install-auth",
-      "description": "'Install and configure LangChain SDK with provider authentication.",
-      "version": "1.0.0",
-      "category": "saas-packs",
-      "parentPlugin": "langchain-pack",
       "requires_env": [],
       "requires_tools": [],
       "fallback_for_env": [],
@@ -17393,18 +17249,6 @@
     {
       "slug": "langchain-local-dev-loop",
       "name": "langchain-local-dev-loop",
-      "description": "'Configure LangChain local development workflow with testing and mocks.",
-      "version": "1.0.0",
-      "category": "saas-packs",
-      "parentPlugin": "langchain-pack",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
-      "slug": "langchain-local-dev-loop-2",
-      "name": "langchain-local-dev-loop",
       "description": "\"Build a fast, deterministic local test loop for LangChain 1.0 / LangGraph\\",
       "version": "2.0.0",
       "category": "saas-packs",
@@ -17427,18 +17271,6 @@
       "fallback_for_tools": []
     },
     {
-      "slug": "langchain-migration-deep-dive",
-      "name": "langchain-migration-deep-dive",
-      "description": "'Migrate to LangChain from raw OpenAI SDK, LlamaIndex, or custom LLM",
-      "version": "1.0.0",
-      "category": "saas-packs",
-      "parentPlugin": "langchain-pack",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
       "slug": "langchain-model-inference",
       "name": "langchain-model-inference",
       "description": "'Invoke Claude, GPT-4o, and Gemini through LangChain 1.0 without tripping",
@@ -17453,18 +17285,6 @@
     {
       "slug": "langchain-multi-env-setup",
       "name": "langchain-multi-env-setup",
-      "description": "'Configure LangChain across dev/staging/production environments",
-      "version": "1.0.0",
-      "category": "saas-packs",
-      "parentPlugin": "langchain-pack",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
-      "slug": "langchain-multi-env-setup-2",
-      "name": "langchain-multi-env-setup",
       "description": "\"Build reliable dev / staging / prod isolation for LangChain 1.0 services\\",
       "version": "2.0.0",
       "category": "saas-packs",
@@ -17476,18 +17296,6 @@
     },
     {
       "slug": "langchain-observability",
-      "name": "langchain-observability",
-      "description": "'Set up comprehensive observability for LangChain applications",
-      "version": "1.0.0",
-      "category": "saas-packs",
-      "parentPlugin": "langchain-pack",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
-      "slug": "langchain-observability-2",
       "name": "langchain-observability",
       "description": "\"Wire LangSmith tracing and custom metric callbacks into a LangChain\\",
       "version": "2.0.0",
@@ -17513,34 +17321,10 @@
     {
       "slug": "langchain-performance-tuning",
       "name": "langchain-performance-tuning",
-      "description": "'Optimize LangChain application performance: latency, throughput,",
-      "version": "1.0.0",
-      "category": "saas-packs",
-      "parentPlugin": "langchain-pack",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
-      "slug": "langchain-performance-tuning-2",
-      "name": "langchain-performance-tuning",
       "description": "\"Tune LangChain 1.0 / LangGraph 1.0 Python chains and agents for throughput,\\n\\",
       "version": "2.0.0",
       "category": "saas-packs",
       "parentPlugin": "langchain-py-pack",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
-      "slug": "langchain-prod-checklist",
-      "name": "langchain-prod-checklist",
-      "description": "'Production readiness checklist for LangChain applications.",
-      "version": "1.0.0",
-      "category": "saas-packs",
-      "parentPlugin": "langchain-pack",
       "requires_env": [],
       "requires_tools": [],
       "fallback_for_env": [],
@@ -17561,18 +17345,6 @@
     {
       "slug": "langchain-rate-limits",
       "name": "langchain-rate-limits",
-      "description": "'Implement LangChain rate limiting, retry strategies, and backoff.",
-      "version": "1.0.0",
-      "category": "saas-packs",
-      "parentPlugin": "langchain-pack",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
-      "slug": "langchain-rate-limits-2",
-      "name": "langchain-rate-limits",
       "description": "\"Rate-limit LangChain 1.0 calls correctly across multi-worker deployments\\",
       "version": "2.0.0",
       "category": "saas-packs",
@@ -17584,18 +17356,6 @@
     },
     {
       "slug": "langchain-reference-architecture",
-      "name": "langchain-reference-architecture",
-      "description": "'Implement LangChain reference architecture for production systems:",
-      "version": "1.0.0",
-      "category": "saas-packs",
-      "parentPlugin": "langchain-pack",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
-      "slug": "langchain-reference-architecture-2",
       "name": "langchain-reference-architecture",
       "description": "\"A reference layered architecture for production LangChain 1.0 / LangGraph\\",
       "version": "2.0.0",
@@ -17609,18 +17369,6 @@
     {
       "slug": "langchain-sdk-patterns",
       "name": "langchain-sdk-patterns",
-      "description": "'Apply production-ready LangChain SDK patterns for structured output,",
-      "version": "1.0.0",
-      "category": "saas-packs",
-      "parentPlugin": "langchain-pack",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
-      "slug": "langchain-sdk-patterns-2",
-      "name": "langchain-sdk-patterns",
       "description": "'Compose LangChain 1.0 Python runnables with the production defaults",
       "version": "2.0.0",
       "category": "saas-packs",
@@ -17632,18 +17380,6 @@
     },
     {
       "slug": "langchain-security-basics",
-      "name": "langchain-security-basics",
-      "description": "'Apply LangChain security best practices for production LLM apps.",
-      "version": "1.0.0",
-      "category": "saas-packs",
-      "parentPlugin": "langchain-pack",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
-      "slug": "langchain-security-basics-2",
       "name": "langchain-security-basics",
       "description": "\"Harden a LangChain 1.0 chain or LangGraph agent against prompt injection,\\",
       "version": "2.0.0",
@@ -17657,18 +17393,6 @@
     {
       "slug": "langchain-upgrade-migration",
       "name": "langchain-upgrade-migration",
-      "description": "'Upgrade LangChain SDK versions safely with import path migration,",
-      "version": "1.0.0",
-      "category": "saas-packs",
-      "parentPlugin": "langchain-pack",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
-      "slug": "langchain-upgrade-migration-2",
-      "name": "langchain-upgrade-migration",
       "description": "\"Migrate a LangChain 0.3.x Python codebase to LangChain 1.0 / LangGraph\\",
       "version": "2.0.0",
       "category": "saas-packs",
@@ -17680,18 +17404,6 @@
     },
     {
       "slug": "langchain-webhooks-events",
-      "name": "langchain-webhooks-events",
-      "description": "'Implement LangChain callback handlers, streaming, webhooks,",
-      "version": "1.0.0",
-      "category": "saas-packs",
-      "parentPlugin": "langchain-pack",
-      "requires_env": [],
-      "requires_tools": [],
-      "fallback_for_env": [],
-      "fallback_for_tools": []
-    },
-    {
-      "slug": "langchain-webhooks-events-2",
       "name": "langchain-webhooks-events",
       "description": "\"Dispatch LangChain 1.0 chain/agent events to external systems \\u2014\\",
       "version": "2.0.0",
@@ -33255,8 +32967,8 @@
       "fallback_for_tools": []
     }
   ],
-  "count": 2771,
-  "generatedAt": "2026-05-15T18:34:52.757Z",
+  "count": 2747,
+  "generatedAt": "2026-05-17T06:38:45.184Z",
   "categories": [
     "ai-agency",
     "ai-ml",

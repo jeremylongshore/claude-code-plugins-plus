@@ -7535,37 +7535,6 @@
       }
     },
     {
-      "name": "langchain-pack",
-      "source": "./plugins/saas-packs/langchain-pack",
-      "description": "Legacy LangChain integration skill pack with 24 skills covering chains, agents, RAG pipelines, memory, and LLM application development. Deprecated \u2014 use langchain-py-pack or langchain-ts-pack.",
-      "version": "1.0.0",
-      "category": "saas-packs",
-      "keywords": [
-        "langchain",
-        "llm",
-        "chains",
-        "agents",
-        "rag",
-        "memory",
-        "ai-applications",
-        "langsmith"
-      ],
-      "author": {
-        "name": "Jeremy Longshore",
-        "email": "jeremy@intentsolutions.io",
-        "url": "https://github.com/jeremylongshore"
-      },
-      "components": {
-        "skills": 24
-      },
-      "verification": {
-        "score": 70,
-        "grade": "C",
-        "badge": "bronze",
-        "lastValidated": "2026-03-10T00:00:00.000Z"
-      }
-    },
-    {
       "name": "langchain-py-pack",
       "source": "./plugins/saas-packs/langchain-py-pack",
       "description": "LangChain 1.0 + LangGraph 1.0 skill pack for Python. Pain-first skills anchored to a 68-entry pain catalog covering content blocks, streaming token accounting, structured-output, vector stores, checkpointing, HITL, middleware, Deep Agents, and native OTEL. Expanding toward 34 skills across four epics.",
