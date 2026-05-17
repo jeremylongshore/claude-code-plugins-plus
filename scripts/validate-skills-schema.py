@@ -3564,6 +3564,67 @@ def populate_compliance_db(db_path: str, skill_results: list, agent_results: lis
 
     repo_root_for_paths = Path(__file__).resolve().parents[1]
 
+    # Issue #660 item 4: pre-2026-05-17 DBs created the *_compliance tables
+    # with `<entity>_path TEXT UNIQUE`, which means INSERT OR REPLACE silently
+    # overwrites prior runs. Fix: rebuild each table with the composite UNIQUE
+    # (path, run_id). Idempotent — only acts when the old constraint is
+    # detected. Run before the CREATE TABLE IF NOT EXISTS so the rebuilt
+    # tables match the new schema below.
+    def _migrate_compliance_unique_to_composite() -> None:
+        """Rebuild compliance tables when the legacy single-col UNIQUE is found."""
+        for table, key_col in (
+            ('skill_compliance', 'skill_path'),
+            ('agent_compliance', 'agent_path'),
+            ('plugin_compliance', 'plugin_path'),
+        ):
+            try:
+                # Index-list inspects all UNIQUEs (named + auto). The legacy
+                # schema's UNIQUE constraint surfaces as a single-column
+                # autoindex on `<key_col>`. The new schema's composite
+                # constraint surfaces as a two-column autoindex on
+                # (<key_col>, run_id). The presence of the single-column
+                # autoindex (without a corresponding composite) is the
+                # smoking gun for the legacy schema.
+                idx_rows = c.execute(f"PRAGMA index_list({table})").fetchall()
+            except sqlite3.OperationalError:
+                # Table doesn't exist yet — nothing to migrate. The CREATE
+                # TABLE IF NOT EXISTS below will create it with the right
+                # schema directly.
+                continue
+            has_legacy_unique = False
+            has_composite_unique = False
+            for idx_row in idx_rows:
+                idx_name = idx_row[1]
+                is_unique = bool(idx_row[2])
+                if not is_unique:
+                    continue
+                info = c.execute(f"PRAGMA index_info({idx_name})").fetchall()
+                cols = [r[2] for r in info]
+                if cols == [key_col]:
+                    has_legacy_unique = True
+                elif cols == [key_col, 'run_id']:
+                    has_composite_unique = True
+            if has_composite_unique:
+                continue  # already on new schema
+            if not has_legacy_unique:
+                continue  # neither — table is custom, leave alone
+            # Rebuild. We carry data forward verbatim. Old DBs only have one
+            # row per skill_path (that's the bug); after migration those same
+            # rows live under their original run_id, future writes start
+            # snapshotting per-run.
+            old_cols = [r[1] for r in c.execute(f"PRAGMA table_info({table})").fetchall()]
+            tmp_name = f"{table}__migrate_tmp"
+            c.execute(f"DROP TABLE IF EXISTS {tmp_name}")
+            c.execute(f"ALTER TABLE {table} RENAME TO {tmp_name}")
+            # The CREATE TABLE IF NOT EXISTS below will create the new
+            # `<table>` with the composite UNIQUE. Copy data over after.
+            # Defer copy to a second pass — done at the bottom of the
+            # migration block.
+            _migration_queue.append((table, tmp_name, old_cols))
+
+    _migration_queue: list = []
+    _migrate_compliance_unique_to_composite()
+
     def _normalize_skill_path(raw: str) -> str:
         """Convert any skill path form to repo-relative dir (no /SKILL.md)."""
         if not raw:
@@ -3590,9 +3651,16 @@ def populate_compliance_db(db_path: str, skill_results: list, agent_results: lis
                 pass
         return str(p)
 
+    # skill_compliance: one row per (skill_path, run_id). Composite-key UNIQUE
+    # so multiple validation passes against the same discovery run preserve
+    # before/after history (issue #660 item 4). Pre-2026-05-17 schema had
+    # `skill_path TEXT UNIQUE` which caused INSERT OR REPLACE to silently
+    # overwrite prior runs, losing the very thing the run_id column was meant
+    # to enable. _migrate_compliance_unique_to_composite() below repairs older
+    # DBs at startup. New deployments get the correct schema directly.
     c.execute('''CREATE TABLE IF NOT EXISTS skill_compliance (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        skill_path TEXT UNIQUE,
+        skill_path TEXT,
         total_fields INTEGER,
         anthropic_fields INTEGER,
         enterprise_fields INTEGER,
@@ -3620,7 +3688,8 @@ def populate_compliance_db(db_path: str, skill_results: list, agent_results: lis
         gold_standard_pct INTEGER DEFAULT 0,
         jrig_passed INTEGER DEFAULT NULL,
         jrig_tier_blocked INTEGER DEFAULT NULL,
-        jrig_baseline_delta REAL DEFAULT NULL
+        jrig_baseline_delta REAL DEFAULT NULL,
+        UNIQUE(skill_path, run_id)
     )''')
 
     # Idempotent migration: add JRig integration columns to pre-existing tables
@@ -3638,9 +3707,12 @@ def populate_compliance_db(db_path: str, skill_results: list, agent_results: lis
         if col_name not in existing_cols:
             c.execute(f"ALTER TABLE skill_compliance ADD COLUMN {col_name} {col_def}")
 
+    # Same per-run-snapshot rule as skill_compliance: composite UNIQUE on
+    # (agent_path, run_id) so re-validating the same discovery run preserves
+    # history rather than overwriting it.
     c.execute('''CREATE TABLE IF NOT EXISTS agent_compliance (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        agent_path TEXT UNIQUE,
+        agent_path TEXT,
         total_fields INTEGER,
         anthropic_fields INTEGER,
         missing_fields TEXT,
@@ -3651,12 +3723,15 @@ def populate_compliance_db(db_path: str, skill_results: list, agent_results: lis
         warning_count INTEGER,
         validated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         validator_version TEXT,
-        run_id INTEGER
+        run_id INTEGER,
+        UNIQUE(agent_path, run_id)
     )''')
 
+    # Same per-run-snapshot rule as skill_compliance: composite UNIQUE on
+    # (plugin_path, run_id).
     c.execute('''CREATE TABLE IF NOT EXISTS plugin_compliance (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        plugin_path TEXT UNIQUE,
+        plugin_path TEXT,
         plugin_json_valid INTEGER,
         plugin_json_fields INTEGER,
         skill_count INTEGER,
@@ -3671,7 +3746,8 @@ def populate_compliance_db(db_path: str, skill_results: list, agent_results: lis
         warning_count INTEGER,
         validated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         validator_version TEXT,
-        run_id INTEGER
+        run_id INTEGER,
+        UNIQUE(plugin_path, run_id)
     )''')
 
     # Forge proofs table — Phase 4A of the "Use the Printing Press to Learn"
@@ -3692,6 +3768,24 @@ def populate_compliance_db(db_path: str, skill_results: list, agent_results: lis
         verified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         UNIQUE(plugin_name, verification_type, run_id)
     )''')
+
+    # Complete the legacy-UNIQUE migration started above: copy rows from the
+    # renamed `*__migrate_tmp` tables into the freshly created tables (which
+    # now carry the composite UNIQUE), then drop the temporaries. Carried at
+    # this point because the new CREATE TABLE IF NOT EXISTS statements above
+    # have just run.
+    for table, tmp_name, old_cols in _migration_queue:
+        new_cols = [r[1] for r in c.execute(f"PRAGMA table_info({table})").fetchall()]
+        # Copy only columns that exist in BOTH (defensive — if the migration
+        # ever lags behind a schema change, we still carry what we can rather
+        # than crash). `id` is excluded so the new table renumbers cleanly.
+        common = [col for col in old_cols if col in new_cols and col != 'id']
+        if not common:
+            c.execute(f"DROP TABLE {tmp_name}")
+            continue
+        col_list = ", ".join(common)
+        c.execute(f"INSERT INTO {table} ({col_list}) SELECT {col_list} FROM {tmp_name}")
+        c.execute(f"DROP TABLE {tmp_name}")
 
     # Helpful index for run-scoped queries.
     c.execute('CREATE INDEX IF NOT EXISTS idx_skill_compliance_run_id ON skill_compliance(run_id)')
