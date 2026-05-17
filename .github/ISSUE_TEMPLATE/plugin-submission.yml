@@ -3,6 +3,22 @@ description: Submit a plugin
 title: "[Plugin] "
 labels: ["plugin-submission"]
 body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 📋 Read the spec before you submit
+
+        Every plugin and skill in this marketplace is graded against the
+        **[Global Master Standard for Claude Skills (v3.6.0)](../blob/main/000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md)**.
+
+        Marketplace-tier requirements at a glance:
+        - **8 frontmatter fields** per SKILL.md: `name`, `description`, `allowed-tools`, `version`, `author`, `license`, `compatibility`, `tags`
+        - **7 body sections**: `## Overview`, `## Prerequisites`, `## Instructions`, `## Output`, `## Error Handling`, `## Examples`, `## Resources`
+        - **100-point rubric**: the validator scores against it; submissions below the threshold are flagged before review
+        - **No `--thorough` shortcuts**: validator is deterministic; LLM judging lives at the workflow layer
+
+        Also worth reading: [CONTRIBUTING.md § Before You Submit](../blob/main/CONTRIBUTING.md#before-you-submit--read-this) and the [PR Pre-screen runbook](../blob/main/000-docs/265-DR-GUID-pr-prescreen-system.md).
+
   - type: input
     id: plugin-name
     attributes:
@@ -47,15 +63,19 @@ body:
   - type: checkboxes
     id: checklist
     attributes:
-      label: Checklist
+      label: Checklist (per spec v3.6.0)
       options:
-        - label: Has plugin.json
+        - label: I have read the [skill spec](../blob/main/000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md)
           required: true
-        - label: Has README.md
+        - label: Has `plugin.json` + `.claude-plugin/marketplace.json`
           required: true
-        - label: Has LICENSE
+        - label: Each SKILL.md has the **8 marketplace-required frontmatter fields**
           required: true
-        - label: Tested locally
+        - label: Each SKILL.md has the **7 required body sections**
           required: true
-        - label: No hardcoded secrets
+        - label: Has README.md and LICENSE at the plugin root
+          required: true
+        - label: Tested locally with `python3 scripts/validate-skills-schema.py --marketplace --verbose <plugin-dir>`
+          required: true
+        - label: No hardcoded secrets, no shell substitution in YAML descriptions, no `..` link escapes
           required: true

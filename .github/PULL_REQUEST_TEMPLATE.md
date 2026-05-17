@@ -1,9 +1,11 @@
 # Pull Request
 
-> 📘 **First time contributing?** Read [CONTRIBUTING.md § Before You Submit](../blob/main/CONTRIBUTING.md#before-you-submit--read-this).
-> It explains the Intent Solutions enterprise-standards philosophy — why the
-> bar is where it is, and how to pass the validators on your first push.
-> Reading it up front saves a round-trip with our auto-review bot.
+> 📘 **First time contributing?** Read both:
+> 1. [CONTRIBUTING.md § Before You Submit](../blob/main/CONTRIBUTING.md#before-you-submit--read-this) — the contract and the workflow
+> 2. **[Plugin & Skill Spec (v3.6.0)](../blob/main/000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md)** — the authoritative spec the validator scores against (8-field frontmatter, 7 body sections, 100-point rubric, all source-cited)
+>
+> The PR Pre-screen workflow will post a structured review with the exact
+> validator findings on every PR — reading both up front saves a round-trip.
 
 ## Type of Change
 

@@ -780,6 +780,36 @@ sources:
       - '.github/**'
 
   # ============================================================
+  # Hyperflow (Mohammed Abdelhady)
+  # https://github.com/Mohammed-Abdelhady/hyperflow
+  # Advanced multi-agent orchestration with persistent cross-session
+  # memory, per-step multi-level review, persona stitching, and
+  # adaptive flow profiles (8 skills + hooks)
+  # ============================================================
+
+  - name: hyperflow
+    description: Advanced multi-agent orchestration with persistent cross-session memory, per-step multi-level review, persona stitching, and adaptive flow profiles
+    repo: Mohammed-Abdelhady/hyperflow
+    source_path: .
+    target_path: plugins/ai-agency/hyperflow
+    author:
+      name: Mohammed Abdelhady
+      github: Mohammed-Abdelhady
+      email: abdelhadycongar@gmail.com
+    license: MIT
+    category: ai-agency
+    verified: false
+    include:
+      - '.claude-plugin/**'
+      - 'skills/**'
+      - 'hooks/**'
+      - 'package.json'
+      - 'README.md'
+      - 'LICENSE'
+    exclude:
+      - '**/*.log'
+
+  # ============================================================
   # CLI Power Skills (Yuriy Kotik)
   # https://github.com/ykotik/cli-power-skills
   # ============================================================

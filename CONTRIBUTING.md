@@ -2,6 +2,23 @@
 
 Thank you for your interest in contributing to the Claude Code Plugins marketplace. With hundreds of plugins and thousands of agent skills, this is a community-driven project and contributions of all sizes are welcome.
 
+> ## 📋 Read the spec before you start
+>
+> Every plugin and skill in this marketplace is graded against a single
+> authoritative specification:
+>
+> **→ [`000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md`](000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md)** — the **Global Master Standard for Claude Skills** (v3.6.0, schema 3.6.0).
+>
+> It documents:
+> - The **8 marketplace-tier required frontmatter fields** (vs Anthropic's 2-field minimum)
+> - The **7 required body sections** (`## Overview`, `## Prerequisites`, `## Instructions`, `## Output`, `## Error Handling`, `## Examples`, `## Resources`)
+> - The **100-point rubric** the validator scores against
+> - Conditional fields (`requires_env`, `requires_tools`, `argument-hint`, etc.)
+> - The self-declared config surface (`required_environment_variables`, `metadata.intent-solutions.config`)
+> - Source citations for every field — Anthropic's [skills docs](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview), [Claude Code skills](https://code.claude.com/docs/en/skills), [AgentSkills.io spec](https://agentskills.io/specification), and the [anthropics/skills reference implementation](https://github.com/anthropics/skills).
+>
+> If your submission deviates from the spec, the validator will flag it and the PR Pre-screen workflow will request changes before a human looks at it. Reading the spec up front saves a round-trip.
+
 ## Before You Submit — Read This
 
 Tons of Skills publishes Intent Solutions-grade plugins and skills. That means full-capability, enterprise-ready implementations — validators, tests, docs, license, the works.
@@ -19,11 +36,11 @@ At Intent Solutions we ship the full-fledged capability. We don't publish half-i
 - Your `SKILL.md` needs the full frontmatter schema (not just `name` + `description`). See [Adding Skills](#adding-skills) below.
 - Your plugin needs a `README.md`, a `LICENSE`, a valid `plugin.json` (allowed fields only), and an entry in `.claude-plugin/marketplace.extended.json`.
 - Your code and config can't trip the security scanner — no `rm -rf`, no `eval`, no base64 obfuscation, no hardcoded secrets, no URL shorteners, HTTPS only.
-- Your skill needs to score at or above the enterprise threshold on our 100-point rubric. Run the same validator CI runs:
+- Your skill needs to score at or above the marketplace threshold on our 100-point rubric (full rubric in the [spec doc](000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md)). Run the same validator CI runs:
   ```bash
-  python3 scripts/validate-skills-schema.py --enterprise --verbose plugins/<category>/<name>/
+  python3 scripts/validate-skills-schema.py --marketplace --verbose plugins/<category>/<name>/
   ```
-- If any of this fails in CI, **Gemini 2.5 Pro will post a specific, actionable review** on your PR explaining exactly what's wrong and how to fix it. A human maintainer will follow up if the bot was unclear.
+- If any of this fails in CI, the **PR Pre-screen workflow** ([runbook](000-docs/265-DR-GUID-pr-prescreen-system.md)) will post a structured review on your PR with the exact validator findings + a short Groq-generated summary. A human maintainer follows up after that.
 
 ### "But I just want to submit a small skill"
 
