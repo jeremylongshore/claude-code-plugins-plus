@@ -1,0 +1,105 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="404 — Page Not Found · Tons of Skills"
+  description="That page doesn't exist. Try the home page, browse all plugins, or search."
+>
+  <section class="not-found">
+    <div class="container">
+      <p class="eyebrow">404 · Page Not Found</p>
+      <h1>That page isn't here.</h1>
+      <p class="lede">
+        Either the URL is wrong, the page moved, or it never existed. Three good places to try:
+      </p>
+
+      <ul class="links">
+        <li>
+          <a href="/">Home</a> — what's on the marketplace right now
+        </li>
+        <li>
+          <a href="/explore/">Explore</a> — full-text search across every plugin and skill
+        </li>
+        <li>
+          <a href="/plugins/">All plugins</a> — categorized index
+        </li>
+      </ul>
+
+      <p class="hint">
+        If you got here from a link on this site, that's a bug — please
+        <a href="https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues/new" rel="noopener">open an issue</a>
+        with the URL.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .not-found {
+    padding: 6rem 0;
+    min-height: 70vh;
+  }
+
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 0.875rem;
+    letter-spacing: 0.05em;
+    color: var(--slate-400);
+    margin: 0 0 1rem;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    font-size: 2.75rem;
+    line-height: 1.1;
+    margin: 0 0 1.5rem;
+    color: var(--slate-100);
+  }
+
+  .lede {
+    font-size: 1.125rem;
+    line-height: 1.6;
+    color: var(--slate-300);
+    margin: 0 0 2rem;
+  }
+
+  .links {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 3rem;
+    border-top: 1px solid var(--slate-700);
+  }
+
+  .links li {
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--slate-700);
+    color: var(--slate-300);
+  }
+
+  .links a {
+    color: var(--green-400);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .links a:hover {
+    text-decoration: underline;
+  }
+
+  .hint {
+    font-size: 0.875rem;
+    color: var(--slate-400);
+    margin: 0;
+  }
+
+  .hint a {
+    color: var(--slate-200);
+  }
+</style>
