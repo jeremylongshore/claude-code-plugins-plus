@@ -1387,6 +1387,8 @@ def find_skill_files(root: Path) -> List[Path]:
     # Search in plugins directory
     plugins_dir = root / "plugins"
     if plugins_dir.exists():
+        seen: set = set()
+        # Layout 1: plugins/<cat>/<plugin>/skills/<name>/SKILL.md (legacy)
         for p in plugins_dir.rglob("skills/*/SKILL.md"):
             if p.is_file():
                 parts = p.relative_to(root).parts
@@ -1394,7 +1396,28 @@ def find_skill_files(root: Path) -> List[Path]:
                     continue
                 if any(part.startswith("skills-backup-") for part in parts):
                     continue
+                abs_p = p.resolve()
+                if abs_p in seen:
+                    continue
+                seen.add(abs_p)
                 results.append(p)
+        # Layout 2: plugins/<cat>/<plugin>/SKILL.md (Anthropic-spec / Wondelai-style)
+        # SKILL.md sits at plugin root alongside .claude-plugin/plugin.json — no skills/<name>/ subdir.
+        for plugin_json in plugins_dir.rglob(".claude-plugin/plugin.json"):
+            plugin_root = plugin_json.parent.parent
+            skill_md = plugin_root / "SKILL.md"
+            if not skill_md.is_file():
+                continue
+            parts = skill_md.relative_to(root).parts
+            if any(part in excluded_dirs for part in parts):
+                continue
+            if any(part.startswith("skills-backup-") for part in parts):
+                continue
+            abs_p = skill_md.resolve()
+            if abs_p in seen:
+                continue
+            seen.add(abs_p)
+            results.append(skill_md)
 
     # Search in standalone skills directory
     skills_dir = root / "skills"
@@ -3460,12 +3483,27 @@ def validate_plugin(plugin_dir: Path, tier: str = TIER_STANDARD) -> Dict[str, An
         warnings.append("[plugin.json] No .claude-plugin/plugin.json found")
 
     # 2. Validate skills
+    # Two supported layouts:
+    #   (a) plugin_dir/skills/<name>/SKILL.md   (legacy nested)
+    #   (b) plugin_dir/SKILL.md                 (Anthropic-spec / Wondelai-style — SKILL.md at plugin root)
     skill_results = []
+    seen_skills: set = set()
     skills_dir = plugin_dir / 'skills'
     if skills_dir.exists():
         for skill_md in skills_dir.rglob('SKILL.md'):
+            abs_p = skill_md.resolve()
+            if abs_p in seen_skills:
+                continue
+            seen_skills.add(abs_p)
             result = validate_skill(skill_md, tier)
             skill_results.append((skill_md, result))
+    root_skill_md = plugin_dir / 'SKILL.md'
+    if root_skill_md.is_file():
+        abs_p = root_skill_md.resolve()
+        if abs_p not in seen_skills:
+            seen_skills.add(abs_p)
+            result = validate_skill(root_skill_md, tier)
+            skill_results.append((root_skill_md, result))
 
     # 3. Validate agents
     agent_results = []

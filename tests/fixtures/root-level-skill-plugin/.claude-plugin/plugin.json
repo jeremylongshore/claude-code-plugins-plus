@@ -1,0 +1,9 @@
+{
+  "name": "root-level-skill-fixture",
+  "version": "1.0.0",
+  "description": "Fixture: plugin with SKILL.md at root (Anthropic-spec layout) — exercises root-level discovery in find_skill_files.",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  }
+}
