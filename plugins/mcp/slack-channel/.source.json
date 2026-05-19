@@ -1,15 +1,15 @@
 {
-  "synced_from": {
-    "repo": "jeremylongshore/claude-code-slack-channel",
-    "path": ".",
-    "branch": "main"
-  },
-  "last_sync": "2026-05-17T04:38:10.622Z",
-  "author": {
-    "name": "Jeremy Longshore",
-    "github": "jeremylongshore",
-    "email": "jeremy@intentsolutions.io"
-  },
-  "license": "MIT",
-  "files_synced": 16
+	"synced_from": {
+		"repo": "jeremylongshore/claude-code-slack-channel",
+		"path": ".",
+		"branch": "main"
+	},
+	"last_sync": "2026-05-19T01:48:29.401Z",
+	"author": {
+		"name": "Jeremy Longshore",
+		"github": "jeremylongshore",
+		"email": "jeremy@intentsolutions.io"
+	},
+	"license": "MIT",
+	"files_synced": 17
 }

@@ -649,6 +649,10 @@ sources:
       # journal.ts, manifest.ts, policy.ts. Listing files explicitly drops
       # the imports and produces a non-functional mirror (see #645).
       - '*.ts'
+      # features/ holds upstream's gate-properties + runner test suites.
+      # Tests are pure-unit (bun:test against lib functions) — no Slack creds
+      # required. Synced so `bun test` finds them and CI passes (claude-7tig.1).
+      - 'features/**'
       - 'package.json'
       - '.npmrc'
       - 'skills/**'
@@ -659,8 +663,6 @@ sources:
       - 'node_modules/**'
       - '.git/**'
       - '*.log'
-      - '*.test.ts'
-      - '*.spec.ts'
 
   - name: x-bug-triage
     description: Closed-loop bug triage — X complaints → clusters → repo evidence → owner routing → Slack review → filed issues
