@@ -684,6 +684,10 @@ sources:
       - 'hooks/**'
       - 'mcp/**'
       - 'lib/**'
+      # db/ holds migrate.ts + schema.sql + db/migrations/*.sql — source
+      # code imported by lib/*.test.ts (`from "../db/migrate"`). Stripping
+      # it breaks the vendored test suite (claude-7tig.1 follow-up).
+      - 'db/**'
       - 'config/**'
       - 'scripts/**'
       - 'integrations/**'
@@ -695,7 +699,6 @@ sources:
       - 'node_modules/**'
       - '.git/**'
       - '*.log'
-      - 'db/**'
       - 'data/**'
       - 'tests/**'
       - 'bun.lock'

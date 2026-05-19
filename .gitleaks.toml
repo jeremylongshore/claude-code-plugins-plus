@@ -45,6 +45,12 @@ paths = [
     '''.*/tests?/.*''',
     '''.*/__tests__/.*''',
     '''.*/fixtures/.*''',
+    # *.test.ts / *.spec.ts at any depth — test files often hold leak-canary
+    # fixtures (e.g., xoxb-SECRET-LEAK-CANARY-..., eyJ.eyJ.abc JWT shapes) to
+    # verify redaction logic. The tests/ glob above misses files that live at
+    # module root rather than under a tests/ subdir (e.g.
+    # plugins/mcp/slack-channel/server.test.ts).
+    '''.*\.(test|spec)\.(ts|js|tsx|jsx|mjs|cjs)$''',
     '''^plugins/mcp/.*/dist/.*\.js$''',
     '''^\.gitleaks\.toml$''',
     '''^scripts/validate-skills-schema\.py$''',
