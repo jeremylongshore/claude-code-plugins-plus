@@ -4,7 +4,7 @@
 
 **Do not open a public issue for security vulnerabilities.**
 
-Use [GitHub Private Security Advisories](https://github.com/jeremylongshore/claude-code-plugins/security/advisories/new) to report vulnerabilities privately. Alternatively, email **jeremy@intentsolutions.io**.
+Use [GitHub Private Security Advisories](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/security/advisories/new) to report vulnerabilities privately. Alternatively, email **jeremy@intentsolutions.io**.
 
 We will acknowledge receipt within 24 hours and provide a remediation timeline within 72 hours.
 
@@ -12,7 +12,7 @@ We will acknowledge receipt within 24 hours and provide a remediation timeline w
 
 This policy covers:
 
-- All plugins and skills in the `plugins/` directory (339 plugins, 1896 skills)
+- All plugins and skills in the `plugins/` directory (427 plugins, 2747 skills)
 - The `ccpi` CLI tool (`@intentsolutionsio/ccpi` on npm)
 - Cowork zip distribution packages
 - CI/CD pipelines and GitHub Actions workflows
