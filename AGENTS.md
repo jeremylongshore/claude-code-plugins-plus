@@ -2,6 +2,12 @@
 
 # Agent Instructions
 
+<!-- bd-doctor-divergence: ok -->
+<!-- AGENTS.md and CLAUDE.md are intentionally distinct in this repo.
+     CLAUDE.md = repository-specific guidance (build commands, conventions, marketplace layout).
+     AGENTS.md = generic agent / beads session protocol.
+     CLAUDE.md explicitly delegates session protocol here ("Session protocol lives in AGENTS.md"). -->
+
 This project uses **bd** (beads) for issue tracking. Run `bd onboard` to get started.
 
 ---
