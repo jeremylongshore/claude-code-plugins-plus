@@ -654,6 +654,11 @@ sources:
       # required. Synced so `bun test` finds them and CI passes (claude-7tig.1).
       - 'features/**'
       - 'package.json'
+      # tsconfig.json drives `tsc --noEmit` (the typecheck script in upstream
+      # package.json). Without it, tsc dumps help text and exits 1 — making
+      # CI's Type checking step fail. Synced together with the source files
+      # it references (claude-7tig.1).
+      - 'tsconfig.json'
       - '.npmrc'
       - 'skills/**'
       - 'ACCESS.md'

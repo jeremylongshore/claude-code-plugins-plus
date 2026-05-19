@@ -1,0 +1,24 @@
+{
+	"compilerOptions": {
+		"target": "ES2022",
+		"module": "ESNext",
+		"moduleResolution": "bundler",
+		"strict": true,
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"outDir": "dist",
+		"declaration": true,
+		"allowImportingTsExtensions": true,
+		"noEmit": true,
+		"types": ["bun-types"]
+	},
+	"include": [
+		"server.ts",
+		"lib.ts",
+		"server.test.ts",
+		"policy.ts",
+		"journal.ts",
+		"supervisor.ts",
+		"features/**/*.ts"
+	]
+}
