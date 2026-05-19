@@ -103,8 +103,11 @@ google-adk-reference/
 marketplace/backup-*/
 
 # NPM configuration files (local overrides)
-.npmrc
-packages/**/.npmrc
+# Root .npmrc IS tracked — it holds workspace-wide pnpm hoist patterns
+# needed for CI (bun-types resolution for vendored bun-native plugins).
+# Per-package .npmrc files remain ignored to allow per-developer overrides.
+**/.npmrc
+!/.npmrc
 
 # Workspace lab directory (safe sandbox for experiments)
 workspace/
