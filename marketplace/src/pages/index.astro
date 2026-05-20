@@ -69,7 +69,7 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
         }
 
         /* ========================================
-           HERO — minimal, centered, dark
+           HERO — two-column at ≥1024px, single-column below
            ======================================== */
         .hero {
             display: flex;
@@ -77,9 +77,9 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
             align-items: flex-start;
             justify-content: center;
             text-align: left;
-            padding: 5rem 3rem 2rem;
+            padding: 5rem 1.5rem 2rem;
             position: relative;
-            max-width: 1200px;
+            max-width: 1280px;
             margin: 0 auto;
         }
 
@@ -90,6 +90,64 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
             flex-direction: column;
             align-items: flex-start;
             gap: 0;
+        }
+
+        @media (min-width: 1024px) {
+            .hero {
+                display: grid;
+                grid-template-columns: 58fr 42fr;
+                column-gap: 4rem;
+                align-items: start;
+                padding: 5rem 2rem 2rem;
+            }
+            .hero-inner {
+                grid-column: 1;
+                max-width: none;
+            }
+            .hero-stat-block {
+                grid-column: 2;
+                align-self: center;
+            }
+        }
+
+        /* Stat block — right column at ≥1024px, hidden below */
+        .hero-stat-block {
+            display: none;
+        }
+        @media (min-width: 1024px) {
+            .hero-stat-block {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 1.5rem;
+                width: 100%;
+                animation: fadeInUp 0.7s var(--ease-out) 0.25s forwards;
+                opacity: 0;
+            }
+        }
+        .hero-stat-cell {
+            border-top: 1px solid var(--rule);
+            padding-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+        .hero-stat-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(2rem, 3.5vw, 3rem);
+            font-weight: 600;
+            line-height: 1;
+            color: var(--signal);
+            letter-spacing: -0.02em;
+        }
+        :global([data-theme="light"]) .hero-stat-number {
+            color: var(--signal-deep);
+        }
+        .hero-stat-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--ink-3);
         }
 
         /* H1 — Inter Tight, large, split color */
@@ -107,6 +165,12 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
 
         .hero-text-muted { color: var(--text); }
         .hero-text-primary { color: var(--primary); }
+        /* Explicit override: signal-deep on light bg keeps "SKILLS" legible
+           (--primary already remaps to --signal-deep in tokens.css, but we
+           pin it explicitly here so the H1 can't drift if --primary moves) */
+        :global([data-theme="light"]) .hero-text-primary {
+            color: var(--signal-deep);
+        }
 
         .hero-byline {
             font-family: 'JetBrains Mono', monospace;
@@ -126,6 +190,11 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
         .hero-byline a:hover {
             color: var(--primary);
             border-color: var(--primary);
+        }
+        /* Light-theme hover: yellow on white is illegible — fall back to ink */
+        :global([data-theme="light"]) .hero-byline a:hover {
+            color: var(--ink);
+            border-color: var(--ink-3);
         }
 
         .hero-sponsor-marquee {
@@ -161,6 +230,10 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
         .hero-sponsor-link:hover {
             color: var(--primary);
             opacity: 1;
+        }
+        /* Light-theme hover: ink, not yellow */
+        :global([data-theme="light"]) .hero-sponsor-link:hover {
+            color: var(--ink);
         }
         /* Stats marquee (second row, under partners). Visually separated from
            the partner marquee with a subtle divider + breathing room — they
@@ -206,25 +279,24 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
             opacity: 0;
         }
 
-        .hero-cowork-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            padding: 0.5rem 1.25rem;
-            border: 1px solid var(--primary-border);
-            border-radius: 8px;
-            color: var(--primary);
-            font-size: 0.9rem;
-            font-weight: 600;
-            text-decoration: none;
-            margin-bottom: 1.25rem;
-            transition: background var(--duration-fast), border-color var(--duration-fast);
-            animation: fadeInUp 0.7s var(--ease-out) 0.15s forwards;
+        /* Demoted from yellow CTA box to inline tertiary note —
+           sits below the search bar as a quiet pointer, not a competing
+           call-to-action against the install box / spotlight card */
+        .hero-cowork-note {
+            font-family: 'Inter', system-ui, sans-serif;
+            font-size: 0.8rem;
+            color: var(--ink-3);
+            margin: 0.75rem 0 1.5rem;
+            animation: fadeInUp 0.7s var(--ease-out) 0.25s forwards;
             opacity: 0;
         }
-        .hero-cowork-btn:hover {
-            background: var(--primary-tint);
-            border-color: var(--primary);
+        .hero-cowork-note a {
+            color: var(--ink-link);
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+        .hero-cowork-note a:hover {
+            color: var(--ink-link-hover);
         }
 
         /* Search */
@@ -323,9 +395,13 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
             color: var(--text);
         }
 
+        /* Active tab — DESIGN.md §4 badges/tags active pattern:
+           signal-tint background + signal-edge border + ink text.
+           Replaces previous --gold text-on-light-bg which fell below AA. */
         .toggle-btn.active {
-            background: var(--surface-1);
-            color: var(--gold);
+            background: var(--signal-tint);
+            border: 1px solid var(--signal-edge);
+            color: var(--ink);
         }
 
         .search-results {
@@ -1220,7 +1296,6 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
         <div class="hero-inner">
             <h1><span class="hero-text-muted">TONS OF</span><br/><span class="hero-text-primary">SKILLS</span></h1>
             <p class="hero-byline">by <a href="https://jeremylongshore.com" target="_blank" rel="noopener">Jeremy Longshore</a></p>
-            <PartnerBar />
 
             {npmPublished > 0 && (
                 <div class="hero-sponsor-marquee hero-stats-marquee">
@@ -1260,8 +1335,6 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
                 Agent skills for Claude Code. Search {totalSkills} skills across {totalPlugins} plugins.
             </p>
 
-            <a href="/cowork" class="hero-cowork-btn">Using Claude Cowork? Download skill packs here</a>
-
             <!-- Hero Search Bar -->
             <div class="hero-search">
                 <div class="search-container">
@@ -1284,6 +1357,9 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
                 </div>
             </div>
 
+            <p class="hero-cowork-note">
+                Using Claude Cowork? <a href="/cowork">Download skill packs here</a>.
+            </p>
 
             <!-- Installation Instructions -->
             <div class="install-box">
@@ -1312,7 +1388,35 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
                 </div>
             </div>
         </div>
+
+        <!-- Right column: 2×2 stat block (≥1024px only).
+             All four numbers already in scope (lines 15-18, 35-36) — no new
+             data plumbing. Fills the right-of-hero void on iPad-Pro+ landscape
+             so the partner band reads as a discrete row, not a centered orphan. -->
+        <aside class="hero-stat-block" aria-label="Marketplace stats">
+            <div class="hero-stat-cell">
+                <span class="hero-stat-number">{fmtNum(totalSkills)}</span>
+                <span class="hero-stat-label">Skills</span>
+            </div>
+            <div class="hero-stat-cell">
+                <span class="hero-stat-number">{fmtNum(npmPublished)}</span>
+                <span class="hero-stat-label">Packages on npm</span>
+            </div>
+            <div class="hero-stat-cell">
+                <span class="hero-stat-number">{fmtNum(totalPlugins)}</span>
+                <span class="hero-stat-label">Plugins</span>
+            </div>
+            <div class="hero-stat-cell">
+                <span class="hero-stat-number">{fmtNum(npmMonth)}</span>
+                <span class="hero-stat-label">Monthly downloads</span>
+            </div>
+        </aside>
     </section>
+
+    <!-- Partner band — full-bleed sibling of hero (not a child).
+         Sits as its own row below the hero so partner logos don't re-center
+         inside the left-pinned hero-inner column at ≥1024px. -->
+    <PartnerBar />
 
     <!-- Killer Skills This Week -->
     <section class="killer-skills-section" style="padding: 3rem 2rem; background: var(--surface);">

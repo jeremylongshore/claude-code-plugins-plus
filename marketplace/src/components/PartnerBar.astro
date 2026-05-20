@@ -13,8 +13,8 @@ import partnersData from '../data/partners.json';
 const { partners } = partnersData;
 ---
 
-<div class="partner-bar" aria-label="Strategic partners">
-  <span class="partner-bar-label">Strategic partners</span>
+<div class="partner-band" aria-label="Strategic partners">
+  <span class="sr-only">Partners</span>
   <div class={`partner-bar-row partner-bar-count-${partners.length}`}>
     {partners.map((p) => (
       <a
@@ -61,31 +61,37 @@ const { partners } = partnersData;
 </div>
 
 <style>
-  .partner-bar {
+  /* Full-bleed band — exits the hero, sits as its own row below.
+     No max-width / centering inside; just border-top, border-bottom,
+     vertical breathing room. The row inside is the constrained part. */
+  .partner-band {
     width: 100%;
-    margin-top: var(--space-6);
-    padding-top: var(--space-5);
+    padding: 1.5rem 0;
     border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
     display: flex;
-    flex-direction: column;
-    gap: var(--space-4);
-    align-items: center;
+    justify-content: center;
+    background: var(--bg);
   }
 
-  .partner-bar-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--ink-3);
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
 
   .partner-bar-row {
     display: grid;
-    gap: var(--space-3);
+    gap: 3rem;
     width: 100%;
-    max-width: 720px;
+    max-width: 1280px;
+    padding: 0 var(--space-5);
   }
 
   /* 1, 2, 3, 4+ count layouts — explicit, never marquee */
@@ -165,7 +171,8 @@ const { partners } = partnersData;
   /* Mobile — 2-up regardless of partner count, except n=1 stays 1-up */
   @media (max-width: 768px) {
     .partner-bar-row {
-      max-width: 100%;
+      gap: 1rem;
+      padding: 0 var(--space-4);
     }
     .partner-bar-count-3,
     .partner-bar-count-4 {
@@ -179,6 +186,16 @@ const { partners } = partnersData;
     }
     .partner-tagline {
       display: none;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .partner-band {
+      padding: 1rem 0;
+    }
+    .partner-logo {
+      max-height: 24px;
+      height: 24px;
     }
   }
 </style>
