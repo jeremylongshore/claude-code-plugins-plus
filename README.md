@@ -125,7 +125,7 @@ Jump to any of the 18 categories below. Plugin counts are catalog totals — aut
 | 📦  | [Packages](#packages)                              |       5 |
 | ⚡  | [Performance](#performance)                        |      25 |
 | ✅  | [Productivity](#productivity)                      |      19 |
-| 🎁  | [SaaS Skill Packs](#saas-skill-packs)              |     105 |
+| 🎁  | [SaaS Skill Packs](#saas-skill-packs)              |     106 |
 | 🔐  | [Security](#security)                              |      26 |
 | ✨  | [Skill Enhancers](#skill-enhancers)                |       9 |
 | 🧪  | [Testing](#testing)                                |      27 |
@@ -519,7 +519,7 @@ Jump to any of the 18 categories below. Plugin counts are catalog totals — aut
 
 ### SaaS Skill Packs
 
-🎁 **105 plugins** · category slug: `saas-packs`
+🎁 **106 plugins** · category slug: `saas-packs`
 
 | Plugin              | Description                                                                                                                                 |
 | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -564,6 +564,7 @@ Jump to any of the 18 categories below. Plugin counts are catalog totals — aut
 | `flyio-pack`        | Claude Code skill pack for Fly.io (18 skills)                                                                                               |
 | `fondo-pack`        | Claude Code skill pack for Fondo (18 skills)                                                                                                |
 | `framer-pack`       | Claude Code skill pack for Framer (18 skills)                                                                                               |
+| `ga4-pack`          | Claude Code skill pack for Google Analytics 4 — 5 starter skills covering auth (OAuth + service account), Data API v1 queries (runReport,…  |
 | `gamma-pack`        | Complete Gamma integration skill pack with 24 skills covering AI presentations, document generation, templates, and visual content…         |
 | `glean-pack`        | Claude Code skill pack for Glean (24 skills)                                                                                                |
 | `grammarly-pack`    | Claude Code skill pack for Grammarly (24 skills)                                                                                            |

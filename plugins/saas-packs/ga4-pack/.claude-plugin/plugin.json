@@ -1,0 +1,18 @@
+{
+  "name": "ga4-pack",
+  "version": "1.0.0",
+  "description": "Claude Code skill pack for Google Analytics 4 — auth setup, Data API v1 patterns, Realtime API, BigQuery export, common reports (DAU/MAU, retention, attribution).",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "license": "MIT",
+  "keywords": [
+    "google-analytics",
+    "ga4",
+    "analytics",
+    "data-api",
+    "bigquery",
+    "saas"
+  ]
+}

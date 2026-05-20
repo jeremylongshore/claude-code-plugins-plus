@@ -10,8 +10,8 @@
     "version": "1.6.0",
     "homepage": "https://github.com/jeremylongshore/claude-code-plugins",
     "pluginRoot": "./plugins",
-    "totalPlugins": 423,
-    "skillsEnabled": 269,
+    "totalPlugins": 424,
+    "skillsEnabled": 274,
     "lastUpdated": "2026-05-20"
   },
   "plugins": [
@@ -5726,6 +5726,28 @@
         "meetings",
         "ai-notes",
         "meeting-intelligence"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io",
+        "url": "https://github.com/jeremylongshore"
+      }
+    },
+    {
+      "name": "ga4-pack",
+      "source": "./plugins/saas-packs/ga4-pack",
+      "description": "Claude Code skill pack for Google Analytics 4 — 5 starter skills covering auth (OAuth + service account), Data API v1 queries (runReport, filters, sampling), Realtime API, canonical reports (DAU/MAU/retention/top pages/funnel), and BigQuery export with event-level SQL recipes.",
+      "version": "1.0.0",
+      "category": "saas-packs",
+      "keywords": [
+        "google-analytics",
+        "ga4",
+        "analytics",
+        "data-api",
+        "bigquery",
+        "reporting",
+        "dau-mau",
+        "cohort-retention"
       ],
       "author": {
         "name": "Jeremy Longshore",
