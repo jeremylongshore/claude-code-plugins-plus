@@ -1,20 +1,24 @@
 {
   "$schema": "./partners.schema.json",
-  "_doc": "Partners shown on the homepage hero partner bar. Source of truth — edited by hand. Order matters (left-to-right).",
+  "_doc": "Partners shown on the homepage hero partner bar. Source of truth — edited by hand. Order matters (left-to-right). `logo` is a path under /public; `accentColor` is the partner's official brand color used as a hairline accent on the card.",
   "partners": [
     {
       "slug": "kobiton",
       "name": "Kobiton",
       "url": "https://kobiton.com",
       "wordmark": "Kobiton",
-      "tagline": "Mobile testing platform"
+      "tagline": "Accelerate delivery of better mobile experiences",
+      "logo": "/images/partners/kobiton.svg",
+      "accentColor": "#0066CC"
     },
     {
       "slug": "nixtla",
       "name": "Nixtla",
       "url": "https://nixtla.io",
       "wordmark": "Nixtla",
-      "tagline": "Time-series forecasting"
+      "tagline": "Time series forecasting & anomaly detection",
+      "logo": "/images/partners/nixtla.svg",
+      "accentColor": "#000000"
     }
   ]
 }

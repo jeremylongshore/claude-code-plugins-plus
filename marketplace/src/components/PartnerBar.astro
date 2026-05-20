@@ -23,8 +23,21 @@ const { partners } = partnersData;
         target="_blank"
         rel="noopener noreferrer"
         aria-label={`${p.name} (opens in new tab)`}
+        style={p.accentColor ? `--partner-accent: ${p.accentColor};` : undefined}
       >
-        <span class="partner-wordmark">{p.wordmark}</span>
+        {p.logo ? (
+          <img
+            class="partner-logo"
+            src={p.logo}
+            alt={`${p.name} logo`}
+            loading="lazy"
+            decoding="async"
+            width="120"
+            height="32"
+          />
+        ) : (
+          <span class="partner-wordmark">{p.wordmark}</span>
+        )}
         {p.tagline && <span class="partner-tagline">{p.tagline}</span>}
       </a>
     ))}
@@ -84,11 +97,19 @@ const { partners } = partnersData;
   }
 
   .partner-link:hover {
-    border-color: var(--signal-edge);
+    border-color: var(--partner-accent, var(--signal-edge));
     background: var(--panel-2);
     color: var(--ink);
     transform: translateY(-1px);
     text-decoration: none;
+  }
+
+  .partner-logo {
+    height: 28px;
+    width: auto;
+    max-width: 160px;
+    object-fit: contain;
+    display: block;
   }
 
   .partner-wordmark {
