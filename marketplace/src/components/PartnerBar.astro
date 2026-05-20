@@ -23,7 +23,10 @@ const { partners } = partnersData;
         target="_blank"
         rel="noopener noreferrer"
         aria-label={`${p.name} (opens in new tab)`}
-        style={p.accentColor ? `--partner-accent: ${p.accentColor};` : undefined}
+        style={[
+          p.accentColor && `--partner-accent: ${p.accentColor}`,
+          p.logoHeight && `--partner-logo-height: ${p.logoHeight}px`,
+        ].filter(Boolean).join('; ') || undefined}
       >
         {p.logoLight || p.logoDark ? (
           <span class="partner-logo-wrap" aria-hidden="false">
@@ -133,7 +136,11 @@ const { partners } = partnersData;
   }
 
   .partner-logo {
-    height: 28px;
+    /* Per-partner override via --partner-logo-height (set inline on the
+       parent .partner-link). Falls back to 28px. Wider wordmarks
+       (e.g. 5+:1 aspect) should set logoHeight ~18-20 in partners.json
+       so they don't dominate the bar at the uniform default. */
+    height: var(--partner-logo-height, 28px);
     width: auto;
     max-width: 160px;
     object-fit: contain;

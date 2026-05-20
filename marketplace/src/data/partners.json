@@ -1,6 +1,6 @@
 {
   "$schema": "./partners.schema.json",
-  "_doc": "Partners shown on the homepage hero partner bar. Source of truth — edited by hand. Order matters (left-to-right). `logoLight` is the variant designed for LIGHT theme backgrounds (dark/colored fill); `logoDark` is for DARK theme backgrounds (white/light fill). `accentColor` is the partner's official brand color, used as a hairline accent on the card.",
+  "_doc": "Partners shown on the homepage hero partner bar. Source of truth — edited by hand. Order matters (left-to-right). `logoLight` is the variant designed for LIGHT theme backgrounds (dark/colored fill); `logoDark` is for DARK theme backgrounds (white/light fill). `accentColor` is the partner's official brand color, used as a hairline accent on the card. `logoHeight` (optional, px) overrides the default 28px logo height for partners whose wordmark aspect ratio dominates the bar — set lower (e.g. 18-20) for very-wide wordmarks so visual weight stays balanced across partners.",
   "partners": [
     {
       "slug": "kobiton",
@@ -20,7 +20,8 @@
       "tagline": "Time series forecasting & anomaly detection",
       "logoLight": "/images/partners/nixtla-light.svg",
       "logoDark": "/images/partners/nixtla-dark.svg",
-      "accentColor": "#000000"
+      "accentColor": "#000000",
+      "logoHeight": 20
     }
   ]
 }
