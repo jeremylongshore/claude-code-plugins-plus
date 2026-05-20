@@ -25,16 +25,32 @@ const { partners } = partnersData;
         aria-label={`${p.name} (opens in new tab)`}
         style={p.accentColor ? `--partner-accent: ${p.accentColor};` : undefined}
       >
-        {p.logo ? (
-          <img
-            class="partner-logo"
-            src={p.logo}
-            alt={`${p.name} logo`}
-            loading="lazy"
-            decoding="async"
-            width="120"
-            height="32"
-          />
+        {p.logoLight || p.logoDark ? (
+          <span class="partner-logo-wrap" aria-hidden="false">
+            {p.logoDark && (
+              <img
+                class="partner-logo partner-logo-dark"
+                src={p.logoDark}
+                alt={`${p.name} logo`}
+                loading="lazy"
+                decoding="async"
+                width="120"
+                height="32"
+              />
+            )}
+            {p.logoLight && (
+              <img
+                class="partner-logo partner-logo-light"
+                src={p.logoLight}
+                alt={p.logoDark ? '' : `${p.name} logo`}
+                aria-hidden={p.logoDark ? 'true' : 'false'}
+                loading="lazy"
+                decoding="async"
+                width="120"
+                height="32"
+              />
+            )}
+          </span>
         ) : (
           <span class="partner-wordmark">{p.wordmark}</span>
         )}
@@ -104,6 +120,12 @@ const { partners } = partnersData;
     text-decoration: none;
   }
 
+  .partner-logo-wrap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .partner-logo {
     height: 28px;
     width: auto;
@@ -111,6 +133,14 @@ const { partners } = partnersData;
     object-fit: contain;
     display: block;
   }
+
+  /* Default (dark theme): show the -dark variant (white/light fill), hide -light */
+  .partner-logo-light { display: none; }
+  .partner-logo-dark  { display: block; }
+
+  /* Light theme: swap — show -light variant (dark/colored fill), hide -dark */
+  :global([data-theme="light"]) .partner-logo-dark  { display: none; }
+  :global([data-theme="light"]) .partner-logo-light { display: block; }
 
   .partner-wordmark {
     font-family: 'Inter Tight', system-ui, sans-serif;
