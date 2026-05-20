@@ -1,20 +1,20 @@
 {
   "meta": {
     "version": "1.0.0",
-    "generated": "2026-05-15T18:34:53.646Z",
+    "generated": "2026-05-20T03:26:28.681Z",
     "source": "marketplace.extended.json",
     "generator": "scripts/sync-catalog.mjs"
   },
   "stats": {
     "totalPlugins": 428,
-    "totalSkills": 2784,
+    "totalSkills": 2761,
     "totalCommands": 81,
     "pluginsWithSkills": 401,
     "byCategory": {
       "productivity": 43,
       "security": 29,
-      "testing": 25,
-      "ai-ml": 77,
+      "testing": 26,
+      "ai-ml": 76,
       "performance": 25,
       "devops": 41,
       "api-development": 25,
@@ -44,7 +44,7 @@
     },
     "featured": 7,
     "new": 407,
-    "generatedAt": "2026-05-15T18:34:53.646Z"
+    "generatedAt": "2026-05-20T03:26:28.681Z"
   },
   "plugins": [
     {
@@ -9276,43 +9276,6 @@
       "type": "instruction-plugin"
     },
     {
-      "slug": "langchain-pack",
-      "name": "langchain-pack",
-      "displayName": "langchain pack",
-      "description": "Complete LangChain integration skill pack with 24 skills covering chains, agents, RAG pipelines, memory, and LLM application development. Flagship tier vendor pack.",
-      "version": "1.0.0",
-      "category": "ai-ml",
-      "keywords": [
-        "langchain",
-        "llm",
-        "chains",
-        "agents",
-        "rag",
-        "memory",
-        "ai-applications",
-        "langsmith"
-      ],
-      "hasSkills": true,
-      "skillCount": 24,
-      "commandCount": 0,
-      "installCommand": "/plugin install langchain-pack",
-      "sourcePath": "./plugins/saas-packs/langchain-pack",
-      "lastUpdatedEpoch": 1768274305,
-      "lastUpdatedDate": "2026-01-13T03:18:25.233Z",
-      "status": "active",
-      "badges": [
-        "new"
-      ],
-      "isFeatured": false,
-      "isNew": true,
-      "author": {
-        "name": "Jeremy Longshore",
-        "email": "jeremy@intentsolutions.io",
-        "url": "https://github.com/jeremylongshore"
-      },
-      "type": "instruction-plugin"
-    },
-    {
       "slug": "lindy-pack",
       "name": "lindy-pack",
       "displayName": "lindy pack",
@@ -14582,6 +14545,44 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "kobiton-automate",
+      "name": "kobiton-automate",
+      "displayName": "kobiton automate",
+      "description": "Real mobile devices on demand via Kobiton's remote MCP — no emulators, no flaky CI. 12 tools across Devices, Sessions, and Apps surfaces, plus specialist agents for device picking, Appium capability reconciliation, and session triage.",
+      "version": "1.0.2",
+      "category": "testing",
+      "keywords": [
+        "mobile",
+        "testing",
+        "appium",
+        "automation",
+        "devices",
+        "ios",
+        "android",
+        "real-device",
+        "mcp",
+        "kobiton"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 0,
+      "installCommand": "/plugin install kobiton-automate",
+      "sourcePath": "./plugins/testing/kobiton-automate",
+      "lastUpdatedEpoch": 1779247588,
+      "lastUpdatedDate": "2026-05-20T03:26:28.681Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Kobiton Inc.",
+        "url": "https://github.com/kobiton"
       },
       "type": "instruction-plugin"
     }

@@ -1,13 +1,13 @@
 {
   "meta": {
     "version": "1.0.0",
-    "generated": "2026-05-15T18:34:54.361Z",
+    "generated": "2026-05-20T03:26:29.516Z",
     "generator": "scripts/generate-unified-search.mjs"
   },
   "stats": {
     "totalPlugins": 428,
-    "totalSkills": 2771,
-    "totalItems": 3199,
+    "totalSkills": 2747,
+    "totalItems": 3175,
     "categories": [
       "ai-agency",
       "ai-ml",
@@ -322,7 +322,6 @@
       "ai-agency",
       "ai-agent-storage",
       "ai-agents",
-      "ai-applications",
       "ai-art",
       "ai-assistant",
       "ai-coding",
@@ -472,7 +471,6 @@
       "castai",
       "cd",
       "cdn",
-      "chains",
       "changelog",
       "channel",
       "chaos-engineering",
@@ -642,6 +640,7 @@
       "detox",
       "development",
       "development-workflow",
+      "devices",
       "devops",
       "devsecops",
       "dex",
@@ -929,6 +928,7 @@
       "knowledge",
       "knowledge-base",
       "knowledge-management",
+      "kobiton",
       "krug",
       "kubernetes",
       "l10-meetings",
@@ -1248,6 +1248,7 @@
       "react-agents",
       "react-pattern",
       "readability",
+      "real-device",
       "real-time",
       "realtime",
       "recall",
@@ -1621,9 +1622,9 @@
     "totalHooks": 18,
     "pluginsWithAgents": 78,
     "pluginsWithHooks": 14,
-    "officialPlugins": 377,
-    "communityPlugins": 51,
-    "communityContributors": 23
+    "officialPlugins": 376,
+    "communityPlugins": 52,
+    "communityContributors": 24
   },
   "items": [
     {
@@ -10491,42 +10492,6 @@
     },
     {
       "type": "plugin",
-      "id": "langchain-pack",
-      "slug": "langchain-pack",
-      "name": "langchain-pack",
-      "displayName": "langchain pack",
-      "description": "Complete LangChain integration skill pack with 24 skills covering chains, agents, RAG pipelines, memory, and LLM application development. Flagship tier vendor pack.",
-      "category": "ai-ml",
-      "keywords": [
-        "langchain",
-        "llm",
-        "chains",
-        "agents",
-        "rag",
-        "memory",
-        "ai-applications",
-        "langsmith"
-      ],
-      "author": {
-        "name": "Jeremy Longshore",
-        "email": "jeremy@intentsolutions.io",
-        "url": "https://github.com/jeremylongshore"
-      },
-      "authorType": "official",
-      "version": "1.0.0",
-      "isFeatured": false,
-      "isNew": true,
-      "badges": [
-        "new"
-      ],
-      "skillCount": 24,
-      "verificationScore": 70,
-      "verificationGrade": "C",
-      "verificationBadge": "bronze",
-      "searchText": "langchain pack complete langchain integration skill pack with 24 skills covering chains, agents, rag pipelines, memory, and llm application development. flagship tier vendor pack. ai-ml langchain llm chains agents rag memory ai-applications langsmith"
-    },
-    {
-      "type": "plugin",
       "id": "lindy-pack",
       "slug": "lindy-pack",
       "name": "lindy-pack",
@@ -15567,6 +15532,43 @@
       ],
       "skillCount": 1,
       "searchText": "zero tech debt rebuild a feature as if the correct product architecture existed from day one. removes compatibility cruft, dead abstractions, and historical compromises instead of preserving them. methodology-only — surfaces refactor candidates and walks a 7-step workflow before any deletion. skill-enhancers refactoring tech-debt architecture cleanup modernization code-quality"
+    },
+    {
+      "type": "plugin",
+      "id": "kobiton-automate",
+      "slug": "kobiton-automate",
+      "name": "kobiton-automate",
+      "displayName": "kobiton automate",
+      "description": "Real mobile devices on demand via Kobiton's remote MCP — no emulators, no flaky CI. 12 tools across Devices, Sessions, and Apps surfaces, plus specialist agents for device picking, Appium capability reconciliation, and session triage.",
+      "category": "testing",
+      "keywords": [
+        "mobile",
+        "testing",
+        "appium",
+        "automation",
+        "devices",
+        "ios",
+        "android",
+        "real-device",
+        "mcp",
+        "kobiton"
+      ],
+      "author": {
+        "name": "Kobiton Inc.",
+        "url": "https://github.com/kobiton"
+      },
+      "authorType": "community",
+      "version": "1.0.2",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
+      "verificationScore": 95,
+      "verificationGrade": "A",
+      "verificationBadge": "gold",
+      "searchText": "kobiton automate real mobile devices on demand via kobiton's remote mcp — no emulators, no flaky ci. 12 tools across devices, sessions, and apps surfaces, plus specialist agents for device picking, appium capability reconciliation, and session triage. testing mobile testing appium automation devices ios android real-device mcp kobiton"
     },
     {
       "type": "skill",
@@ -46185,27 +46187,6 @@
       "id": "langchain-ci-integration",
       "slug": "langchain-ci-integration",
       "name": "langchain-ci-integration",
-      "description": "'Configure CI/CD for LangChain with GitHub Actions, mocked unit tests,",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(gh:*)"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "langchain-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "langchain-ci-integration 'configure ci/cd for langchain with github actions, mocked unit tests, saas-packs read write edit bash(gh:*) "
-    },
-    {
-      "type": "skill",
-      "id": "langchain-ci-integration-2",
-      "slug": "langchain-ci-integration-2",
-      "name": "langchain-ci-integration",
       "description": "\"Wire LangChain 1.0 / LangGraph 1.0 tests into a GitHub Actions pipeline\\",
       "category": "saas-packs",
       "allowedTools": [
@@ -46227,27 +46208,6 @@
       "type": "skill",
       "id": "langchain-common-errors",
       "slug": "langchain-common-errors",
-      "name": "langchain-common-errors",
-      "description": "'Diagnose and fix common LangChain errors and exceptions.",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Grep"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "langchain-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "langchain-common-errors 'diagnose and fix common langchain errors and exceptions. saas-packs read write edit grep "
-    },
-    {
-      "type": "skill",
-      "id": "langchain-common-errors-2",
-      "slug": "langchain-common-errors-2",
       "name": "langchain-common-errors",
       "description": "\"Paste-match catalog of 14 real LangChain 1.0 / LangGraph 1.0 exceptions\\",
       "category": "saas-packs",
@@ -46307,68 +46267,8 @@
     },
     {
       "type": "skill",
-      "id": "langchain-core-workflow-a",
-      "slug": "langchain-core-workflow-a",
-      "name": "langchain-core-workflow-a",
-      "description": "'Build LangChain LCEL chains with prompts, parsers, and composition.",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "langchain-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "langchain-core-workflow-a 'build langchain lcel chains with prompts, parsers, and composition. saas-packs read write edit "
-    },
-    {
-      "type": "skill",
-      "id": "langchain-core-workflow-b",
-      "slug": "langchain-core-workflow-b",
-      "name": "langchain-core-workflow-b",
-      "description": "'Build LangChain agents with tool calling for autonomous task execution.",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "langchain-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "langchain-core-workflow-b 'build langchain agents with tool calling for autonomous task execution. saas-packs read write edit "
-    },
-    {
-      "type": "skill",
       "id": "langchain-cost-tuning",
       "slug": "langchain-cost-tuning",
-      "name": "langchain-cost-tuning",
-      "description": "'Optimize LangChain API costs with token tracking, model tiering,",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "langchain-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "langchain-cost-tuning 'optimize langchain api costs with token tracking, model tiering, saas-packs read write edit "
-    },
-    {
-      "type": "skill",
-      "id": "langchain-cost-tuning-2",
-      "slug": "langchain-cost-tuning-2",
       "name": "langchain-cost-tuning",
       "description": "'Control LangChain 1.0 AI spend with accurate streaming token accounting,",
       "category": "saas-packs",
@@ -46392,26 +46292,6 @@
       "id": "langchain-data-handling",
       "slug": "langchain-data-handling",
       "name": "langchain-data-handling",
-      "description": "'Implement LangChain RAG pipelines with document loaders, text splitters,",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "langchain-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "langchain-data-handling 'implement langchain rag pipelines with document loaders, text splitters, saas-packs read write edit "
-    },
-    {
-      "type": "skill",
-      "id": "langchain-data-handling-2",
-      "slug": "langchain-data-handling-2",
-      "name": "langchain-data-handling",
       "description": "\"Load and chunk documents for LangChain 1.0 RAG pipelines correctly \\u2014\\",
       "category": "saas-packs",
       "allowedTools": [
@@ -46433,30 +46313,6 @@
       "type": "skill",
       "id": "langchain-debug-bundle",
       "slug": "langchain-debug-bundle",
-      "name": "langchain-debug-bundle",
-      "description": "'Collect LangChain debug evidence for troubleshooting and bug reports.",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(node:*)",
-        "Bash(npm:*)",
-        "Bash(python:*)",
-        "Grep"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "langchain-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "langchain-debug-bundle 'collect langchain debug evidence for troubleshooting and bug reports. saas-packs read write edit bash(node:*) bash(npm:*) bash(python:*) grep "
-    },
-    {
-      "type": "skill",
-      "id": "langchain-debug-bundle-2",
-      "slug": "langchain-debug-bundle-2",
       "name": "langchain-debug-bundle",
       "description": "\"Produce a reproducible, sanitized diagnostic bundle for a LangChain\\",
       "category": "saas-packs",
@@ -46500,28 +46356,6 @@
       "type": "skill",
       "id": "langchain-deploy-integration",
       "slug": "langchain-deploy-integration",
-      "name": "langchain-deploy-integration",
-      "description": "'Deploy LangChain applications to production with LangServe,",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(docker:*)",
-        "Bash(gcloud:*)"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "langchain-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "langchain-deploy-integration 'deploy langchain applications to production with langserve, saas-packs read write edit bash(docker:*) bash(gcloud:*) "
-    },
-    {
-      "type": "skill",
-      "id": "langchain-deploy-integration-2",
-      "slug": "langchain-deploy-integration-2",
       "name": "langchain-deploy-integration",
       "description": "\"Deploy a LangChain 1.0 / LangGraph 1.0 app to Cloud Run, Vercel, or\\",
       "category": "saas-packs",
@@ -46569,26 +46403,6 @@
       "id": "langchain-enterprise-rbac",
       "slug": "langchain-enterprise-rbac",
       "name": "langchain-enterprise-rbac",
-      "description": "'Implement role-based access control for LangChain applications",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "langchain-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "langchain-enterprise-rbac 'implement role-based access control for langchain applications saas-packs read write edit "
-    },
-    {
-      "type": "skill",
-      "id": "langchain-enterprise-rbac-2",
-      "slug": "langchain-enterprise-rbac-2",
-      "name": "langchain-enterprise-rbac",
       "description": "\"Enforce tenant isolation and role-based access across LangChain 1.0\\",
       "category": "saas-packs",
       "allowedTools": [
@@ -46630,50 +46444,8 @@
     },
     {
       "type": "skill",
-      "id": "langchain-hello-world",
-      "slug": "langchain-hello-world",
-      "name": "langchain-hello-world",
-      "description": "'Create a minimal working LangChain example with LCEL chains.",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "langchain-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "langchain-hello-world 'create a minimal working langchain example with lcel chains. saas-packs read write edit "
-    },
-    {
-      "type": "skill",
       "id": "langchain-incident-runbook",
       "slug": "langchain-incident-runbook",
-      "name": "langchain-incident-runbook",
-      "description": "'Incident response procedures for LangChain production issues:",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(curl:*)",
-        "Grep"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "langchain-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "langchain-incident-runbook 'incident response procedures for langchain production issues: saas-packs read write edit bash(curl:*) grep "
-    },
-    {
-      "type": "skill",
-      "id": "langchain-incident-runbook-2",
-      "slug": "langchain-incident-runbook-2",
       "name": "langchain-incident-runbook",
       "description": "\"Triage LangChain 1.0 / LangGraph 1.0 production incidents \\u2014 LLM-specific\\",
       "category": "saas-packs",
@@ -46687,30 +46459,6 @@
         "category": "saas-packs"
       },
       "searchText": "langchain-incident-runbook \"triage langchain 1.0 / langgraph 1.0 production incidents \\u2014 llm-specific\\ saas-packs read "
-    },
-    {
-      "type": "skill",
-      "id": "langchain-install-auth",
-      "slug": "langchain-install-auth",
-      "name": "langchain-install-auth",
-      "description": "'Install and configure LangChain SDK with provider authentication.",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(npm:*)",
-        "Bash(pip:*)",
-        "Bash(pnpm:*)",
-        "Grep"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "langchain-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "langchain-install-auth 'install and configure langchain sdk with provider authentication. saas-packs read write edit bash(npm:*) bash(pip:*) bash(pnpm:*) grep "
     },
     {
       "type": "skill",
@@ -46844,30 +46592,6 @@
       "id": "langchain-local-dev-loop",
       "slug": "langchain-local-dev-loop",
       "name": "langchain-local-dev-loop",
-      "description": "'Configure LangChain local development workflow with testing and mocks.",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(npm:*)",
-        "Bash(npx:*)",
-        "Bash(pytest:*)",
-        "Bash(python:*)"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "langchain-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "langchain-local-dev-loop 'configure langchain local development workflow with testing and mocks. saas-packs read write edit bash(npm:*) bash(npx:*) bash(pytest:*) bash(python:*) "
-    },
-    {
-      "type": "skill",
-      "id": "langchain-local-dev-loop-2",
-      "slug": "langchain-local-dev-loop-2",
-      "name": "langchain-local-dev-loop",
       "description": "\"Build a fast, deterministic local test loop for LangChain 1.0 / LangGraph\\",
       "category": "saas-packs",
       "allowedTools": [
@@ -46909,29 +46633,6 @@
     },
     {
       "type": "skill",
-      "id": "langchain-migration-deep-dive",
-      "slug": "langchain-migration-deep-dive",
-      "name": "langchain-migration-deep-dive",
-      "description": "'Migrate to LangChain from raw OpenAI SDK, LlamaIndex, or custom LLM",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(node:*)",
-        "Bash(npm:*)",
-        "Grep"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "langchain-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "langchain-migration-deep-dive 'migrate to langchain from raw openai sdk, llamaindex, or custom llm saas-packs read write edit bash(node:*) bash(npm:*) grep "
-    },
-    {
-      "type": "skill",
       "id": "langchain-model-inference",
       "slug": "langchain-model-inference",
       "name": "langchain-model-inference",
@@ -46958,26 +46659,6 @@
       "id": "langchain-multi-env-setup",
       "slug": "langchain-multi-env-setup",
       "name": "langchain-multi-env-setup",
-      "description": "'Configure LangChain across dev/staging/production environments",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "langchain-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "langchain-multi-env-setup 'configure langchain across dev/staging/production environments saas-packs read write edit "
-    },
-    {
-      "type": "skill",
-      "id": "langchain-multi-env-setup-2",
-      "slug": "langchain-multi-env-setup-2",
-      "name": "langchain-multi-env-setup",
       "description": "\"Build reliable dev / staging / prod isolation for LangChain 1.0 services\\",
       "category": "saas-packs",
       "allowedTools": [
@@ -46999,26 +46680,6 @@
       "type": "skill",
       "id": "langchain-observability",
       "slug": "langchain-observability",
-      "name": "langchain-observability",
-      "description": "'Set up comprehensive observability for LangChain applications",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "langchain-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "langchain-observability 'set up comprehensive observability for langchain applications saas-packs read write edit "
-    },
-    {
-      "type": "skill",
-      "id": "langchain-observability-2",
-      "slug": "langchain-observability-2",
       "name": "langchain-observability",
       "description": "\"Wire LangSmith tracing and custom metric callbacks into a LangChain\\",
       "category": "saas-packs",
@@ -47063,26 +46724,6 @@
       "id": "langchain-performance-tuning",
       "slug": "langchain-performance-tuning",
       "name": "langchain-performance-tuning",
-      "description": "'Optimize LangChain application performance: latency, throughput,",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "langchain-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "langchain-performance-tuning 'optimize langchain application performance: latency, throughput, saas-packs read write edit "
-    },
-    {
-      "type": "skill",
-      "id": "langchain-performance-tuning-2",
-      "slug": "langchain-performance-tuning-2",
-      "name": "langchain-performance-tuning",
       "description": "\"Tune LangChain 1.0 / LangGraph 1.0 Python chains and agents for throughput,\\n\\",
       "category": "saas-packs",
       "allowedTools": [
@@ -47099,28 +46740,6 @@
         "category": "saas-packs"
       },
       "searchText": "langchain-performance-tuning \"tune langchain 1.0 / langgraph 1.0 python chains and agents for throughput,\\n\\ saas-packs read write edit bash(python:*) bash(redis-cli:*) "
-    },
-    {
-      "type": "skill",
-      "id": "langchain-prod-checklist",
-      "slug": "langchain-prod-checklist",
-      "name": "langchain-prod-checklist",
-      "description": "'Production readiness checklist for LangChain applications.",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(node:*)",
-        "Bash(npm:*)"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "langchain-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "langchain-prod-checklist 'production readiness checklist for langchain applications. saas-packs read write edit bash(node:*) bash(npm:*) "
     },
     {
       "type": "skill",
@@ -47149,26 +46768,6 @@
       "id": "langchain-rate-limits",
       "slug": "langchain-rate-limits",
       "name": "langchain-rate-limits",
-      "description": "'Implement LangChain rate limiting, retry strategies, and backoff.",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "langchain-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "langchain-rate-limits 'implement langchain rate limiting, retry strategies, and backoff. saas-packs read write edit "
-    },
-    {
-      "type": "skill",
-      "id": "langchain-rate-limits-2",
-      "slug": "langchain-rate-limits-2",
-      "name": "langchain-rate-limits",
       "description": "\"Rate-limit LangChain 1.0 calls correctly across multi-worker deployments\\",
       "category": "saas-packs",
       "allowedTools": [
@@ -47191,26 +46790,6 @@
       "id": "langchain-reference-architecture",
       "slug": "langchain-reference-architecture",
       "name": "langchain-reference-architecture",
-      "description": "'Implement LangChain reference architecture for production systems:",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "langchain-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "langchain-reference-architecture 'implement langchain reference architecture for production systems: saas-packs read write edit "
-    },
-    {
-      "type": "skill",
-      "id": "langchain-reference-architecture-2",
-      "slug": "langchain-reference-architecture-2",
-      "name": "langchain-reference-architecture",
       "description": "\"A reference layered architecture for production LangChain 1.0 / LangGraph\\",
       "category": "saas-packs",
       "allowedTools": [
@@ -47230,26 +46809,6 @@
       "type": "skill",
       "id": "langchain-sdk-patterns",
       "slug": "langchain-sdk-patterns",
-      "name": "langchain-sdk-patterns",
-      "description": "'Apply production-ready LangChain SDK patterns for structured output,",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "langchain-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "langchain-sdk-patterns 'apply production-ready langchain sdk patterns for structured output, saas-packs read write edit "
-    },
-    {
-      "type": "skill",
-      "id": "langchain-sdk-patterns-2",
-      "slug": "langchain-sdk-patterns-2",
       "name": "langchain-sdk-patterns",
       "description": "'Compose LangChain 1.0 Python runnables with the production defaults",
       "category": "saas-packs",
@@ -47273,26 +46832,6 @@
       "id": "langchain-security-basics",
       "slug": "langchain-security-basics",
       "name": "langchain-security-basics",
-      "description": "'Apply LangChain security best practices for production LLM apps.",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "langchain-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "langchain-security-basics 'apply langchain security best practices for production llm apps. saas-packs read write edit "
-    },
-    {
-      "type": "skill",
-      "id": "langchain-security-basics-2",
-      "slug": "langchain-security-basics-2",
-      "name": "langchain-security-basics",
       "description": "\"Harden a LangChain 1.0 chain or LangGraph agent against prompt injection,\\",
       "category": "saas-packs",
       "allowedTools": [
@@ -47315,29 +46854,6 @@
       "id": "langchain-upgrade-migration",
       "slug": "langchain-upgrade-migration",
       "name": "langchain-upgrade-migration",
-      "description": "'Upgrade LangChain SDK versions safely with import path migration,",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Bash(npm:*)",
-        "Bash(pip:*)",
-        "Grep"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "langchain-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "langchain-upgrade-migration 'upgrade langchain sdk versions safely with import path migration, saas-packs read write edit bash(npm:*) bash(pip:*) grep "
-    },
-    {
-      "type": "skill",
-      "id": "langchain-upgrade-migration-2",
-      "slug": "langchain-upgrade-migration-2",
-      "name": "langchain-upgrade-migration",
       "description": "\"Migrate a LangChain 0.3.x Python codebase to LangChain 1.0 / LangGraph\\",
       "category": "saas-packs",
       "allowedTools": [
@@ -47359,26 +46875,6 @@
       "type": "skill",
       "id": "langchain-webhooks-events",
       "slug": "langchain-webhooks-events",
-      "name": "langchain-webhooks-events",
-      "description": "'Implement LangChain callback handlers, streaming, webhooks,",
-      "category": "saas-packs",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit"
-      ],
-      "compatibleWith": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "langchain-pack",
-        "category": "saas-packs"
-      },
-      "searchText": "langchain-webhooks-events 'implement langchain callback handlers, streaming, webhooks, saas-packs read write edit "
-    },
-    {
-      "type": "skill",
-      "id": "langchain-webhooks-events-2",
-      "slug": "langchain-webhooks-events-2",
       "name": "langchain-webhooks-events",
       "description": "\"Dispatch LangChain 1.0 chain/agent events to external systems \\u2014\\",
       "category": "saas-packs",

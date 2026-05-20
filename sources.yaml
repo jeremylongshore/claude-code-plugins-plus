@@ -727,6 +727,39 @@ sources:
       - '.git/**'
       - '*.log'
   # ============================================================
+  # Kobiton Automate (Kobiton, Inc.)
+  # https://github.com/kobiton/automate
+  # Real-device cloud for mobile testing. 12 MCP tools + 3
+  # specialist agents across Devices / Sessions / Apps surfaces.
+  # ============================================================
+
+  - name: kobiton-automate
+    description: Real mobile devices on demand via Kobiton's remote MCP — no emulators, no flaky CI
+    repo: kobiton/automate
+    source_path: .
+    target_path: plugins/testing/kobiton-automate
+    author:
+      name: Kobiton Inc.
+      github: kobiton
+    license: MIT
+    category: testing
+    verified: true
+    include:
+      - 'README.md'
+      - 'LICENSE'
+      - 'CHANGELOG.md'
+      - '.claude-plugin/**'
+      - 'skills/**'
+      - 'docs/**'
+      - 'tools/**'
+    exclude:
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
+      - '.mcp.dev-local.json'
+      - 'pnpm-lock.yaml'
+      - 'package.json'
+  # ============================================================
   # Claudebase (Rohit Hazra / rohithzr)
   # https://github.com/rohithzr/claudebase
   # Back up, restore, and sync Claude Code config to a private

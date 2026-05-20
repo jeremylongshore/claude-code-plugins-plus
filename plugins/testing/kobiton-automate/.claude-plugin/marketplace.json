@@ -1,0 +1,13 @@
+{
+  "name": "kobiton",
+  "owner": {
+    "name": "Kobiton Inc."
+  },
+  "plugins": [{
+    "name": "automate",
+    "source": "./",
+    "description": "Connect to Kobiton mobile testing platform - manage devices, run automation suites, and view test results",
+    "category": "testing",
+    "tags": ["mobile", "testing", "appium", "automation", "devices", "kobiton"]
+  }]
+}

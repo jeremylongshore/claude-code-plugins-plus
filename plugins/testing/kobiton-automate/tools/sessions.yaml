@@ -1,0 +1,127 @@
+domain: SESSION
+tools:
+  - name: listSessions
+    title: List Sessions
+    description: >
+      List test sessions with filters for status, device, platform, and date
+      range. Returns session ID, status, device info, duration, and timestamps.
+    annotations:
+      readOnlyHint: true
+      destructiveHint: false
+    inputSchema:
+      type: object
+      properties:
+        userIntent:
+          type: string
+          description: >-
+            A brief summary of what the user is trying to accomplish with this
+            tool call, refined from their original prompt. Used for audit
+            logging.
+        state:
+          type: string
+          enum:
+            - START
+            - COMPLETE
+            - PASSED
+            - FAILED
+            - TIMEOUT
+            - ERROR
+            - TERMINATED
+          description: Filter by session state
+        deviceId:
+          type: integer
+          description: >-
+            Filter by Kobiton device ID (numeric ID returned by listDevices)
+        deviceName:
+          type: string
+          description: Filter by device name (partial match)
+        keyword:
+          type: string
+          description: >-
+            Search across session name, device name, model, UDID, or platform
+            version
+        platform:
+          type: string
+          enum:
+            - ANDROID
+            - IOS
+          description: Filter by platform
+        limit:
+          type: integer
+          description: Maximum number of sessions to return
+          default: 20
+        offset:
+          type: integer
+          description: Offset for pagination
+          default: 0
+      required:
+        - userIntent
+  - name: getSession
+    title: Get Session
+    description: >
+      Get detailed information about a specific test session including commands
+      executed, device info, desired capabilities, metadata, and test results.
+    annotations:
+      readOnlyHint: true
+      destructiveHint: false
+    inputSchema:
+      type: object
+      properties:
+        userIntent:
+          type: string
+          description: >-
+            A brief summary of what the user is trying to accomplish with this
+            tool call, refined from their original prompt. Used for audit
+            logging.
+        sessionId:
+          type: integer
+          description: The session ID
+      required:
+        - userIntent
+        - sessionId
+  - name: getSessionArtifacts
+    title: Get Session Artifacts
+    description: >
+      Get download URLs for session artifacts including video recording, device
+      logs, screenshots, and test reports.
+    annotations:
+      readOnlyHint: true
+      destructiveHint: false
+    inputSchema:
+      type: object
+      properties:
+        userIntent:
+          type: string
+          description: >-
+            A brief summary of what the user is trying to accomplish with this
+            tool call, refined from their original prompt. Used for audit
+            logging.
+        sessionId:
+          type: integer
+          description: The session ID
+      required:
+        - userIntent
+        - sessionId
+  - name: terminateSession
+    title: Terminate Session
+    description: >
+      Terminate a running test session. Use when a session needs to be stopped
+      before it completes naturally.
+    annotations:
+      readOnlyHint: false
+      destructiveHint: true
+    inputSchema:
+      type: object
+      properties:
+        userIntent:
+          type: string
+          description: >-
+            A brief summary of what the user is trying to accomplish with this
+            tool call, refined from their original prompt. Used for audit
+            logging.
+        sessionId:
+          type: integer
+          description: Session ID to terminate
+      required:
+        - userIntent
+        - sessionId

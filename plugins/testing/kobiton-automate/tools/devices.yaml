@@ -1,0 +1,129 @@
+domain: DEVICE
+tools:
+  - name: listDevices
+    title: List Devices
+    description: >
+      List available devices filtered by platform, availability status, or
+      device group. Returns device name, UDID, platform, OS version, and
+      availability.
+    annotations:
+      readOnlyHint: true
+      destructiveHint: false
+    inputSchema:
+      type: object
+      properties:
+        userIntent:
+          type: string
+          description: >-
+            A brief summary of what the user is trying to accomplish with this
+            tool call, refined from their original prompt. Used for audit
+            logging.
+        platform:
+          type: string
+          enum:
+            - ANDROID
+            - IOS
+          description: Filter by device platform
+        available:
+          type: boolean
+          description: Only show currently available devices
+          default: true
+        deviceGroup:
+          type: string
+          enum:
+            - PRIVATE
+            - CLOUD
+            - ALL
+          description: Filter by device group
+          default: PRIVATE
+        deviceName:
+          type: string
+          description: Search by device name (partial match, e.g. "Pixel" matches "Pixel 4", "Pixel 6")
+        udid:
+          type: string
+          description: Filter by exact device UDID
+        groupId:
+          type: integer
+          description: Filter by device group ID
+        limit:
+          type: integer
+          description: Maximum number of devices to return (max 20)
+          default: 5
+      required:
+        - userIntent
+  - name: getDeviceStatus
+    title: Get Device Status
+    description: >
+      Get the real-time status of a specific device including availability,
+      current session info, battery level, and connection state.
+    annotations:
+      readOnlyHint: true
+      destructiveHint: false
+    inputSchema:
+      type: object
+      properties:
+        userIntent:
+          type: string
+          description: >-
+            A brief summary of what the user is trying to accomplish with this
+            tool call, refined from their original prompt. Used for audit
+            logging.
+        deviceId:
+          type: integer
+          description: The device ID
+      required:
+        - userIntent
+        - deviceId
+  - name: reserveDevice
+    title: Reserve Device
+    description: >
+      Reserve a device for exclusive use during testing. The reservation
+      prevents other users from starting sessions on the device. Use the device
+      UDID from listDevices. Returns reservation_id which is needed for
+      terminateReservation.
+    annotations:
+      readOnlyHint: false
+      destructiveHint: false
+    inputSchema:
+      type: object
+      properties:
+        userIntent:
+          type: string
+          description: >-
+            A brief summary of what the user is trying to accomplish with this
+            tool call, refined from their original prompt. Used for audit
+            logging.
+        udid:
+          type: string
+          description: The device UDID to reserve (from listDevices)
+        durationMinutes:
+          type: integer
+          description: Reservation duration in minutes
+          default: 30
+      required:
+        - userIntent
+        - udid
+  - name: terminateReservation
+    title: Terminate Reservation
+    description: >
+      Release a reserved device by terminating its reservation. Use the
+      reservation_id returned by reserveDevice or from listDevices
+      (reservation_id field on reserved devices).
+    annotations:
+      readOnlyHint: false
+      destructiveHint: true
+    inputSchema:
+      type: object
+      properties:
+        userIntent:
+          type: string
+          description: >-
+            A brief summary of what the user is trying to accomplish with this
+            tool call, refined from their original prompt. Used for audit
+            logging.
+        reservationId:
+          type: integer
+          description: Reservation ID from reserveDevice or listDevices
+      required:
+        - userIntent
+        - reservationId

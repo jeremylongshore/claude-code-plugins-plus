@@ -1,0 +1,127 @@
+domain: APP
+tools:
+  - name: listApps
+    title: List Apps
+    description: >
+      List uploaded app builds for the current user's organization. Returns app
+      ID, name, version, platform, upload date, and status.
+    annotations:
+      readOnlyHint: true
+      destructiveHint: false
+    inputSchema:
+      type: object
+      properties:
+        userIntent:
+          type: string
+          description: >-
+            A brief summary of what the user is trying to accomplish with this
+            tool call, refined from their original prompt. Used for audit
+            logging.
+        keyword:
+          type: string
+          description: Search by app name, tag, or ID
+        platform:
+          type: string
+          enum:
+            - ANDROID
+            - IOS
+          description: Filter by app platform
+        limit:
+          type: integer
+          description: Maximum number of apps to return (max 20)
+          default: 5
+      required:
+        - userIntent
+  - name: uploadAppToStore
+    title: Upload App to Store
+    description: >
+      Upload an app build to Kobiton Store for permanent storage and management.
+      The app appears in the portal's app repository. Three-step process:
+      1) Call this tool to get a pre-signed upload URL, upload_headers, and app_path
+      2) Upload the file via PUT to upload_url using the exact upload_headers returned
+      3) Call confirmAppUpload with the app_path and filename to finalize
+      The upload_headers must be sent exactly as returned or S3 will reject the upload.
+      The confirm step (step 3) triggers Kobiton to parse the file and create the app
+      record. Without it, the file is orphaned in S3.
+    annotations:
+      readOnlyHint: false
+      destructiveHint: false
+    inputSchema:
+      type: object
+      properties:
+        userIntent:
+          type: string
+          description: >-
+            A brief summary of what the user is trying to accomplish with this
+            tool call, refined from their original prompt. Used for audit
+            logging.
+        filename:
+          type: string
+          description: App filename with extension (e.g., "my-app.apk")
+        platform:
+          type: string
+          enum:
+            - ANDROID
+            - IOS
+          description: App platform
+      required:
+        - userIntent
+        - filename
+        - platform
+  - name: confirmAppUpload
+    title: Confirm App Upload
+    description: >
+      Confirm a previously uploaded app so Kobiton parses the file and creates
+      the app record. Call this after successfully uploading the file via PUT
+      to the pre-signed URL returned by uploadAppToStore. Without this step
+      the file is orphaned in S3. Returns the appId and versionId of the
+      created app record.
+    annotations:
+      readOnlyHint: false
+      destructiveHint: false
+    inputSchema:
+      type: object
+      properties:
+        userIntent:
+          type: string
+          description: >-
+            A brief summary of what the user is trying to accomplish with this
+            tool call, refined from their original prompt. Used for audit
+            logging.
+        appPath:
+          type: string
+          description: The app_path value returned by uploadAppToStore
+        filename:
+          type: string
+          description: Original filename with extension (e.g., "my-app.apk")
+      required:
+        - userIntent
+        - appPath
+        - filename
+  - name: getApp
+    title: Get App
+    description: >
+      Get detailed information about an app including name, platform, state, and
+      optionally all version history.
+    annotations:
+      readOnlyHint: true
+      destructiveHint: false
+    inputSchema:
+      type: object
+      properties:
+        userIntent:
+          type: string
+          description: >-
+            A brief summary of what the user is trying to accomplish with this
+            tool call, refined from their original prompt. Used for audit
+            logging.
+        appId:
+          type: integer
+          description: App ID
+        includeAllVersions:
+          type: boolean
+          description: Include all app versions
+          default: false
+      required:
+        - userIntent
+        - appId

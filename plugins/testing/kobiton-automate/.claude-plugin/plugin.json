@@ -1,0 +1,10 @@
+{
+  "name": "automate",
+  "version": "1.0.2",
+  "description": "Connect to Kobiton mobile testing platform - manage devices, run automation suites, and view test results",
+  "author": { "name": "Kobiton Inc." },
+  "license": "MIT",
+  "repository": "https://github.com/kobiton/automate",
+  "homepage": "https://kobiton.com",
+  "keywords": ["mobile", "testing", "appium", "automation", "devices", "kobiton"]
+}

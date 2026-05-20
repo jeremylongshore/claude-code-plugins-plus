@@ -2,7 +2,7 @@
   "week": "2026-W21",
   "title": "Killer Skill of the Week",
   "spotlight": {
-    "pluginSlug": "automate",
+    "pluginSlug": "kobiton-automate",
     "headline": "Real mobile devices on demand — no emulators, no flaky CI",
     "whyKiller": "Kobiton's automate plugin gives Claude Code, Cursor, Codex, and Gemini CLI direct access to the Kobiton real-device cloud via remote MCP. 12 tools across three surfaces — Devices (list / reserve / status / terminate), Sessions (list / get / artifacts / terminate), and Apps (upload / confirm / list / get) — plus 3 specialist agents for device picking, Appium capability reconciliation, and session triage. One install, real iOS + Android hardware, no emulator drift.",
     "author": "Kobiton Inc.",
@@ -10,7 +10,7 @@
     "grade": "A",
     "skillCount": 1,
     "category": "testing",
-    "link": "https://github.com/kobiton/automate",
+    "link": "/plugins/kobiton-automate",
     "quote": "Mobile testing that runs where the bugs actually live — on the device, not the simulator."
   },
   "hallOfFame": [
@@ -113,7 +113,7 @@
     }
   ],
   "meta": {
-    "version": "2.3.0",
+    "version": "2.4.0",
     "lastUpdated": "2026-05-20",
     "curatedBy": "Jeremy Longshore"
   }

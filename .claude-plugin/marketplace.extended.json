@@ -10,9 +10,9 @@
     "version": "1.6.0",
     "homepage": "https://github.com/jeremylongshore/claude-code-plugins",
     "pluginRoot": "./plugins",
-    "totalPlugins": 422,
-    "skillsEnabled": 268,
-    "lastUpdated": "2026-04-20"
+    "totalPlugins": 423,
+    "skillsEnabled": 269,
+    "lastUpdated": "2026-05-20"
   },
   "plugins": [
     {
@@ -3499,6 +3499,43 @@
         "grade": "A",
         "badge": "gold",
         "lastValidated": "2026-03-10T00:00:00.000Z"
+      }
+    },
+    {
+      "name": "kobiton-automate",
+      "source": "./plugins/testing/kobiton-automate",
+      "description": "Real mobile devices on demand via Kobiton's remote MCP — no emulators, no flaky CI. 12 tools across Devices, Sessions, and Apps surfaces, plus specialist agents for device picking, Appium capability reconciliation, and session triage.",
+      "version": "1.0.2",
+      "category": "testing",
+      "keywords": [
+        "mobile",
+        "testing",
+        "appium",
+        "automation",
+        "devices",
+        "ios",
+        "android",
+        "real-device",
+        "mcp",
+        "kobiton"
+      ],
+      "author": {
+        "name": "Kobiton Inc.",
+        "url": "https://github.com/kobiton"
+      },
+      "components": {
+        "skills": 1
+      },
+      "external_sync": {
+        "enabled": true,
+        "source_repo": "kobiton/automate",
+        "source_path": "."
+      },
+      "verification": {
+        "score": 95,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-05-20T00:00:00.000Z"
       }
     },
     {
