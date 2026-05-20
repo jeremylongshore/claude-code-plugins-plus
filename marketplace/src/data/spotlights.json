@@ -1,19 +1,32 @@
 {
-  "week": "2026-W18",
+  "week": "2026-W21",
   "title": "Killer Skill of the Week",
   "spotlight": {
-    "pluginSlug": "skyvern",
-    "headline": "AI agents that drive your browser. 21,000 stars of Selenium-killer.",
-    "whyKiller": "Skyvern automates browser-based workflows with vision-language models — point it at a page, describe the goal, and the agent navigates, fills forms, handles 2FA, and extracts data. Where Selenium and Playwright break the moment a page redesigns, Skyvern adapts because it sees the page like a human would. The CLI skill exposes Skyvern's task runner inside Claude Code: navigate, fill forms, extract data, handle logins, and stream back structured results. Pulled into the marketplace via daily external sync from Skyvern-AI/skyvern (AGPL-3.0). Sourced into the catalog by community contributor @mark1ian.",
-    "author": "Skyvern-AI",
-    "authorGithub": "Skyvern-AI",
+    "pluginSlug": "automate",
+    "headline": "Real mobile devices on demand — no emulators, no flaky CI",
+    "whyKiller": "Kobiton's automate plugin gives Claude Code, Cursor, Codex, and Gemini CLI direct access to the Kobiton real-device cloud via remote MCP. 12 tools across three surfaces — Devices (list / reserve / status / terminate), Sessions (list / get / artifacts / terminate), and Apps (upload / confirm / list / get) — plus 3 specialist agents for device picking, Appium capability reconciliation, and session triage. One install, real iOS + Android hardware, no emulator drift.",
+    "author": "Kobiton Inc.",
+    "authorGithub": "kobiton",
     "grade": "A",
     "skillCount": 1,
-    "category": "productivity",
-    "link": "https://github.com/Skyvern-AI/skyvern",
-    "quote": "Automate browser-based workflows using LLMs and computer vision."
+    "category": "testing",
+    "link": "https://github.com/kobiton/automate",
+    "quote": "Mobile testing that runs where the bugs actually live — on the device, not the simulator."
   },
   "hallOfFame": [
+    {
+      "week": "2026-W18",
+      "pluginSlug": "skyvern",
+      "headline": "AI agents that drive your browser. 21,000 stars of Selenium-killer.",
+      "whyKiller": "Skyvern automates browser-based workflows with vision-language models — point it at a page, describe the goal, and the agent navigates, fills forms, handles 2FA, and extracts data. Where Selenium and Playwright break the moment a page redesigns, Skyvern adapts because it sees the page like a human would. The CLI skill exposes Skyvern's task runner inside Claude Code: navigate, fill forms, extract data, handle logins, and stream back structured results. Pulled into the marketplace via daily external sync from Skyvern-AI/skyvern (AGPL-3.0). Sourced into the catalog by community contributor @mark1ian.",
+      "author": "Skyvern-AI",
+      "authorGithub": "Skyvern-AI",
+      "grade": "A",
+      "skillCount": 1,
+      "category": "productivity",
+      "link": "https://github.com/Skyvern-AI/skyvern",
+      "quote": "Automate browser-based workflows using LLMs and computer vision."
+    },
     {
       "week": "2026-W17",
       "pluginSlug": "code-cleanup",
@@ -100,8 +113,8 @@
     }
   ],
   "meta": {
-    "version": "2.2.0",
-    "lastUpdated": "2026-05-02",
+    "version": "2.3.0",
+    "lastUpdated": "2026-05-20",
     "curatedBy": "Jeremy Longshore"
   }
 }
