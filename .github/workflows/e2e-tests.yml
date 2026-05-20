@@ -1,0 +1,170 @@
+name: E2E Tests
+
+# Heavy tests — Playwright UI suite + production-e2e against tonsofskills.com.
+# Combined runtime ~14 min. Trigger policy is tiered:
+#
+#   1. Path-filtered PRs — only fire when the diff actually touches UI surface
+#      that could break visually. Catalog-only PRs, doc PRs, plugin-content
+#      PRs, and CI config PRs don't run these.
+#   2. Push to main — always run after merge so we catch any regression that
+#      slipped through the path filter.
+#   3. workflow_dispatch — manual opt-in for PRs that fell outside the path
+#      filter but need a sanity check (e.g., catalog PR that touches a featured
+#      plugin's spotlight). Run via: gh workflow run e2e-tests.yml --ref <branch>.
+#
+# Required-check policy: NOT in the required-checks set. validate +
+# marketplace-validation cover the spec gates. E2E catches visual/runtime
+# regressions; failures here are signal, not gate.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'marketplace/src/components/**'
+      - 'marketplace/src/pages/**'
+      - 'marketplace/src/layouts/**'
+      - 'marketplace/src/styles/**'
+      - 'marketplace/src/scripts/**'
+      - 'marketplace/public/**'
+      - 'marketplace/astro.config.mjs'
+      - 'marketplace/playwright.config.ts'
+      - 'marketplace/playwright.production.config.ts'
+      - 'marketplace/tests/**'
+      - '.github/workflows/e2e-tests.yml'
+  pull_request:
+    paths:
+      - 'marketplace/src/components/**'
+      - 'marketplace/src/pages/**'
+      - 'marketplace/src/layouts/**'
+      - 'marketplace/src/styles/**'
+      - 'marketplace/src/scripts/**'
+      - 'marketplace/public/**'
+      - 'marketplace/astro.config.mjs'
+      - 'marketplace/playwright.config.ts'
+      - 'marketplace/playwright.production.config.ts'
+      - 'marketplace/tests/**'
+      - '.github/workflows/e2e-tests.yml'
+
+# Cancel in-flight runs when a new push lands on the same PR/branch.
+concurrency:
+  group: e2e-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Playwright UI tests against a locally-built marketplace. PROOF GATE for
+  # UI-touching PRs — catches breakage before it reaches production.
+  playwright-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
+
+      - name: Install marketplace dependencies
+        run: |
+          cd marketplace
+          npm install --ignore-scripts
+
+      - name: Install Playwright
+        run: |
+          cd marketplace
+          npm install -D @playwright/test
+
+      - name: Install Playwright browsers
+        run: |
+          cd marketplace
+          npx playwright install --with-deps chromium webkit
+
+      - name: Build marketplace
+        run: |
+          cd marketplace
+          npm run build
+
+      - name: Run Playwright tests
+        run: |
+          cd marketplace
+          npx playwright test --reporter=html,github
+        env:
+          CI: true
+
+      # A11y smoke tests (issue #588) — gate-wired-but-non-blocking. The spec
+      # baselines the current violation count per page; cleanup is tracked
+      # separately under the a11y-cleanup-followup workstream. Run explicitly
+      # so the result shows up as its own CI step.
+      - name: Run a11y baseline tests
+        run: |
+          cd marketplace
+          npx playwright test tests/a11y/ --reporter=list
+        env:
+          CI: true
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: playwright-report
+          path: marketplace/playwright-report/
+          retention-days: 30
+
+      - name: Upload test screenshots
+        uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: test-screenshots
+          path: marketplace/test-results/screenshots/
+          retention-days: 30
+
+      - name: Upload test videos
+        uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: test-videos
+          path: marketplace/test-results/**/video.webm
+          retention-days: 7
+
+  # Production E2E against live tonsofskills.com. No build needed — drives a
+  # real browser against the deployed site. Useful for detecting deploy/CDN
+  # issues that local builds can't catch.
+  production-e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
+
+      - name: Install marketplace dependencies
+        run: |
+          cd marketplace
+          npm install --ignore-scripts
+
+      - name: Install Playwright
+        run: |
+          cd marketplace
+          npm install -D @playwright/test
+
+      - name: Install Playwright browsers
+        run: |
+          cd marketplace
+          npx playwright install --with-deps chromium webkit
+
+      - name: Run production E2E tests
+        run: |
+          cd marketplace
+          npx playwright test --config=playwright.production.config.ts --reporter=html,github
+        env:
+          CI: true
+
+      - name: Upload production E2E report
+        uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: production-e2e-report
+          path: marketplace/production-e2e-report/
+          retention-days: 30

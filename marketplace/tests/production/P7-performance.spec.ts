@@ -47,6 +47,17 @@ test.describe('P7: Performance', () => {
       if (!src || src.startsWith('data:')) continue;
       if (/^https?:\/\/(?:[^/]+\.)?github(?:usercontent)?\.com\//i.test(src)) continue;
 
+      // Skip display:none images. With loading="lazy" the browser never
+      // initiates the request for hidden imgs, so naturalWidth stays 0 —
+      // a false-positive. The user can't see them; their src can't be
+      // "broken" from a visitor's POV. If a hidden img matters, the
+      // component should preload it (loading="eager") and we'd catch it.
+      const isHidden = await img.evaluate((el: HTMLImageElement) => {
+        const cs = getComputedStyle(el);
+        return cs.display === 'none' || cs.visibility === 'hidden';
+      });
+      if (isHidden) continue;
+
       const naturalWidth = await img.evaluate((el: HTMLImageElement) => el.naturalWidth);
       expect(naturalWidth, `Broken image: ${src}`).toBeGreaterThan(0);
     }
