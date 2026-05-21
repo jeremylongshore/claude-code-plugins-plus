@@ -334,44 +334,54 @@ jobs:
           pnpm build
           echo "✅ Build complete"
 
-      - name: Run MCP plugin tests
+      - name: Run plugin tests (all categories with package.json + test script)
         if: matrix.test-type == 'mcp-plugins'
         run: |
-          echo "Running MCP plugin tests..."
-
-          # Run tests for each MCP plugin that has a test script
-          for package in plugins/mcp/*/package.json; do
+          echo "Running plugin tests across ALL categories (not just plugins/mcp/)..."
+          # Previously this loop only walked plugins/mcp/*. That left test
+          # files in other categories (kobiton-automate, skill-enhancers, etc.)
+          # shipping but never executed. Now we walk any plugin top-level
+          # package.json under plugins/<category>/<name>/.
+          for package in plugins/*/*/package.json; do
             if [ -f "$package" ]; then
               dir=$(dirname "$package")
+              category=$(basename "$(dirname "$dir")")
               plugin_name=$(basename "$dir")
 
-              echo "Testing $plugin_name..."
+              # Skip SaaS packs — they're skill collections, no runtime tests.
+              if [ "$category" = "saas-packs" ]; then continue; fi
+
+              # Check if a test script exists in package.json
+              if ! grep -q '"test":' "$package" && ! grep -q '"test:ci":' "$package"; then
+                continue  # no test script declared, nothing to run
+              fi
+
+              # Skip Python-based plugins (tested in python-tests job)
+              if grep -q 'pytest' "$package"; then
+                echo "⏭️  Skipping $category/$plugin_name (Python plugin, tested separately)"
+                continue
+              fi
+
+              echo "Testing $category/$plugin_name..."
               cd "$dir"
 
-              # Check if test script exists
-              if grep -q '"test":' package.json || grep -q '"test:ci":' package.json; then
-                # Skip Python-based plugins (tested in python-tests job)
-                if grep -q 'pytest' package.json; then
-                  echo "⏭️  Skipping $plugin_name (Python plugin, tested separately)"
-                  cd - > /dev/null
-                  continue
-                fi
-                # Prefer test:ci if available, otherwise use test
-                if grep -q '"test:ci":' package.json; then
-                  pnpm test:ci || exit 1
-                else
-                  pnpm test -- --run || exit 1
-                fi
-                echo "✅ Tests passed for $plugin_name"
+              # Prefer test:ci if available
+              if grep -q '"test:ci":' package.json; then
+                pnpm test:ci || exit 1
               else
-                echo "⚠️  No test script found for $plugin_name"
+                pnpm test -- --run || exit 1
               fi
+              echo "✅ Tests passed for $category/$plugin_name"
 
               cd - > /dev/null
             fi
           done
 
-          echo "✅ All MCP plugin tests passed"
+          echo ""
+          echo "Note: the 'Test framework' field above is whichever the plugin"
+          echo "      declares — vitest, bun, jest, mocha, etc. The loop is"
+          echo "      framework-agnostic; whichever 'test' script the package"
+          echo "      defines is what runs."
 
       - name: Type checking
         if: matrix.test-type == 'mcp-plugins'
@@ -749,3 +759,91 @@ jobs:
         run: |
           cd packages/cli
           pnpm exec size-limit
+
+  # ──────────────────────────────────────────────────────────────────────
+  # Script-quality gates — added 2026-05-20 to close blind spots flagged
+  # in the audit (post-#756). Previously CI checked plugin STRUCTURE (README,
+  # SKILL.md frontmatter, catalog consistency) but didn't actually look at
+  # the scripts shipped INSIDE skills. These three jobs fix that:
+  #
+  #   shellcheck-skills              — syntax-check + lint every .sh in plugins/
+  #   skill-codeblock-syntax         — syntax-check fenced code blocks in
+  #                                    SKILL.md / README.md (python, bash, js)
+  #   typescript-coverage-audit      — flag TS files in plugins/ whose
+  #                                    enclosing package.json doesn't define
+  #                                    a `typecheck` script (so they slip
+  #                                    past `pnpm --filter '*' typecheck`)
+  #
+  # The two markdown / TS-coverage gates run in REPORT-ONLY mode initially —
+  # they print findings but exit 0. Flip to enforcing once the cleanup PR
+  # lands (separate bead). See PR that added these for the rollout plan.
+  # ──────────────────────────────────────────────────────────────────────
+
+  shellcheck-skills:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install shellcheck
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq shellcheck
+          shellcheck --version | head -2
+
+      - name: Run shellcheck across all .sh in plugins/ (REPORT-ONLY)
+        # REPORT-ONLY for initial rollout — exits 0 even on errors.
+        # Local scan already found a misnamed Python file shipping as .sh
+        # (plugins/packages/security-pro-pack/.../security_scan.sh); more
+        # likely exist across the remaining 316 files. Flip this step to
+        # blocking once the cleanup pass clears the existing errors.
+        run: |
+          set +e
+          fail=0
+          count=0
+          while IFS= read -r f; do
+            count=$((count + 1))
+            shellcheck --severity=error --shell=bash "$f" || fail=1
+          done < <(find plugins -name '*.sh' -not -path '*/node_modules/*' -type f)
+          echo ""
+          echo "Shellchecked $count .sh files (severity=error)."
+          if [ $fail -ne 0 ]; then
+            echo "::warning::shellcheck found errors — reporting only for now"
+          fi
+          exit 0
+
+  skill-codeblock-syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Setup Node.js (for js codeblock syntax checks)
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+
+      - name: Lint fenced code blocks in SKILL.md / README.md
+        # REPORT-ONLY for initial rollout — flip to blocking once the
+        # cleanup pass clears existing failures across 3000+ SKILL.md files.
+        run: |
+          python3 scripts/lint-skill-codeblocks.py --report-only --root plugins
+
+  typescript-coverage-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Audit TypeScript files for typecheck coverage
+        # REPORT-ONLY for initial rollout — flip to blocking once each
+        # uncovered package.json has a `typecheck` script added.
+        run: |
+          python3 scripts/audit-typescript-coverage.py --report-only --root plugins
