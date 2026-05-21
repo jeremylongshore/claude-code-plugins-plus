@@ -9,7 +9,7 @@ import JeremysStash from '../components/JeremysStash.astro';
 import PartnerBar from '../components/PartnerBar.astro';
 import PluginCard from '../components/PluginCard.astro';
 import searchIndex from '../data/unified-search-index.json';
-import starterPack from '../data/starter-pack.json';
+import heatCheck from '../data/heat-check.json';
 
 // Dynamic stats from search index (updated at build time)
 const totalSkills = searchIndex.stats.totalSkills;
@@ -849,27 +849,27 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
         }
 
         /* ========================================
-           STARTER PACK SECTION (Phase 4C)
+           HEAT CHECK SECTION — editorial curated picks (was Phase 4C "starter pack")
            ======================================== */
-        .starter-pack-section {
+        .heat-check-section {
             padding: 4rem 2rem;
             background: var(--surface);
             border-top: 1px solid var(--border, var(--rule));
             border-bottom: 1px solid var(--border, var(--rule));
         }
 
-        .starter-pack-container {
+        .heat-check-container {
             max-width: 1200px;
             margin: 0 auto;
         }
 
-        .starter-pack-header {
+        .heat-check-header {
             text-align: left;
             margin-bottom: 2.5rem;
             max-width: 720px;
         }
 
-        .starter-pack-title {
+        .heat-check-title {
             color: var(--text, var(--ink));
             font-size: clamp(1.75rem, 3vw, 2.25rem);
             font-weight: 700;
@@ -877,44 +877,44 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
             letter-spacing: -0.02em;
         }
 
-        .starter-pack-subtitle {
+        .heat-check-subtitle {
             color: var(--text-2, var(--ink-2));
             font-size: 1.05rem;
             line-height: 1.55;
             margin: 0;
         }
 
-        .starter-pack-grid {
+        .heat-check-grid {
             display: grid;
             grid-template-columns: minmax(0, 1fr);
             margin-bottom: 2rem;
         }
 
         @media (min-width: 768px) {
-            .starter-pack-grid {
+            .heat-check-grid {
                 grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr));
                 gap: 1.25rem;
             }
         }
 
-        .starter-pack-meta {
+        .heat-check-meta {
             color: var(--text-3, var(--ink-2));
             font-size: 0.85rem;
             margin: 0;
         }
 
-        .starter-pack-explore-link {
+        .heat-check-explore-link {
             color: var(--accent, var(--signal));
             text-decoration: none;
             font-weight: 600;
         }
 
-        .starter-pack-explore-link:hover {
+        .heat-check-explore-link:hover {
             text-decoration: underline;
         }
 
         @media (max-width: 768px) {
-            .starter-pack-section {
+            .heat-check-section {
                 padding: 3rem 1.5rem;
             }
         }
@@ -1453,26 +1453,28 @@ const fmtNum = (n: number) => n.toLocaleString('en-US');
         </div>
     </section>
 
-    <!-- Start here — curated 5-plugin onboarding pack (Phase 4C) -->
-    <section class="starter-pack-section">
-        <div class="starter-pack-container">
-            <div class="starter-pack-header">
-                <h2 class="starter-pack-title">{starterPack.title}</h2>
-                <p class="starter-pack-subtitle">{starterPack.subtitle}</p>
+    <!-- Heat check — editorial pick of what's hot right now. Mixes
+         in-marketplace plugins (use install command) with external links
+         (use external_url, e.g. tools that live in their own repo). -->
+    <section class="heat-check-section">
+        <div class="heat-check-container">
+            <div class="heat-check-header">
+                <h2 class="heat-check-title">{heatCheck.title}</h2>
+                <p class="heat-check-subtitle">{heatCheck.subtitle}</p>
             </div>
-            <div class="starter-pack-grid">
-                {starterPack.plugins.map((plugin) => (
+            <div class="heat-check-grid">
+                {heatCheck.plugins.map((plugin) => (
                     <PluginCard
                         name={plugin.name}
                         description={plugin.why || plugin.tagline}
                         installCommand={plugin.install}
-                        href={`/plugins/${plugin.slug}`}
+                        href={plugin.external_url || `/plugins/${plugin.slug}`}
                     />
                 ))}
             </div>
-            <p class="starter-pack-meta">
-                Curated by {starterPack.meta.curated_by} · last updated {starterPack.meta.last_updated} ·
-                <a href="/explore" class="starter-pack-explore-link">explore all {totalPlugins} plugins →</a>
+            <p class="heat-check-meta">
+                Curated by {heatCheck.meta.curated_by} · last updated {heatCheck.meta.last_updated} ·
+                <a href="/explore" class="heat-check-explore-link">explore all {totalPlugins} plugins →</a>
             </p>
         </div>
     </section>

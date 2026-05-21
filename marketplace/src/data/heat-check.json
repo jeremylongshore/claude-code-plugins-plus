@@ -1,0 +1,60 @@
+{
+  "title": "Heat check",
+  "subtitle": "Six picks that hit different. Not a starter pack — these are what we actually run.",
+  "plugins": [
+    {
+      "slug": "code-cleanup",
+      "name": "code-cleanup",
+      "tagline": "11-dimensional codebase cleanup with build-verification gates",
+      "category": "code-quality",
+      "why": "Born from a real session — 25,000 lines removed, 4 bugs caught. 11 specialized agents scan for dead code, AI slop, weak types, N+1 queries, floating promises, security holes. LOW-risk dimensions auto-apply after build verification; HIGH-risk flags only — never touches your code without proof.",
+      "install": "/plugin install code-cleanup@claude-code-plugins-plus"
+    },
+    {
+      "slug": "web-analytics",
+      "name": "web-analytics",
+      "tagline": "Push-based analytics team via self-hosted Umami + MCP",
+      "category": "analytics",
+      "why": "Replaces opening dashboards. 9 specialist agents fetch from self-hosted Umami via MCP (GA4 fallback for legacy), detect anomalies, analyze funnels, verify claims adversarially, deliver a narrative report. Three tiers: 30-second pulse, daily brief, or full cross-site deep-dive. Stop checking — get pushed.",
+      "install": "/plugin install web-analytics@claude-code-plugins-plus"
+    },
+    {
+      "slug": "kobiton-automate",
+      "name": "kobiton-automate",
+      "tagline": "Real mobile devices on demand — no emulators, no flaky CI",
+      "category": "testing",
+      "why": "Direct access to Kobiton's real-device cloud via MCP. 12 tools across Devices / Sessions / Apps surfaces, plus 3 specialist agents for device picking, Appium capability reconciliation, session triage. iOS + Android hardware where the bugs actually live — not simulator drift.",
+      "install": "/plugin install kobiton-automate@claude-code-plugins-plus"
+    },
+    {
+      "slug": "excel-analyst-pro",
+      "name": "excel-analyst-pro",
+      "tagline": "Auto-invoked financial modeling toolkit",
+      "category": "business-tools",
+      "why": "Bridges Claude Code into the spreadsheets your finance team lives in. Models, projections, sensitivity analysis without the formula chase. Auto-invokes when xlsx files are in the conversation.",
+      "install": "/plugin install excel-analyst-pro@claude-code-plugins-plus"
+    },
+    {
+      "slug": "slack-channel",
+      "name": "slack-channel",
+      "tagline": "Two-way Slack ↔ Claude Code bridge",
+      "category": "mcp",
+      "why": "Chat with Claude from Slack DMs and channels, just like you'd chat in the terminal. Per-thread session isolation, hash-chained tamper-evident audit journal, policy-gated tools, five-layer prompt-injection defense. Socket Mode means no public URL needed — works behind firewalls. v0.9.1 Research Preview; requires Claude Code v2.1.80+.",
+      "external_url": "https://github.com/jeremylongshore/claude-code-slack-channel"
+    },
+    {
+      "slug": "gastown-viewer-intent",
+      "name": "gastown-viewer-intent",
+      "tagline": "Mission Control dashboard for Gastown multi-agent workspaces",
+      "category": "tool",
+      "why": "Real-time visibility into your agent swarms. Convoy dashboard (Done / Active / Blocked / Pending), D3 force-directed dependency graph across 14 Beads edge types, agent status with tmux integration, molecule progress tracker. Single binary (gvid) — go install or brew install, opens at localhost:7070.",
+      "external_url": "https://github.com/intent-solutions-io/gastown-viewer-intent"
+    }
+  ],
+  "meta": {
+    "curated_by": "Jeremy Longshore",
+    "last_updated": "2026-05-20",
+    "selection_criteria": "Things you'll show someone over your shoulder. Not category-coverage — real stakes, real differentiation, real workflow change. Rotated when something hotter shows up.",
+    "rotation_cadence": "On vibes (and install velocity once Phase 5B telemetry lands)."
+  }
+}
