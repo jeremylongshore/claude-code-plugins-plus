@@ -10,8 +10,8 @@
     "version": "1.6.0",
     "homepage": "https://github.com/jeremylongshore/claude-code-plugins",
     "pluginRoot": "./plugins",
-    "totalPlugins": 424,
-    "skillsEnabled": 274,
+    "totalPlugins": 425,
+    "skillsEnabled": 275,
     "lastUpdated": "2026-05-20"
   },
   "plugins": [
@@ -11446,6 +11446,38 @@
       },
       "license": "MIT",
       "repository": "https://github.com/vdk888/boycott-filter"
+    },
+    {
+      "name": "web-analytics",
+      "source": "./plugins/analytics/web-analytics",
+      "description": "Push-based web analytics intelligence team \u2014 self-hosted Umami via MCP (primary) + GA4 (fallback). 9 specialist agents fetch data, detect anomalies, analyze funnels, verify claims adversarially, and deliver narrative reports across your entire site portfolio. Three tiers: 30-second pulse, 2-min brief, 5-min full deep-dive. Console / email / Slack delivery.",
+      "version": "1.1.0",
+      "category": "analytics",
+      "keywords": [
+        "analytics",
+        "umami",
+        "ga4",
+        "traffic",
+        "mcp",
+        "self-hosted",
+        "multi-agent",
+        "push-based"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io",
+        "url": "https://github.com/jeremylongshore"
+      },
+      "components": {
+        "skills": 1,
+        "agents": 9
+      },
+      "verification": {
+        "score": 85,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-05-20T00:00:00.000Z"
+      }
     }
   ]
 }

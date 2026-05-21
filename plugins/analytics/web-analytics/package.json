@@ -1,0 +1,41 @@
+{
+  "name": "@intentsolutionsio/web-analytics",
+  "version": "1.1.0",
+  "description": "Push-based web analytics intelligence — self-hosted Umami (primary) via MCP + GA4 (fallback). 9 specialist agents fetch data, detect anomalies, analyze funnels, verify claims, and deliver narrative re",
+  "keywords": [
+    "analytics",
+    "umami",
+    "ga4",
+    "traffic",
+    "mcp",
+    "self-hosted",
+    "multi-agent",
+    "push-based",
+    "claude-code",
+    "claude-plugin",
+    "tonsofskills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins-plus-skills.git",
+    "directory": "plugins/analytics/web-analytics"
+  },
+  "homepage": "https://tonsofskills.com/plugins/web-analytics",
+  "bugs": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    ".claude-plugin",
+    "skills",
+    "agents"
+  ],
+  "scripts": {
+    "postinstall": "node -e \"console.log(\\\"\\\\n→ This npm package is a tracking/proof artifact. Install the plugin via:\\\\n  ccpi install web-analytics\\\\n  or /plugin install web-analytics@claude-code-plugins-plus in Claude Code\\\\n\\\")\""
+  }
+}

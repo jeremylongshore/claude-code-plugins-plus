@@ -107,7 +107,7 @@ Across **418 published packages** in the
 
 ## Browse Plugins by Category
 
-Jump to any of the 18 categories below. Plugin counts are catalog totals — auto-generated from `marketplace.extended.json`.
+Jump to any of the 19 categories below. Plugin counts are catalog totals — auto-generated from `marketplace.extended.json`.
 
 |     | Category                                           | Plugins |
 | --- | -------------------------------------------------- | ------: |
@@ -129,6 +129,7 @@ Jump to any of the 18 categories below. Plugin counts are catalog totals — aut
 | 🔐  | [Security](#security)                              |      26 |
 | ✨  | [Skill Enhancers](#skill-enhancers)                |       9 |
 | 🧪  | [Testing](#testing)                                |      27 |
+| 📁  | [Analytics](#analytics)                            |       1 |
 
 ### AI & Machine Learning
 
@@ -718,6 +719,16 @@ Jump to any of the 18 categories below. Plugin counts are catalog totals — aut
 | `test-report-generator`        | Generate comprehensive test reports with coverage, trends, and stakeholder-friendly formats                                                |
 | `unit-test-generator`          | Automatically generate comprehensive unit tests from source code with multiple testing framework support                                   |
 | `visual-regression-tester`     | Visual diff testing with Percy, Chromatic, BackstopJS - catch unintended UI changes                                                        |
+
+<sub>⬆ [Back to category index](#browse-plugins-by-category)</sub>
+
+### Analytics
+
+📁 **1 plugins** · category slug: `analytics`
+
+| Plugin          | Description                                                                                                                                |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `web-analytics` | Push-based web analytics intelligence team — self-hosted Umami via MCP (primary) + GA4 (fallback). 9 specialist agents fetch data, detect… |
 
 <sub>⬆ [Back to category index](#browse-plugins-by-category)</sub>
 
