@@ -952,6 +952,7 @@ Community contributors make this marketplace better. Newest first.
 - [Numman Ali's Skills](https://github.com/numman-ali/n-skills) — Externally-synced community skills
 - [Prism Scanner](https://github.com/aidongise-cell/prism-scanner) — Open-source security scanner for agent skills, plugins, and MCP servers (39+ rules, AST taint tracking, A-F grading)
 - [CCHub](https://github.com/Moresl/cchub) - A desktop control panel for the Claude Code / Codex / Gemini CLI ecosystem. Manage MCP servers, config profiles, agent skills, CLAUDE.md, hooks, and workflow templates from a single Tauri app (Windows / macOS / Linux).
+- [Quill](https://github.com/YG3-ai/quill) — MCP thinking partner that pairs two AIs in dialogue, one drafting while the other critiques. Four skills: consult, perspective, assumptions, and mosaic. Requires both a Claude Pro and a ChatGPT Plus subscription.
 
 ---
 
