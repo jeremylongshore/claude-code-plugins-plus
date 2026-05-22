@@ -90,6 +90,12 @@ coverage/
 # doc-type for adversarial-technical decision records per Doc Filing Standard v4.3.
 # Pattern matches any *-AT-DECR-*.md at the root 000-docs/ level.
 !000-docs/*-AT-DECR-*.md
+# Session AARs — After-Action Comprehensive Reviews per Doc Filing Standard v4.3.
+# Session logs of multi-task work sessions (what was done, what's deferred, what
+# was explicitly NOT done). No inherent secrets risk; transparency is the point.
+# IMPORTANT: scrub tokens/webhooks before commit. If a session involved a leaked
+# secret in chat, redact it in the AAR (use `<REDACTED>` placeholder + flag for rotation).
+!000-docs/*-AA-AACR-*.md
 website/
 
 # Internal planning and research documents (do not commit to public repo)
