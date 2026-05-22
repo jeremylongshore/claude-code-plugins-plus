@@ -1064,6 +1064,87 @@ sources:
       - '.git/**'
       - '*.log'
 
+  # ============================================================
+  # Ejentum Reasoning Harness (Ejentum)
+  # https://github.com/ejentum/ejentum-mcp
+  # ============================================================
+
+  - name: ejentum-reasoning
+    description: Cognitive scaffold for analytical, planning, or multi-step decision tasks. Calls harness_reasoning on the ejentum MCP server to retrieve a structured scaffold (named failure pattern, executable procedure, suppression vectors, falsification test) the agent absorbs before generating. Requires ejentum-mcp and EJENTUM_API_KEY.
+    repo: ejentum/ejentum-mcp
+    source_path: skills/reasoning
+    target_path: plugins/community/ejentum-reasoning
+    author:
+      name: Ejentum
+      github: ejentum
+      email: info@ejentum.com
+    license: MIT
+    category: community
+    verified: false
+    include:
+      - 'SKILL.md'
+    exclude:
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
+
+  - name: ejentum-code
+    description: Cognitive scaffold for code generation, refactoring, or architecture tasks. Calls harness_code on the ejentum MCP server to retrieve a structured scaffold (failure pattern, procedure, correct-pattern example, verification step) the agent absorbs before generating. Requires ejentum-mcp and EJENTUM_API_KEY.
+    repo: ejentum/ejentum-mcp
+    source_path: skills/code
+    target_path: plugins/community/ejentum-code
+    author:
+      name: Ejentum
+      github: ejentum
+      email: info@ejentum.com
+    license: MIT
+    category: community
+    verified: false
+    include:
+      - 'SKILL.md'
+    exclude:
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
+
+  - name: ejentum-anti-deception
+    description: Cognitive scaffold for validation requests, ethical reasoning, or adversarial framings. Calls harness_anti_deception on the ejentum MCP server to retrieve an integrity scaffold (deception pattern, integrity procedure, suppression vectors). Catches sycophantic capitulation, hallucination, and authority-driven softening. Requires ejentum-mcp and EJENTUM_API_KEY.
+    repo: ejentum/ejentum-mcp
+    source_path: skills/anti-deception
+    target_path: plugins/community/ejentum-anti-deception
+    author:
+      name: Ejentum
+      github: ejentum
+      email: info@ejentum.com
+    license: MIT
+    category: community
+    verified: false
+    include:
+      - 'SKILL.md'
+    exclude:
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
+
+  - name: ejentum-memory
+    description: Cognitive scaffold for sharpening perceptions and observations across multi-turn context. Calls harness_memory on the ejentum MCP server to retrieve a perception scaffold (perception failure, detection procedure, suppression vectors) that sharpens an existing observation. Requires ejentum-mcp and EJENTUM_API_KEY.
+    repo: ejentum/ejentum-mcp
+    source_path: skills/memory
+    target_path: plugins/community/ejentum-memory
+    author:
+      name: Ejentum
+      github: ejentum
+      email: info@ejentum.com
+    license: MIT
+    category: community
+    verified: false
+    include:
+      - 'SKILL.md'
+    exclude:
+      - 'node_modules/**'
+      - '.git/**'
+      - '*.log'
+
 # Sync configuration
 config:
   # Branch to sync from (default: main)
