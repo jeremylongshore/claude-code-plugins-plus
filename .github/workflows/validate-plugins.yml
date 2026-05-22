@@ -49,6 +49,13 @@ jobs:
       - name: Verify audit-harness integrity
         run: pnpm exec audit-harness verify
 
+      # CI deadline enforcement — fails the build if any
+      # `# REPORT-ONLY-UNTIL: YYYY-MM-DD` marker in any workflow file is
+      # past its date. Forcing function: report-only gates can't rot
+      # silently into permanent test bypasses.
+      - name: Enforce CI deadlines (no report-only rot)
+        run: python3 scripts/check-ci-deadlines.py
+
       # TODO(cleanup-pr-followup): These run in reporting mode (|| true) until
       # the ~5 pre-existing ESLint errors and ~36 prettier formatting deltas
       # are cleaned up in a follow-up PR. Once clean, drop the `|| true` so CI
@@ -790,12 +797,15 @@ jobs:
           sudo apt-get install -y -qq shellcheck
           shellcheck --version | head -2
 
+      # REPORT-ONLY-UNTIL: 2026-06-21 (shellcheck-skills — bead claude-lrhq)
       - name: Run shellcheck across all .sh in plugins/ (REPORT-ONLY)
         # REPORT-ONLY for initial rollout — exits 0 even on errors.
         # Local scan already found a misnamed Python file shipping as .sh
         # (plugins/packages/security-pro-pack/.../security_scan.sh); more
         # likely exist across the remaining 316 files. Flip this step to
         # blocking once the cleanup pass clears the existing errors.
+        # ENFORCEMENT: scripts/check-ci-deadlines.py fails the build if the
+        # REPORT-ONLY-UNTIL marker above passes without action. No silent rot.
         run: |
           set +e
           fail=0
@@ -826,6 +836,7 @@ jobs:
         with:
           node-version: '20'
 
+      # REPORT-ONLY-UNTIL: 2026-06-21 (skill-codeblock-syntax — bead claude-hy8p)
       - name: Lint fenced code blocks in SKILL.md / README.md
         # REPORT-ONLY for initial rollout — flip to blocking once the
         # cleanup pass clears existing failures across 3000+ SKILL.md files.
@@ -842,6 +853,7 @@ jobs:
         with:
           python-version: '3.12'
 
+      # REPORT-ONLY-UNTIL: 2026-06-21 (typescript-coverage-audit — bead claude-6f4o)
       - name: Audit TypeScript files for typecheck coverage
         # REPORT-ONLY for initial rollout — flip to blocking once each
         # uncovered package.json has a `typecheck` script added.
