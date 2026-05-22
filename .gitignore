@@ -66,9 +66,14 @@ coverage/
 # Two-part rule because git can't re-include files inside an excluded *directory*:
 # 1) Ignore nested 000-docs/ everywhere (e.g. plugins/saas-packs/*/000-docs/)
 #    — these are per-pack private docs, never tracked.
+#    NOTE: the pattern below uses `**/*/000-docs/` (requires at least one parent
+#    directory before `000-docs/`) so it ONLY matches nested 000-docs, not the
+#    root. The original `**/000-docs/` rule matched root too, which silently
+#    defeated every `!000-docs/...` re-include rule below. Repaired 2026-05-21.
 # 2) For ROOT-level 000-docs/, ignore at file level so we can re-include the
 #    canonical cross-repo standards via `!` rules below.
-**/000-docs/
+**/*/000-docs/
+**/*/000-docs/**
 000-docs/*
 000-docs/**/*
 # EXCEPT root-level canonical cross-repo standards:
@@ -79,6 +84,12 @@ coverage/
 # Spec snapshots read by JRig Tier 3A (refreshed quarterly via PR, NOT live-fetch)
 !000-docs/anthropic-skills-spec-snapshot.md
 !000-docs/agentskills-spec-snapshot.md
+# ISEDC Decision Records — the council skill's mandatory final step is /doc-filing
+# into 000-docs/; without this allowlist that step copies the file into a gitignored
+# location and the public record never exists in git. AT-DECR is the canonical 4-letter
+# doc-type for adversarial-technical decision records per Doc Filing Standard v4.3.
+# Pattern matches any *-AT-DECR-*.md at the root 000-docs/ level.
+!000-docs/*-AT-DECR-*.md
 website/
 
 # Internal planning and research documents (do not commit to public repo)
