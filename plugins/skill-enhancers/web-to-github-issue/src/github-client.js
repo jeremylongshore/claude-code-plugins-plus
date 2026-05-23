@@ -150,7 +150,10 @@ export class GitHubClient {
    * @throws {Error} If repo format invalid or not found
    */
   async verifyRepo(repo) {
-    // Validate repo format with regex
+    // Validate repo format with regex. Format errors are caller-side bugs
+    // — throw so they're loud. Lookup-time errors (404, auth, network)
+    // return `{exists: false, error}` so callers can fall back gracefully
+    // without try/catch noise on every check.
     if (!this._validateRepoFormat(repo)) {
       throw new Error(
         `Invalid repo format: ${repo}. Must be owner/repo with valid GitHub characters`
@@ -171,13 +174,12 @@ export class GitHubClient {
         hasIssues: response.data.has_issues
       };
     } catch (error) {
-      if (error.status === 404) {
-        throw new Error(`Repository not found: ${repo}`);
-      }
-
-      // Sanitize error message before re-throwing
-      const sanitizedMessage = this._sanitizeErrorMessage(error.message);
-      throw new Error(`Failed to verify repository: ${sanitizedMessage}`);
+      // Sanitize before exposing — error.message may include auth tokens
+      // or other sensitive fields from the GitHub API response.
+      return {
+        exists: false,
+        error: this._sanitizeErrorMessage(error.message)
+      };
     }
   }
 }

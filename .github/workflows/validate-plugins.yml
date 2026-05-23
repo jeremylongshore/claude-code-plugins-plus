@@ -350,18 +350,21 @@ jobs:
           pnpm build
           echo "✅ Build complete"
 
-      # REPORT-ONLY-UNTIL: 2026-06-21 (widened test loop — bead claude-d1gm)
-      - name: Run plugin tests (all categories with package.json + test script) (REPORT-ONLY)
+      # BLOCKING — codebase passed baseline at PR #770 (2026-05-23).
+      # All 10 candidate plugins pass `pnpm test`. The original 9 failures
+      # in web-to-github-issue were a mix of:
+      #   - 4 stale "Use: owner/repo" error-message expectations (updated
+      #     to match the improved "Must be owner/repo with valid GitHub
+      #     characters" string in the implementation)
+      #   - 4 verifyRepo tests expecting graceful `{exists: false, error}`
+      #     return on lookup errors (implementation refactored to match
+      #     — sanitization of error message preserved)
+      #   - 1 parseSearchResults test expecting permissive 3-source output
+      #     where URL-validation now correctly drops the no-URL entry to 2
+      - name: Run plugin tests (widened loop — every package.json with a test script)
         if: matrix.test-type == 'mcp-plugins'
-        # REPORT-ONLY for initial rollout — matches the pattern for the other
-        # 3 script-quality gates added in this PR. Gate 1 caught its first real
-        # bug immediately (plugins/skill-enhancers/web-to-github-issue/tests/
-        # parser.test.js:651 fails — expected 3, got 2). That's the gate
-        # working, but we shouldn't block every PR until the existing test
-        # failures are fixed. Flip to blocking via bead claude-tloop cleanup
-        # pass by 2026-06-21 (bead claude-d1gm).
         run: |
-          set +e
+          set -e
           fail=0
           tested=0
           failed_plugins=()
@@ -397,7 +400,7 @@ jobs:
               if [ $? -ne 0 ]; then
                 fail=1
                 failed_plugins+=("$category/$plugin_name")
-                echo "::warning::$category/$plugin_name tests failed (report-only)"
+                echo "::error::$category/$plugin_name tests failed"
               else
                 echo "✅ Tests passed for $category/$plugin_name"
               fi
@@ -412,12 +415,9 @@ jobs:
           if [ $fail -ne 0 ]; then
             echo "Failed: ${#failed_plugins[@]}"
             for p in "${failed_plugins[@]}"; do echo "  - $p"; done
-            echo ""
-            echo "::warning::Plugin tests failed but REPORT-ONLY mode active. See bead claude-d1gm for cleanup tracker. Deadline 2026-06-21 (CI fails when lapsed)."
-          else
-            echo "All passing."
+            exit 1
           fi
-          exit 0
+          echo "All passing."
 
       - name: Type checking
         if: matrix.test-type == 'mcp-plugins'

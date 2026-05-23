@@ -91,25 +91,25 @@ describe('GitHubClient', () => {
     it('should throw error for invalid repo format (no slash)', async () => {
       await expect(
         client.createIssue('invalidrepo', validIssueData)
-      ).rejects.toThrow('Invalid repo format: invalidrepo. Use: owner/repo');
+      ).rejects.toThrow('Invalid repo format: invalidrepo. Must be owner/repo with valid GitHub characters');
     });
 
     it('should throw error for invalid repo format (missing owner)', async () => {
       await expect(
         client.createIssue('/repo', validIssueData)
-      ).rejects.toThrow('Invalid repo format: /repo. Use: owner/repo');
+      ).rejects.toThrow('Invalid repo format: /repo. Must be owner/repo with valid GitHub characters');
     });
 
     it('should throw error for invalid repo format (missing repo)', async () => {
       await expect(
         client.createIssue('owner/', validIssueData)
-      ).rejects.toThrow('Invalid repo format: owner/. Use: owner/repo');
+      ).rejects.toThrow('Invalid repo format: owner/. Must be owner/repo with valid GitHub characters');
     });
 
     it('should throw error for empty repo string', async () => {
       await expect(
         client.createIssue('', validIssueData)
-      ).rejects.toThrow('Invalid repo format: . Use: owner/repo');
+      ).rejects.toThrow('Invalid repo format: . Must be owner/repo with valid GitHub characters');
     });
 
     it('should handle API errors gracefully', async () => {
