@@ -71,9 +71,7 @@ def main() -> int:
     #   - **/.vitepress/** (docs-site config, not part of the npm package)
     excluded_parts = {"node_modules", "assets", ".vitepress"}
     ts_files = sorted(
-        p for p in root.rglob("*.ts")
-        if not (excluded_parts & set(p.parts))
-        and not p.name.endswith(".d.ts")
+        p for p in root.rglob("*.ts") if not (excluded_parts & set(p.parts)) and not p.name.endswith(".d.ts")
     )
 
     if not ts_files:
