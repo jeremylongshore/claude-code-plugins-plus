@@ -873,12 +873,14 @@ jobs:
         with:
           python-version: '3.12'
 
-      # REPORT-ONLY-UNTIL: 2026-06-21 (typescript-coverage-audit — bead claude-6f4o)
+      # BLOCKING — codebase passed baseline at PR #769 (2026-05-23).
+      # All 142 .ts files in plugins/ covered by a typecheck script in
+      # their enclosing package.json. Audit script excludes **/assets/**
+      # (illustrative skill-doc examples) and **/.vitepress/** (docs-site
+      # config, not part of the npm package).
       - name: Audit TypeScript files for typecheck coverage
-        # REPORT-ONLY for initial rollout — flip to blocking once each
-        # uncovered package.json has a `typecheck` script added.
         run: |
-          python3 scripts/audit-typescript-coverage.py --report-only --root plugins
+          python3 scripts/audit-typescript-coverage.py --root plugins
 
   eslint-check:
     runs-on: ubuntu-latest

@@ -62,7 +62,19 @@ def main() -> int:
 
     repo_root = root.parent
 
-    ts_files = sorted(p for p in root.rglob("*.ts") if "node_modules" not in p.parts and not p.name.endswith(".d.ts"))
+    # Exclude:
+    #   - node_modules (third-party deps)
+    #   - .d.ts (type declarations only, no executable code to typecheck)
+    #   - **/assets/** (illustrative example .ts files inside skill docs —
+    #     not standalone typecheckable units; they reference external
+    #     packages and runtime context not declared in their parent pkg)
+    #   - **/.vitepress/** (docs-site config, not part of the npm package)
+    excluded_parts = {"node_modules", "assets", ".vitepress"}
+    ts_files = sorted(
+        p for p in root.rglob("*.ts")
+        if not (excluded_parts & set(p.parts))
+        and not p.name.endswith(".d.ts")
+    )
 
     if not ts_files:
         print("No .ts files under plugins/ (excluding node_modules + .d.ts).")

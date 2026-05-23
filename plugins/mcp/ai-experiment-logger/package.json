@@ -12,7 +12,8 @@
     "dev": "tsc --watch",
     "start": "node dist/index.js",
     "web": "node dist/web/server.js",
-    "test": "echo \"No tests yet\" && exit 0"
+    "test": "echo \"No tests yet\" && exit 0",
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [
     "mcp",

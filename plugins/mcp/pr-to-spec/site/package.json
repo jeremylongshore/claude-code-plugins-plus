@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "astro": "^5.16.9",

@@ -34,8 +34,14 @@ import sys
 import tempfile
 from pathlib import Path
 
-# Languages we know how to check; everything else is skipped.
-CHECKABLE = {"python", "py", "bash", "sh", "shell", "javascript", "js", "typescript", "ts"}
+# Languages we know how to syntax-check; everything else is skipped.
+#
+# TypeScript intentionally NOT in this set: SKILL.md TypeScript blocks are
+# illustrative snippets that reference external types, runtime context, or
+# API definitions not present in the block itself. Running `tsc --noEmit`
+# on isolated fragments produces thousands of false positives. Type-safety
+# of actual code is enforced by per-package `pnpm typecheck` jobs.
+CHECKABLE = {"python", "py", "bash", "sh", "shell", "javascript", "js"}
 FENCE_RE = re.compile(r"^```([a-zA-Z0-9_+\-]*)\s*$")
 NOQA = "# noqa: lint-codeblocks"
 

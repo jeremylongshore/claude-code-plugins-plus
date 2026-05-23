@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "bun run server.ts",
-    "test": "bun test"
+    "test": "bun test",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0"
