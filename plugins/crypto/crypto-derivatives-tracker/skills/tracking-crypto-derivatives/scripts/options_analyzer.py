@@ -23,13 +23,13 @@ class OptionsAnalysis:
 
     symbol: str
     snapshot: OptionsSnapshot
-    iv_interpretation: str          # "high", "normal", "low"
-    iv_percentile: float            # Estimated percentile (0-100)
-    sentiment_from_pcr: str         # "bullish", "bearish", "neutral"
-    sentiment_from_skew: str        # "bullish", "bearish", "neutral"
+    iv_interpretation: str  # "high", "normal", "low"
+    iv_percentile: float  # Estimated percentile (0-100)
+    sentiment_from_pcr: str  # "bullish", "bearish", "neutral"
+    sentiment_from_skew: str  # "bullish", "bearish", "neutral"
     overall_sentiment: str
-    max_pain_distance_pct: float    # Distance from current to max pain
-    expiry_pressure: str            # "high", "medium", "low"
+    max_pain_distance_pct: float  # Distance from current to max pain
+    expiry_pressure: str  # "high", "medium", "low"
     timestamp: datetime
 
 
@@ -40,8 +40,8 @@ class OptionsFlow:
     symbol: str
     expiry: str
     strike: Decimal
-    option_type: str                # "call" or "put"
-    side: str                       # "buy" or "sell"
+    option_type: str  # "call" or "put"
+    side: str  # "buy" or "sell"
     size_contracts: int
     premium_usd: Decimal
     iv_at_trade: float
@@ -65,8 +65,8 @@ class OptionsAnalyzer:
     LOW_IV = 40.0
 
     # Put/call interpretation
-    BEARISH_PCR = 1.2   # Above this is bearish
-    BULLISH_PCR = 0.7   # Below this is bullish
+    BEARISH_PCR = 1.2  # Above this is bearish
+    BULLISH_PCR = 0.7  # Below this is bullish
 
     def __init__(
         self,
@@ -125,10 +125,7 @@ class OptionsAnalyzer:
         overall = self._combine_sentiment(pcr_sentiment, skew_sentiment)
 
         # Max pain distance
-        max_pain_dist = (
-            (float(snapshot.max_pain) - float(current_price))
-            / float(current_price) * 100
-        )
+        max_pain_dist = (float(snapshot.max_pain) - float(current_price)) / float(current_price) * 100
 
         # Expiry pressure (days until expiry)
         expiry_pressure = self._assess_expiry_pressure(snapshot.expiry)
@@ -232,13 +229,15 @@ class OptionsAnalyzer:
             try:
                 snapshot = self.client.get_options_snapshot(symbol, exp)
                 if snapshot:
-                    levels.append({
-                        "expiry": exp,
-                        "max_pain": float(snapshot.max_pain),
-                        "call_oi": float(snapshot.total_call_oi),
-                        "put_oi": float(snapshot.total_put_oi),
-                        "pcr_oi": snapshot.put_call_ratio_oi,
-                    })
+                    levels.append(
+                        {
+                            "expiry": exp,
+                            "max_pain": float(snapshot.max_pain),
+                            "call_oi": float(snapshot.total_call_oi),
+                            "put_oi": float(snapshot.total_put_oi),
+                            "pcr_oi": snapshot.put_call_ratio_oi,
+                        }
+                    )
             except Exception:
                 continue
 
@@ -279,18 +278,20 @@ class OptionsAnalyzer:
             else:
                 interp = "Bearish bet" if random.random() > 0.5 else "Protective put"
 
-            flows.append(OptionsFlow(
-                symbol=symbol,
-                expiry="2025-01-31",
-                strike=Decimal(str(int(strike))),
-                option_type=opt_type,
-                side=random.choice(["buy", "sell"]),
-                size_contracts=size,
-                premium_usd=Decimal(str(int(premium))),
-                iv_at_trade=round(55 + random.uniform(-10, 15), 1),
-                interpretation=interp,
-                timestamp=datetime.now(),
-            ))
+            flows.append(
+                OptionsFlow(
+                    symbol=symbol,
+                    expiry="2025-01-31",
+                    strike=Decimal(str(int(strike))),
+                    option_type=opt_type,
+                    side=random.choice(["buy", "sell"]),
+                    size_contracts=size,
+                    premium_usd=Decimal(str(int(premium))),
+                    iv_at_trade=round(55 + random.uniform(-10, 15), 1),
+                    interpretation=interp,
+                    timestamp=datetime.now(),
+                )
+            )
 
         return sorted(flows, key=lambda x: x.premium_usd, reverse=True)
 
@@ -313,23 +314,23 @@ def demo():
     print(f"\nExpiry: {snap.expiry}")
     print(f"Exchange: {snap.exchange}")
 
-    print(f"\nImplied Volatility:")
+    print("\nImplied Volatility:")
     print(f"   ATM IV: {snap.atm_iv:.1f}%")
     print(f"   Interpretation: {analysis.iv_interpretation.upper()}")
     print(f"   IV Rank: {analysis.iv_percentile:.0f}th percentile")
 
-    print(f"\nPut/Call Analysis:")
+    print("\nPut/Call Analysis:")
     print(f"   PCR (Volume): {snap.put_call_ratio_volume:.2f}")
     print(f"   PCR (OI): {snap.put_call_ratio_oi:.2f}")
     print(f"   Sentiment: {analysis.sentiment_from_pcr.upper()}")
 
-    print(f"\nMax Pain:")
+    print("\nMax Pain:")
     print(f"   Price: ${snap.max_pain:,.0f}")
     print(f"   Distance: {analysis.max_pain_distance_pct:+.1f}% from current")
 
-    print(f"\nOpen Interest:")
-    print(f"   Calls: ${float(snap.total_call_oi)/1e9:.2f}B")
-    print(f"   Puts:  ${float(snap.total_put_oi)/1e9:.2f}B")
+    print("\nOpen Interest:")
+    print(f"   Calls: ${float(snap.total_call_oi) / 1e9:.2f}B")
+    print(f"   Puts:  ${float(snap.total_put_oi) / 1e9:.2f}B")
 
     print(f"\nOverall Sentiment: {analysis.overall_sentiment.upper()}")
     print(f"Expiry Pressure: {analysis.expiry_pressure.upper()}")
@@ -346,8 +347,8 @@ def demo():
         print(
             f"{lvl['expiry']:<12} "
             f"${lvl['max_pain']:>10,.0f} "
-            f"${lvl['call_oi']/1e9:>10.1f}B "
-            f"${lvl['put_oi']/1e9:>10.1f}B "
+            f"${lvl['call_oi'] / 1e9:>10.1f}B "
+            f"${lvl['put_oi'] / 1e9:>10.1f}B "
             f"{lvl['pcr_oi']:>5.2f}"
         )
 

@@ -16,9 +16,8 @@ Date: [Date]
 
 # %%
 import pandas as pd
-import numpy as np
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler, QuantileTransformer
+from sklearn.preprocessing import StandardScaler
 from sklearn.feature_selection import SelectKBest, f_classif
 # Add more libraries as needed (e.g., scikit-learn, feature-engine)
 
@@ -61,12 +60,14 @@ print(df.describe())
 # %%
 # Split data into training and testing sets
 TARGET_VARIABLE = "[Your target variable name]"
-FEATURES = [col for col in df.columns if col != TARGET_VARIABLE] # Select all columns except the target as features
+FEATURES = [col for col in df.columns if col != TARGET_VARIABLE]  # Select all columns except the target as features
 
 X = df[FEATURES]
 y = df[TARGET_VARIABLE]
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)  # Adjust test_size and random_state as needed
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)  # Adjust test_size and random_state as needed
 
 print("Training set shape:", X_train.shape)
 print("Testing set shape:", X_test.shape)
@@ -89,9 +90,11 @@ print("Testing set shape:", X_test.shape)
 
 # %%
 # Scaling numerical features
-numerical_features = [col for col in X_train.columns if X_train[col].dtype in ['int64', 'float64']] # Select numerical features
+numerical_features = [
+    col for col in X_train.columns if X_train[col].dtype in ["int64", "float64"]
+]  # Select numerical features
 
-scaler = StandardScaler() # or MinMaxScaler, RobustScaler, etc.
+scaler = StandardScaler()  # or MinMaxScaler, RobustScaler, etc.
 X_train[numerical_features] = scaler.fit_transform(X_train[numerical_features])
 X_test[numerical_features] = scaler.transform(X_test[numerical_features])
 

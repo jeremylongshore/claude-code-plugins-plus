@@ -11,13 +11,14 @@ License: MIT
 
 import json
 from pathlib import Path
-from typing import Dict, Optional, List
+from typing import Dict, List
 from dataclasses import dataclass, asdict
 
 
 @dataclass
 class WalletLabel:
     """Wallet identification label."""
+
     address: str
     name: str
     entity_type: str  # exchange, protocol, fund, bridge, whale, unknown
@@ -89,7 +90,6 @@ EXCHANGE_WALLETS = {
         chain="ethereum",
         tags=["bybit", "hot_wallet"],
     ),
-
     # Bitcoin (sample)
     "bc1qm34lsc65zpw79lxes69zkqmk6ee3ewf0j77s3h": WalletLabel(
         address="bc1qm34lsc65zpw79lxes69zkqmk6ee3ewf0j77s3h",
@@ -259,13 +259,7 @@ class WalletLabeler:
         else:
             return f"{address[:8]}..."
 
-    def add_to_watchlist(
-        self,
-        address: str,
-        name: str,
-        chain: str = "ethereum",
-        notes: str = None
-    ) -> WalletLabel:
+    def add_to_watchlist(self, address: str, name: str, chain: str = "ethereum", notes: str = None) -> WalletLabel:
         """Add wallet to watchlist.
 
         Args:
@@ -358,7 +352,7 @@ def main():
     for wallet in exchanges[:5]:
         print(f"  {wallet.name}: {wallet.address[:20]}...")
 
-    print(f"\n=== Total Labels ===")
+    print("\n=== Total Labels ===")
     print(f"  Built-in: {len(labeler.labels)}")
     print(f"  Watchlist: {len(labeler.watchlist)}")
 

@@ -21,20 +21,29 @@ Exit codes:
 """
 
 from __future__ import annotations
-import argparse, json, os, sys, time
-import urllib.request, urllib.parse, urllib.error
+import argparse
+import json
+import os
+import sys
+import urllib.request
+import urllib.parse
+import urllib.error
 from pathlib import Path
 
 
 def get_podium_token(client_id: str, client_secret: str, refresh_token: str, timeout: float = 10.0) -> str | None:
-    body = urllib.parse.urlencode({
-        "grant_type": "refresh_token",
-        "refresh_token": refresh_token,
-        "client_id": client_id,
-        "client_secret": client_secret,
-    }).encode()
+    body = urllib.parse.urlencode(
+        {
+            "grant_type": "refresh_token",
+            "refresh_token": refresh_token,
+            "client_id": client_id,
+            "client_secret": client_secret,
+        }
+    ).encode()
     req = urllib.request.Request(
-        "https://accounts.podium.com/oauth/token", data=body, method="POST",
+        "https://accounts.podium.com/oauth/token",
+        data=body,
+        method="POST",
         headers={"Content-Type": "application/x-www-form-urlencoded"},
     )
     try:
@@ -128,7 +137,7 @@ def main() -> int:
         if token:
             podium = query_podium_contact_optout(token, args.phone)
 
-    local_state  = local.get("opted_out") if local else None
+    local_state = local.get("opted_out") if local else None
     podium_state = podium.get("opted_out") if podium else None
 
     # Consistency rules:
@@ -141,9 +150,9 @@ def main() -> int:
     elif local_state is None or podium_state is None:
         # If either is "no record" but the other is True, drift. If the other is False, consistent.
         present = local_state if local_state is not None else podium_state
-        consistent = (present is False)
+        consistent = present is False
     else:
-        consistent = (local_state == podium_state)
+        consistent = local_state == podium_state
 
     summary = {
         "phone": args.phone,

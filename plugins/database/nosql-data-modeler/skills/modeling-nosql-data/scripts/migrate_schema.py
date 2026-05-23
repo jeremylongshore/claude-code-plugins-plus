@@ -9,9 +9,7 @@ This script converts schema definitions between different NoSQL database formats
 import argparse
 import json
 import sys
-from datetime import datetime
-from pathlib import Path
-from typing import Dict, List, Any, Optional, Tuple
+from typing import Dict, List, Any
 
 
 class SchemaTransformer:
@@ -30,8 +28,8 @@ class SchemaTransformer:
                 "date": "date",
                 "object": "object",
                 "array": "array",
-                "null": "null"
-            }
+                "null": "null",
+            },
         },
         "dynamodb": {
             "name": "DynamoDB",
@@ -44,8 +42,8 @@ class SchemaTransformer:
                 "date": "S",
                 "object": "M",
                 "array": "L",
-                "binary": "B"
-            }
+                "binary": "B",
+            },
         },
         "firestore": {
             "name": "Firestore",
@@ -58,8 +56,8 @@ class SchemaTransformer:
                 "date": "timestampValue",
                 "object": "mapValue",
                 "array": "arrayValue",
-                "null": "nullValue"
-            }
+                "null": "nullValue",
+            },
         },
         "cosmosdb": {
             "name": "Azure Cosmos DB",
@@ -71,9 +69,9 @@ class SchemaTransformer:
                 "boolean": "boolean",
                 "date": "date",
                 "object": "object",
-                "array": "array"
-            }
-        }
+                "array": "array",
+            },
+        },
     }
 
     def __init__(self, source_type: str, target_type: str):
@@ -129,7 +127,7 @@ class SchemaTransformer:
         parsed = {
             "name": schema.get("$id", schema.get("title", "Schema")),
             "description": schema.get("description", ""),
-            "fields": {}
+            "fields": {},
         }
 
         # Extract fields based on source type
@@ -158,7 +156,7 @@ class SchemaTransformer:
                 "type": field_def.get("type", "string"),
                 "description": field_def.get("description", ""),
                 "required": "required" in str(field_def),
-                "indexed": field_def.get("indexed", False)
+                "indexed": field_def.get("indexed", False),
             }
 
         return fields
@@ -172,7 +170,7 @@ class SchemaTransformer:
             for attr in schema["AttributeDefinitions"]:
                 fields[attr["AttributeName"]] = {
                     "type": self._map_dynamodb_type(attr["AttributeType"]),
-                    "required": attr["AttributeName"] in schema.get("KeySchema", [])
+                    "required": attr["AttributeName"] in schema.get("KeySchema", []),
                 }
 
         return fields
@@ -184,10 +182,7 @@ class SchemaTransformer:
         if "fields" in schema:
             for field_name, field_def in schema["fields"].items():
                 field_type = self._extract_firestore_type(field_def)
-                fields[field_name] = {
-                    "type": field_type,
-                    "indexed": field_def.get("indexed", False)
-                }
+                fields[field_name] = {"type": field_type, "indexed": field_def.get("indexed", False)}
 
         return fields
 
@@ -211,7 +206,7 @@ class SchemaTransformer:
         for field_name, field_info in parsed["fields"].items():
             properties[field_name] = {
                 "type": field_info.get("type", "string"),
-                "description": field_info.get("description", "")
+                "description": field_info.get("description", ""),
             }
 
             if field_info.get("indexed"):
@@ -222,7 +217,7 @@ class SchemaTransformer:
             "$id": parsed["name"],
             "title": parsed["name"],
             "type": "object",
-            "properties": properties
+            "properties": properties,
         }
 
         return schema
@@ -235,18 +230,13 @@ class SchemaTransformer:
             field_type = field_info.get("type", "string")
             dynamo_type = self._map_type_to_dynamodb(field_type)
 
-            attributes.append({
-                "AttributeName": field_name,
-                "AttributeType": dynamo_type
-            })
+            attributes.append({"AttributeName": field_name, "AttributeType": dynamo_type})
 
         schema = {
             "TableName": parsed["name"],
             "AttributeDefinitions": attributes,
-            "KeySchema": [
-                {"AttributeName": "id", "KeyType": "HASH"}
-            ],
-            "BillingMode": "PAY_PER_REQUEST"
+            "KeySchema": [{"AttributeName": "id", "KeyType": "HASH"}],
+            "BillingMode": "PAY_PER_REQUEST",
         }
 
         return schema
@@ -258,17 +248,12 @@ class SchemaTransformer:
         for field_name, field_info in parsed["fields"].items():
             field_type = field_info.get("type", "string")
 
-            fields[field_name] = {
-                field_type + "Value": self._get_firestore_default(field_type)
-            }
+            fields[field_name] = {field_type + "Value": self._get_firestore_default(field_type)}
 
             if field_info.get("indexed"):
                 fields[field_name]["indexed"] = True
 
-        schema = {
-            "name": f"projects/PROJECT_ID/databases/(default)/documents/{parsed['name']}",
-            "fields": fields
-        }
+        schema = {"name": f"projects/PROJECT_ID/databases/(default)/documents/{parsed['name']}", "fields": fields}
 
         return schema
 
@@ -285,7 +270,7 @@ class SchemaTransformer:
             "boolean": "BOOL",
             "date": "S",
             "object": "M",
-            "array": "L"
+            "array": "L",
         }
         return type_map.get(source_type, "S")
 
@@ -300,7 +285,7 @@ class SchemaTransformer:
             "BS": "binary",
             "M": "object",
             "L": "array",
-            "BOOL": "boolean"
+            "BOOL": "boolean",
         }
         return type_map.get(dynamo_type, "string")
 
@@ -316,7 +301,7 @@ class SchemaTransformer:
                     "boolean": "boolean",
                     "timestamp": "date",
                     "map": "object",
-                    "array": "array"
+                    "array": "array",
                 }
                 return type_map.get(type_name, "string")
 
@@ -324,22 +309,14 @@ class SchemaTransformer:
 
     def _get_firestore_default(self, field_type: str) -> Any:
         """Get default value for Firestore field type."""
-        defaults = {
-            "string": "",
-            "number": 0,
-            "integer": 0,
-            "boolean": False,
-            "date": "",
-            "object": {},
-            "array": []
-        }
+        defaults = {"string": "", "number": 0, "integer": 0, "boolean": False, "date": "", "object": {}, "array": []}
         return defaults.get(field_type)
 
 
 def load_schema(filepath: str) -> Dict[str, Any]:
     """Load schema from JSON file."""
     try:
-        with open(filepath, 'r') as f:
+        with open(filepath, "r") as f:
             return json.load(f)
     except FileNotFoundError:
         print(f"Error: Schema file not found: {filepath}", file=sys.stderr)
@@ -360,7 +337,7 @@ def main():
         description="Migrate NoSQL schema between database types",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=f"""
-Supported database types: {', '.join(get_supported_databases())}
+Supported database types: {", ".join(get_supported_databases())}
 
 Examples:
   # MongoDB to DynamoDB
@@ -374,37 +351,15 @@ Examples:
 
   # List supported types
   %(prog)s --list-types
-        """
+        """,
     )
 
-    parser.add_argument(
-        "--from",
-        dest="source_type",
-        help="Source database type"
-    )
-    parser.add_argument(
-        "--to",
-        dest="target_type",
-        help="Target database type"
-    )
-    parser.add_argument(
-        "--schema",
-        help="Path to source schema file"
-    )
-    parser.add_argument(
-        "--output",
-        help="Output file for migrated schema"
-    )
-    parser.add_argument(
-        "--list-types",
-        action="store_true",
-        help="List supported database types"
-    )
-    parser.add_argument(
-        "--verbose",
-        action="store_true",
-        help="Print detailed output"
-    )
+    parser.add_argument("--from", dest="source_type", help="Source database type")
+    parser.add_argument("--to", dest="target_type", help="Target database type")
+    parser.add_argument("--schema", help="Path to source schema file")
+    parser.add_argument("--output", help="Output file for migrated schema")
+    parser.add_argument("--list-types", action="store_true", help="List supported database types")
+    parser.add_argument("--verbose", action="store_true", help="Print detailed output")
 
     args = parser.parse_args()
 
@@ -437,11 +392,11 @@ Examples:
 
         # Save to file if requested
         if args.output:
-            with open(args.output, 'w') as f:
+            with open(args.output, "w") as f:
                 f.write(output_json)
 
             if args.verbose:
-                print(f"✓ Schema migrated successfully", file=sys.stderr)
+                print("✓ Schema migrated successfully", file=sys.stderr)
                 print(f"✓ Saved to {args.output}", file=sys.stderr)
 
         sys.exit(0)

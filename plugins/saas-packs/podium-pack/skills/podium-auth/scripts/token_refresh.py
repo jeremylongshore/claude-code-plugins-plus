@@ -19,7 +19,12 @@ Exit codes:
 """
 
 from __future__ import annotations
-import argparse, json, os, sys, tempfile, time
+import argparse
+import json
+import os
+import sys
+import tempfile
+import time
 from pathlib import Path
 
 import urllib.request
@@ -29,16 +34,21 @@ import urllib.error
 TOKEN_URL = "https://accounts.podium.com/oauth/token"
 
 REQUIRED_SCOPES = {
-    "conversations.read", "conversations.write",
-    "contacts.read", "contacts.write",
-    "reviews.read", "reviews.write",
+    "conversations.read",
+    "conversations.write",
+    "contacts.read",
+    "contacts.write",
+    "reviews.read",
+    "reviews.write",
 }
 
 
 def http_post_form(url: str, data: dict, timeout: float = 10.0) -> tuple[int, dict]:
     body = urllib.parse.urlencode(data).encode("utf-8")
     req = urllib.request.Request(
-        url, data=body, method="POST",
+        url,
+        data=body,
+        method="POST",
         headers={"Content-Type": "application/x-www-form-urlencoded"},
     )
     try:
@@ -62,8 +72,10 @@ def atomic_persist(path: Path, payload: dict) -> None:
         os.chmod(tmp, 0o600)
         os.replace(tmp, path)
     except Exception:
-        try: os.unlink(tmp)
-        except FileNotFoundError: pass
+        try:
+            os.unlink(tmp)
+        except FileNotFoundError:
+            pass
         raise
 
 
@@ -84,12 +96,15 @@ def main() -> int:
     record = json.loads(args.refresh_token_file.read_text())
     refresh = record["refresh_token"]
 
-    status, body = http_post_form(TOKEN_URL, {
-        "grant_type": "refresh_token",
-        "refresh_token": refresh,
-        "client_id": cid,
-        "client_secret": csec,
-    })
+    status, body = http_post_form(
+        TOKEN_URL,
+        {
+            "grant_type": "refresh_token",
+            "refresh_token": refresh,
+            "client_id": cid,
+            "client_secret": csec,
+        },
+    )
 
     if status == 401:
         print("ERR_AUTH_001 invalid_grant — user re-authorization required", file=sys.stderr)

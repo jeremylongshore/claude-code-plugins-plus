@@ -51,23 +51,20 @@ class CORSTestCaseGenerator:
         return self.test_cases
 
     def _add_test_case(
-        self,
-        name: str,
-        description: str,
-        policy: Dict[str, Any],
-        expected_result: str,
-        severity: str = "medium"
+        self, name: str, description: str, policy: Dict[str, Any], expected_result: str, severity: str = "medium"
     ) -> None:
         """Add a test case to the collection."""
-        self.test_cases.append({
-            "id": f"test_{len(self.test_cases) + 1:03d}",
-            "name": name,
-            "description": description,
-            "policy": policy,
-            "expected_result": expected_result,
-            "severity": severity,
-            "category": "security_test"
-        })
+        self.test_cases.append(
+            {
+                "id": f"test_{len(self.test_cases) + 1:03d}",
+                "name": name,
+                "description": description,
+                "policy": policy,
+                "expected_result": expected_result,
+                "severity": severity,
+                "category": "security_test",
+            }
+        )
 
     def _generate_origin_tests(self) -> None:
         """Generate tests for origin validation."""
@@ -75,26 +72,18 @@ class CORSTestCaseGenerator:
         self._add_test_case(
             name="Wildcard Origin Vulnerability",
             description="Tests if policy allows requests from any origin",
-            policy={
-                "origins": ["*"],
-                "methods": ["GET", "POST"],
-                "credentials": False
-            },
+            policy={"origins": ["*"], "methods": ["GET", "POST"], "credentials": False},
             expected_result="FAIL",
-            severity="critical"
+            severity="critical",
         )
 
         # Test 2: Null origin
         self._add_test_case(
             name="Null Origin Vulnerability",
             description="Tests if policy allows null origin",
-            policy={
-                "origins": ["null"],
-                "methods": ["GET"],
-                "credentials": False
-            },
+            policy={"origins": ["null"], "methods": ["GET"], "credentials": False},
             expected_result="FAIL",
-            severity="high"
+            severity="high",
         )
 
         # Test 3: Specific origins
@@ -104,36 +93,28 @@ class CORSTestCaseGenerator:
             policy={
                 "origins": ["https://example.com", "https://app.example.com"],
                 "methods": ["GET", "POST"],
-                "credentials": False
+                "credentials": False,
             },
             expected_result="PASS",
-            severity="info"
+            severity="info",
         )
 
         # Test 4: Subdomain wildcard
         self._add_test_case(
             name="Subdomain Wildcard",
             description="Tests if policy allows subdomain wildcards",
-            policy={
-                "origins": ["https://*.example.com"],
-                "methods": ["GET", "POST"],
-                "credentials": False
-            },
+            policy={"origins": ["https://*.example.com"], "methods": ["GET", "POST"], "credentials": False},
             expected_result="WARNING",
-            severity="high"
+            severity="high",
         )
 
         # Test 5: Mixed HTTP and HTTPS
         self._add_test_case(
             name="Mixed HTTP and HTTPS Origins",
             description="Tests configuration with both HTTP and HTTPS",
-            policy={
-                "origins": ["http://example.com", "https://example.com"],
-                "methods": ["GET"],
-                "credentials": False
-            },
+            policy={"origins": ["http://example.com", "https://example.com"], "methods": ["GET"], "credentials": False},
             expected_result="PASS",
-            severity="info"
+            severity="info",
         )
 
     def _generate_method_tests(self) -> None:
@@ -142,52 +123,36 @@ class CORSTestCaseGenerator:
         self._add_test_case(
             name="Wildcard HTTP Methods",
             description="Tests if policy allows all HTTP methods",
-            policy={
-                "origins": ["https://example.com"],
-                "methods": ["*"],
-                "credentials": False
-            },
+            policy={"origins": ["https://example.com"], "methods": ["*"], "credentials": False},
             expected_result="FAIL",
-            severity="high"
+            severity="high",
         )
 
         # Test 7: Restrictive methods
         self._add_test_case(
             name="Restrictive HTTP Methods",
             description="Tests policy with limited HTTP methods",
-            policy={
-                "origins": ["https://example.com"],
-                "methods": ["GET", "POST"],
-                "credentials": False
-            },
+            policy={"origins": ["https://example.com"], "methods": ["GET", "POST"], "credentials": False},
             expected_result="PASS",
-            severity="info"
+            severity="info",
         )
 
         # Test 8: Dangerous method combinations
         self._add_test_case(
             name="Dangerous Method Combination",
             description="Tests configuration allowing DELETE and PUT from public origins",
-            policy={
-                "origins": ["*"],
-                "methods": ["GET", "POST", "PUT", "DELETE", "PATCH"],
-                "credentials": False
-            },
+            policy={"origins": ["*"], "methods": ["GET", "POST", "PUT", "DELETE", "PATCH"], "credentials": False},
             expected_result="FAIL",
-            severity="critical"
+            severity="critical",
         )
 
         # Test 9: Safe method subset
         self._add_test_case(
             name="Safe Method Subset",
             description="Tests policy with only safe methods",
-            policy={
-                "origins": ["https://example.com"],
-                "methods": ["GET", "HEAD", "OPTIONS"],
-                "credentials": False
-            },
+            policy={"origins": ["https://example.com"], "methods": ["GET", "HEAD", "OPTIONS"], "credentials": False},
             expected_result="PASS",
-            severity="info"
+            severity="info",
         )
 
     def _generate_header_tests(self) -> None:
@@ -196,13 +161,9 @@ class CORSTestCaseGenerator:
         self._add_test_case(
             name="Wildcard Allowed Headers",
             description="Tests if policy allows all request headers",
-            policy={
-                "origins": ["https://example.com"],
-                "methods": ["GET", "POST"],
-                "allowed_headers": ["*"]
-            },
+            policy={"origins": ["https://example.com"], "methods": ["GET", "POST"], "allowed_headers": ["*"]},
             expected_result="WARNING",
-            severity="medium"
+            severity="medium",
         )
 
         # Test 11: Sensitive exposed headers
@@ -212,10 +173,10 @@ class CORSTestCaseGenerator:
             policy={
                 "origins": ["https://example.com"],
                 "methods": ["GET"],
-                "exposed_headers": ["Authorization", "X-API-Key"]
+                "exposed_headers": ["Authorization", "X-API-Key"],
             },
             expected_result="FAIL",
-            severity="high"
+            severity="high",
         )
 
         # Test 12: Safe exposed headers
@@ -225,23 +186,19 @@ class CORSTestCaseGenerator:
             policy={
                 "origins": ["https://example.com"],
                 "methods": ["GET"],
-                "exposed_headers": ["Content-Type", "X-Total-Count", "X-Page-Number"]
+                "exposed_headers": ["Content-Type", "X-Total-Count", "X-Page-Number"],
             },
             expected_result="PASS",
-            severity="info"
+            severity="info",
         )
 
         # Test 13: Cookie exposure
         self._add_test_case(
             name="Cookie Header Exposure",
             description="Tests exposure of Set-Cookie header",
-            policy={
-                "origins": ["https://example.com"],
-                "methods": ["GET"],
-                "exposed_headers": ["Set-Cookie"]
-            },
+            policy={"origins": ["https://example.com"], "methods": ["GET"], "exposed_headers": ["Set-Cookie"]},
             expected_result="FAIL",
-            severity="critical"
+            severity="critical",
         )
 
     def _generate_credential_tests(self) -> None:
@@ -250,26 +207,18 @@ class CORSTestCaseGenerator:
         self._add_test_case(
             name="Credentials with Wildcard Origins",
             description="Tests critical vulnerability: credentials allowed with wildcard origins",
-            policy={
-                "origins": ["*"],
-                "methods": ["GET", "POST"],
-                "credentials": True
-            },
+            policy={"origins": ["*"], "methods": ["GET", "POST"], "credentials": True},
             expected_result="FAIL",
-            severity="critical"
+            severity="critical",
         )
 
         # Test 15: Credentials with specific origins
         self._add_test_case(
             name="Credentials with Specific Origins",
             description="Tests safe credentials configuration",
-            policy={
-                "origins": ["https://trusted.example.com"],
-                "methods": ["GET", "POST"],
-                "credentials": True
-            },
+            policy={"origins": ["https://trusted.example.com"], "methods": ["GET", "POST"], "credentials": True},
             expected_result="PASS",
-            severity="info"
+            severity="info",
         )
 
         # Test 16: Credentials with multiple origins
@@ -279,10 +228,10 @@ class CORSTestCaseGenerator:
             policy={
                 "origins": ["https://app1.example.com", "https://app2.example.com"],
                 "methods": ["GET", "POST"],
-                "credentials": True
+                "credentials": True,
             },
             expected_result="PASS",
-            severity="info"
+            severity="info",
         )
 
     def _generate_edge_case_tests(self) -> None:
@@ -293,7 +242,7 @@ class CORSTestCaseGenerator:
             description="Tests behavior with empty policy",
             policy={},
             expected_result="WARNING",
-            severity="medium"
+            severity="medium",
         )
 
         # Test 18: Max age too high
@@ -303,22 +252,19 @@ class CORSTestCaseGenerator:
             policy={
                 "origins": ["https://example.com"],
                 "methods": ["GET"],
-                "max_age": 604800  # 7 days
+                "max_age": 604800,  # 7 days
             },
             expected_result="WARNING",
-            severity="low"
+            severity="low",
         )
 
         # Test 19: Invalid origin format
         self._add_test_case(
             name="Invalid Origin Format",
             description="Tests policy with malformed origin",
-            policy={
-                "origins": ["invalid-origin", "https://valid.com"],
-                "methods": ["GET"]
-            },
+            policy={"origins": ["invalid-origin", "https://valid.com"], "methods": ["GET"]},
             expected_result="WARNING",
-            severity="medium"
+            severity="medium",
         )
 
         # Test 20: Localhost origin
@@ -328,10 +274,10 @@ class CORSTestCaseGenerator:
             policy={
                 "origins": ["http://localhost:3000", "http://127.0.0.1:3000"],
                 "methods": ["GET", "POST"],
-                "credentials": True
+                "credentials": True,
             },
             expected_result="INFO",
-            severity="info"
+            severity="info",
         )
 
     def _generate_advanced_attack_tests(self) -> None:
@@ -340,62 +286,45 @@ class CORSTestCaseGenerator:
         self._add_test_case(
             name="Potential Regex Origin Bypass",
             description="Tests policy vulnerable to regex bypass",
-            policy={
-                "origins": ["https://example.com.*"],
-                "methods": ["GET", "POST"],
-                "credentials": False
-            },
+            policy={"origins": ["https://example.com.*"], "methods": ["GET", "POST"], "credentials": False},
             expected_result="WARNING",
-            severity="high"
+            severity="high",
         )
 
         # Test 22: Port manipulation
         self._add_test_case(
             name="Port-based Origin Distinction",
             description="Tests configuration distinguishing ports",
-            policy={
-                "origins": ["https://example.com:443", "https://example.com:8443"],
-                "methods": ["GET"]
-            },
+            policy={"origins": ["https://example.com:443", "https://example.com:8443"], "methods": ["GET"]},
             expected_result="PASS",
-            severity="info"
+            severity="info",
         )
 
         # Test 23: Case sensitivity
         self._add_test_case(
             name="Origin Case Sensitivity Test",
             description="Tests if origin matching respects case",
-            policy={
-                "origins": ["https://Example.com", "https://example.com"],
-                "methods": ["GET"]
-            },
+            policy={"origins": ["https://Example.com", "https://example.com"], "methods": ["GET"]},
             expected_result="PASS",
-            severity="info"
+            severity="info",
         )
 
         # Test 24: Path-based origins
         self._add_test_case(
             name="Path in Origin",
             description="Tests if policy attempts to use paths in origin",
-            policy={
-                "origins": ["https://example.com/api"],
-                "methods": ["GET"]
-            },
+            policy={"origins": ["https://example.com/api"], "methods": ["GET"]},
             expected_result="WARNING",
-            severity="medium"
+            severity="medium",
         )
 
         # Test 25: Superdomain risk
         self._add_test_case(
             name="Superdomain Vulnerability",
             description="Tests configuration allowing parent domain",
-            policy={
-                "origins": ["https://example.com"],
-                "methods": ["GET", "POST"],
-                "credentials": True
-            },
+            policy={"origins": ["https://example.com"], "methods": ["GET", "POST"], "credentials": True},
             expected_result="PASS",
-            severity="info"
+            severity="info",
         )
 
     def generate_from_template(self, template_path: str) -> List[Dict[str, Any]]:
@@ -409,7 +338,7 @@ class CORSTestCaseGenerator:
             List of test cases
         """
         try:
-            with open(template_path, 'r') as f:
+            with open(template_path, "r") as f:
                 template = json.load(f)
 
             # Generate variations of the template
@@ -423,12 +352,14 @@ class CORSTestCaseGenerator:
     def _create_policy_variations(base_policy: Dict[str, Any]) -> List[Dict[str, Any]]:
         """Create policy variations for testing."""
         variations = []
-        variations.append({
-            "id": "variation_original",
-            "name": "Original Policy",
-            "policy": base_policy,
-            "expected_result": "EVALUATE"
-        })
+        variations.append(
+            {
+                "id": "variation_original",
+                "name": "Original Policy",
+                "policy": base_policy,
+                "expected_result": "EVALUATE",
+            }
+        )
         return variations
 
 
@@ -442,32 +373,26 @@ Examples:
   generate_test_cases.py --output test_cases.json
   generate_test_cases.py --coverage high --output comprehensive_tests.json
   generate_test_cases.py --template cors.json --output variant_tests.json
-        """
+        """,
     )
 
     parser.add_argument(
-        "-o", "--output",
+        "-o",
+        "--output",
         type=str,
         default="cors_test_cases.json",
-        help="Output file for test cases (default: cors_test_cases.json)"
+        help="Output file for test cases (default: cors_test_cases.json)",
     )
     parser.add_argument(
-        "-c", "--coverage",
+        "-c",
+        "--coverage",
         type=str,
         choices=["basic", "standard", "comprehensive", "high"],
         default="standard",
-        help="Coverage level for test generation (default: standard)"
+        help="Coverage level for test generation (default: standard)",
     )
-    parser.add_argument(
-        "-t", "--template",
-        type=str,
-        help="Template CORS policy file to generate variations from"
-    )
-    parser.add_argument(
-        "-v", "--verbose",
-        action="store_true",
-        help="Enable verbose output"
-    )
+    parser.add_argument("-t", "--template", type=str, help="Template CORS policy file to generate variations from")
+    parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose output")
 
     args = parser.parse_args()
 
@@ -493,13 +418,13 @@ Examples:
                 "high": len([t for t in test_cases if t.get("severity") == "high"]),
                 "medium": len([t for t in test_cases if t.get("severity") == "medium"]),
                 "low": len([t for t in test_cases if t.get("severity") == "low"]),
-                "info": len([t for t in test_cases if t.get("severity") == "info"])
-            }
+                "info": len([t for t in test_cases if t.get("severity") == "info"]),
+            },
         }
 
         # Write output
         output_path = Path(args.output)
-        with open(output_path, 'w') as f:
+        with open(output_path, "w") as f:
             json.dump(output, f, indent=2)
 
         print(f"Generated {len(test_cases)} test cases")

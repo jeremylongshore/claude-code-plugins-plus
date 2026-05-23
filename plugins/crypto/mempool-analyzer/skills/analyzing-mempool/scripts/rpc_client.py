@@ -33,6 +33,7 @@ DEFAULT_RPC_URLS = {
 @dataclass
 class PendingTransaction:
     """Represents a pending transaction in the mempool."""
+
     hash: str
     from_address: str
     to_address: Optional[str]
@@ -49,6 +50,7 @@ class PendingTransaction:
 @dataclass
 class GasInfo:
     """Current gas price information."""
+
     base_fee: int
     priority_fee: int
     gas_price: int  # legacy
@@ -58,12 +60,7 @@ class GasInfo:
 class RPCClient:
     """Ethereum JSON-RPC client for mempool access."""
 
-    def __init__(
-        self,
-        rpc_url: str = None,
-        chain: str = "ethereum",
-        verbose: bool = False
-    ):
+    def __init__(self, rpc_url: str = None, chain: str = "ethereum", verbose: bool = False):
         """Initialize RPC client.
 
         Args:
@@ -184,7 +181,9 @@ class RPCClient:
             gas=int(tx.get("gas", "0x0"), 16),
             gas_price=int(tx.get("gasPrice", "0x0"), 16),
             max_fee_per_gas=int(tx.get("maxFeePerGas", "0x0"), 16) if tx.get("maxFeePerGas") else None,
-            max_priority_fee_per_gas=int(tx.get("maxPriorityFeePerGas", "0x0"), 16) if tx.get("maxPriorityFeePerGas") else None,
+            max_priority_fee_per_gas=int(tx.get("maxPriorityFeePerGas", "0x0"), 16)
+            if tx.get("maxPriorityFeePerGas")
+            else None,
             nonce=int(tx.get("nonce", "0x0"), 16),
             input_data=tx.get("input", "0x"),
             block_number=int(tx.get("blockNumber", "0x0"), 16) if tx.get("blockNumber") else None,
@@ -209,19 +208,21 @@ class RPCClient:
 
         for i in range(min(limit, 20)):
             gas_price = base_gas_price + random.randint(-5, 20) * 10**9
-            mock_txs.append(PendingTransaction(
-                hash=f"0x{''.join(random.choices('0123456789abcdef', k=64))}",
-                from_address=f"0x{''.join(random.choices('0123456789abcdef', k=40))}",
-                to_address=random.choice(routers),
-                value=random.randint(0, 10) * 10**18,
-                gas=random.randint(100000, 500000),
-                gas_price=gas_price,
-                max_fee_per_gas=gas_price + 5 * 10**9,
-                max_priority_fee_per_gas=2 * 10**9,
-                nonce=random.randint(1, 1000),
-                input_data=swap_input + "0" * 128,
-                block_number=None,
-            ))
+            mock_txs.append(
+                PendingTransaction(
+                    hash=f"0x{''.join(random.choices('0123456789abcdef', k=64))}",
+                    from_address=f"0x{''.join(random.choices('0123456789abcdef', k=40))}",
+                    to_address=random.choice(routers),
+                    value=random.randint(0, 10) * 10**18,
+                    gas=random.randint(100000, 500000),
+                    gas_price=gas_price,
+                    max_fee_per_gas=gas_price + 5 * 10**9,
+                    max_priority_fee_per_gas=2 * 10**9,
+                    nonce=random.randint(1, 1000),
+                    input_data=swap_input + "0" * 128,
+                    block_number=None,
+                )
+            )
 
         return mock_txs
 

@@ -11,10 +11,7 @@ class CascadeInterface(ABC):
 
     @abstractmethod
     async def upload_blob(
-        self,
-        data: bytes,
-        content_type: str = "application/octet-stream",
-        metadata: Optional[dict] = None
+        self, data: bytes, content_type: str = "application/octet-stream", metadata: Optional[dict] = None
     ) -> str:
         """
         Upload a blob to Cascade.

@@ -70,6 +70,7 @@ def log_error(message: str) -> None:
 # Project detection
 # ---------------------------------------------------------------------------
 
+
 def detect_project_type(directory: Path) -> list[str]:
     """Auto-detect project ecosystems by scanning for manifest files.
 
@@ -99,8 +100,7 @@ def detect_project_type(directory: Path) -> list[str]:
     for ecosystem, manifest in FUTURE_SCANNERS.items():
         if (directory / manifest).exists():
             log_warn(
-                f"Detected {ecosystem} project ({manifest}), but {ecosystem} "
-                f"scanning is not yet implemented. Skipping."
+                f"Detected {ecosystem} project ({manifest}), but {ecosystem} scanning is not yet implemented. Skipping."
             )
 
     return detected
@@ -109,6 +109,7 @@ def detect_project_type(directory: Path) -> list[str]:
 # ---------------------------------------------------------------------------
 # npm audit
 # ---------------------------------------------------------------------------
+
 
 def run_npm_audit(directory: Path) -> list[dict[str, Any]]:
     """Run npm audit and parse vulnerability findings.
@@ -128,7 +129,9 @@ def run_npm_audit(directory: Path) -> list[dict[str, Any]]:
     # Check npm is available
     npm_check = subprocess.run(
         ["npm", "--version"],
-        capture_output=True, text=True, timeout=SUBPROCESS_TIMEOUT,
+        capture_output=True,
+        text=True,
+        timeout=SUBPROCESS_TIMEOUT,
     )
     if npm_check.returncode != 0:
         log_warn("npm is not installed or not in PATH. Skipping npm audit.")
@@ -141,15 +144,13 @@ def run_npm_audit(directory: Path) -> list[dict[str, Any]]:
 
     # Warn if node_modules is missing
     if not (directory / "node_modules").is_dir():
-        log_warn(
-            f"No node_modules directory in {directory}. "
-            f"Run 'npm install' first for accurate audit results."
-        )
+        log_warn(f"No node_modules directory in {directory}. Run 'npm install' first for accurate audit results.")
 
     try:
         result = subprocess.run(
             ["npm", "audit", "--json"],
-            capture_output=True, text=True,
+            capture_output=True,
+            text=True,
             cwd=str(directory),
             timeout=SUBPROCESS_TIMEOUT,
         )
@@ -198,43 +199,49 @@ def _parse_npm_audit_v2(data: dict[str, Any]) -> list[dict[str, Any]]:
         # Each vulnerability entry may reference multiple advisories via "via"
         via_entries = vuln_info.get("via", [])
         if not via_entries:
-            findings.append({
-                "scanner": "npm",
-                "package": pkg_name,
-                "severity": _normalize_severity(severity),
-                "title": f"Vulnerability in {pkg_name}",
-                "detail": f"Severity: {severity}. Check npm audit for details.",
-                "cve": None,
-                "installed_version": vuln_info.get("range"),
-                "fixed_version": fixed_version,
-            })
+            findings.append(
+                {
+                    "scanner": "npm",
+                    "package": pkg_name,
+                    "severity": _normalize_severity(severity),
+                    "title": f"Vulnerability in {pkg_name}",
+                    "detail": f"Severity: {severity}. Check npm audit for details.",
+                    "cve": None,
+                    "installed_version": vuln_info.get("range"),
+                    "fixed_version": fixed_version,
+                }
+            )
             continue
 
         for via in via_entries:
             if isinstance(via, str):
                 # Indirect vulnerability reference (transitive dependency name)
-                findings.append({
-                    "scanner": "npm",
-                    "package": pkg_name,
-                    "severity": _normalize_severity(severity),
-                    "title": f"Depends on vulnerable {via}",
-                    "detail": f"{pkg_name} is affected through dependency on {via}.",
-                    "cve": None,
-                    "installed_version": vuln_info.get("range"),
-                    "fixed_version": fixed_version,
-                })
+                findings.append(
+                    {
+                        "scanner": "npm",
+                        "package": pkg_name,
+                        "severity": _normalize_severity(severity),
+                        "title": f"Depends on vulnerable {via}",
+                        "detail": f"{pkg_name} is affected through dependency on {via}.",
+                        "cve": None,
+                        "installed_version": vuln_info.get("range"),
+                        "fixed_version": fixed_version,
+                    }
+                )
             elif isinstance(via, dict):
                 cve = _extract_cve(via.get("url", ""))
-                findings.append({
-                    "scanner": "npm",
-                    "package": pkg_name,
-                    "severity": _normalize_severity(via.get("severity", severity)),
-                    "title": via.get("title", f"Vulnerability in {pkg_name}"),
-                    "detail": via.get("title", "No description available."),
-                    "cve": cve,
-                    "installed_version": via.get("range") or vuln_info.get("range"),
-                    "fixed_version": fixed_version,
-                })
+                findings.append(
+                    {
+                        "scanner": "npm",
+                        "package": pkg_name,
+                        "severity": _normalize_severity(via.get("severity", severity)),
+                        "title": via.get("title", f"Vulnerability in {pkg_name}"),
+                        "detail": via.get("title", "No description available."),
+                        "cve": cve,
+                        "installed_version": via.get("range") or vuln_info.get("range"),
+                        "fixed_version": fixed_version,
+                    }
+                )
 
     return findings
 
@@ -250,16 +257,18 @@ def _parse_npm_audit_v1(data: dict[str, Any]) -> list[dict[str, Any]]:
     for _adv_id, advisory in advisories.items():
         cve_list = advisory.get("cves", [])
         cve = cve_list[0] if cve_list else None
-        findings.append({
-            "scanner": "npm",
-            "package": advisory.get("module_name", "unknown"),
-            "severity": _normalize_severity(advisory.get("severity", "moderate")),
-            "title": advisory.get("title", "Unknown vulnerability"),
-            "detail": advisory.get("overview", "No description available."),
-            "cve": cve,
-            "installed_version": advisory.get("findings", [{}])[0].get("version"),
-            "fixed_version": advisory.get("patched_versions"),
-        })
+        findings.append(
+            {
+                "scanner": "npm",
+                "package": advisory.get("module_name", "unknown"),
+                "severity": _normalize_severity(advisory.get("severity", "moderate")),
+                "title": advisory.get("title", "Unknown vulnerability"),
+                "detail": advisory.get("overview", "No description available."),
+                "cve": cve,
+                "installed_version": advisory.get("findings", [{}])[0].get("version"),
+                "fixed_version": advisory.get("patched_versions"),
+            }
+        )
 
     return findings
 
@@ -267,6 +276,7 @@ def _parse_npm_audit_v1(data: dict[str, Any]) -> list[dict[str, Any]]:
 # ---------------------------------------------------------------------------
 # pip-audit
 # ---------------------------------------------------------------------------
+
 
 def run_pip_audit(directory: Path) -> list[dict[str, Any]]:
     """Run pip-audit and parse vulnerability findings.
@@ -291,7 +301,8 @@ def run_pip_audit(directory: Path) -> list[dict[str, Any]]:
     try:
         result = subprocess.run(
             pip_audit_cmd,
-            capture_output=True, text=True,
+            capture_output=True,
+            text=True,
             cwd=str(directory),
             timeout=SUBPROCESS_TIMEOUT,
         )
@@ -305,14 +316,16 @@ def run_pip_audit(directory: Path) -> list[dict[str, Any]]:
     # Try installing pip-audit
     install_result = subprocess.run(
         [sys.executable, "-m", "pip", "install", "pip-audit", "--quiet"],
-        capture_output=True, text=True,
+        capture_output=True,
+        text=True,
         timeout=SUBPROCESS_TIMEOUT,
     )
     if install_result.returncode == 0:
         try:
             result = subprocess.run(
                 pip_audit_cmd,
-                capture_output=True, text=True,
+                capture_output=True,
+                text=True,
                 cwd=str(directory),
                 timeout=SUBPROCESS_TIMEOUT,
             )
@@ -370,16 +383,18 @@ def _parse_pip_audit_output(raw_output: str) -> list[dict[str, Any]]:
             if isinstance(fix, list):
                 fix = fix[0] if fix else None
 
-            findings.append({
-                "scanner": "pip-audit",
-                "package": pkg_name,
-                "severity": _severity_from_vuln_id(vuln_id),
-                "title": f"{vuln_id}: {pkg_name}" if vuln_id else f"Vulnerability in {pkg_name}",
-                "detail": description or "No description provided by pip-audit.",
-                "cve": cve,
-                "installed_version": installed,
-                "fixed_version": fix,
-            })
+            findings.append(
+                {
+                    "scanner": "pip-audit",
+                    "package": pkg_name,
+                    "severity": _severity_from_vuln_id(vuln_id),
+                    "title": f"{vuln_id}: {pkg_name}" if vuln_id else f"Vulnerability in {pkg_name}",
+                    "detail": description or "No description provided by pip-audit.",
+                    "cve": cve,
+                    "installed_version": installed,
+                    "fixed_version": fix,
+                }
+            )
 
     return findings
 
@@ -390,7 +405,8 @@ def _run_pip_outdated_fallback() -> list[dict[str, Any]]:
     try:
         result = subprocess.run(
             [sys.executable, "-m", "pip", "list", "--outdated", "--format=json"],
-            capture_output=True, text=True,
+            capture_output=True,
+            text=True,
             timeout=SUBPROCESS_TIMEOUT,
         )
     except (FileNotFoundError, subprocess.TimeoutExpired):
@@ -406,20 +422,22 @@ def _run_pip_outdated_fallback() -> list[dict[str, Any]]:
         return findings
 
     for entry in data:
-        findings.append({
-            "scanner": "pip-audit",
-            "package": entry.get("name", "unknown"),
-            "severity": "info",
-            "title": f"Outdated package: {entry.get('name', 'unknown')}",
-            "detail": (
-                f"Installed {entry.get('version', '?')}, "
-                f"latest {entry.get('latest_version', '?')}. "
-                f"Outdated packages may contain known vulnerabilities."
-            ),
-            "cve": None,
-            "installed_version": entry.get("version"),
-            "fixed_version": entry.get("latest_version"),
-        })
+        findings.append(
+            {
+                "scanner": "pip-audit",
+                "package": entry.get("name", "unknown"),
+                "severity": "info",
+                "title": f"Outdated package: {entry.get('name', 'unknown')}",
+                "detail": (
+                    f"Installed {entry.get('version', '?')}, "
+                    f"latest {entry.get('latest_version', '?')}. "
+                    f"Outdated packages may contain known vulnerabilities."
+                ),
+                "cve": None,
+                "installed_version": entry.get("version"),
+                "fixed_version": entry.get("latest_version"),
+            }
+        )
 
     return findings
 
@@ -427,6 +445,7 @@ def _run_pip_outdated_fallback() -> list[dict[str, Any]]:
 # ---------------------------------------------------------------------------
 # pip check
 # ---------------------------------------------------------------------------
+
 
 def run_pip_check(directory: Path) -> list[dict[str, Any]]:
     """Run pip check to detect broken dependencies and version conflicts.
@@ -446,7 +465,8 @@ def run_pip_check(directory: Path) -> list[dict[str, Any]]:
     try:
         result = subprocess.run(
             [sys.executable, "-m", "pip", "check"],
-            capture_output=True, text=True,
+            capture_output=True,
+            text=True,
             cwd=str(directory),
             timeout=SUBPROCESS_TIMEOUT,
         )
@@ -470,16 +490,18 @@ def run_pip_check(directory: Path) -> list[dict[str, Any]]:
         pkg_name = parts[0] if parts else "unknown"
         installed_version = parts[1] if len(parts) > 1 else None
 
-        findings.append({
-            "scanner": "pip-check",
-            "package": pkg_name,
-            "severity": "moderate",
-            "title": f"Dependency conflict: {pkg_name}",
-            "detail": line,
-            "cve": None,
-            "installed_version": installed_version,
-            "fixed_version": None,
-        })
+        findings.append(
+            {
+                "scanner": "pip-check",
+                "package": pkg_name,
+                "severity": "moderate",
+                "title": f"Dependency conflict: {pkg_name}",
+                "detail": line,
+                "cve": None,
+                "installed_version": installed_version,
+                "fixed_version": None,
+            }
+        )
 
     return findings
 
@@ -487,6 +509,7 @@ def run_pip_check(directory: Path) -> list[dict[str, Any]]:
 # ---------------------------------------------------------------------------
 # Unification and deduplication
 # ---------------------------------------------------------------------------
+
 
 def unify_results(findings: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Normalize, deduplicate, and sort findings by severity.
@@ -527,6 +550,7 @@ def unify_results(findings: list[dict[str, Any]]) -> list[dict[str, Any]]:
 # ---------------------------------------------------------------------------
 # Reporting
 # ---------------------------------------------------------------------------
+
 
 def generate_report(
     directory: Path,
@@ -618,6 +642,7 @@ def generate_report(
 # Helpers
 # ---------------------------------------------------------------------------
 
+
 def _normalize_severity(severity: str) -> str:
     """Normalize a severity string to one of the canonical levels."""
     s = severity.strip().lower()
@@ -637,6 +662,7 @@ def _normalize_severity(severity: str) -> str:
 def _extract_cve(text: str) -> Optional[str]:
     """Extract a CVE identifier from a string, if present."""
     import re
+
     match = re.search(r"CVE-\d{4}-\d{4,}", text)
     return match.group(0) if match else None
 
@@ -667,6 +693,7 @@ def _filter_by_severity(
 # ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
+
 
 def main() -> None:
     """Entry point for the dependency auditor CLI."""
@@ -726,8 +753,7 @@ def main() -> None:
 
     if not ecosystems:
         log_warn(
-            f"No supported project types detected in {directory}. "
-            f"Supported: {', '.join(sorted(SUPPORTED_SCANNERS))}"
+            f"No supported project types detected in {directory}. Supported: {', '.join(sorted(SUPPORTED_SCANNERS))}"
         )
         sys.exit(0)
 
@@ -758,8 +784,7 @@ def main() -> None:
     filtered = _filter_by_severity(unified, args.min_severity)
 
     log(
-        f"Unified: {len(unified)} total, {len(filtered)} at or above "
-        f"{args.min_severity} severity.",
+        f"Unified: {len(unified)} total, {len(filtered)} at or above {args.min_severity} severity.",
         verbose,
     )
 
@@ -767,9 +792,7 @@ def main() -> None:
     generate_report(directory, filtered, args.output)
 
     # Exit code: 1 if any critical or high findings remain after filtering
-    has_critical_or_high = any(
-        f["severity"] in ("critical", "high") for f in filtered
-    )
+    has_critical_or_high = any(f["severity"] in ("critical", "high") for f in filtered)
     sys.exit(1 if has_critical_or_high else 0)
 
 

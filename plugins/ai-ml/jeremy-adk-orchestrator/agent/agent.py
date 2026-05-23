@@ -14,7 +14,6 @@
 
 """ADK Orchestrator Agent - Production-ready A2A protocol manager for Vertex AI Engine"""
 
-from typing import Optional, List, Dict, Any
 from google.adk.agents import LlmAgent
 from google.adk.tools import FunctionTool
 from google.adk.runners import Runner
@@ -31,7 +30,7 @@ from .tools import (
     deploy_to_vertex_engine,
     monitor_agent_health,
     create_agent_team,
-    coordinate_workflow
+    coordinate_workflow,
 )
 
 
@@ -48,7 +47,7 @@ def get_agent() -> LlmAgent:
     """
 
     # Load system prompt from file
-    with open('system-prompt.md', 'r') as f:
+    with open("system-prompt.md", "r") as f:
         system_instruction = f.read()
 
     return LlmAgent(
@@ -61,14 +60,11 @@ def get_agent() -> LlmAgent:
             FunctionTool(discover_agents),
             FunctionTool(invoke_agent),
             FunctionTool(validate_agent_card),
-
             # Session & Memory Management
             FunctionTool(manage_agent_session),
-
             # Deployment & Operations
             FunctionTool(deploy_to_vertex_engine),
             FunctionTool(monitor_agent_health),
-
             # Multi-Agent Coordination
             FunctionTool(create_agent_team),
             FunctionTool(coordinate_workflow),
@@ -82,8 +78,8 @@ def get_agent() -> LlmAgent:
             "version": "2.1.0",
             "deployment_target": "vertex-ai-engine",
             "capabilities": ["a2a", "multi-agent", "session-management", "monitoring"],
-            "compliance": "R5-ready"
-        }
+            "compliance": "R5-ready",
+        },
     )
 
 
@@ -101,14 +97,14 @@ async def create_runner() -> Runner:
     session_service = VertexAiSessionService(
         project_id="your-project-id",  # Will be configured via env
         location="us-central1",
-        session_ttl_days=30
+        session_ttl_days=30,
     )
 
     memory_service = VertexAiMemoryBankService(
         project_id="your-project-id",
         location="us-central1",
         corpus_name="adk-orchestrator-memory",
-        ttl_days=14  # R5 compliance
+        ttl_days=14,  # R5 compliance
     )
 
     # Create runner with production configuration
@@ -120,9 +116,7 @@ async def create_runner() -> Runner:
         artifact_service=InMemoryArtifactService(),
         credential_service=InMemoryCredentialService(),
         # Auto-save session to memory for R5 compliance
-        callbacks={
-            "after_session": auto_save_session_to_memory
-        }
+        callbacks={"after_session": auto_save_session_to_memory},
     )
 
 
@@ -135,11 +129,7 @@ async def auto_save_session_to_memory(session, memory_service):
         await memory_service.save_session(
             session_id=session.id,
             session_data=session.to_dict(),
-            metadata={
-                "timestamp": session.updated_at,
-                "agent": "adk-orchestrator",
-                "compliance": "R5"
-            }
+            metadata={"timestamp": session.updated_at, "agent": "adk-orchestrator", "compliance": "R5"},
         )
 
 

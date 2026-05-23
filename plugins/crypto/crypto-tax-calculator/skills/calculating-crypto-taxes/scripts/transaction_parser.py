@@ -80,26 +80,22 @@ TYPE_MAPPING = {
     "staking income": "staking",
     "coinbase earn": "income",
     "learning reward": "income",
-
     # Sells (disposals)
     "sell": "sell",
     "send": "transfer_out",
     "withdrawal": "transfer_out",
     "advanced trade sell": "sell",
     "convert": "trade",
-
     # Income events
     "staking": "staking",
     "airdrop": "airdrop",
     "mining": "mining",
     "interest": "interest",
     "reward": "staking",
-
     # Trades
     "trade": "trade",
     "swap": "trade",
     "exchange": "trade",
-
     # Transfers (non-taxable)
     "transfer": "transfer",
 }
@@ -116,11 +112,7 @@ class TransactionParser:
         """
         self.verbose = verbose
 
-    def parse(
-        self,
-        filepath: str,
-        exchange: Optional[str] = None
-    ) -> List[Dict[str, Any]]:
+    def parse(self, filepath: str, exchange: Optional[str] = None) -> List[Dict[str, Any]]:
         """Parse a transaction CSV file.
 
         Args:
@@ -182,12 +174,7 @@ class TransactionParser:
 
         return "generic"
 
-    def _parse_row(
-        self,
-        row: Dict[str, str],
-        format_spec: Dict[str, Any],
-        row_num: int
-    ) -> Optional[Dict[str, Any]]:
+    def _parse_row(self, row: Dict[str, str], format_spec: Dict[str, Any], row_num: int) -> Optional[Dict[str, Any]]:
         """Parse a single CSV row into normalized transaction.
 
         Args:

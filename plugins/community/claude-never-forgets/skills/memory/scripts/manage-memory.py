@@ -13,7 +13,7 @@ import json
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict
 
 
 class MemoryManager:
@@ -26,17 +26,13 @@ class MemoryManager:
 
     def _initialize_memory_file(self):
         """Initialize empty memory file"""
-        initial_data = {
-            "project_memories": [],
-            "manual_memories": [],
-            "last_updated": datetime.now().isoformat()
-        }
+        initial_data = {"project_memories": [], "manual_memories": [], "last_updated": datetime.now().isoformat()}
         self._save_memories(initial_data)
 
     def _load_memories(self) -> Dict:
         """Load memories from file"""
         try:
-            with open(self.memory_file, 'r') as f:
+            with open(self.memory_file, "r") as f:
                 return json.load(f)
         except Exception as e:
             print(f"Error loading memories: {e}")
@@ -45,18 +41,14 @@ class MemoryManager:
     def _save_memories(self, data: Dict):
         """Save memories to file"""
         data["last_updated"] = datetime.now().isoformat()
-        with open(self.memory_file, 'w') as f:
+        with open(self.memory_file, "w") as f:
             json.dump(data, f, indent=2)
 
     def add_memory(self, text: str, category: str = "manual"):
         """Add a new memory"""
         memories = self._load_memories()
 
-        memory_entry = {
-            "text": text,
-            "timestamp": datetime.now().isoformat(),
-            "category": category
-        }
+        memory_entry = {"text": text, "timestamp": datetime.now().isoformat(), "category": category}
 
         if category == "manual":
             memories["manual_memories"].append(memory_entry)
@@ -91,16 +83,12 @@ class MemoryManager:
 
         # Check project memories
         memories["project_memories"] = [
-            m for m in memories["project_memories"]
-            if text.lower() not in m["text"].lower()
+            m for m in memories["project_memories"] if text.lower() not in m["text"].lower()
         ]
 
         # Check manual memories
         original_count = len(memories["manual_memories"])
-        memories["manual_memories"] = [
-            m for m in memories["manual_memories"]
-            if text.lower() not in m["text"].lower()
-        ]
+        memories["manual_memories"] = [m for m in memories["manual_memories"] if text.lower() not in m["text"].lower()]
 
         if len(memories["manual_memories"]) < original_count:
             removed = True
@@ -109,7 +97,7 @@ class MemoryManager:
             self._save_memories(memories)
             print(f"✓ Memory removed: {text}")
         else:
-            print(f"✗ No matching memory found")
+            print("✗ No matching memory found")
 
     def search_memories(self, query: str):
         """Search memories by query"""

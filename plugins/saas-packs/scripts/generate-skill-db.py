@@ -43,18 +43,32 @@ PRO_SKILLS = FLAGSHIP_SKILLS[:18]
 # Standard tier (12 skills) - subset
 STANDARD_SKILLS = FLAGSHIP_SKILLS[:12]
 
+
 def generate_csv(vendor: str, display: str, skills: list, output_dir: str):
     """Generate skills CSV file."""
     csv_path = os.path.join(output_dir, f"{vendor}-skills.csv")
 
-    with open(csv_path, 'w', newline='') as f:
+    with open(csv_path, "w", newline="") as f:
         writer = csv.writer(f)
-        writer.writerow([
-            "Name", "Who", "What", "When", "Where",
-            "Definition_of_Success_Technical", "Definition_of_Success_Business",
-            "Target_Goal", "Production", "Category", "Path", "Allowed_Tools",
-            "Version", "License", "Author"
-        ])
+        writer.writerow(
+            [
+                "Name",
+                "Who",
+                "What",
+                "When",
+                "Where",
+                "Definition_of_Success_Technical",
+                "Definition_of_Success_Business",
+                "Target_Goal",
+                "Production",
+                "Category",
+                "Path",
+                "Allowed_Tools",
+                "Version",
+                "License",
+                "Author",
+            ]
+        )
 
         for skill_name, category, what_template in skills:
             full_name = f"{vendor}-{skill_name}"
@@ -73,25 +87,28 @@ def generate_csv(vendor: str, display: str, skills: list, output_dir: str):
             else:  # enterprise
                 tools = "Read, Write, Edit, Bash(kubectl:*), Bash(curl:*)"
 
-            writer.writerow([
-                full_name,
-                "Backend developers, DevOps engineers, Full-stack developers",
-                what,
-                triggers,
-                f"Claude Code skill; {display} SDK; local/cloud development",
-                f"Working {display} integration; Tests passing; Documentation updated",
-                f"Faster {display} integration; Reduced errors; Team productivity",
-                f"Complete {display} {skill_name.replace('-', ' ')} in under 15 minutes",
-                "true",
-                category,
-                f"plugins/saas-packs/{vendor}-pack/skills/{full_name}/",
-                tools,
-                "1.0.0",
-                "MIT",
-                "Jeremy Longshore <jeremy@intentsolutions.io>"
-            ])
+            writer.writerow(
+                [
+                    full_name,
+                    "Backend developers, DevOps engineers, Full-stack developers",
+                    what,
+                    triggers,
+                    f"Claude Code skill; {display} SDK; local/cloud development",
+                    f"Working {display} integration; Tests passing; Documentation updated",
+                    f"Faster {display} integration; Reduced errors; Team productivity",
+                    f"Complete {display} {skill_name.replace('-', ' ')} in under 15 minutes",
+                    "true",
+                    category,
+                    f"plugins/saas-packs/{vendor}-pack/skills/{full_name}/",
+                    tools,
+                    "1.0.0",
+                    "MIT",
+                    "Jeremy Longshore <jeremy@intentsolutions.io>",
+                ]
+            )
 
     return csv_path
+
 
 def generate_md(vendor: str, display: str, skill_name: str, category: str, what: str, output_dir: str):
     """Generate skill MD file."""
@@ -119,10 +136,11 @@ def generate_md(vendor: str, display: str, skill_name: str, category: str, what:
 This skill helps developers {what.lower()}. It provides step-by-step guidance for {display} integration following best practices and production-ready patterns. Use this skill to accelerate your {display} development workflow.
 """
 
-    with open(md_path, 'w') as f:
+    with open(md_path, "w") as f:
         f.write(content)
 
     return md_path
+
 
 def generate_skill_database(vendor: str, display: str, tier: str):
     """Generate complete skill database for a vendor."""
@@ -157,6 +175,7 @@ def generate_skill_database(vendor: str, display: str, tier: str):
         print(f"Created: {md_path}")
 
     return len(skills)
+
 
 if __name__ == "__main__":
     if len(sys.argv) < 4:

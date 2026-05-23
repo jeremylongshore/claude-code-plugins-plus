@@ -17,6 +17,7 @@ Schema documented in references/fingerprint-spec.md. Current schema_version: "1"
 
 Required packages: Python 3.9+ standard library only (hashlib, json, pathlib, os, sys, argparse).
 """
+
 from __future__ import annotations
 
 import argparse
@@ -141,7 +142,8 @@ def cmd_diff(input_path: str) -> int:
     added_nodes = [n for nid, n in new_node_ids.items() if nid not in old_node_ids]
     removed_nodes = [n for nid, n in old_node_ids.items() if nid not in new_node_ids]
     changed_nodes = [
-        n for nid, n in new_node_ids.items()
+        n
+        for nid, n in new_node_ids.items()
         if nid in old_node_ids and old_node_ids[nid]["stable_hash"] != n["stable_hash"]
     ]
     added_edges = [e for h, e in new_edge_hashes.items() if h not in old_edge_hashes]

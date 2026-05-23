@@ -22,16 +22,20 @@ from backtest import run_backtest, load_settings
 # Helpers
 # ---------------------------------------------------------------------------
 
+
 def make_price_data(prices, start="2024-01-01"):
     """Build a minimal DataFrame from a list of close prices."""
     dates = pd.date_range(start, periods=len(prices), freq="D")
-    df = pd.DataFrame({
-        "open": prices,
-        "high": [p * 1.01 for p in prices],
-        "low": [p * 0.99 for p in prices],
-        "close": prices,
-        "volume": [1000] * len(prices),
-    }, index=dates)
+    df = pd.DataFrame(
+        {
+            "open": prices,
+            "high": [p * 1.01 for p in prices],
+            "low": [p * 0.99 for p in prices],
+            "close": prices,
+            "volume": [1000] * len(prices),
+        },
+        index=dates,
+    )
     df.index.name = "date"
     df.attrs["symbol"] = "TEST"
     return df
@@ -62,6 +66,7 @@ def make_mean_reverting_data(n=300, mean=100, std=5):
 # parse_period
 # ---------------------------------------------------------------------------
 
+
 class TestParsePeriod:
     def test_years(self):
         assert parse_period("1y") == timedelta(days=365)
@@ -86,6 +91,7 @@ class TestParsePeriod:
 # Signal dataclass
 # ---------------------------------------------------------------------------
 
+
 class TestSignal:
     def test_defaults(self):
         s = Signal()
@@ -107,6 +113,7 @@ class TestSignal:
 # ---------------------------------------------------------------------------
 # Strategy signals
 # ---------------------------------------------------------------------------
+
 
 class TestStrategies:
     def test_list_strategies(self):
@@ -187,6 +194,7 @@ class TestStrategies:
 # Trade and metrics
 # ---------------------------------------------------------------------------
 
+
 class TestMetrics:
     def test_long_trade_pnl(self):
         t = Trade(
@@ -228,8 +236,10 @@ class TestMetrics:
         t = Trade(
             entry_time=pd.Timestamp("2024-01-01"),
             exit_time=pd.Timestamp("2024-01-31"),
-            entry_price=100, exit_price=100,
-            direction="long", size=1,
+            entry_price=100,
+            exit_price=100,
+            direction="long",
+            size=1,
         )
         assert t.duration == timedelta(days=30)
 
@@ -240,10 +250,8 @@ class TestMetrics:
 
     def test_trade_stats_mixed(self):
         trades = [
-            Trade(pd.Timestamp("2024-01-01"), pd.Timestamp("2024-01-10"),
-                  100, 120, "long", 1),
-            Trade(pd.Timestamp("2024-01-11"), pd.Timestamp("2024-01-20"),
-                  120, 110, "long", 1),
+            Trade(pd.Timestamp("2024-01-01"), pd.Timestamp("2024-01-10"), 100, 120, "long", 1),
+            Trade(pd.Timestamp("2024-01-11"), pd.Timestamp("2024-01-20"), 120, 110, "long", 1),
         ]
         stats = calculate_trade_stats(trades)
         assert stats["total_trades"] == 2
@@ -253,6 +261,7 @@ class TestMetrics:
 # ---------------------------------------------------------------------------
 # Settings loading
 # ---------------------------------------------------------------------------
+
 
 class TestSettings:
     def test_load_settings_existing(self):
@@ -271,6 +280,7 @@ class TestSettings:
 # Stop-loss / Take-profit enforcement
 # ---------------------------------------------------------------------------
 
+
 class TestRiskManagement:
     def test_stop_loss_triggers(self):
         """A stop loss should limit downside."""
@@ -287,25 +297,29 @@ class TestRiskManagement:
 
         # With tight stop loss
         result_sl = run_backtest(
-            "momentum", data,
+            "momentum",
+            data,
             params={"period": 14, "threshold": 3.0},
             risk_settings={"stop_loss": 0.03},
         )
         # Stop loss should cause more trades (early exits)
-        assert result_sl.total_trades >= result_no_sl.total_trades or \
-               result_sl.final_capital >= result_no_sl.final_capital
+        assert (
+            result_sl.total_trades >= result_no_sl.total_trades or result_sl.final_capital >= result_no_sl.final_capital
+        )
 
     def test_take_profit_triggers(self):
         """A take profit should lock in gains."""
         data = make_trending_data(n=300, trend=0.003)
         result_tp = run_backtest(
-            "sma_crossover", data,
+            "sma_crossover",
+            data,
             params={"fast_period": 5, "slow_period": 20},
             risk_settings={"take_profit": 0.05},
         )
         # With take profit, should have more trades (exiting early)
         result_no_tp = run_backtest(
-            "sma_crossover", data,
+            "sma_crossover",
+            data,
             params={"fast_period": 5, "slow_period": 20},
         )
         assert result_tp.total_trades >= result_no_tp.total_trades
@@ -314,7 +328,8 @@ class TestRiskManagement:
         """Custom max_position_size should be respected."""
         data = make_trending_data(n=300)
         result = run_backtest(
-            "sma_crossover", data,
+            "sma_crossover",
+            data,
             params={"fast_period": 5, "slow_period": 20},
             risk_settings={"max_position_size": 0.5},
         )
@@ -326,6 +341,7 @@ class TestRiskManagement:
 # ---------------------------------------------------------------------------
 # Full backtest flow
 # ---------------------------------------------------------------------------
+
 
 class TestBacktestFlow:
     def test_basic_backtest_runs(self):

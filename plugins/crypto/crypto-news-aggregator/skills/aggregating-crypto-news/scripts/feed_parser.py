@@ -28,14 +28,10 @@ class FeedParser:
 
     def __init__(self):
         """Initialize feed parser."""
-        self.html_tag_pattern = re.compile(r'<[^>]+>')
+        self.html_tag_pattern = re.compile(r"<[^>]+>")
 
     def parse_feed(
-        self,
-        content: str,
-        source_name: str = "Unknown",
-        source_category: str = "market",
-        source_quality: int = 5
+        self, content: str, source_name: str = "Unknown", source_category: str = "market", source_quality: int = 5
     ) -> List[Dict[str, Any]]:
         """
         Parse RSS/Atom feed content into article list.
@@ -56,10 +52,7 @@ class FeedParser:
 
             for entry in feed.entries:
                 article = self._parse_entry(
-                    entry,
-                    source_name=source_name,
-                    source_category=source_category,
-                    source_quality=source_quality
+                    entry, source_name=source_name, source_category=source_category, source_quality=source_quality
                 )
                 if article:
                     articles.append(article)
@@ -70,11 +63,7 @@ class FeedParser:
         return articles
 
     def _parse_entry(
-        self,
-        entry: Any,
-        source_name: str,
-        source_category: str,
-        source_quality: int
+        self, entry: Any, source_name: str, source_category: str, source_quality: int
     ) -> Optional[Dict[str, Any]]:
         """
         Parse a single feed entry.
@@ -130,7 +119,7 @@ class FeedParser:
             "published": published,
             "summary": summary,
             "category": category,
-            "coins_mentioned": coins_mentioned
+            "coins_mentioned": coins_mentioned,
         }
 
     def _clean_text(self, text: str) -> str:
@@ -174,7 +163,7 @@ class FeedParser:
                     "%Y-%m-%dT%H:%M:%S%z",
                     "%a, %d %b %Y %H:%M:%S %z",
                     "%a, %d %b %Y %H:%M:%S GMT",
-                    "%Y-%m-%d %H:%M:%S"
+                    "%Y-%m-%d %H:%M:%S",
                 ]:
                     try:
                         return datetime.strptime(date_str[:24], fmt[:24])
@@ -238,11 +227,7 @@ class FeedParser:
 
         return default
 
-    def deduplicate(
-        self,
-        articles: List[Dict[str, Any]],
-        threshold: float = 0.8
-    ) -> List[Dict[str, Any]]:
+    def deduplicate(self, articles: List[Dict[str, Any]], threshold: float = 0.8) -> List[Dict[str, Any]]:
         """
         Remove duplicate articles based on title similarity.
 

@@ -10,9 +10,7 @@ License: MIT
 """
 
 import json
-import os
 import time
-from datetime import datetime
 from pathlib import Path
 from typing import List, Dict, Any, Optional
 
@@ -66,11 +64,7 @@ class ProtocolFetcher:
             if self.verbose:
                 print(f"  Fetching from {self.DEFILLAMA_YIELDS_URL}...")
 
-            response = requests.get(
-                self.DEFILLAMA_YIELDS_URL,
-                timeout=30,
-                headers={"Accept": "application/json"}
-            )
+            response = requests.get(self.DEFILLAMA_YIELDS_URL, timeout=30, headers={"Accept": "application/json"})
             response.raise_for_status()
 
             data = response.json()
@@ -161,10 +155,7 @@ class ProtocolFetcher:
                 with open(self.CACHE_FILE, "r") as f:
                     cache = json.load(f)
 
-            cache[key] = {
-                "timestamp": time.time(),
-                "data": data
-            }
+            cache[key] = {"timestamp": time.time(), "data": data}
 
             with open(self.CACHE_FILE, "w") as f:
                 json.dump(cache, f)
@@ -279,8 +270,10 @@ def main():
     print("\nTop 5 by TVL:")
     sorted_pools = sorted(pools, key=lambda x: -(x.get("tvlUsd") or 0))
     for pool in sorted_pools[:5]:
-        print(f"  {pool.get('project')}: {pool.get('symbol')} on {pool.get('chain')} - "
-              f"TVL: ${pool.get('tvlUsd', 0)/1e6:.1f}M, APY: {pool.get('apy', 0):.2f}%")
+        print(
+            f"  {pool.get('project')}: {pool.get('symbol')} on {pool.get('chain')} - "
+            f"TVL: ${pool.get('tvlUsd', 0) / 1e6:.1f}M, APY: {pool.get('apy', 0):.2f}%"
+        )
 
 
 if __name__ == "__main__":

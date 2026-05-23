@@ -11,10 +11,9 @@ License: MIT
 """
 
 import argparse
-import json
 import sys
 from pathlib import Path
-from typing import Optional, Dict, List, Any
+from typing import Optional
 
 # Add scripts directory to path for local imports
 SCRIPT_DIR = Path(__file__).parent
@@ -39,53 +38,23 @@ Examples:
   %(prog)s --category defi                # DeFi tokens only
   %(prog)s --preset aggressive            # Use aggressive preset
   %(prog)s --format json --output out.json  # Export to JSON
-        """
+        """,
     )
 
     # Filter options
+    parser.add_argument("--min-change", type=float, default=5.0, help="Minimum absolute %% change (default: 5)")
     parser.add_argument(
-        "--min-change",
-        type=float,
-        default=5.0,
-        help="Minimum absolute %% change (default: 5)"
+        "--volume-spike", type=float, default=2.0, help="Minimum volume ratio vs average (default: 2.0)"
     )
-    parser.add_argument(
-        "--volume-spike",
-        type=float,
-        default=2.0,
-        help="Minimum volume ratio vs average (default: 2.0)"
-    )
-    parser.add_argument(
-        "--min-cap",
-        type=float,
-        default=10_000_000,
-        help="Minimum market cap in USD (default: 10M)"
-    )
-    parser.add_argument(
-        "--max-cap",
-        type=float,
-        default=None,
-        help="Maximum market cap in USD (default: no limit)"
-    )
-    parser.add_argument(
-        "--min-volume",
-        type=float,
-        default=100_000,
-        help="Minimum 24h volume in USD (default: 100K)"
-    )
+    parser.add_argument("--min-cap", type=float, default=10_000_000, help="Minimum market cap in USD (default: 10M)")
+    parser.add_argument("--max-cap", type=float, default=None, help="Maximum market cap in USD (default: no limit)")
+    parser.add_argument("--min-volume", type=float, default=100_000, help="Minimum 24h volume in USD (default: 100K)")
 
     # Category and preset options
     parser.add_argument(
-        "--category",
-        type=str,
-        choices=["defi", "layer2", "nft", "gaming", "meme"],
-        help="Filter by category"
+        "--category", type=str, choices=["defi", "layer2", "nft", "gaming", "meme"], help="Filter by category"
     )
-    parser.add_argument(
-        "--preset",
-        type=str,
-        help="Use named preset from config/presets/"
-    )
+    parser.add_argument("--preset", type=str, help="Use named preset from config/presets/")
 
     # Timeframe options
     parser.add_argument(
@@ -93,59 +62,35 @@ Examples:
         type=str,
         choices=["1h", "4h", "24h", "7d"],
         default="24h",
-        help="Timeframe for change calculation (default: 24h)"
+        help="Timeframe for change calculation (default: 24h)",
     )
 
     # Output options
-    parser.add_argument(
-        "--top",
-        type=int,
-        default=20,
-        help="Number of results per category (default: 20)"
-    )
-    parser.add_argument(
-        "--gainers-only",
-        action="store_true",
-        help="Only show gainers"
-    )
-    parser.add_argument(
-        "--losers-only",
-        action="store_true",
-        help="Only show losers"
-    )
+    parser.add_argument("--top", type=int, default=20, help="Number of results per category (default: 20)")
+    parser.add_argument("--gainers-only", action="store_true", help="Only show gainers")
+    parser.add_argument("--losers-only", action="store_true", help="Only show losers")
     parser.add_argument(
         "--sort-by",
         type=str,
         choices=["significance", "change", "volume", "market_cap"],
         default="significance",
-        help="Sort results by (default: significance)"
+        help="Sort results by (default: significance)",
     )
 
     # Format and export
     parser.add_argument(
-        "--format", "-f",
+        "--format",
+        "-f",
         type=str,
         choices=["table", "json", "csv"],
         default="table",
-        help="Output format (default: table)"
+        help="Output format (default: table)",
     )
-    parser.add_argument(
-        "--output", "-o",
-        type=str,
-        help="Output file path (default: stdout)"
-    )
+    parser.add_argument("--output", "-o", type=str, help="Output file path (default: stdout)")
 
     # Debug options
-    parser.add_argument(
-        "--verbose", "-v",
-        action="store_true",
-        help="Enable verbose output"
-    )
-    parser.add_argument(
-        "--version",
-        action="version",
-        version="%(prog)s 2.0.0"
-    )
+    parser.add_argument("--verbose", "-v", action="store_true", help="Enable verbose output")
+    parser.add_argument("--version", action="version", version="%(prog)s 2.0.0")
 
     return parser.parse_args()
 
@@ -157,6 +102,7 @@ def load_config() -> dict:
     if config_path.exists():
         try:
             import yaml
+
             with open(config_path, "r") as f:
                 return yaml.safe_load(f) or {}
         except ImportError:
@@ -166,21 +112,9 @@ def load_config() -> dict:
 
     # Default configuration
     return {
-        "thresholds": {
-            "min_change": 5,
-            "volume_spike": 2,
-            "min_market_cap": 10_000_000,
-            "min_volume": 100_000
-        },
-        "scoring": {
-            "change_weight": 0.40,
-            "volume_weight": 0.40,
-            "cap_weight": 0.20
-        },
-        "display": {
-            "top_n": 20,
-            "sort_by": "significance"
-        }
+        "thresholds": {"min_change": 5, "volume_spike": 2, "min_market_cap": 10_000_000, "min_volume": 100_000},
+        "scoring": {"change_weight": 0.40, "volume_weight": 0.40, "cap_weight": 0.20},
+        "display": {"top_n": 20, "sort_by": "significance"},
     }
 
 
@@ -191,6 +125,7 @@ def load_preset(preset_name: str) -> Optional[dict]:
     if preset_path.exists():
         try:
             import yaml
+
             with open(preset_path, "r") as f:
                 return yaml.safe_load(f)
         except Exception:
@@ -215,8 +150,7 @@ def main() -> None:
             args.min_volume = preset.get("min_volume", args.min_volume)
             args.top = preset.get("top_n", args.top)
         else:
-            print(f"Warning: Preset '{args.preset}' not found, using defaults",
-                  file=sys.stderr)
+            print(f"Warning: Preset '{args.preset}' not found, using defaults", file=sys.stderr)
 
     # Initialize analyzer
     try:
@@ -231,10 +165,7 @@ def main() -> None:
         print("Fetching market data...", file=sys.stderr)
 
     try:
-        market_data = analyzer.fetch_market_data(
-            category=args.category,
-            limit=1000
-        )
+        market_data = analyzer.fetch_market_data(category=args.category, limit=1000)
     except Exception as e:
         print(f"Error fetching market data: {e}", file=sys.stderr)
         sys.exit(1)
@@ -276,10 +207,7 @@ def main() -> None:
         # Calculate significance score
         weights = config.get("scoring", {})
         asset["significance_score"] = calculate_significance(
-            change_pct=change,
-            volume_ratio=volume_ratio,
-            market_cap=market_cap,
-            weights=weights
+            change_pct=change, volume_ratio=volume_ratio, market_cap=market_cap, weights=weights
         )
 
     # Apply filters
@@ -288,14 +216,13 @@ def main() -> None:
         volume_spike=args.volume_spike,
         min_market_cap=args.min_cap,
         max_market_cap=args.max_cap,
-        min_volume=args.min_volume
+        min_volume=args.min_volume,
     )
 
     filtered = apply_filters(market_data, filter_config)
 
     if args.verbose:
-        print(f"After filtering: {len(filtered)} assets match criteria",
-              file=sys.stderr)
+        print(f"After filtering: {len(filtered)} assets match criteria", file=sys.stderr)
 
     # Separate gainers and losers
     gainers = [a for a in filtered if a.get("change", 0) > 0]
@@ -306,15 +233,15 @@ def main() -> None:
         "significance": lambda x: x.get("significance_score", 0),
         "change": lambda x: abs(x.get("change", 0)),
         "volume": lambda x: x.get("volume_ratio", 0),
-        "market_cap": lambda x: x.get("market_cap", 0)
+        "market_cap": lambda x: x.get("market_cap", 0),
     }.get(args.sort_by, lambda x: x.get("significance_score", 0))
 
     gainers.sort(key=sort_key, reverse=True)
     losers.sort(key=sort_key, reverse=True)
 
     # Limit results
-    gainers = gainers[:args.top]
-    losers = losers[:args.top]
+    gainers = gainers[: args.top]
+    losers = losers[: args.top]
 
     # Add ranks
     for i, g in enumerate(gainers, 1):
@@ -331,12 +258,12 @@ def main() -> None:
             "thresholds": {
                 "min_change": args.min_change,
                 "volume_spike": args.volume_spike,
-                "min_market_cap": args.min_cap
+                "min_market_cap": args.min_cap,
             },
             "total_scanned": len(market_data),
             "matches": len(filtered),
-            "category": args.category
-        }
+            "category": args.category,
+        },
     }
 
     # Format output

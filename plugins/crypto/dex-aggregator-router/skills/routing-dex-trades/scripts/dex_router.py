@@ -291,7 +291,6 @@ async def main():
 
 def demo_mode():
     """Run demo with mock data when APIs unavailable."""
-    from datetime import datetime
 
     print("=" * 60)
     print("DEX AGGREGATOR ROUTER - DEMO MODE")
@@ -332,10 +331,7 @@ def demo_mode():
     print("-" * 60)
 
     for q in mock_quotes:
-        print(
-            f"{q['source']:<12} {q['output']:>12} {q['rate']:>12} "
-            f"{q['impact']:>8} {q['gas']:>8}"
-        )
+        print(f"{q['source']:<12} {q['output']:>12} {q['rate']:>12} {q['impact']:>8} {q['gas']:>8}")
 
     print("-" * 60)
     print("\nBest Route: 1inch via Uniswap V3")

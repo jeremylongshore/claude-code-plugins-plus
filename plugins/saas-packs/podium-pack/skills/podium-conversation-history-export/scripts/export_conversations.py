@@ -27,9 +27,17 @@ Exit codes:
 """
 
 from __future__ import annotations
-import argparse, gzip, json, os, sqlite3, sys, time
+import argparse
+import gzip
+import json
+import os
+import sqlite3
+import sys
+import time
 from pathlib import Path
-import urllib.request, urllib.parse, urllib.error
+import urllib.request
+import urllib.parse
+import urllib.error
 
 API_BASE = "https://api.podium.com"
 TOKEN_URL = "https://accounts.podium.com/oauth/token"
@@ -37,14 +45,18 @@ PAGE_SIZE = 100
 
 
 def get_access_token(client_id: str, client_secret: str, refresh_token: str) -> str:
-    body = urllib.parse.urlencode({
-        "grant_type": "refresh_token",
-        "refresh_token": refresh_token,
-        "client_id": client_id,
-        "client_secret": client_secret,
-    }).encode()
+    body = urllib.parse.urlencode(
+        {
+            "grant_type": "refresh_token",
+            "refresh_token": refresh_token,
+            "client_id": client_id,
+            "client_secret": client_secret,
+        }
+    ).encode()
     req = urllib.request.Request(
-        TOKEN_URL, data=body, method="POST",
+        TOKEN_URL,
+        data=body,
+        method="POST",
         headers={"Content-Type": "application/x-www-form-urlencoded"},
     )
     with urllib.request.urlopen(req, timeout=10) as resp:
@@ -61,8 +73,10 @@ def http_get(token: str, path: str, params: dict, timeout: float = 30.0) -> tupl
         with urllib.request.urlopen(req, timeout=timeout) as resp:
             return resp.status, json.loads(resp.read())
     except urllib.error.HTTPError as e:
-        try: payload = json.loads(e.read())
-        except Exception: payload = {"error": "non_json"}
+        try:
+            payload = json.loads(e.read())
+        except Exception:
+            payload = {"error": "non_json"}
         return e.code, payload
 
 
@@ -77,10 +91,13 @@ def get_watermark(db: str, resource: str) -> float:
 def advance_watermark(db: str, resource: str, ts: float) -> None:
     con = sqlite3.connect(db)
     con.execute("CREATE TABLE IF NOT EXISTS cdc(resource TEXT PRIMARY KEY, watermark REAL, updated_at REAL)")
-    con.execute("""
+    con.execute(
+        """
         INSERT INTO cdc(resource, watermark, updated_at) VALUES(?, ?, ?)
         ON CONFLICT(resource) DO UPDATE SET watermark = excluded.watermark, updated_at = excluded.updated_at
-    """, (resource, ts, time.time()))
+    """,
+        (resource, ts, time.time()),
+    )
     con.commit()
     con.close()
 
@@ -125,7 +142,7 @@ def main() -> int:
             cursor = state.get("cursor")
             seen_ids = set(state.get("seen_ids", []))
         except Exception:
-            print(f"ERR_EXPORT_004 cursor checkpoint corrupt, restarting", file=sys.stderr)
+            print("ERR_EXPORT_004 cursor checkpoint corrupt, restarting", file=sys.stderr)
             cursor_path.unlink(missing_ok=True)
 
     if args.mode == "incremental":
@@ -186,11 +203,15 @@ def main() -> int:
                     f.flush()
 
             cursor = body.get("next_cursor")
-            cursor_path.write_text(json.dumps({
-                "cursor": cursor,
-                "seen_ids": list(seen_ids)[-50_000:],
-                "updated_at": time.time(),
-            }))
+            cursor_path.write_text(
+                json.dumps(
+                    {
+                        "cursor": cursor,
+                        "seen_ids": list(seen_ids)[-50_000:],
+                        "updated_at": time.time(),
+                    }
+                )
+            )
             if not cursor:
                 break
 

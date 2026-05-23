@@ -28,30 +28,80 @@ except ImportError:
 # Sentiment keywords with weights
 POSITIVE_KEYWORDS = {
     # Strong positive (0.3)
-    "bullish": 0.3, "surge": 0.3, "soar": 0.3, "rally": 0.3, "breakout": 0.3,
-    "record high": 0.3, "all-time high": 0.3, "ath": 0.3, "moon": 0.3,
+    "bullish": 0.3,
+    "surge": 0.3,
+    "soar": 0.3,
+    "rally": 0.3,
+    "breakout": 0.3,
+    "record high": 0.3,
+    "all-time high": 0.3,
+    "ath": 0.3,
+    "moon": 0.3,
     # Medium positive (0.2)
-    "adoption": 0.2, "partnership": 0.2, "approval": 0.2, "milestone": 0.2,
-    "upgrade": 0.2, "launch": 0.2, "integration": 0.2, "institutional": 0.2,
-    "etf": 0.2, "accumulation": 0.2, "inflow": 0.2, "buy": 0.2,
+    "adoption": 0.2,
+    "partnership": 0.2,
+    "approval": 0.2,
+    "milestone": 0.2,
+    "upgrade": 0.2,
+    "launch": 0.2,
+    "integration": 0.2,
+    "institutional": 0.2,
+    "etf": 0.2,
+    "accumulation": 0.2,
+    "inflow": 0.2,
+    "buy": 0.2,
     # Mild positive (0.1)
-    "gain": 0.1, "rise": 0.1, "up": 0.1, "growth": 0.1, "positive": 0.1,
-    "optimistic": 0.1, "recovery": 0.1, "support": 0.1, "bullrun": 0.1,
+    "gain": 0.1,
+    "rise": 0.1,
+    "up": 0.1,
+    "growth": 0.1,
+    "positive": 0.1,
+    "optimistic": 0.1,
+    "recovery": 0.1,
+    "support": 0.1,
+    "bullrun": 0.1,
 }
 
 NEGATIVE_KEYWORDS = {
     # Strong negative (-0.3)
-    "bearish": -0.3, "crash": -0.3, "dump": -0.3, "collapse": -0.3,
-    "hack": -0.3, "exploit": -0.3, "scam": -0.3, "fraud": -0.3,
-    "bankruptcy": -0.3, "insolvent": -0.3, "rug pull": -0.3, "rugpull": -0.3,
+    "bearish": -0.3,
+    "crash": -0.3,
+    "dump": -0.3,
+    "collapse": -0.3,
+    "hack": -0.3,
+    "exploit": -0.3,
+    "scam": -0.3,
+    "fraud": -0.3,
+    "bankruptcy": -0.3,
+    "insolvent": -0.3,
+    "rug pull": -0.3,
+    "rugpull": -0.3,
     # Medium negative (-0.2)
-    "ban": -0.2, "lawsuit": -0.2, "investigation": -0.2, "sec": -0.2,
-    "regulation": -0.2, "crackdown": -0.2, "sell-off": -0.2, "selloff": -0.2,
-    "outflow": -0.2, "withdrawal": -0.2, "liquidation": -0.2,
+    "ban": -0.2,
+    "lawsuit": -0.2,
+    "investigation": -0.2,
+    "sec": -0.2,
+    "regulation": -0.2,
+    "crackdown": -0.2,
+    "sell-off": -0.2,
+    "selloff": -0.2,
+    "outflow": -0.2,
+    "withdrawal": -0.2,
+    "liquidation": -0.2,
     # Mild negative (-0.1)
-    "decline": -0.1, "drop": -0.1, "fall": -0.1, "down": -0.1, "loss": -0.1,
-    "concern": -0.1, "risk": -0.1, "uncertain": -0.1, "volatility": -0.1,
-    "correction": -0.1, "dip": -0.1, "fear": -0.1, "weak": -0.1,
+    "decline": -0.1,
+    "drop": -0.1,
+    "fall": -0.1,
+    "down": -0.1,
+    "loss": -0.1,
+    "concern": -0.1,
+    "risk": -0.1,
+    "uncertain": -0.1,
+    "volatility": -0.1,
+    "correction": -0.1,
+    "dip": -0.1,
+    "fear": -0.1,
+    "weak": -0.1,
 }
 
 # Coin-specific keywords
@@ -91,11 +141,7 @@ class NewsSentimentAnalyzer:
         self._cache: Dict[str, Any] = {}
         self._cache_time: float = 0
 
-    def analyze(
-        self,
-        coin: Optional[str] = None,
-        period: str = "24h"
-    ) -> Optional[Dict[str, Any]]:
+    def analyze(self, coin: Optional[str] = None, period: str = "24h") -> Optional[Dict[str, Any]]:
         """Analyze news sentiment.
 
         Args:
@@ -130,7 +176,7 @@ class NewsSentimentAnalyzer:
                 "positive": 0,
                 "negative": 0,
                 "neutral": 0,
-                "error": "No articles available"
+                "error": "No articles available",
             }
 
         # Filter by coin if specified
@@ -149,16 +195,15 @@ class NewsSentimentAnalyzer:
 
         return result
 
-    def _try_news_aggregator(
-        self,
-        coin: Optional[str],
-        period: str
-    ) -> Optional[Dict[str, Any]]:
+    def _try_news_aggregator(self, coin: Optional[str], period: str) -> Optional[Dict[str, Any]]:
         """Try to use crypto-news-aggregator skill if available."""
         # Check for news aggregator in sibling plugin
         aggregator_path = (
-            Path(__file__).parent.parent.parent.parent.parent /
-            "crypto-news-aggregator" / "skills" / "aggregating-crypto-news" / "scripts"
+            Path(__file__).parent.parent.parent.parent.parent
+            / "crypto-news-aggregator"
+            / "skills"
+            / "aggregating-crypto-news"
+            / "scripts"
         )
 
         if not aggregator_path.exists():
@@ -169,6 +214,7 @@ class NewsSentimentAnalyzer:
         try:
             sys.path.insert(0, str(aggregator_path))
             from news_aggregator import NewsAggregator
+
             sys.path.pop(0)
 
             if self.verbose:
@@ -182,8 +228,7 @@ class NewsSentimentAnalyzer:
 
             # Score the aggregated articles
             articles = [
-                {"title": a.get("title", ""), "summary": a.get("summary", "")}
-                for a in news_data.get("articles", [])
+                {"title": a.get("title", ""), "summary": a.get("summary", "")} for a in news_data.get("articles", [])
             ]
 
             scored = self._score_articles(articles)
@@ -230,11 +275,7 @@ class NewsSentimentAnalyzer:
 
         return unique
 
-    def _parse_rss_xml(
-        self,
-        xml_content: str,
-        cutoff: datetime
-    ) -> List[Dict[str, Any]]:
+    def _parse_rss_xml(self, xml_content: str, cutoff: datetime) -> List[Dict[str, Any]]:
         """Parse RSS XML content."""
         articles = []
 
@@ -255,18 +296,11 @@ class NewsSentimentAnalyzer:
             description = re.sub(r"<[^>]+>", "", description)
 
             if title:
-                articles.append({
-                    "title": title,
-                    "summary": description[:500]
-                })
+                articles.append({"title": title, "summary": description[:500]})
 
         return articles[:30]  # Limit per feed
 
-    def _filter_by_coin(
-        self,
-        articles: List[Dict[str, Any]],
-        coin: str
-    ) -> List[Dict[str, Any]]:
+    def _filter_by_coin(self, articles: List[Dict[str, Any]], coin: str) -> List[Dict[str, Any]]:
         """Filter articles mentioning specific coin."""
         keywords = COIN_ALIASES.get(coin, [coin.lower()])
 
@@ -307,24 +341,14 @@ class NewsSentimentAnalyzer:
             else:
                 sentiment = "neutral"
 
-            scored.append({
-                **article,
-                "score": score,
-                "sentiment": sentiment
-            })
+            scored.append({**article, "score": score, "sentiment": sentiment})
 
         return scored
 
     def _aggregate_scores(self, scored: List[Dict[str, Any]]) -> Dict[str, Any]:
         """Aggregate article scores to overall sentiment."""
         if not scored:
-            return {
-                "score": 50,
-                "articles_analyzed": 0,
-                "positive": 0,
-                "negative": 0,
-                "neutral": 0
-            }
+            return {"score": 50, "articles_analyzed": 0, "positive": 0, "negative": 0, "neutral": 0}
 
         positive = sum(1 for a in scored if a["sentiment"] == "positive")
         negative = sum(1 for a in scored if a["sentiment"] == "negative")
@@ -344,13 +368,13 @@ class NewsSentimentAnalyzer:
             "negative": negative,
             "neutral": neutral,
             "top_positive": [
-                a["title"] for a in sorted(scored, key=lambda x: x["score"], reverse=True)[:3]
+                a["title"]
+                for a in sorted(scored, key=lambda x: x["score"], reverse=True)[:3]
                 if a["sentiment"] == "positive"
             ],
             "top_negative": [
-                a["title"] for a in sorted(scored, key=lambda x: x["score"])[:3]
-                if a["sentiment"] == "negative"
-            ]
+                a["title"] for a in sorted(scored, key=lambda x: x["score"])[:3] if a["sentiment"] == "negative"
+            ],
         }
 
     def _get_cutoff_time(self, period: str) -> datetime:

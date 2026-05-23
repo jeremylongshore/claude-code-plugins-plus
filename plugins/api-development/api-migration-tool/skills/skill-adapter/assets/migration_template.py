@@ -16,9 +16,7 @@ import os
 import sys
 
 # Configure logging
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 
 class MigrationError(Exception):
@@ -124,15 +122,9 @@ def main():
     """
     Main function to parse arguments and run the migration.
     """
-    parser = argparse.ArgumentParser(
-        description="Migrate API data between versions."
-    )
-    parser.add_argument(
-        "input_file", help="Path to the input JSON file (old format)."
-    )
-    parser.add_argument(
-        "output_file", help="Path to the output JSON file (new format)."
-    )
+    parser = argparse.ArgumentParser(description="Migrate API data between versions.")
+    parser.add_argument("input_file", help="Path to the input JSON file (old format).")
+    parser.add_argument("output_file", help="Path to the output JSON file (new format).")
 
     args = parser.parse_args()
     migrate_api(args.input_file, args.output_file)

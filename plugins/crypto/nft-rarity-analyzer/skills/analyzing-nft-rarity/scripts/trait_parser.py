@@ -17,6 +17,7 @@ from collections import defaultdict
 @dataclass
 class NormalizedTrait:
     """Normalized trait with frequency data."""
+
     trait_type: str
     value: str
     count: int
@@ -27,6 +28,7 @@ class NormalizedTrait:
 @dataclass
 class TraitType:
     """Trait type with all possible values."""
+
     name: str
     values: Dict[str, int]  # value -> count
     total_with_trait: int
@@ -36,6 +38,7 @@ class TraitType:
 @dataclass
 class TraitMap:
     """Complete trait frequency map for a collection."""
+
     trait_types: Dict[str, TraitType]
     total_supply: int
     token_traits: Dict[int, List[NormalizedTrait]]  # token_id -> traits
@@ -99,10 +102,7 @@ class TraitParser:
 
         return trait_type.strip().title()
 
-    def parse_token_attributes(
-        self,
-        attributes: List[Dict[str, Any]]
-    ) -> List[NormalizedTrait]:
+    def parse_token_attributes(self, attributes: List[Dict[str, Any]]) -> List[NormalizedTrait]:
         """Parse token attributes into normalized traits.
 
         Args:
@@ -114,9 +114,7 @@ class TraitParser:
         traits = []
 
         for attr in attributes:
-            trait_type = self.normalize_trait_type(
-                attr.get("trait_type", "Unknown")
-            )
+            trait_type = self.normalize_trait_type(attr.get("trait_type", "Unknown"))
             value = self.normalize_value(attr.get("value"))
 
             # Skip display_type traits like "number" or "boost_percentage"
@@ -124,13 +122,15 @@ class TraitParser:
             if display_type in ("number", "boost_number", "boost_percentage"):
                 continue
 
-            traits.append(NormalizedTrait(
-                trait_type=trait_type,
-                value=value,
-                count=0,
-                frequency=0.0,
-                is_none=value == "None",
-            ))
+            traits.append(
+                NormalizedTrait(
+                    trait_type=trait_type,
+                    value=value,
+                    count=0,
+                    frequency=0.0,
+                    is_none=value == "None",
+                )
+            )
 
         return traits
 
@@ -170,13 +170,15 @@ class TraitParser:
                 trait_counts[trait_type][value] += 1
                 trait_presence[trait_type].add(token_id)
 
-                parsed_traits.append(NormalizedTrait(
-                    trait_type=trait_type,
-                    value=value,
-                    count=0,
-                    frequency=0.0,
-                    is_none=value == "None",
-                ))
+                parsed_traits.append(
+                    NormalizedTrait(
+                        trait_type=trait_type,
+                        value=value,
+                        count=0,
+                        frequency=0.0,
+                        is_none=value == "None",
+                    )
+                )
 
             token_traits[token_id] = parsed_traits
 
@@ -204,13 +206,15 @@ class TraitParser:
             # Add explicit "None" traits for missing trait types
             for trait_type, tt in trait_types.items():
                 if trait_type not in present_types:
-                    traits.append(NormalizedTrait(
-                        trait_type=trait_type,
-                        value="None",
-                        count=tt.total_without,
-                        frequency=tt.total_without / total_supply,
-                        is_none=True,
-                    ))
+                    traits.append(
+                        NormalizedTrait(
+                            trait_type=trait_type,
+                            value="None",
+                            count=tt.total_without,
+                            frequency=tt.total_without / total_supply,
+                            is_none=True,
+                        )
+                    )
 
             # Update counts and frequencies
             for trait in traits:
@@ -237,34 +241,25 @@ class TraitParser:
         summaries = []
 
         for name, tt in sorted(trait_map.trait_types.items()):
-            values_sorted = sorted(
-                tt.values.items(),
-                key=lambda x: x[1],
-                reverse=True
-            )
+            values_sorted = sorted(tt.values.items(), key=lambda x: x[1], reverse=True)
 
-            summaries.append({
-                "trait_type": name,
-                "unique_values": len(tt.values),
-                "total_with": tt.total_with_trait,
-                "total_without": tt.total_without,
-                "top_values": [
-                    {
-                        "value": v,
-                        "count": c,
-                        "percentage": c / trait_map.total_supply * 100
-                    }
-                    for v, c in values_sorted[:5]
-                ],
-                "rarest_values": [
-                    {
-                        "value": v,
-                        "count": c,
-                        "percentage": c / trait_map.total_supply * 100
-                    }
-                    for v, c in values_sorted[-3:] if c > 0
-                ],
-            })
+            summaries.append(
+                {
+                    "trait_type": name,
+                    "unique_values": len(tt.values),
+                    "total_with": tt.total_with_trait,
+                    "total_without": tt.total_without,
+                    "top_values": [
+                        {"value": v, "count": c, "percentage": c / trait_map.total_supply * 100}
+                        for v, c in values_sorted[:5]
+                    ],
+                    "rarest_values": [
+                        {"value": v, "count": c, "percentage": c / trait_map.total_supply * 100}
+                        for v, c in values_sorted[-3:]
+                        if c > 0
+                    ],
+                }
+            )
 
         return summaries
 
@@ -286,7 +281,7 @@ def main():
                 Trait("Background", "Blue", None),
                 Trait("Eyes", "Laser", None),
                 Trait("Hat", "Crown", None),
-            ]
+            ],
         ),
         TokenData(
             token_id=2,
@@ -297,7 +292,7 @@ def main():
                 Trait("Background", "Red", None),
                 Trait("Eyes", "Normal", None),
                 Trait("Hat", "Cap", None),
-            ]
+            ],
         ),
         TokenData(
             token_id=3,
@@ -308,7 +303,7 @@ def main():
                 Trait("Background", "Blue", None),
                 Trait("Eyes", "Normal", None),
                 # No Hat trait
-            ]
+            ],
         ),
     ]
 

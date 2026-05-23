@@ -9,7 +9,7 @@ Version: 2.0.0
 License: MIT
 """
 
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 
 
 class PoolMetrics:
@@ -196,11 +196,7 @@ class PoolMetrics:
         pool["metrics"]["health_level"] = health_level
         pool["metrics"]["warnings"] = warnings
 
-    def calculate_position_metrics(
-        self,
-        pool: Dict[str, Any],
-        position_value: float
-    ) -> Dict[str, Any]:
+    def calculate_position_metrics(self, pool: Dict[str, Any], position_value: float) -> Dict[str, Any]:
         """Calculate metrics for a specific position size.
 
         Args:
@@ -237,10 +233,7 @@ class PoolMetrics:
             "fee_apr": fee_apr,
         }
 
-    def compare_pools(
-        self,
-        pools: List[Dict[str, Any]]
-    ) -> Dict[str, Any]:
+    def compare_pools(self, pools: List[Dict[str, Any]]) -> Dict[str, Any]:
         """Compare metrics across multiple pools.
 
         Args:
@@ -309,7 +302,7 @@ def main():
     print(f"  Health Score: {metrics['health_score']}/100 ({metrics['health_level']})")
 
     if metrics["warnings"]:
-        print(f"  Warnings:")
+        print("  Warnings:")
         for w in metrics["warnings"]:
             print(f"    - {w}")
 

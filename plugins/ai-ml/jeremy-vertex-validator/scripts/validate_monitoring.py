@@ -13,6 +13,7 @@ References:
   - Logging: https://cloud.google.com/logging/docs/view/overview
   - Dashboards: https://cloud.google.com/monitoring/dashboards
 """
+
 from __future__ import annotations
 
 import argparse
@@ -77,6 +78,7 @@ def _result(
 
 # ── Check 1: Alert Policies ─────────────────────────────────────────────────
 
+
 def check_alert_policies(project: str) -> dict[str, Any]:
     """Verify alert policies exist, especially for Vertex AI metrics.
 
@@ -109,7 +111,8 @@ def check_alert_policies(project: str) -> dict[str, Any]:
 
         # Check for Vertex AI-related policies
         vertex_policies = [
-            p for p in policies
+            p
+            for p in policies
             if any(
                 "aiplatform" in str(c.filter).lower()
                 or "vertex" in (p.display_name or "").lower()
@@ -148,6 +151,7 @@ def check_alert_policies(project: str) -> dict[str, Any]:
 
 # ── Check 2: SLOs ───────────────────────────────────────────────────────────
 
+
 def check_slos(project: str) -> dict[str, Any]:
     """Verify SLOs are defined for the project's services.
 
@@ -180,9 +184,7 @@ def check_slos(project: str) -> dict[str, Any]:
         # Check each service for SLOs
         total_slos = 0
         for svc in services:
-            slos = list(client.list_service_level_objectives(
-                request={"parent": svc.name}
-            ))
+            slos = list(client.list_service_level_objectives(request={"parent": svc.name}))
             total_slos += len(slos)
 
         if total_slos == 0:
@@ -190,8 +192,7 @@ def check_slos(project: str) -> dict[str, Any]:
                 "SLO Definitions",
                 "FAIL",
                 f"{len(services)} service(s) found but no SLOs defined",
-                "Define SLOs for availability and latency: "
-                "https://cloud.google.com/monitoring/sli-slo/slo-creating",
+                "Define SLOs for availability and latency: https://cloud.google.com/monitoring/sli-slo/slo-creating",
             )
 
         return _result(
@@ -210,6 +211,7 @@ def check_slos(project: str) -> dict[str, Any]:
 
 
 # ── Check 3: Cloud Logging ──────────────────────────────────────────────────
+
 
 def check_logging(project: str) -> dict[str, Any]:
     """Verify Cloud Logging is active and retention is adequate.
@@ -241,18 +243,19 @@ def check_logging(project: str) -> dict[str, Any]:
         )
 
         # Just check if the filter is queryable — don't fetch all entries
-        entries = list(client.list_entries(
-            filter_=vertex_filter,
-            page_size=5,
-            max_results=5,
-        ))
+        entries = list(
+            client.list_entries(
+                filter_=vertex_filter,
+                page_size=5,
+                max_results=5,
+            )
+        )
 
         if entries:
             return _result(
                 "Cloud Logging",
                 "PASS",
-                f"Active — {len(entries)} recent Vertex AI log entries found, "
-                f"{len(sinks)} log sink(s) configured",
+                f"Active — {len(entries)} recent Vertex AI log entries found, {len(sinks)} log sink(s) configured",
             )
 
         if sinks:
@@ -282,6 +285,7 @@ def check_logging(project: str) -> dict[str, Any]:
 
 
 # ── Check 4: Monitoring Dashboards ──────────────────────────────────────────
+
 
 def check_dashboards(project: str) -> dict[str, Any]:
     """Verify monitoring dashboards exist.
@@ -315,7 +319,8 @@ def check_dashboards(project: str) -> dict[str, Any]:
 
         # Check for Vertex AI-related dashboards
         vertex_dashboards = [
-            d for d in dashboards
+            d
+            for d in dashboards
             if "vertex" in (d.display_name or "").lower()
             or "agent" in (d.display_name or "").lower()
             or "aiplatform" in (d.display_name or "").lower()
@@ -332,8 +337,7 @@ def check_dashboards(project: str) -> dict[str, Any]:
             "Monitoring Dashboards",
             "WARNING",
             f"{len(dashboards)} dashboard(s) found but none named for Vertex AI / agents",
-            "Create a dedicated Vertex AI dashboard: "
-            "https://cloud.google.com/monitoring/dashboards/api-dashboard",
+            "Create a dedicated Vertex AI dashboard: https://cloud.google.com/monitoring/dashboards/api-dashboard",
         )
 
     except Exception as exc:
@@ -346,6 +350,7 @@ def check_dashboards(project: str) -> dict[str, Any]:
 
 
 # ── Entrypoint ───────────────────────────────────────────────────────────────
+
 
 def run_monitoring_checks(
     project: str,
@@ -383,9 +388,9 @@ def run_monitoring_checks(
         print(f"\n{YELLOW}[WARN]{RESET} Missing optional deps: {', '.join(_MISSING_DEPS)}")
         print(f"       Install with: pip install {' '.join(_MISSING_DEPS)}\n")
 
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"  Monitoring Validation — project={project}")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
 
     results = []
     for name, fn in checks:

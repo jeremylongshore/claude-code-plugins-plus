@@ -89,9 +89,7 @@ def cmd_estimate(args):
         gas_price_wei = tier_prices.get(args.tier, gas_data.standard)
         gas_price_gwei = gas_price_wei / 10**9
 
-        estimate = estimator.estimate_cost(
-            operation, gas_price_gwei, args.tier, gas_limit
-        )
+        estimate = estimator.estimate_cost(operation, gas_price_gwei, args.tier, gas_limit)
 
         if args.json:
             print(format_json(estimate))
@@ -258,40 +256,43 @@ Examples:
   gas_optimizer.py predict --time "14"        # Predict gas at 2 PM
   gas_optimizer.py compare                    # Compare all chains
   gas_optimizer.py operations                 # List known operations
-        """
+        """,
     )
 
     parser.add_argument("--verbose", "-v", action="store_true", help="Verbose output")
     parser.add_argument("--json", "-j", action="store_true", help="JSON output")
-    parser.add_argument("--chain", "-c", default="ethereum",
-                       choices=list(CHAIN_CONFIG.keys()),
-                       help="Blockchain network (default: ethereum)")
+    parser.add_argument(
+        "--chain",
+        "-c",
+        default="ethereum",
+        choices=list(CHAIN_CONFIG.keys()),
+        help="Blockchain network (default: ethereum)",
+    )
 
     subparsers = parser.add_subparsers(dest="command", help="Commands")
 
     # current command
     p_current = subparsers.add_parser("current", help="Show current gas prices")
-    p_current.add_argument("--no-record", action="store_true",
-                          help="Don't record for pattern analysis")
+    p_current.add_argument("--no-record", action="store_true", help="Don't record for pattern analysis")
     p_current.set_defaults(func=cmd_current)
 
     # estimate command
     p_estimate = subparsers.add_parser("estimate", help="Estimate transaction cost")
-    p_estimate.add_argument("--operation", "-o",
-                           help="Operation name (use 'operations' to list)")
-    p_estimate.add_argument("--gas-limit", "-g", type=int,
-                           help="Custom gas limit")
-    p_estimate.add_argument("--tier", "-t", default="standard",
-                           choices=["slow", "standard", "fast", "instant"],
-                           help="Gas price tier (default: standard)")
-    p_estimate.add_argument("--all-tiers", "-a", action="store_true",
-                           help="Show all tier estimates")
+    p_estimate.add_argument("--operation", "-o", help="Operation name (use 'operations' to list)")
+    p_estimate.add_argument("--gas-limit", "-g", type=int, help="Custom gas limit")
+    p_estimate.add_argument(
+        "--tier",
+        "-t",
+        default="standard",
+        choices=["slow", "standard", "fast", "instant"],
+        help="Gas price tier (default: standard)",
+    )
+    p_estimate.add_argument("--all-tiers", "-a", action="store_true", help="Show all tier estimates")
     p_estimate.set_defaults(func=cmd_estimate)
 
     # patterns command
     p_patterns = subparsers.add_parser("patterns", help="Show gas patterns")
-    p_patterns.add_argument("--daily", "-d", action="store_true",
-                           help="Show daily patterns instead of hourly")
+    p_patterns.add_argument("--daily", "-d", action="store_true", help="Show daily patterns instead of hourly")
     p_patterns.set_defaults(func=cmd_patterns)
 
     # optimal command
@@ -300,8 +301,7 @@ Examples:
 
     # predict command
     p_predict = subparsers.add_parser("predict", help="Predict gas for future time")
-    p_predict.add_argument("--time", "-t",
-                          help="Target time (YYYY-MM-DD HH:MM or just hour 0-23)")
+    p_predict.add_argument("--time", "-t", help="Target time (YYYY-MM-DD HH:MM or just hour 0-23)")
     p_predict.set_defaults(func=cmd_predict)
 
     # operations command
@@ -310,14 +310,12 @@ Examples:
 
     # compare command
     p_compare = subparsers.add_parser("compare", help="Compare gas across chains")
-    p_compare.add_argument("--chains",
-                          help="Comma-separated chain list")
+    p_compare.add_argument("--chains", help="Comma-separated chain list")
     p_compare.set_defaults(func=cmd_compare)
 
     # history command
     p_history = subparsers.add_parser("history", help="Show base fee history")
-    p_history.add_argument("--blocks", "-b", type=int, default=100,
-                          help="Number of blocks (default: 100)")
+    p_history.add_argument("--blocks", "-b", type=int, default=100, help="Number of blocks (default: 100)")
     p_history.set_defaults(func=cmd_history)
 
     args = parser.parse_args()

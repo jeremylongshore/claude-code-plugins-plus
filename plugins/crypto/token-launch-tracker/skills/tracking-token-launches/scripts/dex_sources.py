@@ -19,6 +19,7 @@ PAIR_CREATED_TOPIC = "0x0d3648bd0f6ba80134a33ba9275ac585d9d315f0ad8355cddefde31a
 @dataclass
 class DexFactory:
     """DEX factory configuration."""
+
     name: str
     address: str
     version: str  # v2 or v3
@@ -28,6 +29,7 @@ class DexFactory:
 @dataclass
 class ChainConfig:
     """Chain configuration."""
+
     name: str
     chain_id: int
     rpc_url: str

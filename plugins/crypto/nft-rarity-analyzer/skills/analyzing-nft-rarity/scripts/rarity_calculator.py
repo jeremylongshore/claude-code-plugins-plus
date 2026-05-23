@@ -21,6 +21,7 @@ class RarityAlgorithm(Enum):
     Note: Normalization (0-100 scale) is a post-processing step applied
     via normalize_scores(), not a primary algorithm.
     """
+
     STATISTICAL = "statistical"  # Sum of 1/frequency (same as RARITY_SCORE)
     RARITY_SCORE = "rarity_score"  # Sum of 1/frequency for all traits
     AVERAGE = "average"  # Mean of trait rarities
@@ -30,6 +31,7 @@ class RarityAlgorithm(Enum):
 @dataclass
 class TraitRarity:
     """Rarity data for a single trait."""
+
     trait_type: str
     value: str
     count: int
@@ -41,6 +43,7 @@ class TraitRarity:
 @dataclass
 class TokenRarity:
     """Complete rarity data for a token."""
+
     token_id: int
     name: str
     rarity_score: float
@@ -61,11 +64,7 @@ class RarityCalculator:
         """
         self.verbose = verbose
 
-    def calculate_trait_rarity(
-        self,
-        frequency: float,
-        total_supply: int
-    ) -> float:
+    def calculate_trait_rarity(self, frequency: float, total_supply: int) -> float:
         """Calculate rarity for a single trait.
 
         Args:
@@ -82,7 +81,7 @@ class RarityCalculator:
     def calculate_statistical_rarity(
         self,
         traits: List[Any],  # NormalizedTrait
-        total_supply: int
+        total_supply: int,
     ) -> Tuple[float, List[TraitRarity]]:
         """Calculate rarity using statistical method (product of rarities).
 
@@ -107,22 +106,20 @@ class RarityCalculator:
             rarity = 1.0 / frequency
             total_score += rarity
 
-            trait_rarities.append(TraitRarity(
-                trait_type=trait.trait_type,
-                value=trait.value,
-                count=trait.count,
-                frequency=frequency,
-                rarity=rarity,
-                contribution=rarity,
-            ))
+            trait_rarities.append(
+                TraitRarity(
+                    trait_type=trait.trait_type,
+                    value=trait.value,
+                    count=trait.count,
+                    frequency=frequency,
+                    rarity=rarity,
+                    contribution=rarity,
+                )
+            )
 
         return total_score, trait_rarities
 
-    def calculate_rarity_score(
-        self,
-        traits: List[Any],
-        total_supply: int
-    ) -> Tuple[float, List[TraitRarity]]:
+    def calculate_rarity_score(self, traits: List[Any], total_supply: int) -> Tuple[float, List[TraitRarity]]:
         """Calculate rarity score (sum of 1/frequency).
 
         This is the most common rarity scoring method.
@@ -136,11 +133,7 @@ class RarityCalculator:
         """
         return self.calculate_statistical_rarity(traits, total_supply)
 
-    def calculate_average_rarity(
-        self,
-        traits: List[Any],
-        total_supply: int
-    ) -> Tuple[float, List[TraitRarity]]:
+    def calculate_average_rarity(self, traits: List[Any], total_supply: int) -> Tuple[float, List[TraitRarity]]:
         """Calculate average rarity across traits.
 
         Args:
@@ -153,9 +146,7 @@ class RarityCalculator:
         if not traits:
             return 0.0, []
 
-        total_score, trait_rarities = self.calculate_statistical_rarity(
-            traits, total_supply
-        )
+        total_score, trait_rarities = self.calculate_statistical_rarity(traits, total_supply)
 
         avg_score = total_score / len(traits)
 
@@ -165,11 +156,7 @@ class RarityCalculator:
 
         return avg_score, trait_rarities
 
-    def calculate_information_content(
-        self,
-        traits: List[Any],
-        total_supply: int
-    ) -> Tuple[float, List[TraitRarity]]:
+    def calculate_information_content(self, traits: List[Any], total_supply: int) -> Tuple[float, List[TraitRarity]]:
         """Calculate information content (entropy-based).
 
         Uses -log2(frequency) for each trait.
@@ -194,14 +181,16 @@ class RarityCalculator:
             information = -math.log2(frequency) if frequency > 0 else 0
             total_score += information
 
-            trait_rarities.append(TraitRarity(
-                trait_type=trait.trait_type,
-                value=trait.value,
-                count=trait.count,
-                frequency=frequency,
-                rarity=1.0 / frequency,
-                contribution=information,
-            ))
+            trait_rarities.append(
+                TraitRarity(
+                    trait_type=trait.trait_type,
+                    value=trait.value,
+                    count=trait.count,
+                    frequency=frequency,
+                    rarity=1.0 / frequency,
+                    contribution=information,
+                )
+            )
 
         return total_score, trait_rarities
 
@@ -211,7 +200,7 @@ class RarityCalculator:
         name: str,
         traits: List[Any],  # NormalizedTrait
         total_supply: int,
-        algorithm: RarityAlgorithm = RarityAlgorithm.RARITY_SCORE
+        algorithm: RarityAlgorithm = RarityAlgorithm.RARITY_SCORE,
     ) -> TokenRarity:
         """Calculate complete rarity for a token.
 
@@ -226,21 +215,13 @@ class RarityCalculator:
             TokenRarity with score and breakdown
         """
         if algorithm == RarityAlgorithm.STATISTICAL:
-            score, trait_rarities = self.calculate_statistical_rarity(
-                traits, total_supply
-            )
+            score, trait_rarities = self.calculate_statistical_rarity(traits, total_supply)
         elif algorithm == RarityAlgorithm.AVERAGE:
-            score, trait_rarities = self.calculate_average_rarity(
-                traits, total_supply
-            )
+            score, trait_rarities = self.calculate_average_rarity(traits, total_supply)
         elif algorithm == RarityAlgorithm.INFORMATION:
-            score, trait_rarities = self.calculate_information_content(
-                traits, total_supply
-            )
+            score, trait_rarities = self.calculate_information_content(traits, total_supply)
         else:  # Default: RARITY_SCORE
-            score, trait_rarities = self.calculate_rarity_score(
-                traits, total_supply
-            )
+            score, trait_rarities = self.calculate_rarity_score(traits, total_supply)
 
         # Sort traits by contribution (highest first)
         trait_rarities.sort(key=lambda x: x.contribution, reverse=True)
@@ -259,7 +240,7 @@ class RarityCalculator:
         self,
         tokens: List[Any],  # List of TokenData
         trait_map: Any,  # TraitMap
-        algorithm: RarityAlgorithm = RarityAlgorithm.RARITY_SCORE
+        algorithm: RarityAlgorithm = RarityAlgorithm.RARITY_SCORE,
     ) -> List[TokenRarity]:
         """Rank all tokens in a collection by rarity.
 
@@ -297,11 +278,7 @@ class RarityCalculator:
 
         return rarities
 
-    def get_token_by_id(
-        self,
-        rarities: List[TokenRarity],
-        token_id: int
-    ) -> TokenRarity:
+    def get_token_by_id(self, rarities: List[TokenRarity], token_id: int) -> TokenRarity:
         """Find token rarity by ID.
 
         Args:
@@ -316,12 +293,7 @@ class RarityCalculator:
                 return rarity
         return None
 
-    def normalize_scores(
-        self,
-        rarities: List[TokenRarity],
-        min_score: float = 0,
-        max_score: float = 100
-    ) -> None:
+    def normalize_scores(self, rarities: List[TokenRarity], min_score: float = 0, max_score: float = 100) -> None:
         """Normalize scores to a 0-100 scale (modifies in place).
 
         Args:
@@ -355,36 +327,48 @@ def main():
     # Create sample tokens
     sample_tokens = [
         TokenData(
-            token_id=1, name="Rare Token", description="", image_url="",
+            token_id=1,
+            name="Rare Token",
+            description="",
+            image_url="",
             attributes=[
                 Trait("Background", "Gold", None),  # Very rare
                 Trait("Eyes", "Laser", None),
                 Trait("Hat", "Crown", None),
-            ]
+            ],
         ),
         TokenData(
-            token_id=2, name="Common Token", description="", image_url="",
+            token_id=2,
+            name="Common Token",
+            description="",
+            image_url="",
             attributes=[
                 Trait("Background", "Blue", None),
                 Trait("Eyes", "Normal", None),
                 Trait("Hat", "Cap", None),
-            ]
+            ],
         ),
         TokenData(
-            token_id=3, name="Mid Token", description="", image_url="",
+            token_id=3,
+            name="Mid Token",
+            description="",
+            image_url="",
             attributes=[
                 Trait("Background", "Blue", None),
                 Trait("Eyes", "Normal", None),
                 Trait("Hat", "Crown", None),
-            ]
+            ],
         ),
         TokenData(
-            token_id=4, name="Another Common", description="", image_url="",
+            token_id=4,
+            name="Another Common",
+            description="",
+            image_url="",
             attributes=[
                 Trait("Background", "Blue", None),
                 Trait("Eyes", "Normal", None),
                 Trait("Hat", "Cap", None),
-            ]
+            ],
         ),
     ]
 
@@ -397,11 +381,7 @@ def main():
 
     # Calculate rankings
     calculator = RarityCalculator(verbose=True)
-    rarities = calculator.rank_collection(
-        sample_tokens,
-        trait_map,
-        RarityAlgorithm.RARITY_SCORE
-    )
+    rarities = calculator.rank_collection(sample_tokens, trait_map, RarityAlgorithm.RARITY_SCORE)
 
     print("\n=== Rankings (Rarity Score Method) ===")
     for r in rarities:

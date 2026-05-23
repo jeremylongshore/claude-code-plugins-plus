@@ -8,23 +8,21 @@ Supports table, JSON, and CSV output formats with rich terminal styling.
 import csv
 import io
 import json
-from dataclasses import asdict
 from datetime import datetime
 from decimal import Decimal
-from typing import Any, Dict, List, Optional
+from typing import List
 
 try:
     from rich.console import Console
     from rich.table import Table
     from rich.panel import Panel
-    from rich.text import Text
 
     RICH_AVAILABLE = True
 except ImportError:
     RICH_AVAILABLE = False
 
 from quote_fetcher import NormalizedQuote
-from route_optimizer import RouteAnalysis, RouteComparison
+from route_optimizer import RouteComparison
 from split_calculator import SplitRecommendation
 from mev_assessor import MEVAssessment, MEVRiskLevel
 
@@ -63,9 +61,7 @@ class OutputFormatter:
         if self.use_color:
             self.console = Console()
 
-    def format_quote(
-        self, quote: NormalizedQuote, output_format: str = "table"
-    ) -> str:
+    def format_quote(self, quote: NormalizedQuote, output_format: str = "table") -> str:
         """Format a single quote."""
         if output_format == "json":
             return self._quote_to_json(quote)
@@ -74,9 +70,7 @@ class OutputFormatter:
         else:
             return self._quote_to_table(quote)
 
-    def format_comparison(
-        self, comparison: RouteComparison, output_format: str = "table"
-    ) -> str:
+    def format_comparison(self, comparison: RouteComparison, output_format: str = "table") -> str:
         """Format route comparison results."""
         if output_format == "json":
             return self._comparison_to_json(comparison)
@@ -85,9 +79,7 @@ class OutputFormatter:
         else:
             return self._comparison_to_table(comparison)
 
-    def format_split(
-        self, split: SplitRecommendation, output_format: str = "table"
-    ) -> str:
+    def format_split(self, split: SplitRecommendation, output_format: str = "table") -> str:
         """Format split order recommendation."""
         if output_format == "json":
             return self._split_to_json(split)
@@ -96,9 +88,7 @@ class OutputFormatter:
         else:
             return self._split_to_table(split)
 
-    def format_mev(
-        self, assessment: MEVAssessment, output_format: str = "table"
-    ) -> str:
+    def format_mev(self, assessment: MEVAssessment, output_format: str = "table") -> str:
         """Format MEV risk assessment."""
         if output_format == "json":
             return self._mev_to_json(assessment)
@@ -196,11 +186,13 @@ class OutputFormatter:
                 f"{analysis.score:>6.0f}"
             )
 
-        lines.extend([
-            "-" * 70,
-            f"Spread: {comparison.price_spread:.2f}%",
-            f"Recommendation: {comparison.recommendation}",
-        ])
+        lines.extend(
+            [
+                "-" * 70,
+                f"Spread: {comparison.price_spread:.2f}%",
+                f"Recommendation: {comparison.recommendation}",
+            ]
+        )
 
         return "\n".join(lines)
 
@@ -237,7 +229,7 @@ class OutputFormatter:
                     f"(${float(split.net_benefit):.2f} saved)"
                 )
             else:
-                console.print(f"[yellow]Split not beneficial for this trade size[/yellow]")
+                console.print("[yellow]Split not beneficial for this trade size[/yellow]")
 
             console.print(f"\n{split.recommendation}")
             return output.getvalue()
@@ -261,15 +253,17 @@ class OutputFormatter:
                 f"${alloc.gas_cost_usd:>6.2f}"
             )
 
-        lines.extend([
-            "-" * 60,
-            f"Total Output:  {split.total_output:.2f}",
-            f"Single Venue:  {split.single_venue_output:.2f}",
-            f"Improvement:   +{split.improvement_pct:.2f}%",
-            f"Net Benefit:   ${float(split.net_benefit):.2f}",
-            "",
-            split.recommendation,
-        ])
+        lines.extend(
+            [
+                "-" * 60,
+                f"Total Output:  {split.total_output:.2f}",
+                f"Single Venue:  {split.single_venue_output:.2f}",
+                f"Improvement:   +{split.improvement_pct:.2f}%",
+                f"Net Benefit:   ${float(split.net_benefit):.2f}",
+                "",
+                split.recommendation,
+            ]
+        )
 
         return "\n".join(lines)
 
@@ -290,15 +284,12 @@ class OutputFormatter:
             color = risk_colors.get(assessment.risk_level, "white")
             console.print(
                 Panel(
-                    f"[{color}]{assessment.risk_level.value}[/{color}] "
-                    f"(Score: {assessment.risk_score:.0f}/100)",
+                    f"[{color}]{assessment.risk_level.value}[/{color}] (Score: {assessment.risk_score:.0f}/100)",
                     title="MEV Risk Level",
                 )
             )
 
-            console.print(
-                f"Estimated Exposure: [bold]${assessment.estimated_mev_exposure_usd:.2f}[/bold]\n"
-            )
+            console.print(f"Estimated Exposure: [bold]${assessment.estimated_mev_exposure_usd:.2f}[/bold]\n")
 
             # Risk factors table
             table = Table(title="Risk Factors")
@@ -320,9 +311,7 @@ class OutputFormatter:
             # Protection options
             console.print("\n[bold]Protection Options:[/bold]")
             for option in assessment.protection_options:
-                console.print(
-                    f"  • {option.name} ({option.effectiveness:.0f}% effective)"
-                )
+                console.print(f"  • {option.name} ({option.effectiveness:.0f}% effective)")
                 console.print(f"    {option.description}")
 
             console.print(f"\n[bold]Recommendation:[/bold] {assessment.recommendation}")
@@ -456,18 +445,36 @@ class OutputFormatter:
         """Convert quotes to CSV string."""
         output = io.StringIO()
         writer = csv.writer(output)
-        writer.writerow([
-            "source", "input_token", "output_token", "input_amount",
-            "output_amount", "price", "price_impact", "gas_cost_usd",
-            "effective_rate", "protocols",
-        ])
+        writer.writerow(
+            [
+                "source",
+                "input_token",
+                "output_token",
+                "input_amount",
+                "output_amount",
+                "price",
+                "price_impact",
+                "gas_cost_usd",
+                "effective_rate",
+                "protocols",
+            ]
+        )
 
         for q in quotes:
-            writer.writerow([
-                q.source, q.input_token, q.output_token, float(q.input_amount),
-                float(q.output_amount), float(q.price), q.price_impact,
-                q.gas_cost_usd, float(q.effective_rate), ";".join(q.protocols),
-            ])
+            writer.writerow(
+                [
+                    q.source,
+                    q.input_token,
+                    q.output_token,
+                    float(q.input_amount),
+                    float(q.output_amount),
+                    float(q.price),
+                    q.price_impact,
+                    q.gas_cost_usd,
+                    float(q.effective_rate),
+                    ";".join(q.protocols),
+                ]
+            )
 
         return output.getvalue()
 
@@ -475,17 +482,30 @@ class OutputFormatter:
         """Convert comparison to CSV string."""
         output = io.StringIO()
         writer = csv.writer(output)
-        writer.writerow([
-            "rank", "source", "output_amount", "effective_rate",
-            "gas_cost_usd", "score", "savings_pct",
-        ])
+        writer.writerow(
+            [
+                "rank",
+                "source",
+                "output_amount",
+                "effective_rate",
+                "gas_cost_usd",
+                "score",
+                "savings_pct",
+            ]
+        )
 
         for a in comparison.all_routes:
-            writer.writerow([
-                a.rank, a.quote.source, float(a.quote.output_amount),
-                float(a.quote.effective_rate), a.quote.gas_cost_usd,
-                a.score, a.savings_pct,
-            ])
+            writer.writerow(
+                [
+                    a.rank,
+                    a.quote.source,
+                    float(a.quote.output_amount),
+                    float(a.quote.effective_rate),
+                    a.quote.gas_cost_usd,
+                    a.score,
+                    a.savings_pct,
+                ]
+            )
 
         return output.getvalue()
 
@@ -493,14 +513,25 @@ class OutputFormatter:
         """Convert split recommendation to CSV string."""
         output = io.StringIO()
         writer = csv.writer(output)
-        writer.writerow([
-            "source", "percentage", "input_amount", "expected_output", "gas_cost_usd",
-        ])
+        writer.writerow(
+            [
+                "source",
+                "percentage",
+                "input_amount",
+                "expected_output",
+                "gas_cost_usd",
+            ]
+        )
 
         for a in split.allocations:
-            writer.writerow([
-                a.source, a.percentage, float(a.input_amount),
-                float(a.expected_output), a.gas_cost_usd,
-            ])
+            writer.writerow(
+                [
+                    a.source,
+                    a.percentage,
+                    float(a.input_amount),
+                    float(a.expected_output),
+                    a.gas_cost_usd,
+                ]
+            )
 
         return output.getvalue()

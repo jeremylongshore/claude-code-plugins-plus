@@ -15,6 +15,7 @@ from dataclasses import dataclass
 
 try:
     import yaml
+
     HAS_YAML = True
 except ImportError:
     HAS_YAML = False
@@ -25,6 +26,7 @@ from tx_decoder import TransactionDecoder
 @dataclass
 class MEVOpportunity:
     """Detected MEV opportunity."""
+
     opportunity_type: str  # sandwich, arbitrage, liquidation, backrun
     target_tx: str  # Target transaction hash
     estimated_profit_usd: float
@@ -37,6 +39,7 @@ class MEVOpportunity:
 @dataclass
 class PendingSwap:
     """Detected pending swap transaction."""
+
     tx_hash: str
     dex: str
     amount_in: Optional[int]
@@ -105,10 +108,12 @@ class MEVDetector:
 
         # Default locations
         script_dir = os.path.dirname(os.path.abspath(__file__))
-        search_paths.extend([
-            os.path.join(script_dir, "..", "config", "settings.yaml"),
-            os.path.expanduser("~/.mempool_analyzer.yaml"),
-        ])
+        search_paths.extend(
+            [
+                os.path.join(script_dir, "..", "config", "settings.yaml"),
+                os.path.expanduser("~/.mempool_analyzer.yaml"),
+            ]
+        )
 
         for path in search_paths:
             if os.path.exists(path):
@@ -121,11 +126,7 @@ class MEVDetector:
 
         return None
 
-    def detect_pending_swaps(
-        self,
-        pending_txs: List[Any],
-        eth_price: float = 3000.0
-    ) -> List[PendingSwap]:
+    def detect_pending_swaps(self, pending_txs: List[Any], eth_price: float = 3000.0) -> List[PendingSwap]:
         """Identify pending swap transactions.
 
         Args:
@@ -157,21 +158,21 @@ class MEVDetector:
             # Try to identify as swap
             swap_info = self.decoder.identify_dex_swap(input_data, to_address)
             if swap_info:
-                swaps.append(PendingSwap(
-                    tx_hash=tx_hash,
-                    dex=swap_info.dex,
-                    amount_in=swap_info.amount_in,
-                    amount_out_min=swap_info.amount_out_min,
-                    gas_price=gas_price,
-                    from_address=from_address,
-                ))
+                swaps.append(
+                    PendingSwap(
+                        tx_hash=tx_hash,
+                        dex=swap_info.dex,
+                        amount_in=swap_info.amount_in,
+                        amount_out_min=swap_info.amount_out_min,
+                        gas_price=gas_price,
+                        from_address=from_address,
+                    )
+                )
 
         return swaps
 
     def detect_sandwich_opportunities(
-        self,
-        pending_swaps: List[PendingSwap],
-        eth_price: float = 3000.0
+        self, pending_swaps: List[PendingSwap], eth_price: float = 3000.0
     ) -> List[MEVOpportunity]:
         """Detect potential sandwich attack opportunities.
 
@@ -206,27 +207,27 @@ class MEVDetector:
             if estimated_profit < self.min_profit_usd:
                 continue
 
-            opportunities.append(MEVOpportunity(
-                opportunity_type="sandwich",
-                target_tx=swap.tx_hash,
-                estimated_profit_usd=estimated_profit,
-                required_capital_usd=value_usd * 0.5,  # Need capital to front-run
-                risk_level="high",  # Sandwiches are risky
-                confidence=0.3,  # Low confidence without pool analysis
-                details={
-                    "dex": swap.dex,
-                    "swap_value_usd": value_usd,
-                    "target_slippage": estimated_slippage,
-                    "gas_price_gwei": swap.gas_price / 10**9,
-                },
-            ))
+            opportunities.append(
+                MEVOpportunity(
+                    opportunity_type="sandwich",
+                    target_tx=swap.tx_hash,
+                    estimated_profit_usd=estimated_profit,
+                    required_capital_usd=value_usd * 0.5,  # Need capital to front-run
+                    risk_level="high",  # Sandwiches are risky
+                    confidence=0.3,  # Low confidence without pool analysis
+                    details={
+                        "dex": swap.dex,
+                        "swap_value_usd": value_usd,
+                        "target_slippage": estimated_slippage,
+                        "gas_price_gwei": swap.gas_price / 10**9,
+                    },
+                )
+            )
 
         return opportunities
 
     def detect_arbitrage_opportunities(
-        self,
-        pending_swaps: List[PendingSwap],
-        pool_prices: Dict[str, float] = None
+        self, pending_swaps: List[PendingSwap], pool_prices: Dict[str, float] = None
     ) -> List[MEVOpportunity]:
         """Detect arbitrage opportunities from pending swaps.
 
@@ -258,10 +259,7 @@ class MEVDetector:
 
         return opportunities
 
-    def detect_liquidation_opportunities(
-        self,
-        pending_txs: List[Any]
-    ) -> List[MEVOpportunity]:
+    def detect_liquidation_opportunities(self, pending_txs: List[Any]) -> List[MEVOpportunity]:
         """Detect pending liquidation opportunities.
 
         Args:
@@ -285,9 +283,7 @@ class MEVDetector:
         return opportunities
 
     def detect_all_opportunities(
-        self,
-        pending_txs: List[Any],
-        eth_price: float = 3000.0
+        self, pending_txs: List[Any], eth_price: float = 3000.0
     ) -> Dict[str, List[MEVOpportunity]]:
         """Run all MEV detection algorithms.
 
@@ -310,10 +306,7 @@ class MEVDetector:
 
         return results
 
-    def format_opportunities(
-        self,
-        opportunities: List[MEVOpportunity]
-    ) -> str:
+    def format_opportunities(self, opportunities: List[MEVOpportunity]) -> str:
         """Format opportunities for display.
 
         Args:
@@ -360,6 +353,7 @@ def main():
     class MockTx:
         def __init__(self, value, gas_price):
             import random
+
             self.hash = f"0x{''.join(random.choices('0123456789abcdef', k=64))}"
             self.from_address = f"0x{''.join(random.choices('0123456789abcdef', k=40))}"
             self.to_address = "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D"
@@ -368,10 +362,8 @@ def main():
             self.input_data = "0x38ed1739" + "0" * 256
 
     import random
-    mock_txs = [
-        MockTx(random.randint(1, 100) * 10**18, (30 + random.randint(0, 20)) * 10**9)
-        for _ in range(20)
-    ]
+
+    mock_txs = [MockTx(random.randint(1, 100) * 10**18, (30 + random.randint(0, 20)) * 10**9) for _ in range(20)]
 
     # Detect
     print("=== Scanning for Pending Swaps ===")

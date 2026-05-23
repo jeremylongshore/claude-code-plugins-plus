@@ -26,16 +26,11 @@ def get_git_diff(staged_only: bool = False) -> str:
         The git diff output as a string
     """
     try:
-        cmd = ['git', 'diff']
+        cmd = ["git", "diff"]
         if staged_only:
-            cmd.append('--cached')
+            cmd.append("--cached")
 
-        result = subprocess.run(
-            cmd,
-            capture_output=True,
-            text=True,
-            check=False
-        )
+        result = subprocess.run(cmd, capture_output=True, text=True, check=False)
 
         if result.returncode != 0:
             return ""
@@ -56,7 +51,7 @@ def get_diff_from_file(filepath: str) -> str:
         The diff content as a string
     """
     try:
-        with open(filepath, 'r', encoding='utf-8') as f:
+        with open(filepath, "r", encoding="utf-8") as f:
             return f.read()
     except FileNotFoundError:
         print(f"Error: File not found: {filepath}", file=sys.stderr)
@@ -84,55 +79,55 @@ def analyze_diff(diff_content: str) -> Tuple[str, str, str]:
     has_fix = False
     files_changed = []
 
-    lines = diff_content.split('\n')
+    lines = diff_content.split("\n")
 
     for line in lines:
         # Track which files are being modified
-        if line.startswith('diff --git'):
+        if line.startswith("diff --git"):
             # Extract filename
-            parts = line.split(' ')
+            parts = line.split(" ")
             if len(parts) >= 4:
                 filepath = parts[3]
                 files_changed.append(filepath)
 
         # Detect test files
-        if 'test' in line.lower() or 'spec' in line.lower():
+        if "test" in line.lower() or "spec" in line.lower():
             has_tests = True
 
         # Detect documentation changes
-        if any(x in line.lower() for x in ['.md', 'readme', 'docs/', 'documentation']):
+        if any(x in line.lower() for x in [".md", "readme", "docs/", "documentation"]):
             has_docs = True
 
         # Detect style changes (formatting, whitespace)
-        if line.startswith('-') and line.lstrip('-').strip():
-            if len(line.lstrip('-').strip()) < 20:  # Short lines likely style
+        if line.startswith("-") and line.lstrip("-").strip():
+            if len(line.lstrip("-").strip()) < 20:  # Short lines likely style
                 has_style = True
 
         # Detect feature additions (new functions, classes)
-        if any(x in line for x in ['def ', 'class ', 'function ', 'const ', 'let ']):
-            if line.startswith('+'):
+        if any(x in line for x in ["def ", "class ", "function ", "const ", "let "]):
+            if line.startswith("+"):
                 has_feature = True
 
         # Detect bug fixes (removing problematic code)
-        if 'bug' in line.lower() or 'fix' in line.lower():
+        if "bug" in line.lower() or "fix" in line.lower():
             has_fix = True
 
     # Determine commit type
     if has_fix:
-        commit_type = 'fix'
+        commit_type = "fix"
     elif has_feature:
-        commit_type = 'feat'
+        commit_type = "feat"
     elif has_tests:
-        commit_type = 'test'
+        commit_type = "test"
     elif has_docs:
-        commit_type = 'docs'
+        commit_type = "docs"
     elif has_style:
-        commit_type = 'style'
+        commit_type = "style"
     else:
-        commit_type = 'refactor'
+        commit_type = "refactor"
 
     # Determine scope from files changed
-    scope = ''
+    scope = ""
     if files_changed:
         # Extract directory or module name from first file
         first_file = files_changed[0]
@@ -141,17 +136,13 @@ def analyze_diff(diff_content: str) -> Tuple[str, str, str]:
             scope = parts[0]
 
     # Create description
-    description = f"Update code based on diff analysis"
+    description = "Update code based on diff analysis"
 
     return commit_type, scope, description
 
 
 def generate_message(
-    commit_type: str,
-    scope: Optional[str],
-    subject: str,
-    body: Optional[str] = None,
-    footer: Optional[str] = None
+    commit_type: str, scope: Optional[str], subject: str, body: Optional[str] = None, footer: Optional[str] = None
 ) -> str:
     """
     Generate a conventional commit message.
@@ -173,7 +164,7 @@ def generate_message(
         subject_line = f"{commit_type}: {subject}"
 
     # Ensure subject starts with lowercase
-    parts = subject_line.split(': ', 1)
+    parts = subject_line.split(": ", 1)
     if len(parts) == 2:
         subject_line = f"{parts[0]}: {parts[1][0].lower()}{parts[1][1:] if len(parts[1]) > 1 else ''}"
 
@@ -210,52 +201,19 @@ Examples:
 
   # Output as JSON
   %(prog)s --staged --format json
-        """
+        """,
     )
 
     input_group = parser.add_mutually_exclusive_group()
-    input_group.add_argument(
-        '--staged',
-        action='store_true',
-        help='Analyze staged changes (default)'
-    )
-    input_group.add_argument(
-        '--unstaged',
-        action='store_true',
-        help='Analyze unstaged changes'
-    )
-    input_group.add_argument(
-        '--file',
-        type=str,
-        help='Path to diff file'
-    )
+    input_group.add_argument("--staged", action="store_true", help="Analyze staged changes (default)")
+    input_group.add_argument("--unstaged", action="store_true", help="Analyze unstaged changes")
+    input_group.add_argument("--file", type=str, help="Path to diff file")
 
-    parser.add_argument(
-        '--subject',
-        type=str,
-        help='Custom subject for the commit message'
-    )
-    parser.add_argument(
-        '--body',
-        type=str,
-        help='Optional body text'
-    )
-    parser.add_argument(
-        '--footer',
-        type=str,
-        help='Optional footer (e.g., Closes #123)'
-    )
-    parser.add_argument(
-        '--format',
-        choices=['text', 'json'],
-        default='text',
-        help='Output format (default: text)'
-    )
-    parser.add_argument(
-        '-v', '--verbose',
-        action='store_true',
-        help='Enable verbose output'
-    )
+    parser.add_argument("--subject", type=str, help="Custom subject for the commit message")
+    parser.add_argument("--body", type=str, help="Optional body text")
+    parser.add_argument("--footer", type=str, help="Optional footer (e.g., Closes #123)")
+    parser.add_argument("--format", choices=["text", "json"], default="text", help="Output format (default: text)")
+    parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose output")
 
     args = parser.parse_args()
 
@@ -278,23 +236,17 @@ Examples:
     subject = args.subject or "update code"
 
     # Generate message
-    message = generate_message(
-        commit_type,
-        scope if scope else None,
-        subject,
-        args.body,
-        args.footer
-    )
+    message = generate_message(commit_type, scope if scope else None, subject, args.body, args.footer)
 
     # Output result
-    if args.format == 'json':
+    if args.format == "json":
         output = {
-            'type': commit_type,
-            'scope': scope or None,
-            'subject': subject,
-            'body': args.body,
-            'footer': args.footer,
-            'message': message
+            "type": commit_type,
+            "scope": scope or None,
+            "subject": subject,
+            "body": args.body,
+            "footer": args.footer,
+            "message": message,
         }
         print(json.dumps(output, indent=2))
     else:
@@ -303,5 +255,5 @@ Examples:
     return 0
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(main())

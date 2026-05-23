@@ -13,18 +13,17 @@ License: MIT
 import argparse
 import gzip
 import hashlib
-import os
 import subprocess
 import sys
 from pathlib import Path
 from dataclasses import dataclass
 from typing import Optional, Tuple
-from datetime import datetime
 
 
 @dataclass
 class ValidationResult:
     """Result of backup validation."""
+
     valid: bool
     file_path: str
     file_size: int
@@ -42,31 +41,31 @@ def detect_file_type(file_path: Path) -> Tuple[str, bool, bool]:
     name = file_path.name.lower()
     suffixes = file_path.suffixes
 
-    encrypted = '.gpg' in suffixes or '.enc' in suffixes
-    compressed = '.gz' in suffixes or '.tar' in suffixes
+    encrypted = ".gpg" in suffixes or ".enc" in suffixes
+    compressed = ".gz" in suffixes or ".tar" in suffixes
 
     # Remove encryption/compression suffixes for base detection
     base_name = name
-    for ext in ['.gpg', '.enc', '.gz', '.tar']:
-        base_name = base_name.replace(ext, '')
+    for ext in [".gpg", ".enc", ".gz", ".tar"]:
+        base_name = base_name.replace(ext, "")
 
-    if base_name.endswith('.dump') or 'postgresql' in base_name or 'pg_' in base_name:
-        return 'postgresql', compressed, encrypted
-    elif base_name.endswith('.sql') or 'mysql' in base_name:
-        return 'mysql', compressed, encrypted
-    elif base_name.endswith('.bson') or 'mongodb' in base_name or 'mongo' in base_name:
-        return 'mongodb', compressed, encrypted
-    elif base_name.endswith('.db') or 'sqlite' in base_name:
-        return 'sqlite', compressed, encrypted
+    if base_name.endswith(".dump") or "postgresql" in base_name or "pg_" in base_name:
+        return "postgresql", compressed, encrypted
+    elif base_name.endswith(".sql") or "mysql" in base_name:
+        return "mysql", compressed, encrypted
+    elif base_name.endswith(".bson") or "mongodb" in base_name or "mongo" in base_name:
+        return "mongodb", compressed, encrypted
+    elif base_name.endswith(".db") or "sqlite" in base_name:
+        return "sqlite", compressed, encrypted
 
-    return 'unknown', compressed, encrypted
+    return "unknown", compressed, encrypted
 
 
 def calculate_checksum(file_path: Path) -> str:
     """Calculate SHA256 checksum of file."""
     sha256 = hashlib.sha256()
-    with open(file_path, 'rb') as f:
-        for chunk in iter(lambda: f.read(8192), b''):
+    with open(file_path, "rb") as f:
+        for chunk in iter(lambda: f.read(8192), b""):
             sha256.update(chunk)
     return sha256.hexdigest()
 
@@ -79,27 +78,22 @@ def validate_postgresql(file_path: Path, compressed: bool) -> ValidationResult:
 
     # For custom format (.dump), use pg_restore --list
     try:
-        result = subprocess.run(
-            ['pg_restore', '--list', str(file_path)],
-            capture_output=True,
-            text=True,
-            timeout=30
-        )
+        result = subprocess.run(["pg_restore", "--list", str(file_path)], capture_output=True, text=True, timeout=30)
         if result.returncode == 0:
-            lines = result.stdout.strip().split('\n')
-            details['objects'] = len([l for l in lines if l.strip() and not l.startswith(';')])
-            details['format'] = 'custom'
+            lines = result.stdout.strip().split("\n")
+            details["objects"] = len([l for l in lines if l.strip() and not l.startswith(";")])
+            details["format"] = "custom"
         else:
             # Try reading as SQL
             if compressed:
-                with gzip.open(file_path, 'rt', errors='ignore') as f:
+                with gzip.open(file_path, "rt", errors="ignore") as f:
                     header = f.read(1000)
             else:
-                with open(file_path, 'r', errors='ignore') as f:
+                with open(file_path, "r", errors="ignore") as f:
                     header = f.read(1000)
 
-            if 'PostgreSQL database dump' in header or 'pg_dump' in header:
-                details['format'] = 'plain_sql'
+            if "PostgreSQL database dump" in header or "pg_dump" in header:
+                details["format"] = "plain_sql"
             else:
                 errors.append("Could not verify PostgreSQL backup format")
 
@@ -110,10 +104,10 @@ def validate_postgresql(file_path: Path, compressed: bool) -> ValidationResult:
         # Fallback: check file headers
         if compressed:
             try:
-                with gzip.open(file_path, 'rt', errors='ignore') as f:
+                with gzip.open(file_path, "rt", errors="ignore") as f:
                     header = f.read(500)
-                if 'PostgreSQL' in header or 'pg_dump' in header:
-                    details['format'] = 'plain_sql_gzip'
+                if "PostgreSQL" in header or "pg_dump" in header:
+                    details["format"] = "plain_sql_gzip"
             except Exception:
                 errors.append("Could not read gzip file")
 
@@ -121,13 +115,13 @@ def validate_postgresql(file_path: Path, compressed: bool) -> ValidationResult:
         valid=len(errors) == 0,
         file_path=str(file_path),
         file_size=file_path.stat().st_size,
-        db_type='postgresql',
+        db_type="postgresql",
         compressed=compressed,
         encrypted=False,
         checksum=calculate_checksum(file_path),
         errors=errors,
         warnings=warnings,
-        details=details
+        details=details,
     )
 
 
@@ -139,27 +133,27 @@ def validate_mysql(file_path: Path, compressed: bool) -> ValidationResult:
 
     try:
         if compressed:
-            with gzip.open(file_path, 'rt', errors='ignore') as f:
+            with gzip.open(file_path, "rt", errors="ignore") as f:
                 header = f.read(2000)
         else:
-            with open(file_path, 'r', errors='ignore') as f:
+            with open(file_path, "r", errors="ignore") as f:
                 header = f.read(2000)
 
         # Check for MySQL dump signature
-        if 'MySQL dump' in header or 'mysqldump' in header.lower():
-            details['format'] = 'mysqldump'
+        if "MySQL dump" in header or "mysqldump" in header.lower():
+            details["format"] = "mysqldump"
 
             # Try to extract version
-            for line in header.split('\n'):
-                if 'Server version' in line:
-                    details['server_version'] = line.split(':')[-1].strip()
+            for line in header.split("\n"):
+                if "Server version" in line:
+                    details["server_version"] = line.split(":")[-1].strip()
                     break
 
             # Count tables
-            if 'CREATE TABLE' in header:
-                details['has_schema'] = True
-            if 'INSERT INTO' in header:
-                details['has_data'] = True
+            if "CREATE TABLE" in header:
+                details["has_schema"] = True
+            if "INSERT INTO" in header:
+                details["has_data"] = True
 
         else:
             errors.append("File does not appear to be a MySQL dump")
@@ -173,13 +167,13 @@ def validate_mysql(file_path: Path, compressed: bool) -> ValidationResult:
         valid=len(errors) == 0,
         file_path=str(file_path),
         file_size=file_path.stat().st_size,
-        db_type='mysql',
+        db_type="mysql",
         compressed=compressed,
         encrypted=False,
         checksum=calculate_checksum(file_path),
         errors=errors,
         warnings=warnings,
-        details=details
+        details=details,
     )
 
 
@@ -191,31 +185,26 @@ def validate_mongodb(file_path: Path, compressed: bool) -> ValidationResult:
 
     if file_path.is_dir():
         # Directory format
-        bson_files = list(file_path.rglob('*.bson*'))
-        metadata_files = list(file_path.rglob('*.metadata.json*'))
+        bson_files = list(file_path.rglob("*.bson*"))
+        metadata_files = list(file_path.rglob("*.metadata.json*"))
 
         if bson_files:
-            details['bson_files'] = len(bson_files)
-            details['collections'] = len(metadata_files)
-            details['format'] = 'directory'
+            details["bson_files"] = len(bson_files)
+            details["collections"] = len(metadata_files)
+            details["format"] = "directory"
         else:
             errors.append("No BSON files found in backup directory")
 
-    elif file_path.suffix == '.tar':
+    elif file_path.suffix == ".tar":
         # Tar archive
         try:
-            result = subprocess.run(
-                ['tar', '-tf', str(file_path)],
-                capture_output=True,
-                text=True,
-                timeout=30
-            )
+            result = subprocess.run(["tar", "-tf", str(file_path)], capture_output=True, text=True, timeout=30)
             if result.returncode == 0:
-                files = result.stdout.strip().split('\n')
-                bson_count = len([f for f in files if '.bson' in f])
+                files = result.stdout.strip().split("\n")
+                bson_count = len([f for f in files if ".bson" in f])
                 if bson_count > 0:
-                    details['bson_files'] = bson_count
-                    details['format'] = 'tar_archive'
+                    details["bson_files"] = bson_count
+                    details["format"] = "tar_archive"
                 else:
                     errors.append("No BSON files in archive")
             else:
@@ -226,21 +215,23 @@ def validate_mongodb(file_path: Path, compressed: bool) -> ValidationResult:
     else:
         # Single BSON file
         if file_path.stat().st_size > 0:
-            details['format'] = 'single_bson'
+            details["format"] = "single_bson"
         else:
             errors.append("Empty backup file")
 
     return ValidationResult(
         valid=len(errors) == 0,
         file_path=str(file_path),
-        file_size=file_path.stat().st_size if file_path.is_file() else sum(f.stat().st_size for f in file_path.rglob('*') if f.is_file()),
-        db_type='mongodb',
+        file_size=file_path.stat().st_size
+        if file_path.is_file()
+        else sum(f.stat().st_size for f in file_path.rglob("*") if f.is_file()),
+        db_type="mongodb",
         compressed=compressed,
         encrypted=False,
-        checksum=calculate_checksum(file_path) if file_path.is_file() else 'N/A (directory)',
+        checksum=calculate_checksum(file_path) if file_path.is_file() else "N/A (directory)",
         errors=errors,
         warnings=warnings,
-        details=details
+        details=details,
     )
 
 
@@ -250,49 +241,44 @@ def validate_sqlite(file_path: Path, compressed: bool) -> ValidationResult:
     warnings = []
     details = {}
 
-    actual_file = file_path
-
     # Decompress if needed
-    if compressed and file_path.suffix == '.gz':
+    if compressed and file_path.suffix == ".gz":
         # Read header from gzip
         try:
-            with gzip.open(file_path, 'rb') as f:
+            with gzip.open(file_path, "rb") as f:
                 header = f.read(16)
         except Exception as e:
             errors.append(f"Could not read gzip file: {e}")
-            header = b''
+            header = b""
     else:
-        with open(file_path, 'rb') as f:
+        with open(file_path, "rb") as f:
             header = f.read(16)
 
     # SQLite magic bytes
-    if header.startswith(b'SQLite format 3'):
-        details['format'] = 'sqlite3'
+    if header.startswith(b"SQLite format 3"):
+        details["format"] = "sqlite3"
 
         # If not compressed, run integrity check
         if not compressed:
             try:
                 result = subprocess.run(
-                    ['sqlite3', str(file_path), 'PRAGMA integrity_check;'],
-                    capture_output=True,
-                    text=True,
-                    timeout=60
+                    ["sqlite3", str(file_path), "PRAGMA integrity_check;"], capture_output=True, text=True, timeout=60
                 )
-                if result.returncode == 0 and 'ok' in result.stdout.lower():
-                    details['integrity_check'] = 'passed'
+                if result.returncode == 0 and "ok" in result.stdout.lower():
+                    details["integrity_check"] = "passed"
                 else:
                     warnings.append(f"Integrity check: {result.stdout.strip()}")
-                    details['integrity_check'] = 'failed'
+                    details["integrity_check"] = "failed"
 
                 # Get table count
                 result = subprocess.run(
-                    ['sqlite3', str(file_path), "SELECT COUNT(*) FROM sqlite_master WHERE type='table';"],
+                    ["sqlite3", str(file_path), "SELECT COUNT(*) FROM sqlite_master WHERE type='table';"],
                     capture_output=True,
                     text=True,
-                    timeout=10
+                    timeout=10,
                 )
                 if result.returncode == 0:
-                    details['table_count'] = int(result.stdout.strip())
+                    details["table_count"] = int(result.stdout.strip())
 
             except FileNotFoundError:
                 warnings.append("sqlite3 not found - limited validation")
@@ -300,7 +286,7 @@ def validate_sqlite(file_path: Path, compressed: bool) -> ValidationResult:
                 warnings.append("Validation timed out")
     elif compressed:
         warnings.append("Cannot fully validate compressed SQLite backup")
-        details['format'] = 'sqlite3_compressed'
+        details["format"] = "sqlite3_compressed"
     else:
         errors.append("File does not appear to be SQLite format")
 
@@ -308,13 +294,13 @@ def validate_sqlite(file_path: Path, compressed: bool) -> ValidationResult:
         valid=len(errors) == 0,
         file_path=str(file_path),
         file_size=file_path.stat().st_size,
-        db_type='sqlite',
+        db_type="sqlite",
         compressed=compressed,
         encrypted=False,
         checksum=calculate_checksum(file_path),
         errors=errors,
         warnings=warnings,
-        details=details
+        details=details,
     )
 
 
@@ -325,13 +311,13 @@ def validate_backup(file_path: Path, db_type: Optional[str] = None) -> Validatio
             valid=False,
             file_path=str(file_path),
             file_size=0,
-            db_type='unknown',
+            db_type="unknown",
             compressed=False,
             encrypted=False,
-            checksum='',
-            errors=[f'File not found: {file_path}'],
+            checksum="",
+            errors=[f"File not found: {file_path}"],
             warnings=[],
-            details={}
+            details={},
         )
 
     # Detect type if not specified
@@ -349,15 +335,15 @@ def validate_backup(file_path: Path, db_type: Optional[str] = None) -> Validatio
             encrypted=True,
             checksum=calculate_checksum(file_path),
             errors=[],
-            warnings=['Encrypted backup - content validation skipped'],
-            details={'encrypted': True}
+            warnings=["Encrypted backup - content validation skipped"],
+            details={"encrypted": True},
         )
 
     validators = {
-        'postgresql': validate_postgresql,
-        'mysql': validate_mysql,
-        'mongodb': validate_mongodb,
-        'sqlite': validate_sqlite,
+        "postgresql": validate_postgresql,
+        "mysql": validate_mysql,
+        "mongodb": validate_mongodb,
+        "sqlite": validate_sqlite,
     }
 
     if detected_type in validators:
@@ -373,9 +359,9 @@ def validate_backup(file_path: Path, db_type: Optional[str] = None) -> Validatio
         compressed=compressed,
         encrypted=encrypted,
         checksum=calculate_checksum(file_path),
-        errors=[f'Unknown database type: {detected_type}'],
+        errors=[f"Unknown database type: {detected_type}"],
         warnings=[],
-        details={}
+        details={},
     )
 
 
@@ -408,19 +394,17 @@ def print_result(result: ValidationResult, verbose: bool = False) -> None:
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description='Validate database backup file integrity'
+    parser = argparse.ArgumentParser(description="Validate database backup file integrity")
+    parser.add_argument("backup_file", help="Backup file to validate")
+    parser.add_argument(
+        "--db-type",
+        "-t",
+        choices=["postgresql", "mysql", "mongodb", "sqlite"],
+        help="Database type (auto-detected if not specified)",
     )
-    parser.add_argument('backup_file', help='Backup file to validate')
-    parser.add_argument('--db-type', '-t',
-                        choices=['postgresql', 'mysql', 'mongodb', 'sqlite'],
-                        help='Database type (auto-detected if not specified)')
-    parser.add_argument('--verbose', '-v', action='store_true',
-                        help='Verbose output')
-    parser.add_argument('--checksum-file', '-c',
-                        help='Write checksum to file')
-    parser.add_argument('--json', action='store_true',
-                        help='Output as JSON')
+    parser.add_argument("--verbose", "-v", action="store_true", help="Verbose output")
+    parser.add_argument("--checksum-file", "-c", help="Write checksum to file")
+    parser.add_argument("--json", action="store_true", help="Output as JSON")
 
     args = parser.parse_args()
 
@@ -429,18 +413,24 @@ def main():
 
     if args.json:
         import json
-        print(json.dumps({
-            'valid': result.valid,
-            'file_path': result.file_path,
-            'file_size': result.file_size,
-            'db_type': result.db_type,
-            'compressed': result.compressed,
-            'encrypted': result.encrypted,
-            'checksum': result.checksum,
-            'errors': result.errors,
-            'warnings': result.warnings,
-            'details': result.details
-        }, indent=2))
+
+        print(
+            json.dumps(
+                {
+                    "valid": result.valid,
+                    "file_path": result.file_path,
+                    "file_size": result.file_size,
+                    "db_type": result.db_type,
+                    "compressed": result.compressed,
+                    "encrypted": result.encrypted,
+                    "checksum": result.checksum,
+                    "errors": result.errors,
+                    "warnings": result.warnings,
+                    "details": result.details,
+                },
+                indent=2,
+            )
+        )
     else:
         print_result(result, args.verbose)
 
@@ -451,5 +441,5 @@ def main():
     return 0 if result.valid else 1
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(main())

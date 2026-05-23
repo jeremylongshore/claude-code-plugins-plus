@@ -30,6 +30,7 @@ ETHERSCAN_BASE = "https://api.etherscan.io/api"
 @dataclass
 class WhaleTransaction:
     """Represents a large cryptocurrency transaction."""
+
     tx_hash: str
     blockchain: str
     symbol: str
@@ -112,7 +113,7 @@ class WhaleAlertClient:
         limit: int = 100,
         start: int = None,
         end: int = None,
-        cursor: str = None
+        cursor: str = None,
     ) -> List[WhaleTransaction]:
         """Fetch recent whale transactions.
 
@@ -161,29 +162,28 @@ class WhaleAlertClient:
 
         transactions = []
         for tx in data.get("transactions", []):
-            transactions.append(WhaleTransaction(
-                tx_hash=tx.get("hash", ""),
-                blockchain=tx.get("blockchain", "unknown"),
-                symbol=tx.get("symbol", "").upper(),
-                amount=tx.get("amount", 0),
-                amount_usd=tx.get("amount_usd", 0),
-                from_address=tx.get("from", {}).get("address", ""),
-                from_owner=tx.get("from", {}).get("owner", None),
-                from_owner_type=tx.get("from", {}).get("owner_type", None),
-                to_address=tx.get("to", {}).get("address", ""),
-                to_owner=tx.get("to", {}).get("owner", None),
-                to_owner_type=tx.get("to", {}).get("owner_type", None),
-                timestamp=tx.get("timestamp", 0),
-                transaction_type=tx.get("transaction_type", "transfer"),
-            ))
+            transactions.append(
+                WhaleTransaction(
+                    tx_hash=tx.get("hash", ""),
+                    blockchain=tx.get("blockchain", "unknown"),
+                    symbol=tx.get("symbol", "").upper(),
+                    amount=tx.get("amount", 0),
+                    amount_usd=tx.get("amount_usd", 0),
+                    from_address=tx.get("from", {}).get("address", ""),
+                    from_owner=tx.get("from", {}).get("owner", None),
+                    from_owner_type=tx.get("from", {}).get("owner_type", None),
+                    to_address=tx.get("to", {}).get("address", ""),
+                    to_owner=tx.get("to", {}).get("owner", None),
+                    to_owner_type=tx.get("to", {}).get("owner_type", None),
+                    timestamp=tx.get("timestamp", 0),
+                    transaction_type=tx.get("transaction_type", "transfer"),
+                )
+            )
 
         return transactions[:limit]
 
     def _get_mock_transactions(
-        self,
-        blockchain: str = None,
-        min_value: int = 500000,
-        limit: int = 10
+        self, blockchain: str = None, min_value: int = 500000, limit: int = 10
     ) -> List[WhaleTransaction]:
         """Generate mock transactions for demo/testing."""
         now = int(time.time())
@@ -277,24 +277,17 @@ class WhaleAlertClient:
     def get_status(self) -> Dict[str, Any]:
         """Get API status and rate limit info."""
         if not self.api_key:
-            return {
-                "status": "demo_mode",
-                "message": "No API key configured, using mock data",
-                "rate_limit": "N/A"
-            }
+            return {"status": "demo_mode", "message": "No API key configured, using mock data", "rate_limit": "N/A"}
 
         try:
             data = self._api_get(f"{WHALE_ALERT_BASE}/status")
             return {
                 "status": "ok",
                 "blockchains": data.get("blockchains", []),
-                "rate_limit_remaining": data.get("rate_limit_remaining", "unknown")
+                "rate_limit_remaining": data.get("rate_limit_remaining", "unknown"),
             }
         except Exception as e:
-            return {
-                "status": "error",
-                "message": str(e)
-            }
+            return {"status": "error", "message": str(e)}
 
 
 class EtherscanClient:
@@ -305,11 +298,7 @@ class EtherscanClient:
         self.api_key = api_key or os.environ.get("ETHERSCAN_API_KEY", "")
         self.verbose = verbose
 
-    def get_large_transfers(
-        self,
-        address: str = None,
-        min_value_eth: float = 100
-    ) -> List[Dict[str, Any]]:
+    def get_large_transfers(self, address: str = None, min_value_eth: float = 100) -> List[Dict[str, Any]]:
         """Get large ETH transfers."""
         if not requests:
             raise ImportError("requests library required")
@@ -337,14 +326,16 @@ class EtherscanClient:
         for tx in data.get("result", []):
             value_eth = int(tx.get("value", 0)) / 1e18
             if value_eth >= min_value_eth:
-                transfers.append({
-                    "hash": tx.get("hash"),
-                    "from": tx.get("from"),
-                    "to": tx.get("to"),
-                    "value_eth": value_eth,
-                    "timestamp": int(tx.get("timeStamp", 0)),
-                    "block": tx.get("blockNumber"),
-                })
+                transfers.append(
+                    {
+                        "hash": tx.get("hash"),
+                        "from": tx.get("from"),
+                        "to": tx.get("to"),
+                        "value_eth": value_eth,
+                        "timestamp": int(tx.get("timeStamp", 0)),
+                        "block": tx.get("blockNumber"),
+                    }
+                )
 
         return transfers
 

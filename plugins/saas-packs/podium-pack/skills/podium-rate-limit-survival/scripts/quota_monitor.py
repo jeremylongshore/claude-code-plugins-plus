@@ -22,7 +22,10 @@ Exit codes:
 """
 
 from __future__ import annotations
-import argparse, json, sqlite3, sys
+import argparse
+import json
+import sqlite3
+import sys
 from datetime import datetime, timezone
 
 
@@ -44,9 +47,7 @@ def read_from_redis(url: str) -> int:
 
 def read_from_sqlite(path: str) -> int:
     with sqlite3.connect(path) as conn:
-        row = conn.execute(
-            "SELECT count FROM quota WHERE day = ?", (today_utc(),)
-        ).fetchone()
+        row = conn.execute("SELECT count FROM quota WHERE day = ?", (today_utc(),)).fetchone()
         return row[0] if row else 0
 
 
@@ -83,9 +84,7 @@ def main() -> int:
         return 4
 
     ratio = count / args.quota if args.quota > 0 else 0.0
-    tier_name, exit_code = tier(
-        ratio, args.warn_threshold, args.page_threshold, args.throttle_threshold
-    )
+    tier_name, exit_code = tier(ratio, args.warn_threshold, args.page_threshold, args.throttle_threshold)
 
     report = {
         "day_utc": today_utc(),

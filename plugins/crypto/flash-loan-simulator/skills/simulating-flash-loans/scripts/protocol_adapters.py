@@ -11,8 +11,6 @@ from dataclasses import dataclass
 from decimal import Decimal
 from typing import Dict, List, Optional
 
-import httpx
-
 
 @dataclass
 class LoanParams:
@@ -343,9 +341,7 @@ class ProviderManager:
         """List all available providers."""
         return list(self.providers.keys())
 
-    def compare_providers(
-        self, asset: str, amount: Decimal, chain: str = "ethereum"
-    ) -> List[ProviderInfo]:
+    def compare_providers(self, asset: str, amount: Decimal, chain: str = "ethereum") -> List[ProviderInfo]:
         """
         Compare all providers for a specific loan.
 
@@ -368,9 +364,7 @@ class ProviderManager:
         results.sort(key=lambda x: x.fee_amount)
         return results
 
-    def find_cheapest(
-        self, asset: str, amount: Decimal, chain: str = "ethereum"
-    ) -> Optional[ProviderInfo]:
+    def find_cheapest(self, asset: str, amount: Decimal, chain: str = "ethereum") -> Optional[ProviderInfo]:
         """Find the cheapest provider for a loan."""
         providers = self.compare_providers(asset, amount, chain)
         return providers[0] if providers else None

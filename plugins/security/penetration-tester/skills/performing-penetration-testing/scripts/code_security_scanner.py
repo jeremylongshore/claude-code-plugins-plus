@@ -30,7 +30,7 @@ import re
 import subprocess
 import sys
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -44,13 +44,29 @@ SEVERITY_ORDER: dict[str, int] = {
 }
 
 SCANNABLE_EXTENSIONS: set[str] = {
-    ".py", ".js", ".ts", ".jsx", ".tsx",
-    ".java", ".rb", ".go", ".php", ".sh",
+    ".py",
+    ".js",
+    ".ts",
+    ".jsx",
+    ".tsx",
+    ".java",
+    ".rb",
+    ".go",
+    ".php",
+    ".sh",
 }
 
 SKIP_DIRS: set[str] = {
-    ".git", "node_modules", "__pycache__", ".venv", "venv",
-    ".tox", ".mypy_cache", ".pytest_cache", "dist", "build",
+    ".git",
+    "node_modules",
+    "__pycache__",
+    ".venv",
+    "venv",
+    ".tox",
+    ".mypy_cache",
+    ".pytest_cache",
+    "dist",
+    "build",
 }
 
 BANDIT_TIMEOUT_SECONDS: int = 120
@@ -64,28 +80,36 @@ BANDIT_TIMEOUT_SECONDS: int = 120
 _HARDCODED_SECRET_PATTERNS: list[tuple[re.Pattern[str], str, str, str, str, str, str | None]] = [
     (
         re.compile(r"""api[_\-]?key\s*[=:]\s*["'][A-Za-z0-9]{20,}""", re.IGNORECASE),
-        "hardcoded-secret", "high", "medium",
+        "hardcoded-secret",
+        "high",
+        "medium",
         "Hardcoded API key detected",
         "Move API keys to environment variables or a secrets manager.",
         "CWE-798",
     ),
     (
         re.compile(r"""AKIA[0-9A-Z]{16}"""),
-        "hardcoded-secret", "critical", "high",
+        "hardcoded-secret",
+        "critical",
+        "high",
         "AWS Access Key ID detected",
         "Rotate the exposed key immediately and use IAM roles or environment variables.",
         "CWE-798",
     ),
     (
         re.compile(r"""password\s*[=:]\s*["'](?!["']$)(?!\s*$)(?!<%=)(?!\$\{)(?!\{\{)[^"']+["']""", re.IGNORECASE),
-        "hardcoded-secret", "high", "medium",
+        "hardcoded-secret",
+        "high",
+        "medium",
         "Hardcoded password detected",
         "Use environment variables or a secrets manager instead of hardcoded passwords.",
         "CWE-798",
     ),
     (
         re.compile(r"""-----BEGIN\s+(?:RSA\s+|EC\s+|DSA\s+)?PRIVATE\s+KEY-----"""),
-        "hardcoded-secret", "critical", "high",
+        "hardcoded-secret",
+        "critical",
+        "high",
         "Private key embedded in source code",
         "Remove the private key from source and store it in a secure vault.",
         "CWE-321",
@@ -95,7 +119,9 @@ _HARDCODED_SECRET_PATTERNS: list[tuple[re.Pattern[str], str, str, str, str, str,
             r"""(?:secret|token|bearer)\s*[=:]\s*["'][A-Za-z0-9+/=]{20,}""",
             re.IGNORECASE,
         ),
-        "hardcoded-secret", "high", "medium",
+        "hardcoded-secret",
+        "high",
+        "medium",
         "Hardcoded secret or token detected",
         "Store secrets in environment variables or a dedicated secrets manager.",
         "CWE-798",
@@ -108,21 +134,27 @@ _SQL_INJECTION_PATTERNS: list[tuple[re.Pattern[str], str, str, str, str, str, st
             r"""(?:execute|cursor|query)\s*\(\s*f["'].*(?:%s|%d|\{)""",
             re.IGNORECASE,
         ),
-        "sql-injection", "high", "high",
+        "sql-injection",
+        "high",
+        "high",
         "Potential SQL injection via string formatting",
         "Use parameterized queries or prepared statements instead of string formatting.",
         "CWE-89",
     ),
     (
         re.compile(r"""["']SELECT\s+.*["']\s*\+\s*""", re.IGNORECASE),
-        "sql-injection", "high", "medium",
+        "sql-injection",
+        "high",
+        "medium",
         "SQL query built with string concatenation (SELECT)",
         "Use parameterized queries instead of string concatenation.",
         "CWE-89",
     ),
     (
         re.compile(r"""["']INSERT\s+.*["']\s*\+\s*""", re.IGNORECASE),
-        "sql-injection", "high", "medium",
+        "sql-injection",
+        "high",
+        "medium",
         "SQL query built with string concatenation (INSERT)",
         "Use parameterized queries instead of string concatenation.",
         "CWE-89",
@@ -132,28 +164,36 @@ _SQL_INJECTION_PATTERNS: list[tuple[re.Pattern[str], str, str, str, str, str, st
 _COMMAND_INJECTION_PATTERNS: list[tuple[re.Pattern[str], str, str, str, str, str, str | None]] = [
     (
         re.compile(r"""os\.system\("""),
-        "command-injection", "high", "high",
+        "command-injection",
+        "high",
+        "high",
         "Use of os.system() allows shell command injection",
         "Use subprocess.run() with a list of arguments and shell=False.",
         "CWE-78",
     ),
     (
         re.compile(r"""subprocess\.(?:call|run|Popen)\(.*shell\s*=\s*True"""),
-        "command-injection", "high", "high",
+        "command-injection",
+        "high",
+        "high",
         "Subprocess call with shell=True enables command injection",
         "Pass commands as a list with shell=False instead of shell=True.",
         "CWE-78",
     ),
     (
         re.compile(r"""\beval\("""),
-        "command-injection", "medium", "medium",
+        "command-injection",
+        "medium",
+        "medium",
         "Use of eval() can execute arbitrary code",
         "Avoid eval(). Use ast.literal_eval() for data parsing or refactor logic.",
         "CWE-95",
     ),
     (
         re.compile(r"""\bexec\("""),
-        "command-injection", "medium", "medium",
+        "command-injection",
+        "medium",
+        "medium",
         "Use of exec() can execute arbitrary code",
         "Avoid exec(). Refactor to use safer alternatives.",
         "CWE-95",
@@ -163,21 +203,27 @@ _COMMAND_INJECTION_PATTERNS: list[tuple[re.Pattern[str], str, str, str, str, str
 _DESERIALIZATION_PATTERNS: list[tuple[re.Pattern[str], str, str, str, str, str, str | None]] = [
     (
         re.compile(r"""pickle\.loads?\("""),
-        "insecure-deserialization", "high", "high",
+        "insecure-deserialization",
+        "high",
+        "high",
         "Insecure deserialization with pickle",
         "Avoid pickle for untrusted data. Use JSON or a safe serialization format.",
         "CWE-502",
     ),
     (
         re.compile(r"""yaml\.load\((?!.*Loader\s*=\s*(?:Safe|Base)Loader)"""),
-        "insecure-deserialization", "high", "high",
+        "insecure-deserialization",
+        "high",
+        "high",
         "Unsafe YAML loading without SafeLoader",
         "Use yaml.safe_load() or pass Loader=SafeLoader to yaml.load().",
         "CWE-502",
     ),
     (
         re.compile(r"""marshal\.loads?\("""),
-        "insecure-deserialization", "high", "medium",
+        "insecure-deserialization",
+        "high",
+        "medium",
         "Insecure deserialization with marshal",
         "Avoid marshal for untrusted data. Use JSON or a safe serialization format.",
         "CWE-502",
@@ -187,28 +233,36 @@ _DESERIALIZATION_PATTERNS: list[tuple[re.Pattern[str], str, str, str, str, str, 
 _CRYPTO_NETWORK_PATTERNS: list[tuple[re.Pattern[str], str, str, str, str, str, str | None]] = [
     (
         re.compile(r"""verify\s*=\s*False"""),
-        "insecure-transport", "medium", "high",
+        "insecure-transport",
+        "medium",
+        "high",
         "SSL/TLS certificate verification disabled",
         "Enable certificate verification. Set verify=True or provide a CA bundle.",
         "CWE-295",
     ),
     (
         re.compile(r"""\bMD5\b|\.md5\(""", re.IGNORECASE),
-        "weak-crypto", "medium", "medium",
+        "weak-crypto",
+        "medium",
+        "medium",
         "Use of weak MD5 hashing algorithm",
         "Use SHA-256 or stronger hashing. For passwords, use bcrypt or Argon2.",
         "CWE-328",
     ),
     (
         re.compile(r"""\bSHA1\b|\.sha1\(""", re.IGNORECASE),
-        "weak-crypto", "medium", "medium",
+        "weak-crypto",
+        "medium",
+        "medium",
         "Use of weak SHA-1 hashing algorithm",
         "Use SHA-256 or stronger hashing. For passwords, use bcrypt or Argon2.",
         "CWE-328",
     ),
     (
         re.compile(r"""http://(?!localhost|127\.0\.0\.1|0\.0\.0\.0|\[::1\])"""),
-        "insecure-transport", "medium", "low",
+        "insecure-transport",
+        "medium",
+        "low",
         "Insecure HTTP URL (not HTTPS)",
         "Use HTTPS for all external communications.",
         "CWE-319",
@@ -227,6 +281,7 @@ ALL_REGEX_PATTERNS = (
 # ---------------------------------------------------------------------------
 # Utility helpers
 # ---------------------------------------------------------------------------
+
 
 def _log(message: str, verbose: bool = True) -> None:
     """Print a progress message to stderr."""
@@ -281,6 +336,7 @@ def _normalize_bandit_confidence(raw: str) -> str:
 # Bandit scanning
 # ---------------------------------------------------------------------------
 
+
 def run_bandit_scan(
     directory: Path,
     exclude_patterns: list[str] | None = None,
@@ -318,8 +374,7 @@ def run_bandit_scan(
         return []
     except subprocess.TimeoutExpired:
         print(
-            f"[scanner] Bandit scan timed out after {BANDIT_TIMEOUT_SECONDS}s. "
-            "Consider narrowing the scan scope.",
+            f"[scanner] Bandit scan timed out after {BANDIT_TIMEOUT_SECONDS}s. Consider narrowing the scan scope.",
             file=sys.stderr,
         )
         return []
@@ -342,22 +397,20 @@ def run_bandit_scan(
 
     findings: list[dict[str, Any]] = []
     for issue in data.get("results", []):
-        findings.append({
-            "tool": "bandit",
-            "file": str(Path(issue.get("filename", "unknown")).resolve()),
-            "line": issue.get("line_number", 0),
-            "severity": _normalize_bandit_severity(issue.get("issue_severity", "LOW")),
-            "confidence": _normalize_bandit_confidence(issue.get("issue_confidence", "LOW")),
-            "category": issue.get("test_id", "unknown"),
-            "title": issue.get("test_name", "Unknown issue"),
-            "detail": issue.get("issue_text", ""),
-            "remediation": "",
-            "cwe": (
-                f"CWE-{issue['issue_cwe']['id']}"
-                if issue.get("issue_cwe", {}).get("id")
-                else None
-            ),
-        })
+        findings.append(
+            {
+                "tool": "bandit",
+                "file": str(Path(issue.get("filename", "unknown")).resolve()),
+                "line": issue.get("line_number", 0),
+                "severity": _normalize_bandit_severity(issue.get("issue_severity", "LOW")),
+                "confidence": _normalize_bandit_confidence(issue.get("issue_confidence", "LOW")),
+                "category": issue.get("test_id", "unknown"),
+                "title": issue.get("test_name", "Unknown issue"),
+                "detail": issue.get("issue_text", ""),
+                "remediation": "",
+                "cwe": (f"CWE-{issue['issue_cwe']['id']}" if issue.get("issue_cwe", {}).get("id") else None),
+            }
+        )
 
     _log(f"Bandit found {len(findings)} issue(s).", verbose)
     return findings
@@ -366,6 +419,7 @@ def run_bandit_scan(
 # ---------------------------------------------------------------------------
 # Regex-based scanning
 # ---------------------------------------------------------------------------
+
 
 def run_regex_scan(
     directory: Path,
@@ -429,18 +483,20 @@ def run_regex_scan(
                             continue
 
                         truncated_line = line.strip()[:200]
-                        findings.append({
-                            "tool": "regex",
-                            "file": str(filepath.resolve()),
-                            "line": line_num,
-                            "severity": severity,
-                            "confidence": confidence,
-                            "category": category,
-                            "title": title,
-                            "detail": truncated_line,
-                            "remediation": remediation,
-                            "cwe": cwe,
-                        })
+                        findings.append(
+                            {
+                                "tool": "regex",
+                                "file": str(filepath.resolve()),
+                                "line": line_num,
+                                "severity": severity,
+                                "confidence": confidence,
+                                "category": category,
+                                "title": title,
+                                "detail": truncated_line,
+                                "remediation": remediation,
+                                "cwe": cwe,
+                            }
+                        )
 
     _log(f"Regex scan complete: {files_scanned} file(s) scanned, {len(findings)} issue(s) found.", verbose)
     return findings
@@ -471,18 +527,32 @@ def _is_password_placeholder(line: str) -> bool:
     """
     lower = line.lower()
     placeholders = [
-        'password = ""', "password = ''",
-        'password: ""', "password: ''",
-        "password = os.environ", "password = os.getenv",
-        "password = env(", "password = config",
+        'password = ""',
+        "password = ''",
+        'password: ""',
+        "password: ''",
+        "password = os.environ",
+        "password = os.getenv",
+        "password = env(",
+        "password = config",
         "password = settings",
-        "password = none", "password = null",
-        "password_hash", "password_field",
-        "password_input", "password_reset",
-        "${", "<%=", "{{",
-        "placeholder", "changeme", "xxx", "example",
-        "your_password", "your-password",
-        "password_here", "<password>",
+        "password = none",
+        "password = null",
+        "password_hash",
+        "password_field",
+        "password_input",
+        "password_reset",
+        "${",
+        "<%=",
+        "{{",
+        "placeholder",
+        "changeme",
+        "xxx",
+        "example",
+        "your_password",
+        "your-password",
+        "password_here",
+        "<password>",
     ]
     for p in placeholders:
         if p in lower:
@@ -493,6 +563,7 @@ def _is_password_placeholder(line: str) -> bool:
 # ---------------------------------------------------------------------------
 # Merge and deduplicate findings
 # ---------------------------------------------------------------------------
+
 
 def merge_findings(
     bandit_results: list[dict[str, Any]],
@@ -518,11 +589,9 @@ def merge_findings(
             if len(finding.get("detail", "")) > len(existing.get("detail", "")):
                 seen[key] = finding
             # If equal detail length, prefer higher severity
-            elif (
-                len(finding.get("detail", "")) == len(existing.get("detail", ""))
-                and SEVERITY_ORDER.get(finding["severity"], 99)
-                < SEVERITY_ORDER.get(existing["severity"], 99)
-            ):
+            elif len(finding.get("detail", "")) == len(existing.get("detail", "")) and SEVERITY_ORDER.get(
+                finding["severity"], 99
+            ) < SEVERITY_ORDER.get(existing["severity"], 99):
                 seen[key] = finding
         else:
             seen[key] = finding
@@ -541,6 +610,7 @@ def merge_findings(
 # ---------------------------------------------------------------------------
 # Reporting
 # ---------------------------------------------------------------------------
+
 
 def generate_report(
     directory: Path,
@@ -671,6 +741,7 @@ def _write_json_report(
 # CLI entry point
 # ---------------------------------------------------------------------------
 
+
 def main() -> None:
     """Parse arguments and run the security scanner."""
     parser = argparse.ArgumentParser(
@@ -755,14 +826,10 @@ def main() -> None:
     all_findings = merge_findings(bandit_results, regex_results)
 
     # Apply severity filter
-    filtered_findings = [
-        f for f in all_findings
-        if _severity_at_or_above(f["severity"], severity_threshold)
-    ]
+    filtered_findings = [f for f in all_findings if _severity_at_or_above(f["severity"], severity_threshold)]
 
     _log(
-        f"Total: {len(all_findings)} finding(s), "
-        f"{len(filtered_findings)} at or above '{severity_threshold}' severity.",
+        f"Total: {len(all_findings)} finding(s), {len(filtered_findings)} at or above '{severity_threshold}' severity.",
         verbose,
     )
 
@@ -770,9 +837,7 @@ def main() -> None:
     generate_report(directory, filtered_findings, args.output)
 
     # Exit code based on critical/high findings
-    has_critical_or_high = any(
-        f["severity"] in ("critical", "high") for f in filtered_findings
-    )
+    has_critical_or_high = any(f["severity"] in ("critical", "high") for f in filtered_findings)
     sys.exit(1 if has_critical_or_high else 0)
 
 

@@ -42,6 +42,7 @@ GAS_LIMITS = {
 @dataclass
 class CostEstimate:
     """Transaction cost estimate."""
+
     operation: str
     gas_limit: int
     gas_price_gwei: float
@@ -53,6 +54,7 @@ class CostEstimate:
 @dataclass
 class MultiTierEstimate:
     """Cost estimates for all tiers."""
+
     operation: str
     gas_limit: int
     slow: CostEstimate
@@ -95,7 +97,7 @@ class CostEstimator:
             coin_id = symbol_to_id.get(self.native_symbol, "ethereum")
 
             response = requests.get(
-                f"https://api.coingecko.com/api/v3/simple/price",
+                "https://api.coingecko.com/api/v3/simple/price",
                 params={"ids": coin_id, "vs_currencies": "usd"},
                 timeout=10,
             )
@@ -113,11 +115,7 @@ class CostEstimator:
             return 3000.0 if self.native_symbol == "ETH" else 1.0
 
     def estimate_cost(
-        self,
-        operation: str,
-        gas_price_gwei: float,
-        tier: str = "standard",
-        custom_gas_limit: int = None
+        self, operation: str, gas_price_gwei: float, tier: str = "standard", custom_gas_limit: int = None
     ) -> CostEstimate:
         """Estimate cost for an operation.
 
@@ -152,7 +150,7 @@ class CostEstimator:
         gas_standard: float,
         gas_fast: float,
         gas_instant: float,
-        custom_gas_limit: int = None
+        custom_gas_limit: int = None,
     ) -> MultiTierEstimate:
         """Estimate costs for all tiers.
 
@@ -182,11 +180,7 @@ class CostEstimator:
         """Estimate ETH transfer cost."""
         return self.estimate_cost("eth_transfer", gas_price_gwei)
 
-    def estimate_swap(
-        self,
-        gas_price_gwei: float,
-        dex: str = "uniswap_v2"
-    ) -> CostEstimate:
+    def estimate_swap(self, gas_price_gwei: float, dex: str = "uniswap_v2") -> CostEstimate:
         """Estimate DEX swap cost.
 
         Args:
@@ -203,11 +197,7 @@ class CostEstimator:
         """Estimate NFT mint cost."""
         return self.estimate_cost("nft_mint", gas_price_gwei)
 
-    def estimate_custom(
-        self,
-        gas_price_gwei: float,
-        gas_limit: int
-    ) -> CostEstimate:
+    def estimate_custom(self, gas_price_gwei: float, gas_limit: int) -> CostEstimate:
         """Estimate cost for custom gas limit.
 
         Args:

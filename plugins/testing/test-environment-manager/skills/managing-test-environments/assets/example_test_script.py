@@ -10,11 +10,10 @@ It assumes that services like a database or message queue are running within Doc
 """
 
 import os
-import time
 import logging
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 
 def connect_to_database(host, port, user, password, database):
@@ -33,6 +32,7 @@ def connect_to_database(host, port, user, password, database):
     """
     try:
         import psycopg2  # Example: PostgreSQL
+
         conn = psycopg2.connect(host=host, port=port, user=user, password=password, database=database)
         conn.close()
         logging.info("Successfully connected to the database.")
@@ -59,8 +59,9 @@ def send_message(queue_host, queue_port, message):
     """
     try:
         import redis  # Example: Redis
+
         r = redis.Redis(host=queue_host, port=queue_port)
-        r.publish('test_channel', message)
+        r.publish("test_channel", message)
         logging.info(f"Successfully sent message to the queue: {message}")
         return True
     except ImportError:

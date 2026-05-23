@@ -146,9 +146,7 @@ class MEVAssessor:
         Returns:
             Complete MEV assessment with recommendations
         """
-        risk_factors = self._calculate_risk_factors(
-            quote, trade_value_usd, is_volatile_token
-        )
+        risk_factors = self._calculate_risk_factors(quote, trade_value_usd, is_volatile_token)
 
         # Calculate overall risk score
         total_weight = sum(f.weight for f in risk_factors)
@@ -158,17 +156,13 @@ class MEVAssessor:
         risk_level = self._classify_risk(risk_score)
 
         # Estimate MEV exposure
-        mev_exposure = self._estimate_mev_exposure(
-            trade_value_usd, risk_score, quote.price_impact
-        )
+        mev_exposure = self._estimate_mev_exposure(trade_value_usd, risk_score, quote.price_impact)
 
         # Get relevant protection options
         protection_options = self._get_protection_options(risk_level, trade_value_usd)
 
         # Generate recommendation
-        recommendation = self._generate_recommendation(
-            risk_level, mev_exposure, trade_value_usd
-        )
+        recommendation = self._generate_recommendation(risk_level, mev_exposure, trade_value_usd)
 
         return MEVAssessment(
             risk_level=risk_level,
@@ -317,9 +311,7 @@ class MEVAssessor:
         else:
             return MEVRiskLevel.CRITICAL
 
-    def _estimate_mev_exposure(
-        self, trade_value_usd: float, risk_score: float, price_impact: float
-    ) -> float:
+    def _estimate_mev_exposure(self, trade_value_usd: float, risk_score: float, price_impact: float) -> float:
         """
         Estimate potential MEV extraction in USD.
 
@@ -335,9 +327,7 @@ class MEVAssessor:
 
         return min(estimated_mev, trade_value_usd * 0.05)  # Cap at 5%
 
-    def _get_protection_options(
-        self, risk_level: MEVRiskLevel, trade_value_usd: float
-    ) -> List[MEVProtectionOption]:
+    def _get_protection_options(self, risk_level: MEVRiskLevel, trade_value_usd: float) -> List[MEVProtectionOption]:
         """Get relevant protection options based on risk level."""
         if risk_level == MEVRiskLevel.LOW:
             # Low risk: basic protection sufficient
@@ -355,15 +345,10 @@ class MEVAssessor:
             # Critical risk: all protection options
             return self.PROTECTION_OPTIONS
 
-    def _generate_recommendation(
-        self, risk_level: MEVRiskLevel, mev_exposure: float, trade_value_usd: float
-    ) -> str:
+    def _generate_recommendation(self, risk_level: MEVRiskLevel, mev_exposure: float, trade_value_usd: float) -> str:
         """Generate human-readable recommendation."""
         if risk_level == MEVRiskLevel.LOW:
-            return (
-                f"LOW MEV RISK: Safe to execute via public mempool. "
-                f"Estimated exposure: ${mev_exposure:.2f}"
-            )
+            return f"LOW MEV RISK: Safe to execute via public mempool. Estimated exposure: ${mev_exposure:.2f}"
 
         elif risk_level == MEVRiskLevel.MEDIUM:
             return (
@@ -409,9 +394,7 @@ def demo():
     )
 
     assessor = MEVAssessor(eth_price_usd=2500.0)
-    assessment = assessor.assess_risk(
-        quote, trade_value_usd=50000.0, is_volatile_token=False
-    )
+    assessment = assessor.assess_risk(quote, trade_value_usd=50000.0, is_volatile_token=False)
 
     print("=" * 60)
     print("MEV RISK ASSESSMENT")

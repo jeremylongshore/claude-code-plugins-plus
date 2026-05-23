@@ -199,7 +199,7 @@ def format_csv(data: List[Dict[str, Any]], fields: List[str] = None) -> str:
         fields = list(data[0].keys())
 
     output = io.StringIO()
-    writer = csv.DictWriter(output, fieldnames=fields, extrasaction='ignore')
+    writer = csv.DictWriter(output, fieldnames=fields, extrasaction="ignore")
     writer.writeheader()
     writer.writerows(data)
 
@@ -210,8 +210,24 @@ def main():
     """CLI entry point for testing."""
     # Test with sample data
     protocols = [
-        {"rank": 1, "name": "Lido", "tvl": 15e9, "change_1d": 2.5, "change_7d": 5.0, "market_share": 30.0, "category": "Liquid Staking"},
-        {"rank": 2, "name": "Aave", "tvl": 8e9, "change_1d": -1.2, "change_7d": 3.0, "market_share": 16.0, "category": "Lending"},
+        {
+            "rank": 1,
+            "name": "Lido",
+            "tvl": 15e9,
+            "change_1d": 2.5,
+            "change_7d": 5.0,
+            "market_share": 30.0,
+            "category": "Liquid Staking",
+        },
+        {
+            "rank": 2,
+            "name": "Aave",
+            "tvl": 8e9,
+            "change_1d": -1.2,
+            "change_7d": 3.0,
+            "market_share": 16.0,
+            "category": "Lending",
+        },
     ]
 
     print(format_protocols_table(protocols))

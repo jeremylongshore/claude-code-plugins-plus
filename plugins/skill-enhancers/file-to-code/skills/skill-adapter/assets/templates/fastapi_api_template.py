@@ -27,6 +27,7 @@ class RequestModel(BaseModel):
     """
     Example request model using Pydantic for data validation.
     """
+
     item_id: int
     item_name: str
     item_description: str = None
@@ -37,6 +38,7 @@ class ResponseModel(BaseModel):
     """
     Example response model for API endpoints.
     """
+
     message: str
     data: Dict[str, Any] = {}
 

@@ -27,10 +27,7 @@ class MockCascadeFS(CascadeInterface):
         self.storage_dir.mkdir(parents=True, exist_ok=True)
 
     async def upload_blob(
-        self,
-        data: bytes,
-        content_type: str = "application/octet-stream",
-        metadata: Optional[dict] = None
+        self, data: bytes, content_type: str = "application/octet-stream", metadata: Optional[dict] = None
     ) -> str:
         """Upload blob with content-addressed URI."""
         # Compute SHA-256 hash for content-addressed storage
@@ -53,6 +50,7 @@ class MockCascadeFS(CascadeInterface):
         if metadata:
             meta_path = subdir / f"{sha256_hash}.meta"
             import json
+
             meta_path.write_text(json.dumps(metadata))
 
         return uri

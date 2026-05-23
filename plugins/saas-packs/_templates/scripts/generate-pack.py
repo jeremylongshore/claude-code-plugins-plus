@@ -10,8 +10,6 @@ Usage:
 
 import argparse
 import json
-import os
-import shutil
 import sys
 from pathlib import Path
 
@@ -34,22 +32,42 @@ TRACKER_CSV = SAAS_PACKS_DIR / "TRACKER.csv"
 # Slot definitions by tier
 TIER_SLOTS = {
     "standard": [
-        "S01-install-auth", "S02-hello-world", "S03-local-dev-loop",
-        "S04-sdk-patterns", "S05-core-workflow-a", "S06-core-workflow-b",
-        "S07-common-errors", "S08-debug-bundle", "S09-rate-limits",
-        "S10-security-basics", "S11-prod-checklist", "S12-upgrade-migration",
+        "S01-install-auth",
+        "S02-hello-world",
+        "S03-local-dev-loop",
+        "S04-sdk-patterns",
+        "S05-core-workflow-a",
+        "S06-core-workflow-b",
+        "S07-common-errors",
+        "S08-debug-bundle",
+        "S09-rate-limits",
+        "S10-security-basics",
+        "S11-prod-checklist",
+        "S12-upgrade-migration",
     ],
     "pro": [
-        "P13-ci-integration", "P14-deploy-integration", "P15-webhooks-events",
-        "P16-performance-tuning", "P17-cost-tuning", "P18-reference-architecture",
+        "P13-ci-integration",
+        "P14-deploy-integration",
+        "P15-webhooks-events",
+        "P16-performance-tuning",
+        "P17-cost-tuning",
+        "P18-reference-architecture",
     ],
     "flagship": [
-        "F19-multi-env-setup", "F20-observability", "F21-incident-runbook",
-        "F22-data-handling", "F23-enterprise-rbac", "F24-migration-deep-dive",
+        "F19-multi-env-setup",
+        "F20-observability",
+        "F21-incident-runbook",
+        "F22-data-handling",
+        "F23-enterprise-rbac",
+        "F24-migration-deep-dive",
     ],
     "flagship+": [
-        "X25-advanced-troubleshooting", "X26-load-scale", "X27-reliability-patterns",
-        "X28-policy-guardrails", "X29-architecture-variants", "X30-known-pitfalls",
+        "X25-advanced-troubleshooting",
+        "X26-load-scale",
+        "X27-reliability-patterns",
+        "X28-policy-guardrails",
+        "X29-architecture-variants",
+        "X30-known-pitfalls",
     ],
 }
 
@@ -112,10 +130,7 @@ def generate_plugin_json(company: str, display_name: str, tier: str, skill_count
         "name": f"{company}-pack",
         "version": "1.0.0",
         "description": f"Claude Code skill pack for {display_name} ({skill_count} skills)",
-        "author": {
-            "name": "Jeremy Longshore",
-            "email": "jeremy@intentsolutions.io"
-        },
+        "author": {"name": "Jeremy Longshore", "email": "jeremy@intentsolutions.io"},
         "license": "MIT",
         "keywords": [company, display_name.lower(), "saas", "sdk", "integration"],
     }
@@ -262,20 +277,20 @@ def generate_pack(company: str, dry_run: bool = False) -> bool:
     plugin_json = generate_plugin_json(company, display_name, tier, len(slots), config)
     with open(plugin_dir / "plugin.json", "w") as f:
         json.dump(plugin_json, f, indent=2)
-    print(f"  Created: .claude-plugin/plugin.json")
+    print("  Created: .claude-plugin/plugin.json")
 
     # Generate README.md
     readme = generate_readme(config, slots)
     with open(pack_dir / "README.md", "w") as f:
         f.write(readme)
-    print(f"  Created: README.md")
+    print("  Created: README.md")
 
     # Create license file
     license_dir = pack_dir / "000-docs"
     license_dir.mkdir(parents=True, exist_ok=True)
     with open(license_dir / "001-BL-LICN-license.txt", "w") as f:
         f.write("MIT License\n\nCopyright (c) 2025 Jeremy Longshore\n")
-    print(f"  Created: 000-docs/001-BL-LICN-license.txt")
+    print("  Created: 000-docs/001-BL-LICN-license.txt")
 
     print(f"✓ Pack generated: {pack_dir}")
     return True

@@ -15,13 +15,20 @@ Endpoints:
 """
 
 from __future__ import annotations
-import hmac, hashlib, json, os, sys, time, logging
+import hmac
+import hashlib
+import json
+import os
+import sys
+import time
+import logging
 from typing import Any
 
 from fastapi import FastAPI, Request, HTTPException, Header
 
 try:
     import redis.asyncio as redis_async
+
     _HAS_REDIS = True
 except ImportError:
     _HAS_REDIS = False
@@ -127,15 +134,17 @@ async def safe_dispatch(event: dict, raw: bytes, sig_header: str) -> None:
     try:
         await dispatch(event)
     except Exception as e:
-        await dlq_persist({
-            "event_id": event.get("id"),
-            "event_type": event.get("type"),
-            "raw_body": raw.decode("utf-8", errors="replace"),
-            "signature_header": sig_header,
-            "occurred_at": event.get("occurred_at"),
-            "received_at": time.time(),
-            "exception": f"{type(e).__name__}: {e}",
-        })
+        await dlq_persist(
+            {
+                "event_id": event.get("id"),
+                "event_type": event.get("type"),
+                "raw_body": raw.decode("utf-8", errors="replace"),
+                "signature_header": sig_header,
+                "occurred_at": event.get("occurred_at"),
+                "received_at": time.time(),
+                "exception": f"{type(e).__name__}: {e}",
+            }
+        )
         raise
 
 

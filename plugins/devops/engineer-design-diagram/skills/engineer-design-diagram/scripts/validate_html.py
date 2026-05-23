@@ -15,6 +15,7 @@ Checks:
 Exits 0 on pass, 1 on fail with details printed to stderr.
 Required packages: Python 3.9+ standard library only (re, sys, pathlib).
 """
+
 from __future__ import annotations
 
 import re
@@ -42,9 +43,7 @@ def validate(html: str) -> list[str]:
 
     # 3. At least one <rect> with accompanying <title> or aria-label (sampling check)
     rect_count = len(re.findall(r"<rect\b", html, re.IGNORECASE))
-    titled_rect_pattern = re.compile(
-        r"<rect[^>]*>\s*<title>", re.IGNORECASE | re.DOTALL
-    )
+    titled_rect_pattern = re.compile(r"<rect[^>]*>\s*<title>", re.IGNORECASE | re.DOTALL)
     aria_rect_pattern = re.compile(r"<rect[^>]*aria-label", re.IGNORECASE)
     if rect_count > 2:  # skip background/grid rects
         titled = len(titled_rect_pattern.findall(html)) + len(aria_rect_pattern.findall(html))

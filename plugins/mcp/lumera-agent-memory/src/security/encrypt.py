@@ -11,6 +11,7 @@ from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 @dataclass
 class CryptoResult:
     """Encryption result with metadata."""
+
     ciphertext: bytes
     algorithm: str
     key_id: str
@@ -49,7 +50,7 @@ def encrypt_data(plaintext: str, key_id: str = "default") -> CryptoResult:
     nonce = os.urandom(12)
 
     # Encrypt
-    plaintext_bytes = plaintext.encode('utf-8')
+    plaintext_bytes = plaintext.encode("utf-8")
     ciphertext_without_nonce = aesgcm.encrypt(nonce, plaintext_bytes, None)
 
     # Prepend nonce to ciphertext for storage
@@ -64,15 +65,11 @@ def encrypt_data(plaintext: str, key_id: str = "default") -> CryptoResult:
         algorithm="AES-256-GCM",
         key_id=key_id,
         plaintext_sha256=plaintext_sha256,
-        ciphertext_sha256=ciphertext_sha256
+        ciphertext_sha256=ciphertext_sha256,
     )
 
 
-def decrypt_data(
-    ciphertext: bytes,
-    key_id: str = "default",
-    expected_ciphertext_sha256: str = None
-) -> str:
+def decrypt_data(ciphertext: bytes, key_id: str = "default", expected_ciphertext_sha256: str = None) -> str:
     """
     Decrypt AES-256-GCM encrypted data.
 
@@ -89,8 +86,7 @@ def decrypt_data(
         actual_sha256 = hashlib.sha256(ciphertext).hexdigest()
         if actual_sha256 != expected_ciphertext_sha256:
             raise ValueError(
-                f"Ciphertext integrity check failed. "
-                f"Expected: {expected_ciphertext_sha256}, Got: {actual_sha256}"
+                f"Ciphertext integrity check failed. Expected: {expected_ciphertext_sha256}, Got: {actual_sha256}"
             )
 
     # Get decryption key
@@ -104,4 +100,4 @@ def decrypt_data(
     # Decrypt
     plaintext_bytes = aesgcm.decrypt(nonce, ciphertext_only, None)
 
-    return plaintext_bytes.decode('utf-8')
+    return plaintext_bytes.decode("utf-8")

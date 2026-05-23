@@ -17,7 +17,9 @@ Exit codes:
 """
 
 from __future__ import annotations
-import argparse, os, sys
+import argparse
+import os
+import sys
 
 
 def main() -> int:

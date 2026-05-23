@@ -12,7 +12,7 @@ License: MIT
 import os
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
-from typing import Dict, Any, List, Optional
+from typing import Dict, List, Optional
 from decimal import Decimal
 
 try:
@@ -59,6 +59,7 @@ CHAIN_CONFIGS = {
 @dataclass
 class Transaction:
     """Transaction data."""
+
     tx_hash: str
     block_number: int
     timestamp: int
@@ -75,11 +76,12 @@ class Transaction:
 @dataclass
 class ContractInteraction:
     """Contract interaction data."""
+
     contract_address: str
     contract_name: Optional[str]
     interaction_count: int
     first_interaction: int  # timestamp
-    last_interaction: int   # timestamp
+    last_interaction: int  # timestamp
     total_value: Decimal
     is_verified: bool
     is_flagged: bool = False
@@ -89,6 +91,7 @@ class ContractInteraction:
 @dataclass
 class SuspiciousActivity:
     """Suspicious activity detection."""
+
     activity_type: str
     severity: str  # critical, high, medium, low
     description: str
@@ -99,6 +102,7 @@ class SuspiciousActivity:
 @dataclass
 class InteractionReport:
     """Contract interaction analysis report."""
+
     total_transactions: int
     unique_contracts: int
     verified_contracts: int
@@ -135,12 +139,7 @@ class TxAnalyzer:
         },
     }
 
-    def __init__(
-        self,
-        chain: str = "ethereum",
-        explorer_api_key: str = None,
-        verbose: bool = False
-    ):
+    def __init__(self, chain: str = "ethereum", explorer_api_key: str = None, verbose: bool = False):
         """Initialize transaction analyzer.
 
         Args:
@@ -183,12 +182,7 @@ class TxAnalyzer:
                 print(f"API error: {e}")
             return None
 
-    def get_recent_transactions(
-        self,
-        address: str,
-        days: int = 30,
-        limit: int = 1000
-    ) -> List[Transaction]:
+    def get_recent_transactions(self, address: str, days: int = 30, limit: int = 1000) -> List[Transaction]:
         """Get recent transactions for an address.
 
         Args:
@@ -202,16 +196,18 @@ class TxAnalyzer:
         address = address.lower()
 
         # Fetch normal transactions
-        result = self._api_call({
-            "module": "account",
-            "action": "txlist",
-            "address": address,
-            "startblock": 0,
-            "endblock": 99999999,
-            "page": 1,
-            "offset": limit,
-            "sort": "desc",
-        })
+        result = self._api_call(
+            {
+                "module": "account",
+                "action": "txlist",
+                "address": address,
+                "startblock": 0,
+                "endblock": 99999999,
+                "page": 1,
+                "offset": limit,
+                "sort": "desc",
+            }
+        )
 
         if not result:
             return []
@@ -227,19 +223,21 @@ class TxAnalyzer:
                 if timestamp < cutoff_time:
                     continue
 
-                transactions.append(Transaction(
-                    tx_hash=tx.get("hash", ""),
-                    block_number=int(tx.get("blockNumber", 0)),
-                    timestamp=timestamp,
-                    from_address=tx.get("from", "").lower(),
-                    to_address=tx.get("to", "").lower(),
-                    value=Decimal(tx.get("value", 0)) / Decimal(10 ** 18),
-                    gas_used=int(tx.get("gasUsed", 0)),
-                    gas_price=Decimal(tx.get("gasPrice", 0)) / Decimal(10 ** 9),
-                    is_error=tx.get("isError", "0") == "1",
-                    method_id=tx.get("methodId", ""),
-                    method_name=tx.get("functionName", "").split("(")[0] if tx.get("functionName") else None,
-                ))
+                transactions.append(
+                    Transaction(
+                        tx_hash=tx.get("hash", ""),
+                        block_number=int(tx.get("blockNumber", 0)),
+                        timestamp=timestamp,
+                        from_address=tx.get("from", "").lower(),
+                        to_address=tx.get("to", "").lower(),
+                        value=Decimal(tx.get("value", 0)) / Decimal(10**18),
+                        gas_used=int(tx.get("gasUsed", 0)),
+                        gas_price=Decimal(tx.get("gasPrice", 0)) / Decimal(10**9),
+                        is_error=tx.get("isError", "0") == "1",
+                        method_id=tx.get("methodId", ""),
+                        method_name=tx.get("functionName", "").split("(")[0] if tx.get("functionName") else None,
+                    )
+                )
 
             except Exception as e:
                 if self.verbose:
@@ -259,22 +257,26 @@ class TxAnalyzer:
         }
 
         # Check if it's a contract
-        result = self._api_call({
-            "module": "contract",
-            "action": "getabi",
-            "address": address,
-        })
+        result = self._api_call(
+            {
+                "module": "contract",
+                "action": "getabi",
+                "address": address,
+            }
+        )
 
         if result and result != "Contract source code not verified":
             info["is_contract"] = True
             info["is_verified"] = True
 
             # Try to get contract name
-            source_result = self._api_call({
-                "module": "contract",
-                "action": "getsourcecode",
-                "address": address,
-            })
+            source_result = self._api_call(
+                {
+                    "module": "contract",
+                    "action": "getsourcecode",
+                    "address": address,
+                }
+            )
 
             if source_result and isinstance(source_result, list) and len(source_result) > 0:
                 info["name"] = source_result[0].get("ContractName", "")
@@ -282,11 +284,7 @@ class TxAnalyzer:
         self._contract_cache[address] = info
         return info
 
-    def analyze_interaction_patterns(
-        self,
-        address: str,
-        transactions: List[Transaction] = None
-    ) -> InteractionReport:
+    def analyze_interaction_patterns(self, address: str, transactions: List[Transaction] = None) -> InteractionReport:
         """Analyze contract interaction patterns.
 
         Args:
@@ -321,7 +319,7 @@ class TxAnalyzer:
             # Track outgoing value
             if tx.from_address == address:
                 total_value_sent += tx.value
-                total_gas_spent += tx.gas_price * tx.gas_used / Decimal(10 ** 9)
+                total_gas_spent += tx.gas_price * tx.gas_used / Decimal(10**9)
 
                 # Track contract interaction
                 if tx.to_address and tx.to_address != address:
@@ -393,11 +391,7 @@ class TxAnalyzer:
             suspicious_activities=suspicious,
         )
 
-    def _detect_suspicious_activities(
-        self,
-        address: str,
-        transactions: List[Transaction]
-    ) -> List[SuspiciousActivity]:
+    def _detect_suspicious_activities(self, address: str, transactions: List[Transaction]) -> List[SuspiciousActivity]:
         """Detect suspicious transaction patterns.
 
         Args:
@@ -411,10 +405,7 @@ class TxAnalyzer:
         address = address.lower()
 
         # Check for rapid approvals (approve method = 0x095ea7b3)
-        approval_txs = [
-            tx for tx in transactions
-            if tx.method_id == "0x095ea7b3" and tx.from_address == address
-        ]
+        approval_txs = [tx for tx in transactions if tx.method_id == "0x095ea7b3" and tx.from_address == address]
 
         if approval_txs:
             # Group by hour
@@ -428,13 +419,15 @@ class TxAnalyzer:
             for i in range(len(approval_times) - (threshold - 1)):
                 window = approval_times[i + threshold - 1] - approval_times[i]
                 if window <= window_seconds:  # threshold+ approvals in window
-                    suspicious.append(SuspiciousActivity(
-                        activity_type="rapid_approvals",
-                        severity="high",
-                        description=f"Multiple approvals ({len(approval_txs)}) in short time window",
-                        related_tx=[tx.tx_hash for tx in approval_txs[:5]],
-                        timestamp=approval_times[i],
-                    ))
+                    suspicious.append(
+                        SuspiciousActivity(
+                            activity_type="rapid_approvals",
+                            severity="high",
+                            description=f"Multiple approvals ({len(approval_txs)}) in short time window",
+                            related_tx=[tx.tx_hash for tx in approval_txs[:5]],
+                            timestamp=approval_times[i],
+                        )
+                    )
                     break
 
         # Check for interaction burst
@@ -447,43 +440,44 @@ class TxAnalyzer:
                     unique_contracts_24h.add(tx.to_address)
 
         if len(unique_contracts_24h) > 20:
-            suspicious.append(SuspiciousActivity(
-                activity_type="interaction_burst",
-                severity="medium",
-                description=f"High number of unique contracts ({len(unique_contracts_24h)}) in 24h",
-                timestamp=recent_time,
-            ))
+            suspicious.append(
+                SuspiciousActivity(
+                    activity_type="interaction_burst",
+                    severity="medium",
+                    description=f"High number of unique contracts ({len(unique_contracts_24h)}) in 24h",
+                    timestamp=recent_time,
+                )
+            )
 
         # Check for failed transactions
         failed_txs = [tx for tx in transactions if tx.is_error and tx.from_address == address]
         if len(failed_txs) > 10:
-            suspicious.append(SuspiciousActivity(
-                activity_type="high_failure_rate",
-                severity="low",
-                description=f"Many failed transactions ({len(failed_txs)})",
-                related_tx=[tx.tx_hash for tx in failed_txs[:5]],
-            ))
+            suspicious.append(
+                SuspiciousActivity(
+                    activity_type="high_failure_rate",
+                    severity="low",
+                    description=f"Many failed transactions ({len(failed_txs)})",
+                    related_tx=[tx.tx_hash for tx in failed_txs[:5]],
+                )
+            )
 
         # Check for dust attacks (many tiny incoming values)
-        dust_txs = [
-            tx for tx in transactions
-            if tx.to_address == address and Decimal(0) < tx.value < Decimal("0.001")
-        ]
+        dust_txs = [tx for tx in transactions if tx.to_address == address and Decimal(0) < tx.value < Decimal("0.001")]
 
         if len(dust_txs) > 5:
-            suspicious.append(SuspiciousActivity(
-                activity_type="dust_attack",
-                severity="low",
-                description=f"Multiple tiny incoming transactions ({len(dust_txs)}) - possible dust attack",
-                related_tx=[tx.tx_hash for tx in dust_txs[:5]],
-            ))
+            suspicious.append(
+                SuspiciousActivity(
+                    activity_type="dust_attack",
+                    severity="low",
+                    description=f"Multiple tiny incoming transactions ({len(dust_txs)}) - possible dust attack",
+                    related_tx=[tx.tx_hash for tx in dust_txs[:5]],
+                )
+            )
 
         return sorted(suspicious, key=lambda x: {"critical": 0, "high": 1, "medium": 2, "low": 3}.get(x.severity, 4))
 
     def get_contract_interactions(
-        self,
-        address: str,
-        transactions: List[Transaction] = None
+        self, address: str, transactions: List[Transaction] = None
     ) -> List[ContractInteraction]:
         """Get list of contract interactions.
 
@@ -498,9 +492,7 @@ class TxAnalyzer:
         return report.interactions
 
     def detect_suspicious_activity(
-        self,
-        address: str,
-        transactions: List[Transaction] = None
+        self, address: str, transactions: List[Transaction] = None
     ) -> List[SuspiciousActivity]:
         """Detect suspicious transaction patterns.
 
@@ -536,7 +528,7 @@ def main():
     print("\nAnalyzing interaction patterns...")
     report = analyzer.analyze_interaction_patterns(test_address, txs)
 
-    print(f"\nResults:")
+    print("\nResults:")
     print(f"  Total transactions: {report.total_transactions}")
     print(f"  Unique contracts: {report.unique_contracts}")
     print(f"  Verified: {report.verified_contracts}")
@@ -546,7 +538,7 @@ def main():
     print(f"  Total gas spent: {report.total_gas_spent:.4f} Gwei")
 
     if report.suspicious_activities:
-        print(f"\nSuspicious Activities:")
+        print("\nSuspicious Activities:")
         for activity in report.suspicious_activities:
             print(f"  [{activity.severity.upper()}] {activity.description}")
 

@@ -26,7 +26,10 @@ def main() -> int:
     checks = {}
 
     has_fm = RE_FRONTMATTER.search(content) is not None
-    checks["frontmatter_present"] = {"pass": has_fm, "message": "frontmatter found" if has_fm else "missing frontmatter"}
+    checks["frontmatter_present"] = {
+        "pass": has_fm,
+        "message": "frontmatter found" if has_fm else "missing frontmatter",
+    }
     if not has_fm:
         score -= 30
         errors.append("Missing YAML frontmatter block")
@@ -51,4 +54,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

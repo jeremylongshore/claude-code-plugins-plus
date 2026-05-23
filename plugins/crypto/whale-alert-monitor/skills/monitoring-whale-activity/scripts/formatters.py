@@ -89,7 +89,9 @@ def format_whale_table(transactions: List[Any], show_addresses: bool = False) ->
     if show_addresses:
         lines.append(f"{'Time':<12} {'Chain':<10} {'Amount':<20} {'USD Value':<14} {'From':<20} {'To':<20}")
     else:
-        lines.append(f"{'Time':<12} {'Chain':<10} {'Amount':<20} {'USD Value':<14} {'From':<18} {'To':<18} {'Type':<10}")
+        lines.append(
+            f"{'Time':<12} {'Chain':<10} {'Amount':<20} {'USD Value':<14} {'From':<18} {'To':<18} {'Type':<10}"
+        )
 
     lines.append("-" * 100)
 
@@ -108,7 +110,9 @@ def format_whale_table(transactions: List[Any], show_addresses: bool = False) ->
         if show_addresses:
             lines.append(f"{time_str:<12} {chain:<10} {amount_str:<20} {usd_str:<14} {from_label:<20} {to_label:<20}")
         else:
-            lines.append(f"{time_str:<12} {chain:<10} {amount_str:<20} {usd_str:<14} {from_label:<18} {to_label:<18} {tx_type:<10}")
+            lines.append(
+                f"{time_str:<12} {chain:<10} {amount_str:<20} {usd_str:<14} {from_label:<18} {to_label:<18} {tx_type:<10}"
+            )
 
     lines.append("-" * 100)
     lines.append(f"Total: {len(transactions)} transactions")
@@ -154,10 +158,7 @@ def format_whale_alert(transaction: Any) -> str:
     return "\n".join(lines)
 
 
-def format_exchange_flow(
-    inflows: List[Dict[str, Any]],
-    outflows: List[Dict[str, Any]]
-) -> str:
+def format_exchange_flow(inflows: List[Dict[str, Any]], outflows: List[Dict[str, Any]]) -> str:
     """Format exchange inflow/outflow summary.
 
     Args:
@@ -287,6 +288,7 @@ def main():
     print(f"Address: {format_address('0x1234567890abcdef1234567890abcdef12345678')}")
 
     import time
+
     print(f"Time ago: {format_time_ago(int(time.time()) - 3600)}")
 
 

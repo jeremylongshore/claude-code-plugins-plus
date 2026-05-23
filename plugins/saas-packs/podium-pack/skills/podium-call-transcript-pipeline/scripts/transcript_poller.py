@@ -41,7 +41,7 @@ import urllib.parse
 
 # Re-use the inbox helpers from webhook_ingest.py
 sys.path.insert(0, str(Path(__file__).parent))
-from webhook_ingest import insert_inbox, _connect   # type: ignore
+from webhook_ingest import insert_inbox, _connect  # type: ignore
 
 CONVERSATIONS_URL = "https://api.podium.com/v4/conversations"
 TRANSCRIPT_URL_TMPL = "https://api.podium.com/v4/conversations/{cid}/transcript"
@@ -56,19 +56,18 @@ def _get_token() -> str:
     try:
         from podium_auth import PodiumAuth
     except ImportError:
-        print("podium-auth not installed; this poller requires it for outbound calls",
-              file=sys.stderr)
+        print("podium-auth not installed; this poller requires it for outbound calls", file=sys.stderr)
         sys.exit(3)
 
     cid = os.environ.get("PODIUM_CLIENT_ID")
     csec = os.environ.get("PODIUM_CLIENT_SECRET")
     refresh_file = Path(os.environ.get("PODIUM_REFRESH_TOKEN_FILE", ""))
     if not cid or not csec or not refresh_file.is_file():
-        print("missing PODIUM_CLIENT_ID / PODIUM_CLIENT_SECRET / PODIUM_REFRESH_TOKEN_FILE",
-              file=sys.stderr)
+        print("missing PODIUM_CLIENT_ID / PODIUM_CLIENT_SECRET / PODIUM_REFRESH_TOKEN_FILE", file=sys.stderr)
         sys.exit(2)
 
     import asyncio
+
     record = json.loads(refresh_file.read_text())
     auth = PodiumAuth(client_id=cid, client_secret=csec, refresh_token=record["refresh_token"])
     return asyncio.run(auth.get_token())
@@ -108,8 +107,7 @@ def fetch_transcript(token: str, conversation_id: str) -> dict | None:
     if status == 404:
         return None
     if status != 200:
-        print(f"transcript fetch for {conversation_id} returned {status}: {body}",
-              file=sys.stderr)
+        print(f"transcript fetch for {conversation_id} returned {status}: {body}", file=sys.stderr)
         return None
     return body
 
@@ -136,11 +134,15 @@ def _call_ended_at(db: sqlite3.Connection, transcript_id: str) -> float | None:
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--since-hours", type=int, default=12)
-    ap.add_argument("--max-age-hours", type=int, default=4,
-                    help="A call.ended without transcript past this age triggers a fetch")
+    ap.add_argument(
+        "--max-age-hours", type=int, default=4, help="A call.ended without transcript past this age triggers a fetch"
+    )
     ap.add_argument("--location-uid", default=None)
-    ap.add_argument("--inbox-path", type=Path,
-                    default=Path(os.environ.get("PODIUM_TRANSCRIPT_INBOX_PATH", "./podium_transcripts.db")))
+    ap.add_argument(
+        "--inbox-path",
+        type=Path,
+        default=Path(os.environ.get("PODIUM_TRANSCRIPT_INBOX_PATH", "./podium_transcripts.db")),
+    )
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
 
@@ -170,21 +172,25 @@ def main() -> int:
         transcript = fetch_transcript(token, cid)
         if transcript is None:
             # Mark failed — Podium has no transcript for this call.
-            synthetic = json.dumps({
-                "type": "call.transcript.failed",
-                "data": {"transcript_id": tid, "call_id": cid, "reason": "poller_404"},
-            }).encode()
+            synthetic = json.dumps(
+                {
+                    "type": "call.transcript.failed",
+                    "data": {"transcript_id": tid, "call_id": cid, "reason": "poller_404"},
+                }
+            ).encode()
             event_type = "call.transcript.failed"
         else:
-            synthetic = json.dumps({
-                "type": "call.transcript.completed",
-                "data": {
-                    "transcript_id": tid,
-                    "call_id": cid,
-                    "location_uid": conv.get("location_uid"),
-                    "segments": transcript.get("segments", []),
-                },
-            }).encode()
+            synthetic = json.dumps(
+                {
+                    "type": "call.transcript.completed",
+                    "data": {
+                        "transcript_id": tid,
+                        "call_id": cid,
+                        "location_uid": conv.get("location_uid"),
+                        "segments": transcript.get("segments", []),
+                    },
+                }
+            ).encode()
             event_type = "call.transcript.completed"
 
         if args.dry_run:
@@ -205,11 +211,15 @@ def main() -> int:
         except sqlite3.OperationalError as e:
             print(f"inbox write failed for {tid}: {e}", file=sys.stderr)
 
-    print(json.dumps({
-        "status": "ok",
-        "checked": len(convs),
-        "synthesized": synthesized,
-    }))
+    print(
+        json.dumps(
+            {
+                "status": "ok",
+                "checked": len(convs),
+                "synthesized": synthesized,
+            }
+        )
+    )
     return 0
 
 

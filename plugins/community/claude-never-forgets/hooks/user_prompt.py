@@ -23,7 +23,7 @@ def get_memories(cwd: str) -> tuple[Path, dict]:
         "memories": [],
         "manual_memories": [],
         "realtime_memories": [],
-        "created_at": datetime.now().isoformat()
+        "created_at": datetime.now().isoformat(),
     }
 
 
@@ -71,22 +71,26 @@ def main():
         # Save Claude's last response
         response = get_last_claude_response(transcript)
         if response and not is_duplicate(response, memories["realtime_memories"]):
-            memories["realtime_memories"].append({
-                "type": "claude_response",
-                "content": response,
-                "added_at": datetime.now().isoformat(),
-                "source": "realtime_capture"
-            })
+            memories["realtime_memories"].append(
+                {
+                    "type": "claude_response",
+                    "content": response,
+                    "added_at": datetime.now().isoformat(),
+                    "source": "realtime_capture",
+                }
+            )
 
         # Save user message
         clean_prompt = " ".join(prompt.split())[:200]
         if not is_duplicate(clean_prompt, memories["realtime_memories"]):
-            memories["realtime_memories"].append({
-                "type": "message",
-                "content": clean_prompt,
-                "added_at": datetime.now().isoformat(),
-                "source": "realtime_capture"
-            })
+            memories["realtime_memories"].append(
+                {
+                    "type": "message",
+                    "content": clean_prompt,
+                    "added_at": datetime.now().isoformat(),
+                    "source": "realtime_capture",
+                }
+            )
 
         memories["updated_at"] = datetime.now().isoformat()
         json.dump(memories, open(memory_file, "w", encoding="utf-8"), indent=2, ensure_ascii=False)

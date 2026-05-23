@@ -74,10 +74,7 @@ def format_trait_distribution(trait_summary: List[Dict]) -> str:
         rarest = ts["rarest_values"][0] if ts["rarest_values"] else {}
         rarest_str = f"{rarest.get('value', 'N/A')} ({rarest.get('percentage', 0):.1f}%)"
 
-        lines.append(
-            f"{ts['trait_type']:<20} {ts['unique_values']:<10} "
-            f"{coverage:.1f}%{' ':10} {rarest_str:<20}"
-        )
+        lines.append(f"{ts['trait_type']:<20} {ts['unique_values']:<10} {coverage:.1f}%{' ':10} {rarest_str:<20}")
 
     lines.append("=" * 70)
 
@@ -111,8 +108,7 @@ def format_rankings(rarities: List[Any], limit: int = 20) -> str:
             top_str = top_str[:20] + "..."
 
         lines.append(
-            f"#{r.rank:<7} {r.name[:18]:<20} {r.rarity_score:<12.2f} "
-            f"Top {r.percentile:.1f}%{' ':3} {top_str:<25}"
+            f"#{r.rank:<7} {r.name[:18]:<20} {r.rarity_score:<12.2f} Top {r.percentile:.1f}%{' ':3} {top_str:<25}"
         )
 
     if total > limit:
@@ -152,10 +148,8 @@ def format_token_detail(rarity: Any) -> str:
     ]
 
     for t in rarity.traits:
-        rarity_str = f"1 in {int(1/t.frequency)}" if t.frequency > 0 else "Unique"
-        lines.append(
-            f"{t.trait_type:<20} {t.value[:18]:<20} {rarity_str:<12} +{t.contribution:.2f}"
-        )
+        rarity_str = f"1 in {int(1 / t.frequency)}" if t.frequency > 0 else "Unique"
+        lines.append(f"{t.trait_type:<20} {t.value[:18]:<20} {rarity_str:<12} +{t.contribution:.2f}")
 
     lines.append("=" * 60)
 
@@ -176,15 +170,17 @@ def format_rarest_traits(rarities: List[Any], top_n: int = 10) -> str:
     all_traits = []
     for r in rarities:
         for t in r.traits:
-            all_traits.append({
-                "trait_type": t.trait_type,
-                "value": t.value,
-                "count": t.count,
-                "frequency": t.frequency,
-                "token_id": r.token_id,
-                "token_name": r.name,
-                "token_rank": r.rank,
-            })
+            all_traits.append(
+                {
+                    "trait_type": t.trait_type,
+                    "value": t.value,
+                    "count": t.count,
+                    "frequency": t.frequency,
+                    "token_id": r.token_id,
+                    "token_name": r.name,
+                    "token_rank": r.rank,
+                }
+            )
 
     # Remove duplicates and sort by frequency (ascending = rarest)
     seen = set()
@@ -207,10 +203,7 @@ def format_rarest_traits(rarities: List[Any], top_n: int = 10) -> str:
 
     for t in unique_traits[:top_n]:
         freq_str = format_percentage(t["frequency"] * 100)
-        lines.append(
-            f"{t['trait_type']:<20} {t['value'][:18]:<20} "
-            f"{t['count']:<10} {freq_str:<12}"
-        )
+        lines.append(f"{t['trait_type']:<20} {t['value'][:18]:<20} {t['count']:<10} {freq_str:<12}")
 
     lines.append("=" * 70)
 
@@ -325,10 +318,7 @@ def format_csv_rankings(rarities: List[Any]) -> str:
 
     for r in rarities:
         name = r.name.replace(",", " ")
-        lines.append(
-            f"{r.rank},{r.token_id},{name},{r.rarity_score:.4f},"
-            f"{r.percentile:.2f},{r.algorithm}"
-        )
+        lines.append(f"{r.rank},{r.token_id},{name},{r.rarity_score:.4f},{r.percentile:.2f},{r.algorithm}")
 
     return "\n".join(lines)
 

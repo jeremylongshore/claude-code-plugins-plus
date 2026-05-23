@@ -30,7 +30,7 @@ def load_csv_data(filepath: str) -> Tuple[List[Dict], List[str]]:
         Tuple of (data_rows, column_names)
     """
     try:
-        with open(filepath, 'r', encoding='utf-8') as f:
+        with open(filepath, "r", encoding="utf-8") as f:
             reader = csv.DictReader(f)
             if not reader.fieldnames:
                 raise ValueError("CSV file has no headers")
@@ -60,13 +60,13 @@ def load_json_data(filepath: str) -> Tuple[List[Dict], List[str]]:
         Tuple of (data_rows, column_names)
     """
     try:
-        with open(filepath, 'r', encoding='utf-8') as f:
+        with open(filepath, "r", encoding="utf-8") as f:
             data = json.load(f)
 
         if isinstance(data, list):
             rows = data
-        elif isinstance(data, dict) and 'data' in data:
-            rows = data['data']
+        elif isinstance(data, dict) and "data" in data:
+            rows = data["data"]
         else:
             raise ValueError("Unexpected JSON structure")
 
@@ -89,20 +89,20 @@ def load_json_data(filepath: str) -> Tuple[List[Dict], List[str]]:
 
 def detect_data_type(value: Any) -> str:
     """Detect the data type of a value."""
-    if value is None or value == '':
-        return 'missing'
+    if value is None or value == "":
+        return "missing"
     try:
         float(value)
-        if '.' in str(value):
-            return 'float'
+        if "." in str(value):
+            return "float"
         else:
-            return 'int'
+            return "int"
     except (ValueError, TypeError):
         try:
             int(value)
-            return 'int'
+            return "int"
         except (ValueError, TypeError):
-            return 'string'
+            return "string"
 
 
 def check_missing_values(rows: List[Dict], columns: List[str]) -> Dict[str, Dict]:
@@ -123,14 +123,14 @@ def check_missing_values(rows: List[Dict], columns: List[str]) -> Dict[str, Dict
         missing_count = 0
         for row in rows:
             value = row.get(col)
-            if value is None or str(value).strip() == '':
+            if value is None or str(value).strip() == "":
                 missing_count += 1
 
         if missing_count > 0:
             missing_stats[col] = {
-                'count': missing_count,
-                'percentage': (missing_count / total_rows) * 100,
-                'severity': 'high' if (missing_count / total_rows) > 0.1 else 'medium'
+                "count": missing_count,
+                "percentage": (missing_count / total_rows) * 100,
+                "severity": "high" if (missing_count / total_rows) > 0.1 else "medium",
             }
 
     return missing_stats
@@ -167,11 +167,11 @@ def check_data_consistency(rows: List[Dict], columns: List[str]) -> Dict[str, An
         primary_pct = (type_counts[primary_type] / total) * 100
 
         consistency[col] = {
-            'primary_type': primary_type,
-            'type_distribution': dict(type_counts),
-            'type_consistency_percent': primary_pct,
-            'sample_values': sample_values,
-            'is_consistent': primary_pct > 95
+            "primary_type": primary_type,
+            "type_distribution": dict(type_counts),
+            "type_consistency_percent": primary_pct,
+            "sample_values": sample_values,
+            "is_consistent": primary_pct > 95,
         }
 
     return consistency
@@ -229,13 +229,13 @@ def check_outliers(rows: List[Dict], columns: List[str]) -> Dict[str, Dict]:
 
         if outlier_indices:
             outliers[col] = {
-                'outlier_count': len(outlier_indices),
-                'outlier_percentage': (len(outlier_indices) / len(numeric_values)) * 100,
-                'lower_bound': lower_bound,
-                'upper_bound': upper_bound,
-                'iqr': iqr,
-                'q1': q1,
-                'q3': q3
+                "outlier_count": len(outlier_indices),
+                "outlier_percentage": (len(outlier_indices) / len(numeric_values)) * 100,
+                "lower_bound": lower_bound,
+                "upper_bound": upper_bound,
+                "iqr": iqr,
+                "q1": q1,
+                "q3": q3,
             }
 
     return outliers
@@ -253,12 +253,12 @@ def validate_target_variable(rows: List[Dict], target_col: Optional[str]) -> Dic
         Validation results
     """
     result = {
-        'found': False,
-        'column': target_col,
-        'is_numeric': False,
-        'missing_count': 0,
-        'issues': [],
-        'statistics': {}
+        "found": False,
+        "column": target_col,
+        "is_numeric": False,
+        "missing_count": 0,
+        "issues": [],
+        "statistics": {},
     }
 
     if not target_col:
@@ -266,10 +266,10 @@ def validate_target_variable(rows: List[Dict], target_col: Optional[str]) -> Dic
 
     # Check if column exists
     if not rows or target_col not in rows[0]:
-        result['issues'].append(f"Target column '{target_col}' not found in data")
+        result["issues"].append(f"Target column '{target_col}' not found in data")
         return result
 
-    result['found'] = True
+    result["found"] = True
 
     # Check if numeric
     numeric_values = []
@@ -282,25 +282,25 @@ def validate_target_variable(rows: List[Dict], target_col: Optional[str]) -> Dic
         except (ValueError, TypeError):
             missing_count += 1
 
-    result['missing_count'] = missing_count
-    result['is_numeric'] = len(numeric_values) > 0
+    result["missing_count"] = missing_count
+    result["is_numeric"] = len(numeric_values) > 0
 
-    if not result['is_numeric']:
-        result['issues'].append("Target variable is not numeric")
+    if not result["is_numeric"]:
+        result["issues"].append("Target variable is not numeric")
     else:
         # Calculate statistics
         numeric_values.sort()
-        result['statistics'] = {
-            'min': numeric_values[0],
-            'max': numeric_values[-1],
-            'mean': sum(numeric_values) / len(numeric_values),
-            'median': numeric_values[len(numeric_values) // 2],
-            'count': len(numeric_values)
+        result["statistics"] = {
+            "min": numeric_values[0],
+            "max": numeric_values[-1],
+            "mean": sum(numeric_values) / len(numeric_values),
+            "median": numeric_values[len(numeric_values) // 2],
+            "count": len(numeric_values),
         }
 
         # Check for reasonable variance
         if numeric_values[0] == numeric_values[-1]:
-            result['issues'].append("Target variable has zero variance (all values identical)")
+            result["issues"].append("Target variable has zero variance (all values identical)")
 
     return result
 
@@ -318,9 +318,9 @@ def validate_dataset(filepath: str, target_col: Optional[str] = None) -> Dict:
     """
     # Detect file format
     suffix = Path(filepath).suffix.lower()
-    if suffix == '.csv':
+    if suffix == ".csv":
         rows, columns = load_csv_data(filepath)
-    elif suffix == '.json':
+    elif suffix == ".json":
         rows, columns = load_json_data(filepath)
     else:
         print(f"Error: Unsupported file format: {suffix}", file=sys.stderr)
@@ -328,75 +328,81 @@ def validate_dataset(filepath: str, target_col: Optional[str] = None) -> Dict:
 
     # Validate dataset
     results = {
-        'file': filepath,
-        'format': 'CSV' if suffix == '.csv' else 'JSON',
-        'rows': len(rows),
-        'columns': len(columns),
-        'column_names': columns,
-        'issues': [],
-        'warnings': [],
-        'recommendations': [],
-        'validation_score': 100.0,
-        'missing_values': {},
-        'data_consistency': {},
-        'outliers': {},
-        'target_variable': {}
+        "file": filepath,
+        "format": "CSV" if suffix == ".csv" else "JSON",
+        "rows": len(rows),
+        "columns": len(columns),
+        "column_names": columns,
+        "issues": [],
+        "warnings": [],
+        "recommendations": [],
+        "validation_score": 100.0,
+        "missing_values": {},
+        "data_consistency": {},
+        "outliers": {},
+        "target_variable": {},
     }
 
     if len(rows) == 0:
-        results['issues'].append("Dataset is empty (0 rows)")
-        results['validation_score'] = 0.0
+        results["issues"].append("Dataset is empty (0 rows)")
+        results["validation_score"] = 0.0
         return results
 
     if len(columns) == 0:
-        results['issues'].append("Dataset has no columns")
-        results['validation_score'] = 0.0
+        results["issues"].append("Dataset has no columns")
+        results["validation_score"] = 0.0
         return results
 
     # Check missing values
-    results['missing_values'] = check_missing_values(rows, columns)
-    if results['missing_values']:
-        results['warnings'].append(f"Found {len(results['missing_values'])} columns with missing values")
+    results["missing_values"] = check_missing_values(rows, columns)
+    if results["missing_values"]:
+        results["warnings"].append(f"Found {len(results['missing_values'])} columns with missing values")
 
     # Check data consistency
-    results['data_consistency'] = check_data_consistency(rows, columns)
-    inconsistent_cols = [col for col, info in results['data_consistency'].items() if not info['is_consistent']]
+    results["data_consistency"] = check_data_consistency(rows, columns)
+    inconsistent_cols = [col for col, info in results["data_consistency"].items() if not info["is_consistent"]]
     if inconsistent_cols:
-        results['warnings'].append(f"Found {len(inconsistent_cols)} columns with inconsistent data types")
+        results["warnings"].append(f"Found {len(inconsistent_cols)} columns with inconsistent data types")
 
     # Check for outliers
-    results['outliers'] = check_outliers(rows, columns)
-    if results['outliers']:
-        results['warnings'].append(f"Found outliers in {len(results['outliers'])} columns")
+    results["outliers"] = check_outliers(rows, columns)
+    if results["outliers"]:
+        results["warnings"].append(f"Found outliers in {len(results['outliers'])} columns")
 
     # Validate target variable if specified
     if target_col:
-        results['target_variable'] = validate_target_variable(rows, target_col)
-        if results['target_variable']['issues']:
-            results['issues'].extend(results['target_variable']['issues'])
+        results["target_variable"] = validate_target_variable(rows, target_col)
+        if results["target_variable"]["issues"]:
+            results["issues"].extend(results["target_variable"]["issues"])
 
     # Recommendations
     if len(rows) < 30:
-        results['recommendations'].append("Dataset size is small (<30 rows) - consider collecting more data for better model generalization")
+        results["recommendations"].append(
+            "Dataset size is small (<30 rows) - consider collecting more data for better model generalization"
+        )
 
-    if results['missing_values']:
-        results['recommendations'].append("Consider removing or imputing missing values before regression")
+    if results["missing_values"]:
+        results["recommendations"].append("Consider removing or imputing missing values before regression")
 
     if inconsistent_cols:
-        results['recommendations'].append("Ensure consistent data types - convert strings to numeric where appropriate")
+        results["recommendations"].append("Ensure consistent data types - convert strings to numeric where appropriate")
 
-    if results['outliers']:
-        results['recommendations'].append("Consider handling outliers through removal, transformation, or robust regression methods")
+    if results["outliers"]:
+        results["recommendations"].append(
+            "Consider handling outliers through removal, transformation, or robust regression methods"
+        )
 
     # Calculate validation score
     score_deduction = 0
-    score_deduction += len(results['issues']) * 25
+    score_deduction += len(results["issues"]) * 25
     score_deduction += len(inconsistent_cols) * 5
-    if results['missing_values']:
-        avg_missing_pct = sum(v['percentage'] for v in results['missing_values'].values()) / len(results['missing_values'])
+    if results["missing_values"]:
+        avg_missing_pct = sum(v["percentage"] for v in results["missing_values"].values()) / len(
+            results["missing_values"]
+        )
         score_deduction += min(30, avg_missing_pct / 2)
 
-    results['validation_score'] = max(0.0, 100.0 - score_deduction)
+    results["validation_score"] = max(0.0, 100.0 - score_deduction)
 
     return results
 
@@ -414,29 +420,29 @@ def generate_report(results: Dict) -> str:
     report.append(f"Columns: {results['columns']}")
     report.append(f"\nValidation Score: {results['validation_score']:.1f}/100")
 
-    if results['issues']:
+    if results["issues"]:
         report.append("\n[CRITICAL ISSUES]")
-        for issue in results['issues']:
+        for issue in results["issues"]:
             report.append(f"  ✗ {issue}")
 
-    if results['missing_values']:
+    if results["missing_values"]:
         report.append("\n[MISSING VALUES]")
-        for col, data in results['missing_values'].items():
+        for col, data in results["missing_values"].items():
             report.append(f"  {col}: {data['count']} ({data['percentage']:.1f}%) - {data['severity']}")
 
-    if results['outliers']:
+    if results["outliers"]:
         report.append("\n[OUTLIERS DETECTED]")
-        for col, data in results['outliers'].items():
+        for col, data in results["outliers"].items():
             report.append(f"  {col}: {data['outlier_count']} outliers ({data['outlier_percentage']:.1f}%)")
 
-    if results['warnings']:
+    if results["warnings"]:
         report.append("\n[WARNINGS]")
-        for warning in results['warnings']:
+        for warning in results["warnings"]:
             report.append(f"  ⚠ {warning}")
 
-    if results['recommendations']:
+    if results["recommendations"]:
         report.append("\n[RECOMMENDATIONS]")
-        for rec in results['recommendations']:
+        for rec in results["recommendations"]:
             report.append(f"  → {rec}")
 
     report.append("\n" + "=" * 70)
@@ -462,31 +468,13 @@ Examples:
 
   # Verbose output
   %(prog)s --file data.csv --verbose
-        """
+        """,
     )
 
-    parser.add_argument(
-        '-f', '--file',
-        type=str,
-        required=True,
-        help='Path to dataset file (CSV or JSON)'
-    )
-    parser.add_argument(
-        '-t', '--target',
-        type=str,
-        help='Target variable column name (for regression)'
-    )
-    parser.add_argument(
-        '--format',
-        choices=['text', 'json'],
-        default='text',
-        help='Output format (default: text)'
-    )
-    parser.add_argument(
-        '-v', '--verbose',
-        action='store_true',
-        help='Enable verbose output'
-    )
+    parser.add_argument("-f", "--file", type=str, required=True, help="Path to dataset file (CSV or JSON)")
+    parser.add_argument("-t", "--target", type=str, help="Target variable column name (for regression)")
+    parser.add_argument("--format", choices=["text", "json"], default="text", help="Output format (default: text)")
+    parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose output")
 
     args = parser.parse_args()
 
@@ -494,18 +482,18 @@ Examples:
     results = validate_dataset(args.file, args.target)
 
     # Output results
-    if args.format == 'json':
+    if args.format == "json":
         print(json.dumps(results, indent=2, default=str))
     else:
         report = generate_report(results)
         print(report)
 
     # Exit with error if critical issues
-    if results['issues']:
+    if results["issues"]:
         return 1
 
     return 0
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(main())

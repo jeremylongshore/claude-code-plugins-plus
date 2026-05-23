@@ -24,7 +24,13 @@ Exit codes:
 """
 
 from __future__ import annotations
-import argparse, hashlib, json, os, sqlite3, sys, time
+import argparse
+import hashlib
+import json
+import os
+import sqlite3
+import sys
+import time
 from pathlib import Path
 from typing import Iterable
 
@@ -81,8 +87,20 @@ def http_get_json(url: str, token: str, timeout: float = 10.0) -> tuple[int, dic
 def field_count(c: dict) -> int:
     # Count non-empty fields on the Podium contact payload.
     n = 0
-    for k in ("name", "first_name", "last_name", "email", "address", "city", "state",
-              "postal_code", "country", "company", "notes", "birthday"):
+    for k in (
+        "name",
+        "first_name",
+        "last_name",
+        "email",
+        "address",
+        "city",
+        "state",
+        "postal_code",
+        "country",
+        "company",
+        "notes",
+        "birthday",
+    ):
         if c.get(k):
             n += 1
     if c.get("tags"):
@@ -154,7 +172,7 @@ def scan_location(db: sqlite3.Connection, location_uid: str, token: str, region:
 
 
 def cluster_confidence(a: dict, b: dict) -> float:
-    score = 0.60   # same natural_key by construction
+    score = 0.60  # same natural_key by construction
     if a.get("name") and a["name"].strip().lower() == (b.get("name") or "").strip().lower():
         score += 0.20
     if a.get("email") and a["email"].strip().lower() == (b.get("email") or "").strip().lower():
@@ -187,12 +205,27 @@ def emit_clusters(db: sqlite3.Connection, location_uid: str, threshold: float) -
     ).fetchall()
     for natural_key, _ in rows:
         members = [
-            dict(zip(
-                ["contact_uid", "location_uid", "natural_key", "raw_phone", "name", "email",
-                 "tags_json", "field_count", "marketing_opt_out", "sms_opt_out",
-                 "email_opt_out", "deleted_at_podium", "updated_at_podium", "indexed_at"],
-                row,
-            ))
+            dict(
+                zip(
+                    [
+                        "contact_uid",
+                        "location_uid",
+                        "natural_key",
+                        "raw_phone",
+                        "name",
+                        "email",
+                        "tags_json",
+                        "field_count",
+                        "marketing_opt_out",
+                        "sms_opt_out",
+                        "email_opt_out",
+                        "deleted_at_podium",
+                        "updated_at_podium",
+                        "indexed_at",
+                    ],
+                    row,
+                )
+            )
             for row in db.execute(
                 """SELECT contact_uid, location_uid, natural_key, raw_phone, name, email,
                           tags_json, field_count, marketing_opt_out, sms_opt_out,

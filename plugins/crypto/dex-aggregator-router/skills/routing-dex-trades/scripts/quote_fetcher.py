@@ -7,7 +7,6 @@ in parallel and normalizes them to a standard format.
 """
 
 import asyncio
-import os
 import time
 from dataclasses import dataclass, field
 from datetime import datetime
@@ -198,7 +197,7 @@ class QuoteFetcher:
                     return await self._fetch_paraswap(client, params)
                 elif aggregator == "0x":
                     return await self._fetch_0x(client, params)
-        except Exception as e:
+        except Exception:
             return None
 
     async def _wait_for_rate_limit(self, aggregator: str):
@@ -214,9 +213,7 @@ class QuoteFetcher:
 
         self._last_request_time[aggregator] = time.time()
 
-    async def _fetch_1inch(
-        self, client: httpx.AsyncClient, params: SwapParams
-    ) -> Optional[NormalizedQuote]:
+    async def _fetch_1inch(self, client: httpx.AsyncClient, params: SwapParams) -> Optional[NormalizedQuote]:
         """Fetch quote from 1inch API."""
         chain_id = CHAIN_IDS.get(params.chain, 1)
         from_token = self.resolve_token_address(params.from_token, params.chain)
@@ -246,9 +243,7 @@ class QuoteFetcher:
         except Exception:
             return None
 
-    async def _fetch_paraswap(
-        self, client: httpx.AsyncClient, params: SwapParams
-    ) -> Optional[NormalizedQuote]:
+    async def _fetch_paraswap(self, client: httpx.AsyncClient, params: SwapParams) -> Optional[NormalizedQuote]:
         """Fetch quote from Paraswap API."""
         chain_id = CHAIN_IDS.get(params.chain, 1)
         from_token = self.resolve_token_address(params.from_token, params.chain)
@@ -276,9 +271,7 @@ class QuoteFetcher:
         except Exception:
             return None
 
-    async def _fetch_0x(
-        self, client: httpx.AsyncClient, params: SwapParams
-    ) -> Optional[NormalizedQuote]:
+    async def _fetch_0x(self, client: httpx.AsyncClient, params: SwapParams) -> Optional[NormalizedQuote]:
         """Fetch quote from 0x API."""
         from_token = self.resolve_token_address(params.from_token, params.chain)
         to_token = self.resolve_token_address(params.to_token, params.chain)
@@ -306,9 +299,7 @@ class QuoteFetcher:
         except Exception:
             return None
 
-    def _normalize_1inch_quote(
-        self, data: Dict, params: SwapParams
-    ) -> NormalizedQuote:
+    def _normalize_1inch_quote(self, data: Dict, params: SwapParams) -> NormalizedQuote:
         """Normalize 1inch quote to standard format."""
         # Determine output decimals (6 for stablecoins, 18 for others)
         out_decimals = 6 if "USD" in params.to_token.upper() else 18
@@ -354,16 +345,12 @@ class QuoteFetcher:
             raw_response=data,
         )
 
-    def _normalize_paraswap_quote(
-        self, data: Dict, params: SwapParams
-    ) -> NormalizedQuote:
+    def _normalize_paraswap_quote(self, data: Dict, params: SwapParams) -> NormalizedQuote:
         """Normalize Paraswap quote to standard format."""
         price_route = data.get("priceRoute", {})
         out_decimals = 6 if "USD" in params.to_token.upper() else 18
 
-        output_amount = Decimal(price_route.get("destAmount", 0)) / Decimal(
-            10**out_decimals
-        )
+        output_amount = Decimal(price_route.get("destAmount", 0)) / Decimal(10**out_decimals)
         input_amount = params.amount
 
         price = output_amount / input_amount if input_amount > 0 else Decimal(0)

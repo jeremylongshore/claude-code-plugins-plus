@@ -22,9 +22,8 @@ Example:
 
 import pandas as pd
 import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
 import numpy as np
-from typing import Optional, Tuple, List
+from typing import Optional, Tuple
 
 
 def plot_time_series(
@@ -35,9 +34,9 @@ def plot_time_series(
     xlabel: str = "Time",
     ylabel: str = "Value",
     figsize: Tuple[int, int] = (12, 6),
-    data_color: str = 'blue',
-    forecast_color: str = 'red',
-    confidence_color: str = 'lightgray'
+    data_color: str = "blue",
+    forecast_color: str = "red",
+    confidence_color: str = "lightgray",
 ) -> None:
     """
     Plots the time series data and, optionally, a forecast with confidence intervals.
@@ -65,29 +64,36 @@ def plot_time_series(
         ValueError: If `confidence_interval` is provided but `forecast` does not have 'lower' and 'upper' columns.
     """
 
-    if 'time' not in data.columns:
+    if "time" not in data.columns:
         raise ValueError("Data DataFrame must have a 'time' column.")
 
-    value_column = next((col for col in data.columns if col != 'time'), None)
+    value_column = next((col for col in data.columns if col != "time"), None)
     if value_column is None:
         raise ValueError("Data DataFrame must have a column with the time series values.")
 
     plt.figure(figsize=figsize)
-    plt.plot(data['time'], data[value_column], label="Historical Data", color=data_color)
+    plt.plot(data["time"], data[value_column], label="Historical Data", color=data_color)
 
     if forecast is not None:
-        if 'time' not in forecast.columns:
+        if "time" not in forecast.columns:
             raise ValueError("Forecast DataFrame must have a 'time' column.")
-        forecast_column = next((col for col in forecast.columns if col != 'time'), None)
+        forecast_column = next((col for col in forecast.columns if col != "time"), None)
         if forecast_column is None:
             raise ValueError("Forecast DataFrame must have a column with the forecast values.")
 
-        plt.plot(forecast['time'], forecast[forecast_column], label="Forecast", color=forecast_color)
+        plt.plot(forecast["time"], forecast[forecast_column], label="Forecast", color=forecast_color)
 
         if confidence_interval is not None:
-            if 'lower' not in forecast.columns or 'upper' not in forecast.columns:
+            if "lower" not in forecast.columns or "upper" not in forecast.columns:
                 raise ValueError("Forecast DataFrame must have 'lower' and 'upper' columns for confidence intervals.")
-            plt.fill_between(forecast['time'], forecast['lower'], forecast['upper'], color=confidence_color, alpha=0.5, label="Confidence Interval")
+            plt.fill_between(
+                forecast["time"],
+                forecast["lower"],
+                forecast["upper"],
+                color=confidence_color,
+                alpha=0.5,
+                label="Confidence Interval",
+            )
 
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
@@ -103,7 +109,7 @@ def plot_residuals(
     title: str = "Residual Plot",
     xlabel: str = "Time",
     ylabel: str = "Residuals",
-    figsize: Tuple[int, int] = (12, 6)
+    figsize: Tuple[int, int] = (12, 6),
 ) -> None:
     """
     Plots the residuals of a time series forecast.
@@ -123,8 +129,8 @@ def plot_residuals(
         raise TypeError("Residuals must be a pandas Series.")
 
     plt.figure(figsize=figsize)
-    plt.plot(residuals.index, residuals.values, marker='o', linestyle='-', label="Residuals")
-    plt.axhline(y=0, color='r', linestyle='--', label="Zero Line")  # Add a horizontal line at y=0
+    plt.plot(residuals.index, residuals.values, marker="o", linestyle="-", label="Residuals")
+    plt.axhline(y=0, color="r", linestyle="--", label="Zero Line")  # Add a horizontal line at y=0
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     plt.title(title)
@@ -135,10 +141,7 @@ def plot_residuals(
 
 
 def plot_acf(
-    data: pd.Series,
-    lags: int = 40,
-    title: str = "Autocorrelation Function (ACF)",
-    figsize: Tuple[int, int] = (12, 6)
+    data: pd.Series, lags: int = 40, title: str = "Autocorrelation Function (ACF)", figsize: Tuple[int, int] = (12, 6)
 ) -> None:
     """
     Plots the Autocorrelation Function (ACF) of a time series.
@@ -169,7 +172,7 @@ def plot_pacf(
     data: pd.Series,
     lags: int = 40,
     title: str = "Partial Autocorrelation Function (PACF)",
-    figsize: Tuple[int, int] = (12, 6)
+    figsize: Tuple[int, int] = (12, 6),
 ) -> None:
     """
     Plots the Partial Autocorrelation Function (PACF) of a time series.
@@ -196,20 +199,22 @@ def plot_pacf(
     plt.tight_layout()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # Example Usage
     try:
         # Create sample data
-        dates = pd.date_range(start='2023-01-01', periods=100, freq='D')
+        dates = pd.date_range(start="2023-01-01", periods=100, freq="D")
         values = np.random.randn(100).cumsum()
-        data = pd.DataFrame({'time': dates, 'value': values})
+        data = pd.DataFrame({"time": dates, "value": values})
 
         # Create sample forecast
-        forecast_dates = pd.date_range(start='2023-04-11', periods=30, freq='D')
+        forecast_dates = pd.date_range(start="2023-04-11", periods=30, freq="D")
         forecast_values = np.random.randn(30).cumsum() + values[-1]
         lower_bound = forecast_values - np.abs(np.random.randn(30).cumsum())
         upper_bound = forecast_values + np.abs(np.random.randn(30).cumsum())
-        forecast = pd.DataFrame({'time': forecast_dates, 'forecast': forecast_values, 'lower': lower_bound, 'upper': upper_bound})
+        forecast = pd.DataFrame(
+            {"time": forecast_dates, "forecast": forecast_values, "lower": lower_bound, "upper": upper_bound}
+        )
 
         # Plot time series and forecast
         plot_time_series(data, forecast, confidence_interval=(0.05, 0.95), title="Example Time Series Forecast")
@@ -223,11 +228,11 @@ if __name__ == '__main__':
         plt.show()
 
         # Plot ACF
-        plot_acf(data['value'], lags=20, title="Example ACF Plot")
+        plot_acf(data["value"], lags=20, title="Example ACF Plot")
         plt.show()
 
         # Plot PACF
-        plot_pacf(data['value'], lags=20, title="Example PACF Plot")
+        plot_pacf(data["value"], lags=20, title="Example PACF Plot")
         plt.show()
 
     except ValueError as e:

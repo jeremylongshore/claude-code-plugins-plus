@@ -9,9 +9,8 @@ Handles all output formatting:
 """
 
 import json
-from dataclasses import asdict
 from decimal import Decimal
-from typing import Any, Dict, List, Optional
+from typing import List, Optional
 
 from opportunity_scanner import ArbitrageOpportunity, ScanResult, RiskLevel
 from triangular_finder import ArbitragePath
@@ -74,18 +73,11 @@ class ConsoleFormatter:
         lines.append("-" * 50)
 
         for quote in sorted(result.quotes, key=lambda x: x.bid, reverse=True):
-            lines.append(
-                f"{quote.exchange:<15} "
-                f"${quote.bid:>11,.2f} "
-                f"${quote.ask:>11,.2f} "
-                f"{quote.spread_pct:>7.3f}%"
-            )
+            lines.append(f"{quote.exchange:<15} ${quote.bid:>11,.2f} ${quote.ask:>11,.2f} {quote.spread_pct:>7.3f}%")
 
         # Opportunities table
         lines.append(self._subheader("OPPORTUNITIES"))
-        lines.append(
-            f"{'Buy On':<15} {'Sell On':<15} {'Gross':>8} {'Net':>8} {'Risk':<8}"
-        )
+        lines.append(f"{'Buy On':<15} {'Sell On':<15} {'Gross':>8} {'Net':>8} {'Risk':<8}")
         lines.append("-" * 60)
 
         for opp in result.opportunities[:10]:
@@ -110,9 +102,7 @@ class ConsoleFormatter:
         """Format detailed view of a single opportunity."""
         lines = []
 
-        risk_icon, risk_label = self.RISK_INDICATORS.get(
-            opp.risk_level, ("⚪", "UNKNOWN")
-        )
+        risk_icon, risk_label = self.RISK_INDICATORS.get(opp.risk_level, ("⚪", "UNKNOWN"))
 
         lines.append(f"Buy on {opp.buy_exchange} at ${opp.buy_price:,.2f}")
         lines.append(f"Sell on {opp.sell_exchange} at ${opp.sell_price:,.2f}")
@@ -235,13 +225,11 @@ class ConsoleFormatter:
 
         if trade_amount:
             profit = opp.profit_for_amount(trade_amount)
-            lines.append(f"")
+            lines.append("")
             lines.append(f"For {trade_amount} units:")
             lines.append(f"Estimated profit: ${profit:,.2f}")
 
-        risk_icon, risk_label = self.RISK_INDICATORS.get(
-            opp.risk_level, ("⚪", "?")
-        )
+        risk_icon, risk_label = self.RISK_INDICATORS.get(opp.risk_level, ("⚪", "?"))
         lines.append("")
         lines.append(f"Risk: {risk_icon} {risk_label}")
 

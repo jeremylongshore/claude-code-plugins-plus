@@ -30,11 +30,11 @@ def format_currency(value: Union[float, Decimal], decimals: int = 0) -> str:
     """Format value as currency."""
     val = float(value)
     if abs(val) >= 1e9:
-        return f"${val/1e9:.1f}B"
+        return f"${val / 1e9:.1f}B"
     elif abs(val) >= 1e6:
-        return f"${val/1e6:.1f}M"
+        return f"${val / 1e6:.1f}M"
     elif abs(val) >= 1e3:
-        return f"${val/1e3:.1f}K"
+        return f"${val / 1e3:.1f}K"
     else:
         return f"${val:,.{decimals}f}"
 
@@ -216,17 +216,17 @@ class ConsoleFormatter:
         """Format options analysis summary."""
         lines = []
 
-        lines.append(f"Implied Volatility:")
+        lines.append("Implied Volatility:")
         lines.append(f"   ATM IV: {analysis.get('atm_iv', 0):.1f}%")
         lines.append(f"   Interpretation: {analysis.get('iv_interpretation', 'unknown').upper()}")
         lines.append(f"   IV Rank: {analysis.get('iv_percentile', 50):.0f}th percentile")
 
-        lines.append(f"\nPut/Call Analysis:")
+        lines.append("\nPut/Call Analysis:")
         lines.append(f"   PCR (Volume): {analysis.get('pcr_volume', 0):.2f}")
         lines.append(f"   PCR (OI): {analysis.get('pcr_oi', 0):.2f}")
         lines.append(f"   Sentiment: {analysis.get('pcr_sentiment', 'neutral').upper()}")
 
-        lines.append(f"\nMax Pain:")
+        lines.append("\nMax Pain:")
         lines.append(f"   Price: ${analysis.get('max_pain', 0):,.0f}")
         lines.append(f"   Distance: {analysis.get('max_pain_distance', 0):+.1f}% from current")
 
@@ -243,10 +243,7 @@ class ConsoleFormatter:
             annual = point.get("annualized_pct", 0)
             bar = "+" * min(int(abs(annual) / 2), 20)
             direction = "▲" if annual > 0 else "▼"
-            lines.append(
-                f"{point.get('expiry', 'N/A'):<12} {direction} {bar} "
-                f"{annual:+.1f}%"
-            )
+            lines.append(f"{point.get('expiry', 'N/A'):<12} {direction} {bar} {annual:+.1f}%")
 
         return "\n".join(lines)
 
@@ -377,32 +374,30 @@ class ReportGenerator:
             Formatted summary string
         """
         if format == "json":
-            return self.json_fmt.derivatives_dashboard(
-                symbol, funding, oi, liquidations
-            )
+            return self.json_fmt.derivatives_dashboard(symbol, funding, oi, liquidations)
 
         # Console format
         lines = []
         lines.append(self.console.header(f"{symbol} DERIVATIVES SUMMARY"))
 
         # Funding section
-        lines.append(f"\n📊 FUNDING RATES")
+        lines.append("\n📊 FUNDING RATES")
         lines.append(f"   Weighted Average: {format_percent(funding.get('weighted_avg', 0) * 100, 4)}")
         lines.append(f"   Annualized: {format_percent(funding.get('annualized_avg', 0), 1)}")
         lines.append(f"   Sentiment: {funding.get('sentiment', 'unknown').upper()}")
 
         # OI section
-        lines.append(f"\n📈 OPEN INTEREST")
+        lines.append("\n📈 OPEN INTEREST")
         lines.append(f"   Total: {format_currency(oi.get('total_oi_usd', 0))}")
         lines.append(f"   24h Change: {format_percent(oi.get('avg_change_24h', 0), 1)}")
         lines.append(f"   Trend: {oi.get('trend', 'unknown').title()}")
 
         # Liquidations section
-        lines.append(f"\n💥 LIQUIDATIONS")
+        lines.append("\n💥 LIQUIDATIONS")
         lines.append(f"   24h Total: {format_currency(liquidations.get('total_24h_usd', 0))}")
         lines.append(f"   Longs: {format_currency(liquidations.get('long_liquidations_usd', 0))}")
         lines.append(f"   Shorts: {format_currency(liquidations.get('short_liquidations_usd', 0))}")
-        risk = liquidations.get('cascade_risk', 'low')
+        risk = liquidations.get("cascade_risk", "low")
         lines.append(f"   Cascade Risk: {self.console.risk_icon(risk)} {risk.upper()}")
 
         lines.append(f"\n{self.console.H_LINE * self.console.width}")
@@ -450,7 +445,7 @@ def demo():
         "metrics": {
             "funding": 0.01,
             "oi": Decimal("15000000000"),
-        }
+        },
     }
     print(json_fmt.format(sample_data))
 

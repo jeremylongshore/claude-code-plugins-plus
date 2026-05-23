@@ -101,8 +101,10 @@ def run_single_query(
 
         cmd = [
             "claude",
-            "-p", query,
-            "--output-format", "stream-json",
+            "-p",
+            query,
+            "--output-format",
+            "stream-json",
             "--verbose",
             "--include-partial-messages",
         ]
@@ -265,14 +267,16 @@ def run_eval(
             did_pass = trigger_rate >= trigger_threshold
         else:
             did_pass = trigger_rate < trigger_threshold
-        results.append({
-            "query": query,
-            "should_trigger": should_trigger,
-            "trigger_rate": trigger_rate,
-            "triggers": sum(triggers),
-            "runs": len(triggers),
-            "pass": did_pass,
-        })
+        results.append(
+            {
+                "query": query,
+                "should_trigger": should_trigger,
+                "trigger_rate": trigger_rate,
+                "triggers": sum(triggers),
+                "runs": len(triggers),
+                "pass": did_pass,
+            }
+        )
 
     passed = sum(1 for r in results if r["pass"])
     total = len(results)

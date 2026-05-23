@@ -13,13 +13,14 @@ License: MIT
 from dataclasses import dataclass, field
 from datetime import datetime
 from decimal import Decimal
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List
 import copy
 
 
 @dataclass
 class Lot:
     """Represents a tax lot (acquisition of an asset)."""
+
     asset: str
     quantity: Decimal
     cost_per_unit: Decimal
@@ -48,6 +49,7 @@ class Lot:
 @dataclass
 class DisposalResult:
     """Result of disposing (selling) an asset."""
+
     asset: str
     quantity: Decimal
     proceeds: Decimal
@@ -89,7 +91,7 @@ class CostBasisEngine:
         quantity: Decimal,
         cost_per_unit: Decimal,
         acquired_date: datetime,
-        fees: Decimal = Decimal("0")
+        fees: Decimal = Decimal("0"),
     ) -> Lot:
         """Record acquisition of an asset.
 
@@ -110,7 +112,7 @@ class CostBasisEngine:
             cost_per_unit=cost_per_unit,
             acquired_date=acquired_date,
             fees=fees,
-            lot_id=self._lot_counter
+            lot_id=self._lot_counter,
         )
 
         if asset.upper() not in self._lots:
@@ -129,7 +131,7 @@ class CostBasisEngine:
         quantity: Decimal,
         proceeds_per_unit: Decimal,
         disposed_date: datetime,
-        fees: Decimal = Decimal("0")
+        fees: Decimal = Decimal("0"),
     ) -> List[DisposalResult]:
         """Dispose (sell) an asset and calculate gains/losses.
 
@@ -147,9 +149,7 @@ class CostBasisEngine:
         available = self.get_available(asset)
 
         if quantity > available:
-            raise ValueError(
-                f"Cannot dispose {quantity} {asset} - only {available} available"
-            )
+            raise ValueError(f"Cannot dispose {quantity} {asset} - only {available} available")
 
         results = []
         remaining = quantity
@@ -190,7 +190,7 @@ class CostBasisEngine:
                 acquired_date=lot.acquired_date,
                 disposed_date=disposed_date,
                 is_long_term=is_long_term,
-                lot_id=lot.lot_id
+                lot_id=lot.lot_id,
             )
 
             results.append(result)
@@ -261,15 +261,17 @@ class CostBasisEngine:
             inventory[asset] = []
             for lot in lots:
                 if lot.remaining > 0:
-                    inventory[asset].append({
-                        "lot_id": lot.lot_id,
-                        "quantity": float(lot.quantity),
-                        "remaining": float(lot.remaining),
-                        "cost_per_unit": float(lot.cost_per_unit),
-                        "cost_basis_per_unit": float(lot.cost_basis_per_unit),
-                        "acquired_date": lot.acquired_date.strftime("%Y-%m-%d"),
-                        "total_cost": float(lot.total_cost),
-                    })
+                    inventory[asset].append(
+                        {
+                            "lot_id": lot.lot_id,
+                            "quantity": float(lot.quantity),
+                            "remaining": float(lot.remaining),
+                            "cost_per_unit": float(lot.cost_per_unit),
+                            "cost_basis_per_unit": float(lot.cost_basis_per_unit),
+                            "acquired_date": lot.acquired_date.strftime("%Y-%m-%d"),
+                            "total_cost": float(lot.total_cost),
+                        }
+                    )
 
         return inventory
 
@@ -340,18 +342,15 @@ def main():
 
     # Dispose
     print("\nDisposing 0.75 BTC @ $100,000:")
-    results = engine.dispose(
-        "BTC",
-        Decimal("0.75"),
-        Decimal("100000"),
-        datetime(2025, 1, 20)
-    )
+    results = engine.dispose("BTC", Decimal("0.75"), Decimal("100000"), datetime(2025, 1, 20))
 
     print("\nDisposal Results:")
     for r in results:
         term = "Long-term" if r.is_long_term else "Short-term"
-        print(f"  {r.quantity} BTC: Proceeds ${r.proceeds:.2f}, "
-              f"Cost ${r.cost_basis:.2f}, Gain/Loss ${r.gain_loss:.2f} ({term})")
+        print(
+            f"  {r.quantity} BTC: Proceeds ${r.proceeds:.2f}, "
+            f"Cost ${r.cost_basis:.2f}, Gain/Loss ${r.gain_loss:.2f} ({term})"
+        )
 
     print("\nSummary:")
     summary = engine.get_summary()

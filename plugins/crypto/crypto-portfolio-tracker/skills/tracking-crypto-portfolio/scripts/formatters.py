@@ -16,18 +16,14 @@ import csv
 import io
 import json
 from datetime import datetime
-from typing import Dict, Any, List
+from typing import Dict, Any
 
 
 class PortfolioFormatter:
     """Formats portfolio data for output."""
 
     def format(
-        self,
-        data: Dict[str, Any],
-        format_type: str = "table",
-        show_all_holdings: bool = False,
-        show_pnl: bool = False
+        self, data: Dict[str, Any], format_type: str = "table", show_all_holdings: bool = False, show_pnl: bool = False
     ) -> str:
         """Format portfolio data for output.
 
@@ -47,12 +43,7 @@ class PortfolioFormatter:
         else:
             return self._format_table(data, show_all_holdings, show_pnl)
 
-    def _format_table(
-        self,
-        data: Dict[str, Any],
-        show_all: bool,
-        show_pnl: bool
-    ) -> str:
+    def _format_table(self, data: Dict[str, Any], show_all: bool, show_pnl: bool) -> str:
         """Format as terminal table/dashboard."""
         lines = []
         w = 78  # Width
@@ -201,16 +192,11 @@ class PortfolioFormatter:
             "allocation_pct",
             "change_24h_pct",
             "change_7d_pct",
-            "market_cap"
+            "market_cap",
         ]
 
         if include_pnl:
-            headers.extend([
-                "cost_basis",
-                "total_cost",
-                "unrealized_pnl",
-                "pnl_pct"
-            ])
+            headers.extend(["cost_basis", "total_cost", "unrealized_pnl", "pnl_pct"])
 
         writer.writerow(headers)
 
@@ -224,16 +210,18 @@ class PortfolioFormatter:
                 holding.get("allocation_pct", 0),
                 holding.get("change_24h_pct", ""),
                 holding.get("change_7d_pct", ""),
-                holding.get("market_cap", "")
+                holding.get("market_cap", ""),
             ]
 
             if include_pnl:
-                row.extend([
-                    holding.get("cost_basis", ""),
-                    holding.get("total_cost", ""),
-                    holding.get("unrealized_pnl", ""),
-                    holding.get("pnl_pct", "")
-                ])
+                row.extend(
+                    [
+                        holding.get("cost_basis", ""),
+                        holding.get("total_cost", ""),
+                        holding.get("unrealized_pnl", ""),
+                        holding.get("pnl_pct", ""),
+                    ]
+                )
 
             writer.writerow(row)
 
@@ -277,7 +265,7 @@ def main():
                 "cost_basis": 50000,
                 "total_cost": 25000,
                 "unrealized_pnl": 22500,
-                "pnl_pct": 90.0
+                "pnl_pct": 90.0,
             },
             {
                 "coin": "ETH",
@@ -289,7 +277,7 @@ def main():
                 "cost_basis": 2500,
                 "total_cost": 25000,
                 "unrealized_pnl": 7000,
-                "pnl_pct": 28.0
+                "pnl_pct": 28.0,
             },
             {
                 "coin": "SOL",
@@ -297,21 +285,12 @@ def main():
                 "price_usd": 180,
                 "value_usd": 18000,
                 "allocation_pct": 14.4,
-                "change_24h_pct": 4.2
-            }
+                "change_24h_pct": 4.2,
+            },
         ],
-        "allocation_by_category": {
-            "Layer 1": 77.8,
-            "Other": 22.2
-        },
-        "risk_flags": [
-            "BTC allocation (37.9%) exceeds 25% threshold",
-            "ETH allocation (25.5%) exceeds 25% threshold"
-        ],
-        "meta": {
-            "timestamp": "2026-01-14T15:30:00Z",
-            "threshold": 25
-        }
+        "allocation_by_category": {"Layer 1": 77.8, "Other": 22.2},
+        "risk_flags": ["BTC allocation (37.9%) exceeds 25% threshold", "ETH allocation (25.5%) exceeds 25% threshold"],
+        "meta": {"timestamp": "2026-01-14T15:30:00Z", "threshold": 25},
     }
 
     formatter = PortfolioFormatter()

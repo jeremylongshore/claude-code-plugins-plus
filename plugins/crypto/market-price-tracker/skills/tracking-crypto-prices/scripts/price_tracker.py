@@ -39,109 +39,56 @@ Examples:
   %(prog)s --symbol BTC --period 30d       # 30-day history
   %(prog)s --symbol ETH --output csv       # Export to CSV
   %(prog)s --list                          # Search available coins
-        """
+        """,
     )
 
     # Symbol selection (mutually exclusive)
     symbol_group = parser.add_mutually_exclusive_group()
+    symbol_group.add_argument("--symbol", "-s", type=str, help="Single cryptocurrency symbol (e.g., BTC, ETH)")
+    symbol_group.add_argument("--symbols", type=str, help="Comma-separated list of symbols (e.g., BTC,ETH,SOL)")
     symbol_group.add_argument(
-        "--symbol", "-s",
-        type=str,
-        help="Single cryptocurrency symbol (e.g., BTC, ETH)"
-    )
-    symbol_group.add_argument(
-        "--symbols",
-        type=str,
-        help="Comma-separated list of symbols (e.g., BTC,ETH,SOL)"
-    )
-    symbol_group.add_argument(
-        "--watchlist", "-w",
+        "--watchlist",
+        "-w",
         type=str,
         choices=["top10", "defi", "layer2", "stablecoins", "memecoins", "custom"],
-        help="Use predefined watchlist"
+        help="Use predefined watchlist",
     )
     symbol_group.add_argument(
-        "--list", "-l",
-        action="store_true",
-        help="List available cryptocurrencies (search with --query)"
+        "--list", "-l", action="store_true", help="List available cryptocurrencies (search with --query)"
     )
 
     # Search options
-    parser.add_argument(
-        "--query", "-q",
-        type=str,
-        help="Search query for --list mode"
-    )
+    parser.add_argument("--query", "-q", type=str, help="Search query for --list mode")
 
     # Historical data options
-    parser.add_argument(
-        "--period", "-p",
-        type=str,
-        help="Historical period (e.g., 7d, 30d, 90d, 1y, max)"
-    )
-    parser.add_argument(
-        "--start",
-        type=str,
-        help="Start date for custom range (YYYY-MM-DD)"
-    )
-    parser.add_argument(
-        "--end",
-        type=str,
-        help="End date for custom range (YYYY-MM-DD)"
-    )
+    parser.add_argument("--period", "-p", type=str, help="Historical period (e.g., 7d, 30d, 90d, 1y, max)")
+    parser.add_argument("--start", type=str, help="Start date for custom range (YYYY-MM-DD)")
+    parser.add_argument("--end", type=str, help="End date for custom range (YYYY-MM-DD)")
 
     # Output options
     parser.add_argument(
-        "--format", "-f",
+        "--format",
+        "-f",
         type=str,
         choices=["table", "json", "csv", "minimal"],
         default="table",
-        help="Output format (default: table)"
+        help="Output format (default: table)",
     )
-    parser.add_argument(
-        "--output", "-o",
-        type=str,
-        help="Output file path (default: stdout)"
-    )
+    parser.add_argument("--output", "-o", type=str, help="Output file path (default: stdout)")
 
     # Currency options
-    parser.add_argument(
-        "--currency", "-c",
-        type=str,
-        default="usd",
-        help="Fiat currency for prices (default: usd)"
-    )
+    parser.add_argument("--currency", "-c", type=str, default="usd", help="Fiat currency for prices (default: usd)")
 
     # Cache control
-    parser.add_argument(
-        "--no-cache",
-        action="store_true",
-        help="Bypass cache and fetch fresh data"
-    )
-    parser.add_argument(
-        "--clear-cache",
-        action="store_true",
-        help="Clear all cached data"
-    )
+    parser.add_argument("--no-cache", action="store_true", help="Bypass cache and fetch fresh data")
+    parser.add_argument("--clear-cache", action="store_true", help="Clear all cached data")
 
     # Verbosity
-    parser.add_argument(
-        "--verbose", "-v",
-        action="store_true",
-        help="Enable verbose output"
-    )
-    parser.add_argument(
-        "--quiet",
-        action="store_true",
-        help="Suppress non-essential output"
-    )
+    parser.add_argument("--verbose", "-v", action="store_true", help="Enable verbose output")
+    parser.add_argument("--quiet", action="store_true", help="Suppress non-essential output")
 
     # Version
-    parser.add_argument(
-        "--version",
-        action="version",
-        version="%(prog)s 2.0.0"
-    )
+    parser.add_argument("--version", action="version", version="%(prog)s 2.0.0")
 
     return parser.parse_args()
 
@@ -153,6 +100,7 @@ def load_config() -> dict:
     if config_path.exists():
         try:
             import yaml
+
             with open(config_path, "r") as f:
                 return yaml.safe_load(f) or {}
         except ImportError:
@@ -167,20 +115,27 @@ def load_config() -> dict:
             "enabled": True,
             "spot_ttl": 30,
             "historical_ttl": 3600,
-            "directory": str(SCRIPT_DIR.parent / "data")
+            "directory": str(SCRIPT_DIR.parent / "data"),
         },
-        "currency": {
-            "default": "usd"
-        },
+        "currency": {"default": "usd"},
         "watchlists": {
-            "top10": ["bitcoin", "ethereum", "tether", "binancecoin", "solana",
-                      "ripple", "cardano", "avalanche-2", "dogecoin", "polkadot"],
-            "defi": ["uniswap", "aave", "chainlink", "maker",
-                     "compound-governance-token", "curve-dao-token", "sushi"],
+            "top10": [
+                "bitcoin",
+                "ethereum",
+                "tether",
+                "binancecoin",
+                "solana",
+                "ripple",
+                "cardano",
+                "avalanche-2",
+                "dogecoin",
+                "polkadot",
+            ],
+            "defi": ["uniswap", "aave", "chainlink", "maker", "compound-governance-token", "curve-dao-token", "sushi"],
             "layer2": ["matic-network", "arbitrum", "optimism", "immutable-x"],
             "stablecoins": ["tether", "usd-coin", "dai", "frax", "true-usd"],
-            "memecoins": ["dogecoin", "shiba-inu", "pepe", "floki", "bonk"]
-        }
+            "memecoins": ["dogecoin", "shiba-inu", "pepe", "floki", "bonk"],
+        },
     }
 
 
@@ -191,8 +146,7 @@ def get_watchlist_symbols(watchlist_name: str, config: dict) -> list:
     if watchlist_name == "custom":
         custom = watchlists.get("custom", [])
         if not custom:
-            print("Error: Custom watchlist is empty. Configure in settings.yaml",
-                  file=sys.stderr)
+            print("Error: Custom watchlist is empty. Configure in settings.yaml", file=sys.stderr)
             sys.exit(1)
         return custom
 
@@ -205,10 +159,7 @@ def get_watchlist_symbols(watchlist_name: str, config: dict) -> list:
 
 
 def handle_list_command(
-    client: CryptoAPIClient,
-    query: Optional[str],
-    formatter: PriceFormatter,
-    args: argparse.Namespace
+    client: CryptoAPIClient, query: Optional[str], formatter: PriceFormatter, args: argparse.Namespace
 ) -> None:
     """Handle --list command to search available coins."""
     try:
@@ -230,7 +181,7 @@ def handle_price_command(
     cache: CacheManager,
     formatter: PriceFormatter,
     args: argparse.Namespace,
-    config: dict
+    config: dict,
 ) -> None:
     """Handle price lookup for one or more symbols."""
     currency = args.currency.lower()
@@ -268,19 +219,14 @@ def handle_price_command(
                     stale["_stale"] = True
                     results.append(stale)
                     if not args.quiet:
-                        print(f"Warning: Using stale cache for {symbol}",
-                              file=sys.stderr)
+                        print(f"Warning: Using stale cache for {symbol}", file=sys.stderr)
 
     if not results:
         print("Error: No price data available", file=sys.stderr)
         sys.exit(1)
 
     # Output results
-    output_text = formatter.format_prices(
-        results,
-        format_type=args.format,
-        verbose=args.verbose
-    )
+    output_text = formatter.format_prices(results, format_type=args.format, verbose=args.verbose)
 
     if args.output:
         output_path = Path(args.output)
@@ -303,7 +249,7 @@ def handle_historical_command(
     cache: CacheManager,
     formatter: PriceFormatter,
     args: argparse.Namespace,
-    config: dict
+    config: dict,
 ) -> None:
     """Handle historical price lookup."""
     currency = args.currency.lower()
@@ -338,11 +284,7 @@ def handle_historical_command(
     if results is None:
         try:
             results = client.get_historical_prices(
-                symbol,
-                currency=currency,
-                period=period,
-                start_date=start_date,
-                end_date=end_date
+                symbol, currency=currency, period=period, start_date=start_date, end_date=end_date
             )
 
             if use_cache:
@@ -353,11 +295,7 @@ def handle_historical_command(
             sys.exit(1)
 
     # Output results
-    output_text = formatter.format_historical(
-        symbol,
-        results,
-        format_type=args.format
-    )
+    output_text = formatter.format_historical(symbol, results, format_type=args.format)
 
     if args.output:
         output_path = Path(args.output)
@@ -378,12 +316,11 @@ def main() -> None:
     config = load_config()
 
     # Initialize components
-    cache_dir = Path(config.get("cache", {}).get("directory",
-                     str(SCRIPT_DIR.parent / "data")))
+    cache_dir = Path(config.get("cache", {}).get("directory", str(SCRIPT_DIR.parent / "data")))
     cache = CacheManager(
         cache_dir=cache_dir,
         spot_ttl=config.get("cache", {}).get("spot_ttl", 30),
-        historical_ttl=config.get("cache", {}).get("historical_ttl", 3600)
+        historical_ttl=config.get("cache", {}).get("historical_ttl", 3600),
     )
 
     client = CryptoAPIClient(config=config)
@@ -411,24 +348,18 @@ def main() -> None:
         symbols = get_watchlist_symbols(args.watchlist, config)
     else:
         # Default: show help
-        print("Error: Specify --symbol, --symbols, --watchlist, or --list",
-              file=sys.stderr)
+        print("Error: Specify --symbol, --symbols, --watchlist, or --list", file=sys.stderr)
         print("Use --help for usage information", file=sys.stderr)
         sys.exit(1)
 
     # Handle historical vs current prices
     if args.period or args.start:
         if len(symbols) > 1:
-            print("Error: Historical data supports single symbol only",
-                  file=sys.stderr)
+            print("Error: Historical data supports single symbol only", file=sys.stderr)
             sys.exit(1)
-        handle_historical_command(
-            symbols[0], client, cache, formatter, args, config
-        )
+        handle_historical_command(symbols[0], client, cache, formatter, args, config)
     else:
-        handle_price_command(
-            symbols, client, cache, formatter, args, config
-        )
+        handle_price_command(symbols, client, cache, formatter, args, config)
 
 
 if __name__ == "__main__":

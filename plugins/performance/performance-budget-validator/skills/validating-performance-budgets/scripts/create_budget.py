@@ -16,7 +16,7 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import Dict, List, Any, Optional
+from typing import Dict, Any, Optional
 from datetime import datetime
 
 
@@ -34,9 +34,9 @@ class BudgetCreator:
                 "time_to_interactive": 3500,
                 "bundle_size": 200000,
                 "js_bundle_size": 150000,
-                "css_bundle_size": 50000
+                "css_bundle_size": 50000,
             },
-            "description": "Default performance budgets for web applications"
+            "description": "Default performance budgets for web applications",
         },
         "strict": {
             "name": "Strict Performance Budget",
@@ -48,9 +48,9 @@ class BudgetCreator:
                 "time_to_interactive": 2500,
                 "bundle_size": 100000,
                 "js_bundle_size": 75000,
-                "css_bundle_size": 25000
+                "css_bundle_size": 25000,
             },
-            "description": "Strict performance budgets for high-performance applications"
+            "description": "Strict performance budgets for high-performance applications",
         },
         "mobile": {
             "name": "Mobile Performance Budget",
@@ -62,9 +62,9 @@ class BudgetCreator:
                 "time_to_interactive": 5500,
                 "bundle_size": 150000,
                 "js_bundle_size": 100000,
-                "css_bundle_size": 50000
+                "css_bundle_size": 50000,
             },
-            "description": "Performance budgets optimized for mobile devices"
+            "description": "Performance budgets optimized for mobile devices",
         },
         "api": {
             "name": "API Performance Budget",
@@ -73,10 +73,10 @@ class BudgetCreator:
                 "api_response_time": 500,
                 "p95_response_time": 2000,
                 "p99_response_time": 5000,
-                "error_rate": 0.5
+                "error_rate": 0.5,
             },
-            "description": "Performance budgets for API services"
-        }
+            "description": "Performance budgets for API services",
+        },
     }
 
     def __init__(self):
@@ -99,7 +99,7 @@ class BudgetCreator:
             "version": version,
             "created": datetime.now().isoformat(),
             "description": description,
-            "budgets": {}
+            "budgets": {},
         }
 
         # Add metrics
@@ -117,7 +117,7 @@ class BudgetCreator:
             "7": ("css_bundle_size", "KB", 50),
             "8": ("api_response_time", "ms", 500),
             "9": ("memory_usage", "MB", 100),
-            "10": ("custom metric", None, None)
+            "10": ("custom metric", None, None),
         }
 
         for key, (metric_name, unit, default) in metrics_info.items():
@@ -138,16 +138,16 @@ class BudgetCreator:
                     metric_name, unit, default = metrics_info[selection]
 
                     if metric_name == "custom metric":
-                        custom_name = input(f"  Custom metric name: ").strip()
-                        custom_budget = input(f"  Budget value: ").strip()
-                        custom_unit = input(f"  Unit (ms/KB/etc): ").strip()
+                        custom_name = input("  Custom metric name: ").strip()
+                        custom_budget = input("  Budget value: ").strip()
+                        input("  Unit (ms/KB/etc): ").strip()
 
                         if custom_name and custom_budget:
                             try:
                                 self.budget["budgets"][custom_name] = float(custom_budget)
                                 print(f"  ✓ Added {custom_name}")
                             except ValueError:
-                                print(f"  ✗ Invalid budget value")
+                                print("  ✗ Invalid budget value")
                     else:
                         budget_value = input(f"  Budget for {metric_name} (default: {default}): ").strip()
 
@@ -158,7 +158,7 @@ class BudgetCreator:
                                 self.budget["budgets"][metric_name] = default
                             print(f"  ✓ Added {metric_name}")
                         except ValueError:
-                            print(f"  ✗ Invalid budget value, skipping")
+                            print("  ✗ Invalid budget value, skipping")
 
         return self.budget
 
@@ -172,10 +172,7 @@ class BudgetCreator:
         return template
 
     def create_from_baseline(
-        self,
-        metrics: Dict[str, Any],
-        margin_percent: float = 10.0,
-        percentile: float = 1.0
+        self, metrics: Dict[str, Any], margin_percent: float = 10.0, percentile: float = 1.0
     ) -> Dict[str, Any]:
         """
         Create budget from baseline metrics with margin.
@@ -194,11 +191,8 @@ class BudgetCreator:
             "created": datetime.now().isoformat(),
             "description": f"Auto-generated from baseline with {margin_percent}% margin",
             "baseline_metrics": metrics.copy(),
-            "generation_params": {
-                "margin_percent": margin_percent,
-                "percentile": percentile
-            },
-            "budgets": {}
+            "generation_params": {"margin_percent": margin_percent, "percentile": percentile},
+            "budgets": {},
         }
 
         # Convert metrics to budgets with margin
@@ -215,10 +209,7 @@ class BudgetCreator:
         return self.budget
 
     def create_tiered(
-        self,
-        metrics: Dict[str, Any],
-        warning_margin: float = 5.0,
-        critical_margin: float = 15.0
+        self, metrics: Dict[str, Any], warning_margin: float = 5.0, critical_margin: float = 15.0
     ) -> Dict[str, Any]:
         """
         Create tiered budget with warning and critical thresholds.
@@ -236,7 +227,7 @@ class BudgetCreator:
             "version": "1.0.0",
             "created": datetime.now().isoformat(),
             "description": f"Tiered thresholds: warning at {warning_margin}%, critical at {critical_margin}%",
-            "budgets": {}
+            "budgets": {},
         }
 
         for metric_name, metric_value in metrics.items():
@@ -244,17 +235,13 @@ class BudgetCreator:
                 self.budget["budgets"][metric_name] = {
                     "baseline": metric_value,
                     "warning": round(metric_value * (1 + warning_margin / 100), 2),
-                    "critical": round(metric_value * (1 + critical_margin / 100), 2)
+                    "critical": round(metric_value * (1 + critical_margin / 100), 2),
                 }
 
         return self.budget
 
     def add_metric(
-        self,
-        metric_name: str,
-        budget_value: float,
-        unit: Optional[str] = None,
-        description: Optional[str] = None
+        self, metric_name: str, budget_value: float, unit: Optional[str] = None, description: Optional[str] = None
     ) -> None:
         """Add a metric to the budget."""
         if not self.budget:
@@ -262,7 +249,7 @@ class BudgetCreator:
                 "name": "Performance Budget",
                 "version": "1.0.0",
                 "created": datetime.now().isoformat(),
-                "budgets": {}
+                "budgets": {},
             }
 
         if isinstance(budget_value, dict):
@@ -279,7 +266,7 @@ class BudgetCreator:
         output = Path(output_path)
         output.parent.mkdir(parents=True, exist_ok=True)
 
-        with open(output, 'w') as f:
+        with open(output, "w") as f:
             json.dump(self.budget, f, indent=2)
 
         print(f"Budget saved to: {output_path}")
@@ -312,51 +299,21 @@ Examples:
   create_budget.py --baseline metrics.json --margin 15 --output budget.json
   create_budget.py --baseline metrics.json --tiered --output budget.json
   create_budget.py --list-templates
-        """
+        """,
     )
 
+    parser.add_argument("-i", "--interactive", action="store_true", help="Interactive budget creation")
     parser.add_argument(
-        "-i", "--interactive",
-        action="store_true",
-        help="Interactive budget creation"
+        "-t", "--template", type=str, choices=list(BudgetCreator.TEMPLATES.keys()), help="Use a predefined template"
     )
+    parser.add_argument("-b", "--baseline", type=str, help="Generate from baseline metrics file")
     parser.add_argument(
-        "-t", "--template",
-        type=str,
-        choices=list(BudgetCreator.TEMPLATES.keys()),
-        help="Use a predefined template"
+        "-m", "--margin", type=float, default=10.0, help="Safety margin percentage for baseline (default: 10)"
     )
-    parser.add_argument(
-        "-b", "--baseline",
-        type=str,
-        help="Generate from baseline metrics file"
-    )
-    parser.add_argument(
-        "-m", "--margin",
-        type=float,
-        default=10.0,
-        help="Safety margin percentage for baseline (default: 10)"
-    )
-    parser.add_argument(
-        "--tiered",
-        action="store_true",
-        help="Generate tiered budget (baseline, warning, critical)"
-    )
-    parser.add_argument(
-        "-o", "--output",
-        type=str,
-        help="Output budget file"
-    )
-    parser.add_argument(
-        "--list-templates",
-        action="store_true",
-        help="List available templates"
-    )
-    parser.add_argument(
-        "-v", "--verbose",
-        action="store_true",
-        help="Enable verbose output"
-    )
+    parser.add_argument("--tiered", action="store_true", help="Generate tiered budget (baseline, warning, critical)")
+    parser.add_argument("-o", "--output", type=str, help="Output budget file")
+    parser.add_argument("--list-templates", action="store_true", help="List available templates")
+    parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose output")
 
     args = parser.parse_args()
 
@@ -377,7 +334,7 @@ Examples:
                 print(f"Error: Baseline file not found: {args.baseline}", file=sys.stderr)
                 return 1
 
-            with open(baseline_path, 'r') as f:
+            with open(baseline_path, "r") as f:
                 metrics = json.load(f)
 
             if args.tiered:

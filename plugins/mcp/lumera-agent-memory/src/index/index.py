@@ -6,7 +6,7 @@ import json
 import sqlite3
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Optional
+from typing import Optional
 
 
 class MemoryIndex:
@@ -73,12 +73,7 @@ class MemoryIndex:
         conn.close()
 
     def store_memory(
-        self,
-        session_id: str,
-        cascade_uri: str,
-        memory_card: dict,
-        tags: list[str] = None,
-        metadata: dict = None
+        self, session_id: str, cascade_uri: str, memory_card: dict, tags: list[str] = None, metadata: dict = None
     ) -> bool:
         """
         Store memory in index.
@@ -91,33 +86,39 @@ class MemoryIndex:
 
         try:
             # Insert into main table
-            conn.execute("""
+            conn.execute(
+                """
                 INSERT OR REPLACE INTO memories
                 (session_id, cascade_uri, memory_card, tags, metadata, created_at, updated_at)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
-            """, (
-                session_id,
-                cascade_uri,
-                json.dumps(memory_card),
-                json.dumps(tags or []),
-                json.dumps(metadata or {}),
-                now,
-                now
-            ))
+            """,
+                (
+                    session_id,
+                    cascade_uri,
+                    json.dumps(memory_card),
+                    json.dumps(tags or []),
+                    json.dumps(metadata or {}),
+                    now,
+                    now,
+                ),
+            )
 
             # Insert into FTS table
             title = memory_card.get("title", "")
             content = " ".join(memory_card.get("summary_bullets", []))
             keywords = " ".join(memory_card.get("keywords", []))
 
-            conn.execute("""
+            conn.execute(
+                """
                 INSERT OR REPLACE INTO memories_fts
                 (rowid, session_id, title, content, keywords)
                 VALUES (
                     (SELECT id FROM memories WHERE session_id = ?),
                     ?, ?, ?, ?
                 )
-            """, (session_id, session_id, title, content, keywords))
+            """,
+                (session_id, session_id, title, content, keywords),
+            )
 
             conn.commit()
             return True
@@ -129,11 +130,7 @@ class MemoryIndex:
             conn.close()
 
     def search(
-        self,
-        query: str,
-        tags: Optional[list[str]] = None,
-        time_range: Optional[dict] = None,
-        limit: int = 10
+        self, query: str, tags: Optional[list[str]] = None, time_range: Optional[dict] = None, limit: int = 10
     ) -> list[dict]:
         """
         Search memories using FTS5.
@@ -151,7 +148,8 @@ class MemoryIndex:
         conn.row_factory = sqlite3.Row
 
         # Build FTS query
-        sql_parts = ["""
+        sql_parts = [
+            """
             SELECT
                 m.session_id,
                 m.cascade_uri,
@@ -162,7 +160,8 @@ class MemoryIndex:
             FROM memories m
             JOIN memories_fts fts ON m.id = fts.rowid
             WHERE memories_fts MATCH ?
-        """]
+        """
+        ]
 
         params = [query]
 
@@ -200,15 +199,17 @@ class MemoryIndex:
             if memory_card.get("summary_bullets"):
                 snippet += " - " + memory_card["summary_bullets"][0][:100]
 
-            hits.append({
-                "session_id": row["session_id"],
-                "cascade_uri": row["cascade_uri"],
-                "title": memory_card.get("title", ""),
-                "snippet": snippet,
-                "tags": tags_list,
-                "created_at": row["created_at"],
-                "score": abs(row["score"])  # FTS5 rank is negative
-            })
+            hits.append(
+                {
+                    "session_id": row["session_id"],
+                    "cascade_uri": row["cascade_uri"],
+                    "title": memory_card.get("title", ""),
+                    "snippet": snippet,
+                    "tags": tags_list,
+                    "created_at": row["created_at"],
+                    "score": abs(row["score"]),  # FTS5 rank is negative
+                }
+            )
 
         return hits
 
@@ -217,9 +218,12 @@ class MemoryIndex:
         conn = sqlite3.connect(self.db_path)
         conn.row_factory = sqlite3.Row
 
-        cursor = conn.execute("""
+        cursor = conn.execute(
+            """
             SELECT * FROM memories WHERE cascade_uri = ?
-        """, (cascade_uri,))
+        """,
+            (cascade_uri,),
+        )
 
         row = cursor.fetchone()
         conn.close()
@@ -234,5 +238,5 @@ class MemoryIndex:
             "tags": json.loads(row["tags"]),
             "metadata": json.loads(row["metadata"]),
             "created_at": row["created_at"],
-            "updated_at": row["updated_at"]
+            "updated_at": row["updated_at"],
         }

@@ -25,7 +25,15 @@ Run with `--print-config-only` to dump the resolved configuration without bindin
 """
 
 from __future__ import annotations
-import argparse, base64, hmac, hashlib, json, os, sys, time, uuid
+import argparse
+import base64
+import hmac
+import hashlib
+import json
+import os
+import sys
+import time
+import uuid
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 COUNTERS: dict[str, int] = {}
@@ -37,9 +45,7 @@ def incr(name: str) -> None:
 
 
 def verify_shopify_hmac(body: bytes, header: str, secret: str) -> bool:
-    digest = base64.b64encode(
-        hmac.new(secret.encode(), body, hashlib.sha256).digest()
-    ).decode()
+    digest = base64.b64encode(hmac.new(secret.encode(), body, hashlib.sha256).digest()).decode()
     return hmac.compare_digest(digest, header or "")
 
 
@@ -61,6 +67,7 @@ def normalize_e164(raw: str) -> str | None:
 
 def redis_client():
     import redis as redis_lib
+
     return redis_lib.from_url(CONFIG["redis_url"], decode_responses=True)
 
 
@@ -84,8 +91,7 @@ def is_opted_out(phone: str) -> bool:
     raw = r.hgetall(f"podium:contact:{phone}")
     if not raw:
         return False
-    flags = ["marketing_sms_opt_out", "review_request_opt_out",
-             "global_unsubscribe", "podium_keyword_optout"]
+    flags = ["marketing_sms_opt_out", "review_request_opt_out", "global_unsubscribe", "podium_keyword_optout"]
     return any(raw.get(f) == "true" for f in flags)
 
 
@@ -208,9 +214,16 @@ class Handler(BaseHTTPRequestHandler):
     }
 
     def log_message(self, fmt: str, *args) -> None:
-        sys.stderr.write(json.dumps({
-            "ts": time.time(), "path": self.path, "msg": fmt % args,
-        }) + "\n")
+        sys.stderr.write(
+            json.dumps(
+                {
+                    "ts": time.time(),
+                    "path": self.path,
+                    "msg": fmt % args,
+                }
+            )
+            + "\n"
+        )
 
     def do_GET(self) -> None:
         if self.path == "/healthz":
@@ -250,13 +263,13 @@ class Handler(BaseHTTPRequestHandler):
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description=__doc__,
-                                 formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--port", type=int, default=8787)
     ap.add_argument("--shopify-webhook-secret-env", default="SHOPIFY_WEBHOOK_SECRET")
     ap.add_argument("--podium-webhook-secret-env", default="PODIUM_WEBHOOK_SECRET")
-    ap.add_argument("--podium-campaign-id", required=True,
-                    help="Podium campaign ID — pass {your-podium-campaign-id} for redaction")
+    ap.add_argument(
+        "--podium-campaign-id", required=True, help="Podium campaign ID — pass {your-podium-campaign-id} for redaction"
+    )
     ap.add_argument("--redis-url", required=True)
     ap.add_argument("--cooldown-days", type=int, default=30)
     ap.add_argument("--refund-buffer-days", type=int, default=5)
@@ -264,20 +277,21 @@ def main() -> int:
     ap.add_argument("--print-config-only", action="store_true")
     args = ap.parse_args()
 
-    CONFIG.update({
-        "shopify_secret_env": args.shopify_webhook_secret_env,
-        "podium_secret_env": args.podium_webhook_secret_env,
-        "campaign_id": args.podium_campaign_id,
-        "redis_url": args.redis_url,
-        "cooldown_days": args.cooldown_days,
-        "refund_buffer_days": args.refund_buffer_days,
-        "queue_zkey": f"queue:{args.queue_name}:scheduled",
-        "queue_hkey": f"queue:{args.queue_name}:payloads",
-    })
+    CONFIG.update(
+        {
+            "shopify_secret_env": args.shopify_webhook_secret_env,
+            "podium_secret_env": args.podium_webhook_secret_env,
+            "campaign_id": args.podium_campaign_id,
+            "redis_url": args.redis_url,
+            "cooldown_days": args.cooldown_days,
+            "refund_buffer_days": args.refund_buffer_days,
+            "queue_zkey": f"queue:{args.queue_name}:scheduled",
+            "queue_hkey": f"queue:{args.queue_name}:payloads",
+        }
+    )
 
     if args.print_config_only:
-        print(json.dumps({k: v for k, v in CONFIG.items() if k != "redis_url"},
-                         indent=2))
+        print(json.dumps({k: v for k, v in CONFIG.items() if k != "redis_url"}, indent=2))
         return 0
 
     server = ThreadingHTTPServer(("0.0.0.0", args.port), Handler)

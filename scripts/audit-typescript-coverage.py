@@ -62,12 +62,7 @@ def main() -> int:
 
     repo_root = root.parent
 
-    ts_files = sorted(
-        p
-        for p in root.rglob("*.ts")
-        if "node_modules" not in p.parts
-        and not p.name.endswith(".d.ts")
-    )
+    ts_files = sorted(p for p in root.rglob("*.ts") if "node_modules" not in p.parts and not p.name.endswith(".d.ts"))
 
     if not ts_files:
         print("No .ts files under plugins/ (excluding node_modules + .d.ts).")

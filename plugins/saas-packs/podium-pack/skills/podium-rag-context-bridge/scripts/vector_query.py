@@ -19,7 +19,12 @@ Exit codes:
 """
 
 from __future__ import annotations
-import argparse, asyncio, hashlib, json, re, sys
+import argparse
+import asyncio
+import hashlib
+import json
+import re
+import sys
 
 
 async def embed_stub(text: str) -> list[float]:
@@ -33,19 +38,18 @@ async def rerank_stub(query: str, candidates: list[str]) -> list[float]:
     for c in candidates:
         c_tokens = set(re.findall(r"\w+", c.lower()))
         if not q_tokens or not c_tokens:
-            out.append(0.0); continue
+            out.append(0.0)
+            continue
         out.append(len(q_tokens & c_tokens) / max(len(q_tokens), 1))
     return out
 
 
-async def pgvector_query(dsn: str, embedding: list[float], top_k: int,
-                          contact_uid: str | None) -> list[dict]:
+async def pgvector_query(dsn: str, embedding: list[float], top_k: int, contact_uid: str | None) -> list[dict]:
     def _run() -> list[dict] | None:
         try:
             import psycopg
         except ImportError:
-            print("psycopg not installed — install with: pip install 'psycopg[binary]'",
-                  file=sys.stderr)
+            print("psycopg not installed — install with: pip install 'psycopg[binary]'", file=sys.stderr)
             return None
         try:
             with psycopg.connect(dsn, connect_timeout=2) as conn:
@@ -64,16 +68,21 @@ async def pgvector_query(dsn: str, embedding: list[float], top_k: int,
             print(f"pgvector error: {e}", file=sys.stderr)
             return None
         return [
-            {"id": r[0], "contact_uid": r[1], "content": r[2],
-             "channel": r[3], "occurred_at": str(r[4]) if r[4] is not None else None,
-             "cosine_score": float(r[5])}
+            {
+                "id": r[0],
+                "contact_uid": r[1],
+                "content": r[2],
+                "channel": r[3],
+                "occurred_at": str(r[4]) if r[4] is not None else None,
+                "cosine_score": float(r[5]),
+            }
             for r in rows
         ]
+
     return await asyncio.to_thread(_run)
 
 
-async def run(query: str, dsn: str, contact_uid: str | None,
-              pool_k: int, final_k: int) -> int:
+async def run(query: str, dsn: str, contact_uid: str | None, pool_k: int, final_k: int) -> int:
     emb = await embed_stub(query)
     pool = await pgvector_query(dsn, emb, pool_k, contact_uid)
     if pool is None:
@@ -91,16 +100,14 @@ async def run(query: str, dsn: str, contact_uid: str | None,
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description=__doc__,
-                                  formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--query",        required=True)
-    ap.add_argument("--contact-uid",  default=None)
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--query", required=True)
+    ap.add_argument("--contact-uid", default=None)
     ap.add_argument("--pgvector-dsn", required=True)
-    ap.add_argument("--pool-k",       type=int, default=20)
-    ap.add_argument("--final-k",      type=int, default=5)
+    ap.add_argument("--pool-k", type=int, default=20)
+    ap.add_argument("--final-k", type=int, default=5)
     args = ap.parse_args()
-    return asyncio.run(run(args.query, args.pgvector_dsn, args.contact_uid,
-                            args.pool_k, args.final_k))
+    return asyncio.run(run(args.query, args.pgvector_dsn, args.contact_uid, args.pool_k, args.final_k))
 
 
 if __name__ == "__main__":

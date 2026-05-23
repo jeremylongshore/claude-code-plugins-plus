@@ -10,8 +10,7 @@ import argparse
 import json
 import sys
 from datetime import datetime
-from pathlib import Path
-from typing import Dict, List, Any, Optional
+from typing import Dict, Any
 
 
 class ValidationRuleConfigurator:
@@ -30,11 +29,9 @@ class ValidationRuleConfigurator:
         Args:
             column: Column name
         """
-        self.rules.append({
-            "rule": "not_null",
-            "column": column,
-            "description": f"Column {column} must not contain NULL values"
-        })
+        self.rules.append(
+            {"rule": "not_null", "column": column, "description": f"Column {column} must not contain NULL values"}
+        )
 
     def add_unique_rule(self, column: str):
         """
@@ -43,18 +40,11 @@ class ValidationRuleConfigurator:
         Args:
             column: Column name
         """
-        self.rules.append({
-            "rule": "unique",
-            "column": column,
-            "description": f"Column {column} must contain unique values"
-        })
+        self.rules.append(
+            {"rule": "unique", "column": column, "description": f"Column {column} must contain unique values"}
+        )
 
-    def add_range_rule(
-        self,
-        column: str,
-        min_value: float,
-        max_value: float
-    ):
+    def add_range_rule(self, column: str, min_value: float, max_value: float):
         """
         Add a RANGE validation rule.
 
@@ -63,13 +53,15 @@ class ValidationRuleConfigurator:
             min_value: Minimum allowed value
             max_value: Maximum allowed value
         """
-        self.rules.append({
-            "rule": "range",
-            "column": column,
-            "min": min_value,
-            "max": max_value,
-            "description": f"Column {column} values must be between {min_value} and {max_value}"
-        })
+        self.rules.append(
+            {
+                "rule": "range",
+                "column": column,
+                "min": min_value,
+                "max": max_value,
+                "description": f"Column {column} values must be between {min_value} and {max_value}",
+            }
+        )
 
     def add_pattern_rule(self, column: str, pattern: str):
         """
@@ -79,12 +71,14 @@ class ValidationRuleConfigurator:
             column: Column name
             pattern: Regular expression pattern
         """
-        self.rules.append({
-            "rule": "pattern",
-            "column": column,
-            "pattern": pattern,
-            "description": f"Column {column} values must match pattern: {pattern}"
-        })
+        self.rules.append(
+            {
+                "rule": "pattern",
+                "column": column,
+                "pattern": pattern,
+                "description": f"Column {column} values must match pattern: {pattern}",
+            }
+        )
 
     def add_custom_rule(self, column: str, query: str):
         """
@@ -94,12 +88,9 @@ class ValidationRuleConfigurator:
             column: Column name
             query: Custom SQL query
         """
-        self.rules.append({
-            "rule": "custom",
-            "column": column,
-            "query": query,
-            "description": f"Custom validation on {column}"
-        })
+        self.rules.append(
+            {"rule": "custom", "column": column, "query": query, "description": f"Custom validation on {column}"}
+        )
 
     def remove_rule(self, index: int) -> bool:
         """
@@ -127,7 +118,7 @@ class ValidationRuleConfigurator:
             "table": self.table_name,
             "database": self.database,
             "created_at": datetime.now().isoformat(),
-            "validations": self.rules
+            "validations": self.rules,
         }
 
     def load_config(self, filepath: str) -> bool:
@@ -141,7 +132,7 @@ class ValidationRuleConfigurator:
             True if successful, False otherwise
         """
         try:
-            with open(filepath, 'r') as f:
+            with open(filepath, "r") as f:
                 config = json.load(f)
 
             self.table_name = config.get("table", "")
@@ -164,7 +155,7 @@ class ValidationRuleConfigurator:
             True if successful, False otherwise
         """
         try:
-            with open(filepath, 'w') as f:
+            with open(filepath, "w") as f:
                 json.dump(self.get_config_dict(), f, indent=2)
             return True
         except Exception as e:
@@ -179,9 +170,9 @@ def interactive_mode(configurator: ValidationRuleConfigurator):
     Args:
         configurator: ValidationRuleConfigurator instance
     """
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("Data Validation Rule Configurator")
-    print("="*60 + "\n")
+    print("=" * 60 + "\n")
 
     # Get table and database info
     configurator.table_name = input("Enter table name: ").strip()
@@ -258,9 +249,9 @@ def interactive_mode(configurator: ValidationRuleConfigurator):
             print("Invalid choice. Please try again.")
 
     # Summary and save
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("Configuration Summary")
-    print("="*60)
+    print("=" * 60)
     print(f"Table: {configurator.table_name}")
     print(f"Database: {configurator.database or '(none specified)'}")
     print(f"Total Rules: {len(configurator.rules)}\n")
@@ -406,37 +397,16 @@ Examples:
 
   # Load and modify existing rules
   %(prog)s --load rules.json --not-null phone --output rules.json
-        """
+        """,
     )
 
-    parser.add_argument(
-        "--table",
-        help="Table name for non-interactive mode"
-    )
-    parser.add_argument(
-        "--database",
-        help="Database name"
-    )
-    parser.add_argument(
-        "--not-null",
-        help="Comma-separated columns that must not be NULL"
-    )
-    parser.add_argument(
-        "--unique",
-        help="Comma-separated columns that must be unique"
-    )
-    parser.add_argument(
-        "--range",
-        help="Range validations in format: col:min:max,col2:min2:max2"
-    )
-    parser.add_argument(
-        "--load",
-        help="Load existing configuration file"
-    )
-    parser.add_argument(
-        "--output",
-        help="Output file for configuration (JSON)"
-    )
+    parser.add_argument("--table", help="Table name for non-interactive mode")
+    parser.add_argument("--database", help="Database name")
+    parser.add_argument("--not-null", help="Comma-separated columns that must not be NULL")
+    parser.add_argument("--unique", help="Comma-separated columns that must be unique")
+    parser.add_argument("--range", help="Range validations in format: col:min:max,col2:min2:max2")
+    parser.add_argument("--load", help="Load existing configuration file")
+    parser.add_argument("--output", help="Output file for configuration (JSON)")
 
     args = parser.parse_args()
 

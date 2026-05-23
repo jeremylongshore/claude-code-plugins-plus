@@ -20,11 +20,17 @@ Exit codes:
 """
 
 from __future__ import annotations
-import argparse, asyncio, json, os, re, sys, time
-from pathlib import Path
+import argparse
+import asyncio
+import json
+import os
+import re
+import sys
+import time
 from typing import Any
 
-import urllib.request, urllib.error
+import urllib.request
+import urllib.error
 
 
 # --- redaction ---------------------------------------------------------------
@@ -34,10 +40,8 @@ REDACTION_PATTERNS = [
     (re.compile(r"\b\d{3}-?\d{2}-?\d{4}\b"), "[REDACTED:SSN]"),
     (re.compile(r"\b[\w.+-]+@[\w-]+\.[\w.-]+\b"), "[REDACTED:EMAIL]"),
     (re.compile(r"\+?\d[\d\s\-().]{8,}\d"), "[REDACTED:PHONE]"),
-    (re.compile(r"\b(0?[1-9]|1[0-2])[/-](0?[1-9]|[12]\d|3[01])[/-](19|20)\d{2}\b"),
-        "[REDACTED:DOB]"),
-    (re.compile(r"\b\d{1,5}\s+\w+\s+(St|Ave|Rd|Blvd|Lane|Ln|Dr|Drive|Court|Ct)\b", re.I),
-        "[REDACTED:ADDR]"),
+    (re.compile(r"\b(0?[1-9]|1[0-2])[/-](0?[1-9]|[12]\d|3[01])[/-](19|20)\d{2}\b"), "[REDACTED:DOB]"),
+    (re.compile(r"\b\d{1,5}\s+\w+\s+(St|Ave|Rd|Blvd|Lane|Ln|Dr|Drive|Court|Ct)\b", re.I), "[REDACTED:ADDR]"),
 ]
 
 
@@ -54,6 +58,7 @@ def redact(text: str) -> str:
 # Production callers should swap these for the real implementations documented in
 # references/implementation.md.
 
+
 async def embed_stub(text: str) -> list[float]:
     """Deterministic hashed pseudo-embedding so the CLI can be exercised without a model.
 
@@ -61,6 +66,7 @@ async def embed_stub(text: str) -> list[float]:
     Returns a 1024-dim float vector (matches default pgvector schema).
     """
     import hashlib
+
     digest = hashlib.sha256(text.encode("utf-8")).digest()
     # Spread the 32-byte digest into 1024 floats in [-1, 1]. NOT semantically meaningful;
     # the CLI is wired this way so the pipeline can be smoke-tested end-to-end.
@@ -85,12 +91,12 @@ async def rerank_stub(query: str, candidates: list[str]) -> list[float]:
     return scores
 
 
-async def pgvector_query(dsn: str, embedding: list[float], top_k: int,
-                          contact_uid: str | None) -> list[dict]:
+async def pgvector_query(dsn: str, embedding: list[float], top_k: int, contact_uid: str | None) -> list[dict]:
     """Synchronous psycopg call wrapped in a thread.
 
     Returns the empty list if psycopg is unavailable or the connection fails — degraded mode.
     """
+
     def _run() -> list[dict]:
         try:
             import psycopg
@@ -110,13 +116,19 @@ async def pgvector_query(dsn: str, embedding: list[float], top_k: int,
                     )
                     rows = cur.fetchall()
             return [
-                {"id": r[0], "contact_uid": r[1], "content": r[2],
-                 "channel": r[3], "occurred_at": str(r[4]) if r[4] is not None else None,
-                 "score": float(r[5])}
+                {
+                    "id": r[0],
+                    "contact_uid": r[1],
+                    "content": r[2],
+                    "channel": r[3],
+                    "occurred_at": str(r[4]) if r[4] is not None else None,
+                    "score": float(r[5]),
+                }
                 for r in rows
             ]
         except Exception:
             return []
+
     return await asyncio.to_thread(_run)
 
 
@@ -146,6 +158,7 @@ async def fetch_live_contact(token: str | None, contact_uid: str | None) -> dict
 
 # --- pipeline ---------------------------------------------------------------
 
+
 def approx_tokens(s: str, chars_per_token: int = 4) -> int:
     return max(1, len(s) // chars_per_token)
 
@@ -154,18 +167,20 @@ def merge_live_over_vector(vec_hits: list[dict], live_contact: dict) -> dict:
     return {
         "contact": live_contact,
         "historical_excerpts": [
-            {"id": h.get("id"), "content": h["content"], "channel": h.get("channel"),
-             "occurred_at": h.get("occurred_at"),
-             "rerank_score": float(h.get("rerank_score", h.get("score", 0.0)))}
+            {
+                "id": h.get("id"),
+                "content": h["content"],
+                "channel": h.get("channel"),
+                "occurred_at": h.get("occurred_at"),
+                "rerank_score": float(h.get("rerank_score", h.get("score", 0.0))),
+            }
             for h in vec_hits
         ],
     }
 
 
 def redact_bundle(bundle: dict) -> dict:
-    bundle["historical_excerpts"] = [
-        {**e, "content": redact(e["content"])} for e in bundle["historical_excerpts"]
-    ]
+    bundle["historical_excerpts"] = [{**e, "content": redact(e["content"])} for e in bundle["historical_excerpts"]]
     return bundle
 
 
@@ -197,8 +212,14 @@ async def with_deadline(coro, deadline: float) -> Any:
 
 
 async def build_context(
-    transcript: str, contact_uid: str | None, dsn: str, podium_token: str | None,
-    pool_k: int, final_k: int, timeout_ms: int, max_tokens: int,
+    transcript: str,
+    contact_uid: str | None,
+    dsn: str,
+    podium_token: str | None,
+    pool_k: int,
+    final_k: int,
+    timeout_ms: int,
+    max_tokens: int,
 ) -> dict:
     started = time.monotonic()
     deadline = started + timeout_ms / 1000.0
@@ -215,11 +236,10 @@ async def build_context(
         return pool[:final_k]
 
     vec_task = asyncio.create_task(with_deadline(vector_path(), deadline))
-    live_task = asyncio.create_task(with_deadline(fetch_live_contact(podium_token, contact_uid),
-                                                   deadline))
+    live_task = asyncio.create_task(with_deadline(fetch_live_contact(podium_token, contact_uid), deadline))
 
     vec_hits = (await vec_task) or []
-    live     = (await live_task) or {"live_fields_available": False}
+    live = (await live_task) or {"live_fields_available": False}
 
     elapsed_ms = int((time.monotonic() - started) * 1000)
     bundle = merge_live_over_vector(vec_hits, live)
@@ -237,34 +257,41 @@ async def build_context(
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description=__doc__,
-                                  formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--transcript", required=True)
     ap.add_argument("--contact-uid", default=None)
-    ap.add_argument("--pgvector-dsn", required=True,
-                    help="postgresql:// DSN. Load from secret store; pass {your-pgvector-dsn} placeholder.")
-    ap.add_argument("--podium-token-env", default="PODIUM_ACCESS_TOKEN",
-                    help="env var holding a live Podium access token (from podium-auth)")
-    ap.add_argument("--pool-k",     type=int, default=20)
-    ap.add_argument("--final-k",    type=int, default=5)
+    ap.add_argument(
+        "--pgvector-dsn",
+        required=True,
+        help="postgresql:// DSN. Load from secret store; pass {your-pgvector-dsn} placeholder.",
+    )
+    ap.add_argument(
+        "--podium-token-env",
+        default="PODIUM_ACCESS_TOKEN",
+        help="env var holding a live Podium access token (from podium-auth)",
+    )
+    ap.add_argument("--pool-k", type=int, default=20)
+    ap.add_argument("--final-k", type=int, default=5)
     ap.add_argument("--timeout-ms", type=int, default=800)
     ap.add_argument("--max-tokens", type=int, default=1500)
-    ap.add_argument("--output",     choices=("json", "human"), default="json")
+    ap.add_argument("--output", choices=("json", "human"), default="json")
     args = ap.parse_args()
 
     podium_token = os.environ.get(args.podium_token_env)
 
     try:
-        bundle = asyncio.run(build_context(
-            transcript=args.transcript,
-            contact_uid=args.contact_uid,
-            dsn=args.pgvector_dsn,
-            podium_token=podium_token,
-            pool_k=args.pool_k,
-            final_k=args.final_k,
-            timeout_ms=args.timeout_ms,
-            max_tokens=args.max_tokens,
-        ))
+        bundle = asyncio.run(
+            build_context(
+                transcript=args.transcript,
+                contact_uid=args.contact_uid,
+                dsn=args.pgvector_dsn,
+                podium_token=podium_token,
+                pool_k=args.pool_k,
+                final_k=args.final_k,
+                timeout_ms=args.timeout_ms,
+                max_tokens=args.max_tokens,
+            )
+        )
     except Exception as e:
         print(f"fatal: {e}", file=sys.stderr)
         return 2
@@ -272,12 +299,15 @@ def main() -> int:
     if args.output == "json":
         print(json.dumps(bundle, indent=2, default=str))
     else:
-        print(f"elapsed_ms={bundle['meta']['elapsed_ms']} "
-              f"partial={bundle['meta']['partial']} "
-              f"vector_hits={bundle['meta']['had_vector_hits']} "
-              f"live_lookup={bundle['meta']['had_live_lookup']} "
-              f"excerpts={len(bundle['historical_excerpts'])} "
-              f"tokens={bundle.get('token_count')}", file=sys.stderr)
+        print(
+            f"elapsed_ms={bundle['meta']['elapsed_ms']} "
+            f"partial={bundle['meta']['partial']} "
+            f"vector_hits={bundle['meta']['had_vector_hits']} "
+            f"live_lookup={bundle['meta']['had_live_lookup']} "
+            f"excerpts={len(bundle['historical_excerpts'])} "
+            f"tokens={bundle.get('token_count')}",
+            file=sys.stderr,
+        )
         print(json.dumps(bundle, indent=2, default=str))
     return 0
 

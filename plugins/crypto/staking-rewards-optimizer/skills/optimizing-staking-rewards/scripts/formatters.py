@@ -13,7 +13,7 @@ import json
 import csv
 import io
 from datetime import datetime
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 
 
 class StakingFormatter:
@@ -23,12 +23,7 @@ class StakingFormatter:
         """Initialize formatter."""
         self.timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")
 
-    def format(
-        self,
-        data: Any,
-        format_type: str = "table",
-        detailed: bool = False
-    ) -> str:
+    def format(self, data: Any, format_type: str = "table", detailed: bool = False) -> str:
         """Format data for output.
 
         Args:
@@ -49,11 +44,7 @@ class StakingFormatter:
             else:
                 return self._format_single(data, detailed)
 
-    def _format_table(
-        self,
-        options: List[Dict[str, Any]],
-        detailed: bool = False
-    ) -> str:
+    def _format_table(self, options: List[Dict[str, Any]], detailed: bool = False) -> str:
         """Format as comparison table.
 
         Args:
@@ -101,7 +92,7 @@ class StakingFormatter:
             symbol = opt.get("symbol", "")
             if symbol:
                 name = f"{name} ({symbol})"
-            name = name[:18 if detailed else 20]
+            name = name[: 18 if detailed else 20]
 
             stype = (opt.get("staking_type", "?"))[:7]
             gross_apy = metrics.get("gross_apy", opt.get("apy", 0) or 0)
@@ -124,11 +115,7 @@ class StakingFormatter:
 
         return "\n".join(lines)
 
-    def _format_single(
-        self,
-        option: Dict[str, Any],
-        detailed: bool = False
-    ) -> str:
+    def _format_single(self, option: Dict[str, Any], detailed: bool = False) -> str:
         """Format single staking option.
 
         Args:
@@ -242,10 +229,7 @@ class StakingFormatter:
         return "\n".join(lines)
 
     def format_optimization_report(
-        self,
-        current_positions: List[Dict],
-        recommendations: List[Dict],
-        summary: Dict[str, Any]
+        self, current_positions: List[Dict], recommendations: List[Dict], summary: Dict[str, Any]
     ) -> str:
         """Format portfolio optimization report.
 
@@ -287,7 +271,9 @@ class StakingFormatter:
         total_value = summary.get("total_value", 0)
         blended_apy = summary.get("blended_apy", 0)
         total_annual = summary.get("total_annual", 0)
-        lines.append(f"  Total: {self._format_usd(total_value):<17} {blended_apy:>9.2f}% {self._format_usd(total_annual):>15}")
+        lines.append(
+            f"  Total: {self._format_usd(total_value):<17} {blended_apy:>9.2f}% {self._format_usd(total_annual):>15}"
+        )
         lines.append("")
 
         # Recommendations
@@ -318,7 +304,9 @@ class StakingFormatter:
         new_annual = summary.get("optimized_annual", 0)
         improvement = summary.get("improvement", 0)
         improvement_pct = summary.get("improvement_pct", 0)
-        lines.append(f"  Optimized Annual: {self._format_usd(new_annual)}      Improvement: +{self._format_usd(improvement)} (+{improvement_pct:.1f}%)")
+        lines.append(
+            f"  Optimized Annual: {self._format_usd(new_annual)}      Improvement: +{self._format_usd(improvement)} (+{improvement_pct:.1f}%)"
+        )
         lines.append("")
 
         # Implementation steps
@@ -351,51 +339,63 @@ class StakingFormatter:
         writer = csv.writer(output)
 
         # Header
-        writer.writerow([
-            "Protocol", "Symbol", "Chain", "Type",
-            "Gross APY", "Net APY", "Protocol Fee",
-            "TVL (USD)", "Risk Score", "Risk Level", "Unbonding"
-        ])
+        writer.writerow(
+            [
+                "Protocol",
+                "Symbol",
+                "Chain",
+                "Type",
+                "Gross APY",
+                "Net APY",
+                "Protocol Fee",
+                "TVL (USD)",
+                "Risk Score",
+                "Risk Level",
+                "Unbonding",
+            ]
+        )
 
         for opt in data:
             metrics = opt.get("metrics", {})
             risk = opt.get("risk_assessment", {})
 
-            writer.writerow([
-                opt.get("project", ""),
-                opt.get("symbol", ""),
-                opt.get("chain", ""),
-                opt.get("staking_type", ""),
-                metrics.get("gross_apy", opt.get("apy", 0)),
-                metrics.get("net_apy", 0),
-                metrics.get("protocol_fee_rate", 0),
-                metrics.get("tvl_usd", opt.get("tvlUsd", 0)),
-                risk.get("overall_score", 0) if isinstance(risk, dict) else 0,
-                risk.get("risk_level", "") if isinstance(risk, dict) else "",
-                metrics.get("unbonding", opt.get("unbonding", "")),
-            ])
+            writer.writerow(
+                [
+                    opt.get("project", ""),
+                    opt.get("symbol", ""),
+                    opt.get("chain", ""),
+                    opt.get("staking_type", ""),
+                    metrics.get("gross_apy", opt.get("apy", 0)),
+                    metrics.get("net_apy", 0),
+                    metrics.get("protocol_fee_rate", 0),
+                    metrics.get("tvl_usd", opt.get("tvlUsd", 0)),
+                    risk.get("overall_score", 0) if isinstance(risk, dict) else 0,
+                    risk.get("risk_level", "") if isinstance(risk, dict) else "",
+                    metrics.get("unbonding", opt.get("unbonding", "")),
+                ]
+            )
 
         return output.getvalue()
 
     def _format_usd(self, value: float) -> str:
         """Format USD value."""
         if value >= 1e9:
-            return f"${value/1e9:.2f}B"
+            return f"${value / 1e9:.2f}B"
         elif value >= 1e6:
-            return f"${value/1e6:.2f}M"
+            return f"${value / 1e6:.2f}M"
         elif value >= 1e3:
-            return f"${value/1e3:.1f}K"
+            return f"${value / 1e3:.1f}K"
         else:
             return f"${value:,.2f}"
 
     def _format_usd_short(self, value: float) -> str:
         """Format USD value compactly."""
         if value >= 1e9:
-            return f"${value/1e9:.1f}B"
+            return f"${value / 1e9:.1f}B"
         elif value >= 1e6:
-            return f"${value/1e6:.0f}M"
+            return f"${value / 1e6:.0f}M"
         elif value >= 1e3:
-            return f"${value/1e3:.0f}K"
+            return f"${value / 1e3:.0f}K"
         else:
             return f"${value:.0f}"
 

@@ -12,8 +12,7 @@ License: MIT
 import json
 import time
 from pathlib import Path
-from datetime import datetime, timedelta
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 
 try:
     import requests
@@ -133,10 +132,7 @@ class StakingFetcher:
             if self.verbose:
                 print("Fetching staking pools from DeFiLlama...")
 
-            response = requests.get(
-                "https://yields.llama.fi/pools",
-                timeout=30
-            )
+            response = requests.get("https://yields.llama.fi/pools", timeout=30)
             response.raise_for_status()
             data = response.json()
 
@@ -151,10 +147,10 @@ class StakingFetcher:
 
                 # Check if it's a known staking protocol
                 is_staking = (
-                    project in STAKING_PROTOCOLS or
-                    category == "liquid staking" or
-                    any(kw in project for kw in ["stak", "lsd"]) or
-                    any(kw in symbol for kw in ["STETH", "RETH", "CBETH", "FRXETH", "MSOL", "SAVAX"])
+                    project in STAKING_PROTOCOLS
+                    or category == "liquid staking"
+                    or any(kw in project for kw in ["stak", "lsd"])
+                    or any(kw in symbol for kw in ["STETH", "RETH", "CBETH", "FRXETH", "MSOL", "SAVAX"])
                 )
 
                 if is_staking:
@@ -180,11 +176,7 @@ class StakingFetcher:
                 print(f"API error: {e}, using fallback data")
             return self._get_fallback_pools()
 
-    def fetch_pools_by_asset(
-        self,
-        asset: str,
-        include_native: bool = True
-    ) -> List[Dict[str, Any]]:
+    def fetch_pools_by_asset(self, asset: str, include_native: bool = True) -> List[Dict[str, Any]]:
         """Fetch staking pools for a specific asset.
 
         Args:
@@ -265,13 +257,13 @@ class StakingFetcher:
     def _estimate_native_tvl(self, asset: str) -> float:
         """Estimate native staking TVL (rough approximations)."""
         tvl_estimates = {
-            "ETH": 50_000_000_000,   # ~$50B
-            "SOL": 15_000_000_000,   # ~$15B
-            "ATOM": 5_000_000_000,   # ~$5B
-            "DOT": 8_000_000_000,    # ~$8B
-            "AVAX": 4_000_000_000,   # ~$4B
+            "ETH": 50_000_000_000,  # ~$50B
+            "SOL": 15_000_000_000,  # ~$15B
+            "ATOM": 5_000_000_000,  # ~$5B
+            "DOT": 8_000_000_000,  # ~$8B
+            "AVAX": 4_000_000_000,  # ~$4B
             "MATIC": 3_000_000_000,  # ~$3B
-            "ADA": 10_000_000_000,   # ~$10B
+            "ADA": 10_000_000_000,  # ~$10B
         }
         return tvl_estimates.get(asset, 1_000_000_000)
 
@@ -282,19 +274,21 @@ class StakingFetcher:
         # Generate fallback data from known protocols
         for project_key, meta in STAKING_PROTOCOLS.items():
             for asset in meta.get("assets", []):
-                fallback.append({
-                    "pool": f"{project_key}-{asset.lower()}",
-                    "project": project_key,
-                    "symbol": f"st{asset}" if meta["type"] == "liquid" else asset,
-                    "chain": self._get_chain_for_asset(asset),
-                    "apy": self._get_estimated_apy(project_key, asset),
-                    "apyBase": self._get_estimated_apy(project_key, asset),
-                    "tvlUsd": self._get_estimated_tvl(project_key),
-                    "staking_type": meta["type"],
-                    "protocol_fee": meta["fee"],
-                    "protocol_meta": meta,
-                    "base_asset": asset,
-                })
+                fallback.append(
+                    {
+                        "pool": f"{project_key}-{asset.lower()}",
+                        "project": project_key,
+                        "symbol": f"st{asset}" if meta["type"] == "liquid" else asset,
+                        "chain": self._get_chain_for_asset(asset),
+                        "apy": self._get_estimated_apy(project_key, asset),
+                        "apyBase": self._get_estimated_apy(project_key, asset),
+                        "tvlUsd": self._get_estimated_tvl(project_key),
+                        "staking_type": meta["type"],
+                        "protocol_fee": meta["fee"],
+                        "protocol_meta": meta,
+                        "base_asset": asset,
+                    }
+                )
 
         return fallback
 

@@ -15,7 +15,7 @@ import sys
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Optional, Dict, Any, List
+from typing import Optional, Dict, Any
 
 try:
     import requests
@@ -103,7 +103,7 @@ class MarketMomentumAnalyzer:
 
         # Convert to momentum score (0-100)
         # Price change component (60% weight)
-        avg_change = (btc_change * 0.7 + eth_change * 0.3)  # BTC-weighted
+        avg_change = btc_change * 0.7 + eth_change * 0.3  # BTC-weighted
         price_score = self._change_to_score(avg_change)
 
         # Volume component (40% weight)
@@ -120,7 +120,7 @@ class MarketMomentumAnalyzer:
             "eth_price": eth_data.get("current_price") if eth_data else None,
             "volume_ratio": round(btc_volume_ratio, 2),
             "market_cap": btc_data.get("market_cap"),
-            "timestamp": datetime.utcnow().isoformat() + "Z"
+            "timestamp": datetime.utcnow().isoformat() + "Z",
         }
 
     def _analyze_coin(self, symbol: str) -> Optional[Dict[str, Any]]:
@@ -150,7 +150,7 @@ class MarketMomentumAnalyzer:
             "volume_ratio": round(volume_ratio, 2),
             "market_cap": data.get("market_cap"),
             "market_cap_rank": data.get("market_cap_rank"),
-            "timestamp": datetime.utcnow().isoformat() + "Z"
+            "timestamp": datetime.utcnow().isoformat() + "Z",
         }
 
     def _fetch_coin_data(self, coin_id: str) -> Optional[Dict[str, Any]]:
@@ -165,7 +165,7 @@ class MarketMomentumAnalyzer:
                 "ids": coin_id,
                 "order": "market_cap_desc",
                 "sparkline": "false",
-                "price_change_percentage": "24h"
+                "price_change_percentage": "24h",
             }
 
             response = requests.get(url, params=params, timeout=10)
@@ -242,7 +242,7 @@ class MarketMomentumAnalyzer:
             "eth_change_24h": None,
             "volume_ratio": None,
             "error": "Market data unavailable",
-            "timestamp": datetime.utcnow().isoformat() + "Z"
+            "timestamp": datetime.utcnow().isoformat() + "Z",
         }
 
 

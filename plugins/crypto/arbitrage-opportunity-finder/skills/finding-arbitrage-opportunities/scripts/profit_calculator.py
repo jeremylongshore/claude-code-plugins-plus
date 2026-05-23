@@ -11,7 +11,6 @@ Calculates exact profit after all costs including:
 
 from dataclasses import dataclass
 from decimal import Decimal
-from typing import Optional
 
 from price_fetcher import ExchangeType
 
@@ -161,14 +160,10 @@ class ProfitCalculator:
         gas_cost_usd = Decimal("0")
         if buy_exchange_type == ExchangeType.DEX:
             gas_units = self.GAS_COSTS.get(f"{buy_exchange.lower()}_swap", 150000)
-            gas_cost_usd += Decimal(str(
-                gas_units * self.gas_price_gwei * 1e-9 * self.eth_price_usd
-            ))
+            gas_cost_usd += Decimal(str(gas_units * self.gas_price_gwei * 1e-9 * self.eth_price_usd))
         if sell_exchange_type == ExchangeType.DEX:
             gas_units = self.GAS_COSTS.get(f"{sell_exchange.lower()}_swap", 150000)
-            gas_cost_usd += Decimal(str(
-                gas_units * self.gas_price_gwei * 1e-9 * self.eth_price_usd
-            ))
+            gas_cost_usd += Decimal(str(gas_units * self.gas_price_gwei * 1e-9 * self.eth_price_usd))
 
         # Slippage estimate
         slippage = self.estimate_slippage(amount, buy_price)
@@ -218,10 +213,7 @@ class ProfitCalculator:
     def _get_fees(self, exchange: str) -> dict:
         """Get fee structure for an exchange."""
         exchange_lower = exchange.lower().replace(" ", "").replace("v3", "")
-        return self.EXCHANGE_FEES.get(
-            exchange_lower,
-            {"maker": 0.001, "taker": 0.001, "withdrawal": 0.0005}
-        )
+        return self.EXCHANGE_FEES.get(exchange_lower, {"maker": 0.001, "taker": 0.001, "withdrawal": 0.0005})
 
     def estimate_slippage(
         self,
@@ -297,8 +289,7 @@ class ProfitCalculator:
 
         # Total fee percentage
         total_fee_pct = (
-            buy_fees["taker"] + sell_fees["taker"] +
-            buy_fees["withdrawal"] + self.default_slippage_pct / 100
+            buy_fees["taker"] + sell_fees["taker"] + buy_fees["withdrawal"] + self.default_slippage_pct / 100
         )
 
         # Net spread after fees
@@ -343,7 +334,7 @@ def demo():
 
     print(f"\nGross Profit: ${breakdown.gross_profit:,.2f} ({breakdown.gross_profit_pct:+.3f}%)")
 
-    print(f"\nCosts:")
+    print("\nCosts:")
     print(f"  Buy fee ({breakdown.buy_exchange}):  ${breakdown.buy_fee:,.2f}")
     print(f"  Sell fee ({breakdown.sell_exchange}): ${breakdown.sell_fee:,.2f}")
     print(f"  Withdrawal fee:     ${breakdown.withdrawal_fee:,.2f}")
@@ -359,9 +350,9 @@ def demo():
     print(f"Profit per $1000: ${float(breakdown.profit_per_dollar) * 1000:.2f}")
 
     if breakdown.is_profitable:
-        print(f"\n✓ PROFITABLE")
+        print("\n✓ PROFITABLE")
     else:
-        print(f"\n✗ NOT PROFITABLE")
+        print("\n✗ NOT PROFITABLE")
 
     # Calculate minimum amount
     print(f"\n{'─' * 50}")
@@ -376,10 +367,10 @@ def demo():
     )
 
     if min_amount > 0:
-        print(f"\nTo make $100 profit with 0.09% spread:")
+        print("\nTo make $100 profit with 0.09% spread:")
         print(f"Minimum trade: ${min_amount:,.2f}")
     else:
-        print(f"\n0.09% spread is not profitable after fees")
+        print("\n0.09% spread is not profitable after fees")
 
 
 if __name__ == "__main__":

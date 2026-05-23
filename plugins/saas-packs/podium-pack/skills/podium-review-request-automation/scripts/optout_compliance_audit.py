@@ -21,8 +21,12 @@ Exit codes:
 """
 
 from __future__ import annotations
-import argparse, json, os, sys
-import urllib.request, urllib.error
+import argparse
+import json
+import os
+import sys
+import urllib.request
+import urllib.error
 
 OPT_OUT_FLAGS = [
     "marketing_sms_opt_out",
@@ -73,8 +77,7 @@ def audit(contact: dict) -> dict:
         true_flags = [f for f, v in flags.items() if v]
         false_flags = [f for f, v in flags.items() if not v]
         drift_reason = (
-            f"{','.join(false_flags)}=false despite {','.join(true_flags)}=true — "
-            "propagate via podium-contact-dedup"
+            f"{','.join(false_flags)}=false despite {','.join(true_flags)}=true — propagate via podium-contact-dedup"
         )
 
     return {
@@ -86,13 +89,12 @@ def audit(contact: dict) -> dict:
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description=__doc__,
-                                 formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--phone", required=True, help="E.164 phone")
-    ap.add_argument("--api-url-env", default="CONTACTS_API_URL",
-                    help="Env var holding the merged-contacts API base URL")
-    ap.add_argument("--propagate", action="store_true",
-                    help="Write the OR-union of opt-outs back to all flow flags")
+    ap.add_argument(
+        "--api-url-env", default="CONTACTS_API_URL", help="Env var holding the merged-contacts API base URL"
+    )
+    ap.add_argument("--propagate", action="store_true", help="Write the OR-union of opt-outs back to all flow flags")
     args = ap.parse_args()
 
     api_url = os.environ.get(args.api_url_env)

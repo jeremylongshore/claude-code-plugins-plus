@@ -23,12 +23,7 @@ class PoolFormatter:
         """Initialize formatter."""
         self.timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")
 
-    def format(
-        self,
-        data: Any,
-        format_type: str = "table",
-        detailed: bool = False
-    ) -> str:
+    def format(self, data: Any, format_type: str = "table", detailed: bool = False) -> str:
         """Format data for output.
 
         Args:
@@ -49,11 +44,7 @@ class PoolFormatter:
             else:
                 return self._format_single_pool(data, detailed)
 
-    def _format_single_pool(
-        self,
-        pool: Dict[str, Any],
-        detailed: bool = False
-    ) -> str:
+    def _format_single_pool(self, pool: Dict[str, Any], detailed: bool = False) -> str:
         """Format a single pool analysis.
 
         Args:
@@ -132,11 +123,7 @@ class PoolFormatter:
 
         return "\n".join(lines)
 
-    def _format_pool_list(
-        self,
-        pools: List[Dict[str, Any]],
-        detailed: bool = False
-    ) -> str:
+    def _format_pool_list(self, pools: List[Dict[str, Any]], detailed: bool = False) -> str:
         """Format a list of pools as table.
 
         Args:
@@ -185,11 +172,7 @@ class PoolFormatter:
 
         return "\n".join(lines)
 
-    def format_il_report(
-        self,
-        il_data: Dict[str, Any],
-        pool: Dict[str, Any] = None
-    ) -> str:
+    def format_il_report(self, il_data: Dict[str, Any], pool: Dict[str, Any] = None) -> str:
         """Format impermanent loss report.
 
         Args:
@@ -214,7 +197,7 @@ class PoolFormatter:
 
         lines.append(f"  IL (%):         {il_data.get('il_pct', 0):.2f}%")
 
-        if 'position_value' in il_data:
+        if "position_value" in il_data:
             lines.append(f"  IL (USD):       ${il_data.get('il_usd', 0):,.2f}")
             lines.append("")
             lines.append(f"  Value if HODL:  ${il_data.get('value_if_held', 0):,.2f}")
@@ -227,11 +210,11 @@ class PoolFormatter:
             lines.append("-" * 78)
             metrics = pool["metrics"]
             lines.append(f"  Fee Tier:       {metrics.get('fee_tier_pct', 0)}%")
-            lines.append(f"  Daily Fee APR:  {metrics.get('fee_apr', 0)/365:.4f}%")
+            lines.append(f"  Daily Fee APR:  {metrics.get('fee_apr', 0) / 365:.4f}%")
 
             # Calculate breakeven days
-            il_pct = abs(il_data.get('il_pct', 0))
-            daily_fee_pct = metrics.get('fee_apr', 0) / 365
+            il_pct = abs(il_data.get("il_pct", 0))
+            daily_fee_pct = metrics.get("fee_apr", 0) / 365
             if daily_fee_pct > 0:
                 days = il_pct / daily_fee_pct
                 lines.append(f"  Days to Break:  {days:.0f} days")
@@ -240,10 +223,7 @@ class PoolFormatter:
 
         return "\n".join(lines)
 
-    def format_il_scenarios(
-        self,
-        scenarios: List[Dict[str, float]]
-    ) -> str:
+    def format_il_scenarios(self, scenarios: List[Dict[str, float]]) -> str:
         """Format IL scenarios table.
 
         Args:
@@ -308,26 +288,37 @@ class PoolFormatter:
         writer = csv.writer(output)
 
         # Header
-        writer.writerow([
-            "Protocol", "Symbol", "Chain", "Pool Address",
-            "TVL (USD)", "Volume 24h", "Fee Tier (%)", "Fee APR (%)",
-            "Volume/TVL", "Health Score"
-        ])
+        writer.writerow(
+            [
+                "Protocol",
+                "Symbol",
+                "Chain",
+                "Pool Address",
+                "TVL (USD)",
+                "Volume 24h",
+                "Fee Tier (%)",
+                "Fee APR (%)",
+                "Volume/TVL",
+                "Health Score",
+            ]
+        )
 
         for pool in data:
             metrics = pool.get("metrics", {})
-            writer.writerow([
-                pool.get("project", ""),
-                pool.get("symbol", ""),
-                pool.get("chain", ""),
-                pool.get("pool", ""),
-                metrics.get("tvl", pool.get("tvlUsd", 0)),
-                metrics.get("volume_24h", pool.get("volumeUsd", 0)),
-                metrics.get("fee_tier_pct", 0),
-                metrics.get("fee_apr", 0),
-                metrics.get("volume_tvl_ratio", 0),
-                metrics.get("health_score", 0),
-            ])
+            writer.writerow(
+                [
+                    pool.get("project", ""),
+                    pool.get("symbol", ""),
+                    pool.get("chain", ""),
+                    pool.get("pool", ""),
+                    metrics.get("tvl", pool.get("tvlUsd", 0)),
+                    metrics.get("volume_24h", pool.get("volumeUsd", 0)),
+                    metrics.get("fee_tier_pct", 0),
+                    metrics.get("fee_apr", 0),
+                    metrics.get("volume_tvl_ratio", 0),
+                    metrics.get("health_score", 0),
+                ]
+            )
 
         return output.getvalue()
 
@@ -341,11 +332,11 @@ class PoolFormatter:
             Formatted string
         """
         if value >= 1e9:
-            return f"${value/1e9:.2f}B"
+            return f"${value / 1e9:.2f}B"
         elif value >= 1e6:
-            return f"${value/1e6:.2f}M"
+            return f"${value / 1e6:.2f}M"
         elif value >= 1e3:
-            return f"${value/1e3:.1f}K"
+            return f"${value / 1e3:.1f}K"
         else:
             return f"${value:,.2f}"
 
@@ -359,11 +350,11 @@ class PoolFormatter:
             Formatted string
         """
         if value >= 1e9:
-            return f"${value/1e9:.1f}B"
+            return f"${value / 1e9:.1f}B"
         elif value >= 1e6:
-            return f"${value/1e6:.0f}M"
+            return f"${value / 1e6:.0f}M"
         elif value >= 1e3:
-            return f"${value/1e3:.0f}K"
+            return f"${value / 1e3:.0f}K"
         else:
             return f"${value:.0f}"
 
@@ -391,7 +382,7 @@ def main():
             "health_score": 90,
             "health_level": "healthy",
             "warnings": [],
-        }
+        },
     }
 
     print(formatter.format(pool, "table"))

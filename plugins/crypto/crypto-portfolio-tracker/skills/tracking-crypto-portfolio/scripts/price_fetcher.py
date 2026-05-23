@@ -13,9 +13,8 @@ License: MIT
 import json
 import sys
 import time
-from datetime import datetime
 from pathlib import Path
-from typing import Optional, Dict, Any, List
+from typing import Dict, Any, List
 
 try:
     import requests
@@ -158,7 +157,7 @@ class PriceFetcher:
         results = {}
 
         # Batch into groups of 250 (API limit)
-        batches = [coin_ids[i:i+250] for i in range(0, len(coin_ids), 250)]
+        batches = [coin_ids[i : i + 250] for i in range(0, len(coin_ids), 250)]
 
         for batch in batches:
             try:
@@ -172,9 +171,9 @@ class PriceFetcher:
                         "ids": ",".join(batch),
                         "order": "market_cap_desc",
                         "sparkline": "false",
-                        "price_change_percentage": "24h,7d,30d"
+                        "price_change_percentage": "24h,7d,30d",
                     },
-                    timeout=15
+                    timeout=15,
                 )
                 response.raise_for_status()
 
@@ -187,7 +186,7 @@ class PriceFetcher:
                         "change_30d": coin.get("price_change_percentage_30d_in_currency"),
                         "market_cap": coin.get("market_cap"),
                         "volume_24h": coin.get("total_volume"),
-                        "last_updated": coin.get("last_updated")
+                        "last_updated": coin.get("last_updated"),
                     }
 
                 # Rate limit protection
@@ -228,10 +227,7 @@ class PriceFetcher:
         """Save cache to file."""
         try:
             with open(self.CACHE_FILE, "w") as f:
-                json.dump({
-                    "prices": self._cache,
-                    "timestamp": self._cache_time
-                }, f)
+                json.dump({"prices": self._cache, "timestamp": self._cache_time}, f)
         except Exception:
             pass  # Cache save failure is non-fatal
 

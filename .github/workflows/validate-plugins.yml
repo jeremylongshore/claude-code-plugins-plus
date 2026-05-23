@@ -922,3 +922,40 @@ jobs:
       # Run `pnpm format` locally to fix before pushing.
       - name: Check prettier formatting
         run: pnpm format:check
+
+  ruff-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install ruff
+        run: pip install ruff
+
+      # BLOCKING — codebase passed baseline at PR #765 (2026-05-22, 730→0).
+      # ruff.toml at repo root governs rule selection.
+      # No report-only crutch: external PRs that introduce ruff errors fail here.
+      - name: Run ruff check
+        run: ruff check plugins/ scripts/
+
+  ruff-format-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install ruff
+        run: pip install ruff
+
+      # BLOCKING — 374 files formatted at PR #765 baseline.
+      # Run `ruff format plugins/ scripts/` locally to fix before pushing.
+      - name: Check ruff formatting
+        run: ruff format --check plugins/ scripts/

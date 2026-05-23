@@ -11,7 +11,7 @@ Calculates net profit after all costs including:
 
 from dataclasses import dataclass
 from decimal import Decimal
-from typing import List, Optional
+from typing import List
 
 from strategy_engine import StrategyResult, TransactionStep
 
@@ -120,9 +120,7 @@ class ProfitCalculator:
         if total_gas_units > 0 and profit_before_gas > 0:
             # profit_before_gas = gas_units * gas_price * eth_price
             # gas_price = profit_before_gas / (gas_units * eth_price)
-            breakeven_gas = float(
-                profit_before_gas * Decimal("1e9") / (total_gas_units * self.eth_price_usd)
-            )
+            breakeven_gas = float(profit_before_gas * Decimal("1e9") / (total_gas_units * self.eth_price_usd))
         else:
             breakeven_gas = 0.0
 
@@ -223,15 +221,17 @@ class ProfitCalculator:
 
             total_cost = fee + gas_cost
 
-            results.append({
-                "provider": name,
-                "fee_rate": float(fee_rate) * 100,
-                "fee_amount": float(fee),
-                "gas_overhead": overhead,
-                "gas_cost_eth": float(gas_cost),
-                "total_cost_eth": float(total_cost),
-                "total_cost_usd": float(total_cost * self.eth_price_usd),
-            })
+            results.append(
+                {
+                    "provider": name,
+                    "fee_rate": float(fee_rate) * 100,
+                    "fee_amount": float(fee),
+                    "gas_overhead": overhead,
+                    "gas_cost_eth": float(gas_cost),
+                    "total_cost_eth": float(total_cost),
+                    "total_cost_usd": float(total_cost * self.eth_price_usd),
+                }
+            )
 
         # Sort by total cost
         results.sort(key=lambda x: x["total_cost_eth"])
@@ -267,11 +267,11 @@ def demo():
     print("=" * 60)
 
     print(f"\nGross Revenue: {breakdown.gross_revenue:.6f} ETH")
-    print(f"\nCosts:")
+    print("\nCosts:")
     print(f"  Flash Loan Fee: -{breakdown.flash_loan_fee:.6f} ETH")
     print(f"  Gas Cost: -{breakdown.gas_cost_eth:.6f} ETH (${breakdown.gas_cost_usd:.2f})")
     print(f"  Est. Slippage: -{breakdown.slippage_cost:.6f} ETH")
-    print(f"  ────────────────────────────────")
+    print("  ────────────────────────────────")
     print(f"  Total Costs: -{breakdown.total_costs:.6f} ETH")
 
     print(f"\nNet Profit: {breakdown.net_profit:.6f} ETH (${breakdown.net_profit_usd:.2f})")
@@ -297,7 +297,7 @@ def demo():
         providers=providers,
     )
 
-    print(f"\nFor 100 ETH flash loan:")
+    print("\nFor 100 ETH flash loan:")
     print(f"{'Provider':<12} {'Fee %':<8} {'Fee ETH':<12} {'Gas ETH':<12} {'Total':<12}")
     print("-" * 56)
 

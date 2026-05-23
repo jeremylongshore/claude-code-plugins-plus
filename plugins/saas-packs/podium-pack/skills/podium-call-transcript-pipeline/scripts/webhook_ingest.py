@@ -30,6 +30,7 @@ from pathlib import Path
 # Import guard — this file is also a CLI for ad-hoc inbox queries.
 try:
     from fastapi import FastAPI, Request, HTTPException
+
     FASTAPI_AVAILABLE = True
 except ImportError:
     FASTAPI_AVAILABLE = False
@@ -112,6 +113,7 @@ if FASTAPI_AVAILABLE:
         """
         try:
             from podium_webhook_reliability import verify_webhook
+
             return verify_webhook(raw, signature)
         except ImportError:
             # Refuse rather than allow — fail closed.
@@ -133,8 +135,7 @@ if FASTAPI_AVAILABLE:
         if not event_type.startswith("call.transcript.") and event_type != "call.ended":
             return {"status": "ignored", "reason": "not_a_transcript_or_call_event"}
 
-        transcript_id = (event.get("data") or {}).get("transcript_id") \
-                        or (event.get("data") or {}).get("call_id")
+        transcript_id = (event.get("data") or {}).get("transcript_id") or (event.get("data") or {}).get("call_id")
         if not transcript_id:
             raise HTTPException(400, "ERR_TXP_010 missing transcript_id / call_id")
 
@@ -157,8 +158,10 @@ if FASTAPI_AVAILABLE:
 # CLI surface (ad-hoc inbox queries)
 # ---------------------------------------------------------------------------
 
+
 def _cli() -> int:
     import argparse
+
     ap = argparse.ArgumentParser(description="Ad-hoc inbox queries (not for serving webhooks)")
     sub = ap.add_subparsers(dest="cmd", required=True)
 
@@ -182,14 +185,18 @@ def _cli() -> int:
             (args.limit,),
         ).fetchall()
         for r in rows:
-            print(json.dumps({
-                "id": r[0],
-                "transcript_id": r[1],
-                "event_type": r[2],
-                "received_at": r[3],
-                "processed_at": r[4],
-                "attempt_count": r[5],
-            }))
+            print(
+                json.dumps(
+                    {
+                        "id": r[0],
+                        "transcript_id": r[1],
+                        "event_type": r[2],
+                        "received_at": r[3],
+                        "processed_at": r[4],
+                        "attempt_count": r[5],
+                    }
+                )
+            )
         return 0
 
     return 2

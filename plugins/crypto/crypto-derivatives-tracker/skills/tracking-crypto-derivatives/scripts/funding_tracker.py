@@ -10,7 +10,6 @@ Tracks funding rates across exchanges with:
 """
 
 from dataclasses import dataclass
-from decimal import Decimal
 from typing import Dict, List, Optional
 from datetime import datetime
 
@@ -27,9 +26,9 @@ class FundingAnalysis:
     annualized_avg: float
     min_rate: FundingRate
     max_rate: FundingRate
-    spread: float               # Max - min rate
-    sentiment: str              # "bullish", "bearish", "neutral"
-    sentiment_strength: str     # "strong", "moderate", "weak"
+    spread: float  # Max - min rate
+    sentiment: str  # "bullish", "bearish", "neutral"
+    sentiment_strength: str  # "strong", "moderate", "weak"
     arbitrage_opportunity: bool
     arbitrage_spread: float
     timestamp: datetime
@@ -57,12 +56,12 @@ class FundingTracker:
     """
 
     # Funding rate interpretation thresholds
-    NEUTRAL_THRESHOLD = 0.005       # Below this is neutral
-    MODERATE_THRESHOLD = 0.03       # Below this is moderate
-    EXTREME_THRESHOLD = 0.08        # Above this is extreme
+    NEUTRAL_THRESHOLD = 0.005  # Below this is neutral
+    MODERATE_THRESHOLD = 0.03  # Below this is moderate
+    EXTREME_THRESHOLD = 0.08  # Above this is extreme
 
     # Arbitrage minimum spread
-    ARB_MIN_SPREAD = 0.02           # 0.02% minimum for arbitrage
+    ARB_MIN_SPREAD = 0.02  # 0.02% minimum for arbitrage
 
     def __init__(
         self,
@@ -188,17 +187,19 @@ class FundingTracker:
                 profit_daily = profit_8h * 3
                 profit_annual = profit_8h * 365 * 3
 
-                opportunities.append({
-                    "symbol": symbol,
-                    "long_exchange": analysis.min_rate.exchange,
-                    "long_rate": float(analysis.min_rate.rate),
-                    "short_exchange": analysis.max_rate.exchange,
-                    "short_rate": float(analysis.max_rate.rate),
-                    "spread": analysis.spread,
-                    "profit_8h_pct": round(profit_8h, 4),
-                    "profit_daily_pct": round(profit_daily, 4),
-                    "profit_annual_pct": round(profit_annual, 2),
-                })
+                opportunities.append(
+                    {
+                        "symbol": symbol,
+                        "long_exchange": analysis.min_rate.exchange,
+                        "long_rate": float(analysis.min_rate.rate),
+                        "short_exchange": analysis.max_rate.exchange,
+                        "short_rate": float(analysis.max_rate.rate),
+                        "spread": analysis.spread,
+                        "profit_8h_pct": round(profit_8h, 4),
+                        "profit_daily_pct": round(profit_daily, 4),
+                        "profit_annual_pct": round(profit_annual, 2),
+                    }
+                )
 
         # Sort by spread descending
         opportunities.sort(key=lambda x: x["spread"], reverse=True)
@@ -228,15 +229,17 @@ class FundingTracker:
             analysis = self.analyze(symbol)
 
             if abs(analysis.weighted_avg) >= threshold:
-                extreme.append({
-                    "symbol": symbol,
-                    "avg_rate": analysis.weighted_avg,
-                    "annualized": analysis.annualized_avg,
-                    "sentiment": analysis.sentiment,
-                    "strength": analysis.sentiment_strength,
-                    "signal": "short" if analysis.weighted_avg > 0 else "long",
-                    "signal_reason": "Contrarian: extreme funding often reverts",
-                })
+                extreme.append(
+                    {
+                        "symbol": symbol,
+                        "avg_rate": analysis.weighted_avg,
+                        "annualized": analysis.annualized_avg,
+                        "sentiment": analysis.sentiment,
+                        "strength": analysis.sentiment_strength,
+                        "signal": "short" if analysis.weighted_avg > 0 else "long",
+                        "signal_reason": "Contrarian: extreme funding often reverts",
+                    }
+                )
 
         # Sort by absolute rate descending
         extreme.sort(key=lambda x: abs(x["avg_rate"]), reverse=True)
@@ -262,10 +265,7 @@ def demo():
 
     for rate in sorted(analysis.rates, key=lambda r: r.rate, reverse=True):
         print(
-            f"{rate.exchange:<12} "
-            f"{float(rate.rate):>+9.4%} "
-            f"{rate.annualized:>+11.2f}% "
-            f"{rate.time_to_payment_str:>14}"
+            f"{rate.exchange:<12} {float(rate.rate):>+9.4%} {rate.annualized:>+11.2f}% {rate.time_to_payment_str:>14}"
         )
 
     print("-" * 50)
@@ -275,10 +275,10 @@ def demo():
     print(f"\nSentiment: {analysis.sentiment_strength.title()} {analysis.sentiment.title()}")
 
     if analysis.is_extreme:
-        print(f"\n⚠️  EXTREME FUNDING - Contrarian opportunity")
+        print("\n⚠️  EXTREME FUNDING - Contrarian opportunity")
 
     if analysis.arbitrage_opportunity:
-        print(f"\n💰 ARBITRAGE OPPORTUNITY")
+        print("\n💰 ARBITRAGE OPPORTUNITY")
         print(f"   Long on {analysis.min_rate.exchange} ({float(analysis.min_rate.rate):+.4%})")
         print(f"   Short on {analysis.max_rate.exchange} ({float(analysis.max_rate.rate):+.4%})")
         print(f"   Profit: {analysis.arbitrage_spread:.4%} per 8h")

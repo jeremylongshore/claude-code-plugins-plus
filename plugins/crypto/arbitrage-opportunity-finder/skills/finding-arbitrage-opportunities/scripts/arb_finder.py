@@ -20,7 +20,6 @@ import argparse
 import sys
 import time
 from decimal import Decimal, InvalidOperation
-from typing import Optional
 
 from price_fetcher import PriceFetcher, ExchangeType
 from opportunity_scanner import OpportunityScanner
@@ -67,9 +66,7 @@ EDUCATIONAL DISCLAIMER:
     subparsers = parser.add_subparsers(dest="command", help="Command")
 
     # Scan subcommand
-    scan_parser = subparsers.add_parser(
-        "scan", help="Scan for direct arbitrage opportunities"
-    )
+    scan_parser = subparsers.add_parser("scan", help="Scan for direct arbitrage opportunities")
     scan_parser.add_argument("base", help="Base token (e.g., ETH)")
     scan_parser.add_argument("quote", help="Quote token (e.g., USDC)")
     scan_parser.add_argument(
@@ -95,9 +92,7 @@ EDUCATIONAL DISCLAIMER:
     )
 
     # Triangular subcommand
-    tri_parser = subparsers.add_parser(
-        "triangular", help="Find triangular arbitrage paths"
-    )
+    tri_parser = subparsers.add_parser("triangular", help="Find triangular arbitrage paths")
     tri_parser.add_argument("exchange", help="Exchange to analyze")
     tri_parser.add_argument(
         "--min-profit",
@@ -107,9 +102,7 @@ EDUCATIONAL DISCLAIMER:
     )
 
     # Monitor subcommand
-    mon_parser = subparsers.add_parser(
-        "monitor", help="Real-time opportunity monitoring"
-    )
+    mon_parser = subparsers.add_parser("monitor", help="Real-time opportunity monitoring")
     mon_parser.add_argument("base", help="Base token (e.g., ETH)")
     mon_parser.add_argument("quote", help="Quote token (e.g., USDC)")
     mon_parser.add_argument(
@@ -131,9 +124,7 @@ EDUCATIONAL DISCLAIMER:
     )
 
     # Calc subcommand
-    calc_parser = subparsers.add_parser(
-        "calc", help="Calculate profit for specific trade"
-    )
+    calc_parser = subparsers.add_parser("calc", help="Calculate profit for specific trade")
     calc_parser.add_argument(
         "--buy-exchange",
         required=True,

@@ -21,13 +21,10 @@ def test_encrypt_decrypt_roundtrip():
     assert crypto_result.algorithm == "AES-256-GCM"
     assert crypto_result.key_id == "default"
     assert len(crypto_result.ciphertext) > 0
-    assert crypto_result.ciphertext != plaintext.encode('utf-8')
+    assert crypto_result.ciphertext != plaintext.encode("utf-8")
 
     # Decrypt
-    decrypted = decrypt_data(
-        crypto_result.ciphertext,
-        expected_ciphertext_sha256=crypto_result.ciphertext_sha256
-    )
+    decrypted = decrypt_data(crypto_result.ciphertext, expected_ciphertext_sha256=crypto_result.ciphertext_sha256)
 
     assert decrypted == plaintext
 
@@ -51,10 +48,7 @@ def test_decrypt_integrity_check_fails():
     wrong_hash = "0" * 64
 
     with pytest.raises(ValueError) as exc_info:
-        decrypt_data(
-            crypto_result.ciphertext,
-            expected_ciphertext_sha256=wrong_hash
-        )
+        decrypt_data(crypto_result.ciphertext, expected_ciphertext_sha256=wrong_hash)
 
     assert "integrity check failed" in str(exc_info.value).lower()
 
@@ -79,7 +73,7 @@ def test_plaintext_sha256_matches():
     plaintext = "test data"
     crypto_result = encrypt_data(plaintext)
 
-    expected_hash = hashlib.sha256(plaintext.encode('utf-8')).hexdigest()
+    expected_hash = hashlib.sha256(plaintext.encode("utf-8")).hexdigest()
     assert crypto_result.plaintext_sha256 == expected_hash
 
 

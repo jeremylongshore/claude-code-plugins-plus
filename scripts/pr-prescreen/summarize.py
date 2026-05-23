@@ -29,7 +29,6 @@ import os
 import sys
 import urllib.error
 import urllib.request
-from typing import Any
 
 
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"

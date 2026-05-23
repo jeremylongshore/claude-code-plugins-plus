@@ -14,9 +14,8 @@ Usage:
 import argparse
 import json
 import sys
-import re
 from pathlib import Path
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any
 from urllib.parse import urlparse
 from datetime import datetime
 
@@ -69,11 +68,9 @@ class CORSValidator:
         self.info = []
 
         if not policy:
-            self.findings.append({
-                "severity": "critical",
-                "issue": "Empty CORS policy",
-                "description": "No CORS configuration found"
-            })
+            self.findings.append(
+                {"severity": "critical", "issue": "Empty CORS policy", "description": "No CORS configuration found"}
+            )
             return self._generate_report()
 
         self._check_origins(policy)
@@ -89,11 +86,13 @@ class CORSValidator:
         origins = policy.get("origins", [])
 
         if not origins:
-            self.warnings.append({
-                "severity": "warning",
-                "issue": "No origins specified",
-                "description": "CORS policy does not specify allowed origins"
-            })
+            self.warnings.append(
+                {
+                    "severity": "warning",
+                    "issue": "No origins specified",
+                    "description": "CORS policy does not specify allowed origins",
+                }
+            )
             return
 
         if isinstance(origins, str):
@@ -101,66 +100,80 @@ class CORSValidator:
 
         for origin in origins:
             if origin == "*":
-                self.findings.append({
-                    "severity": "critical",
-                    "issue": "Wildcard origin (*) allowed",
-                    "description": "CORS policy allows requests from any origin. This is a critical security vulnerability.",
-                    "recommendation": "Specify explicit allowed origins instead of using wildcard"
-                })
+                self.findings.append(
+                    {
+                        "severity": "critical",
+                        "issue": "Wildcard origin (*) allowed",
+                        "description": "CORS policy allows requests from any origin. This is a critical security vulnerability.",
+                        "recommendation": "Specify explicit allowed origins instead of using wildcard",
+                    }
+                )
             elif origin == "null":
-                self.findings.append({
-                    "severity": "high",
-                    "issue": "Null origin allowed",
-                    "description": "Allowing 'null' origin can be exploited by local files or sandboxed documents",
-                    "recommendation": "Remove 'null' from allowed origins"
-                })
+                self.findings.append(
+                    {
+                        "severity": "high",
+                        "issue": "Null origin allowed",
+                        "description": "Allowing 'null' origin can be exploited by local files or sandboxed documents",
+                        "recommendation": "Remove 'null' from allowed origins",
+                    }
+                )
             elif not self._is_valid_origin(origin):
-                self.warnings.append({
-                    "severity": "warning",
-                    "issue": "Invalid origin format",
-                    "description": f"Origin '{origin}' does not match expected URL format",
-                    "recommendation": "Use format: https://example.com"
-                })
+                self.warnings.append(
+                    {
+                        "severity": "warning",
+                        "issue": "Invalid origin format",
+                        "description": f"Origin '{origin}' does not match expected URL format",
+                        "recommendation": "Use format: https://example.com",
+                    }
+                )
             else:
-                self.info.append({
-                    "severity": "info",
-                    "issue": "Valid origin configured",
-                    "description": f"Origin '{origin}' is properly formatted"
-                })
+                self.info.append(
+                    {
+                        "severity": "info",
+                        "issue": "Valid origin configured",
+                        "description": f"Origin '{origin}' is properly formatted",
+                    }
+                )
 
     def _check_methods(self, policy: Dict[str, Any]) -> None:
         """Check HTTP methods configuration."""
         methods = policy.get("methods", [])
 
         if not methods:
-            self.info.append({
-                "severity": "info",
-                "issue": "No HTTP methods specified",
-                "description": "Consider specifying allowed HTTP methods"
-            })
+            self.info.append(
+                {
+                    "severity": "info",
+                    "issue": "No HTTP methods specified",
+                    "description": "Consider specifying allowed HTTP methods",
+                }
+            )
             return
 
         if isinstance(methods, str):
             methods = [methods]
 
         if "*" in methods:
-            self.findings.append({
-                "severity": "high",
-                "issue": "Wildcard HTTP methods (*) allowed",
-                "description": "CORS policy allows all HTTP methods. Consider restricting to necessary methods only.",
-                "recommendation": "Specify only required methods: GET, POST, PUT, DELETE, etc."
-            })
+            self.findings.append(
+                {
+                    "severity": "high",
+                    "issue": "Wildcard HTTP methods (*) allowed",
+                    "description": "CORS policy allows all HTTP methods. Consider restricting to necessary methods only.",
+                    "recommendation": "Specify only required methods: GET, POST, PUT, DELETE, etc.",
+                }
+            )
             return
 
         valid_methods = {"GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"}
         for method in methods:
             if method.upper() not in valid_methods:
-                self.warnings.append({
-                    "severity": "warning",
-                    "issue": "Unusual HTTP method",
-                    "description": f"HTTP method '{method}' is not standard",
-                    "recommendation": f"Review if '{method}' is necessary"
-                })
+                self.warnings.append(
+                    {
+                        "severity": "warning",
+                        "issue": "Unusual HTTP method",
+                        "description": f"HTTP method '{method}' is not standard",
+                        "recommendation": f"Review if '{method}' is necessary",
+                    }
+                )
 
     def _check_headers(self, policy: Dict[str, Any]) -> None:
         """Check allowed and exposed headers."""
@@ -174,22 +187,26 @@ class CORSValidator:
 
         # Check allowed headers
         if "*" in allowed_headers:
-            self.findings.append({
-                "severity": "high",
-                "issue": "Wildcard allowed headers (*)",
-                "description": "All request headers are allowed. Consider being more restrictive.",
-                "recommendation": "Specify only necessary headers"
-            })
+            self.findings.append(
+                {
+                    "severity": "high",
+                    "issue": "Wildcard allowed headers (*)",
+                    "description": "All request headers are allowed. Consider being more restrictive.",
+                    "recommendation": "Specify only necessary headers",
+                }
+            )
 
         # Check exposed headers for sensitive data
         for header in exposed_headers:
             if header in self.DANGEROUS_HEADERS:
-                self.findings.append({
-                    "severity": "high",
-                    "issue": f"Sensitive header exposed: {header}",
-                    "description": f"Exposing '{header}' header can leak sensitive information",
-                    "recommendation": f"Remove '{header}' from exposed_headers"
-                })
+                self.findings.append(
+                    {
+                        "severity": "high",
+                        "issue": f"Sensitive header exposed: {header}",
+                        "description": f"Exposing '{header}' header can leak sensitive information",
+                        "recommendation": f"Remove '{header}' from exposed_headers",
+                    }
+                )
 
     def _check_credentials(self, policy: Dict[str, Any]) -> None:
         """Check credentials configuration."""
@@ -201,36 +218,44 @@ class CORSValidator:
                 origins = [origins]
 
             if "*" in origins or "null" in origins:
-                self.findings.append({
-                    "severity": "critical",
-                    "issue": "Credentials allowed with wildcard/null origins",
-                    "description": "Allowing credentials with wildcard or null origins is a critical security vulnerability",
-                    "recommendation": "Specify explicit origins when credentials are enabled"
-                })
+                self.findings.append(
+                    {
+                        "severity": "critical",
+                        "issue": "Credentials allowed with wildcard/null origins",
+                        "description": "Allowing credentials with wildcard or null origins is a critical security vulnerability",
+                        "recommendation": "Specify explicit origins when credentials are enabled",
+                    }
+                )
 
     def _check_max_age(self, policy: Dict[str, Any]) -> None:
         """Check max age configuration."""
         max_age = policy.get("max_age", None)
 
         if max_age is None:
-            self.info.append({
-                "severity": "info",
-                "issue": "Max-Age not specified",
-                "description": "Consider setting Access-Control-Max-Age for performance"
-            })
+            self.info.append(
+                {
+                    "severity": "info",
+                    "issue": "Max-Age not specified",
+                    "description": "Consider setting Access-Control-Max-Age for performance",
+                }
+            )
         elif max_age < 0:
-            self.warnings.append({
-                "severity": "warning",
-                "issue": "Invalid Max-Age value",
-                "description": f"Max-Age should be non-negative, got: {max_age}"
-            })
+            self.warnings.append(
+                {
+                    "severity": "warning",
+                    "issue": "Invalid Max-Age value",
+                    "description": f"Max-Age should be non-negative, got: {max_age}",
+                }
+            )
         elif max_age > 86400:  # More than 24 hours
-            self.warnings.append({
-                "severity": "warning",
-                "issue": "Very high Max-Age value",
-                "description": f"Max-Age of {max_age} seconds (>{86400}) may reduce security effectiveness",
-                "recommendation": "Consider using a lower value (e.g., 3600 for 1 hour)"
-            })
+            self.warnings.append(
+                {
+                    "severity": "warning",
+                    "issue": "Very high Max-Age value",
+                    "description": f"Max-Age of {max_age} seconds (>{86400}) may reduce security effectiveness",
+                    "recommendation": "Consider using a lower value (e.g., 3600 for 1 hour)",
+                }
+            )
 
     @staticmethod
     def _is_valid_origin(origin: str) -> bool:
@@ -250,12 +275,12 @@ class CORSValidator:
                 "high": len([f for f in self.findings if f.get("severity") == "high"]),
                 "warning": len(self.warnings),
                 "info": len(self.info),
-                "passed": len(self.findings) == 0 and len(self.warnings) == 0
+                "passed": len(self.findings) == 0 and len(self.warnings) == 0,
             },
             "findings": self.findings,
             "warnings": self.warnings,
             "info": self.info,
-            "recommendations": self._generate_recommendations()
+            "recommendations": self._generate_recommendations(),
         }
 
     def _generate_recommendations(self) -> List[str]:
@@ -287,29 +312,13 @@ Examples:
   validate_cors.py --file cors.json
   validate_cors.py --file cors.json --output report.json
   validate_cors.py --config example.json
-        """
+        """,
     )
 
-    parser.add_argument(
-        "-f", "--file",
-        type=str,
-        help="Path to CORS policy JSON file"
-    )
-    parser.add_argument(
-        "-c", "--config",
-        type=str,
-        help="Path to configuration file"
-    )
-    parser.add_argument(
-        "-o", "--output",
-        type=str,
-        help="Output file for JSON report (stdout if not specified)"
-    )
-    parser.add_argument(
-        "-v", "--verbose",
-        action="store_true",
-        help="Enable verbose output"
-    )
+    parser.add_argument("-f", "--file", type=str, help="Path to CORS policy JSON file")
+    parser.add_argument("-c", "--config", type=str, help="Path to configuration file")
+    parser.add_argument("-o", "--output", type=str, help="Output file for JSON report (stdout if not specified)")
+    parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose output")
 
     args = parser.parse_args()
 
@@ -326,7 +335,7 @@ Examples:
             print(f"Error: File not found: {policy_file}", file=sys.stderr)
             return 1
 
-        with open(policy_path, 'r') as f:
+        with open(policy_path, "r") as f:
             policy = json.load(f)
 
         # Validate policy
@@ -336,7 +345,7 @@ Examples:
         # Output report
         if args.output:
             output_path = Path(args.output)
-            with open(output_path, 'w') as f:
+            with open(output_path, "w") as f:
                 json.dump(report, f, indent=2)
             print(f"Report written to: {args.output}")
         else:

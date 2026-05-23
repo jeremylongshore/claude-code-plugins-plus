@@ -18,11 +18,7 @@ import subprocess
 
 def get_access_token() -> str:
     """Get GCP access token"""
-    result = subprocess.run(
-        ["gcloud", "auth", "print-access-token"],
-        capture_output=True,
-        text=True
-    )
+    result = subprocess.run(["gcloud", "auth", "print-access-token"], capture_output=True, text=True)
     return result.stdout.strip()
 
 
@@ -35,10 +31,7 @@ def test_agent_card(agent_url: str, token: str) -> Dict:
     agent_card_url = f"{agent_url}/.well-known/agent-card"
 
     try:
-        req = urllib.request.Request(
-            agent_card_url,
-            headers={"Authorization": f"Bearer {token}"}
-        )
+        req = urllib.request.Request(agent_card_url, headers={"Authorization": f"Bearer {token}"})
         with urllib.request.urlopen(req, timeout=10) as response:
             agent_card = json.loads(response.read().decode())
 
@@ -91,18 +84,15 @@ def test_task_submission(agent_url: str, token: str, message: str) -> Optional[s
         req = urllib.request.Request(
             task_url,
             data=json.dumps(payload).encode(),
-            headers={
-                "Authorization": f"Bearer {token}",
-                "Content-Type": "application/json"
-            },
-            method="POST"
+            headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"},
+            method="POST",
         )
 
         with urllib.request.urlopen(req, timeout=30) as response:
             result = json.loads(response.read().decode())
 
         task_id = result.get("task_id")
-        print(f"✓ Task submitted successfully")
+        print("✓ Task submitted successfully")
         print(f"  Task ID: {task_id}")
         print(f"  Status: {result.get('status', 'unknown')}")
 
@@ -133,12 +123,14 @@ def test_task_status(agent_url: str, token: str, task_id: str, max_wait: int = 6
 
     while time.time() - start_time < max_wait:
         try:
-            status_payload = json.dumps({
-                "jsonrpc": "2.0",
-                "method": "tasks/get",
-                "params": {"id": task_id},
-                "id": f"status-{int(time.time())}",
-            }).encode()
+            status_payload = json.dumps(
+                {
+                    "jsonrpc": "2.0",
+                    "method": "tasks/get",
+                    "params": {"id": task_id},
+                    "id": f"status-{int(time.time())}",
+                }
+            ).encode()
 
             req = urllib.request.Request(
                 status_url,

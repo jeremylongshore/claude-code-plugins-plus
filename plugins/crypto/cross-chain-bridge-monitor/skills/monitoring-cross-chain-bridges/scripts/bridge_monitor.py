@@ -16,7 +16,7 @@ from decimal import Decimal
 from typing import List
 
 # Local imports
-from bridge_fetcher import BridgeFetcher, BridgeInfo, TVLData
+from bridge_fetcher import BridgeFetcher
 from protocol_adapters import get_all_adapters, FeeEstimate
 from tx_tracker import TxTracker
 from formatters import (
@@ -44,7 +44,7 @@ def cmd_tvl(args) -> int:
 
         # Fetch TVL for top bridges
         tvl_data = []
-        for bridge in bridges[:args.limit]:
+        for bridge in bridges[: args.limit]:
             if args.verbose:
                 print(f"  Fetching TVL for {bridge.display_name}...")
 
@@ -52,13 +52,7 @@ def cmd_tvl(args) -> int:
             tvl_data.append((bridge.display_name, tvl))
 
         if args.format == "json":
-            output = [
-                {
-                    "bridge": name,
-                    "tvl": vars(tvl) if tvl else None
-                }
-                for name, tvl in tvl_data
-            ]
+            output = [{"bridge": name, "tvl": vars(tvl) if tvl else None} for name, tvl in tvl_data]
             print(json.dumps(output, indent=2, default=str))
         else:
             print(format_tvl_table(tvl_data))
@@ -69,6 +63,7 @@ def cmd_tvl(args) -> int:
         print(f"Error: {e}")
         if args.verbose:
             import traceback
+
             traceback.print_exc()
         return 1
 
@@ -84,17 +79,14 @@ def cmd_bridges(args) -> int:
         if args.chain:
             # Filter by chain
             chain_lower = args.chain.lower()
-            bridges = [
-                b for b in bridges
-                if chain_lower in [c.lower() for c in b.chains + b.destination_chains]
-            ]
+            bridges = [b for b in bridges if chain_lower in [c.lower() for c in b.chains + b.destination_chains]]
 
         if not bridges:
             print("No bridges found")
             return 1
 
         if args.format == "json":
-            print(format_json(bridges[:args.limit]))
+            print(format_json(bridges[: args.limit]))
         else:
             print(format_bridges_table(bridges, limit=args.limit))
 
@@ -104,6 +96,7 @@ def cmd_bridges(args) -> int:
         print(f"Error: {e}")
         if args.verbose:
             import traceback
+
             traceback.print_exc()
         return 1
 
@@ -127,10 +120,7 @@ def cmd_detail(args) -> int:
         tvl = fetcher.get_bridge_tvl(bridge.id)
 
         if args.format == "json":
-            output = {
-                "bridge": vars(bridge),
-                "tvl": vars(tvl) if tvl else None
-            }
+            output = {"bridge": vars(bridge), "tvl": vars(tvl) if tvl else None}
             print(json.dumps(output, indent=2, default=str))
         else:
             print(format_bridge_detail(bridge, tvl))
@@ -141,6 +131,7 @@ def cmd_detail(args) -> int:
         print(f"Error: {e}")
         if args.verbose:
             import traceback
+
             traceback.print_exc()
         return 1
 
@@ -158,12 +149,7 @@ def cmd_compare(args) -> int:
             # Check if both chains supported
             chains = [c.lower() for c in adapter.supported_chains]
             if args.source.lower() in chains and args.dest.lower() in chains:
-                estimate = adapter.get_fee_estimate(
-                    args.source,
-                    args.dest,
-                    args.token,
-                    Decimal(str(args.amount))
-                )
+                estimate = adapter.get_fee_estimate(args.source, args.dest, args.token, Decimal(str(args.amount)))
                 if estimate:
                     estimates.append(estimate)
 
@@ -182,6 +168,7 @@ def cmd_compare(args) -> int:
         print(f"Error: {e}")
         if args.verbose:
             import traceback
+
             traceback.print_exc()
         return 1
 
@@ -192,11 +179,7 @@ def cmd_tx(args) -> int:
 
     try:
         tracker = TxTracker(verbose=args.verbose)
-        status = tracker.track_bridge_tx(
-            args.tx_hash,
-            bridge=args.bridge,
-            source_chain=args.chain
-        )
+        status = tracker.track_bridge_tx(args.tx_hash, bridge=args.bridge, source_chain=args.chain)
 
         if not status:
             print("Transaction not found in any bridge")
@@ -213,6 +196,7 @@ def cmd_tx(args) -> int:
         print(f"Error: {e}")
         if args.verbose:
             import traceback
+
             traceback.print_exc()
         return 1
 
@@ -236,6 +220,7 @@ def cmd_chains(args) -> int:
         print(f"Error: {e}")
         if args.verbose:
             import traceback
+
             traceback.print_exc()
         return 1
 
@@ -246,11 +231,7 @@ def cmd_protocols(args) -> int:
 
     if args.format == "json":
         output = {
-            name: {
-                "name": adapter.name,
-                "chains": adapter.supported_chains
-            }
-            for name, adapter in adapters.items()
+            name: {"name": adapter.name, "chains": adapter.supported_chains} for name, adapter in adapters.items()
         }
         print(json.dumps(output, indent=2))
     else:
@@ -297,125 +278,53 @@ Examples:
 
   # List supported chains
   %(prog)s chains
-        """
+        """,
     )
 
+    parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose output")
     parser.add_argument(
-        "-v", "--verbose",
-        action="store_true",
-        help="Enable verbose output"
-    )
-    parser.add_argument(
-        "-f", "--format",
-        choices=["text", "json"],
-        default="text",
-        help="Output format (default: text)"
+        "-f", "--format", choices=["text", "json"], default="text", help="Output format (default: text)"
     )
 
     subparsers = parser.add_subparsers(dest="command", help="Command")
 
     # tvl command
-    tvl_parser = subparsers.add_parser(
-        "tvl",
-        help="Show bridge TVL rankings"
-    )
-    tvl_parser.add_argument(
-        "--limit", "-l",
-        type=int,
-        default=20,
-        help="Maximum bridges (default: 20)"
-    )
+    tvl_parser = subparsers.add_parser("tvl", help="Show bridge TVL rankings")
+    tvl_parser.add_argument("--limit", "-l", type=int, default=20, help="Maximum bridges (default: 20)")
     tvl_parser.set_defaults(func=cmd_tvl)
 
     # bridges command
-    bridges_parser = subparsers.add_parser(
-        "bridges",
-        help="List all bridges"
-    )
-    bridges_parser.add_argument(
-        "--chain", "-c",
-        help="Filter by chain"
-    )
-    bridges_parser.add_argument(
-        "--limit", "-l",
-        type=int,
-        default=30,
-        help="Maximum bridges (default: 30)"
-    )
+    bridges_parser = subparsers.add_parser("bridges", help="List all bridges")
+    bridges_parser.add_argument("--chain", "-c", help="Filter by chain")
+    bridges_parser.add_argument("--limit", "-l", type=int, default=30, help="Maximum bridges (default: 30)")
     bridges_parser.set_defaults(func=cmd_bridges)
 
     # detail command
-    detail_parser = subparsers.add_parser(
-        "detail",
-        help="Show bridge details"
-    )
-    detail_parser.add_argument(
-        "--bridge", "-b",
-        required=True,
-        help="Bridge name"
-    )
+    detail_parser = subparsers.add_parser("detail", help="Show bridge details")
+    detail_parser.add_argument("--bridge", "-b", required=True, help="Bridge name")
     detail_parser.set_defaults(func=cmd_detail)
 
     # compare command
-    compare_parser = subparsers.add_parser(
-        "compare",
-        help="Compare bridge fees and times"
-    )
-    compare_parser.add_argument(
-        "--source", "-s",
-        required=True,
-        help="Source chain"
-    )
-    compare_parser.add_argument(
-        "--dest", "-d",
-        required=True,
-        help="Destination chain"
-    )
-    compare_parser.add_argument(
-        "--amount", "-a",
-        type=float,
-        default=1000,
-        help="Amount to bridge (default: 1000)"
-    )
-    compare_parser.add_argument(
-        "--token", "-t",
-        default="USDC",
-        help="Token symbol (default: USDC)"
-    )
+    compare_parser = subparsers.add_parser("compare", help="Compare bridge fees and times")
+    compare_parser.add_argument("--source", "-s", required=True, help="Source chain")
+    compare_parser.add_argument("--dest", "-d", required=True, help="Destination chain")
+    compare_parser.add_argument("--amount", "-a", type=float, default=1000, help="Amount to bridge (default: 1000)")
+    compare_parser.add_argument("--token", "-t", default="USDC", help="Token symbol (default: USDC)")
     compare_parser.set_defaults(func=cmd_compare)
 
     # tx command
-    tx_parser = subparsers.add_parser(
-        "tx",
-        help="Track transaction status"
-    )
-    tx_parser.add_argument(
-        "--tx-hash",
-        required=True,
-        help="Transaction hash"
-    )
-    tx_parser.add_argument(
-        "--bridge", "-b",
-        help="Bridge name (optional)"
-    )
-    tx_parser.add_argument(
-        "--chain", "-c",
-        help="Source chain (optional)"
-    )
+    tx_parser = subparsers.add_parser("tx", help="Track transaction status")
+    tx_parser.add_argument("--tx-hash", required=True, help="Transaction hash")
+    tx_parser.add_argument("--bridge", "-b", help="Bridge name (optional)")
+    tx_parser.add_argument("--chain", "-c", help="Source chain (optional)")
     tx_parser.set_defaults(func=cmd_tx)
 
     # chains command
-    chains_parser = subparsers.add_parser(
-        "chains",
-        help="List supported chains"
-    )
+    chains_parser = subparsers.add_parser("chains", help="List supported chains")
     chains_parser.set_defaults(func=cmd_chains)
 
     # protocols command
-    protocols_parser = subparsers.add_parser(
-        "protocols",
-        help="List supported bridge protocols"
-    )
+    protocols_parser = subparsers.add_parser("protocols", help="List supported bridge protocols")
     protocols_parser.set_defaults(func=cmd_protocols)
 
     args = parser.parse_args()

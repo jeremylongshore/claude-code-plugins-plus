@@ -19,14 +19,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from chain_client import ChainClient, CHAINS, detect_chain
 from tx_decoder import TransactionDecoder, identify_protocol
 from token_resolver import TokenResolver
-from formatters import (
-    format_output,
-    TransactionFormatter,
-    AddressFormatter,
-    BlockFormatter,
-    TransactionListFormatter,
-    TokenTransferFormatter
-)
+from formatters import format_output
 
 
 def cmd_transaction(args) -> int:
@@ -183,9 +176,10 @@ def cmd_token(args) -> int:
     # Format output
     if args.format == "json":
         import json
+
         print(json.dumps(data, indent=2, default=str))
     else:
-        print(f"\nToken Balance")
+        print("\nToken Balance")
         print("=" * 60)
         print(f"Address:  {data['address']}")
         print(f"Token:    {data['token_name']} ({data['token_symbol']})")
@@ -213,10 +207,7 @@ def cmd_history(args) -> int:
     if args.verbose:
         print(f"Querying transaction history on {chain}...")
 
-    transactions = client.get_transaction_list(
-        args.address,
-        limit=args.limit
-    )
+    transactions = client.get_transaction_list(args.address, limit=args.limit)
 
     if not transactions:
         print("No transactions found.")
@@ -243,11 +234,7 @@ def cmd_transfers(args) -> int:
     if args.verbose:
         print(f"Querying token transfers on {chain}...")
 
-    transfers = client.get_token_transfers(
-        args.address,
-        contract=args.contract,
-        limit=args.limit
-    )
+    transfers = client.get_token_transfers(args.address, contract=args.contract, limit=args.limit)
 
     if not transfers:
         print("No token transfers found.")
@@ -276,30 +263,13 @@ Examples:
   %(prog)s transfers 0xaddr                # Token transfers
 
 Supported chains: ethereum, polygon, bsc, arbitrum, optimism, base, avalanche
-        """
+        """,
     )
 
-    parser.add_argument(
-        "--chain", "-c",
-        choices=list(CHAINS.keys()),
-        help="Blockchain network (default: ethereum)"
-    )
-    parser.add_argument(
-        "--format", "-f",
-        choices=["table", "json", "csv"],
-        default="table",
-        help="Output format"
-    )
-    parser.add_argument(
-        "--verbose", "-v",
-        action="store_true",
-        help="Verbose output"
-    )
-    parser.add_argument(
-        "--version",
-        action="version",
-        version="%(prog)s 1.0.0"
-    )
+    parser.add_argument("--chain", "-c", choices=list(CHAINS.keys()), help="Blockchain network (default: ethereum)")
+    parser.add_argument("--format", "-f", choices=["table", "json", "csv"], default="table", help="Output format")
+    parser.add_argument("--verbose", "-v", action="store_true", help="Verbose output")
+    parser.add_argument("--version", action="version", version="%(prog)s 1.0.0")
 
     subparsers = parser.add_subparsers(dest="command", help="Commands")
 
@@ -356,6 +326,7 @@ Supported chains: ethereum, polygon, bsc, arbitrum, optimism, base, avalanche
         print(f"Error: {e}", file=sys.stderr)
         if args.verbose:
             import traceback
+
             traceback.print_exc()
         return 1
 

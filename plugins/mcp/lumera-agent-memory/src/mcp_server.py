@@ -6,15 +6,14 @@ Durable session memory with Cascade object storage and local FTS index.
 
 import asyncio
 import json
-import sys
 from typing import Any, Optional
 
 from mcp.server import Server
 from mcp.server.stdio import stdio_server
 from mcp.types import Tool, TextContent
 
-from security.redact import redact_session, RedactionReport
-from security.encrypt import encrypt_data, decrypt_data, CryptoResult
+from security.redact import redact_session
+from security.encrypt import encrypt_data, decrypt_data
 from cascade.interface import CascadeInterface
 from cascade.mock_fs import MockCascadeFS
 from index.index import MemoryIndex
@@ -47,10 +46,10 @@ class LumeraMemoryServer:
                             "session_id": {"type": "string", "description": "CASS session ID to store"},
                             "tags": {"type": "array", "items": {"type": "string"}, "description": "Optional tags"},
                             "metadata": {"type": "object", "description": "Optional metadata"},
-                            "mode": {"type": "string", "enum": ["mock", "live"], "default": "mock"}
+                            "mode": {"type": "string", "enum": ["mock", "live"], "default": "mock"},
                         },
-                        "required": ["session_id"]
-                    }
+                        "required": ["session_id"],
+                    },
                 ),
                 Tool(
                     name="query_memories",
@@ -59,12 +58,16 @@ class LumeraMemoryServer:
                         "type": "object",
                         "properties": {
                             "query": {"type": "string", "description": "Search query text"},
-                            "tags": {"type": "array", "items": {"type": "string"}, "description": "Optional tag filters"},
+                            "tags": {
+                                "type": "array",
+                                "items": {"type": "string"},
+                                "description": "Optional tag filters",
+                            },
                             "time_range": {"type": "object", "description": "Optional time range {start, end}"},
-                            "limit": {"type": "integer", "default": 10, "description": "Max results"}
+                            "limit": {"type": "integer", "default": 10, "description": "Max results"},
                         },
-                        "required": ["query"]
-                    }
+                        "required": ["query"],
+                    },
                 ),
                 Tool(
                     name="retrieve_session_from_cascade",
@@ -73,10 +76,10 @@ class LumeraMemoryServer:
                         "type": "object",
                         "properties": {
                             "cascade_uri": {"type": "string", "description": "Cascade URI from index"},
-                            "mode": {"type": "string", "enum": ["mock", "live"], "default": "mock"}
+                            "mode": {"type": "string", "enum": ["mock", "live"], "default": "mock"},
                         },
-                        "required": ["cascade_uri"]
-                    }
+                        "required": ["cascade_uri"],
+                    },
                 ),
                 Tool(
                     name="estimate_storage_cost",
@@ -86,11 +89,11 @@ class LumeraMemoryServer:
                         "properties": {
                             "bytes": {"type": "integer", "description": "Data size in bytes"},
                             "redundancy": {"type": "integer", "default": 3, "description": "Replication factor"},
-                            "pricing_inputs": {"type": "object", "description": "Optional pricing overrides"}
+                            "pricing_inputs": {"type": "object", "description": "Optional pricing overrides"},
                         },
-                        "required": ["bytes"]
-                    }
-                )
+                        "required": ["bytes"],
+                    },
+                ),
             ]
 
         @self.server.call_tool()
@@ -132,10 +135,7 @@ class LumeraMemoryServer:
 
             # Step 5: Upload to Cascade
             cascade = self.cascade_mock if mode == "mock" else self._get_live_cascade()
-            cascade_uri = await cascade.upload_blob(
-                crypto_result.ciphertext,
-                content_type="application/octet-stream"
-            )
+            cascade_uri = await cascade.upload_blob(crypto_result.ciphertext, content_type="application/octet-stream")
 
             # Step 6: Index locally
             indexed = self.index.store_memory(
@@ -148,10 +148,10 @@ class LumeraMemoryServer:
                     "crypto": {
                         "key_id": crypto_result.key_id,
                         "plaintext_sha256": crypto_result.plaintext_sha256,
-                        "ciphertext_sha256": crypto_result.ciphertext_sha256
+                        "ciphertext_sha256": crypto_result.ciphertext_sha256,
                     },
-                    "redaction": redaction_report.to_dict()
-                }
+                    "redaction": redaction_report.to_dict(),
+                },
             )
 
             return {
@@ -160,19 +160,16 @@ class LumeraMemoryServer:
                 "cascade_uri": cascade_uri,
                 "indexed": indexed,
                 "redaction": {
-                    "rules_fired": [
-                        {"rule": r.rule_name, "count": r.count}
-                        for r in redaction_report.rules_fired
-                    ]
+                    "rules_fired": [{"rule": r.rule_name, "count": r.count} for r in redaction_report.rules_fired]
                 },
                 "crypto": {
                     "enc": crypto_result.algorithm,
                     "key_id": crypto_result.key_id,
                     "plaintext_sha256": crypto_result.plaintext_sha256,
                     "ciphertext_sha256": crypto_result.ciphertext_sha256,
-                    "bytes": len(crypto_result.ciphertext)
+                    "bytes": len(crypto_result.ciphertext),
                 },
-                "memory_card": memory_card
+                "memory_card": memory_card,
             }
 
         except Exception as e:
@@ -186,12 +183,7 @@ class LumeraMemoryServer:
         limit = args.get("limit", 10)
 
         try:
-            hits = self.index.search(
-                query=query,
-                tags=tags,
-                time_range=time_range,
-                limit=limit
-            )
+            hits = self.index.search(query=query, tags=tags, time_range=time_range, limit=limit)
 
             return {
                 "ok": True,
@@ -203,10 +195,10 @@ class LumeraMemoryServer:
                         "snippet": hit.get("snippet", ""),
                         "tags": hit.get("tags", []),
                         "created_at": hit["created_at"],
-                        "score": hit.get("score", 0.0)
+                        "score": hit.get("score", 0.0),
                     }
                     for hit in hits
-                ]
+                ],
             }
         except Exception as e:
             return {"ok": False, "error": str(e)}
@@ -229,10 +221,7 @@ class LumeraMemoryServer:
             expected_sha256 = index_entry["metadata"]["crypto"]["ciphertext_sha256"]
 
             # Step 3: Decrypt client-side
-            session_json = decrypt_data(
-                encrypted_blob,
-                expected_ciphertext_sha256=expected_sha256
-            )
+            session_json = decrypt_data(encrypted_blob, expected_ciphertext_sha256=expected_sha256)
             session_data = json.loads(session_json)
 
             # Step 4: Return session with memory card
@@ -245,8 +234,8 @@ class LumeraMemoryServer:
                     "verified": True,
                     "plaintext_sha256": index_entry["metadata"]["crypto"]["plaintext_sha256"],
                     "ciphertext_sha256": expected_sha256,
-                    "key_id": index_entry["metadata"]["crypto"]["key_id"]
-                }
+                    "key_id": index_entry["metadata"]["crypto"]["key_id"],
+                },
             }
         except Exception as e:
             return {"ok": False, "error": str(e)}
@@ -261,7 +250,7 @@ class LumeraMemoryServer:
         storage_per_gb_month = pricing.get("storage_per_gb_month", 0.02)
         request_per_1k = pricing.get("request_per_1k", 0.0004)
 
-        gb = bytes_size / (1024 ** 3)
+        gb = bytes_size / (1024**3)
         replicated_gb = gb * redundancy
 
         monthly_storage = replicated_gb * storage_per_gb_month
@@ -279,8 +268,8 @@ class LumeraMemoryServer:
                 "redundancy": redundancy,
                 "storage_per_gb_month_usd": storage_per_gb_month,
                 "request_per_1k_usd": request_per_1k,
-                "estimated_reads_per_month": 100
-            }
+                "estimated_reads_per_month": 100,
+            },
         }
 
     def _get_live_cascade(self) -> CascadeInterface:
@@ -301,23 +290,20 @@ class LumeraMemoryServer:
                 {
                     "role": "user",
                     "content": "Deploy the new API with my AWS key AKIAIOSFODNN7EXAMPLE",
-                    "timestamp": "2025-01-15T10:30:00Z"
+                    "timestamp": "2025-01-15T10:30:00Z",
                 },
                 {
                     "role": "assistant",
                     "content": "I'll help deploy the API. What region?",
-                    "timestamp": "2025-01-15T10:30:15Z"
+                    "timestamp": "2025-01-15T10:30:15Z",
                 },
                 {
                     "role": "user",
                     "content": "us-east-1, my email is john@example.com for notifications",
-                    "timestamp": "2025-01-15T10:31:00Z"
-                }
+                    "timestamp": "2025-01-15T10:31:00Z",
+                },
             ],
-            "metadata": {
-                "started_at": "2025-01-15T10:30:00Z",
-                "ended_at": "2025-01-15T10:35:00Z"
-            }
+            "metadata": {"started_at": "2025-01-15T10:30:00Z", "ended_at": "2025-01-15T10:35:00Z"},
         }
 
     def _generate_memory_card(self, session_data: dict) -> dict:
@@ -390,17 +376,13 @@ class LumeraMemoryServer:
             "todos": todos[:3],
             "entities": list(entities)[:10],
             "keywords": keywords,
-            "notable_quotes": notable_quotes[:3]
+            "notable_quotes": notable_quotes[:3],
         }
 
     async def run(self):
         """Run the MCP server."""
         async with stdio_server() as (read_stream, write_stream):
-            await self.server.run(
-                read_stream,
-                write_stream,
-                self.server.create_initialization_options()
-            )
+            await self.server.run(read_stream, write_stream, self.server.create_initialization_options())
 
 
 async def main():

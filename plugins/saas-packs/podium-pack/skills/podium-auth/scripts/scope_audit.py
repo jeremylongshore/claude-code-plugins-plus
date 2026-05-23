@@ -12,7 +12,9 @@ Exit codes:
 """
 
 from __future__ import annotations
-import argparse, json, sys
+import argparse
+import json
+import sys
 from pathlib import Path
 
 
@@ -37,12 +39,17 @@ def main() -> int:
     missing = sorted(required - granted)
     extra = sorted(granted - required)
 
-    print(json.dumps({
-        "required_count": len(required),
-        "granted_count": len(granted),
-        "missing": missing,
-        "extra": extra,
-    }, indent=2))
+    print(
+        json.dumps(
+            {
+                "required_count": len(required),
+                "granted_count": len(granted),
+                "missing": missing,
+                "extra": extra,
+            },
+            indent=2,
+        )
+    )
 
     if missing:
         print(f"ERR_AUTH_007 scope_drift — missing: {missing}", file=sys.stderr)

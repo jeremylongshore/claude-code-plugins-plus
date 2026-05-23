@@ -20,7 +20,9 @@ Exit codes:
 """
 
 from __future__ import annotations
-import argparse, json, sys
+import argparse
+import json
+import sys
 from pathlib import Path
 
 
@@ -38,8 +40,7 @@ def format_prompt(transcript: str, bundle: dict, system: str) -> str:
     parts.append("=== LIVE CONTACT (current truth, always authoritative) ===")
     contact = bundle.get("contact") or {}
     if contact.get("live_fields_available"):
-        for k in ("phone", "email", "opt_out_sms", "opt_out_email",
-                   "location_uid", "last_seen_at"):
+        for k in ("phone", "email", "opt_out_sms", "opt_out_email", "location_uid", "last_seen_at"):
             if k in contact and contact[k] is not None:
                 parts.append(f"  {k}: {contact[k]}")
     else:
@@ -62,10 +63,11 @@ def format_prompt(transcript: str, bundle: dict, system: str) -> str:
     meta = bundle.get("meta") or {}
     if meta.get("partial"):
         parts.append("=== DEGRADED MODE NOTICE ===")
-        parts.append(f"  This context was assembled under timeout (elapsed={meta.get('elapsed_ms')}ms,"
-                     f" budget={meta.get('timeout_ms')}ms).")
-        parts.append(f"  had_vector_hits={meta.get('had_vector_hits')}"
-                     f" had_live_lookup={meta.get('had_live_lookup')}")
+        parts.append(
+            f"  This context was assembled under timeout (elapsed={meta.get('elapsed_ms')}ms,"
+            f" budget={meta.get('timeout_ms')}ms)."
+        )
+        parts.append(f"  had_vector_hits={meta.get('had_vector_hits')} had_live_lookup={meta.get('had_live_lookup')}")
         parts.append("  Ground answers conservatively; ask the customer to confirm any uncertain details.")
         parts.append("")
 
@@ -76,13 +78,13 @@ def format_prompt(transcript: str, bundle: dict, system: str) -> str:
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description=__doc__,
-                                  formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--transcript", required=True)
     ap.add_argument("--bundle-file", required=True, type=Path)
     ap.add_argument("--system-prompt-file", type=Path, default=None)
-    ap.add_argument("--max-tokens", type=int, default=4000,
-                    help="hard cap on the assembled prompt; refuse to truncate if exceeded")
+    ap.add_argument(
+        "--max-tokens", type=int, default=4000, help="hard cap on the assembled prompt; refuse to truncate if exceeded"
+    )
     ap.add_argument("--output", choices=("llm", "json"), default="llm")
     args = ap.parse_args()
 
@@ -104,17 +106,24 @@ def main() -> int:
     tokens = approx_tokens(prompt)
 
     if tokens > args.max_tokens:
-        print(f"assembled prompt ~{tokens} tokens exceeds --max-tokens {args.max_tokens};"
-              " reduce bundle budget upstream rather than silently truncating",
-              file=sys.stderr)
+        print(
+            f"assembled prompt ~{tokens} tokens exceeds --max-tokens {args.max_tokens};"
+            " reduce bundle budget upstream rather than silently truncating",
+            file=sys.stderr,
+        )
         return 2
 
     if args.output == "json":
-        print(json.dumps({
-            "prompt": prompt,
-            "token_count_estimate": tokens,
-            "partial_context": (bundle.get("meta") or {}).get("partial", False),
-        }, indent=2))
+        print(
+            json.dumps(
+                {
+                    "prompt": prompt,
+                    "token_count_estimate": tokens,
+                    "partial_context": (bundle.get("meta") or {}).get("partial", False),
+                },
+                indent=2,
+            )
+        )
     else:
         print(prompt)
     return 0

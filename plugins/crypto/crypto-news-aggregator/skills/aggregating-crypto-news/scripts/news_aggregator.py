@@ -10,11 +10,10 @@ License: MIT
 """
 
 import argparse
-import json
 import sys
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Optional, List, Dict, Any
+from typing import List, Dict, Any
 
 # Add scripts directory to path for local imports
 SCRIPT_DIR = Path(__file__).parent
@@ -37,80 +36,51 @@ Examples:
   %(prog)s --coin BTC --period 4h         # Bitcoin news, past 4 hours
   %(prog)s --category defi                # DeFi category only
   %(prog)s --format json --output news.json  # Export to JSON
-        """
+        """,
     )
 
     # Filtering options
-    parser.add_argument(
-        "--coin",
-        type=str,
-        help="Filter by single coin symbol (e.g., BTC, ETH)"
-    )
-    parser.add_argument(
-        "--coins",
-        type=str,
-        help="Filter by multiple coins (comma-separated, e.g., BTC,ETH,SOL)"
-    )
+    parser.add_argument("--coin", type=str, help="Filter by single coin symbol (e.g., BTC, ETH)")
+    parser.add_argument("--coins", type=str, help="Filter by multiple coins (comma-separated, e.g., BTC,ETH,SOL)")
     parser.add_argument(
         "--category",
         type=str,
         choices=["market", "defi", "nft", "regulatory", "layer1", "layer2", "exchange", "security"],
-        help="Filter by news category"
+        help="Filter by news category",
     )
     parser.add_argument(
         "--period",
         type=str,
         choices=["1h", "4h", "24h", "7d"],
         default="24h",
-        help="Time window for news (default: 24h)"
+        help="Time window for news (default: 24h)",
     )
 
     # Output options
-    parser.add_argument(
-        "--top",
-        type=int,
-        default=20,
-        help="Number of results to return (default: 20)"
-    )
-    parser.add_argument(
-        "--min-score",
-        type=float,
-        default=0,
-        help="Minimum relevance score (default: 0)"
-    )
+    parser.add_argument("--top", type=int, default=20, help="Number of results to return (default: 20)")
+    parser.add_argument("--min-score", type=float, default=0, help="Minimum relevance score (default: 0)")
     parser.add_argument(
         "--sort-by",
         type=str,
         choices=["relevance", "recency"],
         default="relevance",
-        help="Sort results by (default: relevance)"
+        help="Sort results by (default: relevance)",
     )
 
     # Format and export
     parser.add_argument(
-        "--format", "-f",
+        "--format",
+        "-f",
         type=str,
         choices=["table", "json", "csv"],
         default="table",
-        help="Output format (default: table)"
+        help="Output format (default: table)",
     )
-    parser.add_argument(
-        "--output", "-o",
-        type=str,
-        help="Output file path (default: stdout)"
-    )
+    parser.add_argument("--output", "-o", type=str, help="Output file path (default: stdout)")
 
     # Debug options
-    parser.add_argument(
-        "--verbose", "-v",
-        action="store_true",
-        help="Enable verbose output"
-    )
-    parser.add_argument(
-        "--version",
-        action="version",
-        version="%(prog)s 2.0.0"
-    )
+    parser.add_argument("--verbose", "-v", action="store_true", help="Enable verbose output")
+    parser.add_argument("--version", action="version", version="%(prog)s 2.0.0")
 
     return parser.parse_args()
 
@@ -137,6 +107,7 @@ def load_sources() -> List[Dict[str, Any]]:
     if config_path.exists():
         try:
             import yaml
+
             with open(config_path, "r") as f:
                 config = yaml.safe_load(f)
                 return config.get("sources", [])
@@ -147,7 +118,12 @@ def load_sources() -> List[Dict[str, Any]]:
 
     # Default sources if config not available
     return [
-        {"name": "CoinDesk", "url": "https://www.coindesk.com/arc/outboundfeeds/rss/", "category": "market", "quality": 9},
+        {
+            "name": "CoinDesk",
+            "url": "https://www.coindesk.com/arc/outboundfeeds/rss/",
+            "category": "market",
+            "quality": 9,
+        },
         {"name": "CoinTelegraph", "url": "https://cointelegraph.com/rss", "category": "market", "quality": 8},
         {"name": "The Block", "url": "https://www.theblock.co/rss.xml", "category": "market", "quality": 9},
         {"name": "Decrypt", "url": "https://decrypt.co/feed", "category": "market", "quality": 8},
@@ -205,7 +181,7 @@ def main() -> None:
             feed_content,
             source_name=source_name,
             source_category=source_info.get("category", "market"),
-            source_quality=source_info.get("quality", 5)
+            source_quality=source_info.get("quality", 5),
         )
         all_articles.extend(articles)
 
@@ -224,7 +200,7 @@ def main() -> None:
             title=article.get("title", ""),
             summary=article.get("summary", ""),
             source_quality=article.get("source_quality", 5),
-            published=article.get("published")
+            published=article.get("published"),
         )
 
     # Apply filters
@@ -251,7 +227,7 @@ def main() -> None:
                 "exchange": ["binance", "coinbase", "kraken", "listing", "delist"],
                 "security": ["hack", "exploit", "vulnerability", "audit", "breach"],
                 "layer1": ["ethereum", "solana", "bitcoin", "cardano", "avalanche"],
-                "layer2": ["arbitrum", "optimism", "polygon", "zksync", "base"]
+                "layer2": ["arbitrum", "optimism", "polygon", "zksync", "base"],
             }
             keywords = category_keywords.get(args.category, [])
             text = f"{article.get('title', '')} {article.get('summary', '')}".lower()
@@ -274,7 +250,7 @@ def main() -> None:
         filtered.sort(key=lambda x: x.get("published") or datetime.min, reverse=True)
 
     # Limit results
-    result_articles = filtered[:args.top]
+    result_articles = filtered[: args.top]
 
     # Add ranks
     for i, article in enumerate(result_articles, 1):
@@ -290,12 +266,8 @@ def main() -> None:
             "after_dedup": len(unique_articles),
             "after_filter": len(filtered),
             "shown": len(result_articles),
-            "filters": {
-                "coins": coins if coins else None,
-                "category": args.category,
-                "min_score": args.min_score
-            }
-        }
+            "filters": {"coins": coins if coins else None, "category": args.category, "min_score": args.min_score},
+        },
     }
 
     # Format output

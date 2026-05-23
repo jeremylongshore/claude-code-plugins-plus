@@ -24,6 +24,7 @@ from dex_sources import get_chain_config
 @dataclass
 class TokenInfo:
     """Complete token information."""
+
     address: str
     name: str
     symbol: str
@@ -37,6 +38,7 @@ class TokenInfo:
 @dataclass
 class RiskIndicator:
     """Single risk indicator."""
+
     name: str
     detected: bool
     severity: str  # high, medium, low, info
@@ -46,6 +48,7 @@ class RiskIndicator:
 @dataclass
 class ContractAnalysis:
     """Complete contract risk analysis."""
+
     address: str
     risk_score: int  # 0-100 (higher = riskier)
     indicators: List[RiskIndicator] = field(default_factory=list)
@@ -79,11 +82,7 @@ class TokenAnalyzer:
     """Analyze token contracts for risks."""
 
     def __init__(
-        self,
-        chain: str = "ethereum",
-        rpc_url: str = None,
-        etherscan_api_key: str = None,
-        verbose: bool = False
+        self, chain: str = "ethereum", rpc_url: str = None, etherscan_api_key: str = None, verbose: bool = False
     ):
         """Initialize token analyzer.
 
@@ -95,10 +94,7 @@ class TokenAnalyzer:
         """
         self.chain = chain.lower()
         self.config = get_chain_config(chain)
-        self.rpc_url = rpc_url or os.environ.get(
-            f"{chain.upper()}_RPC_URL",
-            self.config.rpc_url
-        )
+        self.rpc_url = rpc_url or os.environ.get(f"{chain.upper()}_RPC_URL", self.config.rpc_url)
         self.etherscan_key = etherscan_api_key or os.environ.get("ETHERSCAN_API_KEY", "")
         self.verbose = verbose
 
@@ -129,10 +125,7 @@ class TokenAnalyzer:
     def _call_contract(self, address: str, data: str) -> Optional[str]:
         """Make eth_call."""
         try:
-            result = self._rpc_call("eth_call", [
-                {"to": address, "data": data},
-                "latest"
-            ])
+            result = self._rpc_call("eth_call", [{"to": address, "data": data}, "latest"])
             return result if result and result != "0x" else None
         except Exception:
             return None
@@ -176,7 +169,7 @@ class TokenAnalyzer:
 
             if len(data) >= 128:
                 length = int(data[64:128], 16)
-                string_data = data[128:128 + length * 2]
+                string_data = data[128 : 128 + length * 2]
                 return bytes.fromhex(string_data).decode("utf-8", errors="ignore")
 
             return bytes.fromhex(data).decode("utf-8", errors="ignore").strip("\x00")
@@ -203,12 +196,16 @@ class TokenAnalyzer:
             if not api_url:
                 return False
 
-            response = requests.get(api_url, params={
-                "module": "contract",
-                "action": "getsourcecode",
-                "address": address,
-                "apikey": self.etherscan_key,
-            }, timeout=10)
+            response = requests.get(
+                api_url,
+                params={
+                    "module": "contract",
+                    "action": "getsourcecode",
+                    "address": address,
+                    "apikey": self.etherscan_key,
+                },
+                timeout=10,
+            )
 
             data = response.json()
             if data.get("status") == "1" and data.get("result"):
@@ -240,12 +237,14 @@ class TokenAnalyzer:
         # Check if proxy
         is_proxy = self._detect_proxy(address, bytecode)
         if is_proxy:
-            indicators.append(RiskIndicator(
-                name="Proxy Contract",
-                detected=True,
-                severity="medium",
-                description="Contract is a proxy - implementation can be changed"
-            ))
+            indicators.append(
+                RiskIndicator(
+                    name="Proxy Contract",
+                    detected=True,
+                    severity="medium",
+                    description="Contract is a proxy - implementation can be changed",
+                )
+            )
             risk_score += 20
 
         # Check ownership
@@ -255,30 +254,29 @@ class TokenAnalyzer:
 
         if owner:
             if ownership_renounced:
-                indicators.append(RiskIndicator(
-                    name="Ownership Renounced",
-                    detected=True,
-                    severity="info",
-                    description="Ownership has been renounced"
-                ))
+                indicators.append(
+                    RiskIndicator(
+                        name="Ownership Renounced",
+                        detected=True,
+                        severity="info",
+                        description="Ownership has been renounced",
+                    )
+                )
             else:
-                indicators.append(RiskIndicator(
-                    name="Has Owner",
-                    detected=True,
-                    severity="low",
-                    description=f"Contract has active owner: {owner[:20]}..."
-                ))
+                indicators.append(
+                    RiskIndicator(
+                        name="Has Owner",
+                        detected=True,
+                        severity="low",
+                        description=f"Contract has active owner: {owner[:20]}...",
+                    )
+                )
                 risk_score += 10
 
         # Check for risky function signatures in bytecode
         for sig, (name, severity, desc) in RISKY_FUNCTIONS.items():
             if sig[2:] in bytecode.lower():
-                indicators.append(RiskIndicator(
-                    name=f"Has {name}",
-                    detected=True,
-                    severity=severity,
-                    description=desc
-                ))
+                indicators.append(RiskIndicator(name=f"Has {name}", detected=True, severity=severity, description=desc))
                 if severity == "high":
                     risk_score += 30
                 elif severity == "medium":
@@ -289,12 +287,9 @@ class TokenAnalyzer:
         # Check for suspicious patterns
         for pattern, severity, desc in SUSPICIOUS_PATTERNS:
             if pattern in bytecode.lower():
-                indicators.append(RiskIndicator(
-                    name="Suspicious Pattern",
-                    detected=True,
-                    severity=severity,
-                    description=desc
-                ))
+                indicators.append(
+                    RiskIndicator(name="Suspicious Pattern", detected=True, severity=severity, description=desc)
+                )
                 if severity == "high":
                     risk_score += 25
                 elif severity == "medium":
@@ -303,22 +298,26 @@ class TokenAnalyzer:
         # Check verification
         is_verified = self._check_verified(address)
         if not is_verified:
-            indicators.append(RiskIndicator(
-                name="Not Verified",
-                detected=True,
-                severity="medium",
-                description="Contract source code not verified"
-            ))
+            indicators.append(
+                RiskIndicator(
+                    name="Not Verified",
+                    detected=True,
+                    severity="medium",
+                    description="Contract source code not verified",
+                )
+            )
             risk_score += 15
 
         # Very small bytecode might be suspicious
         if bytecode_size < 500:
-            indicators.append(RiskIndicator(
-                name="Small Contract",
-                detected=True,
-                severity="info",
-                description=f"Bytecode is only {bytecode_size} bytes"
-            ))
+            indicators.append(
+                RiskIndicator(
+                    name="Small Contract",
+                    detected=True,
+                    severity="info",
+                    description=f"Bytecode is only {bytecode_size} bytes",
+                )
+            )
 
         # Cap at 100
         risk_score = min(risk_score, 100)

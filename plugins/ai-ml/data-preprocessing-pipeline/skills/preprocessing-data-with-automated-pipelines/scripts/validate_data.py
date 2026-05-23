@@ -14,7 +14,7 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List
 import csv
 
 
@@ -30,7 +30,7 @@ class DataValidator:
         """
         self.schema = {}
         if schema_file and Path(schema_file).exists():
-            with open(schema_file, 'r') as f:
+            with open(schema_file, "r") as f:
                 self.schema = json.load(f)
         self.errors = []
         self.warnings = []
@@ -51,9 +51,9 @@ class DataValidator:
                 self.errors.append(f"File not found: {file_path}")
                 return False
 
-            if path.suffix.lower() == '.csv':
+            if path.suffix.lower() == ".csv":
                 return self._validate_csv(str(path))
-            elif path.suffix.lower() == '.json':
+            elif path.suffix.lower() == ".json":
                 return self._validate_json(str(path))
             else:
                 self.errors.append(f"Unsupported file format: {path.suffix}")
@@ -65,7 +65,7 @@ class DataValidator:
     def _validate_csv(self, file_path: str) -> bool:
         """Validate CSV file structure and content."""
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(file_path, "r", encoding="utf-8") as f:
                 reader = csv.DictReader(f)
                 if not reader.fieldnames:
                     self.errors.append("CSV file is empty or has no headers")
@@ -73,7 +73,7 @@ class DataValidator:
 
                 # Check schema fields if defined
                 if self.schema:
-                    required_fields = self.schema.get('required_fields', [])
+                    required_fields = self.schema.get("required_fields", [])
                     for field in required_fields:
                         if field not in reader.fieldnames:
                             self.errors.append(f"Missing required field: {field}")
@@ -99,7 +99,7 @@ class DataValidator:
     def _validate_json(self, file_path: str) -> bool:
         """Validate JSON file structure and content."""
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(file_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
 
             if isinstance(data, list):
@@ -141,13 +141,12 @@ class DataValidator:
                     self.warnings.append(f"Empty value for field: {key}")
             return True
 
-        field_types = self.schema.get('field_types', {})
+        field_types = self.schema.get("field_types", {})
         for field, expected_type in field_types.items():
             if field in row:
                 if not self._validate_type(row[field], expected_type):
                     self.errors.append(
-                        f"Type mismatch for field '{field}': "
-                        f"expected {expected_type}, got {type(row[field]).__name__}"
+                        f"Type mismatch for field '{field}': expected {expected_type}, got {type(row[field]).__name__}"
                     )
                     return False
         return True
@@ -158,11 +157,11 @@ class DataValidator:
             return True
 
         type_map = {
-            'string': str,
-            'int': int,
-            'float': (int, float),
-            'bool': bool,
-            'number': (int, float),
+            "string": str,
+            "int": int,
+            "float": (int, float),
+            "bool": bool,
+            "number": (int, float),
         }
 
         if expected_type not in type_map:
@@ -174,38 +173,21 @@ class DataValidator:
     def get_report(self) -> Dict[str, Any]:
         """Get validation report."""
         return {
-            'valid': len(self.errors) == 0,
-            'errors': self.errors,
-            'warnings': self.warnings,
-            'error_count': len(self.errors),
-            'warning_count': len(self.warnings),
+            "valid": len(self.errors) == 0,
+            "errors": self.errors,
+            "warnings": self.warnings,
+            "error_count": len(self.errors),
+            "warning_count": len(self.warnings),
         }
 
 
 def main():
     """Main entry point."""
-    parser = argparse.ArgumentParser(
-        description='Validate data against predefined schemas or rules'
-    )
-    parser.add_argument(
-        'data_file',
-        help='Path to data file (CSV or JSON)'
-    )
-    parser.add_argument(
-        '-s', '--schema',
-        help='Path to JSON schema file for validation',
-        default=None
-    )
-    parser.add_argument(
-        '-v', '--verbose',
-        action='store_true',
-        help='Print detailed validation report'
-    )
-    parser.add_argument(
-        '-o', '--output',
-        help='Save validation report to JSON file',
-        default=None
-    )
+    parser = argparse.ArgumentParser(description="Validate data against predefined schemas or rules")
+    parser.add_argument("data_file", help="Path to data file (CSV or JSON)")
+    parser.add_argument("-s", "--schema", help="Path to JSON schema file for validation", default=None)
+    parser.add_argument("-v", "--verbose", action="store_true", help="Print detailed validation report")
+    parser.add_argument("-o", "--output", help="Save validation report to JSON file", default=None)
 
     args = parser.parse_args()
 
@@ -220,7 +202,7 @@ def main():
 
     # Save report if requested
     if args.output:
-        with open(args.output, 'w') as f:
+        with open(args.output, "w") as f:
             json.dump(report, f, indent=2)
         print(f"Validation report saved to: {args.output}")
 
@@ -228,5 +210,5 @@ def main():
     sys.exit(0 if is_valid else 1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

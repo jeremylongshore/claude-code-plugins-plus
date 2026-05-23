@@ -78,10 +78,10 @@ def run_loop(
 
     for iteration in range(1, max_iterations + 1):
         if verbose:
-            print(f"\n{'='*60}", file=sys.stderr)
+            print(f"\n{'=' * 60}", file=sys.stderr)
             print(f"Iteration {iteration}/{max_iterations}", file=sys.stderr)
             print(f"Description: {current_description}", file=sys.stderr)
-            print(f"{'='*60}", file=sys.stderr)
+            print(f"{'=' * 60}", file=sys.stderr)
 
         # Evaluate train + test together in one batch for parallelism
         all_queries = train_set + test_set
@@ -119,23 +119,25 @@ def run_loop(
             test_results = None
             test_summary = None
 
-        history.append({
-            "iteration": iteration,
-            "description": current_description,
-            "train_passed": train_summary["passed"],
-            "train_failed": train_summary["failed"],
-            "train_total": train_summary["total"],
-            "train_results": train_results["results"],
-            "test_passed": test_summary["passed"] if test_summary else None,
-            "test_failed": test_summary["failed"] if test_summary else None,
-            "test_total": test_summary["total"] if test_summary else None,
-            "test_results": test_results["results"] if test_results else None,
-            # For backward compat with report generator
-            "passed": train_summary["passed"],
-            "failed": train_summary["failed"],
-            "total": train_summary["total"],
-            "results": train_results["results"],
-        })
+        history.append(
+            {
+                "iteration": iteration,
+                "description": current_description,
+                "train_passed": train_summary["passed"],
+                "train_failed": train_summary["failed"],
+                "train_total": train_summary["total"],
+                "train_results": train_results["results"],
+                "test_passed": test_summary["passed"] if test_summary else None,
+                "test_failed": test_summary["failed"] if test_summary else None,
+                "test_total": test_summary["total"] if test_summary else None,
+                "test_results": test_results["results"] if test_results else None,
+                # For backward compat with report generator
+                "passed": train_summary["passed"],
+                "failed": train_summary["failed"],
+                "total": train_summary["total"],
+                "results": train_results["results"],
+            }
+        )
 
         # Write live report if path provided
         if live_report_path:
@@ -152,6 +154,7 @@ def run_loop(
             live_report_path.write_text(generate_html(partial_output, auto_refresh=True, skill_name=name))
 
         if verbose:
+
             def print_eval_stats(label, results, elapsed):
                 pos = [r for r in results if r["should_trigger"]]
                 neg = [r for r in results if not r["should_trigger"]]
@@ -165,11 +168,17 @@ def run_loop(
                 precision = tp / (tp + fp) if (tp + fp) > 0 else 1.0
                 recall = tp / (tp + fn) if (tp + fn) > 0 else 1.0
                 accuracy = (tp + tn) / total if total > 0 else 0.0
-                print(f"{label}: {tp+tn}/{total} correct, precision={precision:.0%} recall={recall:.0%} accuracy={accuracy:.0%} ({elapsed:.1f}s)", file=sys.stderr)
+                print(
+                    f"{label}: {tp + tn}/{total} correct, precision={precision:.0%} recall={recall:.0%} accuracy={accuracy:.0%} ({elapsed:.1f}s)",
+                    file=sys.stderr,
+                )
                 for r in results:
                     status = "PASS" if r["pass"] else "FAIL"
                     rate_str = f"{r['triggers']}/{r['runs']}"
-                    print(f"  [{status}] rate={rate_str} expected={r['should_trigger']}: {r['query'][:60]}", file=sys.stderr)
+                    print(
+                        f"  [{status}] rate={rate_str} expected={r['should_trigger']}: {r['query'][:60]}",
+                        file=sys.stderr,
+                    )
 
             print_eval_stats("Train", train_results["results"], eval_elapsed)
             if test_summary:
@@ -189,14 +198,11 @@ def run_loop(
 
         # Improve the description based on train results
         if verbose:
-            print(f"\nImproving description...", file=sys.stderr)
+            print("\nImproving description...", file=sys.stderr)
 
         t0 = time.time()
         # Strip test scores from history so improvement model can't see them
-        blinded_history = [
-            {k: v for k, v in h.items() if not k.startswith("test_")}
-            for h in history
-        ]
+        blinded_history = [{k: v for k, v in h.items() if not k.startswith("test_")} for h in history]
         new_description = improve_description(
             skill_name=name,
             skill_content=content,
@@ -252,11 +258,21 @@ def main():
     parser.add_argument("--max-iterations", type=int, default=5, help="Max improvement iterations")
     parser.add_argument("--runs-per-query", type=int, default=3, help="Number of runs per query")
     parser.add_argument("--trigger-threshold", type=float, default=0.5, help="Trigger rate threshold")
-    parser.add_argument("--holdout", type=float, default=0.4, help="Fraction of eval set to hold out for testing (0 to disable)")
+    parser.add_argument(
+        "--holdout", type=float, default=0.4, help="Fraction of eval set to hold out for testing (0 to disable)"
+    )
     parser.add_argument("--model", required=True, help="Model for improvement")
     parser.add_argument("--verbose", action="store_true", help="Print progress to stderr")
-    parser.add_argument("--report", default="auto", help="Generate HTML report at this path (default: 'auto' for temp file, 'none' to disable)")
-    parser.add_argument("--results-dir", default=None, help="Save all outputs (results.json, report.html, log.txt) to a timestamped subdirectory here")
+    parser.add_argument(
+        "--report",
+        default="auto",
+        help="Generate HTML report at this path (default: 'auto' for temp file, 'none' to disable)",
+    )
+    parser.add_argument(
+        "--results-dir",
+        default=None,
+        help="Save all outputs (results.json, report.html, log.txt) to a timestamped subdirectory here",
+    )
     args = parser.parse_args()
 
     eval_set = json.loads(Path(args.eval_set).read_text())
@@ -272,11 +288,15 @@ def main():
     if args.report != "none":
         if args.report == "auto":
             timestamp = time.strftime("%Y%m%d_%H%M%S")
-            live_report_path = Path(tempfile.gettempdir()) / f"skill_description_report_{skill_path.name}_{timestamp}.html"
+            live_report_path = (
+                Path(tempfile.gettempdir()) / f"skill_description_report_{skill_path.name}_{timestamp}.html"
+            )
         else:
             live_report_path = Path(args.report)
         # Open the report immediately so the user can watch
-        live_report_path.write_text("<html><body><h1>Starting optimization loop...</h1><meta http-equiv='refresh' content='5'></body></html>")
+        live_report_path.write_text(
+            "<html><body><h1>Starting optimization loop...</h1><meta http-equiv='refresh' content='5'></body></html>"
+        )
         webbrowser.open(str(live_report_path))
     else:
         live_report_path = None

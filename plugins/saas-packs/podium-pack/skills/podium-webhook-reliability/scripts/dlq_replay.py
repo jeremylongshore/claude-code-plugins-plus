@@ -24,13 +24,20 @@ Exit codes:
 """
 
 from __future__ import annotations
-import argparse, json, os, sys, time
-import urllib.request, urllib.error
+import argparse
+import json
+import os
+import sys
+import time
+import urllib.request
+import urllib.error
 
 
 def post(target: str, body: bytes, signature_header: str, timeout: float = 10.0) -> int:
     req = urllib.request.Request(
-        target, data=body, method="POST",
+        target,
+        data=body,
+        method="POST",
         headers={
             "Content-Type": "application/json",
             "X-Podium-Signature": signature_header,
@@ -111,8 +118,7 @@ def main() -> int:
             body = entry.get("raw_body", "").encode("utf-8")
             sig = entry.get("signature_header", "")
             if not body or not sig:
-                print(f"  skip: entry missing body or signature (event_id={entry.get('event_id')})",
-                      file=sys.stderr)
+                print(f"  skip: entry missing body or signature (event_id={entry.get('event_id')})", file=sys.stderr)
                 failed += 1
                 continue
 
@@ -130,13 +136,18 @@ def main() -> int:
 
             time.sleep(sleep_per)
 
-    print(json.dumps({
-        "drained": drained,
-        "succeeded_2xx": succeeded,
-        "failed_non_2xx": failed,
-        "duplicate_inferred": duplicate,
-        "remaining": r.llen(args.dlq_key),
-    }, indent=2))
+    print(
+        json.dumps(
+            {
+                "drained": drained,
+                "succeeded_2xx": succeeded,
+                "failed_non_2xx": failed,
+                "duplicate_inferred": duplicate,
+                "remaining": r.llen(args.dlq_key),
+            },
+            indent=2,
+        )
+    )
     return 0 if failed == 0 else 1
 
 

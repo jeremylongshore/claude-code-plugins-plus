@@ -14,7 +14,9 @@ Requires:
 """
 
 from __future__ import annotations
-import argparse, json, sys
+import argparse
+import json
+import sys
 
 
 def main() -> int:
@@ -27,8 +29,12 @@ def main() -> int:
     try:
         import phonenumbers
         from phonenumbers import (
-            NumberParseException, PhoneNumberFormat, is_valid_number,
-            is_possible_number, number_type, carrier,
+            NumberParseException,
+            PhoneNumberFormat,
+            is_valid_number,
+            is_possible_number,
+            number_type,
+            carrier,
         )
         from phonenumbers.phonenumberutil import PhoneNumberType
     except ImportError:

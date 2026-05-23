@@ -21,7 +21,9 @@ Exit codes:
 """
 
 from __future__ import annotations
-import argparse, json, sys
+import argparse
+import json
+import sys
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 
@@ -57,10 +59,10 @@ def parse_retry_after(header_value: str) -> tuple[float, str]:
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--header", required=True, help="Retry-After header value")
-    ap.add_argument("--cap-seconds", type=float, default=120.0,
-                    help="cap the wait at this many seconds (default 120)")
-    ap.add_argument("--default-on-malformed", type=float, default=60.0,
-                    help="fallback wait if neither parser succeeds (default 60)")
+    ap.add_argument("--cap-seconds", type=float, default=120.0, help="cap the wait at this many seconds (default 120)")
+    ap.add_argument(
+        "--default-on-malformed", type=float, default=60.0, help="fallback wait if neither parser succeeds (default 60)"
+    )
     args = ap.parse_args()
 
     wait_s, method = parse_retry_after(args.header)
@@ -75,12 +77,16 @@ def main() -> int:
     wakeup = datetime.now(timezone.utc).timestamp() + wait_s
     wakeup_iso = datetime.fromtimestamp(wakeup, tz=timezone.utc).isoformat()
 
-    print(json.dumps({
-        "wait_seconds": round(wait_s, 2),
-        "parse_method": method,
-        "capped_to_max": capped,
-        "absolute_wakeup_utc": wakeup_iso,
-    }))
+    print(
+        json.dumps(
+            {
+                "wait_seconds": round(wait_s, 2),
+                "parse_method": method,
+                "capped_to_max": capped,
+                "absolute_wakeup_utc": wakeup_iso,
+            }
+        )
+    )
 
     if method == "default":
         return 2

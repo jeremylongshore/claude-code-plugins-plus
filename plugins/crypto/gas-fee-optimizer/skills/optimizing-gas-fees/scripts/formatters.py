@@ -156,7 +156,6 @@ def format_hourly_patterns(patterns: List[Any]) -> str:
     for p in patterns:
         range_str = f"{p.min_gas_gwei:.0f} - {p.max_gas_gwei:.0f}"
         status = "LOW" if p.is_low else ""
-        sample_str = f"(n={p.sample_count})" if p.sample_count > 0 else "(default)"
         lines.append(f"{p.hour:02d}:00    {p.avg_gas_gwei:<12.1f} {range_str:<20} {status:<10}")
 
     lines.append("=" * 60)

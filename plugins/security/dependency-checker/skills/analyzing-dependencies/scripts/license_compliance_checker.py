@@ -53,40 +53,22 @@ class License:
 # Known licenses database
 KNOWN_LICENSES: Dict[str, License] = {
     "MIT": License("MIT", "MIT", "permissive", "Very permissive license"),
-    "Apache-2.0": License(
-        "Apache License 2.0", "Apache-2.0", "permissive", "Permissive with patent grant"
-    ),
-    "BSD-2-Clause": License(
-        "BSD 2-Clause", "BSD-2-Clause", "permissive", "Simple BSD-style license"
-    ),
-    "BSD-3-Clause": License(
-        "BSD 3-Clause", "BSD-3-Clause", "permissive", "Standard BSD license"
-    ),
+    "Apache-2.0": License("Apache License 2.0", "Apache-2.0", "permissive", "Permissive with patent grant"),
+    "BSD-2-Clause": License("BSD 2-Clause", "BSD-2-Clause", "permissive", "Simple BSD-style license"),
+    "BSD-3-Clause": License("BSD 3-Clause", "BSD-3-Clause", "permissive", "Standard BSD license"),
     "ISC": License("ISC", "ISC", "permissive", "ISC/OpenBSD style license"),
-    "GPL-2.0": License(
-        "GNU GPL v2", "GPL-2.0", "copyleft", "Strong copyleft (requires source)"
-    ),
-    "GPL-3.0": License(
-        "GNU GPL v3", "GPL-3.0", "copyleft", "Strong copyleft (requires source)"
-    ),
-    "LGPL-2.1": License(
-        "GNU LGPL v2.1", "LGPL-2.1", "copyleft", "Weak copyleft (library only)"
-    ),
-    "LGPL-3.0": License(
-        "GNU LGPL v3", "LGPL-3.0", "copyleft", "Weak copyleft (library only)"
-    ),
+    "GPL-2.0": License("GNU GPL v2", "GPL-2.0", "copyleft", "Strong copyleft (requires source)"),
+    "GPL-3.0": License("GNU GPL v3", "GPL-3.0", "copyleft", "Strong copyleft (requires source)"),
+    "LGPL-2.1": License("GNU LGPL v2.1", "LGPL-2.1", "copyleft", "Weak copyleft (library only)"),
+    "LGPL-3.0": License("GNU LGPL v3", "LGPL-3.0", "copyleft", "Weak copyleft (library only)"),
     "AGPL-3.0": License(
         "GNU AGPL v3",
         "AGPL-3.0",
         "copyleft",
         "Strong copyleft (includes network use)",
     ),
-    "MPL-2.0": License(
-        "Mozilla Public License 2.0", "MPL-2.0", "copyleft", "File-level copyleft"
-    ),
-    "EPL-1.0": License(
-        "Eclipse Public License 1.0", "EPL-1.0", "copyleft", "Weak copyleft"
-    ),
+    "MPL-2.0": License("Mozilla Public License 2.0", "MPL-2.0", "copyleft", "File-level copyleft"),
+    "EPL-1.0": License("Eclipse Public License 1.0", "EPL-1.0", "copyleft", "Weak copyleft"),
     "Unlicense": License("Unlicense", "Unlicense", "permissive", "Public domain-like"),
     "CC0-1.0": License("CC0 1.0", "CC0-1.0", "permissive", "Public domain waiver"),
 }
@@ -251,9 +233,7 @@ class LicenseCompliance:
             self.log(f"Found npm dependency: {name}@{version} ({license_str})")
 
             license_obj = self.resolve_license(license_str)
-            dep = Dependency(
-                name=name, version=version, license=license_str, license_obj=license_obj
-            )
+            dep = Dependency(name=name, version=version, license=license_str, license_obj=license_obj)
 
             self.dependencies.append(dep)
 
@@ -272,9 +252,7 @@ class LicenseCompliance:
 
         try:
             # Try pip-licenses
-            if subprocess.run(
-                ["pip-licenses", "--version"], capture_output=True
-            ).returncode == 0:
+            if subprocess.run(["pip-licenses", "--version"], capture_output=True).returncode == 0:
                 result = subprocess.run(
                     ["pip-licenses", "--format=json", "--with-urls"],
                     capture_output=True,
@@ -317,9 +295,7 @@ class LicenseCompliance:
             self.log(f"Found Python dependency: {name}@{version} ({license_str})")
 
             license_obj = self.resolve_license(license_str)
-            dep = Dependency(
-                name=name, version=version, license=license_str, license_obj=license_obj
-            )
+            dep = Dependency(name=name, version=version, license=license_str, license_obj=license_obj)
 
             self.dependencies.append(dep)
 
@@ -343,9 +319,7 @@ class LicenseCompliance:
             if dep.license_obj and dep.license_obj.is_copyleft():
                 # Warn if using strong copyleft
                 if dep.license in ["GPL-2.0", "GPL-3.0", "AGPL-3.0"]:
-                    self.warning(
-                        f"Strong copyleft license: {dep.name} ({dep.license})"
-                    )
+                    self.warning(f"Strong copyleft license: {dep.name} ({dep.license})")
 
         # Check for incompatible combinations
         license_types = set()
@@ -377,9 +351,7 @@ class LicenseCompliance:
         # Summary by license type
         by_category: Dict[str, List[Dependency]] = {}
         for dep in self.dependencies:
-            category = (
-                dep.license_obj.category if dep.license_obj else "unknown"
-            )
+            category = dep.license_obj.category if dep.license_obj else "unknown"
             if category not in by_category:
                 by_category[category] = []
             by_category[category].append(dep)
@@ -436,11 +408,7 @@ class LicenseCompliance:
                     "name": dep.name,
                     "version": dep.version,
                     "license": dep.license,
-                    "category": (
-                        dep.license_obj.category
-                        if dep.license_obj
-                        else "unknown"
-                    ),
+                    "category": (dep.license_obj.category if dep.license_obj else "unknown"),
                 }
                 for dep in self.dependencies
             ],

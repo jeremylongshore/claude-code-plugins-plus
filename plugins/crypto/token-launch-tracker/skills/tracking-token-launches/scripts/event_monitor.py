@@ -31,6 +31,7 @@ from dex_sources import (
 @dataclass
 class PairCreated:
     """New trading pair event."""
+
     block_number: int
     tx_hash: str
     timestamp: int
@@ -45,6 +46,7 @@ class PairCreated:
 @dataclass
 class TokenBasicInfo:
     """Basic token info from RPC."""
+
     address: str
     name: str
     symbol: str
@@ -54,12 +56,7 @@ class TokenBasicInfo:
 class EventMonitor:
     """Monitor blockchain events for new pairs."""
 
-    def __init__(
-        self,
-        chain: str = "ethereum",
-        rpc_url: str = None,
-        verbose: bool = False
-    ):
+    def __init__(self, chain: str = "ethereum", rpc_url: str = None, verbose: bool = False):
         """Initialize event monitor.
 
         Args:
@@ -69,10 +66,7 @@ class EventMonitor:
         """
         self.chain = chain.lower()
         self.config = get_chain_config(chain)
-        self.rpc_url = rpc_url or os.environ.get(
-            f"{chain.upper()}_RPC_URL",
-            self.config.rpc_url
-        )
+        self.rpc_url = rpc_url or os.environ.get(f"{chain.upper()}_RPC_URL", self.config.rpc_url)
         self.verbose = verbose
         # Use a size-limited cache to prevent memory leaks on long-running instances
         # Keeps most recent 1000 block timestamps
@@ -111,10 +105,7 @@ class EventMonitor:
         if block_number in self._block_cache:
             return self._block_cache[block_number]
 
-        block = self._rpc_call(
-            "eth_getBlockByNumber",
-            [hex(block_number), False]
-        )
+        block = self._rpc_call("eth_getBlockByNumber", [hex(block_number), False])
 
         if block:
             timestamp = int(block.get("timestamp", "0x0"), 16)
@@ -136,11 +127,7 @@ class EventMonitor:
         result = self._rpc_call("eth_blockNumber")
         return int(result, 16)
 
-    def get_recent_pairs(
-        self,
-        hours: int = 24,
-        dex: str = None
-    ) -> List[PairCreated]:
+    def get_recent_pairs(self, hours: int = 24, dex: str = None) -> List[PairCreated]:
         """Get recently created pairs.
 
         Args:
@@ -168,12 +155,17 @@ class EventMonitor:
 
         for factory_addr in factory_addresses:
             try:
-                logs = self._rpc_call("eth_getLogs", [{
-                    "fromBlock": hex(from_block),
-                    "toBlock": "latest",
-                    "address": factory_addr,
-                    "topics": [PAIR_CREATED_TOPIC],
-                }])
+                logs = self._rpc_call(
+                    "eth_getLogs",
+                    [
+                        {
+                            "fromBlock": hex(from_block),
+                            "toBlock": "latest",
+                            "address": factory_addr,
+                            "topics": [PAIR_CREATED_TOPIC],
+                        }
+                    ],
+                )
 
                 for log in logs or []:
                     pair = self._parse_pair_created(log, factory_addr)
@@ -189,11 +181,7 @@ class EventMonitor:
 
         return pairs
 
-    def _parse_pair_created(
-        self,
-        log: Dict,
-        factory_address: str
-    ) -> Optional[PairCreated]:
+    def _parse_pair_created(self, log: Dict, factory_address: str) -> Optional[PairCreated]:
         """Parse PairCreated event log."""
         try:
             block_number = int(log["blockNumber"], 16)
@@ -265,10 +253,7 @@ class EventMonitor:
     def _call_contract(self, address: str, data: str) -> Optional[str]:
         """Make eth_call to contract."""
         try:
-            result = self._rpc_call("eth_call", [
-                {"to": address, "data": data},
-                "latest"
-            ])
+            result = self._rpc_call("eth_call", [{"to": address, "data": data}, "latest"])
             return result if result and result != "0x" else None
         except Exception:
             return None
@@ -289,7 +274,7 @@ class EventMonitor:
             # ABI encoded string: offset (32 bytes) + length (32 bytes) + data
             if len(data) >= 128:
                 length = int(data[64:128], 16)
-                string_data = data[128:128 + length * 2]
+                string_data = data[128 : 128 + length * 2]
                 return bytes.fromhex(string_data).decode("utf-8", errors="ignore")
 
             return bytes.fromhex(data).decode("utf-8", errors="ignore").strip("\x00")

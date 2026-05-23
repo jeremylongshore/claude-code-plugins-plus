@@ -117,21 +117,25 @@ def chunk_segments(
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--input",  required=True, type=Path)
-    ap.add_argument("--output", type=Path, default=None,
-                    help="Required unless --dry-run")
-    ap.add_argument("--target-tokens",  type=int, default=1500)
+    ap.add_argument("--input", required=True, type=Path)
+    ap.add_argument("--output", type=Path, default=None, help="Required unless --dry-run")
+    ap.add_argument("--target-tokens", type=int, default=1500)
     ap.add_argument("--overlap-tokens", type=int, default=200)
-    ap.add_argument("--process-loop",   action="store_true",
-                    help="Run as a processor loop reading from the inbox SQLite (not implemented as CLI; placeholder)")
+    ap.add_argument(
+        "--process-loop",
+        action="store_true",
+        help="Run as a processor loop reading from the inbox SQLite (not implemented as CLI; placeholder)",
+    )
     ap.add_argument("--interval", type=int, default=5)
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--warn-on-oversize", action="store_true")
     args = ap.parse_args()
 
     if args.process_loop:
-        print("process-loop mode: invoke the processor module directly — this CLI is for one-shot chunking",
-              file=sys.stderr)
+        print(
+            "process-loop mode: invoke the processor module directly — this CLI is for one-shot chunking",
+            file=sys.stderr,
+        )
         return 2
 
     if not args.dry_run and args.output is None:
@@ -181,11 +185,15 @@ def main() -> int:
     }
 
     if args.dry_run:
-        print(json.dumps({
-            "status": "dry-run",
-            "chunk_count": len(chunks),
-            "oversize_chunk_count": oversize,
-        }))
+        print(
+            json.dumps(
+                {
+                    "status": "dry-run",
+                    "chunk_count": len(chunks),
+                    "oversize_chunk_count": oversize,
+                }
+            )
+        )
         return 0
 
     try:
@@ -194,11 +202,15 @@ def main() -> int:
         print(f"output write failed: {e}", file=sys.stderr)
         return 2
 
-    print(json.dumps({
-        "status": "ok",
-        "chunk_count": len(chunks),
-        "oversize_chunk_count": oversize,
-    }))
+    print(
+        json.dumps(
+            {
+                "status": "ok",
+                "chunk_count": len(chunks),
+                "oversize_chunk_count": oversize,
+            }
+        )
+    )
     return 0
 
 

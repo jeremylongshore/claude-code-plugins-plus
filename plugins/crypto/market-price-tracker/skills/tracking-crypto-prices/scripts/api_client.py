@@ -12,8 +12,8 @@ License: MIT
 
 import os
 import time
-from datetime import datetime, timedelta
-from typing import Optional, Dict, List, Any
+from datetime import datetime
+from typing import Optional, List
 from dataclasses import dataclass
 from enum import Enum
 
@@ -25,26 +25,31 @@ except ImportError:
 
 class APIError(Exception):
     """Base exception for API errors."""
+
     pass
 
 
 class RateLimitError(APIError):
     """Rate limit exceeded."""
+
     pass
 
 
 class NetworkError(APIError):
     """Network connectivity error."""
+
     pass
 
 
 class SymbolNotFoundError(APIError):
     """Cryptocurrency symbol not found."""
+
     pass
 
 
 class DataSource(Enum):
     """Available data sources."""
+
     COINGECKO = "coingecko"
     YFINANCE = "yfinance"
 
@@ -52,6 +57,7 @@ class DataSource(Enum):
 @dataclass
 class PriceData:
     """Standardized price data structure."""
+
     symbol: str
     name: str
     price: float
@@ -75,7 +81,7 @@ class PriceData:
             "volume_24h": self.volume_24h,
             "market_cap": self.market_cap,
             "timestamp": self.timestamp or datetime.utcnow().isoformat(),
-            "source": self.source
+            "source": self.source,
         }
 
 
@@ -117,7 +123,7 @@ class CryptoAPIClient:
         "BNB": "binancecoin",
         "SHIB": "shiba-inu",
         "PEPE": "pepe",
-        "BONK": "bonk"
+        "BONK": "bonk",
     }
 
     def __init__(self, config: Optional[dict] = None):
@@ -130,18 +136,12 @@ class CryptoAPIClient:
         self.config = config or {}
 
         # CoinGecko API setup
-        self.api_key = (
-            os.environ.get("COINGECKO_API_KEY") or
-            self.config.get("api", {}).get("coingecko", {}).get("api_key")
+        self.api_key = os.environ.get("COINGECKO_API_KEY") or self.config.get("api", {}).get("coingecko", {}).get(
+            "api_key"
         )
-        self.use_pro = (
-            self.api_key and
-            self.config.get("api", {}).get("coingecko", {}).get("use_pro", False)
-        )
+        self.use_pro = self.api_key and self.config.get("api", {}).get("coingecko", {}).get("use_pro", False)
 
-        self.base_url = (
-            self.COINGECKO_PRO_BASE if self.use_pro else self.COINGECKO_BASE
-        )
+        self.base_url = self.COINGECKO_PRO_BASE if self.use_pro else self.COINGECKO_BASE
 
         # Rate limiting
         self._last_request_time = 0
@@ -160,7 +160,8 @@ class CryptoAPIClient:
         """Check if yfinance is available."""
         if self._yfinance_available is None:
             try:
-                import yfinance
+                import yfinance  # noqa: F401 — capability probe
+
                 self._yfinance_available = True
             except ImportError:
                 self._yfinance_available = False
@@ -173,11 +174,7 @@ class CryptoAPIClient:
             time.sleep(self._min_request_interval - elapsed)
         self._last_request_time = time.time()
 
-    def _make_request(
-        self,
-        endpoint: str,
-        params: Optional[dict] = None
-    ) -> dict:
+    def _make_request(self, endpoint: str, params: Optional[dict] = None) -> dict:
         """
         Make HTTP request to CoinGecko API with error handling.
 
@@ -205,18 +202,11 @@ class CryptoAPIClient:
                 headers["x-cg-demo-api-key"] = self.api_key
 
         try:
-            response = requests.get(
-                url,
-                params=params,
-                headers=headers,
-                timeout=10
-            )
+            response = requests.get(url, params=params, headers=headers, timeout=10)
 
             if response.status_code == 429:
                 retry_after = int(response.headers.get("Retry-After", 60))
-                raise RateLimitError(
-                    f"Rate limit exceeded. Retry after {retry_after}s"
-                )
+                raise RateLimitError(f"Rate limit exceeded. Retry after {retry_after}s")
 
             if response.status_code == 404:
                 raise SymbolNotFoundError("Resource not found")
@@ -250,11 +240,7 @@ class CryptoAPIClient:
         # Assume lowercase symbol is the ID
         return symbol.lower()
 
-    def list_coins(
-        self,
-        query: Optional[str] = None,
-        limit: int = 100
-    ) -> List[dict]:
+    def list_coins(self, query: Optional[str] = None, limit: int = 100) -> List[dict]:
         """
         List available cryptocurrencies.
 
@@ -267,10 +253,7 @@ class CryptoAPIClient:
         """
         # Refresh coin list if stale (older than 1 hour)
         now = time.time()
-        if (self._coin_list_cache is None or
-            self._coin_list_timestamp is None or
-            now - self._coin_list_timestamp > 3600):
-
+        if self._coin_list_cache is None or self._coin_list_timestamp is None or now - self._coin_list_timestamp > 3600:
             try:
                 self._coin_list_cache = self._make_request("/coins/list")
                 self._coin_list_timestamp = now
@@ -284,20 +267,19 @@ class CryptoAPIClient:
         if query:
             query_lower = query.lower()
             coins = [
-                c for c in coins
-                if (query_lower in c.get("id", "").lower() or
-                    query_lower in c.get("name", "").lower() or
-                    query_lower in c.get("symbol", "").lower())
+                c
+                for c in coins
+                if (
+                    query_lower in c.get("id", "").lower()
+                    or query_lower in c.get("name", "").lower()
+                    or query_lower in c.get("symbol", "").lower()
+                )
             ]
 
         # Limit results
         return coins[:limit]
 
-    def get_current_price(
-        self,
-        symbol: str,
-        currency: str = "usd"
-    ) -> dict:
+    def get_current_price(self, symbol: str, currency: str = "usd") -> dict:
         """
         Get current price for a cryptocurrency.
 
@@ -318,8 +300,8 @@ class CryptoAPIClient:
                     "tickers": "false",
                     "community_data": "false",
                     "developer_data": "false",
-                    "sparkline": "false"
-                }
+                    "sparkline": "false",
+                },
             )
 
             market_data = data.get("market_data", {})
@@ -338,7 +320,7 @@ class CryptoAPIClient:
                 change_7d=market_data.get("price_change_percentage_7d"),
                 volume_24h=market_data.get("total_volume", {}).get(currency.lower()),
                 market_cap=market_data.get("market_cap", {}).get(currency.lower()),
-                source="coingecko"
+                source="coingecko",
             ).to_dict()
 
         except SymbolNotFoundError:
@@ -353,11 +335,7 @@ class CryptoAPIClient:
                 return self._get_price_yfinance(symbol, currency)
             raise
 
-    def _get_price_yfinance(
-        self,
-        symbol: str,
-        currency: str = "usd"
-    ) -> dict:
+    def _get_price_yfinance(self, symbol: str, currency: str = "usd") -> dict:
         """
         Get price using yfinance as fallback.
 
@@ -391,7 +369,7 @@ class CryptoAPIClient:
                 change_24h=info.get("regularMarketChangePercent"),
                 volume_24h=info.get("regularMarketVolume"),
                 market_cap=info.get("marketCap"),
-                source="yfinance"
+                source="yfinance",
             ).to_dict()
 
         except Exception as e:
@@ -403,7 +381,7 @@ class CryptoAPIClient:
         currency: str = "usd",
         period: Optional[str] = None,
         start_date: Optional[datetime] = None,
-        end_date: Optional[datetime] = None
+        end_date: Optional[datetime] = None,
     ) -> List[dict]:
         """
         Get historical OHLCV data.
@@ -423,9 +401,16 @@ class CryptoAPIClient:
         # Convert period to days
         if period:
             period_map = {
-                "1d": 1, "7d": 7, "14d": 14, "30d": 30,
-                "60d": 60, "90d": 90, "180d": 180,
-                "1y": 365, "2y": 730, "max": "max"
+                "1d": 1,
+                "7d": 7,
+                "14d": 14,
+                "30d": 30,
+                "60d": 60,
+                "90d": 90,
+                "180d": 180,
+                "1y": 365,
+                "2y": 730,
+                "max": "max",
             }
             days = period_map.get(period.lower(), 30)
         elif start_date and end_date:
@@ -441,8 +426,8 @@ class CryptoAPIClient:
                     params={
                         "vs_currency": currency.lower(),
                         "days": days,
-                        "interval": "daily" if days > 1 else "hourly"
-                    }
+                        "interval": "daily" if days > 1 else "hourly",
+                    },
                 )
 
                 prices = data.get("prices", [])
@@ -453,22 +438,15 @@ class CryptoAPIClient:
                     dt = datetime.fromtimestamp(timestamp / 1000)
                     vol = volumes[i][1] if i < len(volumes) else None
 
-                    results.append({
-                        "date": dt.strftime("%Y-%m-%d"),
-                        "timestamp": timestamp,
-                        "price": price,
-                        "volume": vol
-                    })
+                    results.append(
+                        {"date": dt.strftime("%Y-%m-%d"), "timestamp": timestamp, "price": price, "volume": vol}
+                    )
 
                 return results
 
             else:  # "max" period
                 data = self._make_request(
-                    f"/coins/{coin_id}/market_chart",
-                    params={
-                        "vs_currency": currency.lower(),
-                        "days": "max"
-                    }
+                    f"/coins/{coin_id}/market_chart", params={"vs_currency": currency.lower(), "days": "max"}
                 )
 
                 prices = data.get("prices", [])
@@ -476,20 +454,14 @@ class CryptoAPIClient:
 
                 for timestamp, price in prices:
                     dt = datetime.fromtimestamp(timestamp / 1000)
-                    results.append({
-                        "date": dt.strftime("%Y-%m-%d"),
-                        "timestamp": timestamp,
-                        "price": price
-                    })
+                    results.append({"date": dt.strftime("%Y-%m-%d"), "timestamp": timestamp, "price": price})
 
                 return results
 
         except (RateLimitError, SymbolNotFoundError):
             # Try yfinance fallback
             if self._check_yfinance():
-                return self._get_historical_yfinance(
-                    symbol, currency, period, start_date, end_date
-                )
+                return self._get_historical_yfinance(symbol, currency, period, start_date, end_date)
             raise
 
     def _get_historical_yfinance(
@@ -498,7 +470,7 @@ class CryptoAPIClient:
         currency: str = "usd",
         period: Optional[str] = None,
         start_date: Optional[datetime] = None,
-        end_date: Optional[datetime] = None
+        end_date: Optional[datetime] = None,
     ) -> List[dict]:
         """
         Get historical data using yfinance.
@@ -524,9 +496,16 @@ class CryptoAPIClient:
         # Map period to yfinance format
         if period:
             yf_period_map = {
-                "1d": "1d", "7d": "7d", "14d": "14d", "30d": "1mo",
-                "60d": "2mo", "90d": "3mo", "180d": "6mo",
-                "1y": "1y", "2y": "2y", "max": "max"
+                "1d": "1d",
+                "7d": "7d",
+                "14d": "14d",
+                "30d": "1mo",
+                "60d": "2mo",
+                "90d": "3mo",
+                "180d": "6mo",
+                "1y": "1y",
+                "2y": "2y",
+                "max": "max",
             }
             yf_period = yf_period_map.get(period.lower(), "1mo")
             df = ticker.history(period=yf_period)
@@ -537,13 +516,15 @@ class CryptoAPIClient:
 
         results = []
         for date, row in df.iterrows():
-            results.append({
-                "date": date.strftime("%Y-%m-%d"),
-                "open": row.get("Open"),
-                "high": row.get("High"),
-                "low": row.get("Low"),
-                "close": row.get("Close"),
-                "volume": row.get("Volume")
-            })
+            results.append(
+                {
+                    "date": date.strftime("%Y-%m-%d"),
+                    "open": row.get("Open"),
+                    "high": row.get("High"),
+                    "low": row.get("Low"),
+                    "close": row.get("Close"),
+                    "volume": row.get("Volume"),
+                }
+            )
 
         return results

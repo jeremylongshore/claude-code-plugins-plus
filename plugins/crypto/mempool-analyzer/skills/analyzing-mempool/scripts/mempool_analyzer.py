@@ -138,11 +138,7 @@ def cmd_summary(args):
     swaps = detector.detect_pending_swaps(pending, eth_price=args.eth_price)
     results = detector.detect_all_opportunities(pending, eth_price=args.eth_price)
 
-    total_opportunities = (
-        len(results["sandwich"]) +
-        len(results["arbitrage"]) +
-        len(results["liquidation"])
-    )
+    total_opportunities = len(results["sandwich"]) + len(results["arbitrage"]) + len(results["liquidation"])
 
     if args.format == "json":
         summary = {
@@ -153,12 +149,14 @@ def cmd_summary(args):
         }
         print(format_json(summary))
     else:
-        print(format_mempool_summary(
-            pending_count=len(pending),
-            gas_info=gas_info,
-            swap_count=len(swaps),
-            opportunities=total_opportunities,
-        ))
+        print(
+            format_mempool_summary(
+                pending_count=len(pending),
+                gas_info=gas_info,
+                swap_count=len(swaps),
+                opportunities=total_opportunities,
+            )
+        )
 
 
 def cmd_watch(args):
@@ -177,10 +175,7 @@ def cmd_watch(args):
 
     pending = client.get_pending_transactions(limit=args.limit, allow_mock=args.demo)
 
-    matching = [
-        tx for tx in pending
-        if tx.to_address and tx.to_address.lower() == contract
-    ]
+    matching = [tx for tx in pending if tx.to_address and tx.to_address.lower() == contract]
 
     if not matching:
         print("No pending transactions found for this contract.")
@@ -240,40 +235,42 @@ Examples:
   %(prog)s watch 0x7a250d...             Watch contract for pending txs
   %(prog)s status                        Check connection status
   %(prog)s --demo pending                Use mock data for testing
-        """
+        """,
     )
 
     parser.add_argument("-v", "--verbose", action="store_true", help="Verbose output")
-    parser.add_argument("--format", choices=["table", "json"], default="table",
-                        help="Output format")
+    parser.add_argument("--format", choices=["table", "json"], default="table", help="Output format")
     parser.add_argument("--rpc-url", help="Custom RPC URL")
-    parser.add_argument("--chain", default="ethereum",
-                        choices=["ethereum", "polygon", "arbitrum", "optimism", "base"],
-                        help="Blockchain network")
-    parser.add_argument("--eth-price", type=float, default=DEFAULT_ETH_PRICE,
-                        help=f"ETH price for USD conversion (default: {DEFAULT_ETH_PRICE})")
-    parser.add_argument("--demo", action="store_true",
-                        help="Use mock data when RPC fails (for testing/demo)")
+    parser.add_argument(
+        "--chain",
+        default="ethereum",
+        choices=["ethereum", "polygon", "arbitrum", "optimism", "base"],
+        help="Blockchain network",
+    )
+    parser.add_argument(
+        "--eth-price",
+        type=float,
+        default=DEFAULT_ETH_PRICE,
+        help=f"ETH price for USD conversion (default: {DEFAULT_ETH_PRICE})",
+    )
+    parser.add_argument("--demo", action="store_true", help="Use mock data when RPC fails (for testing/demo)")
 
     subparsers = parser.add_subparsers(dest="command", help="Command to run")
 
     # pending command
     pending_parser = subparsers.add_parser("pending", help="View pending transactions")
-    pending_parser.add_argument("--limit", type=int, default=50,
-                                help="Max transactions to show")
+    pending_parser.add_argument("--limit", type=int, default=50, help="Max transactions to show")
 
     # gas command
     subparsers.add_parser("gas", help="Analyze gas prices")
 
     # swaps command
     swaps_parser = subparsers.add_parser("swaps", help="Show pending DEX swaps")
-    swaps_parser.add_argument("--limit", type=int, default=100,
-                              help="Max transactions to analyze")
+    swaps_parser.add_argument("--limit", type=int, default=100, help="Max transactions to analyze")
 
     # mev command
     mev_parser = subparsers.add_parser("mev", help="Scan for MEV opportunities")
-    mev_parser.add_argument("--limit", type=int, default=200,
-                            help="Max transactions to analyze")
+    mev_parser.add_argument("--limit", type=int, default=200, help="Max transactions to analyze")
 
     # summary command
     subparsers.add_parser("summary", help="Mempool summary")
@@ -281,8 +278,7 @@ Examples:
     # watch command
     watch_parser = subparsers.add_parser("watch", help="Watch contract for pending txs")
     watch_parser.add_argument("contract", help="Contract address to watch")
-    watch_parser.add_argument("--limit", type=int, default=100,
-                              help="Max transactions to check")
+    watch_parser.add_argument("--limit", type=int, default=100, help="Max transactions to check")
 
     # status command
     subparsers.add_parser("status", help="Check connection status")
@@ -312,6 +308,7 @@ Examples:
         print(f"Error: {e}")
         if args.verbose:
             import traceback
+
             traceback.print_exc()
         sys.exit(1)
 

@@ -21,6 +21,7 @@ from dataclasses import dataclass
 @dataclass
 class BackupConfig:
     """Backup script configuration."""
+
     db_type: str
     database: str
     host: str
@@ -32,7 +33,7 @@ class BackupConfig:
     retention_days: int
 
 
-POSTGRESQL_TEMPLATE = '''#!/bin/bash
+POSTGRESQL_TEMPLATE = """#!/bin/bash
 # PostgreSQL Backup Script
 # Generated: {timestamp}
 # Database: {database}
@@ -88,9 +89,9 @@ log "Cleaning backups older than $RETENTION_DAYS days"
 find "$BACKUP_DIR" -name "*.dump*" -mtime "+$RETENTION_DAYS" -delete
 
 log "Backup process completed"
-'''
+"""
 
-MYSQL_TEMPLATE = '''#!/bin/bash
+MYSQL_TEMPLATE = """#!/bin/bash
 # MySQL Backup Script
 # Generated: {timestamp}
 # Database: {database}
@@ -148,9 +149,9 @@ log "Cleaning backups older than $RETENTION_DAYS days"
 find "$BACKUP_DIR" -name "*.sql*" -mtime "+$RETENTION_DAYS" -delete
 
 log "Backup process completed"
-'''
+"""
 
-MONGODB_TEMPLATE = '''#!/bin/bash
+MONGODB_TEMPLATE = """#!/bin/bash
 # MongoDB Backup Script
 # Generated: {timestamp}
 # Database: {database}
@@ -209,9 +210,9 @@ log "Cleaning backups older than $RETENTION_DAYS days"
 find "$BACKUP_DIR" -name "*.tar*" -mtime "+$RETENTION_DAYS" -delete
 
 log "Backup process completed"
-'''
+"""
 
-SQLITE_TEMPLATE = '''#!/bin/bash
+SQLITE_TEMPLATE = """#!/bin/bash
 # SQLite Backup Script
 # Generated: {timestamp}
 # Database: {database}
@@ -273,7 +274,7 @@ log "Cleaning backups older than $RETENTION_DAYS days"
 find "$BACKUP_DIR" -name "*.db*" -mtime "+$RETENTION_DAYS" -delete
 
 log "Backup process completed"
-'''
+"""
 
 
 def get_encryption_block(encryption: Optional[str], backup_var: str = "BACKUP_FILE") -> str:
@@ -282,7 +283,7 @@ def get_encryption_block(encryption: Optional[str], backup_var: str = "BACKUP_FI
         return ""
 
     if encryption == "gpg":
-        return f'''
+        return f"""
     # Encrypt backup with GPG
     log "Encrypting backup..."
     if gpg --symmetric --cipher-algo AES256 --batch --passphrase-file /etc/backup.key "${{{backup_var}}}"; then
@@ -291,9 +292,9 @@ def get_encryption_block(encryption: Optional[str], backup_var: str = "BACKUP_FI
     else
         log "ERROR: Encryption failed"
         exit 1
-    fi'''
+    fi"""
     elif encryption == "openssl":
-        return f'''
+        return f"""
     # Encrypt backup with OpenSSL
     log "Encrypting backup..."
     if openssl enc -aes-256-cbc -salt -pbkdf2 -in "${{{backup_var}}}" -out "${{{backup_var}}}.enc" -pass file:/etc/backup.key; then
@@ -302,7 +303,7 @@ def get_encryption_block(encryption: Optional[str], backup_var: str = "BACKUP_FI
     else
         log "ERROR: Encryption failed"
         exit 1
-    fi'''
+    fi"""
     return ""
 
 
@@ -316,7 +317,7 @@ def generate_postgresql_script(config: BackupConfig) -> str:
         user=config.user,
         backup_dir=config.backup_dir,
         retention_days=config.retention_days,
-        encryption_block=get_encryption_block(config.encryption)
+        encryption_block=get_encryption_block(config.encryption),
     )
 
 
@@ -324,7 +325,9 @@ def generate_mysql_script(config: BackupConfig) -> str:
     """Generate MySQL backup script."""
     compression_pipe = "| gzip" if config.compression == "gzip" else ""
     compression_ext = ".gz" if config.compression == "gzip" else ""
-    verify_command = 'gunzip -t "$BACKUP_FILE"' if config.compression == "gzip" else 'head -1 "$BACKUP_FILE" | grep -q "MySQL dump"'
+    verify_command = (
+        'gunzip -t "$BACKUP_FILE"' if config.compression == "gzip" else 'head -1 "$BACKUP_FILE" | grep -q "MySQL dump"'
+    )
 
     return MYSQL_TEMPLATE.format(
         timestamp=datetime.now().isoformat(),
@@ -337,7 +340,7 @@ def generate_mysql_script(config: BackupConfig) -> str:
         compression_pipe=compression_pipe,
         compression_ext=compression_ext,
         verify_command=verify_command,
-        encryption_block=get_encryption_block(config.encryption)
+        encryption_block=get_encryption_block(config.encryption),
     )
 
 
@@ -353,7 +356,7 @@ def generate_mongodb_script(config: BackupConfig) -> str:
         backup_dir=config.backup_dir,
         retention_days=config.retention_days,
         compression_flag=compression_flag,
-        encryption_block=get_encryption_block(config.encryption, "BACKUP_PATH.tar")
+        encryption_block=get_encryption_block(config.encryption, "BACKUP_PATH.tar"),
     )
 
 
@@ -371,43 +374,39 @@ def generate_sqlite_script(config: BackupConfig) -> str:
         backup_dir=config.backup_dir,
         retention_days=config.retention_days,
         compression_command=compression_command,
-        encryption_block=get_encryption_block(config.encryption)
+        encryption_block=get_encryption_block(config.encryption),
     )
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description='Generate database backup scripts for PostgreSQL, MySQL, MongoDB, or SQLite'
+        description="Generate database backup scripts for PostgreSQL, MySQL, MongoDB, or SQLite"
     )
-    parser.add_argument('--db-type', '-t', required=True,
-                        choices=['postgresql', 'mysql', 'mongodb', 'sqlite'],
-                        help='Database type')
-    parser.add_argument('--database', '-d', required=True,
-                        help='Database name (or path for SQLite)')
-    parser.add_argument('--host', '-H', default='localhost',
-                        help='Database host (default: localhost)')
-    parser.add_argument('--port', '-P', type=int,
-                        help='Database port (default: depends on db type)')
-    parser.add_argument('--user', '-u', default='root',
-                        help='Database user (default: root)')
-    parser.add_argument('--backup-dir', '-b', default='/var/backups',
-                        help='Backup directory (default: /var/backups)')
-    parser.add_argument('--compression', '-c', choices=['none', 'gzip'],
-                        default='gzip', help='Compression type (default: gzip)')
-    parser.add_argument('--encryption', '-e', choices=['none', 'gpg', 'openssl'],
-                        default='none', help='Encryption type (default: none)')
-    parser.add_argument('--retention', '-r', type=int, default=7,
-                        help='Retention days (default: 7)')
-    parser.add_argument('--output', '-o', help='Output file (default: stdout)')
+    parser.add_argument(
+        "--db-type", "-t", required=True, choices=["postgresql", "mysql", "mongodb", "sqlite"], help="Database type"
+    )
+    parser.add_argument("--database", "-d", required=True, help="Database name (or path for SQLite)")
+    parser.add_argument("--host", "-H", default="localhost", help="Database host (default: localhost)")
+    parser.add_argument("--port", "-P", type=int, help="Database port (default: depends on db type)")
+    parser.add_argument("--user", "-u", default="root", help="Database user (default: root)")
+    parser.add_argument("--backup-dir", "-b", default="/var/backups", help="Backup directory (default: /var/backups)")
+    parser.add_argument(
+        "--compression", "-c", choices=["none", "gzip"], default="gzip", help="Compression type (default: gzip)"
+    )
+    parser.add_argument(
+        "--encryption", "-e", choices=["none", "gpg", "openssl"], default="none", help="Encryption type (default: none)"
+    )
+    parser.add_argument("--retention", "-r", type=int, default=7, help="Retention days (default: 7)")
+    parser.add_argument("--output", "-o", help="Output file (default: stdout)")
 
     args = parser.parse_args()
 
     # Default ports
     default_ports = {
-        'postgresql': 5432,
-        'mysql': 3306,
-        'mongodb': 27017,
-        'sqlite': 0,
+        "postgresql": 5432,
+        "mysql": 3306,
+        "mongodb": 27017,
+        "sqlite": 0,
     }
     port = args.port or default_ports[args.db_type]
 
@@ -419,15 +418,15 @@ def main():
         user=args.user,
         backup_dir=args.backup_dir,
         compression=args.compression,
-        encryption=None if args.encryption == 'none' else args.encryption,
-        retention_days=args.retention
+        encryption=None if args.encryption == "none" else args.encryption,
+        retention_days=args.retention,
     )
 
     generators = {
-        'postgresql': generate_postgresql_script,
-        'mysql': generate_mysql_script,
-        'mongodb': generate_mongodb_script,
-        'sqlite': generate_sqlite_script,
+        "postgresql": generate_postgresql_script,
+        "mysql": generate_mysql_script,
+        "mongodb": generate_mongodb_script,
+        "sqlite": generate_sqlite_script,
     }
 
     script = generators[args.db_type](config)
@@ -443,5 +442,5 @@ def main():
     return 0
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(main())

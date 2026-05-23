@@ -25,6 +25,7 @@ from config_loader import get_api_base_url
 @dataclass
 class FeeEstimate:
     """Bridge fee estimate."""
+
     bridge: str
     source_chain: str
     dest_chain: str
@@ -40,6 +41,7 @@ class FeeEstimate:
 @dataclass
 class TxStatus:
     """Bridge transaction status."""
+
     tx_hash: str
     bridge: str
     source_chain: str
@@ -71,11 +73,7 @@ class ProtocolAdapter(ABC):
 
     @abstractmethod
     def get_fee_estimate(
-        self,
-        source_chain: str,
-        dest_chain: str,
-        token: str,
-        amount: Decimal
+        self, source_chain: str, dest_chain: str, token: str, amount: Decimal
     ) -> Optional[FeeEstimate]:
         """Get fee estimate for a bridge transfer."""
         pass
@@ -110,11 +108,7 @@ class WormholeAdapter(ProtocolAdapter):
         return list(self.CHAIN_IDS.keys())
 
     def get_fee_estimate(
-        self,
-        source_chain: str,
-        dest_chain: str,
-        token: str,
-        amount: Decimal
+        self, source_chain: str, dest_chain: str, token: str, amount: Decimal
     ) -> Optional[FeeEstimate]:
         """Wormhole fee estimate (simplified)."""
         # Wormhole fees are primarily relayer fees
@@ -199,11 +193,7 @@ class LayerZeroAdapter(ProtocolAdapter):
         return list(self.CHAIN_IDS.keys())
 
     def get_fee_estimate(
-        self,
-        source_chain: str,
-        dest_chain: str,
-        token: str,
-        amount: Decimal
+        self, source_chain: str, dest_chain: str, token: str, amount: Decimal
     ) -> Optional[FeeEstimate]:
         """LayerZero fee estimate (simplified)."""
         # LayerZero fees depend on the app (Stargate, etc.)
@@ -287,11 +277,7 @@ class StargateAdapter(ProtocolAdapter):
         return list(self.CHAIN_IDS.keys())
 
     def get_fee_estimate(
-        self,
-        source_chain: str,
-        dest_chain: str,
-        token: str,
-        amount: Decimal
+        self, source_chain: str, dest_chain: str, token: str, amount: Decimal
     ) -> Optional[FeeEstimate]:
         """Stargate fee estimate."""
         # Stargate has liquidity pool fees
@@ -343,11 +329,7 @@ class AcrossAdapter(ProtocolAdapter):
         return list(self.CHAIN_IDS.keys())
 
     def get_fee_estimate(
-        self,
-        source_chain: str,
-        dest_chain: str,
-        token: str,
-        amount: Decimal
+        self, source_chain: str, dest_chain: str, token: str, amount: Decimal
     ) -> Optional[FeeEstimate]:
         """Across fee estimate."""
         # Across uses relayers with variable fees
@@ -445,9 +427,7 @@ def main():
         print(f"  Chains: {', '.join(adapter.supported_chains[:5])}...")
 
         # Test fee estimate
-        fee = adapter.get_fee_estimate(
-            "ethereum", "arbitrum", "USDC", Decimal("1000")
-        )
+        fee = adapter.get_fee_estimate("ethereum", "arbitrum", "USDC", Decimal("1000"))
         if fee:
             print(f"  Fee (1000 USDC ETH→ARB): ${fee.total_fee:.4f}")
             print(f"  Estimated time: {fee.estimated_time_minutes} min")

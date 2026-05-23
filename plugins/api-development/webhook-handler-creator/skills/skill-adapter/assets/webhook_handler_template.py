@@ -19,8 +19,7 @@ from typing import Callable, Dict
 from flask import Flask, request, jsonify
 
 # Configure logging
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 # Environment variables (replace with your actual values)
 WEBHOOK_SECRET = os.environ.get("WEBHOOK_SECRET", "your_secret_key")
@@ -33,16 +32,19 @@ app = Flask(__name__)
 
 class WebhookError(Exception):
     """Base class for webhook-related exceptions."""
+
     pass
 
 
 class SignatureVerificationError(WebhookError):
     """Raised when webhook signature verification fails."""
+
     pass
 
 
 class IdempotencyError(WebhookError):
     """Raised when idempotency check fails."""
+
     pass
 
 
@@ -59,11 +61,7 @@ def verify_signature(request_data: bytes, signature: str, secret: str) -> None:
         SignatureVerificationError: If the signature does not match.
     """
     try:
-        expected_signature = hmac.new(
-            secret.encode('utf-8'),
-            request_data,
-            hashlib.sha256
-        ).hexdigest()
+        expected_signature = hmac.new(secret.encode("utf-8"), request_data, hashlib.sha256).hexdigest()
 
         if not hmac.compare_digest(expected_signature, signature):
             raise SignatureVerificationError("Invalid webhook signature.")
@@ -106,6 +104,7 @@ def idempotent(func: Callable) -> Callable:
         except Exception as e:
             logging.error(f"Error processing request: {e}")
             raise
+
     return wrapper
 
 
@@ -121,8 +120,10 @@ def retry(func: Callable, max_retries: int = MAX_RETRIES, delay: int = RETRY_DEL
     Returns:
         The decorated function.
     """
+
     @wraps(func)
     def wrapper(*args, **kwargs):
+        nonlocal delay
         attempts = 0
         while attempts < max_retries:
             try:
@@ -134,10 +135,11 @@ def retry(func: Callable, max_retries: int = MAX_RETRIES, delay: int = RETRY_DEL
                 delay *= 2  # Exponential backoff
         logging.error(f"Max retries reached. Function {func.__name__} failed.")
         raise
+
     return wrapper
 
 
-@app.route('/webhook', methods=['POST'])
+@app.route("/webhook", methods=["POST"])
 @idempotent
 @retry
 def handle_webhook():
@@ -147,7 +149,7 @@ def handle_webhook():
     This function verifies the signature, processes the event, and returns a
     success response.  It also includes error handling and retry logic.
     """
-    signature = request.headers.get('X-Webhook-Signature')
+    signature = request.headers.get("X-Webhook-Signature")
     if not signature:
         logging.warning("Missing X-Webhook-Signature header.")
         return jsonify({"error": "Missing signature"}), HTTPStatus.BAD_REQUEST
@@ -161,7 +163,7 @@ def handle_webhook():
         return jsonify({"error": str(e)}), HTTPStatus.UNAUTHORIZED
 
     try:
-        payload = json.loads(request_data.decode('utf-8'))
+        payload = json.loads(request_data.decode("utf-8"))
         event_type = payload.get("type")  # Example: Get event type from payload
 
         # Route the event to the appropriate handler (replace with your logic)
@@ -178,7 +180,7 @@ def handle_webhook():
     except json.JSONDecodeError:
         logging.error("Invalid JSON payload")
         return jsonify({"error": "Invalid JSON payload"}), HTTPStatus.BAD_REQUEST
-    except Exception as e:
+    except Exception:
         logging.exception("Error processing webhook")
         return jsonify({"error": "Internal server error"}), HTTPStatus.INTERNAL_SERVER_ERROR
 
@@ -230,7 +232,7 @@ def handle_generic_error(error):
     return jsonify({"error": "Internal server error"}), HTTPStatus.INTERNAL_SERVER_ERROR
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # Example Usage:
     #
     # 1. Set the WEBHOOK_SECRET environment variable.
@@ -249,4 +251,4 @@ if __name__ == '__main__':
     #   "user_id": "123"
     # }
 
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True, host="0.0.0.0", port=5000)

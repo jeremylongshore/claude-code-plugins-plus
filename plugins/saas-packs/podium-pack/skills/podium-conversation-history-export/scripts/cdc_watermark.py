@@ -26,7 +26,11 @@ Exit codes:
 """
 
 from __future__ import annotations
-import argparse, json, sqlite3, sys, time
+import argparse
+import json
+import sqlite3
+import sys
+import time
 from datetime import datetime, timezone
 
 
@@ -79,10 +83,13 @@ def reset(db_path: str, resource: str) -> None:
 
 def advance(db_path: str, resource: str, ts: float) -> None:
     con = open_db(db_path)
-    con.execute("""
+    con.execute(
+        """
         INSERT INTO cdc(resource, watermark, updated_at) VALUES(?, ?, ?)
         ON CONFLICT(resource) DO UPDATE SET watermark = excluded.watermark, updated_at = excluded.updated_at
-    """, (resource, ts, time.time()))
+    """,
+        (resource, ts, time.time()),
+    )
     con.commit()
     con.close()
 
@@ -102,7 +109,10 @@ def main() -> int:
                 print("--reset requires --resource", file=sys.stderr)
                 return 2
             if not args.confirm:
-                print("ERR_EXPORT_014 --reset requires --confirm (forces a full re-pull, burns rate-limit budget)", file=sys.stderr)
+                print(
+                    "ERR_EXPORT_014 --reset requires --confirm (forces a full re-pull, burns rate-limit budget)",
+                    file=sys.stderr,
+                )
                 return 1
             reset(args.db, args.resource)
             print(json.dumps({"action": "reset", "resource": args.resource, "ok": True}))

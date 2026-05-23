@@ -26,23 +26,19 @@ CHECKS = {
     "audit_logging": {"weight": 10, "category": "Compliance"},
 }
 
+
 class Colors:
-    GREEN = '\033[0;32m'
-    YELLOW = '\033[1;33m'
-    RED = '\033[0;31m'
-    BLUE = '\033[0;34m'
-    NC = '\033[0m'
+    GREEN = "\033[0;32m"
+    YELLOW = "\033[1;33m"
+    RED = "\033[0;31m"
+    BLUE = "\033[0;34m"
+    NC = "\033[0m"
 
 
 def run_command(cmd: List[str]) -> Tuple[int, str]:
     """Run command and return exit code and output"""
     try:
-        result = subprocess.run(
-            cmd,
-            capture_output=True,
-            text=True,
-            timeout=30
-        )
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
         return result.returncode, result.stdout
     except Exception as e:
         return 1, str(e)
@@ -54,10 +50,13 @@ def check_iam_permissions(project_id: str, service_account: str) -> Tuple[bool, 
         return False, "No service account configured"
 
     cmd = [
-        "gcloud", "projects", "get-iam-policy", project_id,
+        "gcloud",
+        "projects",
+        "get-iam-policy",
+        project_id,
         "--flatten=bindings[].members",
         f"--filter=bindings.members:serviceAccount:{service_account}",
-        "--format=json"
+        "--format=json",
     ]
 
     returncode, output = run_command(cmd)
@@ -84,10 +83,9 @@ def check_vpc_configuration(project_id: str, region: str, agent_id: str) -> Tupl
     """
     try:
         import vertexai
+
         client = vertexai.Client(project=project_id, location=region)
-        engine = client.agent_engines.get(
-            name=f"projects/{project_id}/locations/{region}/reasoningEngines/{agent_id}"
-        )
+        engine = client.agent_engines.get(name=f"projects/{project_id}/locations/{region}/reasoningEngines/{agent_id}")
         # Check for VPC/network config in the engine metadata
         vpc_config = getattr(engine, "network", None) or getattr(engine, "network_config", None)
 
@@ -105,11 +103,7 @@ def check_encryption(project_id: str) -> Tuple[bool, str]:
     """Check encryption settings"""
     # For Vertex AI, encryption at rest is enabled by default
     # Check if customer-managed encryption keys (CMEK) are used
-    cmd = [
-        "gcloud", "kms", "keyrings", "list",
-        f"--project={project_id}",
-        "--format=json"
-    ]
+    cmd = ["gcloud", "kms", "keyrings", "list", f"--project={project_id}", "--format=json"]
 
     returncode, output = run_command(cmd)
     if returncode != 0:
@@ -127,11 +121,7 @@ def check_encryption(project_id: str) -> Tuple[bool, str]:
 
 def check_audit_logging(project_id: str) -> Tuple[bool, str]:
     """Check if audit logging is enabled"""
-    cmd = [
-        "gcloud", "logging", "sinks", "list",
-        f"--project={project_id}",
-        "--format=json"
-    ]
+    cmd = ["gcloud", "logging", "sinks", "list", f"--project={project_id}", "--format=json"]
 
     returncode, output = run_command(cmd)
     if returncode != 0:
@@ -210,13 +200,14 @@ def main():
     service_account = ""
     try:
         import vertexai
+
         client = vertexai.Client(project=project_id, location=region)
-        engine = client.agent_engines.get(
-            name=f"projects/{project_id}/locations/{region}/reasoningEngines/{agent_id}"
-        )
+        engine = client.agent_engines.get(name=f"projects/{project_id}/locations/{region}/reasoningEngines/{agent_id}")
         service_account = getattr(engine, "service_account", "") or ""
     except ImportError:
-        print(f"{Colors.YELLOW}Warning: vertexai SDK not installed. Install with: pip install google-cloud-aiplatform[agent_engines]{Colors.NC}")
+        print(
+            f"{Colors.YELLOW}Warning: vertexai SDK not installed. Install with: pip install google-cloud-aiplatform[agent_engines]{Colors.NC}"
+        )
     except Exception as e:
         print(f"{Colors.YELLOW}Warning: Could not retrieve agent engine info: {e}{Colors.NC}")
 
@@ -227,7 +218,7 @@ def main():
 
     results["service_account_configured"] = (
         bool(service_account),
-        f"Service account: {service_account}" if service_account else "No service account"
+        f"Service account: {service_account}" if service_account else "No service account",
     )
 
     results["iam_least_privilege"] = check_iam_permissions(project_id, service_account)

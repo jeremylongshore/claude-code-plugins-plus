@@ -37,84 +37,47 @@ Examples:
 
 DISCLAIMER: This tool provides informational calculations only, not tax advice.
 Consult a qualified tax professional for your specific situation.
-        """
+        """,
     )
 
     # Required arguments
-    parser.add_argument(
-        "--transactions", "-t",
-        nargs="+",
-        required=True,
-        help="Transaction CSV file(s) to process"
-    )
+    parser.add_argument("--transactions", "-t", nargs="+", required=True, help="Transaction CSV file(s) to process")
 
     # Tax year filter
-    parser.add_argument(
-        "--year", "-y",
-        type=int,
-        help="Filter transactions by tax year (default: all years)"
-    )
+    parser.add_argument("--year", "-y", type=int, help="Filter transactions by tax year (default: all years)")
 
     # Cost basis method
     parser.add_argument(
-        "--method", "-m",
-        choices=["fifo", "lifo", "hifo"],
-        default="fifo",
-        help="Cost basis method (default: fifo)"
+        "--method", "-m", choices=["fifo", "lifo", "hifo"], default="fifo", help="Cost basis method (default: fifo)"
     )
 
     # Compare methods
-    parser.add_argument(
-        "--compare-methods",
-        action="store_true",
-        help="Compare results across all cost basis methods"
-    )
+    parser.add_argument("--compare-methods", action="store_true", help="Compare results across all cost basis methods")
 
     # Exchange format
     parser.add_argument(
-        "--exchange", "-e",
+        "--exchange",
+        "-e",
         choices=["coinbase", "binance", "kraken", "gemini", "generic"],
-        help="Exchange format for CSV parsing (auto-detected if not specified)"
+        help="Exchange format for CSV parsing (auto-detected if not specified)",
     )
 
     # Output options
     parser.add_argument(
-        "--format", "-f",
-        choices=["table", "csv", "json"],
-        default="table",
-        help="Output format (default: table)"
+        "--format", "-f", choices=["table", "csv", "json"], default="table", help="Output format (default: table)"
     )
 
-    parser.add_argument(
-        "--output", "-o",
-        help="Output file (default: stdout)"
-    )
+    parser.add_argument("--output", "-o", help="Output file (default: stdout)")
 
     # Report types
-    parser.add_argument(
-        "--income-report",
-        action="store_true",
-        help="Generate income report (staking, airdrops, etc.)"
-    )
+    parser.add_argument("--income-report", action="store_true", help="Generate income report (staking, airdrops, etc.)")
 
-    parser.add_argument(
-        "--show-lots",
-        action="store_true",
-        help="Show lot-level details"
-    )
+    parser.add_argument("--show-lots", action="store_true", help="Show lot-level details")
 
     # Verbose
-    parser.add_argument(
-        "--verbose", "-v",
-        action="store_true",
-        help="Verbose output"
-    )
+    parser.add_argument("--verbose", "-v", action="store_true", help="Verbose output")
 
-    parser.add_argument(
-        "--version",
-        action="version",
-        version="%(prog)s 2.0.0"
-    )
+    parser.add_argument("--version", action="version", version="%(prog)s 2.0.0")
 
     args = parser.parse_args()
 
@@ -144,10 +107,7 @@ Consult a qualified tax professional for your specific situation.
 
         # Filter by year if specified
         if args.year:
-            transactions = [
-                tx for tx in transactions
-                if tx["date"].year == args.year
-            ]
+            transactions = [tx for tx in transactions if tx["date"].year == args.year]
             if args.verbose:
                 print(f"Filtered to {len(transactions)} transactions for {args.year}")
 
@@ -178,12 +138,7 @@ Consult a qualified tax professional for your specific situation.
             if args.show_lots:
                 result["lots"] = cost_engine.get_inventory()
 
-            output = report_gen.format(
-                result,
-                format_type=args.format,
-                year=args.year,
-                show_lots=args.show_lots
-            )
+            output = report_gen.format(result, format_type=args.format, year=args.year, show_lots=args.show_lots)
 
         # Output
         if args.output:
@@ -203,6 +158,7 @@ Consult a qualified tax professional for your specific situation.
         print(f"Error: {e}", file=sys.stderr)
         if args.verbose:
             import traceback
+
             traceback.print_exc()
         sys.exit(1)
 

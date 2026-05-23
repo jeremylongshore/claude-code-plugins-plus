@@ -23,6 +23,7 @@ except ImportError:
 @dataclass
 class ChainConfig:
     """Configuration for a blockchain network."""
+
     name: str
     chain_id: int
     rpc_url: str
@@ -41,7 +42,7 @@ CHAINS: Dict[str, ChainConfig] = {
         explorer_api="https://api.etherscan.io/api",
         explorer_url="https://etherscan.io",
         native_symbol="ETH",
-        api_key_env="ETHERSCAN_API_KEY"
+        api_key_env="ETHERSCAN_API_KEY",
     ),
     "polygon": ChainConfig(
         name="Polygon",
@@ -50,7 +51,7 @@ CHAINS: Dict[str, ChainConfig] = {
         explorer_api="https://api.polygonscan.com/api",
         explorer_url="https://polygonscan.com",
         native_symbol="MATIC",
-        api_key_env="POLYGONSCAN_API_KEY"
+        api_key_env="POLYGONSCAN_API_KEY",
     ),
     "bsc": ChainConfig(
         name="BNB Smart Chain",
@@ -59,7 +60,7 @@ CHAINS: Dict[str, ChainConfig] = {
         explorer_api="https://api.bscscan.com/api",
         explorer_url="https://bscscan.com",
         native_symbol="BNB",
-        api_key_env="BSCSCAN_API_KEY"
+        api_key_env="BSCSCAN_API_KEY",
     ),
     "arbitrum": ChainConfig(
         name="Arbitrum One",
@@ -68,7 +69,7 @@ CHAINS: Dict[str, ChainConfig] = {
         explorer_api="https://api.arbiscan.io/api",
         explorer_url="https://arbiscan.io",
         native_symbol="ETH",
-        api_key_env="ARBISCAN_API_KEY"
+        api_key_env="ARBISCAN_API_KEY",
     ),
     "optimism": ChainConfig(
         name="Optimism",
@@ -77,7 +78,7 @@ CHAINS: Dict[str, ChainConfig] = {
         explorer_api="https://api-optimistic.etherscan.io/api",
         explorer_url="https://optimistic.etherscan.io",
         native_symbol="ETH",
-        api_key_env="OPTIMISM_API_KEY"
+        api_key_env="OPTIMISM_API_KEY",
     ),
     "base": ChainConfig(
         name="Base",
@@ -86,7 +87,7 @@ CHAINS: Dict[str, ChainConfig] = {
         explorer_api="https://api.basescan.org/api",
         explorer_url="https://basescan.org",
         native_symbol="ETH",
-        api_key_env="BASESCAN_API_KEY"
+        api_key_env="BASESCAN_API_KEY",
     ),
     "avalanche": ChainConfig(
         name="Avalanche C-Chain",
@@ -95,7 +96,7 @@ CHAINS: Dict[str, ChainConfig] = {
         explorer_api="https://api.snowtrace.io/api",
         explorer_url="https://snowtrace.io",
         native_symbol="AVAX",
-        api_key_env="SNOWTRACE_API_KEY"
+        api_key_env="SNOWTRACE_API_KEY",
     ),
 }
 
@@ -142,21 +143,12 @@ class ChainClient:
 
         self._rate_limit_wait()
 
-        payload = {
-            "jsonrpc": "2.0",
-            "method": method,
-            "params": params,
-            "id": 1
-        }
+        payload = {"jsonrpc": "2.0", "method": method, "params": params, "id": 1}
 
         if self.verbose:
             print(f"RPC: {method} -> {self.config.rpc_url}")
 
-        response = requests.post(
-            self.config.rpc_url,
-            json=payload,
-            timeout=30
-        )
+        response = requests.post(self.config.rpc_url, json=payload, timeout=30)
         response.raise_for_status()
         data = response.json()
 
@@ -185,11 +177,7 @@ class ChainClient:
         if self.verbose:
             print(f"Explorer API: {params.get('action')} -> {self.config.explorer_api}")
 
-        response = requests.get(
-            self.config.explorer_api,
-            params=params,
-            timeout=30
-        )
+        response = requests.get(self.config.explorer_api, params=params, timeout=30)
         response.raise_for_status()
         data = response.json()
 
@@ -308,19 +296,13 @@ class ChainClient:
         # balanceOf(address) function signature
         data = f"0x70a08231000000000000000000000000{address[2:].lower()}"
 
-        result = self._rpc_call("eth_call", [
-            {"to": token_contract, "data": data},
-            "latest"
-        ])
+        result = self._rpc_call("eth_call", [{"to": token_contract, "data": data}, "latest"])
 
         balance_wei = int(result, 16) if result else 0
 
         # Get token decimals
         decimals_data = "0x313ce567"  # decimals()
-        decimals_result = self._rpc_call("eth_call", [
-            {"to": token_contract, "data": decimals_data},
-            "latest"
-        ])
+        decimals_result = self._rpc_call("eth_call", [{"to": token_contract, "data": decimals_data}, "latest"])
         decimals = int(decimals_result, 16) if decimals_result else 18
 
         return {
@@ -328,16 +310,12 @@ class ChainClient:
             "token_contract": token_contract,
             "chain": self.config.name,
             "balance_raw": balance_wei,
-            "balance": balance_wei / (10 ** decimals),
+            "balance": balance_wei / (10**decimals),
             "decimals": decimals,
         }
 
     def get_transaction_list(
-        self,
-        address: str,
-        start_block: int = 0,
-        end_block: int = 99999999,
-        limit: int = 100
+        self, address: str, start_block: int = 0, end_block: int = 99999999, limit: int = 100
     ) -> List[Dict[str, Any]]:
         """Get transaction history for address.
 
@@ -350,42 +328,43 @@ class ChainClient:
         Returns:
             List of transactions
         """
-        result = self._explorer_call({
-            "module": "account",
-            "action": "txlist",
-            "address": address,
-            "startblock": str(start_block),
-            "endblock": str(end_block),
-            "page": "1",
-            "offset": str(limit),
-            "sort": "desc"
-        })
+        result = self._explorer_call(
+            {
+                "module": "account",
+                "action": "txlist",
+                "address": address,
+                "startblock": str(start_block),
+                "endblock": str(end_block),
+                "page": "1",
+                "offset": str(limit),
+                "sort": "desc",
+            }
+        )
 
         if not result or isinstance(result, str):
             return []
 
         transactions = []
         for tx in result[:limit]:
-            transactions.append({
-                "hash": tx.get("hash"),
-                "block_number": int(tx.get("blockNumber", 0)),
-                "timestamp": int(tx.get("timeStamp", 0)),
-                "from": tx.get("from"),
-                "to": tx.get("to"),
-                "value": int(tx.get("value", 0)) / 1e18,
-                "gas_used": int(tx.get("gasUsed", 0)),
-                "gas_price_gwei": int(tx.get("gasPrice", 0)) / 1e9,
-                "status": "success" if tx.get("isError") == "0" else "failed",
-                "method": tx.get("functionName", "").split("(")[0] if tx.get("functionName") else "transfer",
-            })
+            transactions.append(
+                {
+                    "hash": tx.get("hash"),
+                    "block_number": int(tx.get("blockNumber", 0)),
+                    "timestamp": int(tx.get("timeStamp", 0)),
+                    "from": tx.get("from"),
+                    "to": tx.get("to"),
+                    "value": int(tx.get("value", 0)) / 1e18,
+                    "gas_used": int(tx.get("gasUsed", 0)),
+                    "gas_price_gwei": int(tx.get("gasPrice", 0)) / 1e9,
+                    "status": "success" if tx.get("isError") == "0" else "failed",
+                    "method": tx.get("functionName", "").split("(")[0] if tx.get("functionName") else "transfer",
+                }
+            )
 
         return transactions
 
     def get_token_transfers(
-        self,
-        address: str,
-        contract: Optional[str] = None,
-        limit: int = 100
+        self, address: str, contract: Optional[str] = None, limit: int = 100
     ) -> List[Dict[str, Any]]:
         """Get ERC20 token transfers for address.
 
@@ -403,7 +382,7 @@ class ChainClient:
             "address": address,
             "page": "1",
             "offset": str(limit),
-            "sort": "desc"
+            "sort": "desc",
         }
 
         if contract:
@@ -417,19 +396,21 @@ class ChainClient:
         transfers = []
         for tx in result[:limit]:
             decimals = int(tx.get("tokenDecimal", 18))
-            value = int(tx.get("value", 0)) / (10 ** decimals)
+            value = int(tx.get("value", 0)) / (10**decimals)
 
-            transfers.append({
-                "hash": tx.get("hash"),
-                "block_number": int(tx.get("blockNumber", 0)),
-                "timestamp": int(tx.get("timeStamp", 0)),
-                "from": tx.get("from"),
-                "to": tx.get("to"),
-                "value": value,
-                "token_symbol": tx.get("tokenSymbol"),
-                "token_name": tx.get("tokenName"),
-                "token_contract": tx.get("contractAddress"),
-            })
+            transfers.append(
+                {
+                    "hash": tx.get("hash"),
+                    "block_number": int(tx.get("blockNumber", 0)),
+                    "timestamp": int(tx.get("timeStamp", 0)),
+                    "from": tx.get("from"),
+                    "to": tx.get("to"),
+                    "value": value,
+                    "token_symbol": tx.get("tokenSymbol"),
+                    "token_name": tx.get("tokenName"),
+                    "token_contract": tx.get("contractAddress"),
+                }
+            )
 
         return transfers
 
@@ -443,11 +424,7 @@ class ChainClient:
             ABI JSON string or None
         """
         try:
-            result = self._explorer_call({
-                "module": "contract",
-                "action": "getabi",
-                "address": contract
-            })
+            result = self._explorer_call({"module": "contract", "action": "getabi", "address": contract})
             return result if result and result != "Contract source code not verified" else None
         except Exception:
             return None
@@ -491,6 +468,7 @@ def main():
         result = client.get_balance(identifier)
 
     import json
+
     print(json.dumps(result, indent=2, default=str))
 
 

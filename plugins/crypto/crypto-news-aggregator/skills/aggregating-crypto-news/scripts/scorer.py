@@ -9,7 +9,6 @@ Version: 2.0.0
 License: MIT
 """
 
-import re
 from datetime import datetime, timedelta
 from typing import Optional, List, Dict
 
@@ -92,11 +91,7 @@ class NewsScorer:
         }
 
     def calculate_score(
-        self,
-        title: str,
-        summary: str = "",
-        source_quality: int = 5,
-        published: Optional[datetime] = None
+        self, title: str, summary: str = "", source_quality: int = 5, published: Optional[datetime] = None
     ) -> float:
         """
         Calculate relevance score for an article.
@@ -167,11 +162,7 @@ class NewsScorer:
             return 0
 
     def explain_score(
-        self,
-        title: str,
-        summary: str = "",
-        source_quality: int = 5,
-        published: Optional[datetime] = None
+        self, title: str, summary: str = "", source_quality: int = 5, published: Optional[datetime] = None
     ) -> Dict[str, any]:
         """
         Generate explanation of score components.
@@ -194,7 +185,7 @@ class NewsScorer:
             "negative_keywords_found": [],
             "keyword_score": 0,
             "recency_score": 0,
-            "final_score": 0
+            "final_score": 0,
         }
 
         # Find matching keywords
@@ -220,9 +211,7 @@ class NewsScorer:
         if published:
             explanation["recency_score"] = self._calculate_recency_score(published)
 
-        explanation["final_score"] = self.calculate_score(
-            title, summary, source_quality, published
-        )
+        explanation["final_score"] = self.calculate_score(title, summary, source_quality, published)
 
         return explanation
 
@@ -230,10 +219,27 @@ class NewsScorer:
 def get_market_moving_keywords() -> List[str]:
     """Return list of market-moving keywords for highlighting."""
     return [
-        "hack", "exploit", "breach", "stolen",
-        "listing", "delist", "sec", "lawsuit",
-        "etf", "approval", "rejection",
-        "all-time high", "ath", "crash", "surge",
-        "airdrop", "fork", "upgrade", "mainnet",
-        "bankruptcy", "insolvent", "freeze", "halting"
+        "hack",
+        "exploit",
+        "breach",
+        "stolen",
+        "listing",
+        "delist",
+        "sec",
+        "lawsuit",
+        "etf",
+        "approval",
+        "rejection",
+        "all-time high",
+        "ath",
+        "crash",
+        "surge",
+        "airdrop",
+        "fork",
+        "upgrade",
+        "mainnet",
+        "bankruptcy",
+        "insolvent",
+        "freeze",
+        "halting",
     ]

@@ -13,13 +13,14 @@ import time
 from dataclasses import dataclass, field
 from decimal import Decimal
 from enum import Enum
-from typing import Dict, List, Optional, Tuple
+from typing import List, Optional
 
 import httpx
 
 
 class ExchangeType(Enum):
     """Exchange type classification."""
+
     CEX = "CEX"
     DEX = "DEX"
 
@@ -314,10 +315,7 @@ class PriceFetcher:
             exchanges = self.list_exchanges(exchange_type)
 
         # Fetch concurrently
-        tasks = [
-            self.fetch_price(base, quote, ex)
-            for ex in exchanges
-        ]
+        tasks = [self.fetch_price(base, quote, ex) for ex in exchanges]
         results = await asyncio.gather(*tasks)
 
         # Filter None results
@@ -331,9 +329,7 @@ class PriceFetcher:
         exchange_type: Optional[ExchangeType] = None,
     ) -> List[PriceQuote]:
         """Synchronous wrapper for fetch_all_prices."""
-        return asyncio.run(
-            self.fetch_all_prices(base, quote, exchanges, exchange_type)
-        )
+        return asyncio.run(self.fetch_all_prices(base, quote, exchanges, exchange_type))
 
     async def close(self):
         """Close HTTP client."""
@@ -374,7 +370,7 @@ def demo():
 
         if best_sell.bid > best_buy.ask:
             spread = float((best_sell.bid - best_buy.ask) / best_buy.ask * 100)
-            print(f"\nBest opportunity:")
+            print("\nBest opportunity:")
             print(f"  Buy on {best_buy.exchange} at ${best_buy.ask:,.2f}")
             print(f"  Sell on {best_sell.exchange} at ${best_sell.bid:,.2f}")
             print(f"  Gross spread: {spread:.3f}%")

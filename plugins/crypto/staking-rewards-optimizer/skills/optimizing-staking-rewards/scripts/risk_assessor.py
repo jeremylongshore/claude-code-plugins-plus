@@ -10,15 +10,15 @@ License: MIT
 """
 
 from dataclasses import dataclass
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 
 
 @dataclass
 class RiskAssessment:
     """Risk assessment for a staking option."""
 
-    overall_score: int        # 1-10 (10 = safest)
-    risk_level: str           # low, medium, high, very_high
+    overall_score: int  # 1-10 (10 = safest)
+    risk_level: str  # low, medium, high, very_high
 
     # Score breakdown
     audit_score: float
@@ -139,11 +139,11 @@ class RiskAssessor:
 
     # Weights for each risk factor
     WEIGHTS = {
-        "audit": 0.30,       # 30%
+        "audit": 0.30,  # 30%
         "production": 0.25,  # 25%
-        "tvl": 0.20,         # 20%
+        "tvl": 0.20,  # 20%
         "reputation": 0.15,  # 15%
-        "validator": 0.10,   # 10%
+        "validator": 0.10,  # 10%
     }
 
     def __init__(self, verbose: bool = False):
@@ -184,11 +184,11 @@ class RiskAssessor:
 
         # Calculate weighted overall score
         overall = (
-            audit_score * self.WEIGHTS["audit"] +
-            production_score * self.WEIGHTS["production"] +
-            tvl_score * self.WEIGHTS["tvl"] +
-            reputation_score * self.WEIGHTS["reputation"] +
-            validator_score * self.WEIGHTS["validator"]
+            audit_score * self.WEIGHTS["audit"]
+            + production_score * self.WEIGHTS["production"]
+            + tvl_score * self.WEIGHTS["tvl"]
+            + reputation_score * self.WEIGHTS["reputation"]
+            + validator_score * self.WEIGHTS["validator"]
         )
 
         overall_score = max(1, min(10, round(overall)))
@@ -257,11 +257,11 @@ class RiskAssessor:
             return 10.0
         elif tvl >= 1_000_000_000:  # $1B+
             return 9.0
-        elif tvl >= 100_000_000:    # $100M+
+        elif tvl >= 100_000_000:  # $100M+
             return 7.0
-        elif tvl >= 10_000_000:     # $10M+
+        elif tvl >= 10_000_000:  # $10M+
             return 5.0
-        elif tvl >= 1_000_000:      # $1M+
+        elif tvl >= 1_000_000:  # $1M+
             return 3.0
         else:
             return 1.0
@@ -362,10 +362,7 @@ class RiskAssessor:
 
         return warnings
 
-    def compare_risks(
-        self,
-        assessments: List[RiskAssessment]
-    ) -> Dict[str, Any]:
+    def compare_risks(self, assessments: List[RiskAssessment]) -> Dict[str, Any]:
         """Compare risk across multiple assessments.
 
         Args:
@@ -408,7 +405,7 @@ def main():
         assessment = assessor.assess_risk(pool)
         print(f"\n{pool['project'].title()}")
         print(f"  Overall Score: {assessment.overall_score}/10 ({assessment.risk_level.replace('_', ' ').title()})")
-        print(f"  Breakdown:")
+        print("  Breakdown:")
         print(f"    Audit: {assessment.audit_score}")
         print(f"    Production: {assessment.production_score}")
         print(f"    TVL: {assessment.tvl_score}")
@@ -416,7 +413,7 @@ def main():
         print(f"    Validators: {assessment.validator_score}")
 
         if assessment.warnings:
-            print(f"  Warnings:")
+            print("  Warnings:")
             for w in assessment.warnings[:3]:
                 print(f"    - {w}")
 

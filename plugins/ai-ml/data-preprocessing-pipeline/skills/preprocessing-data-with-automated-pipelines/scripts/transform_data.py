@@ -14,7 +14,7 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List
 import csv
 from statistics import mean, stdev
 
@@ -43,12 +43,12 @@ class DataTransformer:
 
         data = []
         try:
-            if path.suffix.lower() == '.csv':
-                with open(file_path, 'r', encoding='utf-8') as f:
+            if path.suffix.lower() == ".csv":
+                with open(file_path, "r", encoding="utf-8") as f:
                     reader = csv.DictReader(f)
                     data = list(reader)
-            elif path.suffix.lower() == '.json':
-                with open(file_path, 'r', encoding='utf-8') as f:
+            elif path.suffix.lower() == ".json":
+                with open(file_path, "r", encoding="utf-8") as f:
                     content = json.load(f)
                     data = content if isinstance(content, list) else [content]
             else:
@@ -58,12 +58,7 @@ class DataTransformer:
 
         return data
 
-    def normalize(
-        self,
-        data: List[Dict[str, Any]],
-        field: str,
-        method: str = 'minmax'
-    ) -> List[Dict[str, Any]]:
+    def normalize(self, data: List[Dict[str, Any]], field: str, method: str = "minmax") -> List[Dict[str, Any]]:
         """
         Normalize numeric field.
 
@@ -87,7 +82,7 @@ class DataTransformer:
             if not values:
                 raise ValueError(f"No valid numeric values for field: {field}")
 
-            if method == 'minmax':
+            if method == "minmax":
                 min_val = min(values)
                 max_val = max(values)
                 if min_val == max_val:
@@ -104,9 +99,9 @@ class DataTransformer:
                             except (ValueError, TypeError):
                                 row[f"{field}_normalized"] = None
 
-                self.statistics[field] = {'method': 'minmax', 'min': min_val, 'max': max_val}
+                self.statistics[field] = {"method": "minmax", "min": min_val, "max": max_val}
 
-            elif method == 'zscore':
+            elif method == "zscore":
                 if len(values) > 1:
                     mean_val = mean(values)
                     std_val = stdev(values)
@@ -125,28 +120,21 @@ class DataTransformer:
                                     row[f"{field}_normalized"] = None
 
                     self.statistics[field] = {
-                        'method': 'zscore',
-                        'mean': round(mean_val, 4),
-                        'stdev': round(std_val, 4)
+                        "method": "zscore",
+                        "mean": round(mean_val, 4),
+                        "stdev": round(std_val, 4),
                     }
             else:
                 raise ValueError(f"Unknown normalization method: {method}")
 
-            self.transformations.append(
-                f"Normalized field '{field}' using {method}"
-            )
+            self.transformations.append(f"Normalized field '{field}' using {method}")
 
         except Exception as e:
             raise ValueError(f"Normalization failed: {str(e)}")
 
         return data
 
-    def encode_categorical(
-        self,
-        data: List[Dict[str, Any]],
-        field: str,
-        method: str = 'label'
-    ) -> List[Dict[str, Any]]:
+    def encode_categorical(self, data: List[Dict[str, Any]], field: str, method: str = "label") -> List[Dict[str, Any]]:
         """
         Encode categorical field.
 
@@ -169,7 +157,7 @@ class DataTransformer:
             if not categories:
                 raise ValueError(f"No categorical values found for field: {field}")
 
-            if method == 'label':
+            if method == "label":
                 for row in data:
                     if field in row and row[field] is not None:
                         val = str(row[field])
@@ -177,11 +165,9 @@ class DataTransformer:
                     else:
                         row[f"{field}_encoded"] = None
 
-                self.transformations.append(
-                    f"Label encoded field '{field}' ({len(categories)} categories)"
-                )
+                self.transformations.append(f"Label encoded field '{field}' ({len(categories)} categories)")
 
-            elif method == 'onehot':
+            elif method == "onehot":
                 for row in data:
                     for cat, code in categories.items():
                         col_name = f"{field}_{cat}"
@@ -191,28 +177,18 @@ class DataTransformer:
                         else:
                             row[col_name] = 0
 
-                self.transformations.append(
-                    f"One-hot encoded field '{field}' ({len(categories)} categories)"
-                )
+                self.transformations.append(f"One-hot encoded field '{field}' ({len(categories)} categories)")
             else:
                 raise ValueError(f"Unknown encoding method: {method}")
 
-            self.statistics[field] = {
-                'method': method,
-                'categories': categories
-            }
+            self.statistics[field] = {"method": method, "categories": categories}
 
         except Exception as e:
             raise ValueError(f"Categorical encoding failed: {str(e)}")
 
         return data
 
-    def impute_missing(
-        self,
-        data: List[Dict[str, Any]],
-        field: str,
-        method: str = 'mean'
-    ) -> List[Dict[str, Any]]:
+    def impute_missing(self, data: List[Dict[str, Any]], field: str, method: str = "mean") -> List[Dict[str, Any]]:
         """
         Impute missing values.
 
@@ -225,7 +201,7 @@ class DataTransformer:
             Transformed data
         """
         try:
-            if method in ('mean', 'median'):
+            if method in ("mean", "median"):
                 values = []
                 for row in data:
                     if field in row and row[field] is not None:
@@ -237,24 +213,22 @@ class DataTransformer:
                 if not values:
                     raise ValueError(f"No numeric values for imputation in field: {field}")
 
-                if method == 'mean':
+                if method == "mean":
                     fill_value = mean(values)
                 else:  # median
                     sorted_vals = sorted(values)
                     n = len(sorted_vals)
                     fill_value = (
-                        sorted_vals[n // 2]
-                        if n % 2 == 1
-                        else (sorted_vals[n // 2 - 1] + sorted_vals[n // 2]) / 2
+                        sorted_vals[n // 2] if n % 2 == 1 else (sorted_vals[n // 2 - 1] + sorted_vals[n // 2]) / 2
                     )
 
                 for row in data:
-                    if field not in row or row[field] is None or row[field] == '':
+                    if field not in row or row[field] is None or row[field] == "":
                         row[field] = round(fill_value, 4)
 
-                self.statistics[field] = {'method': method, 'fill_value': fill_value}
+                self.statistics[field] = {"method": method, "fill_value": fill_value}
 
-            elif method == 'forward_fill':
+            elif method == "forward_fill":
                 last_value = None
                 for row in data:
                     if field in row and row[field] is not None:
@@ -262,14 +236,12 @@ class DataTransformer:
                     elif last_value is not None:
                         row[field] = last_value
 
-                self.statistics[field] = {'method': 'forward_fill'}
+                self.statistics[field] = {"method": "forward_fill"}
 
             else:
                 raise ValueError(f"Unknown imputation method: {method}")
 
-            self.transformations.append(
-                f"Imputed missing values in field '{field}' using {method}"
-            )
+            self.transformations.append(f"Imputed missing values in field '{field}' using {method}")
 
         except Exception as e:
             raise ValueError(f"Imputation failed: {str(e)}")
@@ -288,14 +260,14 @@ class DataTransformer:
             path = Path(output_file)
             path.parent.mkdir(parents=True, exist_ok=True)
 
-            if path.suffix.lower() == '.csv':
+            if path.suffix.lower() == ".csv":
                 if data:
-                    with open(output_file, 'w', newline='', encoding='utf-8') as f:
+                    with open(output_file, "w", newline="", encoding="utf-8") as f:
                         writer = csv.DictWriter(f, fieldnames=data[0].keys())
                         writer.writeheader()
                         writer.writerows(data)
-            elif path.suffix.lower() == '.json':
-                with open(output_file, 'w', encoding='utf-8') as f:
+            elif path.suffix.lower() == ".json":
+                with open(output_file, "w", encoding="utf-8") as f:
                     json.dump(data, f, indent=2)
             else:
                 raise ValueError(f"Unsupported output format: {path.suffix}")
@@ -306,56 +278,43 @@ class DataTransformer:
     def get_summary(self) -> Dict[str, Any]:
         """Get transformation summary."""
         return {
-            'transformations': self.transformations,
-            'statistics': self.statistics,
-            'transformation_count': len(self.transformations),
+            "transformations": self.transformations,
+            "statistics": self.statistics,
+            "transformation_count": len(self.transformations),
         }
 
 
 def main():
     """Main entry point."""
-    parser = argparse.ArgumentParser(
-        description='Apply transformations to data (normalization, encoding, imputation)'
-    )
+    parser = argparse.ArgumentParser(description="Apply transformations to data (normalization, encoding, imputation)")
+    parser.add_argument("input_file", help="Path to input data file (CSV or JSON)")
+    parser.add_argument("-o", "--output", required=True, help="Path to output transformed data file")
     parser.add_argument(
-        'input_file',
-        help='Path to input data file (CSV or JSON)'
-    )
-    parser.add_argument(
-        '-o', '--output',
-        required=True,
-        help='Path to output transformed data file'
-    )
-    parser.add_argument(
-        '-n', '--normalize',
+        "-n",
+        "--normalize",
         nargs=2,
-        metavar=('FIELD', 'METHOD'),
-        action='append',
-        help='Normalize field (minmax or zscore)'
+        metavar=("FIELD", "METHOD"),
+        action="append",
+        help="Normalize field (minmax or zscore)",
     )
     parser.add_argument(
-        '-e', '--encode',
+        "-e",
+        "--encode",
         nargs=2,
-        metavar=('FIELD', 'METHOD'),
-        action='append',
-        help='Encode categorical field (label or onehot)'
+        metavar=("FIELD", "METHOD"),
+        action="append",
+        help="Encode categorical field (label or onehot)",
     )
     parser.add_argument(
-        '-i', '--impute',
+        "-i",
+        "--impute",
         nargs=2,
-        metavar=('FIELD', 'METHOD'),
-        action='append',
-        help='Impute missing values (mean, median, or forward_fill)'
+        metavar=("FIELD", "METHOD"),
+        action="append",
+        help="Impute missing values (mean, median, or forward_fill)",
     )
-    parser.add_argument(
-        '-s', '--summary',
-        help='Save transformation summary to JSON file'
-    )
-    parser.add_argument(
-        '-v', '--verbose',
-        action='store_true',
-        help='Print transformation details'
-    )
+    parser.add_argument("-s", "--summary", help="Save transformation summary to JSON file")
+    parser.add_argument("-v", "--verbose", action="store_true", help="Print transformation details")
 
     args = parser.parse_args()
 
@@ -394,7 +353,7 @@ def main():
         # Save summary if requested
         if args.summary:
             summary = transformer.get_summary()
-            with open(args.summary, 'w') as f:
+            with open(args.summary, "w") as f:
                 json.dump(summary, f, indent=2)
             if args.verbose:
                 print(f"Saved summary to {args.summary}")
@@ -406,5 +365,5 @@ def main():
         sys.exit(1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

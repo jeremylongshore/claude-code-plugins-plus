@@ -34,114 +34,49 @@ Examples:
   %(prog)s --asset SOL --format json
   %(prog)s --compare --protocols lido,rocket-pool
   %(prog)s --optimize --positions "10 ETH @ lido 4.0%%, 100 ATOM @ native 18%%"
-        """
+        """,
     )
 
     # Asset selection
-    parser.add_argument(
-        "--asset", "-a",
-        help="Asset to analyze (ETH, SOL, ATOM, etc.)"
-    )
+    parser.add_argument("--asset", "-a", help="Asset to analyze (ETH, SOL, ATOM, etc.)")
 
-    parser.add_argument(
-        "--assets",
-        help="Multiple assets, comma-separated (ETH,SOL,ATOM)"
-    )
+    parser.add_argument("--assets", help="Multiple assets, comma-separated (ETH,SOL,ATOM)")
 
     # Position analysis
-    parser.add_argument(
-        "--amount",
-        type=float,
-        help="Amount of asset for gas-adjusted analysis"
-    )
+    parser.add_argument("--amount", type=float, help="Amount of asset for gas-adjusted analysis")
 
-    parser.add_argument(
-        "--amount-usd",
-        type=float,
-        help="Position value in USD"
-    )
+    parser.add_argument("--amount-usd", type=float, help="Position value in USD")
 
     # Protocol selection
-    parser.add_argument(
-        "--protocol",
-        help="Single protocol to analyze"
-    )
+    parser.add_argument("--protocol", help="Single protocol to analyze")
 
-    parser.add_argument(
-        "--protocols",
-        help="Protocols to compare, comma-separated"
-    )
+    parser.add_argument("--protocols", help="Protocols to compare, comma-separated")
 
     # Comparison mode
-    parser.add_argument(
-        "--compare",
-        action="store_true",
-        help="Compare protocols head-to-head"
-    )
+    parser.add_argument("--compare", action="store_true", help="Compare protocols head-to-head")
 
     # Optimization mode
-    parser.add_argument(
-        "--optimize",
-        action="store_true",
-        help="Optimize existing portfolio"
-    )
+    parser.add_argument("--optimize", action="store_true", help="Optimize existing portfolio")
 
-    parser.add_argument(
-        "--positions",
-        help="Current positions for optimization (e.g., '10 ETH @ lido 4.0%%')"
-    )
+    parser.add_argument("--positions", help="Current positions for optimization (e.g., '10 ETH @ lido 4.0%%')")
 
     # Output options
-    parser.add_argument(
-        "--format", "-f",
-        choices=["table", "json", "csv"],
-        default="table",
-        help="Output format"
-    )
+    parser.add_argument("--format", "-f", choices=["table", "json", "csv"], default="table", help="Output format")
 
-    parser.add_argument(
-        "--output", "-o",
-        help="Output file"
-    )
+    parser.add_argument("--output", "-o", help="Output file")
 
-    parser.add_argument(
-        "--detailed",
-        action="store_true",
-        help="Show detailed analysis"
-    )
+    parser.add_argument("--detailed", action="store_true", help="Show detailed analysis")
 
     # Other options
-    parser.add_argument(
-        "--no-cache",
-        action="store_true",
-        help="Bypass cache"
-    )
+    parser.add_argument("--no-cache", action="store_true", help="Bypass cache")
 
-    parser.add_argument(
-        "--verbose", "-v",
-        action="store_true",
-        help="Verbose output"
-    )
+    parser.add_argument("--verbose", "-v", action="store_true", help="Verbose output")
 
-    parser.add_argument(
-        "--gas-price",
-        type=float,
-        default=30,
-        help="Gas price in gwei (default: 30)"
-    )
+    parser.add_argument("--gas-price", type=float, default=30, help="Gas price in gwei (default: 30)")
 
-    parser.add_argument(
-        "--eth-price",
-        type=float,
-        default=2000,
-        help="ETH price in USD (default: 2000)"
-    )
+    parser.add_argument("--eth-price", type=float, default=2000, help="ETH price in USD (default: 2000)")
 
-    parser.add_argument(
-        "--version",
-        action="version",
-        version="%(prog)s 2.0.0"
-    )
+    parser.add_argument("--version", action="version", version="%(prog)s 2.0.0")
 
     args = parser.parse_args()
 
@@ -149,9 +84,7 @@ Examples:
         # Initialize components
         fetcher = StakingFetcher(use_cache=not args.no_cache, verbose=args.verbose)
         calculator = MetricsCalculator(
-            gas_price_gwei=args.gas_price,
-            eth_price_usd=args.eth_price,
-            verbose=args.verbose
+            gas_price_gwei=args.gas_price, eth_price_usd=args.eth_price, verbose=args.verbose
         )
         risk_assessor = RiskAssessor(verbose=args.verbose)
         formatter = StakingFormatter()
@@ -165,8 +98,14 @@ Examples:
         if args.amount and args.asset and not position_usd:
             # Estimate USD value (simplified)
             price_estimates = {
-                "ETH": 2000, "SOL": 100, "ATOM": 10, "DOT": 7,
-                "AVAX": 35, "MATIC": 1, "ADA": 0.5, "BNB": 300,
+                "ETH": 2000,
+                "SOL": 100,
+                "ATOM": 10,
+                "DOT": 7,
+                "AVAX": 35,
+                "MATIC": 1,
+                "ADA": 0.5,
+                "BNB": 300,
             }
             price = price_estimates.get(args.asset.upper(), 100)
             position_usd = args.amount * price
@@ -244,10 +183,9 @@ Examples:
         # Sort by risk-adjusted return
         options.sort(
             key=lambda x: calculator.calculate_risk_adjusted_return(
-                x["metrics"]["net_apy"],
-                x["risk_assessment"]["overall_score"]
+                x["metrics"]["net_apy"], x["risk_assessment"]["overall_score"]
             ),
-            reverse=True
+            reverse=True,
         )
 
         # Format output
@@ -268,6 +206,7 @@ Examples:
         print(f"Error: {e}", file=sys.stderr)
         if args.verbose:
             import traceback
+
             traceback.print_exc()
         sys.exit(1)
 
@@ -314,21 +253,29 @@ def handle_optimization(args, fetcher, calculator, risk_assessor, formatter):
 
             # Estimate USD value
             price_estimates = {
-                "ETH": 2000, "SOL": 100, "ATOM": 10, "DOT": 7,
-                "AVAX": 35, "MATIC": 1, "ADA": 0.5, "BNB": 300,
+                "ETH": 2000,
+                "SOL": 100,
+                "ATOM": 10,
+                "DOT": 7,
+                "AVAX": 35,
+                "MATIC": 1,
+                "ADA": 0.5,
+                "BNB": 300,
             }
             price = price_estimates.get(asset, 100)
             value_usd = amount * price
             annual_return = value_usd * (apy / 100)
 
-            positions.append({
-                "amount": amount,
-                "asset": asset,
-                "protocol": protocol,
-                "apy": apy,
-                "value_usd": value_usd,
-                "annual_return": annual_return,
-            })
+            positions.append(
+                {
+                    "amount": amount,
+                    "asset": asset,
+                    "protocol": protocol,
+                    "apy": apy,
+                    "value_usd": value_usd,
+                    "annual_return": annual_return,
+                }
+            )
 
             total_value += value_usd
             total_annual += annual_return
@@ -369,16 +316,18 @@ def handle_optimization(args, fetcher, calculator, risk_assessor, formatter):
             new_annual = value_usd * (best_net_apy / 100)
             change = new_annual - pos["annual_return"]
 
-            recommendations.append({
-                "action": "move",
-                "asset": f"{pos['amount']} {asset}",
-                "current_protocol": pos["protocol"],
-                "target_protocol": best_alternative.get("project", "?"),
-                "current_apy": current_apy,
-                "new_apy": best_net_apy,
-                "new_annual": new_annual,
-                "change": change,
-            })
+            recommendations.append(
+                {
+                    "action": "move",
+                    "asset": f"{pos['amount']} {asset}",
+                    "current_protocol": pos["protocol"],
+                    "target_protocol": best_alternative.get("project", "?"),
+                    "current_apy": current_apy,
+                    "new_apy": best_net_apy,
+                    "new_annual": new_annual,
+                    "change": change,
+                }
+            )
 
             optimized_annual += new_annual
             implementation_steps.append(
@@ -386,16 +335,18 @@ def handle_optimization(args, fetcher, calculator, risk_assessor, formatter):
             )
         else:
             # Keep current
-            recommendations.append({
-                "action": "keep",
-                "asset": f"{pos['amount']} {asset}",
-                "current_protocol": pos["protocol"],
-                "target_protocol": pos["protocol"],
-                "current_apy": current_apy,
-                "new_apy": current_apy,
-                "new_annual": pos["annual_return"],
-                "change": 0,
-            })
+            recommendations.append(
+                {
+                    "action": "keep",
+                    "asset": f"{pos['amount']} {asset}",
+                    "current_protocol": pos["protocol"],
+                    "target_protocol": pos["protocol"],
+                    "current_apy": current_apy,
+                    "new_apy": current_apy,
+                    "new_annual": pos["annual_return"],
+                    "change": 0,
+                }
+            )
             optimized_annual += pos["annual_return"]
 
     # Summary

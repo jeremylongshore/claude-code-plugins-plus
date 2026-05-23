@@ -14,14 +14,13 @@ import argparse
 import sys
 import json
 import csv
-from pathlib import Path
-from typing import Dict, List, Tuple, Optional, Any
+from typing import Dict, List, Tuple, Optional
 
 
 def load_model(filepath: str) -> Dict:
     """Load a trained model from JSON file."""
     try:
-        with open(filepath, 'r', encoding='utf-8') as f:
+        with open(filepath, "r", encoding="utf-8") as f:
             return json.load(f)
     except FileNotFoundError:
         print(f"Error: Model file not found: {filepath}", file=sys.stderr)
@@ -38,7 +37,7 @@ def load_csv_data(filepath: str, target_col: str) -> Tuple[List[List[float]], Li
         targets = []
         feature_names = []
 
-        with open(filepath, 'r', encoding='utf-8') as f:
+        with open(filepath, "r", encoding="utf-8") as f:
             reader = csv.DictReader(f)
             columns = reader.fieldnames
 
@@ -78,33 +77,30 @@ def load_csv_data(filepath: str, target_col: str) -> Tuple[List[List[float]], Li
 def predict(model: Dict, features: List[List[float]]) -> List[float]:
     """Make predictions with a trained model."""
     predictions = []
-    means = model.get('normalization', {}).get('means', [])
-    stds = model.get('normalization', {}).get('stds', [])
+    means = model.get("normalization", {}).get("means", [])
+    stds = model.get("normalization", {}).get("stds", [])
 
     for row in features:
         # Normalize features
         normalized_row = row.copy()
         if means and stds:
-            normalized_row = [
-                (row[i] - means[i]) / stds[i] if stds[i] > 0 else 0
-                for i in range(len(row))
-            ]
+            normalized_row = [(row[i] - means[i]) / stds[i] if stds[i] > 0 else 0 for i in range(len(row))]
 
-        if model['type'] == 'linear':
-            pred = model['intercept']
-            for i, coef in enumerate(model['coefficients']):
+        if model["type"] == "linear":
+            pred = model["intercept"]
+            for i, coef in enumerate(model["coefficients"]):
                 if i < len(normalized_row):
                     pred += coef * normalized_row[i]
             predictions.append(pred)
 
-        elif model['type'] == 'polynomial':
+        elif model["type"] == "polynomial":
             poly_row = normalized_row.copy()
-            for d in range(2, model['degree'] + 1):
-                for val in normalized_row[:len(model['feature_names'])]:
-                    poly_row.append(val ** d)
+            for d in range(2, model["degree"] + 1):
+                for val in normalized_row[: len(model["feature_names"])]:
+                    poly_row.append(val**d)
 
-            pred = model['intercept']
-            for i, coef in enumerate(model['coefficients']):
+            pred = model["intercept"]
+            for i, coef in enumerate(model["coefficients"]):
                 if i < len(poly_row):
                     pred += coef * poly_row[i]
             predictions.append(pred)
@@ -131,7 +127,7 @@ def calculate_metrics(targets: List[float], predictions: List[float]) -> Dict[st
 
     # MSE and RMSE
     mse = ss_res / n
-    rmse = mse ** 0.5
+    rmse = mse**0.5
 
     # MAE
     mae = sum(abs(targets[i] - predictions[i]) for i in range(n)) / n
@@ -149,13 +145,13 @@ def calculate_metrics(targets: List[float], predictions: List[float]) -> Dict[st
     # adj_r2 = 1 - ((1 - r2) * (n - 1) / (n - k - 1)) where k is number of features
 
     return {
-        'r_squared': r_squared,
-        'mse': mse,
-        'rmse': rmse,
-        'mae': mae,
-        'mape': mape,
-        'mean_target': mean_target,
-        'std_target': (sum((t - mean_target) ** 2 for t in targets) / n) ** 0.5
+        "r_squared": r_squared,
+        "mse": mse,
+        "rmse": rmse,
+        "mae": mae,
+        "mape": mape,
+        "mean_target": mean_target,
+        "std_target": (sum((t - mean_target) ** 2 for t in targets) / n) ** 0.5,
     }
 
 
@@ -177,34 +173,32 @@ def analyze_residuals(targets: List[float], predictions: List[float]) -> Dict:
 
     # Heteroscedasticity: check if residual variance changes with prediction magnitude
     predictions_sorted = sorted(enumerate(predictions), key=lambda x: x[1])
-    first_half_idx = [i for i, _ in predictions_sorted[:len(predictions)//2]]
-    second_half_idx = [i for i, _ in predictions_sorted[len(predictions)//2:]]
+    first_half_idx = [i for i, _ in predictions_sorted[: len(predictions) // 2]]
+    second_half_idx = [i for i, _ in predictions_sorted[len(predictions) // 2 :]]
 
     if first_half_idx and second_half_idx:
         var_first = sum((residuals[i] ** 2) for i in first_half_idx) / len(first_half_idx)
         var_second = sum((residuals[i] ** 2) for i in second_half_idx) / len(second_half_idx)
-        heteroscedasticity_score = max(var_first, var_second) / min(var_first, var_second) if min(var_first, var_second) > 0 else 1.0
+        heteroscedasticity_score = (
+            max(var_first, var_second) / min(var_first, var_second) if min(var_first, var_second) > 0 else 1.0
+        )
     else:
         heteroscedasticity_score = 1.0
 
     return {
-        'mean': mean_residual,
-        'std': std_residual,
-        'min': min(residuals),
-        'max': max(residuals),
-        'positive_count': positive_residuals,
-        'negative_count': negative_residuals,
-        'bias_ratio': bias_ratio,
-        'heteroscedasticity_score': heteroscedasticity_score
+        "mean": mean_residual,
+        "std": std_residual,
+        "min": min(residuals),
+        "max": max(residuals),
+        "positive_count": positive_residuals,
+        "negative_count": negative_residuals,
+        "bias_ratio": bias_ratio,
+        "heteroscedasticity_score": heteroscedasticity_score,
     }
 
 
 def evaluate_model(
-    model_file: str,
-    data_file: str,
-    target_col: str,
-    output_file: Optional[str] = None,
-    verbose: bool = False
+    model_file: str, data_file: str, target_col: str, output_file: Optional[str] = None, verbose: bool = False
 ) -> Dict:
     """
     Evaluate a trained regression model.
@@ -220,72 +214,72 @@ def evaluate_model(
         Evaluation results
     """
     results = {
-        'status': 'evaluating',
-        'model_file': model_file,
-        'data_file': data_file,
-        'metrics': {},
-        'residuals': {},
-        'diagnostics': [],
-        'evaluation_log': []
+        "status": "evaluating",
+        "model_file": model_file,
+        "data_file": data_file,
+        "metrics": {},
+        "residuals": {},
+        "diagnostics": [],
+        "evaluation_log": [],
     }
 
     # Load model
     if verbose:
-        results['evaluation_log'].append("Loading model...")
+        results["evaluation_log"].append("Loading model...")
     model = load_model(model_file)
-    results['evaluation_log'].append(f"Loaded {model.get('type', 'unknown')} regression model")
+    results["evaluation_log"].append(f"Loaded {model.get('type', 'unknown')} regression model")
 
     # Load evaluation data
     if verbose:
-        results['evaluation_log'].append("Loading evaluation data...")
+        results["evaluation_log"].append("Loading evaluation data...")
     features, targets, feature_names = load_csv_data(data_file, target_col)
-    results['evaluation_log'].append(f"Loaded {len(features)} samples for evaluation")
+    results["evaluation_log"].append(f"Loaded {len(features)} samples for evaluation")
 
     # Make predictions
     if verbose:
-        results['evaluation_log'].append("Making predictions...")
+        results["evaluation_log"].append("Making predictions...")
     predictions = predict(model, features)
 
     # Calculate metrics
     if verbose:
-        results['evaluation_log'].append("Calculating metrics...")
+        results["evaluation_log"].append("Calculating metrics...")
     metrics = calculate_metrics(targets, predictions)
-    results['metrics'] = metrics
+    results["metrics"] = metrics
 
     # Analyze residuals
     if verbose:
-        results['evaluation_log'].append("Analyzing residuals...")
+        results["evaluation_log"].append("Analyzing residuals...")
     residuals = analyze_residuals(targets, predictions)
-    results['residuals'] = residuals
+    results["residuals"] = residuals
 
     # Diagnostics
-    results['diagnostics'] = []
+    results["diagnostics"] = []
 
-    if metrics.get('r_squared', 0) < 0.5:
-        results['diagnostics'].append("Model has poor explanatory power (R² < 0.5)")
+    if metrics.get("r_squared", 0) < 0.5:
+        results["diagnostics"].append("Model has poor explanatory power (R² < 0.5)")
 
-    if metrics.get('mape', 0) > 20:
-        results['diagnostics'].append(f"High Mean Absolute Percentage Error ({metrics['mape']:.1f}%)")
+    if metrics.get("mape", 0) > 20:
+        results["diagnostics"].append(f"High Mean Absolute Percentage Error ({metrics['mape']:.1f}%)")
 
-    if residuals.get('bias_ratio', 0) > 0.7:
-        results['diagnostics'].append("Systematic bias detected in predictions")
+    if residuals.get("bias_ratio", 0) > 0.7:
+        results["diagnostics"].append("Systematic bias detected in predictions")
 
-    if residuals.get('heteroscedasticity_score', 1.0) > 3.0:
-        results['diagnostics'].append("Heteroscedasticity detected (non-constant variance)")
+    if residuals.get("heteroscedasticity_score", 1.0) > 3.0:
+        results["diagnostics"].append("Heteroscedasticity detected (non-constant variance)")
 
-    if not results['diagnostics']:
-        results['diagnostics'].append("Model performance appears reasonable")
+    if not results["diagnostics"]:
+        results["diagnostics"].append("Model performance appears reasonable")
 
-    results['status'] = 'completed'
+    results["status"] = "completed"
 
     # Save results if requested
     if output_file:
         try:
-            with open(output_file, 'w', encoding='utf-8') as f:
+            with open(output_file, "w", encoding="utf-8") as f:
                 json.dump(results, f, indent=2)
-            results['evaluation_log'].append(f"Results saved to {output_file}")
+            results["evaluation_log"].append(f"Results saved to {output_file}")
         except IOError as e:
-            results['evaluation_log'].append(f"Warning: Could not save results: {e}")
+            results["evaluation_log"].append(f"Warning: Could not save results: {e}")
 
     return results
 
@@ -300,14 +294,14 @@ def format_report(results: Dict) -> str:
     report.append(f"\nModel: {results['model_file']}")
     report.append(f"Data: {results['data_file']}")
 
-    metrics = results['metrics']
+    metrics = results["metrics"]
     report.append("\n[PERFORMANCE METRICS]")
     report.append(f"  R-squared: {metrics.get('r_squared', 0):.4f}")
     report.append(f"  RMSE: {metrics.get('rmse', 0):.4f}")
     report.append(f"  MAE: {metrics.get('mae', 0):.4f}")
     report.append(f"  MAPE: {metrics.get('mape', 0):.2f}%")
 
-    residuals = results['residuals']
+    residuals = results["residuals"]
     if residuals:
         report.append("\n[RESIDUAL ANALYSIS]")
         report.append(f"  Mean Residual: {residuals.get('mean', 0):.4f}")
@@ -315,9 +309,9 @@ def format_report(results: Dict) -> str:
         report.append(f"  Bias Ratio: {residuals.get('bias_ratio', 0):.2f}")
         report.append(f"  Heteroscedasticity: {residuals.get('heteroscedasticity_score', 0):.2f}")
 
-    if results['diagnostics']:
+    if results["diagnostics"]:
         report.append("\n[DIAGNOSTICS]")
-        for diag in results['diagnostics']:
+        for diag in results["diagnostics"]:
             report.append(f"  • {diag}")
 
     report.append("\n" + "=" * 70)
@@ -340,59 +334,30 @@ Examples:
 
   # Verbose output
   %(prog)s --model model.json --data test_data.csv --target price --verbose
-        """
+        """,
     )
 
-    parser.add_argument(
-        '-m', '--model',
-        type=str,
-        required=True,
-        help='Path to trained model file (JSON)'
-    )
-    parser.add_argument(
-        '-d', '--data',
-        type=str,
-        required=True,
-        help='Path to evaluation data (CSV)'
-    )
-    parser.add_argument(
-        '-t', '--target',
-        type=str,
-        required=True,
-        help='Name of target column'
-    )
-    parser.add_argument(
-        '-o', '--output',
-        type=str,
-        help='Output file to save evaluation results'
-    )
-    parser.add_argument(
-        '-v', '--verbose',
-        action='store_true',
-        help='Enable verbose output'
-    )
+    parser.add_argument("-m", "--model", type=str, required=True, help="Path to trained model file (JSON)")
+    parser.add_argument("-d", "--data", type=str, required=True, help="Path to evaluation data (CSV)")
+    parser.add_argument("-t", "--target", type=str, required=True, help="Name of target column")
+    parser.add_argument("-o", "--output", type=str, help="Output file to save evaluation results")
+    parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose output")
 
     args = parser.parse_args()
 
     # Evaluate model
-    results = evaluate_model(
-        args.model,
-        args.data,
-        args.target,
-        args.output,
-        args.verbose
-    )
+    results = evaluate_model(args.model, args.data, args.target, args.output, args.verbose)
 
     # Output results
     if args.verbose or not args.output:
         report = format_report(results)
         print(report)
 
-    if results['status'] != 'completed':
+    if results["status"] != "completed":
         return 1
 
     return 0
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(main())

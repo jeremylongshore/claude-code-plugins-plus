@@ -47,14 +47,18 @@ LOCATIONS_URL = "https://api.podium.com/v4/locations"
 
 
 def refresh_access_token(client_id: str, client_secret: str, refresh_token: str) -> tuple[int, dict]:
-    body = urllib.parse.urlencode({
-        "grant_type": "refresh_token",
-        "refresh_token": refresh_token,
-        "client_id": client_id,
-        "client_secret": client_secret,
-    }).encode()
+    body = urllib.parse.urlencode(
+        {
+            "grant_type": "refresh_token",
+            "refresh_token": refresh_token,
+            "client_id": client_id,
+            "client_secret": client_secret,
+        }
+    ).encode()
     req = urllib.request.Request(
-        TOKEN_URL, data=body, method="POST",
+        TOKEN_URL,
+        data=body,
+        method="POST",
         headers={"Content-Type": "application/x-www-form-urlencoded"},
     )
     try:

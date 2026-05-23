@@ -26,24 +26,33 @@ from signals import SignalGenerator, TradingSignal, SignalType, format_signal
 
 # Predefined watchlists
 WATCHLISTS = {
-    'crypto_top10': [
-        'BTC-USD', 'ETH-USD', 'BNB-USD', 'SOL-USD', 'XRP-USD',
-        'ADA-USD', 'AVAX-USD', 'DOGE-USD', 'DOT-USD', 'MATIC-USD'
+    "crypto_top10": [
+        "BTC-USD",
+        "ETH-USD",
+        "BNB-USD",
+        "SOL-USD",
+        "XRP-USD",
+        "ADA-USD",
+        "AVAX-USD",
+        "DOGE-USD",
+        "DOT-USD",
+        "MATIC-USD",
     ],
-    'crypto_defi': [
-        'UNI-USD', 'AAVE-USD', 'MKR-USD', 'CRV-USD', 'SNX-USD',
-        'COMP-USD', 'SUSHI-USD', 'YFI-USD', 'LDO-USD', 'RPL-USD'
+    "crypto_defi": [
+        "UNI-USD",
+        "AAVE-USD",
+        "MKR-USD",
+        "CRV-USD",
+        "SNX-USD",
+        "COMP-USD",
+        "SUSHI-USD",
+        "YFI-USD",
+        "LDO-USD",
+        "RPL-USD",
     ],
-    'crypto_layer2': [
-        'MATIC-USD', 'OP-USD', 'ARB-USD', 'IMX-USD', 'LRC-USD'
-    ],
-    'stocks_tech': [
-        'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'NVDA',
-        'META', 'TSLA', 'AMD', 'INTC', 'CRM'
-    ],
-    'etfs_major': [
-        'SPY', 'QQQ', 'IWM', 'DIA', 'VTI'
-    ],
+    "crypto_layer2": ["MATIC-USD", "OP-USD", "ARB-USD", "IMX-USD", "LRC-USD"],
+    "stocks_tech": ["AAPL", "MSFT", "GOOGL", "AMZN", "NVDA", "META", "TSLA", "AMD", "INTC", "CRM"],
+    "etfs_major": ["SPY", "QQQ", "IWM", "DIA", "VTI"],
 }
 
 
@@ -52,19 +61,19 @@ def parse_period(period: str) -> timedelta:
     unit = period[-1].lower()
     value = int(period[:-1])
 
-    if unit == 'y':
+    if unit == "y":
         return timedelta(days=value * 365)
-    elif unit == 'm':
+    elif unit == "m":
         return timedelta(days=value * 30)
-    elif unit == 'd':
+    elif unit == "d":
         return timedelta(days=value)
-    elif unit == 'w':
+    elif unit == "w":
         return timedelta(weeks=value)
     else:
         raise ValueError(f"Unknown period unit: {unit}")
 
 
-def fetch_data(symbol: str, period: str = '6m', cache_dir: Path = None) -> pd.DataFrame:
+def fetch_data(symbol: str, period: str = "6m", cache_dir: Path = None) -> pd.DataFrame:
     """Fetch price data for a symbol."""
     end = datetime.now()
     start = end - parse_period(period)
@@ -74,7 +83,7 @@ def fetch_data(symbol: str, period: str = '6m', cache_dir: Path = None) -> pd.Da
         cache_file = cache_dir / f"{symbol.replace('/', '_').replace('-', '_')}_1d.csv"
         if cache_file.exists():
             try:
-                df = pd.read_csv(cache_file, parse_dates=['date'], index_col='date')
+                df = pd.read_csv(cache_file, parse_dates=["date"], index_col="date")
                 if df.index.tz is not None:
                     df.index = df.index.tz_localize(None)
                 df = df[(df.index >= pd.Timestamp(start)) & (df.index <= pd.Timestamp(end))]
@@ -86,10 +95,11 @@ def fetch_data(symbol: str, period: str = '6m', cache_dir: Path = None) -> pd.Da
     # Fetch from yfinance
     try:
         import yfinance as yf
+
         ticker = yf.Ticker(symbol)
-        df = ticker.history(start=start, end=end, interval='1d')
+        df = ticker.history(start=start, end=end, interval="1d")
         df.columns = [c.lower() for c in df.columns]
-        df.index.name = 'date'
+        df.index.name = "date"
 
         if df.index.tz is not None:
             df.index = df.index.tz_localize(None)
@@ -108,11 +118,7 @@ def fetch_data(symbol: str, period: str = '6m', cache_dir: Path = None) -> pd.Da
 
 
 def scan_symbols(
-    symbols: List[str],
-    period: str = '6m',
-    params: Dict[str, Any] = None,
-    cache_dir: Path = None,
-    quiet: bool = False
+    symbols: List[str], period: str = "6m", params: Dict[str, Any] = None, cache_dir: Path = None, quiet: bool = False
 ) -> List[TradingSignal]:
     """
     Scan multiple symbols and generate signals.
@@ -132,7 +138,7 @@ def scan_symbols(
 
     for symbol in symbols:
         if not quiet:
-            print(f"Scanning {symbol}...", end=' ')
+            print(f"Scanning {symbol}...", end=" ")
 
         df = fetch_data(symbol, period, cache_dir)
 
@@ -162,9 +168,7 @@ def scan_symbols(
 
 
 def filter_signals(
-    signals: List[TradingSignal],
-    min_confidence: float = 0,
-    signal_types: List[SignalType] = None
+    signals: List[TradingSignal], min_confidence: float = 0, signal_types: List[SignalType] = None
 ) -> List[TradingSignal]:
     """Filter signals by confidence and type."""
     result = signals
@@ -178,11 +182,11 @@ def filter_signals(
     return result
 
 
-def rank_signals(signals: List[TradingSignal], by: str = 'confidence') -> List[TradingSignal]:
+def rank_signals(signals: List[TradingSignal], by: str = "confidence") -> List[TradingSignal]:
     """Rank signals by confidence or strength."""
-    if by == 'confidence':
+    if by == "confidence":
         return sorted(signals, key=lambda s: s.confidence, reverse=True)
-    elif by == 'bullish':
+    elif by == "bullish":
         score_map = {
             SignalType.STRONG_BUY: 5,
             SignalType.BUY: 4,
@@ -191,7 +195,7 @@ def rank_signals(signals: List[TradingSignal], by: str = 'confidence') -> List[T
             SignalType.STRONG_SELL: 1,
         }
         return sorted(signals, key=lambda s: (score_map[s.signal], s.confidence), reverse=True)
-    elif by == 'bearish':
+    elif by == "bearish":
         score_map = {
             SignalType.STRONG_SELL: 5,
             SignalType.SELL: 4,
@@ -214,7 +218,9 @@ def print_summary(signals: List[TradingSignal]) -> None:
 
     for signal in signals:
         sl = f"${signal.stop_loss:,.2f}" if signal.stop_loss else "N/A"
-        print(f"  {signal.symbol:<12} {signal.signal.value:<14} {signal.confidence:>9.1f}% ${signal.price:>12,.2f} {sl:>12}")
+        print(
+            f"  {signal.symbol:<12} {signal.signal.value:<14} {signal.confidence:>9.1f}% ${signal.price:>12,.2f} {sl:>12}"
+        )
 
     print("-" * 80)
 
@@ -231,30 +237,30 @@ def print_summary(signals: List[TradingSignal]) -> None:
 def save_results(signals: List[TradingSignal], output_path: Path) -> None:
     """Save signals to JSON file."""
     data = {
-        'generated_at': datetime.now().isoformat(),
-        'count': len(signals),
-        'signals': [s.to_dict() for s in signals]
+        "generated_at": datetime.now().isoformat(),
+        "count": len(signals),
+        "signals": [s.to_dict() for s in signals],
     }
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(output_path, 'w') as f:
+    with open(output_path, "w") as f:
         json.dump(data, f, indent=2)
 
     print(f"Results saved to: {output_path}")
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Crypto Signal Scanner')
-    parser.add_argument('--symbols', '-s', help='Comma-separated symbols (e.g., BTC-USD,ETH-USD)')
-    parser.add_argument('--watchlist', '-w', help='Predefined watchlist name')
-    parser.add_argument('--period', '-p', default='6m', help='Lookback period (e.g., 6m, 1y)')
-    parser.add_argument('--min-confidence', type=float, default=0, help='Minimum confidence filter')
-    parser.add_argument('--filter', choices=['buy', 'sell', 'all'], default='all', help='Filter signals')
-    parser.add_argument('--rank', choices=['confidence', 'bullish', 'bearish'], help='Rank signals')
-    parser.add_argument('--output', '-o', help='Output JSON file')
-    parser.add_argument('--detail', '-d', action='store_true', help='Show detailed signal breakdown')
-    parser.add_argument('--list-watchlists', action='store_true', help='List available watchlists')
-    parser.add_argument('--quiet', '-q', action='store_true', help='Minimal output')
+    parser = argparse.ArgumentParser(description="Crypto Signal Scanner")
+    parser.add_argument("--symbols", "-s", help="Comma-separated symbols (e.g., BTC-USD,ETH-USD)")
+    parser.add_argument("--watchlist", "-w", help="Predefined watchlist name")
+    parser.add_argument("--period", "-p", default="6m", help="Lookback period (e.g., 6m, 1y)")
+    parser.add_argument("--min-confidence", type=float, default=0, help="Minimum confidence filter")
+    parser.add_argument("--filter", choices=["buy", "sell", "all"], default="all", help="Filter signals")
+    parser.add_argument("--rank", choices=["confidence", "bullish", "bearish"], help="Rank signals")
+    parser.add_argument("--output", "-o", help="Output JSON file")
+    parser.add_argument("--detail", "-d", action="store_true", help="Show detailed signal breakdown")
+    parser.add_argument("--list-watchlists", action="store_true", help="List available watchlists")
+    parser.add_argument("--quiet", "-q", action="store_true", help="Minimal output")
 
     args = parser.parse_args()
 
@@ -267,7 +273,7 @@ def main():
 
     # Determine symbols to scan
     if args.symbols:
-        symbols = [s.strip() for s in args.symbols.split(',')]
+        symbols = [s.strip() for s in args.symbols.split(",")]
     elif args.watchlist:
         if args.watchlist not in WATCHLISTS:
             print(f"Unknown watchlist: {args.watchlist}")
@@ -275,11 +281,11 @@ def main():
             sys.exit(1)
         symbols = WATCHLISTS[args.watchlist]
     else:
-        symbols = WATCHLISTS['crypto_top10']
+        symbols = WATCHLISTS["crypto_top10"]
 
     # Set up paths
     script_dir = Path(__file__).parent.parent
-    cache_dir = script_dir / 'data'
+    cache_dir = script_dir / "data"
 
     if not args.quiet:
         print(f"\nScanning {len(symbols)} symbols...")
@@ -289,9 +295,9 @@ def main():
     signals = scan_symbols(symbols, args.period, cache_dir=cache_dir, quiet=args.quiet)
 
     # Filter
-    if args.filter == 'buy':
+    if args.filter == "buy":
         signals = filter_signals(signals, signal_types=[SignalType.STRONG_BUY, SignalType.BUY])
-    elif args.filter == 'sell':
+    elif args.filter == "sell":
         signals = filter_signals(signals, signal_types=[SignalType.STRONG_SELL, SignalType.SELL])
 
     if args.min_confidence > 0:
@@ -313,5 +319,5 @@ def main():
         save_results(signals, Path(args.output))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

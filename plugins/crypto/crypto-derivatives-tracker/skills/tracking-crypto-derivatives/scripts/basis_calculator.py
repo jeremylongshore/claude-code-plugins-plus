@@ -12,7 +12,7 @@ Calculates futures basis and spreads with:
 from dataclasses import dataclass
 from decimal import Decimal
 from typing import Dict, List, Optional
-from datetime import datetime, date
+from datetime import datetime
 
 from exchange_client import ExchangeClient, BasisData, Exchange
 
@@ -26,8 +26,8 @@ class BasisAnalysis:
     basis_data: List[BasisData]
     avg_basis_pct: float
     avg_annualized: float
-    market_structure: str          # "contango", "backwardation", "mixed"
-    structure_strength: str        # "strong", "moderate", "weak"
+    market_structure: str  # "contango", "backwardation", "mixed"
+    structure_strength: str  # "strong", "moderate", "weak"
     best_carry_expiry: Optional[str]
     best_carry_yield: float
     timestamp: datetime
@@ -45,8 +45,8 @@ class CarryOpportunity:
     basis_pct: float
     days_to_expiry: int
     annualized_yield: float
-    direction: str                 # "long_basis" or "short_basis"
-    strategy: str                  # Trade description
+    direction: str  # "long_basis" or "short_basis"
+    strategy: str  # Trade description
     risk_notes: str
 
 
@@ -62,8 +62,8 @@ class BasisCalculator:
     """
 
     # Structure interpretation
-    STRONG_BASIS = 5.0             # >5% annualized is strong
-    MODERATE_BASIS = 2.0           # >2% is moderate
+    STRONG_BASIS = 5.0  # >5% annualized is strong
+    MODERATE_BASIS = 2.0  # >2% is moderate
 
     def __init__(
         self,
@@ -213,19 +213,21 @@ class BasisCalculator:
                             )
                             risk_notes = "Borrowing costs apply; squeeze risk in tight markets"
 
-                        opportunities.append(CarryOpportunity(
-                            symbol=symbol,
-                            exchange=basis.exchange,
-                            expiry=basis.expiry,
-                            spot_price=analysis.spot_price,
-                            futures_price=basis.futures_price,
-                            basis_pct=basis.basis_pct,
-                            days_to_expiry=basis.days_to_expiry,
-                            annualized_yield=basis.annualized_pct,
-                            direction=direction,
-                            strategy=strategy,
-                            risk_notes=risk_notes,
-                        ))
+                        opportunities.append(
+                            CarryOpportunity(
+                                symbol=symbol,
+                                exchange=basis.exchange,
+                                expiry=basis.expiry,
+                                spot_price=analysis.spot_price,
+                                futures_price=basis.futures_price,
+                                basis_pct=basis.basis_pct,
+                                days_to_expiry=basis.days_to_expiry,
+                                annualized_yield=basis.annualized_pct,
+                                direction=direction,
+                                strategy=strategy,
+                                risk_notes=risk_notes,
+                            )
+                        )
             except Exception:
                 continue
 
@@ -251,10 +253,7 @@ class BasisCalculator:
         analysis = self.analyze(symbol, spot_price)
 
         # Sort by days to expiry
-        sorted_basis = sorted(
-            analysis.basis_data,
-            key=lambda b: b.days_to_expiry
-        )
+        sorted_basis = sorted(analysis.basis_data, key=lambda b: b.days_to_expiry)
 
         return [
             {

@@ -15,15 +15,14 @@ from mcp_server import LumeraMemoryServer
 
 async def smoke_test():
     """End-to-end smoke test."""
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("LUMERA AGENT MEMORY - 90 SECOND SMOKE TEST")
-    print("="*60 + "\n")
+    print("=" * 60 + "\n")
 
     # Create server instance
     server = LumeraMemoryServer()
 
     # Use temp storage
-    import tempfile
     temp_dir = tempfile.mkdtemp(prefix="lumera_smoke_")
     server.cascade_mock.storage_dir = Path(temp_dir) / "cascade"
     server.index.db_path = Path(temp_dir) / "index.db"
@@ -39,7 +38,7 @@ async def smoke_test():
         "session_id": "test_session_001",
         "tags": ["deployment", "aws", "production"],
         "metadata": {"project": "api-gateway"},
-        "mode": "mock"
+        "mode": "mock",
     }
 
     result = await server._store_session(store_args)
@@ -47,10 +46,10 @@ async def smoke_test():
     print(f"Session ID: {result['session_id']}")
     print(f"Cascade URI: {result['cascade_uri']}")
     print(f"Redaction rules fired: {len(result['redaction']['rules_fired'])}")
-    for rule in result['redaction']['rules_fired']:
+    for rule in result["redaction"]["rules_fired"]:
         print(f"  - {rule['rule']}: {rule['count']} occurrence(s)")
     print(f"Crypto: {result['crypto']['enc']} ({result['crypto']['bytes']} bytes)")
-    print(f"\nMemory Card:")
+    print("\nMemory Card:")
     print(f"  Title: {result['memory_card']['title']}")
     print(f"  Keywords: {', '.join(result['memory_card']['keywords'][:5])}")
     print(f"  Entities: {', '.join(list(result['memory_card']['entities'])[:5])}")
@@ -64,18 +63,14 @@ async def smoke_test():
     print("TEST 2: Query memories via FTS")
     print("-" * 40)
 
-    query_args = {
-        "query": "deploy aws production",
-        "tags": ["deployment"],
-        "limit": 5
-    }
+    query_args = {"query": "deploy aws production", "tags": ["deployment"], "limit": 5}
 
     result = await server._query_memories(query_args)
 
     print(f"Query: '{query_args['query']}'")
     print(f"Hits: {len(result['hits'])}")
 
-    for i, hit in enumerate(result['hits'], 1):
+    for i, hit in enumerate(result["hits"], 1):
         print(f"\n  Hit {i}:")
         print(f"    Session: {hit['cass_session_id']}")
         print(f"    Title: {hit['title']}")
@@ -92,25 +87,22 @@ async def smoke_test():
     print("TEST 3: Retrieve session from Cascade")
     print("-" * 40)
 
-    retrieve_args = {
-        "cascade_uri": cascade_uri,
-        "mode": "mock"
-    }
+    retrieve_args = {"cascade_uri": cascade_uri, "mode": "mock"}
 
     result = await server._retrieve_session(retrieve_args)
 
     print(f"Retrieved URI: {result['cascade_uri']}")
     print(f"Crypto verified: {result['crypto']['verified']}")
     print(f"Session messages: {len(result['session']['messages'])}")
-    print(f"\nMemory Card (from index):")
+    print("\nMemory Card (from index):")
     print(f"  Title: {result['memory_card']['title']}")
     print(f"  Summary bullets: {len(result['memory_card']['summary_bullets'])}")
     print(f"  Decisions: {len(result['memory_card']['decisions'])}")
     print(f"  TODOs: {len(result['memory_card']['todos'])}")
 
     # Check redaction worked
-    session_str = json.dumps(result['session'])
-    print(f"\nRedaction check:")
+    session_str = json.dumps(result["session"])
+    print("\nRedaction check:")
     if "[REDACTED:AWS_ACCESS_KEY]" in session_str:
         print("  ✓ AWS access key redacted")
     if "[REDACTED:EMAIL]" in session_str:
@@ -126,8 +118,8 @@ async def smoke_test():
     print("-" * 40)
 
     cost_args = {
-        "bytes": result['crypto']['bytes'],  # Use actual encrypted size
-        "redundancy": 3
+        "bytes": result["crypto"]["bytes"],  # Use actual encrypted size
+        "redundancy": 3,
     }
 
     result = await server._estimate_cost(cost_args)
@@ -144,11 +136,12 @@ async def smoke_test():
 
     # Cleanup
     import shutil
+
     shutil.rmtree(temp_dir, ignore_errors=True)
 
-    print("="*60)
+    print("=" * 60)
     print("ALL TESTS PASSED ✓")
-    print("="*60 + "\n")
+    print("=" * 60 + "\n")
 
 
 if __name__ == "__main__":

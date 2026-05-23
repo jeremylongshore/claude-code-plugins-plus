@@ -20,7 +20,7 @@ import argparse
 import re
 import sys
 from pathlib import Path
-from typing import List, Tuple, Dict, Any, Optional
+from typing import List, Tuple, Dict, Any
 
 try:
     import yaml
@@ -33,25 +33,35 @@ except ImportError:
 
 # Valid tools per Claude Code spec (2025)
 VALID_TOOLS = {
-    'Read', 'Write', 'Edit', 'Bash', 'Glob', 'Grep',
-    'WebFetch', 'WebSearch', 'Task', 'TodoWrite',
-    'NotebookEdit', 'AskUserQuestion', 'Skill'
+    "Read",
+    "Write",
+    "Edit",
+    "Bash",
+    "Glob",
+    "Grep",
+    "WebFetch",
+    "WebSearch",
+    "Task",
+    "TodoWrite",
+    "NotebookEdit",
+    "AskUserQuestion",
+    "Skill",
 }
 
 # Anthropic required fields (minimum spec)
-ANTHROPIC_REQUIRED = {'name', 'description'}
+ANTHROPIC_REQUIRED = {"name", "description"}
 
 # Enterprise required fields (Intent Solutions marketplace)
-ENTERPRISE_REQUIRED = {'allowed-tools', 'version', 'author', 'license'}
+ENTERPRISE_REQUIRED = {"allowed-tools", "version", "author", "license"}
 
 # All required fields (Anthropic + Enterprise)
 REQUIRED_FIELDS = ANTHROPIC_REQUIRED | ENTERPRISE_REQUIRED
 
 # Optional fields per Anthropic spec
-OPTIONAL_FIELDS = {'model', 'disable-model-invocation', 'mode', 'tags', 'metadata'}
+OPTIONAL_FIELDS = {"model", "disable-model-invocation", "mode", "tags", "metadata"}
 
 # Deprecated fields (warn but don't error)
-DEPRECATED_FIELDS = {'when_to_use'}
+DEPRECATED_FIELDS = {"when_to_use"}
 
 # Nixtla required sections (strict quality mode)
 REQUIRED_SECTIONS = [
@@ -94,16 +104,14 @@ TOTAL_DESCRIPTION_BUDGET_ERROR = 15_000
 
 # === UTILITY FUNCTIONS ===
 
+
 def find_skill_files(plugin_path: Path) -> List[Path]:
     """
     Find all SKILL.md files in a plugin directory.
     Adapted for claude-code-plugins structure.
     """
     # Exclude backup/archive directories
-    excluded_dirs = {
-        "archive", "backups", "backup", ".git", "node_modules",
-        "__pycache__", ".venv", "skills-backup-"
-    }
+    excluded_dirs = {"archive", "backups", "backup", ".git", "node_modules", "__pycache__", ".venv", "skills-backup-"}
 
     results = []
 
@@ -149,23 +157,23 @@ def parse_frontmatter(content: str) -> Tuple[dict, str]:
 def parse_allowed_tools(tools_value: Any) -> List[str]:
     """Parse allowed-tools as a CSV string (Claude Code standard)."""
     if isinstance(tools_value, str):
-        return [t.strip() for t in tools_value.split(',') if t.strip()]
+        return [t.strip() for t in tools_value.split(",") if t.strip()]
     return []
 
 
 def validate_tool_permission(tool: str) -> Tuple[bool, str]:
     """Validate a single tool permission including wildcards like Bash(git:*)."""
-    base_tool = tool.split('(')[0].strip()
+    base_tool = tool.split("(")[0].strip()
 
     if base_tool not in VALID_TOOLS:
         return False, f"Unknown tool: {base_tool}"
 
     # Validate wildcard syntax if present
-    if '(' in tool:
-        if not tool.endswith(')'):
+    if "(" in tool:
+        if not tool.endswith(")"):
             return False, f"Invalid wildcard syntax (missing closing paren): {tool}"
-        inner = tool[tool.index('(')+1:-1]
-        if ':' not in inner:
+        inner = tool[tool.index("(") + 1 : -1]
+        if ":" not in inner:
             return False, f"Wildcard missing colon (use cmd:*): {tool}"
 
     return True, ""
@@ -174,11 +182,12 @@ def validate_tool_permission(tool: str) -> Tuple[bool, str]:
 def estimate_word_count(content: str) -> int:
     """Estimate word count for content length check."""
     # Remove frontmatter
-    content_body = re.sub(r'^---\n.*?\n---\n?', '', content, flags=re.DOTALL)
+    content_body = re.sub(r"^---\n.*?\n---\n?", "", content, flags=re.DOTALL)
     return len(content_body.split())
 
 
 # === VALIDATION FUNCTIONS ===
+
 
 def validate_frontmatter(path: Path, fm: dict) -> Tuple[List[str], List[str]]:
     """
@@ -197,13 +206,13 @@ def validate_frontmatter(path: Path, fm: dict) -> Tuple[List[str], List[str]]:
     # === FIELD-SPECIFIC VALIDATION ===
 
     # name field
-    if 'name' in fm:
-        name = str(fm['name']).strip()
+    if "name" in fm:
+        name = str(fm["name"]).strip()
         if not name:
             errors.append("[frontmatter] 'name' must be non-empty")
         else:
             # Kebab-case check
-            if not re.match(r'^[a-z][a-z0-9-]*[a-z0-9]$', name) and len(name) > 1:
+            if not re.match(r"^[a-z][a-z0-9-]*[a-z0-9]$", name) and len(name) > 1:
                 errors.append(f"[frontmatter] 'name' must be kebab-case (lowercase + hyphens): {name}")
 
             # Length check
@@ -212,17 +221,19 @@ def validate_frontmatter(path: Path, fm: dict) -> Tuple[List[str], List[str]]:
 
             # Reserved words
             name_lower = name.lower()
-            if 'anthropic' in name_lower or 'claude' in name_lower:
+            if "anthropic" in name_lower or "claude" in name_lower:
                 errors.append(f"[frontmatter] 'name' contains reserved word: {name}")
 
             # Folder match check (best practice, not error)
             folder_name = path.parent.name
             if name != folder_name:
-                warnings.append(f"[frontmatter] 'name' '{name}' differs from folder '{folder_name}' (best practice: match them)")
+                warnings.append(
+                    f"[frontmatter] 'name' '{name}' differs from folder '{folder_name}' (best practice: match them)"
+                )
 
     # description field
-    if 'description' in fm:
-        desc = str(fm['description']).strip()
+    if "description" in fm:
+        desc = str(fm["description"]).strip()
 
         if not desc:
             errors.append("[frontmatter] 'description' must be non-empty")
@@ -235,17 +246,25 @@ def validate_frontmatter(path: Path, fm: dict) -> Tuple[List[str], List[str]]:
 
             # Nixtla strict quality checks (ERRORS in strict mode)
             if not RE_DESCRIPTION_USE_WHEN.search(desc):
-                errors.append("[frontmatter] 'description' must include 'Use when ...' phrase (nixtla quality standard)")
+                errors.append(
+                    "[frontmatter] 'description' must include 'Use when ...' phrase (nixtla quality standard)"
+                )
 
             if not RE_DESCRIPTION_TRIGGER_WITH.search(desc):
-                errors.append("[frontmatter] 'description' must include 'Trigger with ...' phrase (nixtla quality standard)")
+                errors.append(
+                    "[frontmatter] 'description' must include 'Trigger with ...' phrase (nixtla quality standard)"
+                )
 
             # Voice checks (nixtla strict mode)
             if RE_FIRST_PERSON.search(desc):
-                errors.append("[frontmatter] 'description' must NOT use first person (I can / I will / etc.) - use third person")
+                errors.append(
+                    "[frontmatter] 'description' must NOT use first person (I can / I will / etc.) - use third person"
+                )
 
             if RE_SECOND_PERSON.search(desc):
-                errors.append("[frontmatter] 'description' must NOT use second person (You can / You should) - use third person")
+                errors.append(
+                    "[frontmatter] 'description' must NOT use second person (You can / You should) - use third person"
+                )
 
             # Reserved words
             desc_lower = desc.lower()
@@ -254,17 +273,34 @@ def validate_frontmatter(path: Path, fm: dict) -> Tuple[List[str], List[str]]:
                     errors.append(f"[frontmatter] 'description' contains reserved word: '{bad}'")
 
             # Imperative language check (best practice)
-            imperative_starts = ['analyze', 'create', 'generate', 'build', 'debug',
-                               'optimize', 'validate', 'test', 'deploy', 'monitor',
-                               'fix', 'review', 'extract', 'convert', 'implement',
-                               'detect', 'forecast', 'transform', 'compare']
+            imperative_starts = [
+                "analyze",
+                "create",
+                "generate",
+                "build",
+                "debug",
+                "optimize",
+                "validate",
+                "test",
+                "deploy",
+                "monitor",
+                "fix",
+                "review",
+                "extract",
+                "convert",
+                "implement",
+                "detect",
+                "forecast",
+                "transform",
+                "compare",
+            ]
             has_imperative = any(v in desc_lower for v in imperative_starts)
             if not has_imperative:
                 warnings.append("[frontmatter] Consider using action verbs (analyze, detect, forecast, etc.)")
 
     # allowed-tools field
-    if 'allowed-tools' in fm:
-        raw_tools = fm['allowed-tools']
+    if "allowed-tools" in fm:
+        raw_tools = fm["allowed-tools"]
         tools_type_error = False
         if isinstance(raw_tools, list):
             errors.append(
@@ -292,58 +328,62 @@ def validate_frontmatter(path: Path, fm: dict) -> Tuple[List[str], List[str]]:
                 errors.append(f"[frontmatter] allowed-tools: {msg}")
 
         # Nixtla strict mode: forbid unscoped Bash
-        if 'Bash' in tools:
-            errors.append("[frontmatter] allowed-tools: unscoped 'Bash' forbidden - use scoped Bash(git:*) or Bash(npm:*)")
+        if "Bash" in tools:
+            errors.append(
+                "[frontmatter] allowed-tools: unscoped 'Bash' forbidden - use scoped Bash(git:*) or Bash(npm:*)"
+            )
 
         # Info about over-permissioning
         if len(tools) > 6:
             warnings.append(f"[frontmatter] Many tools permitted ({len(tools)}) - consider limiting for security")
 
     # version field
-    if 'version' in fm:
-        version = str(fm['version'])
-        if not re.match(r'^\d+\.\d+\.\d+', version):
+    if "version" in fm:
+        version = str(fm["version"])
+        if not re.match(r"^\d+\.\d+\.\d+", version):
             errors.append(f"[frontmatter] 'version' should be semver format (X.Y.Z): {version}")
 
     # author field
-    if 'author' in fm:
-        author = str(fm['author']).strip()
+    if "author" in fm:
+        author = str(fm["author"]).strip()
         if not author:
             errors.append("[frontmatter] 'author' must be non-empty")
         # Recommend email format
-        if '@' not in author:
+        if "@" not in author:
             warnings.append("[frontmatter] 'author' best practice: include email (Name <email>)")
 
     # license field
-    if 'license' in fm:
-        license_val = str(fm['license']).strip()
+    if "license" in fm:
+        license_val = str(fm["license"]).strip()
         if not license_val:
             errors.append("[frontmatter] 'license' must be non-empty")
 
     # === OPTIONAL FIELDS ===
 
     # model field
-    if 'model' in fm:
-        model = fm['model']
-        valid_models = ['inherit', 'sonnet', 'haiku', 'opus']
-        if model not in valid_models and not str(model).startswith('claude-'):
-            warnings.append(f"[frontmatter] 'model' value '{model}' not standard (use: inherit, sonnet, haiku, opus, or claude-*)")
+    if "model" in fm:
+        model = fm["model"]
+        valid_models = ["inherit", "sonnet", "haiku", "opus"]
+        if model not in valid_models and not str(model).startswith("claude-"):
+            warnings.append(
+                f"[frontmatter] 'model' value '{model}' not standard (use: inherit, sonnet, haiku, opus, or claude-*)"
+            )
 
     # disable-model-invocation field
-    if 'disable-model-invocation' in fm:
-        dmi = fm['disable-model-invocation']
+    if "disable-model-invocation" in fm:
+        dmi = fm["disable-model-invocation"]
         if not isinstance(dmi, bool):
             errors.append(f"[frontmatter] 'disable-model-invocation' must be boolean, got: {type(dmi).__name__}")
 
     # mode field
-    if 'mode' in fm:
-        mode = fm['mode']
+    if "mode" in fm:
+        mode = fm["mode"]
         if not isinstance(mode, bool):
             errors.append(f"[frontmatter] 'mode' must be boolean, got: {type(mode).__name__}")
 
     # tags field
-    if 'tags' in fm:
-        tags = fm['tags']
+    if "tags" in fm:
+        tags = fm["tags"]
         if not isinstance(tags, list):
             errors.append(f"[frontmatter] 'tags' must be array of strings, got: {type(tags).__name__}")
         elif not all(isinstance(t, str) for t in tags):
@@ -378,7 +418,9 @@ def validate_body(path: Path, body: str) -> Tuple[List[str], List[str]]:
 
     # Nixtla strict mode: 500 line limit
     if len(lines) > 500:
-        errors.append(f"[body] SKILL.md body has {len(lines)} lines (max 500). Use progressive disclosure (extract to references/)")
+        errors.append(
+            f"[body] SKILL.md body has {len(lines)} lines (max 500). Use progressive disclosure (extract to references/)"
+        )
 
     # Source of truth: word count check
     word_count = len(body.split())
@@ -406,7 +448,7 @@ def validate_body(path: Path, body: str) -> Tuple[List[str], List[str]]:
         if idx == -1:
             return ""
 
-        after = body[idx + len(section_heading):]
+        after = body[idx + len(section_heading) :]
         stop = None
         for m in re.finditer(r"^\s*(#{1,6})\s+", after, flags=re.M):
             next_level = len(m.group(1))
@@ -447,13 +489,15 @@ def validate_body(path: Path, body: str) -> Tuple[List[str], List[str]]:
 
     # === PATH CHECKS ===
 
-    body_no_code = re.sub(r'```.*?```', '', body, flags=re.DOTALL)
-    body_no_code = re.sub(r'`[^`]+`', '', body_no_code)
+    body_no_code = re.sub(r"```.*?```", "", body, flags=re.DOTALL)
+    body_no_code = re.sub(r"`[^`]+`", "", body_no_code)
 
     for i, line in enumerate(body_no_code.splitlines(), start=1):
         for pattern, desc in ABSOLUTE_PATH_PATTERNS:
             if pattern.search(line):
-                errors.append(f"[body] Line {i}: contains absolute/OS-specific path ({desc}) - use '${{CLAUDE_SKILL_DIR}}/...'")
+                errors.append(
+                    f"[body] Line {i}: contains absolute/OS-specific path ({desc}) - use '${{CLAUDE_SKILL_DIR}}/...'"
+                )
                 break
 
         if "\\scripts\\" in line:
@@ -461,7 +505,7 @@ def validate_body(path: Path, body: str) -> Tuple[List[str], List[str]]:
 
     # === VOICE CHECKS ===
 
-    if re.search(r'\byou should\b|\byou can\b|\byou will\b', body, re.IGNORECASE):
+    if re.search(r"\byou should\b|\byou can\b|\byou will\b", body, re.IGNORECASE):
         warnings.append("[body] Consider imperative language instead of 'you should/can/will'")
 
     return errors, warnings
@@ -523,14 +567,14 @@ def validate_skill(path: Path) -> Dict[str, Any]:
     Returns dict with errors, warnings, and metadata.
     """
     try:
-        content = path.read_text(encoding='utf-8')
+        content = path.read_text(encoding="utf-8")
     except Exception as e:
-        return {'fatal': f'Cannot read file: {e}'}
+        return {"fatal": f"Cannot read file: {e}"}
 
     try:
         fm, body = parse_frontmatter(content)
     except Exception as e:
-        return {'fatal': str(e)}
+        return {"fatal": str(e)}
 
     errors: List[str] = []
     warnings: List[str] = []
@@ -565,15 +609,16 @@ def validate_skill(path: Path) -> Dict[str, Any]:
 
     description = str(fm.get("description") or "")
     return {
-        'errors': errors,
-        'warnings': warnings,
-        'word_count': estimate_word_count(content),
-        'line_count': len(body.splitlines()),
-        'description_length': len(description),
+        "errors": errors,
+        "warnings": warnings,
+        "word_count": estimate_word_count(content),
+        "line_count": len(body.splitlines()),
+        "description_length": len(description),
     }
 
 
 # === MAIN ===
+
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Jeremy Plugin Tool - Nixtla-Grade Validator")
@@ -593,8 +638,8 @@ def main() -> int:
         print("No SKILL.md files found in plugin.")
         return 0
 
-    print(f"🔍 JEREMY PLUGIN TOOL - NIXTLA-GRADE VALIDATOR v2.0")
-    print(f"   Enterprise + Nixtla Strict Quality Mode")
+    print("🔍 JEREMY PLUGIN TOOL - NIXTLA-GRADE VALIDATOR v2.0")
+    print("   Enterprise + Nixtla Strict Quality Mode")
     print(f"{'=' * 70}\n")
     print(f"Found {len(skills)} SKILL.md file(s) to validate.\n")
 
@@ -607,39 +652,39 @@ def main() -> int:
         rel = skill.relative_to(plugin_path) if plugin_path.is_dir() else skill.name
         result = validate_skill(skill)
 
-        if 'fatal' in result:
+        if "fatal" in result:
             print(f"❌ {rel}: FATAL - {result['fatal']}")
             total_errors += 1
             continue
 
         has_issues = False
 
-        if result['errors']:
+        if result["errors"]:
             print(f"❌ {rel}:")
-            for error in result['errors']:
+            for error in result["errors"]:
                 print(f"   ERROR: {error}")
-            total_errors += len(result['errors'])
+            total_errors += len(result["errors"])
             has_issues = True
 
-        if result['warnings']:
+        if result["warnings"]:
             if not has_issues:
                 print(f"⚠️  {rel}:")
-            for warning in result['warnings']:
+            for warning in result["warnings"]:
                 print(f"   WARN: {warning}")
-            total_warnings += len(result['warnings'])
+            total_warnings += len(result["warnings"])
             has_issues = True
 
         if args.verbose and not has_issues:
             print(f"✅ {rel} - OK ({result['word_count']} words, {result['line_count']} lines)")
 
-        if not result['errors'] and not result['warnings']:
+        if not result["errors"] and not result["warnings"]:
             files_compliant.append(str(rel))
 
         total_description_chars += int(result.get("description_length") or 0)
 
     # Summary
     print(f"\n{'=' * 70}")
-    print(f"📊 VALIDATION SUMMARY")
+    print("📊 VALIDATION SUMMARY")
     print(f"{'=' * 70}")
     print(f"Total skills validated: {len(skills)}")
     print(f"✅ Fully compliant: {len(files_compliant)}")
@@ -669,12 +714,12 @@ def main() -> int:
         print(f"\n⚠️  Validation PASSED with {total_warnings} warnings")
         return 0
     else:
-        print(f"\n✅ All skills fully compliant!")
+        print("\n✅ All skills fully compliant!")
         print("   - Anthropic 2025 spec ✓")
         print("   - Enterprise standard ✓")
         print("   - Nixtla quality standards ✓")
         return 0
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(main())

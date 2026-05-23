@@ -9,7 +9,7 @@ to ensure they don't trigger false positives or false negatives under normal ope
 import argparse
 import json
 import sys
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Tuple, Any
 
@@ -33,7 +33,7 @@ def load_historical_data(filepath: str) -> List[Dict[str, Any]]:
         if not path.exists():
             raise FileNotFoundError(f"Historical data file not found: {filepath}")
 
-        with open(path, 'r') as f:
+        with open(path, "r") as f:
             data = json.load(f)
 
         if not isinstance(data, list):
@@ -56,14 +56,7 @@ def calculate_statistics(values: List[float]) -> Dict[str, float]:
         Dictionary with min, max, mean, std_dev, p95, p99
     """
     if not values:
-        return {
-            "min": 0,
-            "max": 0,
-            "mean": 0,
-            "std_dev": 0,
-            "p95": 0,
-            "p99": 0
-        }
+        return {"min": 0, "max": 0, "mean": 0, "std_dev": 0, "p95": 0, "p99": 0}
 
     sorted_values = sorted(values)
     n = len(sorted_values)
@@ -73,7 +66,7 @@ def calculate_statistics(values: List[float]) -> Dict[str, float]:
 
     # Calculate standard deviation
     variance = sum((x - mean) ** 2 for x in values) / n
-    std_dev = variance ** 0.5
+    std_dev = variance**0.5
 
     # Calculate percentiles
     p95_idx = int(n * 0.95)
@@ -85,14 +78,12 @@ def calculate_statistics(values: List[float]) -> Dict[str, float]:
         "mean": mean,
         "std_dev": std_dev,
         "p95": sorted_values[p95_idx] if p95_idx < n else sorted_values[-1],
-        "p99": sorted_values[p99_idx] if p99_idx < n else sorted_values[-1]
+        "p99": sorted_values[p99_idx] if p99_idx < n else sorted_values[-1],
     }
 
 
 def validate_threshold(
-    stats: Dict[str, float],
-    threshold: float,
-    threshold_type: str = "upper"
+    stats: Dict[str, float], threshold: float, threshold_type: str = "upper"
 ) -> Tuple[bool, Dict[str, Any]]:
     """
     Validate if a threshold is appropriate based on historical statistics.
@@ -105,26 +96,19 @@ def validate_threshold(
     Returns:
         Tuple of (is_valid, validation_details)
     """
-    details = {
-        "threshold": threshold,
-        "type": threshold_type,
-        "warnings": [],
-        "recommendations": []
-    }
+    details = {"threshold": threshold, "type": threshold_type, "warnings": [], "recommendations": []}
 
     if threshold_type == "upper":
         # Check if threshold is too close to max
         if threshold <= stats["max"]:
             details["warnings"].append(
-                f"Threshold {threshold} is at or below historical max {stats['max']}. "
-                "This may cause frequent alerts."
+                f"Threshold {threshold} is at or below historical max {stats['max']}. This may cause frequent alerts."
             )
 
         # Check if threshold is reasonable relative to p99
         if threshold <= stats["p99"]:
             details["warnings"].append(
-                f"Threshold {threshold} is at or below p99 {stats['p99']}. "
-                "Alert may trigger during normal spikes."
+                f"Threshold {threshold} is at or below p99 {stats['p99']}. Alert may trigger during normal spikes."
             )
 
         # Recommendations
@@ -138,16 +122,12 @@ def validate_threshold(
         # Check if threshold is too close to min
         if threshold >= stats["min"]:
             details["warnings"].append(
-                f"Threshold {threshold} is at or above historical min {stats['min']}. "
-                "This may cause frequent alerts."
+                f"Threshold {threshold} is at or above historical min {stats['min']}. This may cause frequent alerts."
             )
 
         # Check if threshold is reasonable relative to p1
         if threshold >= stats["min"] + (stats["std_dev"] * 0.5):
-            details["warnings"].append(
-                f"Threshold {threshold} may be too high. "
-                "Alert could miss actual anomalies."
-            )
+            details["warnings"].append(f"Threshold {threshold} may be too high. Alert could miss actual anomalies.")
 
         # Recommendations
         if threshold > stats["mean"] - (3 * stats["std_dev"]):
@@ -162,9 +142,7 @@ def validate_threshold(
 
 
 def format_report(
-    metric_name: str,
-    stats: Dict[str, float],
-    validations: List[Tuple[float, str, Tuple[bool, Dict]]]
+    metric_name: str, stats: Dict[str, float], validations: List[Tuple[float, str, Tuple[bool, Dict]]]
 ) -> str:
     """
     Format validation results into a readable report.
@@ -178,9 +156,9 @@ def format_report(
         Formatted report string
     """
     report = []
-    report.append(f"\n{'='*70}")
+    report.append(f"\n{'=' * 70}")
     report.append(f"Threshold Validation Report: {metric_name}")
-    report.append(f"{'='*70}\n")
+    report.append(f"{'=' * 70}\n")
 
     report.append("Historical Data Statistics:")
     report.append(f"  Min:     {stats['min']:.2f}")
@@ -206,7 +184,7 @@ def format_report(
 
         report.append("")
 
-    report.append(f"{'='*70}\n")
+    report.append(f"{'=' * 70}\n")
 
     return "\n".join(report)
 
@@ -221,38 +199,15 @@ Examples:
   %(prog)s --metric cpu_usage --data history.json --upper 85.0
   %(prog)s --metric memory_used --data history.json --lower 1000 --upper 8000
   %(prog)s --metric response_time --data metrics.json --upper 500 --output report.json
-        """
+        """,
     )
 
-    parser.add_argument(
-        "--metric",
-        required=True,
-        help="Name of the metric to validate"
-    )
-    parser.add_argument(
-        "--data",
-        required=True,
-        help="Path to JSON file containing historical data"
-    )
-    parser.add_argument(
-        "--upper",
-        type=float,
-        help="Upper threshold to validate"
-    )
-    parser.add_argument(
-        "--lower",
-        type=float,
-        help="Lower threshold to validate"
-    )
-    parser.add_argument(
-        "--output",
-        help="Output file for validation report (JSON)"
-    )
-    parser.add_argument(
-        "--verbose",
-        action="store_true",
-        help="Print detailed output"
-    )
+    parser.add_argument("--metric", required=True, help="Name of the metric to validate")
+    parser.add_argument("--data", required=True, help="Path to JSON file containing historical data")
+    parser.add_argument("--upper", type=float, help="Upper threshold to validate")
+    parser.add_argument("--lower", type=float, help="Lower threshold to validate")
+    parser.add_argument("--output", help="Output file for validation report (JSON)")
+    parser.add_argument("--verbose", action="store_true", help="Print detailed output")
 
     args = parser.parse_args()
 
@@ -309,17 +264,12 @@ Examples:
                 "timestamp": datetime.now().isoformat(),
                 "statistics": stats,
                 "validations": [
-                    {
-                        "threshold": threshold,
-                        "type": threshold_type,
-                        "valid": is_valid,
-                        "details": details
-                    }
+                    {"threshold": threshold, "type": threshold_type, "valid": is_valid, "details": details}
                     for threshold, threshold_type, (is_valid, details) in validations
-                ]
+                ],
             }
 
-            with open(args.output, 'w') as f:
+            with open(args.output, "w") as f:
                 json.dump(output_data, f, indent=2)
 
             if args.verbose:

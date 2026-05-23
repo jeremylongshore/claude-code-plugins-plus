@@ -60,6 +60,7 @@ CHAIN_CONFIG = {
 @dataclass
 class GasData:
     """Gas price data."""
+
     chain: str
     base_fee: int  # in wei
     priority_fee: int  # in wei
@@ -75,6 +76,7 @@ class GasData:
 @dataclass
 class BaseFeeHistory:
     """Base fee history entry."""
+
     block_number: int
     base_fee: int
     gas_used_ratio: float
@@ -84,13 +86,7 @@ class BaseFeeHistory:
 class GasFetcher:
     """Fetch gas prices from multiple sources."""
 
-    def __init__(
-        self,
-        chain: str = "ethereum",
-        rpc_url: str = None,
-        api_key: str = None,
-        verbose: bool = False
-    ):
+    def __init__(self, chain: str = "ethereum", rpc_url: str = None, api_key: str = None, verbose: bool = False):
         """Initialize gas fetcher.
 
         Args:
@@ -255,7 +251,11 @@ class GasFetcher:
             safe = int(float(result.get("SafeGasPrice", 30)) * 10**9)
             proposed = int(float(result.get("ProposeGasPrice", 35)) * 10**9)
             fast = int(float(result.get("FastGasPrice", 50)) * 10**9)
-            base_fee = int(float(result.get("suggestBaseFee", 25)) * 10**9) if result.get("suggestBaseFee") else int(proposed * 0.8)
+            base_fee = (
+                int(float(result.get("suggestBaseFee", 25)) * 10**9)
+                if result.get("suggestBaseFee")
+                else int(proposed * 0.8)
+            )
 
             return GasData(
                 chain=self.chain,
@@ -294,12 +294,14 @@ class GasFetcher:
 
             history = []
             for i, (base_fee, ratio) in enumerate(zip(base_fees, gas_ratios)):
-                history.append(BaseFeeHistory(
-                    block_number=oldest_block + i,
-                    base_fee=int(base_fee, 16),
-                    gas_used_ratio=ratio,
-                    timestamp=0,  # Would need block timestamps
-                ))
+                history.append(
+                    BaseFeeHistory(
+                        block_number=oldest_block + i,
+                        base_fee=int(base_fee, 16),
+                        gas_used_ratio=ratio,
+                        timestamp=0,  # Would need block timestamps
+                    )
+                )
 
             return history
 

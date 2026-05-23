@@ -13,17 +13,13 @@ import json
 import csv
 import io
 from datetime import datetime
-from typing import Dict, List, Any
+from typing import Dict, Any
 
 
 class MoversFormatter:
     """Format market mover results for various output types."""
 
-    def format(
-        self,
-        result: Dict[str, Any],
-        format_type: str = "table"
-    ) -> str:
+    def format(self, result: Dict[str, Any], format_type: str = "table") -> str:
         """
         Format mover results.
 
@@ -74,8 +70,7 @@ class MoversFormatter:
                 score = f"{g.get('significance_score', 0):.1f}"
 
                 lines.append(
-                    f"  {rank:<6}{symbol:<10}{price:>12}"
-                    f"{change:>12}{vol_ratio:>12}{market_cap:>14}{score:>10}"
+                    f"  {rank:<6}{symbol:<10}{price:>12}{change:>12}{vol_ratio:>12}{market_cap:>14}{score:>10}"
                 )
 
             lines.append("-" * 90)
@@ -102,8 +97,7 @@ class MoversFormatter:
                 score = f"{l.get('significance_score', 0):.1f}"
 
                 lines.append(
-                    f"  {rank:<6}{symbol:<10}{price:>12}"
-                    f"{change:>12}{vol_ratio:>12}{market_cap:>14}{score:>10}"
+                    f"  {rank:<6}{symbol:<10}{price:>12}{change:>12}{vol_ratio:>12}{market_cap:>14}{score:>10}"
                 )
 
             lines.append("-" * 90)
@@ -126,7 +120,7 @@ class MoversFormatter:
                 f"  Thresholds: "
                 f"min_change={thresholds.get('min_change', 5)}%, "
                 f"vol_spike={thresholds.get('volume_spike', 2)}x, "
-                f"min_cap=${thresholds.get('min_market_cap', 0)/1e6:.0f}M"
+                f"min_cap=${thresholds.get('min_market_cap', 0) / 1e6:.0f}M"
             )
 
         lines.append("=" * 90)
@@ -147,8 +141,15 @@ class MoversFormatter:
         output = io.StringIO()
 
         fieldnames = [
-            "type", "rank", "symbol", "name", "price", "change",
-            "volume_ratio", "market_cap", "significance_score"
+            "type",
+            "rank",
+            "symbol",
+            "name",
+            "price",
+            "change",
+            "volume_ratio",
+            "market_cap",
+            "significance_score",
         ]
 
         writer = csv.DictWriter(output, fieldnames=fieldnames)
@@ -156,31 +157,35 @@ class MoversFormatter:
 
         # Write gainers
         for g in result.get("gainers", []):
-            writer.writerow({
-                "type": "gainer",
-                "rank": g.get("rank", ""),
-                "symbol": g.get("symbol", ""),
-                "name": g.get("name", ""),
-                "price": g.get("price", ""),
-                "change": g.get("change", ""),
-                "volume_ratio": g.get("volume_ratio", ""),
-                "market_cap": g.get("market_cap", ""),
-                "significance_score": g.get("significance_score", "")
-            })
+            writer.writerow(
+                {
+                    "type": "gainer",
+                    "rank": g.get("rank", ""),
+                    "symbol": g.get("symbol", ""),
+                    "name": g.get("name", ""),
+                    "price": g.get("price", ""),
+                    "change": g.get("change", ""),
+                    "volume_ratio": g.get("volume_ratio", ""),
+                    "market_cap": g.get("market_cap", ""),
+                    "significance_score": g.get("significance_score", ""),
+                }
+            )
 
         # Write losers
         for l in result.get("losers", []):
-            writer.writerow({
-                "type": "loser",
-                "rank": l.get("rank", ""),
-                "symbol": l.get("symbol", ""),
-                "name": l.get("name", ""),
-                "price": l.get("price", ""),
-                "change": l.get("change", ""),
-                "volume_ratio": l.get("volume_ratio", ""),
-                "market_cap": l.get("market_cap", ""),
-                "significance_score": l.get("significance_score", "")
-            })
+            writer.writerow(
+                {
+                    "type": "loser",
+                    "rank": l.get("rank", ""),
+                    "symbol": l.get("symbol", ""),
+                    "name": l.get("name", ""),
+                    "price": l.get("price", ""),
+                    "change": l.get("change", ""),
+                    "volume_ratio": l.get("volume_ratio", ""),
+                    "market_cap": l.get("market_cap", ""),
+                    "significance_score": l.get("significance_score", ""),
+                }
+            )
 
         return output.getvalue()
 

@@ -39,12 +39,7 @@ class TxTracker:
 
         self.verbose = verbose
 
-    def _rpc_call(
-        self,
-        chain: str,
-        method: str,
-        params: List = None
-    ) -> Any:
+    def _rpc_call(self, chain: str, method: str, params: List = None) -> Any:
         """Make RPC call to chain.
 
         Args:
@@ -79,11 +74,7 @@ class TxTracker:
 
         return result.get("result")
 
-    def verify_tx_on_chain(
-        self,
-        chain: str,
-        tx_hash: str
-    ) -> Dict[str, Any]:
+    def verify_tx_on_chain(self, chain: str, tx_hash: str) -> Dict[str, Any]:
         """Verify transaction exists on chain.
 
         Args:
@@ -94,11 +85,7 @@ class TxTracker:
             Transaction receipt or status dict
         """
         try:
-            receipt = self._rpc_call(
-                chain,
-                "eth_getTransactionReceipt",
-                [tx_hash]
-            )
+            receipt = self._rpc_call(chain, "eth_getTransactionReceipt", [tx_hash])
 
             if receipt:
                 return {
@@ -109,11 +96,7 @@ class TxTracker:
                 }
             else:
                 # Check if pending
-                tx = self._rpc_call(
-                    chain,
-                    "eth_getTransactionByHash",
-                    [tx_hash]
-                )
+                tx = self._rpc_call(chain, "eth_getTransactionByHash", [tx_hash])
                 if tx:
                     return {
                         "found": True,
@@ -129,12 +112,7 @@ class TxTracker:
                 print(f"Error verifying tx: {e}")
             return {"found": False, "status": "error", "error": str(e)}
 
-    def track_bridge_tx(
-        self,
-        tx_hash: str,
-        bridge: str = None,
-        source_chain: str = None
-    ) -> Optional[TxStatus]:
+    def track_bridge_tx(self, tx_hash: str, bridge: str = None, source_chain: str = None) -> Optional[TxStatus]:
         """Track a bridge transaction.
 
         Args:
@@ -178,10 +156,7 @@ class TxTracker:
 
         return None
 
-    def get_tx_status_all_bridges(
-        self,
-        tx_hash: str
-    ) -> Dict[str, Optional[TxStatus]]:
+    def get_tx_status_all_bridges(self, tx_hash: str) -> Dict[str, Optional[TxStatus]]:
         """Check tx status across all bridges.
 
         Args:
@@ -199,12 +174,7 @@ class TxTracker:
 
         return results
 
-    def estimate_completion_time(
-        self,
-        bridge: str,
-        source_chain: str,
-        dest_chain: str
-    ) -> int:
+    def estimate_completion_time(self, bridge: str, source_chain: str, dest_chain: str) -> int:
         """Estimate completion time in minutes.
 
         Args:
@@ -300,9 +270,7 @@ def main():
     print("\n=== Completion Time Estimates ===")
     bridges = ["wormhole", "layerzero", "stargate", "across"]
     for bridge in bridges:
-        time_est = tracker.estimate_completion_time(
-            bridge, "ethereum", "arbitrum"
-        )
+        time_est = tracker.estimate_completion_time(bridge, "ethereum", "arbitrum")
         print(f"  {bridge}: ~{time_est} minutes (ETH → ARB)")
 
 

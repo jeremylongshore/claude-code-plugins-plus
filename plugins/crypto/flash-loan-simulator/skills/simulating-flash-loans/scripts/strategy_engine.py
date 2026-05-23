@@ -176,9 +176,7 @@ class SimpleArbitrageStrategy(FlashLoanStrategy):
     def strategy_type(self) -> StrategyType:
         return StrategyType.SIMPLE_ARBITRAGE
 
-    def get_dex_price(
-        self, dex: str, from_token: str, to_token: str
-    ) -> Optional[Decimal]:
+    def get_dex_price(self, dex: str, from_token: str, to_token: str) -> Optional[Decimal]:
         """Get price from DEX (mock data)."""
         dex_prices = self.MOCK_PRICES.get(dex.lower(), {})
         return dex_prices.get((from_token.upper(), to_token.upper()))
@@ -219,9 +217,7 @@ class SimpleArbitrageStrategy(FlashLoanStrategy):
         )
 
         # Step 2: Sell on high-price DEX
-        sell_price = self.get_dex_price(
-            params.dex_sell, params.input_token, params.output_token
-        )
+        sell_price = self.get_dex_price(params.dex_sell, params.input_token, params.output_token)
         if not sell_price:
             warnings.append(f"No price data for {params.dex_sell}")
             sell_price = Decimal("2540")  # Fallback
@@ -245,9 +241,7 @@ class SimpleArbitrageStrategy(FlashLoanStrategy):
         )
 
         # Step 3: Buy on low-price DEX
-        buy_price = self.get_dex_price(
-            params.dex_buy, params.output_token, params.input_token
-        )
+        buy_price = self.get_dex_price(params.dex_buy, params.output_token, params.input_token)
         if not buy_price:
             warnings.append(f"No price data for {params.dex_buy}")
             buy_price = Decimal("1") / Decimal("2538")  # Fallback
@@ -389,11 +383,9 @@ class LiquidationStrategy(FlashLoanStrategy):
         debt_amount = Decimal("10000")  # 10K USDC debt
         collateral_amount = Decimal("5")  # 5 ETH collateral
         collateral_price = Decimal("2500")  # $2500/ETH
-        collateral_value = collateral_amount * collateral_price  # $12,500
+        collateral_amount * collateral_price  # $12,500
 
-        liquidation_bonus = self.LIQUIDATION_BONUSES.get(
-            params.protocol.lower(), Decimal("0.05")
-        )
+        liquidation_bonus = self.LIQUIDATION_BONUSES.get(params.protocol.lower(), Decimal("0.05"))
 
         # Step 1: Flash borrow debt asset
         loan_fee = provider.get_fee(params.debt_asset, debt_amount)
@@ -459,7 +451,7 @@ class LiquidationStrategy(FlashLoanStrategy):
                 output_amount=Decimal("0"),
                 fee=Decimal("0"),
                 gas_estimate=50000,
-                description=f"Repay flash loan",
+                description="Repay flash loan",
             )
         )
 

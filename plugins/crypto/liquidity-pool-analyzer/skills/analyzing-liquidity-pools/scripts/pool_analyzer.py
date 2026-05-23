@@ -33,132 +33,55 @@ Examples:
   %(prog)s --pair ETH/USDC --protocol uniswap-v3
   %(prog)s --il-calc --entry-price 2000 --current-price 3000
   %(prog)s --compare --pair ETH/USDC --protocols uniswap-v3,curve
-        """
+        """,
     )
 
     # Pool identification
-    parser.add_argument(
-        "--pool", "-p",
-        help="Pool address to analyze"
-    )
+    parser.add_argument("--pool", "-p", help="Pool address to analyze")
 
-    parser.add_argument(
-        "--pair",
-        help="Token pair to search (e.g., ETH/USDC)"
-    )
+    parser.add_argument("--pair", help="Token pair to search (e.g., ETH/USDC)")
 
-    parser.add_argument(
-        "--protocol",
-        help="Protocol filter (uniswap-v3, curve, balancer, etc.)"
-    )
+    parser.add_argument("--protocol", help="Protocol filter (uniswap-v3, curve, balancer, etc.)")
 
-    parser.add_argument(
-        "--chain", "-c",
-        default="ethereum",
-        help="Blockchain (ethereum, arbitrum, polygon, etc.)"
-    )
+    parser.add_argument("--chain", "-c", default="ethereum", help="Blockchain (ethereum, arbitrum, polygon, etc.)")
 
     # IL calculation
-    parser.add_argument(
-        "--il-calc",
-        action="store_true",
-        help="Calculate impermanent loss"
-    )
+    parser.add_argument("--il-calc", action="store_true", help="Calculate impermanent loss")
 
-    parser.add_argument(
-        "--entry-price",
-        type=float,
-        help="Entry price for IL calculation"
-    )
+    parser.add_argument("--entry-price", type=float, help="Entry price for IL calculation")
 
-    parser.add_argument(
-        "--current-price",
-        type=float,
-        help="Current price for IL calculation"
-    )
+    parser.add_argument("--current-price", type=float, help="Current price for IL calculation")
 
-    parser.add_argument(
-        "--il-scenarios",
-        action="store_true",
-        help="Show IL for various price scenarios"
-    )
+    parser.add_argument("--il-scenarios", action="store_true", help="Show IL for various price scenarios")
 
     # Position analysis
-    parser.add_argument(
-        "--position",
-        type=float,
-        help="Position size in USD for projections"
-    )
+    parser.add_argument("--position", type=float, help="Position size in USD for projections")
 
     # Comparison
-    parser.add_argument(
-        "--compare",
-        action="store_true",
-        help="Compare pools"
-    )
+    parser.add_argument("--compare", action="store_true", help="Compare pools")
 
-    parser.add_argument(
-        "--protocols",
-        help="Protocols to compare, comma-separated"
-    )
+    parser.add_argument("--protocols", help="Protocols to compare, comma-separated")
 
-    parser.add_argument(
-        "--fee-tiers",
-        help="Fee tiers to compare, comma-separated"
-    )
+    parser.add_argument("--fee-tiers", help="Fee tiers to compare, comma-separated")
 
     # Filters
-    parser.add_argument(
-        "--min-tvl",
-        type=float,
-        default=0,
-        help="Minimum TVL in USD"
-    )
+    parser.add_argument("--min-tvl", type=float, default=0, help="Minimum TVL in USD")
 
-    parser.add_argument(
-        "--top", "-t",
-        type=int,
-        default=10,
-        help="Number of results to show"
-    )
+    parser.add_argument("--top", "-t", type=int, default=10, help="Number of results to show")
 
     # Output options
-    parser.add_argument(
-        "--format", "-f",
-        choices=["table", "json", "csv"],
-        default="table",
-        help="Output format"
-    )
+    parser.add_argument("--format", "-f", choices=["table", "json", "csv"], default="table", help="Output format")
 
-    parser.add_argument(
-        "--output", "-o",
-        help="Output file"
-    )
+    parser.add_argument("--output", "-o", help="Output file")
 
-    parser.add_argument(
-        "--detailed",
-        action="store_true",
-        help="Show detailed analysis"
-    )
+    parser.add_argument("--detailed", action="store_true", help="Show detailed analysis")
 
     # Other
-    parser.add_argument(
-        "--no-cache",
-        action="store_true",
-        help="Bypass cache"
-    )
+    parser.add_argument("--no-cache", action="store_true", help="Bypass cache")
 
-    parser.add_argument(
-        "--verbose", "-v",
-        action="store_true",
-        help="Verbose output"
-    )
+    parser.add_argument("--verbose", "-v", action="store_true", help="Verbose output")
 
-    parser.add_argument(
-        "--version",
-        action="version",
-        version="%(prog)s 2.0.0"
-    )
+    parser.add_argument("--version", action="version", version="%(prog)s 2.0.0")
 
     args = parser.parse_args()
 
@@ -185,11 +108,7 @@ Examples:
 
         if args.pool:
             # Specific pool by address
-            pool = fetcher.fetch_pool_by_address(
-                args.pool,
-                chain=args.chain,
-                protocol=args.protocol or "uniswap-v3"
-            )
+            pool = fetcher.fetch_pool_by_address(args.pool, chain=args.chain, protocol=args.protocol or "uniswap-v3")
             if pool:
                 pools = [pool]
         elif args.pair:
@@ -197,16 +116,12 @@ Examples:
             tokens = args.pair.upper().replace("/", "-").split("-")
             if len(tokens) >= 2:
                 pools = fetcher.fetch_pools_by_pair(
-                    tokens[0], tokens[1],
-                    chain=args.chain if args.chain != "ethereum" else None,
-                    protocol=args.protocol
+                    tokens[0], tokens[1], chain=args.chain if args.chain != "ethereum" else None, protocol=args.protocol
                 )
         elif args.protocol:
             # All pools for a protocol
             pools = fetcher.fetch_pools_by_protocol(
-                args.protocol,
-                chain=args.chain if args.chain != "ethereum" else None,
-                min_tvl=args.min_tvl
+                args.protocol, chain=args.chain if args.chain != "ethereum" else None, min_tvl=args.min_tvl
             )
         else:
             print("Please specify --pool, --pair, or --protocol", file=sys.stderr)
@@ -225,7 +140,7 @@ Examples:
             metrics_calc.calculate_metrics(pool)
 
         # Limit results
-        pools = pools[:args.top]
+        pools = pools[: args.top]
 
         if not pools:
             print("No pools match criteria after filtering.", file=sys.stderr)
@@ -254,6 +169,7 @@ Examples:
         print(f"Error: {e}", file=sys.stderr)
         if args.verbose:
             import traceback
+
             traceback.print_exc()
         sys.exit(1)
 
@@ -272,9 +188,7 @@ def handle_il_calculation(args, il_calc, formatter):
     position_value = args.position or 1000
 
     il_data = il_calc.calculate_position_il(
-        entry_price=args.entry_price,
-        current_price=args.current_price,
-        position_value=position_value
+        entry_price=args.entry_price, current_price=args.current_price, position_value=position_value
     )
 
     if args.format == "json":

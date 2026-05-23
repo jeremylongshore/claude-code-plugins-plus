@@ -19,7 +19,6 @@ Author: Jeremy Longshore <jeremy@intentsolutions.io>
 import json
 import os
 import time
-import asyncio
 from typing import Dict, Any, Optional, List
 
 
@@ -45,11 +44,12 @@ def _rate_limit():
 
 def _get_groq_client():
     """Get Groq client, or None if unavailable."""
-    api_key = os.environ.get('GROQ_API_KEY')
+    api_key = os.environ.get("GROQ_API_KEY")
     if not api_key:
         return None
     try:
         from groq import Groq
+
         return Groq(api_key=api_key)
     except ImportError:
         return None
@@ -308,45 +308,46 @@ def run_llm_evaluation(
     The engine handles weight renormalization for missing dimensions.
     """
     results = {
-        'available': False,
-        'dimensions': {},
+        "available": False,
+        "dimensions": {},
     }
 
     # Check if Groq is available
-    if not os.environ.get('GROQ_API_KEY'):
-        results['reason'] = 'GROQ_API_KEY not set'
+    if not os.environ.get("GROQ_API_KEY"):
+        results["reason"] = "GROQ_API_KEY not set"
         return results
 
     try:
-        from groq import Groq
+        from groq import Groq  # noqa: F401 — capability probe; client built in _get_groq_client
     except ImportError:
-        results['reason'] = 'groq package not installed (pip install groq)'
+        results["reason"] = "groq package not installed (pip install groq)"
         return results
 
-    results['available'] = True
+    results["available"] = True
     word_count = len(body.split())
     has_refs = False
     if skill_path:
         from pathlib import Path
-        has_refs = (Path(skill_path).parent / 'references').exists()
+
+        has_refs = (Path(skill_path).parent / "references").exists()
 
     body_preview = body[:500]
 
     # Run evaluations sequentially (rate limit aware)
     triggering = judge_triggering_quality(skill_name, description, body_preview)
     if triggering:
-        results['dimensions']['triggering_accuracy'] = triggering
+        results["dimensions"]["triggering_accuracy"] = triggering
 
     orchestration = judge_orchestration_fitness(skill_name, description, body)
     if orchestration:
-        results['dimensions']['orchestration_fitness'] = orchestration
+        results["dimensions"]["orchestration_fitness"] = orchestration
 
     scope = judge_scope_calibration(skill_name, description, body, word_count, has_refs)
     if scope:
-        results['dimensions']['scope_calibration'] = scope
+        results["dimensions"]["scope_calibration"] = scope
 
     output = judge_output_quality(skill_name, description, body)
     if output:
-        results['dimensions']['output_quality'] = output
+        results["dimensions"]["output_quality"] = output
 
     return results

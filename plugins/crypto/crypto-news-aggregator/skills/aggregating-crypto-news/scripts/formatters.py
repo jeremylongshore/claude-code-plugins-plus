@@ -13,17 +13,13 @@ import json
 import csv
 import io
 from datetime import datetime, timedelta
-from typing import Dict, List, Any
+from typing import Dict, Any
 
 
 class NewsFormatter:
     """Format crypto news results for various output types."""
 
-    def format(
-        self,
-        result: Dict[str, Any],
-        format_type: str = "table"
-    ) -> str:
+    def format(self, result: Dict[str, Any], format_type: str = "table") -> str:
         """
         Format news results.
 
@@ -58,9 +54,7 @@ class NewsFormatter:
             period = meta.get("period", "24h")
             lines.append(f"  TOP CRYPTO NEWS ({period})")
             lines.append("-" * 90)
-            lines.append(
-                f"  {'Rank':<6}{'Source':<16}{'Title':<44}{'Age':<10}{'Score':>8}"
-            )
+            lines.append(f"  {'Rank':<6}{'Source':<16}{'Title':<44}{'Age':<10}{'Score':>8}")
             lines.append("-" * 90)
 
             for article in articles:
@@ -70,9 +64,7 @@ class NewsFormatter:
                 age = self._format_age(article.get("published"))
                 score = f"{article.get('relevance_score', 0):.1f}"
 
-                lines.append(
-                    f"  {rank:<6}{source:<16}{title:<44}{age:<10}{score:>8}"
-                )
+                lines.append(f"  {rank:<6}{source:<16}{title:<44}{age:<10}{score:>8}")
 
             lines.append("-" * 90)
 
@@ -87,11 +79,7 @@ class NewsFormatter:
         sources = meta.get("sources_checked", 0)
         total = meta.get("after_filter", 0)
 
-        lines.append(
-            f"  Summary: {shown} articles shown | "
-            f"Scanned: {sources} sources | "
-            f"Matched: {total}"
-        )
+        lines.append(f"  Summary: {shown} articles shown | Scanned: {sources} sources | Matched: {total}")
 
         # Filters applied
         filters = meta.get("filters", {})
@@ -113,10 +101,7 @@ class NewsFormatter:
     def _format_json(self, result: Dict[str, Any]) -> str:
         """Format results as JSON."""
         # Prepare articles for JSON serialization
-        output = {
-            "articles": [],
-            "meta": result.get("meta", {})
-        }
+        output = {"articles": [], "meta": result.get("meta", {})}
 
         for article in result.get("articles", []):
             serializable = {
@@ -129,7 +114,7 @@ class NewsFormatter:
                 "category": article.get("category"),
                 "relevance_score": article.get("relevance_score"),
                 "coins_mentioned": article.get("coins_mentioned", []),
-                "summary": article.get("summary", "")[:200]
+                "summary": article.get("summary", "")[:200],
             }
 
             # Convert datetime to ISO format
@@ -149,8 +134,15 @@ class NewsFormatter:
         output = io.StringIO()
 
         fieldnames = [
-            "rank", "title", "url", "source", "published",
-            "age", "category", "relevance_score", "coins_mentioned"
+            "rank",
+            "title",
+            "url",
+            "source",
+            "published",
+            "age",
+            "category",
+            "relevance_score",
+            "coins_mentioned",
         ]
 
         writer = csv.DictWriter(output, fieldnames=fieldnames)
@@ -160,17 +152,19 @@ class NewsFormatter:
             pub = article.get("published")
             published_str = pub.isoformat() if pub else ""
 
-            writer.writerow({
-                "rank": article.get("rank", ""),
-                "title": article.get("title", ""),
-                "url": article.get("url", ""),
-                "source": article.get("source", ""),
-                "published": published_str,
-                "age": self._format_age(pub),
-                "category": article.get("category", ""),
-                "relevance_score": article.get("relevance_score", ""),
-                "coins_mentioned": ",".join(article.get("coins_mentioned", []))
-            })
+            writer.writerow(
+                {
+                    "rank": article.get("rank", ""),
+                    "title": article.get("title", ""),
+                    "url": article.get("url", ""),
+                    "source": article.get("source", ""),
+                    "published": published_str,
+                    "age": self._format_age(pub),
+                    "category": article.get("category", ""),
+                    "relevance_score": article.get("relevance_score", ""),
+                    "coins_mentioned": ",".join(article.get("coins_mentioned", [])),
+                }
+            )
 
         return output.getvalue()
 

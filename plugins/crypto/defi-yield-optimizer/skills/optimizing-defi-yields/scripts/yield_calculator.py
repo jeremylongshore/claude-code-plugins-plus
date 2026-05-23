@@ -10,7 +10,7 @@ License: MIT
 """
 
 import math
-from typing import Dict, Any, Optional
+from typing import Dict, Any
 
 
 class YieldCalculator:
@@ -72,8 +72,7 @@ class YieldCalculator:
         pool["effective_apy"] = self._calculate_effective_apy(pool)
 
         if self.verbose:
-            print(f"  Calculated yields for {pool.get('project')}/{pool.get('symbol')}: "
-                  f"{pool['total_apy']:.2f}% APY")
+            print(f"  Calculated yields for {pool.get('project')}/{pool.get('symbol')}: {pool['total_apy']:.2f}% APY")
 
         return pool
 
@@ -119,12 +118,7 @@ class YieldCalculator:
 
         return round(apr, 4)
 
-    def calculate_earnings(
-        self,
-        principal: float,
-        apy: float,
-        days: int = 365
-    ) -> Dict[str, float]:
+    def calculate_earnings(self, principal: float, apy: float, days: int = 365) -> Dict[str, float]:
         """Calculate expected earnings over time.
 
         Args:
@@ -182,8 +176,12 @@ class YieldCalculator:
 
         # Correlated pairs (ETH-stETH, BTC-WBTC)
         correlated_pairs = [
-            ("ETH", "STETH"), ("ETH", "RETH"), ("ETH", "CBETH"),
-            ("BTC", "WBTC"), ("BTC", "RENBTC"), ("BTC", "SBTC"),
+            ("ETH", "STETH"),
+            ("ETH", "RETH"),
+            ("ETH", "CBETH"),
+            ("BTC", "WBTC"),
+            ("BTC", "RENBTC"),
+            ("BTC", "SBTC"),
         ]
         for pair in correlated_pairs:
             if pair[0] in symbol and pair[1] in symbol:
@@ -214,10 +212,10 @@ class YieldCalculator:
 
         # IL discount factors (conservative estimates)
         il_discounts = {
-            "none": 1.0,      # No discount
-            "low": 0.98,      # 2% discount
-            "medium": 0.90,   # 10% discount
-            "high": 0.75,     # 25% discount
+            "none": 1.0,  # No discount
+            "low": 0.98,  # 2% discount
+            "medium": 0.90,  # 10% discount
+            "high": 0.75,  # 25% discount
         }
 
         discount = il_discounts.get(il_risk, 0.90)
@@ -275,7 +273,7 @@ def main():
 
     print("\nEarnings Projection:")
     earnings = calc.calculate_earnings(10000, 12.5, 365)
-    print(f"  $10,000 at 12.5% APY for 1 year:")
+    print("  $10,000 at 12.5% APY for 1 year:")
     print(f"    Simple: ${earnings['simple_earnings']:,.2f}")
     print(f"    Compound: ${earnings['compound_earnings']:,.2f}")
     print(f"    Final Value: ${earnings['final_value']:,.2f}")

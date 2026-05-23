@@ -35,122 +35,56 @@ Examples:
   %(prog)s --risk low --audited-only --min-apy 3
   %(prog)s --asset USDC --protocol aave,compound
   %(prog)s --format json --output yields.json
-        """
+        """,
     )
 
     # Search options
-    parser.add_argument(
-        "--top", "-t",
-        type=int,
-        default=10,
-        help="Number of top yields to show (default: 10)"
-    )
+    parser.add_argument("--top", "-t", type=int, default=10, help="Number of top yields to show (default: 10)")
 
-    parser.add_argument(
-        "--chain", "-c",
-        help="Filter by chain(s), comma-separated (ethereum, arbitrum, polygon, etc.)"
-    )
+    parser.add_argument("--chain", "-c", help="Filter by chain(s), comma-separated (ethereum, arbitrum, polygon, etc.)")
 
-    parser.add_argument(
-        "--protocol", "-p",
-        help="Filter by protocol(s), comma-separated (aave, compound, curve, etc.)"
-    )
+    parser.add_argument("--protocol", "-p", help="Filter by protocol(s), comma-separated (aave, compound, curve, etc.)")
 
-    parser.add_argument(
-        "--asset", "-a",
-        help="Filter by asset(s), comma-separated (USDC, ETH, WBTC, etc.)"
-    )
+    parser.add_argument("--asset", "-a", help="Filter by asset(s), comma-separated (USDC, ETH, WBTC, etc.)")
 
     # TVL and APY filters
-    parser.add_argument(
-        "--min-tvl",
-        type=float,
-        default=0,
-        help="Minimum TVL in USD (default: 0)"
-    )
+    parser.add_argument("--min-tvl", type=float, default=0, help="Minimum TVL in USD (default: 0)")
 
-    parser.add_argument(
-        "--min-apy",
-        type=float,
-        default=0,
-        help="Minimum APY percentage (default: 0)"
-    )
+    parser.add_argument("--min-apy", type=float, default=0, help="Minimum APY percentage (default: 0)")
 
-    parser.add_argument(
-        "--max-apy",
-        type=float,
-        help="Maximum APY percentage (filter outliers)"
-    )
+    parser.add_argument("--max-apy", type=float, help="Maximum APY percentage (filter outliers)")
 
     # Risk filters
     parser.add_argument(
-        "--risk",
-        choices=["low", "medium", "high", "all"],
-        default="all",
-        help="Filter by risk level (default: all)"
+        "--risk", choices=["low", "medium", "high", "all"], default="all", help="Filter by risk level (default: all)"
     )
 
-    parser.add_argument(
-        "--audited-only",
-        action="store_true",
-        help="Only show audited protocols"
-    )
+    parser.add_argument("--audited-only", action="store_true", help="Only show audited protocols")
 
     # Analysis options
-    parser.add_argument(
-        "--pool",
-        help="Show detailed analysis for specific pool"
-    )
+    parser.add_argument("--pool", help="Show detailed analysis for specific pool")
 
-    parser.add_argument(
-        "--compare",
-        help="Compare specific protocols, comma-separated"
-    )
+    parser.add_argument("--compare", help="Compare specific protocols, comma-separated")
 
-    parser.add_argument(
-        "--detailed",
-        action="store_true",
-        help="Show detailed breakdown"
-    )
+    parser.add_argument("--detailed", action="store_true", help="Show detailed breakdown")
 
     # Output options
     parser.add_argument(
-        "--format", "-f",
-        choices=["table", "json", "csv"],
-        default="table",
-        help="Output format (default: table)"
+        "--format", "-f", choices=["table", "json", "csv"], default="table", help="Output format (default: table)"
     )
 
-    parser.add_argument(
-        "--output", "-o",
-        help="Output file (default: stdout)"
-    )
+    parser.add_argument("--output", "-o", help="Output file (default: stdout)")
 
     parser.add_argument(
-        "--sort",
-        choices=["apy", "tvl", "risk", "name"],
-        default="apy",
-        help="Sort results by (default: apy)"
+        "--sort", choices=["apy", "tvl", "risk", "name"], default="apy", help="Sort results by (default: apy)"
     )
 
     # Other
-    parser.add_argument(
-        "--no-cache",
-        action="store_true",
-        help="Bypass cache and fetch fresh data"
-    )
+    parser.add_argument("--no-cache", action="store_true", help="Bypass cache and fetch fresh data")
 
-    parser.add_argument(
-        "--verbose", "-v",
-        action="store_true",
-        help="Verbose output"
-    )
+    parser.add_argument("--verbose", "-v", action="store_true", help="Verbose output")
 
-    parser.add_argument(
-        "--version",
-        action="version",
-        version="%(prog)s 2.0.0"
-    )
+    parser.add_argument("--version", action="version", version="%(prog)s 2.0.0")
 
     args = parser.parse_args()
 
@@ -223,23 +157,19 @@ Examples:
             "apy": lambda x: -(x.get("apy") or 0),
             "tvl": lambda x: -(x.get("tvlUsd") or 0),
             "risk": lambda x: -(x.get("risk_score") or 0),
-            "name": lambda x: x.get("project", "").lower()
+            "name": lambda x: x.get("project", "").lower(),
         }
         filtered.sort(key=sort_key.get(args.sort, sort_key["apy"]))
 
         # Limit results
-        filtered = filtered[:args.top]
+        filtered = filtered[: args.top]
 
         if not filtered:
             print("No pools match your criteria. Try broadening filters.", file=sys.stderr)
             sys.exit(0)
 
         # Format output
-        output = formatter.format(
-            filtered,
-            format_type=args.format,
-            detailed=args.detailed
-        )
+        output = formatter.format(filtered, format_type=args.format, detailed=args.detailed)
 
         # Output
         if args.output:
@@ -253,6 +183,7 @@ Examples:
         print(f"Error: {e}", file=sys.stderr)
         if args.verbose:
             import traceback
+
             traceback.print_exc()
         sys.exit(1)
 

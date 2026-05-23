@@ -15,6 +15,7 @@ References:
   - Model Armor: https://cloud.google.com/vertex-ai/docs/model-armor/overview
   - Secret Manager: https://cloud.google.com/secret-manager/docs/overview
 """
+
 from __future__ import annotations
 
 import argparse
@@ -102,6 +103,7 @@ def _result(
 
 # ── Check 1: IAM Least Privilege ─────────────────────────────────────────────
 
+
 def check_iam_least_privilege(project: str) -> dict[str, Any]:
     """List IAM bindings and flag over-privileged service accounts.
 
@@ -157,6 +159,7 @@ def check_iam_least_privilege(project: str) -> dict[str, Any]:
 
 # ── Check 2: VPC Service Controls Perimeter ──────────────────────────────────
 
+
 def check_vpc_sc(project: str) -> dict[str, Any]:
     """Check for VPC-SC access policies protecting the project.
 
@@ -177,11 +180,13 @@ def check_vpc_sc(project: str) -> dict[str, Any]:
         client = accesscontextmanager_v1.AccessContextManagerClient()
         # List access policies for the organization
         # Ref: https://cloud.google.com/access-context-manager/docs/reference/rest/v1/accessPolicies/list
-        policies = list(client.list_access_policies(
-            request=accesscontextmanager_v1.ListAccessPoliciesRequest(
-                parent=f"projects/{project}",
+        policies = list(
+            client.list_access_policies(
+                request=accesscontextmanager_v1.ListAccessPoliciesRequest(
+                    parent=f"projects/{project}",
+                )
             )
-        ))
+        )
 
         if not policies:
             return _result(
@@ -208,6 +213,7 @@ def check_vpc_sc(project: str) -> dict[str, Any]:
 
 
 # ── Check 3: Encryption (CMEK) ──────────────────────────────────────────────
+
 
 def check_encryption(project: str, location: str) -> dict[str, Any]:
     """Check if Vertex AI resources use CMEK encryption.
@@ -271,6 +277,7 @@ def check_encryption(project: str, location: str) -> dict[str, Any]:
 
 # ── Check 4: Model Armor ────────────────────────────────────────────────────
 
+
 def check_model_armor(project: str, location: str) -> dict[str, Any]:
     """Check Model Armor templates for input/output sanitization.
 
@@ -284,8 +291,7 @@ def check_model_armor(project: str, location: str) -> dict[str, Any]:
             "Model Armor",
             "SKIP",
             "google-cloud-modelarmor not installed (optional, SDK may not be GA)",
-            "Model Armor can be configured via Console: "
-            "https://cloud.google.com/vertex-ai/docs/model-armor/overview",
+            "Model Armor can be configured via Console: https://cloud.google.com/vertex-ai/docs/model-armor/overview",
         )
 
     try:
@@ -322,6 +328,7 @@ def check_model_armor(project: str, location: str) -> dict[str, Any]:
 
 
 # ── Check 5: Secret Manager ─────────────────────────────────────────────────
+
 
 def check_secrets(project: str) -> dict[str, Any]:
     """Verify secrets are stored in Secret Manager, not plaintext.
@@ -372,6 +379,7 @@ def check_secrets(project: str) -> dict[str, Any]:
 
 # ── Entrypoint ───────────────────────────────────────────────────────────────
 
+
 def run_security_checks(
     project: str,
     agent_id: str | None = None,
@@ -409,9 +417,9 @@ def run_security_checks(
         print(f"\n{YELLOW}[WARN]{RESET} Missing optional deps: {', '.join(_MISSING_DEPS)}")
         print(f"       Install with: pip install {' '.join(_MISSING_DEPS)}\n")
 
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"  Security Validation — project={project}")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
 
     results = []
     for name, fn in checks:

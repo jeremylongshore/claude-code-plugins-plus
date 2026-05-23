@@ -16,6 +16,7 @@ Usage:
   python3 run_all_checks.py --project my-project --dry-run
   python3 run_all_checks.py --project my-project --output report.json
 """
+
 from __future__ import annotations
 
 import argparse
@@ -135,6 +136,7 @@ def compute_weighted_score(results: list[dict[str, Any]]) -> tuple[float, dict[s
 
 # ── Best Practices (lightweight inline checks) ──────────────────────────────
 
+
 def run_best_practices_checks(
     project: str,
     agent_id: str | None = None,
@@ -166,9 +168,9 @@ def run_best_practices_checks(
         _result("Region Selection", "SKIP", "dry-run mode — no checks made")
         return results
 
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"  Best Practices — project={project}")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
 
     # Check 1: Project ID naming convention
     # Ref: https://cloud.google.com/resource-manager/docs/creating-managing-projects
@@ -215,6 +217,7 @@ def run_best_practices_checks(
 
 # ── Summary Table ────────────────────────────────────────────────────────────
 
+
 def print_summary(
     overall_score: float,
     category_scores: dict[str, float | None],
@@ -228,14 +231,14 @@ def print_summary(
 
     total = len(results)
 
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"{BOLD}  VALIDATION SUMMARY{RESET}")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
     print()
 
     # Category scores
     print(f"  {'Category':<20} {'Weight':<10} {'Score':<10}")
-    print(f"  {'-'*40}")
+    print(f"  {'-' * 40}")
     for category, weight in CATEGORY_WEIGHTS.items():
         score = category_scores.get(category)
         weight_pct = f"{weight:.0%}"
@@ -270,10 +273,11 @@ def print_summary(
         f"SKIP: {status_counts['SKIP']}  "
         f"Total: {total}"
     )
-    print(f"{'='*60}\n")
+    print(f"{'=' * 60}\n")
 
 
 # ── Main ─────────────────────────────────────────────────────────────────────
+
 
 def run_all(
     project: str,
@@ -354,10 +358,7 @@ def run_all(
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "dry_run": dry_run,
         "overall_score": round(overall_score, 1),
-        "category_scores": {
-            k: round(v, 3) if v is not None else None
-            for k, v in category_scores.items()
-        },
+        "category_scores": {k: round(v, 3) if v is not None else None for k, v in category_scores.items()},
         "weights": CATEGORY_WEIGHTS,
         "checks": all_results,
         "summary": {
@@ -411,7 +412,9 @@ Weights:
 
     # When --json is used, suppress human-readable output
     if args.json:
-        import io, contextlib
+        import io
+        import contextlib
+
         f = io.StringIO()
         with contextlib.redirect_stdout(f):
             report = run_all(

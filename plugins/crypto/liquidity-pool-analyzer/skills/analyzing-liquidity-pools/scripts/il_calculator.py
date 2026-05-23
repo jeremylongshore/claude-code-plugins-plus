@@ -10,7 +10,7 @@ License: MIT
 """
 
 import math
-from typing import Dict, Any, List, Tuple
+from typing import Dict, Any, List
 
 
 class ILCalculator:
@@ -42,15 +42,11 @@ class ILCalculator:
         il = (2 * math.sqrt(price_ratio) / (1 + price_ratio)) - 1
 
         if self.verbose:
-            print(f"  Price ratio {price_ratio:.2f}x → IL {il*100:.2f}%")
+            print(f"  Price ratio {price_ratio:.2f}x → IL {il * 100:.2f}%")
 
         return il
 
-    def calculate_il_from_prices(
-        self,
-        entry_price: float,
-        current_price: float
-    ) -> Dict[str, float]:
+    def calculate_il_from_prices(self, entry_price: float, current_price: float) -> Dict[str, float]:
         """Calculate IL with detailed breakdown.
 
         Args:
@@ -75,10 +71,7 @@ class ILCalculator:
         }
 
     def calculate_position_il(
-        self,
-        entry_price: float,
-        current_price: float,
-        position_value: float
+        self, entry_price: float, current_price: float, position_value: float
     ) -> Dict[str, float]:
         """Calculate IL for a specific position size.
 
@@ -91,7 +84,7 @@ class ILCalculator:
             Dictionary with position IL details
         """
         il_info = self.calculate_il_from_prices(entry_price, current_price)
-        price_ratio = current_price / entry_price
+        current_price / entry_price
 
         # Value if just held 50/50 split
         # Assuming entry was 50% token0 (USD) and 50% token1 (volatile)
@@ -111,13 +104,7 @@ class ILCalculator:
             "gain_vs_hold_pct": round((value_in_lp / value_if_held - 1) * 100, 2),
         }
 
-    def calculate_breakeven(
-        self,
-        il_pct: float,
-        fee_tier: float,
-        tvl: float,
-        daily_volume: float
-    ) -> Dict[str, float]:
+    def calculate_breakeven(self, il_pct: float, fee_tier: float, tvl: float, daily_volume: float) -> Dict[str, float]:
         """Calculate days to break even from fees.
 
         Args:
@@ -156,10 +143,7 @@ class ILCalculator:
             "days_to_breakeven": round(days_to_breakeven, 1) if days_to_breakeven != float("inf") else None,
         }
 
-    def generate_il_scenarios(
-        self,
-        price_changes: List[float] = None
-    ) -> List[Dict[str, float]]:
+    def generate_il_scenarios(self, price_changes: List[float] = None) -> List[Dict[str, float]]:
         """Generate IL for various price change scenarios.
 
         Args:
@@ -176,20 +160,18 @@ class ILCalculator:
             price_ratio = 1 + (pct_change / 100)
             if price_ratio > 0:
                 il = self.calculate_il(price_ratio)
-                scenarios.append({
-                    "price_change_pct": pct_change,
-                    "price_ratio": round(price_ratio, 2),
-                    "il_pct": round(il * 100, 2),
-                })
+                scenarios.append(
+                    {
+                        "price_change_pct": pct_change,
+                        "price_ratio": round(price_ratio, 2),
+                        "il_pct": round(il * 100, 2),
+                    }
+                )
 
         return scenarios
 
     def compare_strategies(
-        self,
-        entry_price: float,
-        current_price: float,
-        position_value: float,
-        fee_earned_pct: float
+        self, entry_price: float, current_price: float, position_value: float, fee_earned_pct: float
     ) -> Dict[str, Any]:
         """Compare LP strategy vs HODL.
 
@@ -202,9 +184,7 @@ class ILCalculator:
         Returns:
             Strategy comparison
         """
-        position_info = self.calculate_position_il(
-            entry_price, current_price, position_value
-        )
+        position_info = self.calculate_position_il(entry_price, current_price, position_value)
 
         # Value with fees added
         fees_earned = position_value * (fee_earned_pct / 100)
@@ -237,11 +217,7 @@ def main():
 
     print("\nPosition Analysis:")
     print("-" * 50)
-    position = calc.calculate_position_il(
-        entry_price=2000,
-        current_price=3000,
-        position_value=10000
-    )
+    position = calc.calculate_position_il(entry_price=2000, current_price=3000, position_value=10000)
     print(f"  Entry: ${position['entry_price']}")
     print(f"  Current: ${position['current_price']}")
     print(f"  Price Change: {position['price_change_pct']:+.2f}%")
@@ -253,14 +229,11 @@ def main():
     print("\nBreakeven Analysis (0.3% fee tier):")
     print("-" * 50)
     breakeven = calc.calculate_breakeven(
-        il_pct=position['il_pct'],
-        fee_tier=0.003,
-        tvl=500_000_000,
-        daily_volume=100_000_000
+        il_pct=position["il_pct"], fee_tier=0.003, tvl=500_000_000, daily_volume=100_000_000
     )
     print(f"  Daily Fee APR: {breakeven['daily_fee_pct']:.4f}%")
     print(f"  Annual Fee APR: {breakeven['annual_fee_pct']:.2f}%")
-    if breakeven['days_to_breakeven']:
+    if breakeven["days_to_breakeven"]:
         print(f"  Days to Breakeven: {breakeven['days_to_breakeven']:.0f}")
 
 

@@ -19,21 +19,21 @@ class StakingMetrics:
     """Calculated metrics for a staking option."""
 
     # Yield metrics
-    gross_apy: float          # Advertised APY
+    gross_apy: float  # Advertised APY
     protocol_fee_rate: float  # Protocol's cut (decimal)
-    net_apy: float            # After protocol fees
-    effective_apy: float      # After gas costs (if position provided)
+    net_apy: float  # After protocol fees
+    effective_apy: float  # After gas costs (if position provided)
 
     # Cost metrics
-    gas_cost_usd: float       # Estimated staking gas
-    gas_as_pct: float         # Gas as % of position
+    gas_cost_usd: float  # Estimated staking gas
+    gas_as_pct: float  # Gas as % of position
 
     # Risk metrics
-    risk_score: int           # 1-10 (10 = safest)
+    risk_score: int  # 1-10 (10 = safest)
 
     # Position metrics (if amount provided)
-    position_usd: float       # Position value in USD
-    tvl_usd: float            # Total value locked
+    position_usd: float  # Position value in USD
+    tvl_usd: float  # Total value locked
 
     # Projections
     projected_1m: float
@@ -42,8 +42,8 @@ class StakingMetrics:
     projected_1y: float
 
     # Metadata
-    unbonding: str            # Lock-up period
-    staking_type: str         # native or liquid
+    unbonding: str  # Lock-up period
+    staking_type: str  # native or liquid
 
 
 class MetricsCalculator:
@@ -51,10 +51,10 @@ class MetricsCalculator:
 
     # Typical gas costs in gwei for different operations
     GAS_ESTIMATES = {
-        "stake_liquid": 100_000,     # Liquid staking deposit
-        "unstake_liquid": 150_000,   # Liquid staking withdrawal
-        "stake_native": 200_000,     # Native staking (varies)
-        "claim_rewards": 50_000,     # Claim staking rewards
+        "stake_liquid": 100_000,  # Liquid staking deposit
+        "unstake_liquid": 150_000,  # Liquid staking withdrawal
+        "stake_native": 200_000,  # Native staking (varies)
+        "claim_rewards": 50_000,  # Claim staking rewards
     }
 
     # Protocol-specific fee rates
@@ -71,12 +71,7 @@ class MetricsCalculator:
         "stader": 0.10,
     }
 
-    def __init__(
-        self,
-        gas_price_gwei: float = 30,
-        eth_price_usd: float = 2000,
-        verbose: bool = False
-    ):
+    def __init__(self, gas_price_gwei: float = 30, eth_price_usd: float = 2000, verbose: bool = False):
         """Initialize calculator.
 
         Args:
@@ -89,10 +84,7 @@ class MetricsCalculator:
         self.verbose = verbose
 
     def calculate_metrics(
-        self,
-        pool: Dict[str, Any],
-        position_usd: Optional[float] = None,
-        risk_score: Optional[int] = None
+        self, pool: Dict[str, Any], position_usd: Optional[float] = None, risk_score: Optional[int] = None
     ) -> StakingMetrics:
         """Calculate comprehensive metrics for a staking option.
 
@@ -199,12 +191,7 @@ class MetricsCalculator:
         apr = compounds_per_year * ((1 + apy_decimal) ** (1 / compounds_per_year) - 1)
         return apr * 100
 
-    def calculate_position_metrics(
-        self,
-        position_usd: float,
-        net_apy: float,
-        time_days: int = 365
-    ) -> Dict[str, float]:
+    def calculate_position_metrics(self, position_usd: float, net_apy: float, time_days: int = 365) -> Dict[str, float]:
         """Calculate metrics for a specific position and time horizon.
 
         Args:
@@ -235,11 +222,7 @@ class MetricsCalculator:
             "monthly_earnings": round(position_usd * (net_apy / 100) / 12, 2),
         }
 
-    def calculate_risk_adjusted_return(
-        self,
-        net_apy: float,
-        risk_score: int
-    ) -> float:
+    def calculate_risk_adjusted_return(self, net_apy: float, risk_score: int) -> float:
         """Calculate risk-adjusted return for ranking.
 
         Args:
@@ -252,12 +235,7 @@ class MetricsCalculator:
         # Simple formula: APY * (risk_score / 10)
         return net_apy * (risk_score / 10)
 
-    def calculate_breakeven_days(
-        self,
-        gas_cost_usd: float,
-        position_usd: float,
-        net_apy: float
-    ) -> int:
+    def calculate_breakeven_days(self, gas_cost_usd: float, position_usd: float, net_apy: float) -> int:
         """Calculate days to break even on gas costs.
 
         Args:
@@ -298,7 +276,7 @@ def main():
 
     # Calculate without position
     metrics = calc.calculate_metrics(test_pool)
-    print(f"\nLido (stETH) - No Position:")
+    print("\nLido (stETH) - No Position:")
     print(f"  Gross APY: {metrics.gross_apy}%")
     print(f"  Protocol Fee: {metrics.protocol_fee_rate * 100}%")
     print(f"  Net APY: {metrics.net_apy}%")
@@ -306,7 +284,7 @@ def main():
 
     # Calculate with position
     metrics = calc.calculate_metrics(test_pool, position_usd=10000, risk_score=9)
-    print(f"\nLido (stETH) - $10,000 Position:")
+    print("\nLido (stETH) - $10,000 Position:")
     print(f"  Gross APY: {metrics.gross_apy}%")
     print(f"  Net APY: {metrics.net_apy}%")
     print(f"  Effective APY: {metrics.effective_apy}%")
@@ -314,7 +292,7 @@ def main():
     print(f"  1 Year Projection: ${metrics.projected_1y:,.2f}")
 
     # Position metrics
-    print(f"\nPosition Metrics ($10,000 @ 3.6% net APY):")
+    print("\nPosition Metrics ($10,000 @ 3.6% net APY):")
     pos_metrics = calc.calculate_position_metrics(10000, 3.6, 365)
     print(f"  Daily Earnings: ${pos_metrics['daily_earnings']}")
     print(f"  Monthly Earnings: ${pos_metrics['monthly_earnings']}")

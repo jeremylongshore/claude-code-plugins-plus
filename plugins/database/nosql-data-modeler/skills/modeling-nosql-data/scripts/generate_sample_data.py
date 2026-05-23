@@ -11,8 +11,7 @@ import json
 import random
 import sys
 from datetime import datetime, timedelta
-from pathlib import Path
-from typing import Dict, List, Any, Union
+from typing import Dict, List, Any
 from uuid import uuid4
 
 
@@ -79,10 +78,7 @@ class SampleDataGenerator:
             count = random.randint(min_items, max_items)
 
             if "items" in field_def:
-                return [
-                    SampleDataGenerator.generate_value(field_def["items"])
-                    for _ in range(count)
-                ]
+                return [SampleDataGenerator.generate_value(field_def["items"]) for _ in range(count)]
             else:
                 return [f"item{i}" for i in range(count)]
 
@@ -147,7 +143,7 @@ class SampleDataGenerator:
             True if successful, False otherwise
         """
         try:
-            with open(filepath, 'w') as f:
+            with open(filepath, "w") as f:
                 json.dump(self.generated_data, f, indent=2)
             return True
         except Exception as e:
@@ -165,9 +161,9 @@ class SampleDataGenerator:
             True if successful, False otherwise
         """
         try:
-            with open(filepath, 'w') as f:
+            with open(filepath, "w") as f:
                 for doc in self.generated_data:
-                    f.write(json.dumps(doc) + '\n')
+                    f.write(json.dumps(doc) + "\n")
             return True
         except Exception as e:
             print(f"Error exporting JSONL: {e}", file=sys.stderr)
@@ -200,7 +196,7 @@ class SampleDataGenerator:
 
             all_keys = sorted(list(all_keys))
 
-            with open(filepath, 'w', newline='') as f:
+            with open(filepath, "w", newline="") as f:
                 writer = csv.DictWriter(f, fieldnames=all_keys)
                 writer.writeheader()
                 writer.writerows(flattened)
@@ -210,7 +206,7 @@ class SampleDataGenerator:
             print(f"Error exporting CSV: {e}", file=sys.stderr)
             return False
 
-    def _flatten_dict(self, d: Dict, parent_key: str = '', sep: str = '.') -> Dict:
+    def _flatten_dict(self, d: Dict, parent_key: str = "", sep: str = ".") -> Dict:
         """
         Flatten nested dictionary.
 
@@ -252,7 +248,7 @@ def load_schema(filepath: str) -> Dict[str, Any]:
         json.JSONDecodeError: If file is not valid JSON
     """
     try:
-        with open(filepath, 'r') as f:
+        with open(filepath, "r") as f:
             return json.load(f)
     except FileNotFoundError:
         print(f"Error: Schema file not found: {filepath}", file=sys.stderr)
@@ -280,45 +276,16 @@ Examples:
 
   # Print to stdout
   %(prog)s --schema schema.json --count 5 --print
-        """
+        """,
     )
 
-    parser.add_argument(
-        "--schema",
-        required=True,
-        help="Path to JSON schema file"
-    )
-    parser.add_argument(
-        "--count",
-        type=int,
-        default=10,
-        help="Number of sample documents to generate (default: 10)"
-    )
-    parser.add_argument(
-        "--format",
-        default="json",
-        choices=["json", "jsonl", "csv"],
-        help="Output format"
-    )
-    parser.add_argument(
-        "--output",
-        help="Output file path"
-    )
-    parser.add_argument(
-        "--print",
-        action="store_true",
-        help="Print generated data to stdout"
-    )
-    parser.add_argument(
-        "--seed",
-        type=int,
-        help="Random seed for reproducible data"
-    )
-    parser.add_argument(
-        "--verbose",
-        action="store_true",
-        help="Print detailed output"
-    )
+    parser.add_argument("--schema", required=True, help="Path to JSON schema file")
+    parser.add_argument("--count", type=int, default=10, help="Number of sample documents to generate (default: 10)")
+    parser.add_argument("--format", default="json", choices=["json", "jsonl", "csv"], help="Output format")
+    parser.add_argument("--output", help="Output file path")
+    parser.add_argument("--print", action="store_true", help="Print generated data to stdout")
+    parser.add_argument("--seed", type=int, help="Random seed for reproducible data")
+    parser.add_argument("--verbose", action="store_true", help="Print detailed output")
 
     args = parser.parse_args()
 

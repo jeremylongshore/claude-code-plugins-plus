@@ -18,7 +18,6 @@ Usage:
 import argparse
 import sys
 from decimal import Decimal, InvalidOperation
-from typing import Optional
 
 from strategy_engine import (
     StrategyFactory,
@@ -77,77 +76,39 @@ EDUCATIONAL DISCLAIMER:
     subparsers = parser.add_subparsers(dest="command", help="Simulation type")
 
     # Arbitrage subcommand
-    arb_parser = subparsers.add_parser(
-        "arbitrage", help="Simple two-DEX arbitrage simulation"
-    )
-    arb_parser.add_argument(
-        "input_token", help="Input token (e.g., ETH)"
-    )
-    arb_parser.add_argument(
-        "output_token", help="Output token (e.g., USDC)"
-    )
-    arb_parser.add_argument(
-        "amount", type=str, help="Loan amount"
-    )
-    arb_parser.add_argument(
-        "--dex-buy", default="sushiswap", help="DEX to buy on (default: sushiswap)"
-    )
-    arb_parser.add_argument(
-        "--dex-sell", default="uniswap", help="DEX to sell on (default: uniswap)"
-    )
-    arb_parser.add_argument(
-        "--provider", default="aave", help="Flash loan provider (default: aave)"
-    )
+    arb_parser = subparsers.add_parser("arbitrage", help="Simple two-DEX arbitrage simulation")
+    arb_parser.add_argument("input_token", help="Input token (e.g., ETH)")
+    arb_parser.add_argument("output_token", help="Output token (e.g., USDC)")
+    arb_parser.add_argument("amount", type=str, help="Loan amount")
+    arb_parser.add_argument("--dex-buy", default="sushiswap", help="DEX to buy on (default: sushiswap)")
+    arb_parser.add_argument("--dex-sell", default="uniswap", help="DEX to sell on (default: uniswap)")
+    arb_parser.add_argument("--provider", default="aave", help="Flash loan provider (default: aave)")
 
     # Triangular arbitrage subcommand
-    tri_parser = subparsers.add_parser(
-        "triangular", help="Multi-hop circular arbitrage simulation"
-    )
-    tri_parser.add_argument(
-        "tokens", nargs="+", help="Token path (e.g., ETH USDC WBTC ETH)"
-    )
-    tri_parser.add_argument(
-        "--amount", type=str, required=True, help="Loan amount"
-    )
-    tri_parser.add_argument(
-        "--provider", default="aave", help="Flash loan provider (default: aave)"
-    )
+    tri_parser = subparsers.add_parser("triangular", help="Multi-hop circular arbitrage simulation")
+    tri_parser.add_argument("tokens", nargs="+", help="Token path (e.g., ETH USDC WBTC ETH)")
+    tri_parser.add_argument("--amount", type=str, required=True, help="Loan amount")
+    tri_parser.add_argument("--provider", default="aave", help="Flash loan provider (default: aave)")
 
     # Liquidation subcommand
-    liq_parser = subparsers.add_parser(
-        "liquidation", help="Liquidation opportunity analysis"
-    )
-    liq_parser.add_argument(
-        "--protocol", default="aave", help="Lending protocol (default: aave)"
-    )
+    liq_parser = subparsers.add_parser("liquidation", help="Liquidation opportunity analysis")
+    liq_parser.add_argument("--protocol", default="aave", help="Lending protocol (default: aave)")
     liq_parser.add_argument(
         "--health-factor",
         type=float,
         default=0.95,
         help="Health factor threshold (default: 0.95)",
     )
-    liq_parser.add_argument(
-        "--collateral", default="ETH", help="Collateral asset (default: ETH)"
-    )
-    liq_parser.add_argument(
-        "--debt", default="USDC", help="Debt asset (default: USDC)"
-    )
-    liq_parser.add_argument(
-        "--amount", type=str, default="10", help="Debt amount to liquidate"
-    )
-    liq_parser.add_argument(
-        "--provider", default="aave", help="Flash loan provider (default: aave)"
-    )
+    liq_parser.add_argument("--collateral", default="ETH", help="Collateral asset (default: ETH)")
+    liq_parser.add_argument("--debt", default="USDC", help="Debt asset (default: USDC)")
+    liq_parser.add_argument("--amount", type=str, default="10", help="Debt amount to liquidate")
+    liq_parser.add_argument("--provider", default="aave", help="Flash loan provider (default: aave)")
 
     # Compare providers subcommand
-    cmp_parser = subparsers.add_parser(
-        "compare", help="Compare flash loan providers"
-    )
+    cmp_parser = subparsers.add_parser("compare", help="Compare flash loan providers")
     cmp_parser.add_argument("asset", help="Asset to borrow (e.g., ETH)")
     cmp_parser.add_argument("amount", type=str, help="Amount to borrow")
-    cmp_parser.add_argument(
-        "--chain", default="ethereum", help="Chain (default: ethereum)"
-    )
+    cmp_parser.add_argument("--chain", default="ethereum", help="Chain (default: ethereum)")
 
     # Global options
     for sub in [arb_parser, tri_parser, liq_parser]:
@@ -223,9 +184,7 @@ def run_arbitrage(args: argparse.Namespace) -> int:
     providers = None
 
     if args.full or hasattr(args, "compare_providers") and args.compare_providers:
-        calculator = ProfitCalculator(
-            eth_price_usd=args.eth_price, gas_price_gwei=args.gas_price
-        )
+        calculator = ProfitCalculator(eth_price_usd=args.eth_price, gas_price_gwei=args.gas_price)
         breakdown = calculator.calculate_breakdown(result)
 
     if args.full or (hasattr(args, "risk_analysis") and args.risk_analysis):
@@ -234,9 +193,7 @@ def run_arbitrage(args: argparse.Namespace) -> int:
 
     if args.full or (hasattr(args, "compare_providers") and args.compare_providers):
         manager = ProviderManager()
-        providers = manager.compare_providers(
-            args.input_token.upper(), amount, "ethereum"
-        )
+        providers = manager.compare_providers(args.input_token.upper(), amount, "ethereum")
 
     # Format output
     output_result(args, result, breakdown, assessment, providers)
@@ -276,18 +233,14 @@ def run_triangular(args: argparse.Namespace) -> int:
     providers = None
 
     if args.full:
-        calculator = ProfitCalculator(
-            eth_price_usd=args.eth_price, gas_price_gwei=args.gas_price
-        )
+        calculator = ProfitCalculator(eth_price_usd=args.eth_price, gas_price_gwei=args.gas_price)
         breakdown = calculator.calculate_breakdown(result)
 
         assessor = RiskAssessor(eth_price_usd=args.eth_price)
         assessment = assessor.assess(result)
 
         manager = ProviderManager()
-        providers = manager.compare_providers(
-            args.tokens[0].upper(), amount, "ethereum"
-        )
+        providers = manager.compare_providers(args.tokens[0].upper(), amount, "ethereum")
 
     if hasattr(args, "risk_analysis") and args.risk_analysis:
         assessor = RiskAssessor(eth_price_usd=args.eth_price)
@@ -330,18 +283,14 @@ def run_liquidation(args: argparse.Namespace) -> int:
     providers = None
 
     if args.full:
-        calculator = ProfitCalculator(
-            eth_price_usd=args.eth_price, gas_price_gwei=args.gas_price
-        )
+        calculator = ProfitCalculator(eth_price_usd=args.eth_price, gas_price_gwei=args.gas_price)
         breakdown = calculator.calculate_breakdown(result)
 
         assessor = RiskAssessor(eth_price_usd=args.eth_price)
         assessment = assessor.assess(result)
 
         manager = ProviderManager()
-        providers = manager.compare_providers(
-            args.debt.upper(), amount, "ethereum"
-        )
+        providers = manager.compare_providers(args.debt.upper(), amount, "ethereum")
 
     if hasattr(args, "risk_analysis") and args.risk_analysis:
         assessor = RiskAssessor(eth_price_usd=args.eth_price)
@@ -362,9 +311,7 @@ def run_compare(args: argparse.Namespace) -> int:
         return 1
 
     manager = ProviderManager()
-    providers = manager.compare_providers(
-        args.asset.upper(), amount, args.chain.lower()
-    )
+    providers = manager.compare_providers(args.asset.upper(), amount, args.chain.lower())
 
     if not providers:
         print(
@@ -375,7 +322,7 @@ def run_compare(args: argparse.Namespace) -> int:
 
     # Format output
     if args.output == "json":
-        json_fmt = JSONFormatter()
+        JSONFormatter()
         # Create a minimal result for JSON output
         output = {
             "comparison": {
@@ -396,6 +343,7 @@ def run_compare(args: argparse.Namespace) -> int:
             ],
         }
         import json
+
         print(json.dumps(output, indent=2))
     else:
         console = ConsoleFormatter()
@@ -436,11 +384,7 @@ def output_result(
 
         # Show provider comparison if calculated
         if providers:
-            print(
-                console.format_provider_comparison(
-                    providers, result.loan_asset, result.loan_amount
-                )
-            )
+            print(console.format_provider_comparison(providers, result.loan_asset, result.loan_amount))
 
         # Always show quick summary at end
         print(console.format_quick_summary(result, assessment))

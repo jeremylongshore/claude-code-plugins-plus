@@ -15,7 +15,12 @@ Exit codes:
 """
 
 from __future__ import annotations
-import argparse, json, os, sys, time, sqlite3
+import argparse
+import json
+import os
+import sys
+import time
+import sqlite3
 
 
 def query_redis(redis_url: str, phone: str, cooldown_days: int) -> dict:
@@ -28,8 +33,7 @@ def query_redis(redis_url: str, phone: str, cooldown_days: int) -> dict:
     key = f"podium:cooldown:{phone}"
     last = r.get(key)
     if last is None:
-        return {"phone": phone, "last_contact_at": None,
-                "cooldown_days_remaining": 0.0, "can_send": True}
+        return {"phone": phone, "last_contact_at": None, "cooldown_days_remaining": 0.0, "can_send": True}
     last_f = float(last)
     cooldown_seconds = cooldown_days * 86400
     remaining_seconds = cooldown_seconds - (time.time() - last_f)
@@ -43,15 +47,12 @@ def query_redis(redis_url: str, phone: str, cooldown_days: int) -> dict:
 
 def query_sqlite(db_path: str, phone: str, cooldown_days: int) -> dict:
     if not os.path.exists(db_path):
-        return {"phone": phone, "last_contact_at": None,
-                "cooldown_days_remaining": 0.0, "can_send": True}
+        return {"phone": phone, "last_contact_at": None, "cooldown_days_remaining": 0.0, "can_send": True}
     c = sqlite3.connect(db_path, timeout=5)
-    row = c.execute("SELECT last_contact_at FROM cooldown WHERE phone = ?",
-                    (phone,)).fetchone()
+    row = c.execute("SELECT last_contact_at FROM cooldown WHERE phone = ?", (phone,)).fetchone()
     c.close()
     if row is None:
-        return {"phone": phone, "last_contact_at": None,
-                "cooldown_days_remaining": 0.0, "can_send": True}
+        return {"phone": phone, "last_contact_at": None, "cooldown_days_remaining": 0.0, "can_send": True}
     last_f = row[0]
     cooldown_seconds = cooldown_days * 86400
     remaining_seconds = cooldown_seconds - (time.time() - last_f)
@@ -64,8 +65,7 @@ def query_sqlite(db_path: str, phone: str, cooldown_days: int) -> dict:
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description=__doc__,
-                                 formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--phone", required=True, help="E.164 phone (e.g. +61412345678)")
     ap.add_argument("--cooldown-days", type=int, default=30)
     g = ap.add_mutually_exclusive_group(required=True)

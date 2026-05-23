@@ -20,8 +20,15 @@ Exit codes:
 """
 
 from __future__ import annotations
-import argparse, hmac, hashlib, json, os, sys, time
-import urllib.request, urllib.error
+import argparse
+import hmac
+import hashlib
+import json
+import os
+import sys
+import time
+import urllib.request
+import urllib.error
 
 
 def verify_signature(body: bytes, signature: str, secret: str) -> bool:
@@ -72,18 +79,14 @@ def escalate(review: dict, channel_url: str) -> bool:
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description=__doc__,
-                                 formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--event-file", required=True,
-                    help="Path to JSON event payload, or '-' for stdin")
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--event-file", required=True, help="Path to JSON event payload, or '-' for stdin")
     ap.add_argument("--signature", help="X-Podium-Signature value (optional)")
     ap.add_argument("--secret-env", default="PODIUM_WEBHOOK_SECRET")
     ap.add_argument("--redis-url-env", default="REDIS_URL")
     ap.add_argument("--channel-url-env", default="PODIUM_NEGATIVE_REVIEW_CHANNEL")
-    ap.add_argument("--no-escalate", action="store_true",
-                    help="Skip escalation channel call (for offline replay)")
-    ap.add_argument("--dry-run", action="store_true",
-                    help="Classify only; do not claim idempotency or escalate")
+    ap.add_argument("--no-escalate", action="store_true", help="Skip escalation channel call (for offline replay)")
+    ap.add_argument("--dry-run", action="store_true", help="Classify only; do not claim idempotency or escalate")
     args = ap.parse_args()
 
     if args.event_file == "-":

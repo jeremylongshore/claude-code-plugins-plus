@@ -21,7 +21,12 @@ Exit codes:
 """
 
 from __future__ import annotations
-import argparse, hashlib, hmac, os, sys, time
+import argparse
+import hashlib
+import hmac
+import os
+import sys
+import time
 from pathlib import Path
 
 
@@ -40,13 +45,12 @@ def main() -> int:
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     ap.add_argument("--body-file", required=True, type=Path)
-    ap.add_argument("--signature-header", required=True,
-                    help='Full header value, e.g. "t=<unix_ts>,v1=<hex_hmac>"')
-    ap.add_argument("--secret-env", required=True,
-                    help="Env var name holding the webhook signing secret")
+    ap.add_argument("--signature-header", required=True, help='Full header value, e.g. "t=<unix_ts>,v1=<hex_hmac>"')
+    ap.add_argument("--secret-env", required=True, help="Env var name holding the webhook signing secret")
     ap.add_argument("--replay-window-seconds", type=int, default=300)
-    ap.add_argument("--ignore-replay-window", action="store_true",
-                    help="Verify signature only; do not check the timestamp window")
+    ap.add_argument(
+        "--ignore-replay-window", action="store_true", help="Verify signature only; do not check the timestamp window"
+    )
     args = ap.parse_args()
 
     secret = os.environ.get(args.secret_env)
@@ -82,8 +86,10 @@ def main() -> int:
             return 3
         skew = abs(time.time() - ts_int)
         if skew > args.replay_window_seconds:
-            print(f"ERR_WHK_003 replay_window_exceeded — skew={skew:.0f}s "
-                  f"> {args.replay_window_seconds}s", file=sys.stderr)
+            print(
+                f"ERR_WHK_003 replay_window_exceeded — skew={skew:.0f}s > {args.replay_window_seconds}s",
+                file=sys.stderr,
+            )
             return 2
 
     print("ok: signature valid and within window", file=sys.stderr)

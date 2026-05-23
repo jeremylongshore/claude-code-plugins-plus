@@ -100,7 +100,7 @@ def cmd_approvals(args):
 def cmd_scan(args):
     """Full security scan of wallet."""
     try:
-        print(f"=== Full Security Scan ===")
+        print("=== Full Security Scan ===")
         print(f"Address: {args.address}")
         print(f"Chain:   {args.chain}")
         print()
@@ -127,7 +127,7 @@ def cmd_scan(args):
             approval_summary,
             interactions=interaction_report.interactions,
         )
-        print(f"✓ Security score calculated")
+        print("✓ Security score calculated")
 
         # Display results
         print(format_security_score(security_score))
@@ -151,6 +151,7 @@ def cmd_scan(args):
         print(f"Error: {e}", file=sys.stderr)
         if args.verbose:
             import traceback
+
             traceback.print_exc()
         return 1
 
@@ -172,7 +173,7 @@ def cmd_score(args):
             print(format_security_score(score))
 
             # Quick summary
-            print(f"\nQuick Summary:")
+            print("\nQuick Summary:")
             print(f"  Score: {score.total_score}/100 ({score.risk_level.upper()})")
             print(f"  Risk Factors: {len(score.risk_factors)}")
             print(f"  Recommendations: {len(score.recommendations)}")
@@ -201,7 +202,7 @@ def cmd_history(args):
         # Analyze patterns
         report = analyzer.analyze_interaction_patterns(args.address, transactions)
 
-        print(f"\n=== Transaction History Analysis ===")
+        print("\n=== Transaction History Analysis ===")
         print(f"  Total Transactions: {report.total_transactions}")
         print(f"  Unique Contracts:   {report.unique_contracts}")
         print(f"    Verified:         {report.verified_contracts}")
@@ -212,7 +213,7 @@ def cmd_history(args):
 
         # Top interactions
         if report.interactions:
-            print(f"\n=== Top Contract Interactions ===")
+            print("\n=== Top Contract Interactions ===")
             for i, interaction in enumerate(report.interactions[:10], 1):
                 name = interaction.contract_name or interaction.contract_address[:20] + "..."
                 verified = "✓" if interaction.is_verified else "✗"
@@ -221,7 +222,7 @@ def cmd_history(args):
 
         # Suspicious activities
         if report.suspicious_activities:
-            print(f"\n=== Suspicious Activities ===")
+            print("\n=== Suspicious Activities ===")
             for activity in report.suspicious_activities:
                 print(f"  [{activity.severity.upper()}] {activity.description}")
 
@@ -396,70 +397,48 @@ Examples:
   %(prog)s chains                                     # List supported chains
 
 Supported chains: ethereum, bsc, polygon, arbitrum, optimism, base
-        """
+        """,
     )
 
-    parser.add_argument(
-        "--version", "-v",
-        action="version",
-        version="%(prog)s 1.0.0"
-    )
+    parser.add_argument("--version", "-v", action="version", version="%(prog)s 1.0.0")
 
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
     # approvals command
-    approvals_parser = subparsers.add_parser(
-        "approvals",
-        help="List token approvals for a wallet"
-    )
+    approvals_parser = subparsers.add_parser("approvals", help="List token approvals for a wallet")
     approvals_parser.add_argument("address", type=validate_address, help="Wallet address")
     approvals_parser.add_argument("--chain", "-c", default="ethereum", help="Chain (default: ethereum)")
     approvals_parser.add_argument("--unlimited", "-u", action="store_true", help="Show only unlimited approvals")
     approvals_parser.add_argument("--verbose", action="store_true", help="Verbose output")
 
     # scan command
-    scan_parser = subparsers.add_parser(
-        "scan",
-        help="Full security scan of wallet"
-    )
+    scan_parser = subparsers.add_parser("scan", help="Full security scan of wallet")
     scan_parser.add_argument("address", type=validate_address, help="Wallet address")
     scan_parser.add_argument("--chain", "-c", default="ethereum", help="Chain (default: ethereum)")
     scan_parser.add_argument("--verbose", action="store_true", help="Verbose output")
 
     # score command
-    score_parser = subparsers.add_parser(
-        "score",
-        help="Calculate security risk score"
-    )
+    score_parser = subparsers.add_parser("score", help="Calculate security risk score")
     score_parser.add_argument("address", type=validate_address, help="Wallet address")
     score_parser.add_argument("--chain", "-c", default="ethereum", help="Chain (default: ethereum)")
     score_parser.add_argument("--json", action="store_true", help="JSON output")
     score_parser.add_argument("--verbose", action="store_true", help="Verbose output")
 
     # history command
-    history_parser = subparsers.add_parser(
-        "history",
-        help="Analyze transaction history"
-    )
+    history_parser = subparsers.add_parser("history", help="Analyze transaction history")
     history_parser.add_argument("address", type=validate_address, help="Wallet address")
     history_parser.add_argument("--chain", "-c", default="ethereum", help="Chain (default: ethereum)")
     history_parser.add_argument("--days", "-d", type=int, default=30, help="Days to analyze (default: 30)")
     history_parser.add_argument("--verbose", action="store_true", help="Verbose output")
 
     # revoke-list command
-    revoke_parser = subparsers.add_parser(
-        "revoke-list",
-        help="Generate list of approvals to revoke"
-    )
+    revoke_parser = subparsers.add_parser("revoke-list", help="Generate list of approvals to revoke")
     revoke_parser.add_argument("address", type=validate_address, help="Wallet address")
     revoke_parser.add_argument("--chain", "-c", default="ethereum", help="Chain (default: ethereum)")
     revoke_parser.add_argument("--verbose", action="store_true", help="Verbose output")
 
     # report command
-    report_parser = subparsers.add_parser(
-        "report",
-        help="Generate full security audit report"
-    )
+    report_parser = subparsers.add_parser("report", help="Generate full security audit report")
     report_parser.add_argument("address", type=validate_address, help="Wallet address")
     report_parser.add_argument("--chain", "-c", default="ethereum", help="Chain (default: ethereum)")
     report_parser.add_argument("--output", "-o", help="Output file path")
@@ -467,10 +446,7 @@ Supported chains: ethereum, bsc, polygon, arbitrum, optimism, base
     report_parser.add_argument("--verbose", action="store_true", help="Verbose output")
 
     # chains command
-    subparsers.add_parser(
-        "chains",
-        help="List supported chains"
-    )
+    subparsers.add_parser("chains", help="List supported chains")
 
     args = parser.parse_args()
 

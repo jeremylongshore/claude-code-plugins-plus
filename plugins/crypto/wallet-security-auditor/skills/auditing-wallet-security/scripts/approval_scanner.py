@@ -24,7 +24,7 @@ except ImportError:
 APPROVAL_TOPIC = "0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925"
 
 # Unlimited approval threshold (2^256 - 1 or close to it)
-UNLIMITED_THRESHOLD = 2 ** 200
+UNLIMITED_THRESHOLD = 2**200
 
 # Known risky spenders (placeholder - would be populated from security APIs)
 KNOWN_RISKY_SPENDERS: Dict[str, str] = {
@@ -75,6 +75,7 @@ CHAIN_CONFIGS = {
 @dataclass
 class TokenApproval:
     """Token approval data."""
+
     token_address: str
     token_symbol: str
     token_name: str
@@ -92,6 +93,7 @@ class TokenApproval:
 @dataclass
 class ApprovalSummary:
     """Summary of all approvals."""
+
     total_approvals: int
     unlimited_approvals: int
     risky_approvals: int
@@ -104,11 +106,7 @@ class ApprovalScanner:
     """Scan wallet for token approvals."""
 
     def __init__(
-        self,
-        chain: str = "ethereum",
-        rpc_url: str = None,
-        explorer_api_key: str = None,
-        verbose: bool = False
+        self, chain: str = "ethereum", rpc_url: str = None, explorer_api_key: str = None, verbose: bool = False
     ):
         """Initialize approval scanner.
 
@@ -126,10 +124,7 @@ class ApprovalScanner:
             raise ValueError(f"Unsupported chain: {chain}")
 
         self.config = CHAIN_CONFIGS[self.chain]
-        self.rpc_url = rpc_url or os.environ.get(
-            f"{chain.upper()}_RPC_URL",
-            self.config["rpc_url"]
-        )
+        self.rpc_url = rpc_url or os.environ.get(f"{chain.upper()}_RPC_URL", self.config["rpc_url"])
         self.explorer_api_key = explorer_api_key or os.environ.get("ETHERSCAN_API_KEY", "")
         self.verbose = verbose
         self._token_cache: Dict[str, Dict] = {}
@@ -157,10 +152,7 @@ class ApprovalScanner:
     def _call_contract(self, address: str, data: str) -> Optional[str]:
         """Make eth_call to contract."""
         try:
-            result = self._rpc_call("eth_call", [
-                {"to": address, "data": data},
-                "latest"
-            ])
+            result = self._rpc_call("eth_call", [{"to": address, "data": data}, "latest"])
             return result if result and result != "0x" else None
         except (requests.RequestException, KeyError, ValueError):
             # Contract call failed - contract may not be ERC20 or is inaccessible
@@ -200,7 +192,7 @@ class ApprovalScanner:
 
             if len(data) >= 128:
                 length = int(data[64:128], 16)
-                string_data = data[128:128 + length * 2]
+                string_data = data[128 : 128 + length * 2]
                 return bytes.fromhex(string_data).decode("utf-8", errors="ignore")
 
             return bytes.fromhex(data).decode("utf-8", errors="ignore").strip("\x00")
@@ -236,11 +228,7 @@ class ApprovalScanner:
 
         return None
 
-    def get_all_approvals(
-        self,
-        address: str,
-        from_block: int = 0
-    ) -> ApprovalSummary:
+    def get_all_approvals(self, address: str, from_block: int = 0) -> ApprovalSummary:
         """Get all token approvals for an address.
 
         Args:
@@ -260,11 +248,16 @@ class ApprovalScanner:
             print(f"Scanning approvals for {address[:20]}...")
 
         try:
-            logs = self._rpc_call("eth_getLogs", [{
-                "fromBlock": hex(from_block) if from_block else "0x0",
-                "toBlock": "latest",
-                "topics": [APPROVAL_TOPIC, owner_topic],
-            }])
+            logs = self._rpc_call(
+                "eth_getLogs",
+                [
+                    {
+                        "fromBlock": hex(from_block) if from_block else "0x0",
+                        "toBlock": "latest",
+                        "topics": [APPROVAL_TOPIC, owner_topic],
+                    }
+                ],
+            )
         except Exception as e:
             if self.verbose:
                 print(f"Error fetching logs: {e}")
@@ -294,7 +287,7 @@ class ApprovalScanner:
 
                 # Calculate human-readable allowance
                 decimals = token_info["decimals"]
-                allowance = Decimal(allowance_raw) / Decimal(10 ** decimals)
+                allowance = Decimal(allowance_raw) / Decimal(10**decimals)
 
                 # Check if risky
                 is_risky = False
@@ -332,10 +325,7 @@ class ApprovalScanner:
                     print(f"Error parsing log: {e}")
 
         # Filter out zero allowances (revoked)
-        active_approvals = [
-            a for a in approvals.values()
-            if a.allowance_raw > 0
-        ]
+        active_approvals = [a for a in approvals.values() if a.allowance_raw > 0]
 
         return ApprovalSummary(
             total_approvals=len(active_approvals),
@@ -378,12 +368,12 @@ def main():
     # Test with a sample address (vitalik.eth)
     test_address = "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
 
-    print(f"=== Approval Scanner Test ===")
+    print("=== Approval Scanner Test ===")
     print(f"Scanning: {test_address[:20]}...")
 
     summary = scanner.get_all_approvals(test_address)
 
-    print(f"\nResults:")
+    print("\nResults:")
     print(f"  Total approvals: {summary.total_approvals}")
     print(f"  Unlimited: {summary.unlimited_approvals}")
     print(f"  Risky: {summary.risky_approvals}")
@@ -391,7 +381,7 @@ def main():
     print(f"  Unique tokens: {summary.unique_tokens}")
 
     if summary.approvals:
-        print(f"\nTop Approvals:")
+        print("\nTop Approvals:")
         for approval in summary.approvals[:5]:
             unlimited_str = " [UNLIMITED]" if approval.is_unlimited else ""
             risky_str = " [RISKY]" if approval.is_risky else ""

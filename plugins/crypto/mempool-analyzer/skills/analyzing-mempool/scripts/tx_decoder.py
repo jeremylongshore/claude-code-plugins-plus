@@ -26,7 +26,6 @@ METHOD_SIGNATURES = {
     "0xf305d719": {"name": "addLiquidityETH", "type": "liquidity"},
     "0xbaa2abde": {"name": "removeLiquidity", "type": "liquidity"},
     "0x02751cec": {"name": "removeLiquidityETH", "type": "liquidity"},
-
     # Uniswap V3 Router
     "0x414bf389": {"name": "exactInputSingle", "type": "swap"},
     "0xc04b8d59": {"name": "exactInput", "type": "swap"},
@@ -34,12 +33,10 @@ METHOD_SIGNATURES = {
     "0xf28c0498": {"name": "exactOutput", "type": "swap"},
     "0x5ae401dc": {"name": "multicall", "type": "multicall"},
     "0xac9650d8": {"name": "multicall", "type": "multicall"},
-
     # ERC20
     "0xa9059cbb": {"name": "transfer", "type": "transfer"},
     "0x23b872dd": {"name": "transferFrom", "type": "transfer"},
     "0x095ea7b3": {"name": "approve", "type": "approval"},
-
     # Common
     "0x": {"name": "ETH Transfer", "type": "transfer"},
 }
@@ -54,7 +51,6 @@ KNOWN_CONTRACTS = {
     "0x1111111254fb6c44bac0bed2854e76f90643097d": "1inch Router",
     "0xdef1c0ded9bec7f1a1670819833240f027b25eff": "0x Exchange Proxy",
     "0x881d40237659c251811cec9c364ef91dc08d300c": "Metamask Swap Router",
-
     # Tokens
     "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": "WETH",
     "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": "USDC",
@@ -66,6 +62,7 @@ KNOWN_CONTRACTS = {
 @dataclass
 class DecodedCall:
     """Decoded function call."""
+
     method_name: str
     method_type: str  # swap, transfer, approval, liquidity, multicall, unknown
     contract_name: Optional[str]
@@ -76,6 +73,7 @@ class DecodedCall:
 @dataclass
 class SwapInfo:
     """Detected swap information."""
+
     dex: str
     method: str
     token_in: Optional[str]
@@ -114,10 +112,13 @@ class TransactionDecoder:
         # Get method signature (first 4 bytes)
         signature = input_data[:10].lower()
 
-        method_info = METHOD_SIGNATURES.get(signature, {
-            "name": "Unknown",
-            "type": "unknown",
-        })
+        method_info = METHOD_SIGNATURES.get(
+            signature,
+            {
+                "name": "Unknown",
+                "type": "unknown",
+            },
+        )
 
         contract_name = self._get_contract_name(to_address) if to_address else None
 
@@ -148,7 +149,7 @@ class TransactionDecoder:
         params = {}
 
         # Parse 32-byte chunks
-        chunks = [data[i:i+64] for i in range(0, len(data), 64)]
+        chunks = [data[i : i + 64] for i in range(0, len(data), 64)]
 
         # For swaps, try to extract amounts
         if signature in ["0x38ed1739", "0x8803dbee"]:
@@ -219,11 +220,7 @@ class TransactionDecoder:
         decoded = self.decode_input(input_data, to_address)
         return decoded.method_type
 
-    def estimate_attached_eth_usd_value(
-        self,
-        tx: Dict,
-        eth_price: float = 3000.0
-    ) -> float:
+    def estimate_attached_eth_usd_value(self, tx: Dict, eth_price: float = 3000.0) -> float:
         """Estimate USD value of ETH attached to transaction (msg.value).
 
         Note: This only calculates the USD value of ETH sent with the transaction.

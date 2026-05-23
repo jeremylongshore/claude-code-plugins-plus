@@ -19,7 +19,9 @@ Exit codes:
 """
 
 from __future__ import annotations
-import argparse, re, sys
+import argparse
+import re
+import sys
 
 
 def score_overlap(query: str, candidate: str) -> float:
@@ -39,9 +41,8 @@ def score_overlap(query: str, candidate: str) -> float:
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description=__doc__,
-                                  formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--query",     required=True)
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--query", required=True)
     ap.add_argument("--candidate", required=True)
     ap.add_argument("--precision", type=int, default=2, help="decimal places to print")
     args = ap.parse_args()

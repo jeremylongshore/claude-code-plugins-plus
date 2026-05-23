@@ -13,7 +13,7 @@ import json
 import csv
 import io
 from datetime import datetime
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 
 
 def format_timestamp(ts: int) -> str:
@@ -114,7 +114,7 @@ class TransactionFormatter:
 
         lines = [
             "╔══════════════════════════════════════════════════════════════════════╗",
-            f"║  Transaction Details                                                  ║",
+            "║  Transaction Details                                                  ║",
             "╠══════════════════════════════════════════════════════════════════════╣",
             f"║  Hash:     {tx.get('hash', 'N/A')[:50]:50} ║",
             f"║  Chain:    {tx.get('chain', 'N/A'):54} ║",
@@ -133,11 +133,13 @@ class TransactionFormatter:
         if tx.get("gas_cost"):
             lines.append(f"║  Gas Cost:  {format_value(tx.get('gas_cost', 0), 'ETH', 6):54} ║")
 
-        lines.extend([
-            "╠══════════════════════════════════════════════════════════════════════╣",
-            f"║  Explorer: {tx.get('explorer_url', 'N/A')[:54]:54} ║",
-            "╚══════════════════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                "╠══════════════════════════════════════════════════════════════════════╣",
+                f"║  Explorer: {tx.get('explorer_url', 'N/A')[:54]:54} ║",
+                "╚══════════════════════════════════════════════════════════════════════╝",
+            ]
+        )
 
         return "\n".join(lines)
 
@@ -183,7 +185,7 @@ class AddressFormatter:
         """
         lines = [
             "╔══════════════════════════════════════════════════════════════════════╗",
-            f"║  Address Details                                                      ║",
+            "║  Address Details                                                      ║",
             "╠══════════════════════════════════════════════════════════════════════╣",
             f"║  Address:  {data.get('address', 'N/A'):54} ║",
             f"║  Chain:    {data.get('chain', 'N/A'):54} ║",
@@ -226,7 +228,7 @@ class BlockFormatter:
 
         lines = [
             "╔══════════════════════════════════════════════════════════════════════╗",
-            f"║  Block Details                                                        ║",
+            "║  Block Details                                                        ║",
             "╠══════════════════════════════════════════════════════════════════════╣",
             f"║  Number:   {block.get('number', 'N/A'):,}{' ' * (53 - len(str(block.get('number', 0))))}║",
             f"║  Chain:    {block.get('chain', 'N/A'):54} ║",
@@ -241,12 +243,14 @@ class BlockFormatter:
         if block.get("base_fee_gwei"):
             lines.append(f"║  Base Fee: {block.get('base_fee_gwei', 0):.2f} Gwei{' ' * 43}║")
 
-        lines.extend([
-            f"║  Txns:     {block.get('transaction_count', 0):,}{' ' * (53 - len(str(block.get('transaction_count', 0))))}║",
-            "╠══════════════════════════════════════════════════════════════════════╣",
-            f"║  Explorer: {block.get('explorer_url', 'N/A')[:54]:54} ║",
-            "╚══════════════════════════════════════════════════════════════════════╝",
-        ])
+        lines.extend(
+            [
+                f"║  Txns:     {block.get('transaction_count', 0):,}{' ' * (53 - len(str(block.get('transaction_count', 0))))}║",
+                "╠══════════════════════════════════════════════════════════════════════╣",
+                f"║  Explorer: {block.get('explorer_url', 'N/A')[:54]:54} ║",
+                "╚══════════════════════════════════════════════════════════════════════╝",
+            ]
+        )
 
         return "\n".join(lines)
 
@@ -315,8 +319,7 @@ class TransactionListFormatter:
 
         output = io.StringIO()
         writer = csv.DictWriter(
-            output,
-            fieldnames=["hash", "block_number", "timestamp", "from", "to", "value", "status", "method"]
+            output, fieldnames=["hash", "block_number", "timestamp", "from", "to", "value", "status", "method"]
         )
         writer.writeheader()
         writer.writerows(transactions)
@@ -373,11 +376,7 @@ class TokenTransferFormatter:
         return "\n".join(lines)
 
 
-def format_output(
-    data: Any,
-    output_format: str = "table",
-    data_type: str = "transaction"
-) -> str:
+def format_output(data: Any, output_format: str = "table", data_type: str = "transaction") -> str:
     """Format data based on type and format.
 
     Args:
@@ -423,7 +422,7 @@ def main():
         "gas_limit": 21000,
         "gas_used": 21000,
         "gas_cost": 0.00053,
-        "explorer_url": "https://etherscan.io/tx/0x1234..."
+        "explorer_url": "https://etherscan.io/tx/0x1234...",
     }
 
     formatter = TransactionFormatter()

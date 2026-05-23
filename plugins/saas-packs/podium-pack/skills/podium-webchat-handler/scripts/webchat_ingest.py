@@ -36,6 +36,7 @@ from typing import Any
 
 # -- Phone normalization -------------------------------------------------------
 
+
 class PhoneValidationError(Exception):
     pass
 
@@ -45,7 +46,9 @@ def normalize_phone(raw: str, default_country: str = "AU") -> str:
     try:
         import phonenumbers
         from phonenumbers import (
-            NumberParseException, PhoneNumberFormat, is_valid_number,
+            NumberParseException,
+            PhoneNumberFormat,
+            is_valid_number,
         )
     except ImportError as e:
         raise PhoneValidationError(f"phonenumbers library not installed: {e}")
@@ -60,6 +63,7 @@ def normalize_phone(raw: str, default_country: str = "AU") -> str:
 
 
 # -- Location routing ----------------------------------------------------------
+
 
 class WebchatError(Exception):
     pass
@@ -89,7 +93,7 @@ async def load_locations_stub() -> None:
 
 # -- Attachment validation -----------------------------------------------------
 
-PODIUM_ATTACHMENT_MAX_BYTES = 25 * 1024 * 1024   # 25 MiB
+PODIUM_ATTACHMENT_MAX_BYTES = 25 * 1024 * 1024  # 25 MiB
 
 
 class AttachmentTooLargeError(Exception):
@@ -99,14 +103,14 @@ class AttachmentTooLargeError(Exception):
 def validate_attachment_size(size_bytes: int) -> None:
     if size_bytes > PODIUM_ATTACHMENT_MAX_BYTES:
         raise AttachmentTooLargeError(
-            f"ERR_WEBCHAT_005 attachment {size_bytes/1024/1024:.1f} MiB > "
-            f"{PODIUM_ATTACHMENT_MAX_BYTES/1024/1024:.0f} MiB limit"
+            f"ERR_WEBCHAT_005 attachment {size_bytes / 1024 / 1024:.1f} MiB > "
+            f"{PODIUM_ATTACHMENT_MAX_BYTES / 1024 / 1024:.0f} MiB limit"
         )
 
 
 # -- Sessions + partial state --------------------------------------------------
 
-SESSION_IDLE_WARN_SECONDS  = 20 * 60
+SESSION_IDLE_WARN_SECONDS = 20 * 60
 SESSION_IDLE_CLOSE_SECONDS = 28 * 60
 PARTIAL_STATE_DIR = Path(os.environ.get("WEBCHAT_PARTIAL_STATE_DIR", "/tmp/webchat-partial-state"))
 
@@ -121,8 +125,10 @@ class WebchatSession:
 
     def status(self) -> str:
         idle = time.time() - self.last_message_at
-        if idle >= SESSION_IDLE_CLOSE_SECONDS: return "close"
-        if idle >= SESSION_IDLE_WARN_SECONDS:  return "warn"
+        if idle >= SESSION_IDLE_CLOSE_SECONDS:
+            return "close"
+        if idle >= SESSION_IDLE_WARN_SECONDS:
+            return "warn"
         return "active"
 
 
@@ -137,13 +143,17 @@ def _partial_state_path(phone_e164: str, location_uid: str) -> Path:
 def persist_partial_state(s: WebchatSession) -> None:
     path = _partial_state_path(s.phone_e164, s.location_uid)
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps({
-        "session_uid": s.session_uid,
-        "phone_e164": s.phone_e164,
-        "location_uid": s.location_uid,
-        "partial_state": s.partial_state,
-        "persisted_at": time.time(),
-    }))
+    path.write_text(
+        json.dumps(
+            {
+                "session_uid": s.session_uid,
+                "phone_e164": s.phone_e164,
+                "location_uid": s.location_uid,
+                "partial_state": s.partial_state,
+                "persisted_at": time.time(),
+            }
+        )
+    )
 
 
 def hydrate_partial_state(phone_e164: str, location_uid: str) -> dict:
@@ -177,6 +187,7 @@ optout_store = OptoutStore()
 
 # -- Logging helpers (PII-aware) -----------------------------------------------
 
+
 def _phone_last4(phone_e164: str) -> str:
     return f"****{phone_e164[-4:]}" if phone_e164 else "****"
 
@@ -189,11 +200,11 @@ def log_event(event: str, **fields: Any) -> None:
 
 
 def log_optout_blocked(phone_e164: str, channel: str) -> None:
-    log_event("ERR_WEBCHAT_009 optout_blocked_outbound",
-              phone_e164=phone_e164, channel=channel)
+    log_event("ERR_WEBCHAT_009 optout_blocked_outbound", phone_e164=phone_e164, channel=channel)
 
 
 # -- Core ingest path ----------------------------------------------------------
+
 
 async def process_inbound_webchat(payload: dict, auth=None) -> dict:
     """Process a verified webchat event. Returns a status dict; raises on validation failure."""
@@ -209,8 +220,7 @@ async def process_inbound_webchat(payload: dict, auth=None) -> dict:
     text = (data.get("body") or "").strip().upper()
     if text in OPTOUT_KEYWORDS:
         await optout_store.set_opted_out(phone_e164, source_channel="webchat")
-        log_event("ERR_WEBCHAT_008 optout_keyword_received",
-                  phone_e164=phone_e164, location_uid=location_uid)
+        log_event("ERR_WEBCHAT_008 optout_keyword_received", phone_e164=phone_e164, location_uid=location_uid)
         return {"status": "opted_out_recorded"}
 
     if await optout_store.is_opted_out(phone_e164):
@@ -234,9 +244,13 @@ async def process_inbound_webchat(payload: dict, auth=None) -> dict:
         partial_state=hydrated,
     )
 
-    log_event("webchat_ingested",
-              phone_e164=phone_e164, location_uid=location_uid,
-              session_uid=session_uid, hydrated=bool(hydrated))
+    log_event(
+        "webchat_ingested",
+        phone_e164=phone_e164,
+        location_uid=location_uid,
+        session_uid=session_uid,
+        hydrated=bool(hydrated),
+    )
 
     # Downstream enqueue (agent inbox, CRM mirror) goes here. Left as a hook
     # so the consumer wires their own queue (RabbitMQ, SQS, Postgres LISTEN, etc).
@@ -244,6 +258,7 @@ async def process_inbound_webchat(payload: dict, auth=None) -> dict:
 
 
 # -- Background session scan ---------------------------------------------------
+
 
 async def send_keepalive_prompt(session_uid: str) -> None:
     log_event("ERR_WEBCHAT_007 session_idle_warn", session_uid=session_uid)
@@ -305,5 +320,6 @@ if __name__ == "__main__":
     # Module is meant to be run via `uvicorn webchat_ingest:app`.
     # Direct invocation prints a help message.
     import sys
+
     print(__doc__, file=sys.stderr)
     sys.exit(0)

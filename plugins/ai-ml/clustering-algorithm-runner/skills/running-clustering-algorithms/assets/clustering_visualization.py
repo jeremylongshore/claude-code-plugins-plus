@@ -26,10 +26,7 @@ import numpy as np  # Import numpy
 # Generate some sample data if no data is loaded
 np.random.seed(42)  # for reproducibility
 num_samples = 100
-features = pd.DataFrame({
-    'feature1': np.random.rand(num_samples),
-    'feature2': np.random.rand(num_samples)
-})
+features = pd.DataFrame({"feature1": np.random.rand(num_samples), "feature2": np.random.rand(num_samples)})
 
 # --- Placeholder: Load your clustering results here ---
 # Replace this with your actual cluster assignments
@@ -45,20 +42,23 @@ cluster_labels = np.random.randint(0, num_clusters, num_samples)
 
 # --- Create a DataFrame for visualization ---
 df = features.copy()
-df['cluster'] = cluster_labels
+df["cluster"] = cluster_labels
 
 # --- Visualization using matplotlib ---
 plt.figure(figsize=(8, 6))
 plt.title("Clustering Visualization (Matplotlib)")
 
 # Define colors for each cluster
-colors = ['red', 'green', 'blue', 'purple', 'orange'] # Add more colors if needed
+colors = ["red", "green", "blue", "purple", "orange"]  # Add more colors if needed
 
-for cluster_id in df['cluster'].unique():
-    cluster_data = df[df['cluster'] == cluster_id]
-    plt.scatter(cluster_data['feature1'], cluster_data['feature2'],
-                color=colors[cluster_id % len(colors)],  # Cycle through colors
-                label=f'Cluster {cluster_id}')
+for cluster_id in df["cluster"].unique():
+    cluster_data = df[df["cluster"] == cluster_id]
+    plt.scatter(
+        cluster_data["feature1"],
+        cluster_data["feature2"],
+        color=colors[cluster_id % len(colors)],  # Cycle through colors
+        label=f"Cluster {cluster_id}",
+    )
 
 plt.xlabel("Feature 1")
 plt.ylabel("Feature 2")
@@ -69,7 +69,7 @@ plt.show()
 # --- Visualization using seaborn ---
 plt.figure(figsize=(8, 6))
 plt.title("Clustering Visualization (Seaborn)")
-sns.scatterplot(x='feature1', y='feature2', hue='cluster', data=df, palette='viridis') # or other palettes
+sns.scatterplot(x="feature1", y="feature2", hue="cluster", data=df, palette="viridis")  # or other palettes
 plt.show()
 
 # --- Additional Visualizations ---

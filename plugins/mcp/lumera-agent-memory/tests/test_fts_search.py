@@ -31,14 +31,14 @@ def test_store_and_search_basic(temp_index):
     memory_card = {
         "title": "Deploy API to production",
         "summary_bullets": ["User requested deployment", "Using AWS infrastructure"],
-        "keywords": ["deploy", "api", "production", "aws"]
+        "keywords": ["deploy", "api", "production", "aws"],
     }
 
     temp_index.store_memory(
         session_id="sess_001",
         cascade_uri="cascade://sha256:abc123",
         memory_card=memory_card,
-        tags=["deployment", "aws"]
+        tags=["deployment", "aws"],
     )
 
     # Search for it
@@ -61,10 +61,7 @@ def test_fts_ranking(temp_index):
 
     for session_id, title, keywords, uri in memories:
         temp_index.store_memory(
-            session_id=session_id,
-            cascade_uri=uri,
-            memory_card={"title": title, "keywords": keywords},
-            tags=[]
+            session_id=session_id, cascade_uri=uri, memory_card={"title": title, "keywords": keywords}, tags=[]
         )
 
     # Search for "production deploy"
@@ -83,14 +80,14 @@ def test_tag_filtering(temp_index):
         session_id="sess_001",
         cascade_uri="cascade://sha256:aaa",
         memory_card={"title": "AWS deployment", "keywords": ["aws"]},
-        tags=["aws", "deployment"]
+        tags=["aws", "deployment"],
     )
 
     temp_index.store_memory(
         session_id="sess_002",
         cascade_uri="cascade://sha256:bbb",
         memory_card={"title": "GCP deployment", "keywords": ["gcp"]},
-        tags=["gcp", "deployment"]
+        tags=["gcp", "deployment"],
     )
 
     # Search with tag filter
@@ -109,24 +106,18 @@ def test_time_range_filtering(temp_index):
         session_id="sess_001",
         cascade_uri="cascade://sha256:aaa",
         memory_card={"title": "Test memory", "keywords": ["test"]},
-        tags=[]
+        tags=[],
     )
 
     # Search with future time range (should find nothing)
     future_start = (datetime.utcnow() + timedelta(days=1)).isoformat()
-    results = temp_index.search(
-        "test",
-        time_range={"start": future_start}
-    )
+    results = temp_index.search("test", time_range={"start": future_start})
 
     assert len(results) == 0
 
     # Search with past time range (should find the memory)
     past_start = (datetime.utcnow() - timedelta(days=1)).isoformat()
-    results = temp_index.search(
-        "test",
-        time_range={"start": past_start}
-    )
+    results = temp_index.search("test", time_range={"start": past_start})
 
     assert len(results) == 1
 
@@ -139,7 +130,7 @@ def test_limit_results(temp_index):
             session_id=f"sess_{i:03d}",
             cascade_uri=f"cascade://sha256:{i:03d}",
             memory_card={"title": f"Memory {i}", "keywords": ["test"]},
-            tags=[]
+            tags=[],
         )
 
     # Search with limit
@@ -158,7 +149,7 @@ def test_get_by_cascade_uri(temp_index):
         cascade_uri=cascade_uri,
         memory_card=memory_card,
         tags=["test"],
-        metadata={"custom": "data"}
+        metadata={"custom": "data"},
     )
 
     # Retrieve by URI
@@ -176,15 +167,10 @@ def test_snippet_in_search_results(temp_index):
     memory_card = {
         "title": "Deploy API to AWS",
         "summary_bullets": ["User requested deployment to production", "Using ECS clusters"],
-        "keywords": ["deploy", "aws", "ecs"]
+        "keywords": ["deploy", "aws", "ecs"],
     }
 
-    temp_index.store_memory(
-        session_id="sess_001",
-        cascade_uri="cascade://sha256:abc",
-        memory_card=memory_card,
-        tags=[]
-    )
+    temp_index.store_memory(session_id="sess_001", cascade_uri="cascade://sha256:abc", memory_card=memory_card, tags=[])
 
     results = temp_index.search("deploy")
 

@@ -41,11 +41,7 @@ def cmd_recent(args) -> int:
     print()
 
     try:
-        monitor = EventMonitor(
-            chain=args.chain,
-            rpc_url=args.rpc_url,
-            verbose=args.verbose
-        )
+        monitor = EventMonitor(chain=args.chain, rpc_url=args.rpc_url, verbose=args.verbose)
 
         pairs = monitor.get_recent_pairs(hours=args.hours, dex=args.dex)
 
@@ -54,18 +50,14 @@ def cmd_recent(args) -> int:
             return 0
 
         # Limit results
-        pairs = pairs[:args.limit]
+        pairs = pairs[: args.limit]
 
         # Enrich with token info and analysis if requested
         token_infos: Dict[str, TokenInfo] = {}
         analyses: Dict[str, ContractAnalysis] = {}
 
         if args.analyze:
-            analyzer = TokenAnalyzer(
-                chain=args.chain,
-                rpc_url=args.rpc_url,
-                verbose=args.verbose
-            )
+            analyzer = TokenAnalyzer(chain=args.chain, rpc_url=args.rpc_url, verbose=args.verbose)
 
             print(f"Analyzing {len(pairs)} pairs...")
             for i, pair in enumerate(pairs):
@@ -82,7 +74,7 @@ def cmd_recent(args) -> int:
                     analyses[new_token] = analysis
 
                 if args.verbose:
-                    print(f"  [{i+1}/{len(pairs)}] {info.symbol if info else 'Unknown'}")
+                    print(f"  [{i + 1}/{len(pairs)}] {info.symbol if info else 'Unknown'}")
 
         # Output
         if args.format == "json":
@@ -105,6 +97,7 @@ def cmd_recent(args) -> int:
         print(f"Error: {e}")
         if args.verbose:
             import traceback
+
             traceback.print_exc()
         return 1
 
@@ -114,17 +107,10 @@ def cmd_detail(args) -> int:
     print(f"\nFetching details for {args.address[:20]}...")
 
     try:
-        monitor = EventMonitor(
-            chain=args.chain,
-            rpc_url=args.rpc_url,
-            verbose=args.verbose
-        )
+        EventMonitor(chain=args.chain, rpc_url=args.rpc_url, verbose=args.verbose)
 
         analyzer = TokenAnalyzer(
-            chain=args.chain,
-            rpc_url=args.rpc_url,
-            etherscan_api_key=args.etherscan_key,
-            verbose=args.verbose
+            chain=args.chain, rpc_url=args.rpc_url, etherscan_api_key=args.etherscan_key, verbose=args.verbose
         )
 
         # Get token info
@@ -165,6 +151,7 @@ def cmd_detail(args) -> int:
         print(f"Error: {e}")
         if args.verbose:
             import traceback
+
             traceback.print_exc()
         return 1
 
@@ -175,10 +162,7 @@ def cmd_risk(args) -> int:
 
     try:
         analyzer = TokenAnalyzer(
-            chain=args.chain,
-            rpc_url=args.rpc_url,
-            etherscan_api_key=args.etherscan_key,
-            verbose=args.verbose
+            chain=args.chain, rpc_url=args.rpc_url, etherscan_api_key=args.etherscan_key, verbose=args.verbose
         )
 
         analysis = analyzer.analyze_contract(args.address)
@@ -214,7 +198,9 @@ def cmd_risk(args) -> int:
             print("-" * 60)
 
             if analysis.indicators:
-                for ind in sorted(analysis.indicators, key=lambda x: {"high": 0, "medium": 1, "low": 2, "info": 3}.get(x.severity, 4)):
+                for ind in sorted(
+                    analysis.indicators, key=lambda x: {"high": 0, "medium": 1, "low": 2, "info": 3}.get(x.severity, 4)
+                ):
                     severity_marker = {
                         "high": "!!",
                         "medium": "! ",
@@ -235,6 +221,7 @@ def cmd_risk(args) -> int:
         print(f"Error: {e}")
         if args.verbose:
             import traceback
+
             traceback.print_exc()
         return 1
 
@@ -243,7 +230,7 @@ def cmd_summary(args) -> int:
     """Show launch summary statistics."""
     chains = args.chains.split(",") if args.chains else list(CHAINS.keys())
 
-    print(f"\nGenerating launch summary...")
+    print("\nGenerating launch summary...")
     print(f"Chains: {', '.join(chains)}")
     print(f"Period: Last {args.hours} hours")
     print()
@@ -295,6 +282,7 @@ def cmd_summary(args) -> int:
         print(f"Error: {e}")
         if args.verbose:
             import traceback
+
             traceback.print_exc()
         return 1
 
@@ -321,7 +309,7 @@ def cmd_dexes(args) -> int:
                         "version": f.version,
                     }
                     for f in factories.values()
-                ]
+                ],
             }
             print(json.dumps(output, indent=2))
         else:
@@ -339,8 +327,7 @@ def cmd_dexes(args) -> int:
             for chain_id in CHAINS:
                 factories = get_dex_factories(chain_id)
                 output[chain_id] = [
-                    {"name": f.name, "address": f.address, "version": f.version}
-                    for f in factories.values()
+                    {"name": f.name, "address": f.address, "version": f.version} for f in factories.values()
                 ]
             print(json.dumps(output, indent=2))
         else:
@@ -380,7 +367,9 @@ def cmd_chains(args) -> int:
         print(f"{'Chain':<15} {'Name':<20} {'ID':<10} {'Symbol':<8} {'Block':<8}")
         print("-" * 70)
         for chain_id, config in CHAINS.items():
-            print(f"{chain_id:<15} {config.name:<20} {config.chain_id:<10} {config.native_symbol:<8} {config.block_time}s")
+            print(
+                f"{chain_id:<15} {config.name:<20} {config.chain_id:<10} {config.native_symbol:<8} {config.block_time}s"
+            )
         print("=" * 70)
 
     return 0
@@ -407,156 +396,58 @@ Examples:
 
   # List supported DEXes
   %(prog)s dexes --chain bsc
-        """
+        """,
     )
 
+    parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose output")
     parser.add_argument(
-        "-v", "--verbose",
-        action="store_true",
-        help="Enable verbose output"
-    )
-    parser.add_argument(
-        "-f", "--format",
-        choices=["text", "json"],
-        default="text",
-        help="Output format (default: text)"
+        "-f", "--format", choices=["text", "json"], default="text", help="Output format (default: text)"
     )
 
     subparsers = parser.add_subparsers(dest="command", help="Command")
 
     # recent command
-    recent_parser = subparsers.add_parser(
-        "recent",
-        help="Show recently launched tokens"
-    )
-    recent_parser.add_argument(
-        "--chain", "-c",
-        default="ethereum",
-        help="Chain to scan (default: ethereum)"
-    )
-    recent_parser.add_argument(
-        "--hours", "-H",
-        type=int,
-        default=24,
-        help="Hours to look back (default: 24)"
-    )
-    recent_parser.add_argument(
-        "--dex", "-d",
-        help="Filter by DEX name"
-    )
-    recent_parser.add_argument(
-        "--limit", "-l",
-        type=int,
-        default=50,
-        help="Maximum results (default: 50)"
-    )
-    recent_parser.add_argument(
-        "--analyze", "-a",
-        action="store_true",
-        help="Include token analysis"
-    )
-    recent_parser.add_argument(
-        "--skip-analysis",
-        action="store_true",
-        help="Skip contract analysis (faster)"
-    )
-    recent_parser.add_argument(
-        "--rpc-url",
-        help="Custom RPC URL"
-    )
+    recent_parser = subparsers.add_parser("recent", help="Show recently launched tokens")
+    recent_parser.add_argument("--chain", "-c", default="ethereum", help="Chain to scan (default: ethereum)")
+    recent_parser.add_argument("--hours", "-H", type=int, default=24, help="Hours to look back (default: 24)")
+    recent_parser.add_argument("--dex", "-d", help="Filter by DEX name")
+    recent_parser.add_argument("--limit", "-l", type=int, default=50, help="Maximum results (default: 50)")
+    recent_parser.add_argument("--analyze", "-a", action="store_true", help="Include token analysis")
+    recent_parser.add_argument("--skip-analysis", action="store_true", help="Skip contract analysis (faster)")
+    recent_parser.add_argument("--rpc-url", help="Custom RPC URL")
     recent_parser.set_defaults(func=cmd_recent)
 
     # detail command
-    detail_parser = subparsers.add_parser(
-        "detail",
-        help="Show detailed launch information"
-    )
-    detail_parser.add_argument(
-        "--address", "-a",
-        required=True,
-        help="Token contract address"
-    )
-    detail_parser.add_argument(
-        "--chain", "-c",
-        default="ethereum",
-        help="Chain (default: ethereum)"
-    )
-    detail_parser.add_argument(
-        "--pair", "-p",
-        help="Pair address (optional)"
-    )
-    detail_parser.add_argument(
-        "--dex", "-d",
-        help="DEX name (optional)"
-    )
-    detail_parser.add_argument(
-        "--etherscan-key",
-        help="Etherscan API key for verification check"
-    )
-    detail_parser.add_argument(
-        "--rpc-url",
-        help="Custom RPC URL"
-    )
+    detail_parser = subparsers.add_parser("detail", help="Show detailed launch information")
+    detail_parser.add_argument("--address", "-a", required=True, help="Token contract address")
+    detail_parser.add_argument("--chain", "-c", default="ethereum", help="Chain (default: ethereum)")
+    detail_parser.add_argument("--pair", "-p", help="Pair address (optional)")
+    detail_parser.add_argument("--dex", "-d", help="DEX name (optional)")
+    detail_parser.add_argument("--etherscan-key", help="Etherscan API key for verification check")
+    detail_parser.add_argument("--rpc-url", help="Custom RPC URL")
     detail_parser.set_defaults(func=cmd_detail)
 
     # risk command
-    risk_parser = subparsers.add_parser(
-        "risk",
-        help="Analyze token contract for risks"
-    )
-    risk_parser.add_argument(
-        "--address", "-a",
-        required=True,
-        help="Token contract address"
-    )
-    risk_parser.add_argument(
-        "--chain", "-c",
-        default="ethereum",
-        help="Chain (default: ethereum)"
-    )
-    risk_parser.add_argument(
-        "--etherscan-key",
-        help="Etherscan API key for verification check"
-    )
-    risk_parser.add_argument(
-        "--rpc-url",
-        help="Custom RPC URL"
-    )
+    risk_parser = subparsers.add_parser("risk", help="Analyze token contract for risks")
+    risk_parser.add_argument("--address", "-a", required=True, help="Token contract address")
+    risk_parser.add_argument("--chain", "-c", default="ethereum", help="Chain (default: ethereum)")
+    risk_parser.add_argument("--etherscan-key", help="Etherscan API key for verification check")
+    risk_parser.add_argument("--rpc-url", help="Custom RPC URL")
     risk_parser.set_defaults(func=cmd_risk)
 
     # summary command
-    summary_parser = subparsers.add_parser(
-        "summary",
-        help="Show launch summary statistics"
-    )
-    summary_parser.add_argument(
-        "--chains",
-        help="Comma-separated chains (default: all)"
-    )
-    summary_parser.add_argument(
-        "--hours", "-H",
-        type=int,
-        default=24,
-        help="Hours to look back (default: 24)"
-    )
+    summary_parser = subparsers.add_parser("summary", help="Show launch summary statistics")
+    summary_parser.add_argument("--chains", help="Comma-separated chains (default: all)")
+    summary_parser.add_argument("--hours", "-H", type=int, default=24, help="Hours to look back (default: 24)")
     summary_parser.set_defaults(func=cmd_summary)
 
     # dexes command
-    dexes_parser = subparsers.add_parser(
-        "dexes",
-        help="List supported DEXes"
-    )
-    dexes_parser.add_argument(
-        "--chain", "-c",
-        help="Show DEXes for specific chain"
-    )
+    dexes_parser = subparsers.add_parser("dexes", help="List supported DEXes")
+    dexes_parser.add_argument("--chain", "-c", help="Show DEXes for specific chain")
     dexes_parser.set_defaults(func=cmd_dexes)
 
     # chains command
-    chains_parser = subparsers.add_parser(
-        "chains",
-        help="List supported chains"
-    )
+    chains_parser = subparsers.add_parser("chains", help="List supported chains")
     chains_parser.set_defaults(func=cmd_chains)
 
     args = parser.parse_args()

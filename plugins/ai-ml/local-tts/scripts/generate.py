@@ -10,6 +10,7 @@ Usage:
 Reads text via --text or --stdin. Writes a 48 kHz wav to --out.
 Prints a one-line summary to stdout on success: "OK <duration>s <rtf>x <path>".
 """
+
 import argparse
 import sys
 import time
@@ -24,7 +25,9 @@ def main() -> int:
     p.add_argument("--ref", help="Reference audio for voice cloning (wav, 16 kHz+).")
     p.add_argument("--prompt-wav", help="Prompt wav for ultimate cloning (pass same as --ref for max fidelity).")
     p.add_argument("--cfg", type=float, default=2.0, help="Classifier-free guidance (default 2.0).")
-    p.add_argument("--steps", type=int, default=10, help="Inference timesteps (default 10; higher = slower & slightly better).")
+    p.add_argument(
+        "--steps", type=int, default=10, help="Inference timesteps (default 10; higher = slower & slightly better)."
+    )
     p.add_argument("--model", default="openbmb/VoxCPM2", help="Model id or local path (default openbmb/VoxCPM2).")
     p.add_argument("--quiet", action="store_true", help="Suppress progress output.")
     args = p.parse_args()
@@ -49,7 +52,7 @@ def main() -> int:
     t0 = time.time()
     model = VoxCPM.from_pretrained(args.model, load_denoiser=False)
     if not args.quiet:
-        print(f"[local-tts] model ready in {time.time()-t0:.1f}s", file=sys.stderr, flush=True)
+        print(f"[local-tts] model ready in {time.time() - t0:.1f}s", file=sys.stderr, flush=True)
 
     kwargs = dict(text=text, cfg_value=args.cfg, inference_timesteps=args.steps)
     if args.ref:

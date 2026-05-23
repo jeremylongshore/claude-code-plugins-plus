@@ -10,7 +10,6 @@ License: MIT
 """
 
 import sys
-import time
 import hashlib
 import json
 from pathlib import Path
@@ -33,7 +32,7 @@ class FeedFetcher:
         timeout: int = 10,
         max_workers: int = 10,
         cache_ttl: int = 300,  # 5 minutes
-        verbose: bool = False
+        verbose: bool = False,
     ):
         """
         Initialize feed fetcher.
@@ -64,10 +63,7 @@ class FeedFetcher:
         results = {}
 
         with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
-            future_to_source = {
-                executor.submit(self._fetch_one, source): source
-                for source in sources
-            }
+            future_to_source = {executor.submit(self._fetch_one, source): source for source in sources}
 
             for future in as_completed(future_to_source):
                 source = future_to_source[future]
@@ -111,14 +107,10 @@ class FeedFetcher:
 
             headers = {
                 "User-Agent": "CryptoNewsAggregator/2.0 (RSS Feed Reader)",
-                "Accept": "application/rss+xml, application/xml, text/xml, */*"
+                "Accept": "application/rss+xml, application/xml, text/xml, */*",
             }
 
-            response = requests.get(
-                url,
-                timeout=self.timeout,
-                headers=headers
-            )
+            response = requests.get(url, timeout=self.timeout, headers=headers)
             response.raise_for_status()
 
             content = response.text
@@ -169,11 +161,7 @@ class FeedFetcher:
 
         try:
             with open(cache_path, "w") as f:
-                json.dump({
-                    "url": url,
-                    "timestamp": datetime.utcnow().isoformat(),
-                    "content": content
-                }, f)
+                json.dump({"url": url, "timestamp": datetime.utcnow().isoformat(), "content": content}, f)
         except Exception:
             pass
 

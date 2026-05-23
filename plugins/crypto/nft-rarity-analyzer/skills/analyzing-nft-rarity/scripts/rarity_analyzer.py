@@ -61,17 +61,21 @@ def cmd_collection(args):
 
     # Output
     if args.json:
-        print(format_json({
-            "collection": {
-                "name": collection.name,
-                "slug": collection.slug,
-                "contract": collection.contract_address,
-                "total_supply": collection.total_supply,
-                "fetched": len(collection.tokens),
-            },
-            "traits": trait_summary,
-            "rankings": rarities[:args.top],
-        }))
+        print(
+            format_json(
+                {
+                    "collection": {
+                        "name": collection.name,
+                        "slug": collection.slug,
+                        "contract": collection.contract_address,
+                        "total_supply": collection.total_supply,
+                        "fetched": len(collection.tokens),
+                    },
+                    "traits": trait_summary,
+                    "rankings": rarities[: args.top],
+                }
+            )
+        )
     else:
         print(format_collection_summary(collection, len(trait_map.trait_types)))
 
@@ -112,7 +116,9 @@ def cmd_token(args):
     if not token_rarity:
         print(f"Error: Token #{args.token_id} not found in fetched data.")
         if collection.tokens:
-            print(f"Fetched tokens: {min(t.token_id for t in collection.tokens)} - {max(t.token_id for t in collection.tokens)}")
+            print(
+                f"Fetched tokens: {min(t.token_id for t in collection.tokens)} - {max(t.token_id for t in collection.tokens)}"
+            )
         sys.exit(1)
 
     # Output
@@ -249,7 +255,7 @@ Examples:
   rarity_analyzer.py compare boredapeyachtclub 1234,5678,9012
   rarity_analyzer.py traits boredapeyachtclub
   rarity_analyzer.py export boredapeyachtclub --format csv > rankings.csv
-        """
+        """,
     )
 
     parser.add_argument("--verbose", "-v", action="store_true", help="Verbose output")
@@ -260,29 +266,28 @@ Examples:
     # collection command
     p_col = subparsers.add_parser("collection", help="Analyze a collection")
     p_col.add_argument("slug", help="Collection slug (e.g., 'boredapeyachtclub')")
-    p_col.add_argument("--limit", "-l", type=int, default=200,
-                      help="Max tokens to fetch (default: 200)")
-    p_col.add_argument("--top", "-t", type=int, default=20,
-                      help="Show top N tokens (default: 20)")
-    p_col.add_argument("--algorithm", "-a", default="rarity_score",
-                      choices=["statistical", "rarity_score", "average", "information"],
-                      help="Rarity algorithm (default: rarity_score)")
-    p_col.add_argument("--normalize", "-n", action="store_true",
-                      help="Normalize scores to 0-100")
-    p_col.add_argument("--traits", action="store_true",
-                      help="Show trait distribution")
-    p_col.add_argument("--rarest", action="store_true",
-                      help="Show rarest traits")
+    p_col.add_argument("--limit", "-l", type=int, default=200, help="Max tokens to fetch (default: 200)")
+    p_col.add_argument("--top", "-t", type=int, default=20, help="Show top N tokens (default: 20)")
+    p_col.add_argument(
+        "--algorithm",
+        "-a",
+        default="rarity_score",
+        choices=["statistical", "rarity_score", "average", "information"],
+        help="Rarity algorithm (default: rarity_score)",
+    )
+    p_col.add_argument("--normalize", "-n", action="store_true", help="Normalize scores to 0-100")
+    p_col.add_argument("--traits", action="store_true", help="Show trait distribution")
+    p_col.add_argument("--rarest", action="store_true", help="Show rarest traits")
     p_col.set_defaults(func=cmd_collection)
 
     # token command
     p_token = subparsers.add_parser("token", help="Analyze a specific token")
     p_token.add_argument("slug", help="Collection slug")
     p_token.add_argument("token_id", type=int, help="Token ID")
-    p_token.add_argument("--limit", "-l", type=int, default=200,
-                        help="Max tokens to fetch for context")
-    p_token.add_argument("--algorithm", "-a", default="rarity_score",
-                        choices=["statistical", "rarity_score", "average", "information"])
+    p_token.add_argument("--limit", "-l", type=int, default=200, help="Max tokens to fetch for context")
+    p_token.add_argument(
+        "--algorithm", "-a", default="rarity_score", choices=["statistical", "rarity_score", "average", "information"]
+    )
     p_token.add_argument("--normalize", "-n", action="store_true")
     p_token.set_defaults(func=cmd_token)
 
@@ -291,8 +296,9 @@ Examples:
     p_compare.add_argument("slug", help="Collection slug")
     p_compare.add_argument("tokens", help="Comma-separated token IDs")
     p_compare.add_argument("--limit", "-l", type=int, default=200)
-    p_compare.add_argument("--algorithm", "-a", default="rarity_score",
-                          choices=["statistical", "rarity_score", "average", "information"])
+    p_compare.add_argument(
+        "--algorithm", "-a", default="rarity_score", choices=["statistical", "rarity_score", "average", "information"]
+    )
     p_compare.add_argument("--normalize", "-n", action="store_true")
     p_compare.set_defaults(func=cmd_compare)
 
@@ -305,23 +311,21 @@ Examples:
     # export command
     p_export = subparsers.add_parser("export", help="Export rarity data")
     p_export.add_argument("slug", help="Collection slug")
-    p_export.add_argument("--format", "-f", default="json",
-                         choices=["json", "csv"],
-                         help="Export format (default: json)")
+    p_export.add_argument(
+        "--format", "-f", default="json", choices=["json", "csv"], help="Export format (default: json)"
+    )
     p_export.add_argument("--limit", "-l", type=int, default=500)
-    p_export.add_argument("--algorithm", "-a", default="rarity_score",
-                         choices=["statistical", "rarity_score", "average", "information"])
+    p_export.add_argument(
+        "--algorithm", "-a", default="rarity_score", choices=["statistical", "rarity_score", "average", "information"]
+    )
     p_export.add_argument("--normalize", "-n", action="store_true")
     p_export.set_defaults(func=cmd_export)
 
     # cache command
     p_cache = subparsers.add_parser("cache", help="Manage cache")
-    p_cache.add_argument("--clear", "-c", action="store_true",
-                        help="Clear cache")
-    p_cache.add_argument("--list", action="store_true",
-                        help="List cached items")
-    p_cache.add_argument("--pattern", "-p",
-                        help="Pattern to match when clearing")
+    p_cache.add_argument("--clear", "-c", action="store_true", help="Clear cache")
+    p_cache.add_argument("--list", action="store_true", help="List cached items")
+    p_cache.add_argument("--pattern", "-p", help="Pattern to match when clearing")
     p_cache.set_defaults(func=cmd_cache)
 
     args = parser.parse_args()

@@ -11,7 +11,7 @@ import json
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Any, Optional
+from typing import Dict, Any, Optional
 
 
 # Common alert patterns and their runbook templates
@@ -24,7 +24,7 @@ ALERT_TEMPLATES = {
             "Long-running or infinite loops in application code",
             "Memory exhaustion causing excessive swapping",
             "External process consuming resources",
-            "Inefficient database queries"
+            "Inefficient database queries",
         ],
         "diagnosis_steps": [
             "Check system CPU utilization across cores: `top -b -n 1`",
@@ -32,20 +32,20 @@ ALERT_TEMPLATES = {
             "Review application logs for errors or warnings",
             "Check for pending requests in application queue",
             "Monitor memory usage: `free -h`",
-            "Check disk I/O: `iostat -x 1 5`"
+            "Check disk I/O: `iostat -x 1 5`",
         ],
         "remediation": [
             "If application issue: Review application logs and restart service if needed",
             "If query issue: Optimize slow queries or add indexes",
             "If load issue: Consider horizontal scaling or caching layer",
             "Kill long-running processes if they're hung: `kill -9 <PID>`",
-            "Clear disk cache if needed: `sync && echo 3 > /proc/sys/vm/drop_caches`"
+            "Clear disk cache if needed: `sync && echo 3 > /proc/sys/vm/drop_caches`",
         ],
         "escalation": [
             "If CPU remains high after initial remediation: Contact platform team",
             "If related to database: Escalate to database team",
-            "If affecting multiple services: Page on-call engineer"
-        ]
+            "If affecting multiple services: Page on-call engineer",
+        ],
     },
     "memory_high": {
         "title": "High Memory Utilization Alert",
@@ -55,7 +55,7 @@ ALERT_TEMPLATES = {
             "Insufficient swap space",
             "Large dataset processing",
             "Database cache misconfiguration",
-            "Too many concurrent connections"
+            "Too many concurrent connections",
         ],
         "diagnosis_steps": [
             "Check current memory usage: `free -h`",
@@ -63,20 +63,20 @@ ALERT_TEMPLATES = {
             "Check for memory leaks: `valgrind --leak-check=full <process>`",
             "Review application cache settings",
             "Monitor memory over time: `watch -n 1 free -h`",
-            "Check swap usage: `swapon -s`"
+            "Check swap usage: `swapon -s`",
         ],
         "remediation": [
             "Restart affected service to clear memory",
             "Reduce cache size or TTL if overallocated",
             "Optimize data structures for memory efficiency",
             "Increase available memory if possible",
-            "Implement memory limits per process: `ulimit -v <bytes>`"
+            "Implement memory limits per process: `ulimit -v <bytes>`",
         ],
         "escalation": [
             "If memory issue persists: Contact infrastructure team",
             "If application memory leak confirmed: Escalate to development team",
-            "If system-wide memory issue: Request hardware upgrade"
-        ]
+            "If system-wide memory issue: Request hardware upgrade",
+        ],
     },
     "disk_space_low": {
         "title": "Low Disk Space Alert",
@@ -86,7 +86,7 @@ ALERT_TEMPLATES = {
             "Temporary files not being cleaned up",
             "Database grow beyond allocated space",
             "Old backups not being deleted",
-            "Container or VM images consuming space"
+            "Container or VM images consuming space",
         ],
         "diagnosis_steps": [
             "Check disk usage: `df -h`",
@@ -94,20 +94,20 @@ ALERT_TEMPLATES = {
             "Check log file sizes: `ls -lhS /var/log/ | head -20`",
             "Review application temp directories",
             "Check inode usage: `df -i`",
-            "Monitor disk growth: `du -sh . && sleep 60 && du -sh .`"
+            "Monitor disk growth: `du -sh . && sleep 60 && du -sh .`",
         ],
         "remediation": [
             "Remove old log files: `find /var/log -type f -mtime +30 -delete`",
             "Compress old logs: `gzip /var/log/*.log`",
             "Clear temp directory: `rm -rf /tmp/* /var/tmp/*`",
             "Remove old backups or Docker images",
-            "Archive application data if possible"
+            "Archive application data if possible",
         ],
         "escalation": [
             "If unable to free space: Contact infrastructure team",
             "If database is consuming space: Escalate to DBA",
-            "If persistent issue: Request storage expansion"
-        ]
+            "If persistent issue: Request storage expansion",
+        ],
     },
     "response_time_high": {
         "title": "High Response Time Alert",
@@ -117,7 +117,7 @@ ALERT_TEMPLATES = {
             "Slow database queries",
             "Insufficient server resources",
             "Network latency or congestion",
-            "External service dependency slowdown"
+            "External service dependency slowdown",
         ],
         "diagnosis_steps": [
             "Check request queue depth: Review application metrics",
@@ -125,7 +125,7 @@ ALERT_TEMPLATES = {
             "Check database performance: `mysql> SHOW PROCESSLIST;`",
             "Monitor network latency: `mtr <destination>`",
             "Check dependencies: Verify external service health",
-            "Review recent deployments or configuration changes"
+            "Review recent deployments or configuration changes",
         ],
         "remediation": [
             "Optimize slow queries or add database indexes",
@@ -133,13 +133,13 @@ ALERT_TEMPLATES = {
             "Enable caching for frequently accessed data",
             "Use connection pooling for database connections",
             "Consider circuit breaker for slow dependencies",
-            "Scale horizontally if load is high"
+            "Scale horizontally if load is high",
         ],
         "escalation": [
             "If performance doesn't improve: Contact development team",
             "If database issue: Escalate to database team",
-            "If infrastructure bottleneck: Contact infrastructure team"
-        ]
+            "If infrastructure bottleneck: Contact infrastructure team",
+        ],
     },
     "error_rate_high": {
         "title": "High Error Rate Alert",
@@ -149,7 +149,7 @@ ALERT_TEMPLATES = {
             "Database connectivity issues",
             "External service failure",
             "Resource exhaustion",
-            "Bug in application code"
+            "Bug in application code",
         ],
         "diagnosis_steps": [
             "Check application error logs for patterns",
@@ -157,7 +157,7 @@ ALERT_TEMPLATES = {
             "Check database connectivity: `nc -zv <db-host> <port>`",
             "Verify external service availability",
             "Check system resources (CPU, memory, disk)",
-            "Look for error spikes correlated with deployments"
+            "Look for error spikes correlated with deployments",
         ],
         "remediation": [
             "If recent deployment: Consider rollback",
@@ -165,14 +165,14 @@ ALERT_TEMPLATES = {
             "Verify configuration values are correct",
             "Check application health: `curl http://localhost:8080/health`",
             "Review logs for specific error messages",
-            "Restart affected service if appropriate"
+            "Restart affected service if appropriate",
         ],
         "escalation": [
             "If errors persist: Initiate incident response",
             "If database issue: Escalate to database team",
-            "If external service issue: Contact vendor support"
-        ]
-    }
+            "If external service issue: Contact vendor support",
+        ],
+    },
 }
 
 
@@ -195,7 +195,7 @@ def load_custom_templates(filepath: str) -> Dict[str, Any]:
         if not path.exists():
             raise FileNotFoundError(f"Templates file not found: {filepath}")
 
-        with open(path, 'r') as f:
+        with open(path, "r") as f:
             return json.load(f)
 
     except json.JSONDecodeError as e:
@@ -203,10 +203,7 @@ def load_custom_templates(filepath: str) -> Dict[str, Any]:
         sys.exit(1)
 
 
-def get_alert_template(
-    alert_type: str,
-    custom_templates: Optional[Dict[str, Any]] = None
-) -> Dict[str, Any]:
+def get_alert_template(alert_type: str, custom_templates: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
     """
     Get runbook template for alert type.
 
@@ -229,26 +226,23 @@ def get_alert_template(
     return {
         "title": f"Alert: {alert_type}",
         "description": f"Alert of type {alert_type} has been triggered",
-        "common_causes": [
-            "Check application health and recent changes",
-            "Review system resources and dependencies"
-        ],
+        "common_causes": ["Check application health and recent changes", "Review system resources and dependencies"],
         "diagnosis_steps": [
             "Check application logs for errors",
             "Review system metrics (CPU, memory, disk)",
             "Verify external dependencies are healthy",
-            "Check for recent configuration or deployment changes"
+            "Check for recent configuration or deployment changes",
         ],
         "remediation": [
             "Identify the root cause from logs",
             "Take appropriate action based on findings",
             "Restart services if needed",
-            "Monitor for issue recurrence"
+            "Monitor for issue recurrence",
         ],
         "escalation": [
             "If issue persists, escalate to on-call engineer",
-            "Contact relevant team (development, infrastructure, database)"
-        ]
+            "Contact relevant team (development, infrastructure, database)",
+        ],
     }
 
 
@@ -257,7 +251,7 @@ def generate_runbook(
     severity: str,
     alert_name: Optional[str] = None,
     custom_templates: Optional[Dict[str, Any]] = None,
-    include_metadata: bool = True
+    include_metadata: bool = True,
 ) -> Dict[str, Any]:
     """
     Generate a runbook for an alert type.
@@ -282,14 +276,11 @@ def generate_runbook(
         "common_causes": template.get("common_causes", []),
         "diagnosis_steps": template.get("diagnosis_steps", []),
         "remediation": template.get("remediation", []),
-        "escalation": template.get("escalation", [])
+        "escalation": template.get("escalation", []),
     }
 
     if include_metadata:
-        runbook["metadata"] = {
-            "generated_at": datetime.now().isoformat(),
-            "version": "1.0"
-        }
+        runbook["metadata"] = {"generated_at": datetime.now().isoformat(), "version": "1.0"}
 
     return runbook
 
@@ -352,43 +343,20 @@ Examples:
   %(prog)s --alert-type memory_high --severity high --name "Memory Alert"
   %(prog)s --alert-type response_time_high --output runbook.md --format markdown
   %(prog)s --alert-type custom_alert --templates custom.json --output runbook.json
-        """
+        """,
     )
 
     parser.add_argument(
-        "--alert-type",
-        required=True,
-        help="Type of alert (e.g., cpu_high, memory_high, error_rate_high)"
+        "--alert-type", required=True, help="Type of alert (e.g., cpu_high, memory_high, error_rate_high)"
     )
     parser.add_argument(
-        "--severity",
-        default="high",
-        choices=["critical", "high", "medium", "low"],
-        help="Alert severity level"
+        "--severity", default="high", choices=["critical", "high", "medium", "low"], help="Alert severity level"
     )
-    parser.add_argument(
-        "--name",
-        help="Human-readable alert name"
-    )
-    parser.add_argument(
-        "--templates",
-        help="Path to JSON file with custom templates"
-    )
-    parser.add_argument(
-        "--output",
-        help="Output file for runbook"
-    )
-    parser.add_argument(
-        "--format",
-        default="json",
-        choices=["json", "markdown"],
-        help="Output format"
-    )
-    parser.add_argument(
-        "--verbose",
-        action="store_true",
-        help="Print detailed output"
-    )
+    parser.add_argument("--name", help="Human-readable alert name")
+    parser.add_argument("--templates", help="Path to JSON file with custom templates")
+    parser.add_argument("--output", help="Output file for runbook")
+    parser.add_argument("--format", default="json", choices=["json", "markdown"], help="Output format")
+    parser.add_argument("--verbose", action="store_true", help="Print detailed output")
 
     args = parser.parse_args()
 
@@ -401,12 +369,7 @@ Examples:
             custom_templates = load_custom_templates(args.templates)
 
         # Generate runbook
-        runbook = generate_runbook(
-            args.alert_type,
-            args.severity,
-            args.name,
-            custom_templates
-        )
+        runbook = generate_runbook(args.alert_type, args.severity, args.name, custom_templates)
 
         # Format output
         if args.format == "markdown":
@@ -421,7 +384,7 @@ Examples:
 
         # Save to file if requested
         if args.output:
-            with open(args.output, 'w') as f:
+            with open(args.output, "w") as f:
                 f.write(output_content)
 
             if args.verbose:

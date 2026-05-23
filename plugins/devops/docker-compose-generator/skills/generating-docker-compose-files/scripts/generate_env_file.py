@@ -24,7 +24,7 @@ import re
 import sys
 import yaml
 from pathlib import Path
-from typing import Dict, List, Tuple, Optional
+from typing import Dict
 
 
 class EnvGenerator:
@@ -165,7 +165,7 @@ class EnvGenerator:
                 continue
 
             config_str = json.dumps(service_config)
-            pattern = r'\$\{([A-Z_][A-Z0-9_]*)\}'
+            pattern = r"\$\{([A-Z_][A-Z0-9_]*)\}"
             matches = re.findall(pattern, config_str)
 
             for var_name in matches:

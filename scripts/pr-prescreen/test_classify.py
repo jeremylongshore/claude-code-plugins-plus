@@ -119,9 +119,11 @@ class ClassifyTests(unittest.TestCase):
 
     def test_main_picks_up_env_signals(self):
         payload = json.dumps([_r("plugins/x/SKILL.md", 95, "A")])
-        with patch("sys.stdin", StringIO(payload)), \
-             patch("sys.stdout", new_callable=StringIO) as out, \
-             patch.dict(os.environ, {"PR_PRESCREEN_HARD_BLOCKS": "secret detected in diff"}):
+        with (
+            patch("sys.stdin", StringIO(payload)),
+            patch("sys.stdout", new_callable=StringIO) as out,
+            patch.dict(os.environ, {"PR_PRESCREEN_HARD_BLOCKS": "secret detected in diff"}),
+        ):
             rc = main(["classify.py", "-"])
         self.assertEqual(rc, 0)
         parsed = json.loads(out.getvalue())

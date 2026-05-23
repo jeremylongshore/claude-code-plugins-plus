@@ -8,7 +8,6 @@ Author: Jeremy Longshore <jeremy@intentsolutions.io>
 """
 
 import math
-import random
 from typing import Dict, List, Tuple, Optional
 
 from .stats import bootstrap_ci
@@ -89,7 +88,7 @@ def run_round_robin(
     records = {}
     for skill_id in skills:
         ratings[skill_id] = (initial_ratings or {}).get(skill_id, DEFAULT_RATING)
-        records[skill_id] = {'wins': 0, 'losses': 0, 'draws': 0}
+        records[skill_id] = {"wins": 0, "losses": 0, "draws": 0}
 
     skill_ids = list(skills.keys())
 
@@ -107,23 +106,23 @@ def run_round_robin(
             ratings[b] = update_rating(ratings[b], exp_b, result_b)
 
             if result_a == 1.0:
-                records[a]['wins'] += 1
-                records[b]['losses'] += 1
+                records[a]["wins"] += 1
+                records[b]["losses"] += 1
             elif result_b == 1.0:
-                records[b]['wins'] += 1
-                records[a]['losses'] += 1
+                records[b]["wins"] += 1
+                records[a]["losses"] += 1
             else:
-                records[a]['draws'] += 1
-                records[b]['draws'] += 1
+                records[a]["draws"] += 1
+                records[b]["draws"] += 1
 
     results = {}
     for skill_id in skill_ids:
         results[skill_id] = {
-            'rating': round(ratings[skill_id], 1),
-            'wins': records[skill_id]['wins'],
-            'losses': records[skill_id]['losses'],
-            'draws': records[skill_id]['draws'],
-            'composite_score': skills[skill_id],
+            "rating": round(ratings[skill_id], 1),
+            "wins": records[skill_id]["wins"],
+            "losses": records[skill_id]["losses"],
+            "draws": records[skill_id]["draws"],
+            "composite_score": skills[skill_id],
         }
 
     return results
@@ -131,7 +130,7 @@ def run_round_robin(
 
 def rank_skills(results: Dict[str, Dict]) -> List[Tuple[str, Dict]]:
     """Sort skills by Elo rating, descending."""
-    return sorted(results.items(), key=lambda x: x[1]['rating'], reverse=True)
+    return sorted(results.items(), key=lambda x: x[1]["rating"], reverse=True)
 
 
 def rating_confidence_interval(
@@ -172,8 +171,7 @@ def category_rankings(
         if len(skills) < 2:
             # Can't rank a single skill
             rankings[category] = [
-                (sid, {'rating': DEFAULT_RATING, 'wins': 0, 'losses': 0,
-                       'draws': 0, 'composite_score': score})
+                (sid, {"rating": DEFAULT_RATING, "wins": 0, "losses": 0, "draws": 0, "composite_score": score})
                 for sid, score in skills.items()
             ]
             continue

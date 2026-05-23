@@ -1,0 +1,46 @@
+# Ruff configuration for claude-code-plugins-plus-skills
+#
+# Single source of truth for Python lint rules applied to:
+#   - plugins/**/*.py (community + Intent Solutions plugin scripts)
+#   - scripts/**/*.py (build, sync, validation tooling)
+#   - freshie/**/*.py (CMDB tooling)
+#
+# Policy: we are the marketplace standard for skills — internal code holds
+# to the same bar as external. No report-only crutch; blocking in CI.
+#
+# Reference: https://docs.astral.sh/ruff/configuration/
+
+line-length = 120
+target-version = "py312"
+extend-exclude = ["node_modules", "dist", "build", ".venv", "marketplace/backup-*"]
+
+[lint]
+# Ruff's curated default: E4 (imports), E7 (statements), E9 (syntax), F (pyflakes).
+# Excludes E501 (line-too-long) and most whitespace rules — they're noise
+# without a single project-wide style policy. The format step handles
+# whitespace via prettier-equivalent rules.
+select = ["E4", "E7", "E9", "F"]
+ignore = [
+  # E402: module-level imports not at top.
+  # Legitimate in plugin scripts that use sys.path manipulation BEFORE
+  # importing sibling modules (the standard CLI-entry pattern for the
+  # ~30 multi-script plugin packs we ship). Adding `# noqa` to every
+  # occurrence is noise; suppressing project-wide is the honest call.
+  "E402",
+  # E741: ambiguous variable name (l, I, O).
+  # Real ambiguity matters in production logic but is style-only inside
+  # short loop counters in generator scripts. Not enforced project-wide.
+  "E741",
+]
+
+[lint.per-file-ignores]
+# Notebook templates living under assets/ are intentional scratch
+# scaffolds — first-line shebangs / docstrings before imports are fine.
+"**/assets/*.py" = ["E402"]
+# Generated test data scripts intentionally use short variable names.
+"**/tests/**/*.py" = ["E741"]
+
+[format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"

@@ -11,11 +11,12 @@ from decimal import Decimal
 from enum import Enum
 from typing import List, Optional, Tuple
 
-from price_fetcher import PriceFetcher, PriceQuote, ExchangeType, ExchangeConfig
+from price_fetcher import PriceFetcher, PriceQuote, ExchangeType
 
 
 class OpportunityType(Enum):
     """Type of arbitrage opportunity."""
+
     DIRECT = "DIRECT"  # Buy on A, sell on B
     TRIANGULAR = "TRIANGULAR"  # A→B→C→A circular
     CROSS_CHAIN = "CROSS_CHAIN"  # Same asset across chains
@@ -23,6 +24,7 @@ class OpportunityType(Enum):
 
 class RiskLevel(Enum):
     """Risk level classification."""
+
     LOW = "LOW"
     MEDIUM = "MEDIUM"
     HIGH = "HIGH"
@@ -125,9 +127,7 @@ class OpportunityScanner:
         import time
 
         # Fetch all prices
-        quotes = self.fetcher.fetch_all_prices_sync(
-            base, quote, exchanges, exchange_type
-        )
+        quotes = self.fetcher.fetch_all_prices_sync(base, quote, exchanges, exchange_type)
 
         if len(quotes) < 2:
             return ScanResult(
@@ -181,12 +181,8 @@ class OpportunityScanner:
             return None
 
         # Get exchange configs
-        buy_config = self.fetcher.get_exchange_config(
-            buy_quote.exchange.lower().replace(" ", "").replace("v3", "")
-        )
-        sell_config = self.fetcher.get_exchange_config(
-            sell_quote.exchange.lower().replace(" ", "").replace("v3", "")
-        )
+        buy_config = self.fetcher.get_exchange_config(buy_quote.exchange.lower().replace(" ", "").replace("v3", ""))
+        sell_config = self.fetcher.get_exchange_config(sell_quote.exchange.lower().replace(" ", "").replace("v3", ""))
 
         # Default fees if config not found
         buy_fee = buy_config.taker_fee if buy_config else Decimal("0.001")
@@ -224,7 +220,7 @@ class OpportunityScanner:
         if buy_quote.exchange_type == ExchangeType.DEX:
             notes.append(f"Buy requires on-chain tx (~${gas_cost_usd:.2f} gas)")
         if sell_quote.exchange_type == ExchangeType.DEX:
-            notes.append(f"Sell requires on-chain tx")
+            notes.append("Sell requires on-chain tx")
         if gross_spread_pct > 2.0:
             notes.append("Large spread may indicate low liquidity or stale data")
 
@@ -335,7 +331,7 @@ def demo():
 
         if result.best_opportunity:
             best = result.best_opportunity
-            print(f"\nBest Opportunity:")
+            print("\nBest Opportunity:")
             print(f"  Buy on {best.buy_exchange} at ${best.buy_price:,.2f}")
             print(f"  Sell on {best.sell_exchange} at ${best.sell_price:,.2f}")
             print(f"  Gross spread: {best.gross_spread_pct:.3f}%")

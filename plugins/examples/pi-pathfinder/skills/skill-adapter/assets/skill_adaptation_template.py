@@ -12,7 +12,7 @@ output variables, and adaptation logic.
 import logging
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 
 def adapt_skill(source_plugin_skills, target_plugin_requirements, user_query):
@@ -58,7 +58,7 @@ def adapt_skill(source_plugin_skills, target_plugin_requirements, user_query):
             try:
                 # Placeholder:  Replace with actual call to source plugin's skill
                 # summary = source_plugin_skills["summarize"](user_query)
-                summary = "This is a placeholder summary." # Simulate a summary
+                summary = "This is a placeholder summary."  # Simulate a summary
                 adapted_input["summary"] = summary
             except Exception as e:
                 logging.error(f"Error summarizing using source plugin: {e}")
@@ -76,7 +76,7 @@ def adapt_skill(source_plugin_skills, target_plugin_requirements, user_query):
     except ValueError as e:
         logging.error(f"Value error during skill adaptation: {e}")
         raise
-    except Exception as e:
+    except Exception:
         logging.exception("Unexpected error during skill adaptation.")
         raise
 
@@ -107,7 +107,7 @@ def post_process_output(target_plugin_output):
     except TypeError as e:
         logging.error(f"Type error during output post-processing: {e}")
         raise
-    except Exception as e:
+    except Exception:
         logging.exception("Unexpected error during output post-processing.")
         raise
 
@@ -117,10 +117,7 @@ if __name__ == "__main__":
     source_plugin_skills = {
         "summarize": lambda x: f"Summary of: {x}"  # Placeholder summarize function
     }
-    target_plugin_requirements = {
-        "text": "string",
-        "summary": "string"
-    }
+    target_plugin_requirements = {"text": "string", "summary": "string"}
     user_query = "This is a long document that needs to be summarized."
 
     try:

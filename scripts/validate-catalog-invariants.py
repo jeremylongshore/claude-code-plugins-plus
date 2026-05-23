@@ -73,14 +73,10 @@ def main() -> int:
 
         catalog_cat = p.get("category")
         if catalog_cat != fs_cat:
-            errors.append(
-                f"{name}: category=`{catalog_cat}` but FS path implies `{fs_cat}` (source=`{src}`)"
-            )
+            errors.append(f"{name}: category=`{catalog_cat}` but FS path implies `{fs_cat}` (source=`{src}`)")
 
         if fs_cat.startswith("jeremy-"):
-            errors.append(
-                f"{name}: personal-prefix category `{fs_cat}` is FS-only; remove from catalog"
-            )
+            errors.append(f"{name}: personal-prefix category `{fs_cat}` is FS-only; remove from catalog")
 
         # Invariant 5: plugin directory has a sibling package.json (npm tracking).
         pkg_json = ROOT / fs_path / "package.json"

@@ -4,12 +4,12 @@ Configuration Validator for Database Documentation
 Validates the configuration file and tests database connectivity.
 """
 
-import os
 import sys
 import json
 import argparse
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Tuple
+
 
 class ConfigValidator:
     """Validates database documentation configuration."""
@@ -27,7 +27,7 @@ class ConfigValidator:
             return False
 
         try:
-            with open(self.config_path, 'r') as f:
+            with open(self.config_path, "r") as f:
                 self.config = json.load(f)
             print(f"✓ Configuration file loaded: {self.config_path}")
             return True
@@ -40,29 +40,29 @@ class ConfigValidator:
 
     def validate_structure(self) -> bool:
         """Validate the configuration structure."""
-        required_sections = ['project', 'database', 'documentation', 'export']
+        required_sections = ["project", "database", "documentation", "export"]
 
         for section in required_sections:
             if section not in self.config:
                 self.errors.append(f"Missing required section: '{section}'")
 
         # Validate project section
-        if 'project' in self.config:
-            project_required = ['name']
+        if "project" in self.config:
+            project_required = ["name"]
             for field in project_required:
-                if field not in self.config['project']:
+                if field not in self.config["project"]:
                     self.errors.append(f"Missing required field 'project.{field}'")
 
         # Validate database section
-        if 'database' in self.config:
-            db_required = ['type']
+        if "database" in self.config:
+            db_required = ["type"]
             for field in db_required:
-                if field not in self.config['database']:
+                if field not in self.config["database"]:
                     self.errors.append(f"Missing required field 'database.{field}'")
 
             # Validate database type
-            valid_db_types = ['postgresql', 'mysql', 'sqlite', 'sqlserver', 'oracle']
-            db_type = self.config['database'].get('type', '')
+            valid_db_types = ["postgresql", "mysql", "sqlite", "sqlserver", "oracle"]
+            db_type = self.config["database"].get("type", "")
             if db_type not in valid_db_types:
                 self.errors.append(f"Invalid database type: '{db_type}'. Must be one of: {valid_db_types}")
 
@@ -70,28 +70,28 @@ class ConfigValidator:
 
     def validate_connection(self) -> bool:
         """Validate database connection parameters."""
-        if 'database' not in self.config or 'connection' not in self.config['database']:
+        if "database" not in self.config or "connection" not in self.config["database"]:
             self.warnings.append("No database connection details provided")
             return True
 
-        conn = self.config['database']['connection']
-        db_type = self.config['database'].get('type', 'postgresql')
+        conn = self.config["database"]["connection"]
+        db_type = self.config["database"].get("type", "postgresql")
 
         # Check required fields based on database type
-        if db_type != 'sqlite':
-            if 'host' not in conn:
+        if db_type != "sqlite":
+            if "host" not in conn:
                 self.warnings.append("Database host not specified (using 'localhost')")
-            if 'database' not in conn:
+            if "database" not in conn:
                 self.errors.append("Database name is required")
 
         # Check for credentials
-        if 'user' not in conn and db_type != 'sqlite':
+        if "user" not in conn and db_type != "sqlite":
             self.warnings.append("Database user not specified")
 
         # Validate port if provided
-        if 'port' in conn:
+        if "port" in conn:
             try:
-                port = int(conn['port'])
+                port = int(conn["port"])
                 if port < 1 or port > 65535:
                     self.errors.append(f"Invalid port number: {port}")
             except (ValueError, TypeError):
@@ -101,12 +101,12 @@ class ConfigValidator:
 
     def validate_output_formats(self) -> bool:
         """Validate output format specifications."""
-        if 'documentation' in self.config:
-            doc_config = self.config['documentation']
+        if "documentation" in self.config:
+            doc_config = self.config["documentation"]
 
-            if 'output_format' in doc_config:
-                valid_formats = ['markdown', 'html', 'pdf', 'json', 'xml']
-                formats = doc_config['output_format']
+            if "output_format" in doc_config:
+                valid_formats = ["markdown", "html", "pdf", "json", "xml"]
+                formats = doc_config["output_format"]
 
                 if isinstance(formats, list):
                     for fmt in formats:
@@ -118,24 +118,24 @@ class ConfigValidator:
                 else:
                     self.errors.append("Output format must be a string or list of strings")
 
-        if 'export' in self.config:
-            export_config = self.config['export']
+        if "export" in self.config:
+            export_config = self.config["export"]
 
-            if 'format' in export_config:
-                valid_formats = ['markdown', 'html', 'json', 'csv']
-                if export_config['format'] not in valid_formats:
+            if "format" in export_config:
+                valid_formats = ["markdown", "html", "json", "csv"]
+                if export_config["format"] not in valid_formats:
                     self.warnings.append(f"Unknown export format: '{export_config['format']}'")
 
         return len(self.errors) == 0
 
     def validate_project_structure(self) -> bool:
         """Validate that the project directory structure exists."""
-        if not self.config or 'project' not in self.config:
+        if not self.config or "project" not in self.config:
             return False
 
         # Check if we're in a documentation project directory
         project_dir = self.config_path.parent
-        expected_dirs = ['schemas', 'tables', 'views', 'procedures', 'diagrams', 'exports']
+        expected_dirs = ["schemas", "tables", "views", "procedures", "diagrams", "exports"]
 
         missing_dirs = []
         for dir_name in expected_dirs:
@@ -151,12 +151,12 @@ class ConfigValidator:
 
     def test_connectivity(self) -> bool:
         """Test database connectivity (placeholder for actual connection test)."""
-        if 'database' not in self.config or 'connection' not in self.config['database']:
+        if "database" not in self.config or "connection" not in self.config["database"]:
             self.warnings.append("Cannot test connectivity - no connection details")
             return True
 
-        db_type = self.config['database'].get('type')
-        conn = self.config['database']['connection']
+        db_type = self.config["database"].get("type")
+        conn = self.config["database"]["connection"]
 
         print(f"\n📡 Testing connectivity to {db_type} database...")
         print(f"   Host: {conn.get('host', 'localhost')}")
@@ -216,7 +216,7 @@ class ConfigValidator:
             ("Connection", self.validate_connection),
             ("Output Formats", self.validate_output_formats),
             ("Project Structure", self.validate_project_structure),
-            ("Connectivity", self.test_connectivity)
+            ("Connectivity", self.test_connectivity),
         ]
 
         print("\nRunning validation checks...")
@@ -234,11 +234,12 @@ class ConfigValidator:
         print("-" * 40)
         return all_passed
 
+
 def main():
-    parser = argparse.ArgumentParser(description='Validate database documentation configuration')
-    parser.add_argument('--config', '-c', required=True, help='Path to configuration file')
-    parser.add_argument('--output', '-o', help='Output validation report to file')
-    parser.add_argument('--quiet', '-q', action='store_true', help='Suppress output except errors')
+    parser = argparse.ArgumentParser(description="Validate database documentation configuration")
+    parser.add_argument("--config", "-c", required=True, help="Path to configuration file")
+    parser.add_argument("--output", "-o", help="Output validation report to file")
+    parser.add_argument("--quiet", "-q", action="store_true", help="Suppress output except errors")
 
     args = parser.parse_args()
 
@@ -256,12 +257,13 @@ def main():
 
     # Save report if requested
     if args.output:
-        with open(args.output, 'w') as f:
+        with open(args.output, "w") as f:
             f.write(report)
         print(f"Report saved to: {args.output}")
 
     # Return appropriate exit code
     return 0 if is_valid else 1
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     sys.exit(main())

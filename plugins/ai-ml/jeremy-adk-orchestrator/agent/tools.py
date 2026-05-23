@@ -6,8 +6,7 @@
 """Tools for ADK Orchestrator Agent - A2A protocol and coordination functions"""
 
 import asyncio
-import json
-from typing import Dict, List, Optional, Any, Union
+from typing import Dict, List, Optional, Any
 from datetime import datetime
 import httpx
 from pydantic import BaseModel, Field
@@ -16,6 +15,7 @@ from pydantic import BaseModel, Field
 # Pydantic models for structured data
 class AgentCard(BaseModel):
     """Agent Card for A2A protocol discovery"""
+
     name: str
     description: str
     url: str
@@ -28,6 +28,7 @@ class AgentCard(BaseModel):
 
 class AgentInvocation(BaseModel):
     """Request structure for agent invocation"""
+
     agent_name: str
     input_data: Dict[str, Any]
     timeout_seconds: int = 30
@@ -37,6 +38,7 @@ class AgentInvocation(BaseModel):
 
 class WorkflowConfig(BaseModel):
     """Configuration for multi-agent workflows"""
+
     pattern: str  # "sequential", "parallel", "loop"
     agents: List[str]
     max_iterations: int = 10
@@ -46,9 +48,9 @@ class WorkflowConfig(BaseModel):
 
 # Tool Functions
 
+
 async def discover_agents(
-    registry_url: Optional[str] = None,
-    filter_capabilities: Optional[List[str]] = None
+    registry_url: Optional[str] = None, filter_capabilities: Optional[List[str]] = None
 ) -> Dict[str, Any]:
     """Discovers available agents via A2A protocol.
 
@@ -68,7 +70,7 @@ async def discover_agents(
 
         # In production, this would make actual HTTP requests
         # For now, return example structure
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient():
             # Discover agents from registry
             # response = await client.get(registry_url)
             # agents = response.json()
@@ -86,7 +88,7 @@ async def discover_agents(
                     "description": "Generates code in multiple languages",
                     "url": "https://us-central1-aiplatform.googleapis.com/v1/reasoningEngines/code-generator",
                     "capabilities": ["python", "javascript", "sql"],
-                }
+                },
             ]
 
             # Filter by capabilities if specified
@@ -102,22 +104,14 @@ async def discover_agents(
             "discovered_count": len(discovered_agents),
             "agents": discovered_agents,
             "registry": registry_url,
-            "timestamp": datetime.utcnow().isoformat()
+            "timestamp": datetime.utcnow().isoformat(),
         }
 
     except Exception as e:
-        return {
-            "status": "error",
-            "error": str(e),
-            "discovered_count": 0,
-            "agents": []
-        }
+        return {"status": "error", "error": str(e), "discovered_count": 0, "agents": []}
 
 
-async def invoke_agent(
-    invocation: AgentInvocation,
-    retry_count: int = 3
-) -> Dict[str, Any]:
+async def invoke_agent(invocation: AgentInvocation, retry_count: int = 3) -> Dict[str, Any]:
     """Invokes a specific agent via A2A protocol.
 
     Args:
@@ -132,15 +126,12 @@ async def invoke_agent(
         a2a_request = {
             "jsonrpc": "2.0",
             "method": "agent.invoke",
-            "params": {
-                "input": invocation.input_data,
-                "session_id": invocation.session_id
-            },
-            "id": f"req-{datetime.utcnow().timestamp()}"
+            "params": {"input": invocation.input_data, "session_id": invocation.session_id},
+            "id": f"req-{datetime.utcnow().timestamp()}",
         }
 
         # In production, make actual A2A protocol request
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient():
             # response = await client.post(
             #     f"{agent_url}/a2a",
             #     json=a2a_request,
@@ -153,12 +144,9 @@ async def invoke_agent(
                 "jsonrpc": "2.0",
                 "result": {
                     "output": f"Processed request for {invocation.agent_name}",
-                    "metadata": {
-                        "processing_time_ms": 1234,
-                        "tokens_used": 567
-                    }
+                    "metadata": {"processing_time_ms": 1234, "tokens_used": 567},
                 },
-                "id": a2a_request["id"]
+                "id": a2a_request["id"],
             }
 
         return {
@@ -166,7 +154,7 @@ async def invoke_agent(
             "agent": invocation.agent_name,
             "result": response_data["result"],
             "session_id": invocation.session_id,
-            "timestamp": datetime.utcnow().isoformat()
+            "timestamp": datetime.utcnow().isoformat(),
         }
 
     except asyncio.TimeoutError:
@@ -174,21 +162,16 @@ async def invoke_agent(
             "status": "timeout",
             "agent": invocation.agent_name,
             "error": f"Agent invocation timed out after {invocation.timeout_seconds}s",
-            "session_id": invocation.session_id
+            "session_id": invocation.session_id,
         }
     except Exception as e:
-        return {
-            "status": "error",
-            "agent": invocation.agent_name,
-            "error": str(e),
-            "session_id": invocation.session_id
-        }
+        return {"status": "error", "agent": invocation.agent_name, "error": str(e), "session_id": invocation.session_id}
 
 
 async def manage_agent_session(
     action: str,  # "create", "get", "update", "delete"
     session_id: Optional[str] = None,
-    session_data: Optional[Dict[str, Any]] = None
+    session_data: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     """Manages agent sessions for stateful interactions.
 
@@ -208,7 +191,7 @@ async def manage_agent_session(
                 "status": "success",
                 "action": "created",
                 "session_id": new_session_id,
-                "created_at": datetime.utcnow().isoformat()
+                "created_at": datetime.utcnow().isoformat(),
             }
 
         elif action == "get":
@@ -218,7 +201,7 @@ async def manage_agent_session(
                 "action": "retrieved",
                 "session_id": session_id,
                 "data": session_data or {},
-                "retrieved_at": datetime.utcnow().isoformat()
+                "retrieved_at": datetime.utcnow().isoformat(),
             }
 
         elif action == "update":
@@ -227,7 +210,7 @@ async def manage_agent_session(
                 "status": "success",
                 "action": "updated",
                 "session_id": session_id,
-                "updated_at": datetime.utcnow().isoformat()
+                "updated_at": datetime.utcnow().isoformat(),
             }
 
         elif action == "delete":
@@ -236,27 +219,17 @@ async def manage_agent_session(
                 "status": "success",
                 "action": "deleted",
                 "session_id": session_id,
-                "deleted_at": datetime.utcnow().isoformat()
+                "deleted_at": datetime.utcnow().isoformat(),
             }
 
         else:
-            return {
-                "status": "error",
-                "error": f"Unknown action: {action}"
-            }
+            return {"status": "error", "error": f"Unknown action: {action}"}
 
     except Exception as e:
-        return {
-            "status": "error",
-            "action": action,
-            "error": str(e)
-        }
+        return {"status": "error", "action": action, "error": str(e)}
 
 
-async def validate_agent_card(
-    agent_url: str,
-    strict_mode: bool = True
-) -> Dict[str, Any]:
+async def validate_agent_card(agent_url: str, strict_mode: bool = True) -> Dict[str, Any]:
     """Validates an agent's card against A2A specification.
 
     Args:
@@ -267,7 +240,7 @@ async def validate_agent_card(
         Validation results and agent card if valid
     """
     try:
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient():
             # Fetch agent card from A2A well-known endpoint
             # response = await client.get(f"{agent_url}/.well-known/agent-card")
             # card_data = response.json()
@@ -278,7 +251,7 @@ async def validate_agent_card(
                 "description": "An example agent",
                 "url": agent_url,
                 "version": "1.0.0",
-                "capabilities": {"nlp": True, "code": True}
+                "capabilities": {"nlp": True, "code": True},
             }
 
             # Validate using Pydantic
@@ -288,22 +261,15 @@ async def validate_agent_card(
                 "status": "valid",
                 "agent_card": card.model_dump(),
                 "validation_mode": "strict" if strict_mode else "lenient",
-                "validated_at": datetime.utcnow().isoformat()
+                "validated_at": datetime.utcnow().isoformat(),
             }
 
     except Exception as e:
-        return {
-            "status": "invalid",
-            "error": str(e),
-            "agent_url": agent_url
-        }
+        return {"status": "invalid", "error": str(e), "agent_url": agent_url}
 
 
 async def deploy_to_vertex_engine(
-    agent_name: str,
-    project_id: str,
-    location: str = "us-central1",
-    config: Optional[Dict[str, Any]] = None
+    agent_name: str, project_id: str, location: str = "us-central1", config: Optional[Dict[str, Any]] = None
 ) -> Dict[str, Any]:
     """Deploys an agent to Vertex AI Engine.
 
@@ -317,11 +283,7 @@ async def deploy_to_vertex_engine(
         Deployment status and endpoint information
     """
     try:
-        deployment_config = config or {
-            "machine_type": "n1-standard-4",
-            "replica_count": 2,
-            "auto_scaling": True
-        }
+        deployment_config = config or {"machine_type": "n1-standard-4", "replica_count": 2, "auto_scaling": True}
 
         # In production, use the vertexai SDK:
         # import vertexai
@@ -337,21 +299,14 @@ async def deploy_to_vertex_engine(
             "location": location,
             "endpoint": f"https://{location}-aiplatform.googleapis.com/v1/projects/{project_id}/locations/{location}/endpoints/{agent_name}",
             "config": deployment_config,
-            "deployed_at": datetime.utcnow().isoformat()
+            "deployed_at": datetime.utcnow().isoformat(),
         }
 
     except Exception as e:
-        return {
-            "status": "deployment_failed",
-            "agent": agent_name,
-            "error": str(e)
-        }
+        return {"status": "deployment_failed", "agent": agent_name, "error": str(e)}
 
 
-async def monitor_agent_health(
-    agent_names: List[str],
-    include_metrics: bool = True
-) -> Dict[str, Any]:
+async def monitor_agent_health(agent_names: List[str], include_metrics: bool = True) -> Dict[str, Any]:
     """Monitors health and metrics for deployed agents.
 
     Args:
@@ -370,7 +325,7 @@ async def monitor_agent_health(
                 "status": "healthy",
                 "availability": 99.95,
                 "response_time_ms": 234,
-                "error_rate": 0.001
+                "error_rate": 0.001,
             }
 
             if include_metrics:
@@ -378,7 +333,7 @@ async def monitor_agent_health(
                     "requests_per_minute": 120,
                     "tokens_per_request": 450,
                     "cache_hit_rate": 0.85,
-                    "memory_usage_mb": 512
+                    "memory_usage_mb": 512,
                 }
 
         return {
@@ -388,21 +343,16 @@ async def monitor_agent_health(
             "summary": {
                 "total_agents": len(agent_names),
                 "healthy": len([h for h in health_results.values() if h["status"] == "healthy"]),
-                "unhealthy": len([h for h in health_results.values() if h["status"] != "healthy"])
-            }
+                "unhealthy": len([h for h in health_results.values() if h["status"] != "healthy"]),
+            },
         }
 
     except Exception as e:
-        return {
-            "status": "error",
-            "error": str(e)
-        }
+        return {"status": "error", "error": str(e)}
 
 
 async def create_agent_team(
-    team_name: str,
-    agent_roles: Dict[str, str],
-    coordination_rules: Optional[Dict[str, Any]] = None
+    team_name: str, agent_roles: Dict[str, str], coordination_rules: Optional[Dict[str, Any]] = None
 ) -> Dict[str, Any]:
     """Creates a team of agents for collaborative tasks.
 
@@ -418,31 +368,22 @@ async def create_agent_team(
         team_config = {
             "name": team_name,
             "agents": agent_roles,
-            "coordination": coordination_rules or {
+            "coordination": coordination_rules
+            or {
                 "decision_maker": list(agent_roles.keys())[0] if agent_roles else None,
                 "voting_enabled": False,
-                "consensus_required": False
+                "consensus_required": False,
             },
-            "created_at": datetime.utcnow().isoformat()
+            "created_at": datetime.utcnow().isoformat(),
         }
 
-        return {
-            "status": "created",
-            "team": team_config,
-            "agent_count": len(agent_roles)
-        }
+        return {"status": "created", "team": team_config, "agent_count": len(agent_roles)}
 
     except Exception as e:
-        return {
-            "status": "error",
-            "error": str(e)
-        }
+        return {"status": "error", "error": str(e)}
 
 
-async def coordinate_workflow(
-    workflow: WorkflowConfig,
-    input_data: Dict[str, Any]
-) -> Dict[str, Any]:
+async def coordinate_workflow(workflow: WorkflowConfig, input_data: Dict[str, Any]) -> Dict[str, Any]:
     """Coordinates multi-agent workflow execution.
 
     Args:
@@ -459,10 +400,7 @@ async def coordinate_workflow(
             # Execute agents in sequence
             current_input = input_data
             for agent in workflow.agents:
-                invocation = AgentInvocation(
-                    agent_name=agent,
-                    input_data=current_input
-                )
+                invocation = AgentInvocation(agent_name=agent, input_data=current_input)
                 result = await invoke_agent(invocation)
                 results.append(result)
                 # Pass output to next agent
@@ -474,8 +412,7 @@ async def coordinate_workflow(
         elif workflow.pattern == "parallel":
             # Execute agents in parallel
             tasks = [
-                invoke_agent(AgentInvocation(agent_name=agent, input_data=input_data))
-                for agent in workflow.agents
+                invoke_agent(AgentInvocation(agent_name=agent, input_data=input_data)) for agent in workflow.agents
             ]
             results = await asyncio.gather(*tasks, return_exceptions=True)
 
@@ -485,10 +422,7 @@ async def coordinate_workflow(
             current_input = input_data
             while iteration < workflow.max_iterations:
                 for agent in workflow.agents:
-                    invocation = AgentInvocation(
-                        agent_name=agent,
-                        input_data=current_input
-                    )
+                    invocation = AgentInvocation(agent_name=agent, input_data=current_input)
                     result = await invoke_agent(invocation)
                     results.append(result)
 
@@ -504,12 +438,8 @@ async def coordinate_workflow(
             "results": results,
             "agents_invoked": workflow.agents,
             "execution_time_ms": 5678,  # Would be actual timing
-            "timestamp": datetime.utcnow().isoformat()
+            "timestamp": datetime.utcnow().isoformat(),
         }
 
     except Exception as e:
-        return {
-            "status": "error",
-            "pattern": workflow.pattern,
-            "error": str(e)
-        }
+        return {"status": "error", "pattern": workflow.pattern, "error": str(e)}

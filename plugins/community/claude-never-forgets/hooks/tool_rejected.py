@@ -28,12 +28,14 @@ def main():
         tool_name = data.get("tool_name", "unknown")
         content = f"[CORRECTION] {tool_name}: {error}"[:300]
 
-        memories.setdefault("realtime_memories", []).append({
-            "type": "correction",
-            "content": content,
-            "added_at": datetime.now().isoformat(),
-            "source": "tool_rejection"
-        })
+        memories.setdefault("realtime_memories", []).append(
+            {
+                "type": "correction",
+                "content": content,
+                "added_at": datetime.now().isoformat(),
+                "source": "tool_rejection",
+            }
+        )
 
         memories["updated_at"] = datetime.now().isoformat()
         json.dump(memories, open(memory_file, "w", encoding="utf-8"), indent=2, ensure_ascii=False)

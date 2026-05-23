@@ -16,10 +16,8 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import Dict, List, Any, Optional
+from typing import Dict, Any
 from datetime import datetime
-import subprocess
-import re
 
 
 class ViolationReporter:
@@ -64,7 +62,7 @@ class ViolationReporter:
                 lines.append(f"  Budget:    {violation.get('budget')} {violation.get('unit', '')}")
                 lines.append(f"  Actual:    {violation.get('actual')} {violation.get('unit', '')}")
                 lines.append(f"  Over:      {violation.get('percentage_over', 'N/A')}%")
-                if violation.get('difference'):
+                if violation.get("difference"):
                     lines.append(f"  Excess:    {violation.get('difference')} {violation.get('unit', '')}")
             lines.append("")
 
@@ -146,10 +144,18 @@ class ViolationReporter:
 
         # Summary
         html.append("<div class='summary'>")
-        html.append(f"<div class='summary-item violations'><h3>Violations</h3><div class='value'>{len(self.violations)}</div></div>")
-        html.append(f"<div class='summary-item warnings'><h3>Warnings</h3><div class='value'>{len(self.warnings)}</div></div>")
-        html.append(f"<div class='summary-item passed'><h3>Passed</h3><div class='value'>{len(self.passed)}</div></div>")
-        html.append(f"<div class='summary-item'><h3>Total</h3><div class='value'>{len(self.violations) + len(self.warnings) + len(self.passed)}</div></div>")
+        html.append(
+            f"<div class='summary-item violations'><h3>Violations</h3><div class='value'>{len(self.violations)}</div></div>"
+        )
+        html.append(
+            f"<div class='summary-item warnings'><h3>Warnings</h3><div class='value'>{len(self.warnings)}</div></div>"
+        )
+        html.append(
+            f"<div class='summary-item passed'><h3>Passed</h3><div class='value'>{len(self.passed)}</div></div>"
+        )
+        html.append(
+            f"<div class='summary-item'><h3>Total</h3><div class='value'>{len(self.violations) + len(self.warnings) + len(self.passed)}</div></div>"
+        )
         html.append("</div>")
 
         # Critical violations
@@ -237,8 +243,8 @@ class ViolationReporter:
                 "total_violations": len(self.violations),
                 "critical_violations": len([v for v in self.violations if v.get("severity") == "critical"]),
                 "warnings": len(self.warnings),
-                "passed": len(self.passed)
-            }
+                "passed": len(self.passed),
+            },
         }
 
     def generate_slack_message(self) -> Dict[str, Any]:
@@ -252,39 +258,21 @@ class ViolationReporter:
         fields = []
 
         # Summary
-        fields.append({
-            "title": "Violations",
-            "value": str(len(self.violations)),
-            "short": True
-        })
-        fields.append({
-            "title": "Critical",
-            "value": str(critical_count),
-            "short": True
-        })
-        fields.append({
-            "title": "Warnings",
-            "value": str(len(self.warnings)),
-            "short": True
-        })
-        fields.append({
-            "title": "Passed",
-            "value": str(len(self.passed)),
-            "short": True
-        })
+        fields.append({"title": "Violations", "value": str(len(self.violations)), "short": True})
+        fields.append({"title": "Critical", "value": str(critical_count), "short": True})
+        fields.append({"title": "Warnings", "value": str(len(self.warnings)), "short": True})
+        fields.append({"title": "Passed", "value": str(len(self.passed)), "short": True})
 
         # Top violations
         if critical_count > 0:
             top_violations = sorted(self.violations, key=lambda x: x.get("percentage_over", 0), reverse=True)[:3]
-            violations_text = "\n".join([
-                f"• {v.get('metric')}: {v.get('percentage_over', 'N/A')}% over ({v.get('actual')}/{v.get('budget')} {v.get('unit', '')})"
-                for v in top_violations
-            ])
-            fields.append({
-                "title": "Top Violations",
-                "value": violations_text,
-                "short": False
-            })
+            violations_text = "\n".join(
+                [
+                    f"• {v.get('metric')}: {v.get('percentage_over', 'N/A')}% over ({v.get('actual')}/{v.get('budget')} {v.get('unit', '')})"
+                    for v in top_violations
+                ]
+            )
+            fields.append({"title": "Top Violations", "value": violations_text, "short": False})
 
         return {
             "attachments": [
@@ -294,7 +282,7 @@ class ViolationReporter:
                     "text": f"Performance budget validation at {datetime.now().isoformat()}",
                     "fields": fields,
                     "footer": "Performance Budget Validator",
-                    "ts": int(datetime.now().timestamp())
+                    "ts": int(datetime.now().timestamp()),
                 }
             ]
         }
@@ -306,10 +294,10 @@ class ViolationReporter:
             import json as json_module
 
             message = self.generate_slack_message()
-            data = json_module.dumps(message).encode('utf-8')
+            data = json_module.dumps(message).encode("utf-8")
 
-            req = urllib.request.Request(webhook_url, data=data, method='POST')
-            req.add_header('Content-Type', 'application/json')
+            req = urllib.request.Request(webhook_url, data=data, method="POST")
+            req.add_header("Content-Type", "application/json")
 
             with urllib.request.urlopen(req) as response:
                 return response.status == 200
@@ -323,13 +311,19 @@ class ViolationReporter:
         lines.append("Type,Metric,Budget,Actual,Difference,Percentage,Unit,Severity")
 
         for violation in self.violations:
-            lines.append(f"Violation,{violation.get('metric')},{violation.get('budget')},{violation.get('actual')},{violation.get('difference', '')},{violation.get('percentage_over', '')},{violation.get('unit', '')},{violation.get('severity', '')}")
+            lines.append(
+                f"Violation,{violation.get('metric')},{violation.get('budget')},{violation.get('actual')},{violation.get('difference', '')},{violation.get('percentage_over', '')},{violation.get('unit', '')},{violation.get('severity', '')}"
+            )
 
         for warning in self.warnings:
-            lines.append(f"Warning,{warning.get('metric', '')},{warning.get('budget', '')},{warning.get('actual', '')},{warning.get('difference', '')},{warning.get('percentage_over', '')},{warning.get('unit', '')},{warning.get('severity', '')}")
+            lines.append(
+                f"Warning,{warning.get('metric', '')},{warning.get('budget', '')},{warning.get('actual', '')},{warning.get('difference', '')},{warning.get('percentage_over', '')},{warning.get('unit', '')},{warning.get('severity', '')}"
+            )
 
         for passed in self.passed:
-            lines.append(f"Passed,{passed.get('metric')},{passed.get('budget')},{passed.get('actual')},0,0%,{passed.get('unit', '')},passed")
+            lines.append(
+                f"Passed,{passed.get('metric')},{passed.get('budget')},{passed.get('actual')},0,0%,{passed.get('unit', '')},passed"
+            )
 
         return "\n".join(lines)
 
@@ -345,42 +339,22 @@ Examples:
   report_violation.py --report validation.json --format text
   report_violation.py --report validation.json --format csv --output violations.csv
   report_violation.py --report validation.json --slack https://hooks.slack.com/...
-        """
+        """,
     )
 
+    parser.add_argument("-r", "--report", type=str, required=True, help="Path to validation report JSON file")
     parser.add_argument(
-        "-r", "--report",
-        type=str,
-        required=True,
-        help="Path to validation report JSON file"
-    )
-    parser.add_argument(
-        "-f", "--format",
+        "-f",
+        "--format",
         type=str,
         choices=["text", "html", "json", "csv"],
         default="text",
-        help="Report format (default: text)"
+        help="Report format (default: text)",
     )
-    parser.add_argument(
-        "-o", "--output",
-        type=str,
-        help="Output file (stdout if not specified)"
-    )
-    parser.add_argument(
-        "-s", "--slack",
-        type=str,
-        help="Slack webhook URL for sending report"
-    )
-    parser.add_argument(
-        "-e", "--email",
-        type=str,
-        help="Email address to send report to"
-    )
-    parser.add_argument(
-        "-v", "--verbose",
-        action="store_true",
-        help="Enable verbose output"
-    )
+    parser.add_argument("-o", "--output", type=str, help="Output file (stdout if not specified)")
+    parser.add_argument("-s", "--slack", type=str, help="Slack webhook URL for sending report")
+    parser.add_argument("-e", "--email", type=str, help="Email address to send report to")
+    parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose output")
 
     args = parser.parse_args()
 
@@ -391,7 +365,7 @@ Examples:
             print(f"Error: Report file not found: {args.report}", file=sys.stderr)
             return 1
 
-        with open(report_path, 'r') as f:
+        with open(report_path, "r") as f:
             report_data = json.load(f)
 
         # Create reporter
@@ -414,7 +388,7 @@ Examples:
         if args.output:
             output_path = Path(args.output)
             output_path.parent.mkdir(parents=True, exist_ok=True)
-            with open(output_path, 'w') as f:
+            with open(output_path, "w") as f:
                 f.write(output_text)
             print(f"Report written to: {args.output}")
         else:

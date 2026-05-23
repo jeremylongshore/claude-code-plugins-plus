@@ -11,7 +11,6 @@ License: MIT
 
 import json
 import time
-from datetime import datetime
 from pathlib import Path
 from typing import Dict, Any, List, Optional
 
@@ -50,10 +49,7 @@ class PoolFetcher:
         self._cache = {}
 
     def fetch_pool_by_address(
-        self,
-        address: str,
-        chain: str = "ethereum",
-        protocol: str = "uniswap-v3"
+        self, address: str, chain: str = "ethereum", protocol: str = "uniswap-v3"
     ) -> Optional[Dict[str, Any]]:
         """Fetch pool data by contract address.
 
@@ -91,15 +87,11 @@ class PoolFetcher:
 
         # Return mock data as last resort
         if self.verbose:
-            print(f"  Pool not found, using mock data")
+            print("  Pool not found, using mock data")
         return self._get_mock_pool(address)
 
     def fetch_pools_by_pair(
-        self,
-        token0: str,
-        token1: str,
-        chain: str = None,
-        protocol: str = None
+        self, token0: str, token1: str, chain: str = None, protocol: str = None
     ) -> List[Dict[str, Any]]:
         """Fetch pools for a token pair.
 
@@ -138,12 +130,7 @@ class PoolFetcher:
 
         return matches
 
-    def fetch_pools_by_protocol(
-        self,
-        protocol: str,
-        chain: str = None,
-        min_tvl: float = 0
-    ) -> List[Dict[str, Any]]:
+    def fetch_pools_by_protocol(self, protocol: str, chain: str = None, min_tvl: float = 0) -> List[Dict[str, Any]]:
         """Fetch all pools for a protocol.
 
         Args:
@@ -188,13 +175,9 @@ class PoolFetcher:
 
         try:
             if self.verbose:
-                print(f"  Fetching from DeFiLlama...")
+                print("  Fetching from DeFiLlama...")
 
-            response = requests.get(
-                self.DEFILLAMA_POOLS_URL,
-                timeout=30,
-                headers={"Accept": "application/json"}
-            )
+            response = requests.get(self.DEFILLAMA_POOLS_URL, timeout=30, headers={"Accept": "application/json"})
             response.raise_for_status()
 
             data = response.json()
@@ -210,11 +193,7 @@ class PoolFetcher:
                 print(f"  API error: {e}")
             return self._get_mock_pools()
 
-    def _fetch_from_subgraph(
-        self,
-        address: str,
-        subgraph_key: str
-    ) -> Optional[Dict[str, Any]]:
+    def _fetch_from_subgraph(self, address: str, subgraph_key: str) -> Optional[Dict[str, Any]]:
         """Fetch pool from The Graph subgraph.
 
         Args:
@@ -251,11 +230,7 @@ class PoolFetcher:
         """
 
         try:
-            response = requests.post(
-                endpoint,
-                json={"query": query, "variables": {"id": address.lower()}},
-                timeout=15
-            )
+            response = requests.post(endpoint, json={"query": query, "variables": {"id": address.lower()}}, timeout=15)
             response.raise_for_status()
 
             data = response.json()
@@ -289,11 +264,7 @@ class PoolFetcher:
 
         return None
 
-    def _normalize_subgraph_pool(
-        self,
-        pool: Dict[str, Any],
-        subgraph_key: str
-    ) -> Dict[str, Any]:
+    def _normalize_subgraph_pool(self, pool: Dict[str, Any], subgraph_key: str) -> Dict[str, Any]:
         """Normalize subgraph pool data to standard format.
 
         Args:
@@ -370,10 +341,7 @@ class PoolFetcher:
                 with open(self.CACHE_FILE, "r") as f:
                     cache = json.load(f)
 
-            cache[key] = {
-                "timestamp": time.time(),
-                "data": data
-            }
+            cache[key] = {"timestamp": time.time(), "data": data}
 
             with open(self.CACHE_FILE, "w") as f:
                 json.dump(cache, f)
@@ -455,9 +423,9 @@ def main():
     for pool in pools[:5]:
         tvl = pool.get("tvlUsd", 0)
         if tvl >= 1e9:
-            tvl_str = f"${tvl/1e9:.1f}B"
+            tvl_str = f"${tvl / 1e9:.1f}B"
         elif tvl >= 1e6:
-            tvl_str = f"${tvl/1e6:.0f}M"
+            tvl_str = f"${tvl / 1e6:.0f}M"
         else:
             tvl_str = f"${tvl:,.0f}"
 

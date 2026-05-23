@@ -15,12 +15,12 @@ import sys
 from pathlib import Path
 from datetime import datetime
 from dataclasses import dataclass
-from typing import Optional
 
 
 @dataclass
 class RestoreConfig:
     """Restore script configuration."""
+
     db_type: str
     database: str
     host: str
@@ -30,7 +30,7 @@ class RestoreConfig:
     backup_dir: str
 
 
-POSTGRESQL_RESTORE_TEMPLATE = '''#!/bin/bash
+POSTGRESQL_RESTORE_TEMPLATE = """#!/bin/bash
 # PostgreSQL Restore Script
 # Generated: {timestamp}
 # Database: {database}
@@ -143,9 +143,9 @@ else
     echo "ERROR: Restore failed"
     exit 1
 fi
-'''
+"""
 
-MYSQL_RESTORE_TEMPLATE = '''#!/bin/bash
+MYSQL_RESTORE_TEMPLATE = """#!/bin/bash
 # MySQL Restore Script
 # Generated: {timestamp}
 # Database: {database}
@@ -248,9 +248,9 @@ else
     echo "ERROR: Restore failed"
     exit 1
 fi
-'''
+"""
 
-MONGODB_RESTORE_TEMPLATE = '''#!/bin/bash
+MONGODB_RESTORE_TEMPLATE = """#!/bin/bash
 # MongoDB Restore Script
 # Generated: {timestamp}
 # Database: {database}
@@ -364,9 +364,9 @@ fi
 
 # Cleanup temp directory
 [ -n "${{EXTRACT_DIR:-}}" ] && rm -rf "$EXTRACT_DIR"
-'''
+"""
 
-SQLITE_RESTORE_TEMPLATE = '''#!/bin/bash
+SQLITE_RESTORE_TEMPLATE = """#!/bin/bash
 # SQLite Restore Script
 # Generated: {timestamp}
 # Database: {database}
@@ -480,16 +480,16 @@ fi
 
 # Cleanup
 [ -n "${{TEMP_FILE:-}}" ] && rm -f "$TEMP_FILE"
-'''
+"""
 
 
 def generate_restore_script(config: RestoreConfig) -> str:
     """Generate restore script based on database type."""
     templates = {
-        'postgresql': POSTGRESQL_RESTORE_TEMPLATE,
-        'mysql': MYSQL_RESTORE_TEMPLATE,
-        'mongodb': MONGODB_RESTORE_TEMPLATE,
-        'sqlite': SQLITE_RESTORE_TEMPLATE,
+        "postgresql": POSTGRESQL_RESTORE_TEMPLATE,
+        "mysql": MYSQL_RESTORE_TEMPLATE,
+        "mongodb": MONGODB_RESTORE_TEMPLATE,
+        "sqlite": SQLITE_RESTORE_TEMPLATE,
     }
 
     template = templates.get(config.db_type)
@@ -503,47 +503,41 @@ def generate_restore_script(config: RestoreConfig) -> str:
         port=config.port,
         user=config.user,
         backup_dir=config.backup_dir,
-        backup_pattern=config.backup_pattern
+        backup_pattern=config.backup_pattern,
     )
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description='Generate database restore scripts for PostgreSQL, MySQL, MongoDB, or SQLite'
+        description="Generate database restore scripts for PostgreSQL, MySQL, MongoDB, or SQLite"
     )
-    parser.add_argument('--db-type', '-t', required=True,
-                        choices=['postgresql', 'mysql', 'mongodb', 'sqlite'],
-                        help='Database type')
-    parser.add_argument('--database', '-d', required=True,
-                        help='Database name (or path for SQLite)')
-    parser.add_argument('--host', '-H', default='localhost',
-                        help='Database host (default: localhost)')
-    parser.add_argument('--port', '-P', type=int,
-                        help='Database port (default: depends on db type)')
-    parser.add_argument('--user', '-u', default='root',
-                        help='Database user (default: root)')
-    parser.add_argument('--backup-dir', '-b', default='/var/backups',
-                        help='Backup directory (default: /var/backups)')
-    parser.add_argument('--backup-pattern', '-p',
-                        help='Backup file pattern (default: depends on db type)')
-    parser.add_argument('--output', '-o', help='Output file (default: stdout)')
+    parser.add_argument(
+        "--db-type", "-t", required=True, choices=["postgresql", "mysql", "mongodb", "sqlite"], help="Database type"
+    )
+    parser.add_argument("--database", "-d", required=True, help="Database name (or path for SQLite)")
+    parser.add_argument("--host", "-H", default="localhost", help="Database host (default: localhost)")
+    parser.add_argument("--port", "-P", type=int, help="Database port (default: depends on db type)")
+    parser.add_argument("--user", "-u", default="root", help="Database user (default: root)")
+    parser.add_argument("--backup-dir", "-b", default="/var/backups", help="Backup directory (default: /var/backups)")
+    parser.add_argument("--backup-pattern", "-p", help="Backup file pattern (default: depends on db type)")
+    parser.add_argument("--output", "-o", help="Output file (default: stdout)")
 
     args = parser.parse_args()
 
     # Default ports
     default_ports = {
-        'postgresql': 5432,
-        'mysql': 3306,
-        'mongodb': 27017,
-        'sqlite': 0,
+        "postgresql": 5432,
+        "mysql": 3306,
+        "mongodb": 27017,
+        "sqlite": 0,
     }
 
     # Default backup patterns
     default_patterns = {
-        'postgresql': '*.dump',
-        'mysql': '*.sql*',
-        'mongodb': '*_*',
-        'sqlite': '*.db*',
+        "postgresql": "*.dump",
+        "mysql": "*.sql*",
+        "mongodb": "*_*",
+        "sqlite": "*.db*",
     }
 
     port = args.port or default_ports[args.db_type]
@@ -556,7 +550,7 @@ def main():
         port=port,
         user=args.user,
         backup_dir=args.backup_dir,
-        backup_pattern=backup_pattern
+        backup_pattern=backup_pattern,
     )
 
     script = generate_restore_script(config)
@@ -572,5 +566,5 @@ def main():
     return 0
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(main())

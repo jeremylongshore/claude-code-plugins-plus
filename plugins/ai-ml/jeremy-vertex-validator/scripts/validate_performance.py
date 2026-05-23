@@ -12,6 +12,7 @@ References:
   - Auto-scaling: https://cloud.google.com/vertex-ai/docs/predictions/autoscaling
   - Monitoring metrics: https://cloud.google.com/monitoring/api/metrics_gcp#gcp-aiplatform
 """
+
 from __future__ import annotations
 
 import argparse
@@ -87,6 +88,7 @@ def _result(
 
 # ── Check 1: Auto-scaling Configuration ─────────────────────────────────────
 
+
 def check_autoscaling(project: str, location: str) -> dict[str, Any]:
     """Verify auto-scaling is configured on deployed models/endpoints.
 
@@ -115,8 +117,7 @@ def check_autoscaling(project: str, location: str) -> dict[str, Any]:
                 "Auto-scaling",
                 "WARNING",
                 "No endpoints found in this region",
-                "Deploy models to endpoints: "
-                "https://cloud.google.com/vertex-ai/docs/predictions/deploy-model-api",
+                "Deploy models to endpoints: https://cloud.google.com/vertex-ai/docs/predictions/deploy-model-api",
             )
 
         issues: list[str] = []
@@ -132,17 +133,13 @@ def check_autoscaling(project: str, location: str) -> dict[str, Any]:
                     max_r = dm.dedicated_resources.max_replica_count
                     if min_r == max_r:
                         issues.append(
-                            f"{ep.display_name}/{dm.display_name}: "
-                            f"min==max=={min_r} (no auto-scaling headroom)"
+                            f"{ep.display_name}/{dm.display_name}: min==max=={min_r} (no auto-scaling headroom)"
                         )
                 elif dm.automatic_resources:
                     # AutomaticResources handles scaling automatically — good
                     pass
                 else:
-                    issues.append(
-                        f"{ep.display_name}/{dm.display_name}: "
-                        "no scaling config found"
-                    )
+                    issues.append(f"{ep.display_name}/{dm.display_name}: no scaling config found")
 
         if not checked:
             return _result(
@@ -176,6 +173,7 @@ def check_autoscaling(project: str, location: str) -> dict[str, Any]:
 
 
 # ── Check 2: Resource Limits ────────────────────────────────────────────────
+
 
 def check_resource_limits(project: str, location: str) -> dict[str, Any]:
     """Verify CPU/memory resource limits are within recommended ranges.
@@ -216,10 +214,7 @@ def check_resource_limits(project: str, location: str) -> dict[str, Any]:
                     machine_type = machine.machine_type or "unknown"
                     # Flag if using very large machines without justification
                     if "n1-highmem" in machine_type or "a2-" in machine_type:
-                        findings.append(
-                            f"{ep.display_name}: uses {machine_type} "
-                            "(verify cost vs performance)"
-                        )
+                        findings.append(f"{ep.display_name}: uses {machine_type} (verify cost vs performance)")
 
         if not checked:
             return _result(
@@ -233,8 +228,7 @@ def check_resource_limits(project: str, location: str) -> dict[str, Any]:
                 "Resource Limits",
                 "WARNING",
                 f"{len(findings)} finding(s): {findings[0]}",
-                "Review machine types: "
-                "https://cloud.google.com/vertex-ai/docs/predictions/configure-compute",
+                "Review machine types: https://cloud.google.com/vertex-ai/docs/predictions/configure-compute",
             )
 
         return _result(
@@ -253,6 +247,7 @@ def check_resource_limits(project: str, location: str) -> dict[str, Any]:
 
 
 # ── Check 3: Latency ────────────────────────────────────────────────────────
+
 
 def check_latency(project: str, location: str) -> dict[str, Any]:
     """Query p50/p95/p99 prediction latency from Cloud Monitoring.
@@ -285,9 +280,7 @@ def check_latency(project: str, location: str) -> dict[str, Any]:
         results = client.list_time_series(
             request={
                 "name": project_name,
-                "filter": (
-                    'metric.type = "aiplatform.googleapis.com/prediction/online/response_latencies"'
-                ),
+                "filter": ('metric.type = "aiplatform.googleapis.com/prediction/online/response_latencies"'),
                 "interval": interval,
                 "view": monitoring_v3.ListTimeSeriesRequest.TimeSeriesView.FULL,
             }
@@ -336,6 +329,7 @@ def check_latency(project: str, location: str) -> dict[str, Any]:
 
 # ── Check 4: Error Rate ─────────────────────────────────────────────────────
 
+
 def check_error_rate(project: str, location: str) -> dict[str, Any]:
     """Query prediction error count from Cloud Monitoring and compute error rate.
 
@@ -379,12 +373,8 @@ def check_error_rate(project: str, location: str) -> dict[str, Any]:
             return total
 
         # Ref: https://cloud.google.com/monitoring/api/metrics_gcp#gcp-aiplatform
-        total_predictions = _sum_metric(
-            "aiplatform.googleapis.com/prediction/online/prediction_count"
-        )
-        total_errors = _sum_metric(
-            "aiplatform.googleapis.com/prediction/online/error_count"
-        )
+        total_predictions = _sum_metric("aiplatform.googleapis.com/prediction/online/prediction_count")
+        total_errors = _sum_metric("aiplatform.googleapis.com/prediction/online/error_count")
 
         if total_predictions == 0:
             return _result(
@@ -395,10 +385,7 @@ def check_error_rate(project: str, location: str) -> dict[str, Any]:
             )
 
         error_rate = total_errors / total_predictions
-        evidence = (
-            f"{error_rate:.2%} error rate "
-            f"({total_errors} errors / {total_predictions} predictions, last hour)"
-        )
+        evidence = f"{error_rate:.2%} error rate ({total_errors} errors / {total_predictions} predictions, last hour)"
 
         if error_rate > ERROR_RATE_THRESHOLD:
             return _result(
@@ -422,6 +409,7 @@ def check_error_rate(project: str, location: str) -> dict[str, Any]:
 
 
 # ── Entrypoint ───────────────────────────────────────────────────────────────
+
 
 def run_performance_checks(
     project: str,
@@ -459,9 +447,9 @@ def run_performance_checks(
         print(f"\n{YELLOW}[WARN]{RESET} Missing optional deps: {', '.join(_MISSING_DEPS)}")
         print(f"       Install with: pip install {' '.join(_MISSING_DEPS)}\n")
 
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"  Performance Validation — project={project}, location={location}")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
 
     results = []
     for name, fn in checks:

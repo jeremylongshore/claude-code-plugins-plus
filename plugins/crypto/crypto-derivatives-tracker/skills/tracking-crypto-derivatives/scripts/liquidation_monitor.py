@@ -14,9 +14,7 @@ from decimal import Decimal
 from typing import Dict, List, Optional
 from datetime import datetime, timedelta
 
-from exchange_client import (
-    ExchangeClient, Liquidation, LiquidationLevel, Exchange
-)
+from exchange_client import ExchangeClient, Liquidation, LiquidationLevel
 
 
 @dataclass
@@ -32,7 +30,7 @@ class LiquidationSummary:
     recent_liquidations: List[Liquidation]
     long_levels: List[LiquidationLevel]
     short_levels: List[LiquidationLevel]
-    cascade_risk: str               # "low", "medium", "high", "critical"
+    cascade_risk: str  # "low", "medium", "high", "critical"
     nearest_long_level: Optional[LiquidationLevel]
     nearest_short_level: Optional[LiquidationLevel]
     timestamp: datetime
@@ -50,9 +48,9 @@ class LiquidationMonitor:
     """
 
     # Cascade risk thresholds (USD within 5% of price)
-    CRITICAL_THRESHOLD = 500_000_000    # $500M
-    HIGH_THRESHOLD = 200_000_000        # $200M
-    MEDIUM_THRESHOLD = 100_000_000      # $100M
+    CRITICAL_THRESHOLD = 500_000_000  # $500M
+    HIGH_THRESHOLD = 200_000_000  # $200M
+    MEDIUM_THRESHOLD = 100_000_000  # $100M
 
     def __init__(
         self,
@@ -91,9 +89,7 @@ class LiquidationMonitor:
                 current_price = Decimal("100")
 
         # Fetch recent liquidations
-        liquidations = self.client.get_recent_liquidations(
-            symbol, limit=100, min_value_usd=100000
-        )
+        liquidations = self.client.get_recent_liquidations(symbol, limit=100, min_value_usd=100000)
 
         # Fetch liquidation levels
         levels = self.client.get_liquidation_levels(symbol, current_price)
@@ -122,9 +118,7 @@ class LiquidationMonitor:
         nearest_short = short_levels[0] if short_levels else None
 
         # Assess cascade risk
-        cascade_risk = self._assess_cascade_risk(
-            current_price, long_levels, short_levels
-        )
+        cascade_risk = self._assess_cascade_risk(current_price, long_levels, short_levels)
 
         return LiquidationSummary(
             symbol=symbol,
@@ -207,22 +201,26 @@ class LiquidationMonitor:
         # Add long levels (below price)
         for level in summary.long_levels[:levels]:
             distance_pct = (float(current_price) - float(level.price)) / float(current_price) * 100
-            heatmap["long_levels"].append({
-                "price": float(level.price),
-                "value_usd": float(level.total_value_usd),
-                "distance_pct": round(distance_pct, 1),
-                "density": level.density,
-            })
+            heatmap["long_levels"].append(
+                {
+                    "price": float(level.price),
+                    "value_usd": float(level.total_value_usd),
+                    "distance_pct": round(distance_pct, 1),
+                    "density": level.density,
+                }
+            )
 
         # Add short levels (above price)
         for level in summary.short_levels[:levels]:
             distance_pct = (float(level.price) - float(current_price)) / float(current_price) * 100
-            heatmap["short_levels"].append({
-                "price": float(level.price),
-                "value_usd": float(level.total_value_usd),
-                "distance_pct": round(distance_pct, 1),
-                "density": level.density,
-            })
+            heatmap["short_levels"].append(
+                {
+                    "price": float(level.price),
+                    "value_usd": float(level.total_value_usd),
+                    "distance_pct": round(distance_pct, 1),
+                    "density": level.density,
+                }
+            )
 
         return heatmap
 
@@ -243,9 +241,7 @@ class LiquidationMonitor:
         Returns:
             List of large liquidations
         """
-        liquidations = self.client.get_recent_liquidations(
-            symbol, limit=limit * 2, min_value_usd=min_value_usd
-        )
+        liquidations = self.client.get_recent_liquidations(symbol, limit=limit * 2, min_value_usd=min_value_usd)
 
         # Filter by size and limit
         large = [l for l in liquidations if float(l.value_usd) >= min_value_usd]
@@ -294,10 +290,10 @@ def demo():
     print("-" * 60)
 
     # 24h totals
-    print(f"\n24h Liquidations:")
-    print(f"   Total:  ${float(summary.total_24h_usd)/1e6:,.1f}M")
-    print(f"   Longs:  ${float(summary.long_liquidations_usd)/1e6:,.1f}M")
-    print(f"   Shorts: ${float(summary.short_liquidations_usd)/1e6:,.1f}M")
+    print("\n24h Liquidations:")
+    print(f"   Total:  ${float(summary.total_24h_usd) / 1e6:,.1f}M")
+    print(f"   Longs:  ${float(summary.long_liquidations_usd) / 1e6:,.1f}M")
+    print(f"   Shorts: ${float(summary.short_liquidations_usd) / 1e6:,.1f}M")
 
     # Cascade risk
     risk_emoji = {
@@ -320,7 +316,7 @@ def demo():
         density_mark = "⚠️ " if level.density in ["high", "critical"] else ""
         print(
             f"  ${float(level.price):>10,.0f} {bar} "
-            f"${float(level.total_value_usd)/1e6:.0f}M {density_mark}{level.density.upper()}"
+            f"${float(level.total_value_usd) / 1e6:.0f}M {density_mark}{level.density.upper()}"
         )
 
     print(f"\nSHORT LIQUIDATIONS (above ${summary.current_price:,}):")
@@ -330,7 +326,7 @@ def demo():
         density_mark = "⚠️ " if level.density in ["high", "critical"] else ""
         print(
             f"  ${float(level.price):>10,.0f} {bar} "
-            f"${float(level.total_value_usd)/1e6:.0f}M {density_mark}{level.density.upper()}"
+            f"${float(level.total_value_usd) / 1e6:.0f}M {density_mark}{level.density.upper()}"
         )
 
     # Recent large liquidations
@@ -347,7 +343,7 @@ def demo():
                 f"{l['exchange']:<10} "
                 f"{l['side']:<6} "
                 f"${l['price']:>10,.0f} "
-                f"${l['value_usd']/1e6:>10.1f}M "
+                f"${l['value_usd'] / 1e6:>10.1f}M "
                 f"{l['time_ago']:>10}"
             )
 

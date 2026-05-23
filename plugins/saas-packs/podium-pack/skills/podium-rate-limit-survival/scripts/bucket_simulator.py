@@ -21,7 +21,10 @@ Exit codes:
 """
 
 from __future__ import annotations
-import argparse, csv, json, statistics, sys
+import argparse
+import csv
+import json
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -58,9 +61,11 @@ def parse_iso(s: str) -> float:
     # Accept Z or +00:00 forms
     if s.endswith("Z"):
         s = s[:-1] + "+00:00"
-    return datetime.fromisoformat(s).replace(tzinfo=timezone.utc).timestamp() \
-        if datetime.fromisoformat(s).tzinfo is None \
+    return (
+        datetime.fromisoformat(s).replace(tzinfo=timezone.utc).timestamp()
+        if datetime.fromisoformat(s).tzinfo is None
         else datetime.fromisoformat(s).timestamp()
+    )
 
 
 def main() -> int:
@@ -68,8 +73,9 @@ def main() -> int:
     ap.add_argument("--trace", required=True, type=Path)
     ap.add_argument("--rate-per-minute", type=float, default=60.0)
     ap.add_argument("--capacity", type=float, default=10.0)
-    ap.add_argument("--daily-quota", type=int, default=0,
-                    help="if > 0, report at which request the daily quota would exhaust")
+    ap.add_argument(
+        "--daily-quota", type=int, default=0, help="if > 0, report at which request the daily quota would exhaust"
+    )
     ap.add_argument("--output", choices=("json", "human"), default="json")
     args = ap.parse_args()
 
@@ -81,7 +87,7 @@ def main() -> int:
         with args.trace.open() as f:
             reader = csv.DictReader(f)
             if not reader.fieldnames or set(reader.fieldnames) < {"timestamp_iso", "endpoint", "request_count"}:
-                print(f"trace missing required header (timestamp_iso,endpoint,request_count)", file=sys.stderr)
+                print("trace missing required header (timestamp_iso,endpoint,request_count)", file=sys.stderr)
                 return 3
             rows = list(reader)
     except Exception as e:
@@ -101,7 +107,7 @@ def main() -> int:
             t = parse_iso(row["timestamp_iso"])
             count = int(row["request_count"])
         except Exception as e:
-            print(f"row {i+2}: bad value: {e}", file=sys.stderr)
+            print(f"row {i + 2}: bad value: {e}", file=sys.stderr)
             return 3
         if trace_start_t is None:
             trace_start_t = t

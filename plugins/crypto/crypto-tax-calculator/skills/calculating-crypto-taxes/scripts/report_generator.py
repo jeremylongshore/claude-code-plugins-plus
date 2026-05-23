@@ -13,18 +13,14 @@ import csv
 import io
 import json
 from datetime import datetime
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, Optional
 
 
 class ReportGenerator:
     """Formats tax calculation results for output."""
 
     def format(
-        self,
-        data: Dict[str, Any],
-        format_type: str = "table",
-        year: Optional[int] = None,
-        show_lots: bool = False
+        self, data: Dict[str, Any], format_type: str = "table", year: Optional[int] = None, show_lots: bool = False
     ) -> str:
         """Format tax calculation results.
 
@@ -44,11 +40,7 @@ class ReportGenerator:
         else:
             return self._format_table(data, year, show_lots)
 
-    def format_comparison(
-        self,
-        results: Dict[str, Dict],
-        format_type: str = "table"
-    ) -> str:
+    def format_comparison(self, results: Dict[str, Dict], format_type: str = "table") -> str:
         """Format method comparison results.
 
         Args:
@@ -98,11 +90,7 @@ class ReportGenerator:
 
         return "\n".join(lines)
 
-    def format_income(
-        self,
-        data: Dict[str, Any],
-        format_type: str = "table"
-    ) -> str:
+    def format_income(self, data: Dict[str, Any], format_type: str = "table") -> str:
         """Format income report.
 
         Args:
@@ -130,7 +118,11 @@ class ReportGenerator:
             lines.append("-" * w)
 
             for event in events:
-                date_str = event["date"].strftime("%Y-%m-%d") if isinstance(event["date"], datetime) else str(event["date"])[:10]
+                date_str = (
+                    event["date"].strftime("%Y-%m-%d")
+                    if isinstance(event["date"], datetime)
+                    else str(event["date"])[:10]
+                )
                 lines.append(
                     f"{event['type']:<12} {date_str:<12} {event['asset']:<8} "
                     f"{event['quantity']:>12.4f} ${event['fair_market_value']:>10,.2f}"
@@ -156,12 +148,7 @@ class ReportGenerator:
 
         return "\n".join(lines)
 
-    def _format_table(
-        self,
-        data: Dict[str, Any],
-        year: Optional[int],
-        show_lots: bool
-    ) -> str:
+    def _format_table(self, data: Dict[str, Any], year: Optional[int], show_lots: bool) -> str:
         """Format as terminal table."""
         lines = []
         w = 78
@@ -186,13 +173,25 @@ class ReportGenerator:
         lines.append("-" * w)
 
         if short_term:
-            lines.append(f"  {'Description':<14} {'Acquired':<12} {'Sold':<12} {'Proceeds':>12} {'Cost':>12} {'Gain/Loss':>12}")
+            lines.append(
+                f"  {'Description':<14} {'Acquired':<12} {'Sold':<12} {'Proceeds':>12} {'Cost':>12} {'Gain/Loss':>12}"
+            )
             for d in short_term:
                 desc = f"{d['quantity']:.4f} {d['asset']}"[:14]
-                acq = d["date_acquired"].strftime("%m/%d/%Y") if isinstance(d["date_acquired"], datetime) else str(d["date_acquired"])[:10]
-                sold = d["date_sold"].strftime("%m/%d/%Y") if isinstance(d["date_sold"], datetime) else str(d["date_sold"])[:10]
+                acq = (
+                    d["date_acquired"].strftime("%m/%d/%Y")
+                    if isinstance(d["date_acquired"], datetime)
+                    else str(d["date_acquired"])[:10]
+                )
+                sold = (
+                    d["date_sold"].strftime("%m/%d/%Y")
+                    if isinstance(d["date_sold"], datetime)
+                    else str(d["date_sold"])[:10]
+                )
                 gain_str = f"${d['gain_loss']:,.2f}" if d["gain_loss"] >= 0 else f"-${abs(d['gain_loss']):,.2f}"
-                lines.append(f"  {desc:<14} {acq:<12} {sold:<12} ${d['proceeds']:>10,.2f} ${d['cost_basis']:>10,.2f} {gain_str:>12}")
+                lines.append(
+                    f"  {desc:<14} {acq:<12} {sold:<12} ${d['proceeds']:>10,.2f} ${d['cost_basis']:>10,.2f} {gain_str:>12}"
+                )
         else:
             lines.append("  (No short-term transactions)")
 
@@ -209,13 +208,25 @@ class ReportGenerator:
         lines.append("-" * w)
 
         if long_term:
-            lines.append(f"  {'Description':<14} {'Acquired':<12} {'Sold':<12} {'Proceeds':>12} {'Cost':>12} {'Gain/Loss':>12}")
+            lines.append(
+                f"  {'Description':<14} {'Acquired':<12} {'Sold':<12} {'Proceeds':>12} {'Cost':>12} {'Gain/Loss':>12}"
+            )
             for d in long_term:
                 desc = f"{d['quantity']:.4f} {d['asset']}"[:14]
-                acq = d["date_acquired"].strftime("%m/%d/%Y") if isinstance(d["date_acquired"], datetime) else str(d["date_acquired"])[:10]
-                sold = d["date_sold"].strftime("%m/%d/%Y") if isinstance(d["date_sold"], datetime) else str(d["date_sold"])[:10]
+                acq = (
+                    d["date_acquired"].strftime("%m/%d/%Y")
+                    if isinstance(d["date_acquired"], datetime)
+                    else str(d["date_acquired"])[:10]
+                )
+                sold = (
+                    d["date_sold"].strftime("%m/%d/%Y")
+                    if isinstance(d["date_sold"], datetime)
+                    else str(d["date_sold"])[:10]
+                )
                 gain_str = f"${d['gain_loss']:,.2f}" if d["gain_loss"] >= 0 else f"-${abs(d['gain_loss']):,.2f}"
-                lines.append(f"  {desc:<14} {acq:<12} {sold:<12} ${d['proceeds']:>10,.2f} ${d['cost_basis']:>10,.2f} {gain_str:>12}")
+                lines.append(
+                    f"  {desc:<14} {acq:<12} {sold:<12} ${d['proceeds']:>10,.2f} ${d['cost_basis']:>10,.2f} {gain_str:>12}"
+                )
         else:
             lines.append("  (No long-term transactions)")
 
@@ -280,6 +291,7 @@ class ReportGenerator:
 
     def _format_json(self, data: Dict[str, Any]) -> str:
         """Format as JSON."""
+
         # Convert datetime objects to strings
         def serialize(obj):
             if isinstance(obj, datetime):
@@ -294,35 +306,47 @@ class ReportGenerator:
         writer = csv.writer(output)
 
         # Form 8949 header
-        writer.writerow([
-            "Description of Property",
-            "Date Acquired",
-            "Date Sold or Disposed",
-            "Proceeds (Sales Price)",
-            "Cost or Other Basis",
-            "Gain or (Loss)",
-            "Short/Long Term",
-            "Holding Period (Days)"
-        ])
+        writer.writerow(
+            [
+                "Description of Property",
+                "Date Acquired",
+                "Date Sold or Disposed",
+                "Proceeds (Sales Price)",
+                "Cost or Other Basis",
+                "Gain or (Loss)",
+                "Short/Long Term",
+                "Holding Period (Days)",
+            ]
+        )
 
         disposals = data.get("disposals", [])
 
         for d in disposals:
             desc = f"{d['quantity']:.8f} {d['asset']}"
-            acq = d["date_acquired"].strftime("%m/%d/%Y") if isinstance(d["date_acquired"], datetime) else str(d["date_acquired"])[:10]
-            sold = d["date_sold"].strftime("%m/%d/%Y") if isinstance(d["date_sold"], datetime) else str(d["date_sold"])[:10]
+            acq = (
+                d["date_acquired"].strftime("%m/%d/%Y")
+                if isinstance(d["date_acquired"], datetime)
+                else str(d["date_acquired"])[:10]
+            )
+            sold = (
+                d["date_sold"].strftime("%m/%d/%Y")
+                if isinstance(d["date_sold"], datetime)
+                else str(d["date_sold"])[:10]
+            )
             term = "Long-term" if d.get("is_long_term") else "Short-term"
 
-            writer.writerow([
-                desc,
-                acq,
-                sold,
-                f"{d['proceeds']:.2f}",
-                f"{d['cost_basis']:.2f}",
-                f"{d['gain_loss']:.2f}",
-                term,
-                d.get("holding_days", "")
-            ])
+            writer.writerow(
+                [
+                    desc,
+                    acq,
+                    sold,
+                    f"{d['proceeds']:.2f}",
+                    f"{d['cost_basis']:.2f}",
+                    f"{d['gain_loss']:.2f}",
+                    term,
+                    d.get("holding_days", ""),
+                ]
+            )
 
         # Summary section
         writer.writerow([])
@@ -360,7 +384,7 @@ def main():
                 "gain_loss": 27500.0,
                 "is_long_term": True,
                 "holding_days": 371,
-                "lot_id": 1
+                "lot_id": 1,
             },
             {
                 "date_acquired": datetime(2024, 6, 15),
@@ -372,8 +396,8 @@ def main():
                 "gain_loss": 7500.0,
                 "is_long_term": False,
                 "holding_days": 219,
-                "lot_id": 2
-            }
+                "lot_id": 2,
+            },
         ],
         "income_events": [
             {
@@ -382,7 +406,7 @@ def main():
                 "asset": "ETH",
                 "quantity": 0.1,
                 "fair_market_value": 300.0,
-                "price_per_unit": 3000.0
+                "price_per_unit": 3000.0,
             }
         ],
         "summary": {
@@ -394,9 +418,9 @@ def main():
             "long_term_gain": 27500.0,
             "long_term_loss": 0.0,
             "disposal_count": 2,
-            "income_count": 1
+            "income_count": 1,
         },
-        "method": "fifo"
+        "method": "fifo",
     }
 
     gen = ReportGenerator()

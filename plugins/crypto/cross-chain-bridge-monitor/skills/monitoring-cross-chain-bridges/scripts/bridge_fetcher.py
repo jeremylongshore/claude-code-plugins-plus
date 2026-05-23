@@ -25,6 +25,7 @@ from config_loader import get_api_base_url
 @dataclass
 class BridgeInfo:
     """Bridge protocol information."""
+
     id: str
     name: str
     display_name: str
@@ -38,6 +39,7 @@ class BridgeInfo:
 @dataclass
 class TVLData:
     """Bridge TVL data."""
+
     bridge_id: str
     total_tvl: float
     tvl_by_chain: Dict[str, float] = field(default_factory=dict)
@@ -48,6 +50,7 @@ class TVLData:
 @dataclass
 class ChainVolume:
     """Volume data by chain."""
+
     chain: str
     total_volume_24h: float
     total_volume_7d: float
@@ -59,6 +62,7 @@ class ChainVolume:
 @dataclass
 class BridgeVolume:
     """Daily volume data for a bridge."""
+
     date: str
     deposit_usd: float
     withdraw_usd: float
@@ -161,9 +165,7 @@ class BridgeFetcher:
         name_lower = name.lower()
 
         for bridge in bridges:
-            if (bridge.name.lower() == name_lower or
-                bridge.display_name.lower() == name_lower or
-                bridge.id == name):
+            if bridge.name.lower() == name_lower or bridge.display_name.lower() == name_lower or bridge.id == name:
                 return bridge
 
         return None
@@ -261,11 +263,7 @@ class BridgeFetcher:
                 print(f"Error fetching volume for {chain}: {e}")
             return None
 
-    def get_bridge_volume_history(
-        self,
-        bridge_id: str,
-        days: int = 7
-    ) -> List[BridgeVolume]:
+    def get_bridge_volume_history(self, bridge_id: str, days: int = 7) -> List[BridgeVolume]:
         """Get historical volume for a bridge.
 
         Args:
@@ -323,11 +321,7 @@ class BridgeFetcher:
         bridges = self.get_all_bridges()
         query_lower = query.lower()
 
-        return [
-            b for b in bridges
-            if query_lower in b.name.lower() or
-               query_lower in b.display_name.lower()
-        ]
+        return [b for b in bridges if query_lower in b.name.lower() or query_lower in b.display_name.lower()]
 
 
 def main():

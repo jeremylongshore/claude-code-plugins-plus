@@ -11,14 +11,10 @@ import argparse
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import seaborn as sns
 from sklearn.metrics import mean_squared_error, r2_score
-from typing import Optional
 
 
-def plot_predicted_vs_actual(
-    y_true: np.ndarray, y_pred: np.ndarray, title: str = "Predicted vs. Actual"
-) -> None:
+def plot_predicted_vs_actual(y_true: np.ndarray, y_pred: np.ndarray, title: str = "Predicted vs. Actual") -> None:
     """
     Plots predicted values against actual values.
 
@@ -39,9 +35,7 @@ def plot_predicted_vs_actual(
         print(f"Error plotting predicted vs. actual: {e}")
 
 
-def plot_residuals(
-    y_true: np.ndarray, y_pred: np.ndarray, title: str = "Residual Plot"
-) -> None:
+def plot_residuals(y_true: np.ndarray, y_pred: np.ndarray, title: str = "Residual Plot") -> None:
     """
     Plots the residuals (errors) of the regression model.
 
@@ -63,9 +57,7 @@ def plot_residuals(
         print(f"Error plotting residuals: {e}")
 
 
-def visualize_regression_results(
-    y_true: np.ndarray, y_pred: np.ndarray, model_name: str = "Regression Model"
-) -> None:
+def visualize_regression_results(y_true: np.ndarray, y_pred: np.ndarray, model_name: str = "Regression Model") -> None:
     """
     Visualizes the regression results, including predicted vs. actual and residual plots.
 
@@ -75,9 +67,7 @@ def visualize_regression_results(
         model_name (str, optional): Name of the regression model. Defaults to "Regression Model".
     """
     try:
-        plot_predicted_vs_actual(
-            y_true, y_pred, title=f"{model_name}: Predicted vs. Actual"
-        )
+        plot_predicted_vs_actual(y_true, y_pred, title=f"{model_name}: Predicted vs. Actual")
         plot_residuals(y_true, y_pred, title=f"{model_name}: Residual Plot")
 
         # Calculate and print metrics
@@ -90,9 +80,7 @@ def visualize_regression_results(
         print(f"Error visualizing regression results: {e}")
 
 
-def main(
-    actual_values_file: str, predicted_values_file: str, model_name: str = "Regression Model"
-) -> None:
+def main(actual_values_file: str, predicted_values_file: str, model_name: str = "Regression Model") -> None:
     """
     Main function to load data and visualize regression results.
 
@@ -123,9 +111,7 @@ def main(
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Visualize regression model results from CSV files."
-    )
+    parser = argparse.ArgumentParser(description="Visualize regression model results from CSV files.")
     parser.add_argument(
         "--actual",
         type=str,
@@ -157,5 +143,6 @@ if __name__ == "__main__":
     main(args.actual, args.predicted, args.model_name)
     # Clean up dummy data files
     import os
+
     os.remove("actual_values.csv")
     os.remove("predicted_values.csv")

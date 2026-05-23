@@ -11,8 +11,7 @@ import argparse
 import sys
 import json
 import csv
-from pathlib import Path
-from typing import Dict, List, Tuple, Optional, Any
+from typing import Dict, List, Tuple, Optional
 
 
 def load_csv_data(filepath: str, target_col: str) -> Tuple[List[List[float]], List[float], List[str]]:
@@ -31,7 +30,7 @@ def load_csv_data(filepath: str, target_col: str) -> Tuple[List[List[float]], Li
         targets = []
         feature_names = []
 
-        with open(filepath, 'r', encoding='utf-8') as f:
+        with open(filepath, "r", encoding="utf-8") as f:
             reader = csv.DictReader(f)
             columns = reader.fieldnames
 
@@ -51,7 +50,7 @@ def load_csv_data(filepath: str, target_col: str) -> Tuple[List[List[float]], Li
                         feature_values.append(float(row[col]))
                     features.append(feature_values)
 
-                except (ValueError, KeyError) as e:
+                except (ValueError, KeyError):
                     if sys.stderr.isatty():
                         pass  # Skip rows with invalid data
 
@@ -90,7 +89,7 @@ def normalize_features(features: List[List[float]]) -> Tuple[List[List[float]], 
         values = [row[feat_idx] for row in features]
         mean = sum(values) / len(values)
         variance = sum((x - mean) ** 2 for x in values) / len(values)
-        std = variance ** 0.5
+        std = variance**0.5
 
         means.append(mean)
         stds.append(std if std > 0 else 1.0)
@@ -98,10 +97,7 @@ def normalize_features(features: List[List[float]]) -> Tuple[List[List[float]], 
     # Normalize
     normalized = []
     for row in features:
-        normalized_row = [
-            (row[i] - means[i]) / stds[i]
-            for i in range(n_features)
-        ]
+        normalized_row = [(row[i] - means[i]) / stds[i] for i in range(n_features)]
         normalized.append(normalized_row)
 
     return normalized, means, stds
@@ -168,12 +164,7 @@ def linear_regression(features: List[List[float]], targets: List[float]) -> Dict
     except ZeroDivisionError:
         print("Warning: Matrix is singular, using least-squares approximation", file=sys.stderr)
 
-    return {
-        'type': 'linear',
-        'coefficients': coefficients[1:],
-        'intercept': coefficients[0],
-        'n_features': n_features
-    }
+    return {"type": "linear", "coefficients": coefficients[1:], "intercept": coefficients[0], "n_features": n_features}
 
 
 def polynomial_regression(features: List[List[float]], targets: List[float], degree: int = 2) -> Dict:
@@ -194,14 +185,14 @@ def polynomial_regression(features: List[List[float]], targets: List[float], deg
         poly_row = row.copy()
         for d in range(2, degree + 1):
             for val in row:
-                poly_row.append(val ** d)
+                poly_row.append(val**d)
         poly_features.append(poly_row)
 
     # Fit linear regression on polynomial features
     model = linear_regression(poly_features, targets)
-    model['type'] = 'polynomial'
-    model['degree'] = degree
-    model['n_poly_features'] = len(poly_features[0])
+    model["type"] = "polynomial"
+    model["degree"] = degree
+    model["n_poly_features"] = len(poly_features[0])
 
     return model
 
@@ -220,20 +211,20 @@ def predict(model: Dict, features: List[List[float]]) -> List[float]:
     predictions = []
 
     for row in features:
-        if model['type'] == 'linear':
-            pred = model['intercept']
-            for i, coef in enumerate(model['coefficients']):
+        if model["type"] == "linear":
+            pred = model["intercept"]
+            for i, coef in enumerate(model["coefficients"]):
                 pred += coef * row[i]
             predictions.append(pred)
 
-        elif model['type'] == 'polynomial':
+        elif model["type"] == "polynomial":
             poly_row = row.copy()
-            for d in range(2, model['degree'] + 1):
+            for d in range(2, model["degree"] + 1):
                 for val in row:
-                    poly_row.append(val ** d)
+                    poly_row.append(val**d)
 
-            pred = model['intercept']
-            for i, coef in enumerate(model['coefficients']):
+            pred = model["intercept"]
+            for i, coef in enumerate(model["coefficients"]):
                 if i < len(poly_row):
                     pred += coef * poly_row[i]
             predictions.append(pred)
@@ -267,10 +258,10 @@ def calculate_mae(targets: List[float], predictions: List[float]) -> float:
 def train_model(
     filepath: str,
     target_col: str,
-    model_type: str = 'linear',
+    model_type: str = "linear",
     degree: int = 2,
     output_file: Optional[str] = None,
-    verbose: bool = False
+    verbose: bool = False,
 ) -> Dict:
     """
     Train a regression model on the provided dataset.
@@ -287,36 +278,36 @@ def train_model(
         Training results dictionary
     """
     results = {
-        'status': 'training',
-        'model_type': model_type,
-        'dataset': filepath,
-        'target': target_col,
-        'model': None,
-        'metrics': {},
-        'training_log': []
+        "status": "training",
+        "model_type": model_type,
+        "dataset": filepath,
+        "target": target_col,
+        "model": None,
+        "metrics": {},
+        "training_log": [],
     }
 
     # Load data
     if verbose:
-        results['training_log'].append("Loading dataset...")
+        results["training_log"].append("Loading dataset...")
     features, targets, feature_names = load_csv_data(filepath, target_col)
-    results['training_log'].append(f"Loaded {len(features)} samples with {len(feature_names)} features")
+    results["training_log"].append(f"Loaded {len(features)} samples with {len(feature_names)} features")
 
     # Normalize features
     if verbose:
-        results['training_log'].append("Normalizing features...")
+        results["training_log"].append("Normalizing features...")
     features_normalized, means, stds = normalize_features(features)
 
     # Train model
     if verbose:
-        results['training_log'].append(f"Training {model_type} regression model...")
+        results["training_log"].append(f"Training {model_type} regression model...")
 
-    if model_type == 'polynomial':
+    if model_type == "polynomial":
         model = polynomial_regression(features_normalized, targets, degree)
-        results['training_log'].append(f"Trained polynomial regression (degree={degree})")
+        results["training_log"].append(f"Trained polynomial regression (degree={degree})")
     else:
         model = linear_regression(features_normalized, targets)
-        results['training_log'].append("Trained linear regression")
+        results["training_log"].append("Trained linear regression")
 
     # Make predictions on training data
     predictions = predict(model, features_normalized)
@@ -326,31 +317,23 @@ def train_model(
     mse = calculate_mse(targets, predictions)
     mae = calculate_mae(targets, predictions)
 
-    results['metrics'] = {
-        'r_squared': r_squared,
-        'mse': mse,
-        'rmse': mse ** 0.5,
-        'mae': mae
-    }
+    results["metrics"] = {"r_squared": r_squared, "mse": mse, "rmse": mse**0.5, "mae": mae}
 
     # Store model
-    model['feature_names'] = feature_names
-    model['normalization'] = {
-        'means': means,
-        'stds': stds
-    }
+    model["feature_names"] = feature_names
+    model["normalization"] = {"means": means, "stds": stds}
 
-    results['model'] = model
-    results['status'] = 'completed'
+    results["model"] = model
+    results["status"] = "completed"
 
     # Save if requested
     if output_file:
         try:
-            with open(output_file, 'w', encoding='utf-8') as f:
+            with open(output_file, "w", encoding="utf-8") as f:
                 json.dump(results, f, indent=2)
-            results['training_log'].append(f"Model saved to {output_file}")
+            results["training_log"].append(f"Model saved to {output_file}")
         except IOError as e:
-            results['training_log'].append(f"Warning: Could not save model: {e}")
+            results["training_log"].append(f"Warning: Could not save model: {e}")
 
     return results
 
@@ -373,71 +356,40 @@ Examples:
 
   # Verbose output
   %(prog)s --file data.csv --target price --verbose
-        """
+        """,
     )
 
+    parser.add_argument("-f", "--file", type=str, required=True, help="Path to training data (CSV format)")
+    parser.add_argument("-t", "--target", type=str, required=True, help="Name of target column")
     parser.add_argument(
-        '-f', '--file',
-        type=str,
-        required=True,
-        help='Path to training data (CSV format)'
+        "--type", choices=["linear", "polynomial"], default="linear", help="Model type (default: linear)"
     )
     parser.add_argument(
-        '-t', '--target',
-        type=str,
-        required=True,
-        help='Name of target column'
+        "-d", "--degree", type=int, default=2, help="Polynomial degree (default: 2, for polynomial models)"
     )
-    parser.add_argument(
-        '--type',
-        choices=['linear', 'polynomial'],
-        default='linear',
-        help='Model type (default: linear)'
-    )
-    parser.add_argument(
-        '-d', '--degree',
-        type=int,
-        default=2,
-        help='Polynomial degree (default: 2, for polynomial models)'
-    )
-    parser.add_argument(
-        '-o', '--output',
-        type=str,
-        help='Output file to save trained model (JSON)'
-    )
-    parser.add_argument(
-        '-v', '--verbose',
-        action='store_true',
-        help='Enable verbose output'
-    )
+    parser.add_argument("-o", "--output", type=str, help="Output file to save trained model (JSON)")
+    parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose output")
 
     args = parser.parse_args()
 
     # Train model
-    results = train_model(
-        args.file,
-        args.target,
-        args.type,
-        args.degree,
-        args.output,
-        args.verbose
-    )
+    results = train_model(args.file, args.target, args.type, args.degree, args.output, args.verbose)
 
     # Output results
     if args.verbose or not args.output:
         output = {
-            'status': results['status'],
-            'model_type': results['model_type'],
-            'metrics': results['metrics'],
-            'training_log': results['training_log']
+            "status": results["status"],
+            "model_type": results["model_type"],
+            "metrics": results["metrics"],
+            "training_log": results["training_log"],
         }
         print(json.dumps(output, indent=2))
 
-    if results['status'] != 'completed':
+    if results["status"] != "completed":
         return 1
 
     return 0
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(main())

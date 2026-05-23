@@ -91,7 +91,7 @@ class PortfolioLoader:
             "name": data.get("name", "My Portfolio"),
             "holdings": aggregated,
             "categories": data.get("categories", {}),
-            "currency": data.get("currency", "USD")
+            "currency": data.get("currency", "USD"),
         }
 
     def _validate_holding(self, holding: Any, index: int) -> Optional[Dict[str, Any]]:
@@ -154,7 +154,7 @@ class PortfolioLoader:
             "cost_basis": cost_basis,
             "acquired": acquired,
             "wallet": wallet,
-            "notes": notes
+            "notes": notes,
         }
 
     def _aggregate_holdings(self, holdings: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
@@ -171,7 +171,7 @@ class PortfolioLoader:
                     "total_cost": 0,
                     "has_cost_basis": False,
                     "wallets": [],
-                    "notes": []
+                    "notes": [],
                 }
 
             aggregated[coin]["quantity"] += holding["quantity"]
@@ -193,10 +193,7 @@ class PortfolioLoader:
         # Convert to list with calculated average cost basis
         result = []
         for coin, data in aggregated.items():
-            entry = {
-                "coin": coin,
-                "quantity": data["quantity"]
-            }
+            entry = {"coin": coin, "quantity": data["quantity"]}
 
             # Calculate average cost basis
             if data["has_cost_basis"] and data["quantity"] > 0:

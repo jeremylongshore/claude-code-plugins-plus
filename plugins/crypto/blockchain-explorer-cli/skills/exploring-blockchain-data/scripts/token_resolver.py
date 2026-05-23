@@ -9,10 +9,8 @@ Version: 1.0.0
 License: MIT
 """
 
-import json
 import time
-from pathlib import Path
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, Optional
 from dataclasses import dataclass
 
 try:
@@ -24,6 +22,7 @@ except ImportError:
 @dataclass
 class TokenInfo:
     """Token metadata and pricing."""
+
     address: str
     symbol: str
     name: str
@@ -116,7 +115,7 @@ class TokenResolver:
                 name=token_data["name"],
                 decimals=token_data["decimals"],
                 price_usd=self._get_price(address, chain),
-                chain=chain
+                chain=chain,
             )
             self._cache[cache_key] = info
             return info
@@ -128,14 +127,7 @@ class TokenResolver:
             return info
 
         # Return unknown token
-        return TokenInfo(
-            address=address,
-            symbol="???",
-            name="Unknown Token",
-            decimals=18,
-            price_usd=None,
-            chain=chain
-        )
+        return TokenInfo(address=address, symbol="???", name="Unknown Token", decimals=18, price_usd=None, chain=chain)
 
     def _get_price(self, address: str, chain: str) -> Optional[float]:
         """Get token price with caching.
@@ -194,11 +186,8 @@ class TokenResolver:
 
             response = requests.get(
                 f"https://api.coingecko.com/api/v3/simple/token_price/{platform}",
-                params={
-                    "contract_addresses": address,
-                    "vs_currencies": "usd"
-                },
-                timeout=10
+                params={"contract_addresses": address, "vs_currencies": "usd"},
+                timeout=10,
             )
 
             if response.status_code == 200:
@@ -239,10 +228,7 @@ class TokenResolver:
             return None
 
         try:
-            response = requests.get(
-                f"https://api.coingecko.com/api/v3/coins/{platform}/contract/{address}",
-                timeout=10
-            )
+            response = requests.get(f"https://api.coingecko.com/api/v3/coins/{platform}/contract/{address}", timeout=10)
 
             if response.status_code == 200:
                 data = response.json()
@@ -253,7 +239,7 @@ class TokenResolver:
                     decimals=data.get("detail_platforms", {}).get(platform, {}).get("decimal_place", 18),
                     price_usd=data.get("market_data", {}).get("current_price", {}).get("usd"),
                     chain=chain,
-                    logo_url=data.get("image", {}).get("small")
+                    logo_url=data.get("image", {}).get("small"),
                 )
 
         except Exception as e:
@@ -262,12 +248,7 @@ class TokenResolver:
 
         return None
 
-    def format_amount(
-        self,
-        amount_raw: int,
-        token: TokenInfo,
-        include_usd: bool = True
-    ) -> str:
+    def format_amount(self, amount_raw: int, token: TokenInfo, include_usd: bool = True) -> str:
         """Format token amount for display.
 
         Args:
@@ -278,7 +259,7 @@ class TokenResolver:
         Returns:
             Formatted string
         """
-        amount = amount_raw / (10 ** token.decimals)
+        amount = amount_raw / (10**token.decimals)
 
         if amount >= 1_000_000:
             formatted = f"{amount / 1_000_000:.2f}M"
@@ -365,7 +346,7 @@ class TokenResolver:
             response = requests.get(
                 "https://api.coingecko.com/api/v3/simple/price",
                 params={"ids": coin_id, "vs_currencies": "usd"},
-                timeout=10
+                timeout=10,
             )
 
             if response.status_code == 200:

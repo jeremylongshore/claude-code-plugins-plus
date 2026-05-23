@@ -62,7 +62,7 @@ def classify(
 
     fatal_count = 0
     failing_skills: list[tuple[str, str]] = []  # (path, grade) for errors or D/F
-    weak_skills: list[tuple[str, str]] = []     # (path, grade) for C
+    weak_skills: list[tuple[str, str]] = []  # (path, grade) for C
 
     for entry in validator_results:
         path = entry.get("path", "<unknown>")

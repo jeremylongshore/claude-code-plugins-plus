@@ -15,13 +15,14 @@ import argparse
 import subprocess
 from pathlib import Path
 from datetime import datetime
-from typing import Dict, List, Optional
+from typing import Dict, Optional
 from dataclasses import dataclass
 
 
 @dataclass
 class DeploymentResult:
     """Result of deployment operation."""
+
     success: bool
     message: str
     procedure_name: Optional[str] = None
@@ -42,51 +43,45 @@ class PostgreSQLDeployer:
     def _get_psql_env(self) -> Dict[str, str]:
         """Get environment variables for psql."""
         import os
+
         env = os.environ.copy()
         if self.password:
-            env['PGPASSWORD'] = self.password
+            env["PGPASSWORD"] = self.password
         return env
 
     def _run_psql(self, sql: str, dry_run: bool = False) -> DeploymentResult:
         """Execute SQL via psql."""
         if dry_run:
-            return DeploymentResult(
-                success=True,
-                message=f"DRY RUN: Would execute SQL ({len(sql)} chars)"
-            )
+            return DeploymentResult(success=True, message=f"DRY RUN: Would execute SQL ({len(sql)} chars)")
 
         cmd = [
-            'psql',
-            '-h', self.host,
-            '-p', str(self.port),
-            '-d', self.database,
-            '-U', self.user,
-            '-v', 'ON_ERROR_STOP=1',
-            '-c', sql
+            "psql",
+            "-h",
+            self.host,
+            "-p",
+            str(self.port),
+            "-d",
+            self.database,
+            "-U",
+            self.user,
+            "-v",
+            "ON_ERROR_STOP=1",
+            "-c",
+            sql,
         ]
 
         start_time = datetime.now()
         try:
-            result = subprocess.run(
-                cmd,
-                env=self._get_psql_env(),
-                capture_output=True,
-                text=True,
-                timeout=60
-            )
+            result = subprocess.run(cmd, env=self._get_psql_env(), capture_output=True, text=True, timeout=60)
             elapsed = (datetime.now() - start_time).total_seconds()
 
             if result.returncode == 0:
                 return DeploymentResult(
-                    success=True,
-                    message=result.stdout.strip() or "Executed successfully",
-                    execution_time=elapsed
+                    success=True, message=result.stdout.strip() or "Executed successfully", execution_time=elapsed
                 )
             else:
                 return DeploymentResult(
-                    success=False,
-                    message=f"Error: {result.stderr.strip()}",
-                    execution_time=elapsed
+                    success=False, message=f"Error: {result.stderr.strip()}", execution_time=elapsed
                 )
         except subprocess.TimeoutExpired:
             return DeploymentResult(success=False, message="Execution timed out")
@@ -97,9 +92,9 @@ class PostgreSQLDeployer:
         """Deploy a stored procedure."""
         # Extract procedure name for rollback
         import re
+
         name_match = re.search(
-            r'CREATE\s+(?:OR\s+REPLACE\s+)?(?:FUNCTION|PROCEDURE)\s+(\w+(?:\.\w+)?)',
-            sql, re.IGNORECASE
+            r"CREATE\s+(?:OR\s+REPLACE\s+)?(?:FUNCTION|PROCEDURE)\s+(\w+(?:\.\w+)?)", sql, re.IGNORECASE
         )
         proc_name = name_match.group(1) if name_match else None
 
@@ -108,7 +103,7 @@ class PostgreSQLDeployer:
 
         if proc_name:
             # Detect if it's a function or procedure
-            if 'FUNCTION' in sql.upper():
+            if "FUNCTION" in sql.upper():
                 result.rollback_sql = f"DROP FUNCTION IF EXISTS {proc_name};"
             else:
                 result.rollback_sql = f"DROP PROCEDURE IF EXISTS {proc_name};"
@@ -129,43 +124,34 @@ class MySQLDeployer:
     def _run_mysql(self, sql: str, dry_run: bool = False) -> DeploymentResult:
         """Execute SQL via mysql client."""
         if dry_run:
-            return DeploymentResult(
-                success=True,
-                message=f"DRY RUN: Would execute SQL ({len(sql)} chars)"
-            )
+            return DeploymentResult(success=True, message=f"DRY RUN: Would execute SQL ({len(sql)} chars)")
 
         cmd = [
-            'mysql',
-            '-h', self.host,
-            '-P', str(self.port),
-            '-D', self.database,
-            '-u', self.user,
+            "mysql",
+            "-h",
+            self.host,
+            "-P",
+            str(self.port),
+            "-D",
+            self.database,
+            "-u",
+            self.user,
         ]
         if self.password:
-            cmd.append(f'-p{self.password}')
+            cmd.append(f"-p{self.password}")
 
         start_time = datetime.now()
         try:
-            result = subprocess.run(
-                cmd,
-                input=sql,
-                capture_output=True,
-                text=True,
-                timeout=60
-            )
+            result = subprocess.run(cmd, input=sql, capture_output=True, text=True, timeout=60)
             elapsed = (datetime.now() - start_time).total_seconds()
 
             if result.returncode == 0:
                 return DeploymentResult(
-                    success=True,
-                    message=result.stdout.strip() or "Executed successfully",
-                    execution_time=elapsed
+                    success=True, message=result.stdout.strip() or "Executed successfully", execution_time=elapsed
                 )
             else:
                 return DeploymentResult(
-                    success=False,
-                    message=f"Error: {result.stderr.strip()}",
-                    execution_time=elapsed
+                    success=False, message=f"Error: {result.stderr.strip()}", execution_time=elapsed
                 )
         except subprocess.TimeoutExpired:
             return DeploymentResult(success=False, message="Execution timed out")
@@ -175,10 +161,8 @@ class MySQLDeployer:
     def deploy(self, sql: str, dry_run: bool = False) -> DeploymentResult:
         """Deploy a stored procedure."""
         import re
-        name_match = re.search(
-            r'CREATE\s+(?:DEFINER\s*=\s*[^\s]+\s+)?PROCEDURE\s+(\w+(?:\.\w+)?)',
-            sql, re.IGNORECASE
-        )
+
+        name_match = re.search(r"CREATE\s+(?:DEFINER\s*=\s*[^\s]+\s+)?PROCEDURE\s+(\w+(?:\.\w+)?)", sql, re.IGNORECASE)
         proc_name = name_match.group(1) if name_match else None
 
         result = self._run_mysql(sql, dry_run)
@@ -203,42 +187,24 @@ class SQLServerDeployer:
     def _run_sqlcmd(self, sql: str, dry_run: bool = False) -> DeploymentResult:
         """Execute SQL via sqlcmd."""
         if dry_run:
-            return DeploymentResult(
-                success=True,
-                message=f"DRY RUN: Would execute SQL ({len(sql)} chars)"
-            )
+            return DeploymentResult(success=True, message=f"DRY RUN: Would execute SQL ({len(sql)} chars)")
 
-        cmd = [
-            'sqlcmd',
-            '-S', f'{self.host},{self.port}',
-            '-d', self.database,
-            '-U', self.user,
-            '-Q', sql
-        ]
+        cmd = ["sqlcmd", "-S", f"{self.host},{self.port}", "-d", self.database, "-U", self.user, "-Q", sql]
         if self.password:
-            cmd.extend(['-P', self.password])
+            cmd.extend(["-P", self.password])
 
         start_time = datetime.now()
         try:
-            result = subprocess.run(
-                cmd,
-                capture_output=True,
-                text=True,
-                timeout=60
-            )
+            result = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
             elapsed = (datetime.now() - start_time).total_seconds()
 
             if result.returncode == 0:
                 return DeploymentResult(
-                    success=True,
-                    message=result.stdout.strip() or "Executed successfully",
-                    execution_time=elapsed
+                    success=True, message=result.stdout.strip() or "Executed successfully", execution_time=elapsed
                 )
             else:
                 return DeploymentResult(
-                    success=False,
-                    message=f"Error: {result.stderr.strip()}",
-                    execution_time=elapsed
+                    success=False, message=f"Error: {result.stderr.strip()}", execution_time=elapsed
                 )
         except subprocess.TimeoutExpired:
             return DeploymentResult(success=False, message="Execution timed out")
@@ -248,9 +214,9 @@ class SQLServerDeployer:
     def deploy(self, sql: str, dry_run: bool = False) -> DeploymentResult:
         """Deploy a stored procedure."""
         import re
+
         name_match = re.search(
-            r'CREATE\s+(?:OR\s+ALTER\s+)?PROC(?:EDURE)?\s+(\[?\w+\]?(?:\.\[?\w+\]?)?)',
-            sql, re.IGNORECASE
+            r"CREATE\s+(?:OR\s+ALTER\s+)?PROC(?:EDURE)?\s+(\[?\w+\]?(?:\.\[?\w+\]?)?)", sql, re.IGNORECASE
         )
         proc_name = name_match.group(1) if name_match else None
 
@@ -266,15 +232,15 @@ class SQLServerDeployer:
 def get_deployer(db_type: str, host: str, port: int, database: str, user: str, password: str = None):
     """Factory to get appropriate deployer."""
     deployers = {
-        'postgresql': PostgreSQLDeployer,
-        'mysql': MySQLDeployer,
-        'sqlserver': SQLServerDeployer,
+        "postgresql": PostgreSQLDeployer,
+        "mysql": MySQLDeployer,
+        "sqlserver": SQLServerDeployer,
     }
 
     default_ports = {
-        'postgresql': 5432,
-        'mysql': 3306,
-        'sqlserver': 1433,
+        "postgresql": 5432,
+        "mysql": 3306,
+        "sqlserver": 1433,
     }
 
     if db_type not in deployers:
@@ -285,20 +251,18 @@ def get_deployer(db_type: str, host: str, port: int, database: str, user: str, p
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description='Deploy stored procedures to PostgreSQL, MySQL, or SQL Server'
+    parser = argparse.ArgumentParser(description="Deploy stored procedures to PostgreSQL, MySQL, or SQL Server")
+    parser.add_argument("file", help="SQL file to deploy")
+    parser.add_argument(
+        "--db-type", "-t", required=True, choices=["postgresql", "mysql", "sqlserver"], help="Database type"
     )
-    parser.add_argument('file', help='SQL file to deploy')
-    parser.add_argument('--db-type', '-t', required=True,
-                        choices=['postgresql', 'mysql', 'sqlserver'],
-                        help='Database type')
-    parser.add_argument('--host', '-H', default='localhost', help='Database host')
-    parser.add_argument('--port', '-P', type=int, help='Database port')
-    parser.add_argument('--database', '-d', required=True, help='Database name')
-    parser.add_argument('--user', '-u', required=True, help='Database user')
-    parser.add_argument('--password', '-p', help='Database password')
-    parser.add_argument('--dry-run', action='store_true', help='Show what would be done')
-    parser.add_argument('--save-rollback', help='Save rollback script to file')
+    parser.add_argument("--host", "-H", default="localhost", help="Database host")
+    parser.add_argument("--port", "-P", type=int, help="Database port")
+    parser.add_argument("--database", "-d", required=True, help="Database name")
+    parser.add_argument("--user", "-u", required=True, help="Database user")
+    parser.add_argument("--password", "-p", help="Database password")
+    parser.add_argument("--dry-run", action="store_true", help="Show what would be done")
+    parser.add_argument("--save-rollback", help="Save rollback script to file")
 
     args = parser.parse_args()
 
@@ -316,14 +280,7 @@ def main():
     print()
 
     try:
-        deployer = get_deployer(
-            args.db_type,
-            args.host,
-            args.port,
-            args.database,
-            args.user,
-            args.password
-        )
+        deployer = get_deployer(args.db_type, args.host, args.port, args.database, args.user, args.password)
 
         result = deployer.deploy(sql, args.dry_run)
 
@@ -331,7 +288,7 @@ def main():
             print(f"Procedure: {result.procedure_name}")
 
         if result.success:
-            print(f"Status: SUCCESS")
+            print("Status: SUCCESS")
             print(f"Message: {result.message}")
             if result.execution_time:
                 print(f"Time: {result.execution_time:.2f}s")
@@ -344,7 +301,7 @@ def main():
 
             return 0
         else:
-            print(f"Status: FAILED")
+            print("Status: FAILED")
             print(f"Error: {result.message}")
             return 1
 
@@ -353,5 +310,5 @@ def main():
         return 1
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(main())

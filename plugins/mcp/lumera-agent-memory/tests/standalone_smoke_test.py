@@ -21,9 +21,9 @@ from index.index import MemoryIndex
 
 async def smoke_test():
     """End-to-end smoke test."""
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("LUMERA AGENT MEMORY - STANDALONE SMOKE TEST")
-    print("="*60 + "\n")
+    print("=" * 60 + "\n")
 
     # Use temp storage
     temp_dir = Path(tempfile.mkdtemp(prefix="lumera_smoke_"))
@@ -43,23 +43,20 @@ async def smoke_test():
             {
                 "role": "user",
                 "content": "Deploy the new API with my AWS key AKIAIOSFODNN7EXAMPLE",
-                "timestamp": "2025-01-15T10:30:00Z"
+                "timestamp": "2025-01-15T10:30:00Z",
             },
             {
                 "role": "assistant",
                 "content": "I'll help deploy the API. What region?",
-                "timestamp": "2025-01-15T10:30:15Z"
+                "timestamp": "2025-01-15T10:30:15Z",
             },
             {
                 "role": "user",
                 "content": "us-east-1, my email is john@example.com for notifications",
-                "timestamp": "2025-01-15T10:31:00Z"
-            }
+                "timestamp": "2025-01-15T10:31:00Z",
+            },
         ],
-        "metadata": {
-            "started_at": "2025-01-15T10:30:00Z",
-            "ended_at": "2025-01-15T10:35:00Z"
-        }
+        "metadata": {"started_at": "2025-01-15T10:30:00Z", "ended_at": "2025-01-15T10:35:00Z"},
     }
 
     # Redact
@@ -100,11 +97,7 @@ async def smoke_test():
             if word and word[0].isupper() and len(word) > 2:
                 entities.add(word)
 
-        return {
-            "title": title,
-            "keywords": keywords,
-            "entities": list(entities)[:10]
-        }
+        return {"title": title, "keywords": keywords, "entities": list(entities)[:10]}
 
     memory_card = generate_memory_card(redacted_data)
 
@@ -126,13 +119,13 @@ async def smoke_test():
             "crypto": {
                 "key_id": crypto_result.key_id,
                 "plaintext_sha256": crypto_result.plaintext_sha256,
-                "ciphertext_sha256": crypto_result.ciphertext_sha256
+                "ciphertext_sha256": crypto_result.ciphertext_sha256,
             },
-            "redaction": redaction_report.to_dict()
-        }
+            "redaction": redaction_report.to_dict(),
+        },
     )
 
-    print(f"\nMemory Card:")
+    print("\nMemory Card:")
     print(f"  Title: {memory_card['title']}")
     print(f"  Keywords: {', '.join(memory_card['keywords'][:5])}")
     print(f"  Entities: {', '.join(memory_card['entities'])}")
@@ -144,7 +137,7 @@ async def smoke_test():
     print("-" * 40)
 
     hits = index.search("deploy aws", tags=["deployment"], limit=5)
-    print(f"Query: 'deploy aws'")
+    print("Query: 'deploy aws'")
     print(f"Hits: {len(hits)}")
 
     for i, hit in enumerate(hits, 1):
@@ -173,14 +166,14 @@ async def smoke_test():
     retrieved_session = json.loads(session_json)
 
     print(f"Retrieved URI: {cascade_uri}")
-    print(f"Crypto verified: True")
+    print("Crypto verified: True")
     print(f"Session messages: {len(retrieved_session['messages'])}")
-    print(f"\nMemory Card (from index):")
+    print("\nMemory Card (from index):")
     print(f"  Title: {index_entry['memory_card']['title']}")
 
     # Check redaction worked
     session_str = json.dumps(retrieved_session)
-    print(f"\nRedaction check:")
+    print("\nRedaction check:")
     if "[REDACTED:AWS_ACCESS_KEY]" in session_str:
         print("  ✓ AWS access key redacted")
     if "[REDACTED:EMAIL]" in session_str:
@@ -190,11 +183,12 @@ async def smoke_test():
 
     # Cleanup
     import shutil
+
     shutil.rmtree(temp_dir, ignore_errors=True)
 
-    print("="*60)
+    print("=" * 60)
     print("ALL TESTS PASSED ✓")
-    print("="*60 + "\n")
+    print("=" * 60 + "\n")
 
 
 if __name__ == "__main__":

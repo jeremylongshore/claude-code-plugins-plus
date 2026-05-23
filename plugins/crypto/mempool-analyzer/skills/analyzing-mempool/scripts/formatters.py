@@ -81,6 +81,7 @@ def format_pending_tx_table(
     # Create decoder only if not provided
     if decoder is None:
         from tx_decoder import TransactionDecoder
+
         decoder = TransactionDecoder()
 
     for tx in transactions[:50]:
@@ -101,7 +102,9 @@ def format_pending_tx_table(
         decoded = decoder.decode_input(tx.input_data, tx.to_address)
         tx_type = decoded.method_type[:10]
 
-        lines.append(f"{tx_hash:<18} {from_addr:<14} {to_addr:<14} {value_str:<12} {gas_price_str:<12} {gas_str:<10} {tx_type:<12}")
+        lines.append(
+            f"{tx_hash:<18} {from_addr:<14} {to_addr:<14} {value_str:<12} {gas_price_str:<12} {gas_str:<10} {tx_type:<12}"
+        )
 
     lines.append("-" * 100)
     lines.append(f"Showing {min(len(transactions), 50)} of {len(transactions)} pending transactions")
@@ -149,12 +152,7 @@ def format_pending_swaps_table(swaps: List[Any]) -> str:
     return "\n".join(lines)
 
 
-def format_mempool_summary(
-    pending_count: int,
-    gas_info: Any,
-    swap_count: int,
-    opportunities: int
-) -> str:
+def format_mempool_summary(pending_count: int, gas_info: Any, swap_count: int, opportunities: int) -> str:
     """Format mempool summary.
 
     Args:
@@ -220,6 +218,7 @@ def format_stream_alert(
     # Create decoder only if not provided
     if decoder is None:
         from tx_decoder import TransactionDecoder
+
         decoder = TransactionDecoder()
     decoded = decoder.decode_input(tx.input_data, tx.to_address)
 

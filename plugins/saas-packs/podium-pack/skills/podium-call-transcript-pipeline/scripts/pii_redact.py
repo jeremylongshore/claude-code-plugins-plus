@@ -41,6 +41,7 @@ from pathlib import Path
 # Regex layer
 # ---------------------------------------------------------------------------
 
+
 @dataclass
 class Redaction:
     transcript_id: str
@@ -55,9 +56,9 @@ class Redaction:
 REGEX_PATTERNS = [
     # (category, rule_id, pattern, optional validator)
     ("CREDIT_CARD", "card_luhn_16", re.compile(r"\b(?:\d[ -]?){13,19}\b"), "luhn"),
-    ("PHONE",       "phone_intl",   re.compile(r"\+?\d{1,3}[ -]?\(?\d{2,4}\)?[ -]?\d{3,4}[ -]?\d{3,4}"), None),
-    ("EMAIL",       "email_basic",  re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}"), None),
-    ("SSN_US",      "ssn_us",       re.compile(r"\b\d{3}-\d{2}-\d{4}\b"), None),
+    ("PHONE", "phone_intl", re.compile(r"\+?\d{1,3}[ -]?\(?\d{2,4}\)?[ -]?\d{3,4}[ -]?\d{3,4}"), None),
+    ("EMAIL", "email_basic", re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}"), None),
+    ("SSN_US", "ssn_us", re.compile(r"\b\d{3}-\d{2}-\d{4}\b"), None),
 ]
 
 
@@ -82,19 +83,21 @@ def regex_redact(text: str, transcript_id: str, segment_index: int) -> tuple[str
         for m in pattern.finditer(text):
             if validator == "luhn" and not luhn_valid(m.group()):
                 continue
-            found.append(Redaction(
-                transcript_id=transcript_id,
-                segment_index=segment_index,
-                category=category,
-                rule_id=rule_id,
-                start=m.start(),
-                end=m.end(),
-                ts=now,
-            ))
+            found.append(
+                Redaction(
+                    transcript_id=transcript_id,
+                    segment_index=segment_index,
+                    category=category,
+                    rule_id=rule_id,
+                    start=m.start(),
+                    end=m.end(),
+                    ts=now,
+                )
+            )
     # Apply substitutions in reverse to keep offsets stable.
     out = text
     for r in sorted(found, key=lambda r: r.start, reverse=True):
-        out = out[:r.start] + f"[REDACTED:{r.category}]" + out[r.end:]
+        out = out[: r.start] + f"[REDACTED:{r.category}]" + out[r.end :]
     return out, found
 
 
@@ -102,16 +105,16 @@ def regex_redact(text: str, transcript_id: str, segment_index: int) -> tuple[str
 # Presidio layer (optional)
 # ---------------------------------------------------------------------------
 
+
 def presidio_redact(text: str, transcript_id: str, segment_index: int) -> tuple[str, list[Redaction]]:
     try:
-        from presidio_analyzer import AnalyzerEngine
+        from presidio_analyzer import AnalyzerEngine  # noqa: F401 — capability probe; instance built in _get_analyzer
     except ImportError:
         return text, []
     try:
         analyzer = _get_analyzer()
     except Exception as e:
-        print(f"WARN ERR_TXP_004 presidio init failed: {e} — falling back to regex-only",
-              file=sys.stderr)
+        print(f"WARN ERR_TXP_004 presidio init failed: {e} — falling back to regex-only", file=sys.stderr)
         return text, []
 
     results = analyzer.analyze(text=text, language="en")
@@ -126,20 +129,23 @@ def presidio_redact(text: str, transcript_id: str, segment_index: int) -> tuple[
             end=r.end,
             ts=now,
         )
-        for r in results if r.score >= 0.6
+        for r in results
+        if r.score >= 0.6
     ]
     out = text
     for r in sorted(found, key=lambda r: r.start, reverse=True):
-        out = out[:r.start] + f"[REDACTED:{r.category}]" + out[r.end:]
+        out = out[: r.start] + f"[REDACTED:{r.category}]" + out[r.end :]
     return out, found
 
 
 _analyzer_singleton = None
 
+
 def _get_analyzer():
     global _analyzer_singleton
     if _analyzer_singleton is None:
         from presidio_analyzer import AnalyzerEngine
+
         _analyzer_singleton = AnalyzerEngine(supported_languages=["en"])
     return _analyzer_singleton
 
@@ -148,9 +154,10 @@ def _get_analyzer():
 # Top-level transcript pipeline
 # ---------------------------------------------------------------------------
 
+
 def redact_transcript(transcript: dict, use_presidio: bool = True) -> tuple[dict, list[Redaction]]:
     """Redact a transcript event payload in place. Returns (redacted, audit)."""
-    data = transcript.get("data") or transcript    # accept full event or bare data
+    data = transcript.get("data") or transcript  # accept full event or bare data
     transcript_id = data.get("transcript_id") or "unknown"
 
     segments = data.get("segments") or []
@@ -173,11 +180,10 @@ def redact_transcript(transcript: dict, use_presidio: bool = True) -> tuple[dict
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--input",     required=True, type=Path)
-    ap.add_argument("--output",    required=True, type=Path)
+    ap.add_argument("--input", required=True, type=Path)
+    ap.add_argument("--output", required=True, type=Path)
     ap.add_argument("--audit-log", required=True, type=Path)
-    ap.add_argument("--no-presidio", action="store_true",
-                    help="Skip the presidio layer (regex only)")
+    ap.add_argument("--no-presidio", action="store_true", help="Skip the presidio layer (regex only)")
     args = ap.parse_args()
 
     try:
@@ -197,11 +203,15 @@ def main() -> int:
         print(f"output write failed: {e}", file=sys.stderr)
         return 2
 
-    print(json.dumps({
-        "status": "ok",
-        "redaction_count": len(audit),
-        "categories": sorted({r.category for r in audit}),
-    }))
+    print(
+        json.dumps(
+            {
+                "status": "ok",
+                "redaction_count": len(audit),
+                "categories": sorted({r.category for r in audit}),
+            }
+        )
+    )
     return 0
 
 

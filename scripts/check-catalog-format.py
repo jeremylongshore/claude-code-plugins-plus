@@ -18,6 +18,7 @@ Usage:
 
 BASE_REF defaults to "origin/main". Exits non-zero on suspected reformat.
 """
+
 from __future__ import annotations
 
 import json
@@ -42,7 +43,9 @@ def main(argv: list[str]) -> int:
             stderr=subprocess.PIPE,
         ).decode()
     except subprocess.CalledProcessError as e:
-        print(f"check-catalog-format: could not read {base_ref}:{CATALOG} — {e.stderr.decode().strip()}", file=sys.stderr)
+        print(
+            f"check-catalog-format: could not read {base_ref}:{CATALOG} — {e.stderr.decode().strip()}", file=sys.stderr
+        )
         # No base = new repo; nothing to compare against.
         return 0
 
@@ -74,11 +77,7 @@ def main(argv: list[str]) -> int:
     base_lines = base_json.count("\n")
     head_lines = head_json.count("\n")
     net = head_lines - base_lines
-    budget = (
-        LINES_PER_ADDED * len(added)
-        - LINES_PER_REMOVED * len(removed)
-        + LINES_PER_MODIFIED * len(modified)
-    )
+    budget = LINES_PER_ADDED * len(added) - LINES_PER_REMOVED * len(removed) + LINES_PER_MODIFIED * len(modified)
 
     delta = abs(net - budget)
     print(

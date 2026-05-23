@@ -24,32 +24,44 @@ Exit codes:
 """
 
 from __future__ import annotations
-import argparse, json, os, sys, time
+import argparse
+import json
+import os
+import sys
+import time
 from pathlib import Path
-import urllib.request, urllib.parse, urllib.error
+import urllib.request
+import urllib.parse
+import urllib.error
 
-TOKEN_URL  = "https://accounts.podium.com/oauth/token"
-ME_URL     = "https://api.podium.com/v4/me"
+TOKEN_URL = "https://accounts.podium.com/oauth/token"
+ME_URL = "https://api.podium.com/v4/me"
 REVOKE_URL = "https://accounts.podium.com/oauth/revoke"
 
 
 def refresh(client_id: str, client_secret: str, refresh_token: str) -> tuple[int, dict]:
-    body = urllib.parse.urlencode({
-        "grant_type": "refresh_token",
-        "refresh_token": refresh_token,
-        "client_id": client_id,
-        "client_secret": client_secret,
-    }).encode()
+    body = urllib.parse.urlencode(
+        {
+            "grant_type": "refresh_token",
+            "refresh_token": refresh_token,
+            "client_id": client_id,
+            "client_secret": client_secret,
+        }
+    ).encode()
     req = urllib.request.Request(
-        TOKEN_URL, data=body, method="POST",
+        TOKEN_URL,
+        data=body,
+        method="POST",
         headers={"Content-Type": "application/x-www-form-urlencoded"},
     )
     try:
         with urllib.request.urlopen(req, timeout=10) as resp:
             return resp.status, json.loads(resp.read())
     except urllib.error.HTTPError as e:
-        try: payload = json.loads(e.read())
-        except Exception: payload = {"error": "non_json"}
+        try:
+            payload = json.loads(e.read())
+        except Exception:
+            payload = {"error": "non_json"}
         return e.code, payload
 
 
@@ -65,13 +77,17 @@ def call_me(token: str) -> int:
 
 
 def revoke(client_id: str, client_secret: str, token: str) -> int:
-    body = urllib.parse.urlencode({
-        "token": token,
-        "client_id": client_id,
-        "client_secret": client_secret,
-    }).encode()
+    body = urllib.parse.urlencode(
+        {
+            "token": token,
+            "client_id": client_id,
+            "client_secret": client_secret,
+        }
+    ).encode()
     req = urllib.request.Request(
-        REVOKE_URL, data=body, method="POST",
+        REVOKE_URL,
+        data=body,
+        method="POST",
         headers={"Content-Type": "application/x-www-form-urlencoded"},
     )
     try:
@@ -85,13 +101,13 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--old-secret-env", required=True)
     ap.add_argument("--new-secret-env", required=True)
-    ap.add_argument("--client-id-env",  required=True)
+    ap.add_argument("--client-id-env", required=True)
     ap.add_argument("--refresh-token-file", required=True, type=Path)
     ap.add_argument("--health-check-passes", type=int, default=3)
     ap.add_argument("--overlap-window-seconds", type=int, default=900)
     args = ap.parse_args()
 
-    cid     = os.environ.get(args.client_id_env)
+    cid = os.environ.get(args.client_id_env)
     old_sec = os.environ.get(args.old_secret_env)
     new_sec = os.environ.get(args.new_secret_env)
     if not all([cid, old_sec, new_sec]):
@@ -117,10 +133,10 @@ def main() -> int:
     for i in range(args.health_check_passes):
         s = call_me(token)
         if s != 200:
-            print(f"ERR_AUTH_013 /v4/me pass {i+1} failed: status={s}", file=sys.stderr)
+            print(f"ERR_AUTH_013 /v4/me pass {i + 1} failed: status={s}", file=sys.stderr)
             print("ROTATION ABORTED — old secret retained, NOT revoking.", file=sys.stderr)
             return 1
-        print(f"  pass {i+1}/{args.health_check_passes}: ok", file=sys.stderr)
+        print(f"  pass {i + 1}/{args.health_check_passes}: ok", file=sys.stderr)
 
     # Step 3: overlap window
     print(f"[3/4] sleeping {args.overlap_window_seconds}s for in-flight handlers to drain", file=sys.stderr)
@@ -130,7 +146,9 @@ def main() -> int:
     print("[4/4] revoking old secret", file=sys.stderr)
     s = revoke(cid, old_sec, record["refresh_token"])
     if s not in (200, 204):
-        print(f"warn: revoke returned {s} — old credential may still be live; verify in Podium console", file=sys.stderr)
+        print(
+            f"warn: revoke returned {s} — old credential may still be live; verify in Podium console", file=sys.stderr
+        )
         return 3
     print("rotation complete", file=sys.stderr)
     return 0

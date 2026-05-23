@@ -11,7 +11,7 @@ License: MIT
 
 from decimal import Decimal
 from datetime import datetime
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 from cost_basis_engine import CostBasisEngine
 
 
@@ -39,11 +39,7 @@ class TaxEngine:
         """
         self.verbose = verbose
 
-    def calculate(
-        self,
-        transactions: List[Dict[str, Any]],
-        cost_engine: CostBasisEngine
-    ) -> Dict[str, Any]:
+    def calculate(self, transactions: List[Dict[str, Any]], cost_engine: CostBasisEngine) -> Dict[str, Any]:
         """Calculate tax events from transactions.
 
         Args:
@@ -91,14 +87,16 @@ class TaxEngine:
                 # If income type, also record as income event
                 if tx_type in INCOME_TYPES:
                     fmv = quantity * cost_per_unit
-                    income_events.append({
-                        "date": date,
-                        "type": tx_type,
-                        "asset": asset,
-                        "quantity": float(quantity),
-                        "fair_market_value": float(fmv),
-                        "price_per_unit": float(cost_per_unit),
-                    })
+                    income_events.append(
+                        {
+                            "date": date,
+                            "type": tx_type,
+                            "asset": asset,
+                            "quantity": float(quantity),
+                            "fair_market_value": float(fmv),
+                            "price_per_unit": float(cost_per_unit),
+                        }
+                    )
 
             # Handle disposals (sell lots)
             elif tx_type in DISPOSAL_TYPES:
@@ -121,18 +119,20 @@ class TaxEngine:
                 if quantity > 0:
                     results = cost_engine.dispose(asset, quantity, proceeds_per_unit, date, fee)
                     for result in results:
-                        disposals.append({
-                            "date_acquired": result.acquired_date,
-                            "date_sold": result.disposed_date,
-                            "asset": result.asset,
-                            "quantity": float(result.quantity),
-                            "proceeds": float(result.proceeds),
-                            "cost_basis": float(result.cost_basis),
-                            "gain_loss": float(result.gain_loss),
-                            "is_long_term": result.is_long_term,
-                            "holding_days": result.holding_days,
-                            "lot_id": result.lot_id,
-                        })
+                        disposals.append(
+                            {
+                                "date_acquired": result.acquired_date,
+                                "date_sold": result.disposed_date,
+                                "asset": result.asset,
+                                "quantity": float(result.quantity),
+                                "proceeds": float(result.proceeds),
+                                "cost_basis": float(result.cost_basis),
+                                "gain_loss": float(result.gain_loss),
+                                "is_long_term": result.is_long_term,
+                                "holding_days": result.holding_days,
+                                "lot_id": result.lot_id,
+                            }
+                        )
 
             else:
                 # Unknown type
@@ -161,10 +161,7 @@ class TaxEngine:
             "skipped_count": len(skipped),
         }
 
-    def calculate_income(
-        self,
-        transactions: List[Dict[str, Any]]
-    ) -> Dict[str, Any]:
+    def calculate_income(self, transactions: List[Dict[str, Any]]) -> Dict[str, Any]:
         """Calculate income events only.
 
         Args:
@@ -197,14 +194,16 @@ class TaxEngine:
             fmv = quantity * Decimal(str(price))
             total_income += fmv
 
-            income_events.append({
-                "date": date,
-                "type": tx_type,
-                "asset": asset,
-                "quantity": float(quantity),
-                "price_per_unit": float(price),
-                "fair_market_value": float(fmv),
-            })
+            income_events.append(
+                {
+                    "date": date,
+                    "type": tx_type,
+                    "asset": asset,
+                    "quantity": float(quantity),
+                    "price_per_unit": float(price),
+                    "fair_market_value": float(fmv),
+                }
+            )
 
         # Group by type
         by_type = {}
@@ -228,8 +227,6 @@ class TaxEngine:
 
 def main():
     """CLI entry point for testing."""
-    from datetime import datetime
-    from decimal import Decimal
 
     # Sample transactions
     transactions = [

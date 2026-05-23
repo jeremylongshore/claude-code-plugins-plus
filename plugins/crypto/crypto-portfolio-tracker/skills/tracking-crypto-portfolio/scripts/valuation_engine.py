@@ -10,8 +10,6 @@ Version: 2.0.0
 License: MIT
 """
 
-import sys
-from datetime import datetime
 from typing import Optional, Dict, Any, List
 
 
@@ -27,10 +25,7 @@ class ValuationEngine:
         self.verbose = verbose
 
     def calculate(
-        self,
-        portfolio: Dict[str, Any],
-        prices: Dict[str, Dict[str, Any]],
-        threshold: float = 25.0
+        self, portfolio: Dict[str, Any], prices: Dict[str, Dict[str, Any]], threshold: float = 25.0
     ) -> Dict[str, Any]:
         """Calculate portfolio valuations.
 
@@ -122,16 +117,16 @@ class ValuationEngine:
             "total_value_usd": round(total_value, 2),
             "change_24h": {
                 "amount": round(total_change_24h["amount"], 2) if total_change_24h else None,
-                "percent": round(total_change_24h["percent"], 2) if total_change_24h else None
+                "percent": round(total_change_24h["percent"], 2) if total_change_24h else None,
             },
             "change_7d": {
                 "amount": round(total_change_7d["amount"], 2) if total_change_7d else None,
-                "percent": round(total_change_7d["percent"], 2) if total_change_7d else None
+                "percent": round(total_change_7d["percent"], 2) if total_change_7d else None,
             },
             "holdings": valued_holdings,
             "holdings_count": len(valued_holdings),
             "risk_flags": risk_flags,
-            "allocation_by_category": category_allocation
+            "allocation_by_category": category_allocation,
         }
 
         # Add total P&L if cost basis available
@@ -146,10 +141,7 @@ class ValuationEngine:
         return result
 
     def _calculate_total_change(
-        self,
-        holdings: List[Dict[str, Any]],
-        change_key: str,
-        total_value: float
+        self, holdings: List[Dict[str, Any]], change_key: str, total_value: float
     ) -> Optional[Dict[str, float]]:
         """Calculate weighted total change."""
         if total_value <= 0:
@@ -177,16 +169,9 @@ class ValuationEngine:
         else:
             change_amount = -total_value
 
-        return {
-            "amount": change_amount,
-            "percent": weighted_change
-        }
+        return {"amount": change_amount, "percent": weighted_change}
 
-    def _generate_risk_flags(
-        self,
-        holdings: List[Dict[str, Any]],
-        threshold: float
-    ) -> List[str]:
+    def _generate_risk_flags(self, holdings: List[Dict[str, Any]], threshold: float) -> List[str]:
         """Generate risk flags for portfolio."""
         flags = []
 
@@ -209,17 +194,12 @@ class ValuationEngine:
 
         return flags
 
-    def _calculate_category_allocation(
-        self,
-        holdings: List[Dict[str, Any]],
-        total_value: float
-    ) -> Dict[str, float]:
+    def _calculate_category_allocation(self, holdings: List[Dict[str, Any]], total_value: float) -> Dict[str, float]:
         """Calculate allocation by category."""
         if total_value <= 0:
             return {}
 
         categories = {}
-        uncategorized = 0
 
         for holding in holdings:
             category = holding.get("category", "Other")
@@ -231,8 +211,7 @@ class ValuationEngine:
 
         # Convert to percentages
         return {
-            cat: round((val / total_value) * 100, 1)
-            for cat, val in sorted(categories.items(), key=lambda x: -x[1])
+            cat: round((val / total_value) * 100, 1) for cat, val in sorted(categories.items(), key=lambda x: -x[1])
         }
 
 
@@ -246,19 +225,15 @@ def main():
         "holdings": [
             {"coin": "BTC", "quantity": 0.5, "cost_basis": 50000},
             {"coin": "ETH", "quantity": 10, "cost_basis": 2500},
-            {"coin": "SOL", "quantity": 100, "cost_basis": 100}
+            {"coin": "SOL", "quantity": 100, "cost_basis": 100},
         ],
-        "categories": {
-            "BTC": "Layer 1",
-            "ETH": "Layer 1",
-            "SOL": "Layer 1"
-        }
+        "categories": {"BTC": "Layer 1", "ETH": "Layer 1", "SOL": "Layer 1"},
     }
 
     prices = {
         "BTC": {"price": 95000, "change_24h": 2.5, "change_7d": 5.0},
         "ETH": {"price": 3200, "change_24h": 1.8, "change_7d": 3.5},
-        "SOL": {"price": 180, "change_24h": 4.2, "change_7d": 8.0}
+        "SOL": {"price": 180, "change_24h": 4.2, "change_7d": 8.0},
     }
 
     engine = ValuationEngine(verbose=True)

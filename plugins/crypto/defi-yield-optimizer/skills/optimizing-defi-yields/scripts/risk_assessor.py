@@ -97,11 +97,11 @@ class RiskAssessor:
 
         # Calculate weighted total
         total_score = (
-            scores["audit_score"] * self.WEIGHTS["audit_status"] +
-            scores["tvl_score"] * self.WEIGHTS["tvl"] +
-            scores["age_score"] * self.WEIGHTS["protocol_age"] +
-            scores["trend_score"] * self.WEIGHTS["tvl_trend"] +
-            scores["concentration_score"] * self.WEIGHTS["concentration"]
+            scores["audit_score"] * self.WEIGHTS["audit_status"]
+            + scores["tvl_score"] * self.WEIGHTS["tvl"]
+            + scores["age_score"] * self.WEIGHTS["protocol_age"]
+            + scores["trend_score"] * self.WEIGHTS["tvl_trend"]
+            + scores["concentration_score"] * self.WEIGHTS["concentration"]
         )
 
         # Store scores
@@ -160,13 +160,13 @@ class RiskAssessor:
             return 9.0
         elif tvl_usd >= 100_000_000:  # $100M+
             return 8.0
-        elif tvl_usd >= 50_000_000:   # $50M+
+        elif tvl_usd >= 50_000_000:  # $50M+
             return 7.0
-        elif tvl_usd >= 10_000_000:   # $10M+
+        elif tvl_usd >= 10_000_000:  # $10M+
             return 6.0
-        elif tvl_usd >= 1_000_000:    # $1M+
+        elif tvl_usd >= 1_000_000:  # $1M+
             return 4.0
-        elif tvl_usd >= 100_000:      # $100K+
+        elif tvl_usd >= 100_000:  # $100K+
             return 2.0
         else:
             return 1.0
@@ -185,7 +185,7 @@ class RiskAssessor:
             launch = datetime.strptime(launch_date, "%Y-%m")
             months_old = (datetime.now() - launch).days / 30
 
-            if months_old >= 36:   # 3+ years
+            if months_old >= 36:  # 3+ years
                 return 10.0
             elif months_old >= 24:  # 2+ years
                 return 9.0
@@ -193,9 +193,9 @@ class RiskAssessor:
                 return 8.0
             elif months_old >= 12:  # 1+ year
                 return 7.0
-            elif months_old >= 6:   # 6+ months
+            elif months_old >= 6:  # 6+ months
                 return 5.0
-            elif months_old >= 3:   # 3+ months
+            elif months_old >= 3:  # 3+ months
                 return 3.0
             else:
                 return 1.0
@@ -216,13 +216,13 @@ class RiskAssessor:
         if tvl_change_7d > 10:
             return 10.0  # Growing rapidly
         elif tvl_change_7d > 0:
-            return 8.0   # Growing
+            return 8.0  # Growing
         elif tvl_change_7d > -5:
-            return 7.0   # Stable
+            return 7.0  # Stable
         elif tvl_change_7d > -20:
-            return 5.0   # Declining
+            return 5.0  # Declining
         else:
-            return 3.0   # Declining rapidly
+            return 3.0  # Declining rapidly
 
     def _score_concentration(self, pool: Dict[str, Any]) -> float:
         """Score based on token concentration.
@@ -235,10 +235,7 @@ class RiskAssessor:
         # Blue-chip protocols typically have better distribution
         project = pool.get("project", "").lower()
 
-        distributed_protocols = [
-            "aave", "compound", "curve", "uniswap", "balancer",
-            "maker", "lido", "rocket-pool"
-        ]
+        distributed_protocols = ["aave", "compound", "curve", "uniswap", "balancer", "maker", "lido", "rocket-pool"]
 
         if any(p in project for p in distributed_protocols):
             return 9.0  # Well-distributed
@@ -263,11 +260,7 @@ class RiskAssessor:
         else:
             return "Very High"
 
-    def _identify_risk_factors(
-        self,
-        pool: Dict[str, Any],
-        scores: Dict[str, float]
-    ) -> List[str]:
+    def _identify_risk_factors(self, pool: Dict[str, Any], scores: Dict[str, float]) -> List[str]:
         """Identify specific risk factors for a pool.
 
         Returns:
@@ -285,7 +278,7 @@ class RiskAssessor:
         # TVL concerns
         if scores["tvl_score"] < 5:
             tvl = pool.get("tvlUsd", 0)
-            factors.append(f"Low TVL (${tvl/1e6:.1f}M) - liquidity risk")
+            factors.append(f"Low TVL (${tvl / 1e6:.1f}M) - liquidity risk")
 
         # Age concerns
         if scores["age_score"] < 5:
@@ -327,11 +320,7 @@ class RiskAssessor:
         """
         return self.AUDITED_PROTOCOLS.get(project.lower())
 
-    def filter_by_risk(
-        self,
-        pools: List[Dict[str, Any]],
-        max_risk_level: str = "Medium"
-    ) -> List[Dict[str, Any]]:
+    def filter_by_risk(self, pools: List[Dict[str, Any]], max_risk_level: str = "Medium") -> List[Dict[str, Any]]:
         """Filter pools by maximum risk level.
 
         Args:
@@ -344,10 +333,7 @@ class RiskAssessor:
         risk_order = ["Low", "Medium", "High", "Very High"]
         max_index = risk_order.index(max_risk_level)
 
-        return [
-            p for p in pools
-            if risk_order.index(p.get("risk_level", "Very High")) <= max_index
-        ]
+        return [p for p in pools if risk_order.index(p.get("risk_level", "Very High")) <= max_index]
 
 
 def main():
@@ -376,9 +362,9 @@ def main():
         print(f"\n{pool['project']} - {pool['symbol']}")
         print(f"  Risk Score: {pool['risk_score']}/10 ({pool['risk_level']})")
         print(f"  Audited: {pool['audited']}")
-        if pool['auditors']:
+        if pool["auditors"]:
             print(f"  Auditors: {', '.join(pool['auditors'])}")
-        print(f"  Risk Factors:")
+        print("  Risk Factors:")
         for factor in pool.get("risk_factors", []):
             print(f"    • {factor}")
 

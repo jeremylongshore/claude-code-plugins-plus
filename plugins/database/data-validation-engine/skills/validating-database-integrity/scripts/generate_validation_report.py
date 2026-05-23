@@ -10,8 +10,7 @@ import argparse
 import json
 import sys
 from datetime import datetime
-from pathlib import Path
-from typing import Dict, List, Any, Optional
+from typing import Dict, Any
 
 
 class ValidationReportGenerator:
@@ -33,14 +32,14 @@ class ValidationReportGenerator:
             True if successful, False otherwise
         """
         try:
-            with open(filepath, 'r') as f:
+            with open(filepath, "r") as f:
                 data = json.load(f)
 
             self.results = data.get("validations", [])
             self.metadata = {
                 "table": data.get("table", "unknown"),
                 "timestamp": data.get("timestamp", datetime.now().isoformat()),
-                "statistics": data.get("statistics", {})
+                "statistics": data.get("statistics", {}),
             }
 
             return True
@@ -56,13 +55,7 @@ class ValidationReportGenerator:
             Dictionary with summary stats
         """
         if not self.results:
-            return {
-                "total": 0,
-                "passed": 0,
-                "failed": 0,
-                "pass_rate": 0.0,
-                "issues": []
-            }
+            return {"total": 0, "passed": 0, "failed": 0, "pass_rate": 0.0, "issues": []}
 
         total = len(self.results)
         passed = sum(1 for r in self.results if r.get("valid", False))
@@ -72,11 +65,13 @@ class ValidationReportGenerator:
         for result in self.results:
             if not result.get("valid", False):
                 details = result.get("details", {})
-                issues.append({
-                    "rule": details.get("rule", "unknown"),
-                    "column": details.get("column", "unknown"),
-                    "severity": self._determine_severity(details.get("rule"))
-                })
+                issues.append(
+                    {
+                        "rule": details.get("rule", "unknown"),
+                        "column": details.get("column", "unknown"),
+                        "severity": self._determine_severity(details.get("rule")),
+                    }
+                )
 
         return {
             "total": total,
@@ -86,7 +81,7 @@ class ValidationReportGenerator:
             "issues": issues,
             "critical_issues": sum(1 for i in issues if i["severity"] == "critical"),
             "high_issues": sum(1 for i in issues if i["severity"] == "high"),
-            "medium_issues": sum(1 for i in issues if i["severity"] == "medium")
+            "medium_issues": sum(1 for i in issues if i["severity"] == "medium"),
         }
 
     def _determine_severity(self, rule: str) -> str:
@@ -120,7 +115,7 @@ class ValidationReportGenerator:
             "metadata": self.metadata,
             "summary": summary,
             "timestamp": datetime.now().isoformat(),
-            "validations": self.results
+            "validations": self.results,
         }
 
         return json.dumps(report, indent=2)
@@ -130,15 +125,15 @@ class ValidationReportGenerator:
         summary = self.generate_summary()
 
         md = []
-        md.append(f"# Data Validation Report")
+        md.append("# Data Validation Report")
         md.append(f"\n**Table:** {self.metadata.get('table', 'Unknown')}")
         md.append(f"**Generated:** {datetime.now().isoformat()}")
         md.append("")
 
         # Summary section
         md.append("## Executive Summary\n")
-        md.append(f"| Metric | Value |")
-        md.append(f"|--------|-------|")
+        md.append("| Metric | Value |")
+        md.append("|--------|-------|")
         md.append(f"| Total Checks | {summary['total']} |")
         md.append(f"| Passed | {summary['passed']} |")
         md.append(f"| Failed | {summary['failed']} |")
@@ -154,32 +149,32 @@ class ValidationReportGenerator:
             md.append("")
 
         # Issues section
-        if summary['failed'] > 0:
+        if summary["failed"] > 0:
             md.append("## Issues Identified\n")
 
-            if summary['critical_issues'] > 0:
+            if summary["critical_issues"] > 0:
                 md.append("### Critical Issues\n")
-                for issue in summary['issues']:
-                    if issue['severity'] == 'critical':
+                for issue in summary["issues"]:
+                    if issue["severity"] == "critical":
                         md.append(f"- **{issue['rule']}** on column `{issue['column']}`")
                 md.append("")
 
-            if summary['high_issues'] > 0:
+            if summary["high_issues"] > 0:
                 md.append("### High Priority Issues\n")
-                for issue in summary['issues']:
-                    if issue['severity'] == 'high':
+                for issue in summary["issues"]:
+                    if issue["severity"] == "high":
                         md.append(f"- **{issue['rule']}** on column `{issue['column']}`")
                 md.append("")
 
-            if summary['medium_issues'] > 0:
+            if summary["medium_issues"] > 0:
                 md.append("### Medium Priority Issues\n")
-                for issue in summary['issues']:
-                    if issue['severity'] == 'medium':
+                for issue in summary["issues"]:
+                    if issue["severity"] == "medium":
                         md.append(f"- **{issue['rule']}** on column `{issue['column']}`")
                 md.append("")
 
         # Detailed results
-        if summary['failed'] > 0:
+        if summary["failed"] > 0:
             md.append("## Detailed Validation Results\n")
             for result in self.results:
                 if not result.get("valid", False):
@@ -194,19 +189,20 @@ class ValidationReportGenerator:
                     elif rule == "not_null":
                         md.append(f"**Issue:** Found {details.get('null_count', 0)} NULL values\n")
                     elif rule == "unique":
-                        md.append(f"**Issue:** Found {details.get('duplicate_count', 0)} "
-                                f"duplicate groups\n")
+                        md.append(f"**Issue:** Found {details.get('duplicate_count', 0)} duplicate groups\n")
                     elif rule == "range":
-                        md.append(f"**Issue:** {details.get('out_of_range_count', 0)} values "
-                                f"outside range [{details.get('min')}, {details.get('max')}]\n")
+                        md.append(
+                            f"**Issue:** {details.get('out_of_range_count', 0)} values "
+                            f"outside range [{details.get('min')}, {details.get('max')}]\n"
+                        )
 
         # Recommendations
         md.append("## Recommendations\n")
-        if summary['critical_issues'] > 0:
+        if summary["critical_issues"] > 0:
             md.append("1. **Immediately address critical issues** - These indicate data integrity problems")
-        if summary['high_issues'] > 0:
+        if summary["high_issues"] > 0:
             md.append("2. **Resolve high priority issues within 1 week** - These affect data quality")
-        if summary['failed'] == 0:
+        if summary["failed"] == 0:
             md.append("✅ **All validations passed!** - Data integrity is maintained")
         else:
             md.append("3. **Review validation rules** - Ensure they match business requirements")
@@ -254,18 +250,26 @@ class ValidationReportGenerator:
             "</head>",
             "<body>",
             "<div class='container'>",
-            f"<h1>Data Validation Report</h1>",
+            "<h1>Data Validation Report</h1>",
             f"<p><strong>Table:</strong> {self.metadata.get('table', 'Unknown')}</p>",
-            f"<p><strong>Generated:</strong> {datetime.now().isoformat()}</p>"
+            f"<p><strong>Generated:</strong> {datetime.now().isoformat()}</p>",
         ]
 
         # Summary metrics
         html.append("<h2>Summary</h2>")
         html.append("<div class='summary'>")
-        html.append(f"<div class='metric'><div class='value'>{summary['total']}</div><div class='label'>Total Checks</div></div>")
-        html.append(f"<div class='metric'><div class='value success'>{summary['passed']}</div><div class='label'>Passed</div></div>")
-        html.append(f"<div class='metric'><div class='value critical'>{summary['failed']}</div><div class='label'>Failed</div></div>")
-        html.append(f"<div class='metric'><div class='value'>{summary['pass_rate']:.1f}%</div><div class='label'>Pass Rate</div></div>")
+        html.append(
+            f"<div class='metric'><div class='value'>{summary['total']}</div><div class='label'>Total Checks</div></div>"
+        )
+        html.append(
+            f"<div class='metric'><div class='value success'>{summary['passed']}</div><div class='label'>Passed</div></div>"
+        )
+        html.append(
+            f"<div class='metric'><div class='value critical'>{summary['failed']}</div><div class='label'>Failed</div></div>"
+        )
+        html.append(
+            f"<div class='metric'><div class='value'>{summary['pass_rate']:.1f}%</div><div class='label'>Pass Rate</div></div>"
+        )
         html.append("</div>")
 
         # Table statistics
@@ -278,12 +282,12 @@ class ValidationReportGenerator:
             html.append("</table>")
 
         # Issues
-        if summary['failed'] > 0:
+        if summary["failed"] > 0:
             html.append("<h2>Issues</h2>")
             html.append("<div class='issue-list'>")
 
-            for issue in summary['issues']:
-                severity_class = issue['severity']
+            for issue in summary["issues"]:
+                severity_class = issue["severity"]
                 html.append(
                     f"<div class='issue'>"
                     f"<span class='{severity_class}'>{issue['severity'].upper()}</span>: "
@@ -319,29 +323,13 @@ Examples:
   %(prog)s --results validation.json --format markdown
   %(prog)s --results validation.json --format html --output report.html
   %(prog)s --results validation.json --format json --output report.json
-        """
+        """,
     )
 
-    parser.add_argument(
-        "--results",
-        required=True,
-        help="Path to JSON file containing validation results"
-    )
-    parser.add_argument(
-        "--format",
-        default="markdown",
-        choices=["json", "markdown", "html"],
-        help="Report format"
-    )
-    parser.add_argument(
-        "--output",
-        help="Output file for report"
-    )
-    parser.add_argument(
-        "--verbose",
-        action="store_true",
-        help="Print detailed output"
-    )
+    parser.add_argument("--results", required=True, help="Path to JSON file containing validation results")
+    parser.add_argument("--format", default="markdown", choices=["json", "markdown", "html"], help="Report format")
+    parser.add_argument("--output", help="Output file for report")
+    parser.add_argument("--verbose", action="store_true", help="Print detailed output")
 
     args = parser.parse_args()
 
@@ -368,7 +356,7 @@ Examples:
 
         # Save to file if requested
         if args.output:
-            with open(args.output, 'w') as f:
+            with open(args.output, "w") as f:
                 f.write(report)
 
             if args.verbose:

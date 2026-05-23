@@ -21,7 +21,11 @@ Exit codes:
 """
 
 from __future__ import annotations
-import argparse, hashlib, json, sqlite3, sys
+import argparse
+import hashlib
+import json
+import sqlite3
+import sys
 from pathlib import Path
 
 
@@ -31,7 +35,7 @@ def cluster_id_for(uids: list[str]) -> str:
 
 
 def cluster_confidence(a: dict, b: dict) -> float:
-    score = 0.60   # same natural_key
+    score = 0.60  # same natural_key
     if a.get("name") and a["name"].strip().lower() == (b.get("name") or "").strip().lower():
         score += 0.20
     if a.get("email") and a["email"].strip().lower() == (b.get("email") or "").strip().lower():
@@ -53,8 +57,8 @@ def select_primary(members: list[dict]) -> dict:
 def union_opt_outs(members: list[dict]) -> dict:
     return {
         "marketing_opt_out": any(m["marketing_opt_out"] for m in members),
-        "sms_opt_out":       any(m["sms_opt_out"]       for m in members),
-        "email_opt_out":     any(m["email_opt_out"]     for m in members),
+        "sms_opt_out": any(m["sms_opt_out"] for m in members),
+        "email_opt_out": any(m["email_opt_out"] for m in members),
     }
 
 
@@ -78,10 +82,18 @@ def load_members(db: sqlite3.Connection, natural_key: str) -> list[dict]:
         (natural_key,),
     ).fetchall()
     return [
-        {"contact_uid": r[0], "location_uid": r[1], "name": r[2], "email": r[3],
-         "tags_json": r[4], "field_count": r[5],
-         "marketing_opt_out": bool(r[6]), "sms_opt_out": bool(r[7]),
-         "email_opt_out": bool(r[8]), "updated_at_podium": r[9]}
+        {
+            "contact_uid": r[0],
+            "location_uid": r[1],
+            "name": r[2],
+            "email": r[3],
+            "tags_json": r[4],
+            "field_count": r[5],
+            "marketing_opt_out": bool(r[6]),
+            "sms_opt_out": bool(r[7]),
+            "email_opt_out": bool(r[8]),
+            "updated_at_podium": r[9],
+        }
         for r in rows
     ]
 
@@ -143,9 +155,7 @@ def main() -> int:
                 ],
                 "suggested_primary_uid": primary["contact_uid"],
                 "opt_out_union_if_merged": union_opt_outs(members),
-                "auto_merge_eligible": (
-                    args.policy == "auto_merge" and worst >= args.auto_merge_threshold
-                ),
+                "auto_merge_eligible": (args.policy == "auto_merge" and worst >= args.auto_merge_threshold),
             }
             f.write(json.dumps(cluster) + "\n")
             written += 1

@@ -13,6 +13,7 @@ import os
 import secrets
 import re
 
+
 def secure_password_hashing(password: str, salt: bytes = None) -> tuple[str, str]:
     """
     Hashes a password using a strong hashing algorithm (e.g., bcrypt or scrypt).
@@ -27,16 +28,16 @@ def secure_password_hashing(password: str, salt: bytes = None) -> tuple[str, str
     try:
         if salt is None:
             salt = secrets.token_bytes(16)  # Generate a 16-byte salt
-        
+
         hashed_password = hashlib.scrypt(
-            password.encode('utf-8'),
+            password.encode("utf-8"),
             salt=salt,
             n=2**14,  # CPU/memory cost parameter
-            r=8,      # Block size parameter
-            p=1,      # Parallelization parameter
-            dklen=64   # Desired key length
+            r=8,  # Block size parameter
+            p=1,  # Parallelization parameter
+            dklen=64,  # Desired key length
         )
-        
+
         return salt.hex(), hashed_password.hex()
     except Exception as e:
         print(f"Error in secure_password_hashing: {e}")
@@ -58,14 +59,14 @@ def verify_password(password: str, salt_hex: str, hash_hex: str) -> bool:
     try:
         salt = bytes.fromhex(salt_hex)
         stored_hash = bytes.fromhex(hash_hex)
-        
+
         hashed_password = hashlib.scrypt(
-            password.encode('utf-8'),
+            password.encode("utf-8"),
             salt=salt,
             n=2**14,  # CPU/memory cost parameter
-            r=8,      # Block size parameter
-            p=1,      # Parallelization parameter
-            dklen=64   # Desired key length
+            r=8,  # Block size parameter
+            p=1,  # Parallelization parameter
+            dklen=64,  # Desired key length
         )
 
         return hmac.compare_digest(hashed_password, stored_hash)
@@ -92,7 +93,13 @@ def sanitize_input(input_string: str) -> str:
     """
     try:
         # Example: Escape HTML entities
-        sanitized_string = input_string.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\"", "&quot;").replace("'", "&#39;")
+        sanitized_string = (
+            input_string.replace("&", "&amp;")
+            .replace("<", "&lt;")
+            .replace(">", "&gt;")
+            .replace('"', "&quot;")
+            .replace("'", "&#39;")
+        )
 
         # Example: Remove potentially dangerous characters (e.g., for SQL injection)
         sanitized_string = re.sub(r"[;'\"]", "", sanitized_string)
@@ -137,7 +144,7 @@ def secure_file_upload(filename: str, file_content: bytes, upload_dir: str) -> s
     try:
         # Sanitize filename to prevent path traversal attacks
         sanitized_filename = os.path.basename(filename)  # Remove directory components
-        sanitized_filename = re.sub(r"[^a-zA-Z0-9._-]", "", sanitized_filename) # Remove invalid characters
+        sanitized_filename = re.sub(r"[^a-zA-Z0-9._-]", "", sanitized_filename)  # Remove invalid characters
 
         if not sanitized_filename:
             print("Invalid filename.")
@@ -160,6 +167,7 @@ def secure_file_upload(filename: str, file_content: bytes, upload_dir: str) -> s
         print(f"Error in secure_file_upload: {e}")
         return None
 
+
 def generate_secure_random_token(length: int = 32) -> str:
     """
     Generates a cryptographically secure random token.
@@ -175,6 +183,7 @@ def generate_secure_random_token(length: int = 32) -> str:
     except Exception as e:
         print(f"Error in generate_secure_random_token: {e}")
         return None
+
 
 if __name__ == "__main__":
     # Example usage

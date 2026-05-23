@@ -11,11 +11,9 @@ License: MIT
 """
 
 import argparse
-import json
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Optional, Dict, Any, List
 
 # Add scripts directory to path for local imports
 SCRIPT_DIR = Path(__file__).parent
@@ -38,69 +36,42 @@ Examples:
   %(prog)s --portfolio holdings.json --holdings   # All holdings
   %(prog)s --portfolio holdings.json --detailed   # Full analysis
   %(prog)s --portfolio holdings.json --format json  # JSON export
-        """
+        """,
     )
 
     # Required
-    parser.add_argument(
-        "--portfolio", "-p",
-        type=str,
-        required=True,
-        help="Path to portfolio JSON file"
-    )
+    parser.add_argument("--portfolio", "-p", type=str, required=True, help="Path to portfolio JSON file")
 
     # Display options
-    parser.add_argument(
-        "--holdings",
-        action="store_true",
-        help="Show all holdings breakdown"
-    )
-    parser.add_argument(
-        "--detailed",
-        action="store_true",
-        help="Show detailed analysis with P&L"
-    )
+    parser.add_argument("--holdings", action="store_true", help="Show all holdings breakdown")
+    parser.add_argument("--detailed", action="store_true", help="Show detailed analysis with P&L")
     parser.add_argument(
         "--sort",
         type=str,
         choices=["value", "allocation", "name", "change"],
         default="value",
-        help="Sort holdings by (default: value)"
+        help="Sort holdings by (default: value)",
     )
 
     # Thresholds
     parser.add_argument(
-        "--threshold",
-        type=float,
-        default=25.0,
-        help="Allocation warning threshold in percent (default: 25)"
+        "--threshold", type=float, default=25.0, help="Allocation warning threshold in percent (default: 25)"
     )
 
     # Output options
     parser.add_argument(
-        "--format", "-f",
+        "--format",
+        "-f",
         type=str,
         choices=["table", "json", "csv"],
         default="table",
-        help="Output format (default: table)"
+        help="Output format (default: table)",
     )
-    parser.add_argument(
-        "--output", "-o",
-        type=str,
-        help="Output file path (default: stdout)"
-    )
+    parser.add_argument("--output", "-o", type=str, help="Output file path (default: stdout)")
 
     # Debug options
-    parser.add_argument(
-        "--verbose", "-v",
-        action="store_true",
-        help="Enable verbose output"
-    )
-    parser.add_argument(
-        "--version",
-        action="version",
-        version="%(prog)s 2.0.0"
-    )
+    parser.add_argument("--verbose", "-v", action="store_true", help="Enable verbose output")
+    parser.add_argument("--version", action="version", version="%(prog)s 2.0.0")
 
     return parser.parse_args()
 
@@ -147,11 +118,7 @@ def main() -> None:
     if args.verbose:
         print("Calculating valuations...", file=sys.stderr)
 
-    valuations = engine.calculate(
-        portfolio=portfolio,
-        prices=prices,
-        threshold=args.threshold
-    )
+    valuations = engine.calculate(portfolio=portfolio, prices=prices, threshold=args.threshold)
 
     # Sort holdings
     if valuations.get("holdings"):
@@ -163,18 +130,14 @@ def main() -> None:
         }.get(args.sort, lambda x: x.get("value_usd", 0))
 
         reverse = args.sort != "name"
-        valuations["holdings"] = sorted(
-            valuations["holdings"],
-            key=sort_key,
-            reverse=reverse
-        )
+        valuations["holdings"] = sorted(valuations["holdings"], key=sort_key, reverse=reverse)
 
     # Add metadata
     valuations["meta"] = {
         "timestamp": datetime.utcnow().isoformat() + "Z",
         "portfolio_file": args.portfolio,
         "threshold": args.threshold,
-        "sort_by": args.sort
+        "sort_by": args.sort,
     }
 
     # Determine display mode
@@ -182,12 +145,7 @@ def main() -> None:
     show_pnl = args.detailed
 
     # Format output
-    output = formatter.format(
-        valuations,
-        format_type=args.format,
-        show_all_holdings=show_all,
-        show_pnl=show_pnl
-    )
+    output = formatter.format(valuations, format_type=args.format, show_all_holdings=show_all, show_pnl=show_pnl)
 
     # Write output
     if args.output:

@@ -14,10 +14,7 @@ from typing import Dict, Optional
 
 
 def calculate_significance(
-    change_pct: float,
-    volume_ratio: float,
-    market_cap: float,
-    weights: Optional[Dict[str, float]] = None
+    change_pct: float, volume_ratio: float, market_cap: float, weights: Optional[Dict[str, float]] = None
 ) -> float:
     """
     Calculate composite significance score for ranking movers.
@@ -36,11 +33,7 @@ def calculate_significance(
     Returns:
         Significance score from 0-100
     """
-    weights = weights or {
-        "change_weight": 0.40,
-        "volume_weight": 0.40,
-        "cap_weight": 0.20
-    }
+    weights = weights or {"change_weight": 0.40, "volume_weight": 0.40, "cap_weight": 0.20}
 
     # Normalize change score (cap at 100)
     # 50% change = 100 score
@@ -59,18 +52,16 @@ def calculate_significance(
 
     # Calculate weighted sum
     score = (
-        weights.get("change_weight", 0.4) * change_score +
-        weights.get("volume_weight", 0.4) * volume_score +
-        weights.get("cap_weight", 0.2) * cap_score
+        weights.get("change_weight", 0.4) * change_score
+        + weights.get("volume_weight", 0.4) * volume_score
+        + weights.get("cap_weight", 0.2) * cap_score
     )
 
     return round(score, 1)
 
 
 def calculate_momentum_score(
-    change_1h: Optional[float],
-    change_24h: Optional[float],
-    change_7d: Optional[float]
+    change_1h: Optional[float], change_24h: Optional[float], change_7d: Optional[float]
 ) -> float:
     """
     Calculate momentum score based on multi-timeframe changes.
@@ -114,11 +105,7 @@ def calculate_momentum_score(
     return round(score, 1)
 
 
-def calculate_volatility_score(
-    high_24h: Optional[float],
-    low_24h: Optional[float],
-    current_price: float
-) -> float:
+def calculate_volatility_score(high_24h: Optional[float], low_24h: Optional[float], current_price: float) -> float:
     """
     Calculate volatility score based on 24h range.
 
@@ -142,10 +129,7 @@ def calculate_volatility_score(
     return round(score, 1)
 
 
-def calculate_relative_strength(
-    change: float,
-    market_avg_change: float
-) -> float:
+def calculate_relative_strength(change: float, market_avg_change: float) -> float:
     """
     Calculate relative strength vs market average.
 
@@ -173,7 +157,7 @@ def explain_score(
     volume_ratio: float,
     market_cap: float,
     final_score: float,
-    weights: Optional[Dict[str, float]] = None
+    weights: Optional[Dict[str, float]] = None,
 ) -> Dict[str, str]:
     """
     Generate human-readable explanation of score components.
@@ -188,11 +172,7 @@ def explain_score(
     Returns:
         Dictionary with explanation strings
     """
-    weights = weights or {
-        "change_weight": 0.40,
-        "volume_weight": 0.40,
-        "cap_weight": 0.20
-    }
+    weights = weights or {"change_weight": 0.40, "volume_weight": 0.40, "cap_weight": 0.20}
 
     explanations = {}
 
@@ -200,16 +180,14 @@ def explain_score(
     change_score = min(100, abs(change_pct) * 2)
     change_contribution = weights.get("change_weight", 0.4) * change_score
     explanations["change"] = (
-        f"{change_pct:+.1f}% change → {change_score:.0f} points "
-        f"(contributes {change_contribution:.1f} to score)"
+        f"{change_pct:+.1f}% change → {change_score:.0f} points (contributes {change_contribution:.1f} to score)"
     )
 
     # Volume component
     volume_score = min(100, volume_ratio * 20)
     volume_contribution = weights.get("volume_weight", 0.4) * volume_score
     explanations["volume"] = (
-        f"{volume_ratio:.1f}x volume → {volume_score:.0f} points "
-        f"(contributes {volume_contribution:.1f} to score)"
+        f"{volume_ratio:.1f}x volume → {volume_score:.0f} points (contributes {volume_contribution:.1f} to score)"
     )
 
     # Cap component
@@ -219,11 +197,8 @@ def explain_score(
         cap_score = 0
     cap_contribution = weights.get("cap_weight", 0.2) * cap_score
 
-    cap_str = f"${market_cap/1e9:.1f}B" if market_cap >= 1e9 else f"${market_cap/1e6:.1f}M"
-    explanations["market_cap"] = (
-        f"{cap_str} cap → {cap_score:.0f} points "
-        f"(contributes {cap_contribution:.1f} to score)"
-    )
+    cap_str = f"${market_cap / 1e9:.1f}B" if market_cap >= 1e9 else f"${market_cap / 1e6:.1f}M"
+    explanations["market_cap"] = f"{cap_str} cap → {cap_score:.0f} points (contributes {cap_contribution:.1f} to score)"
 
     # Summary
     explanations["summary"] = (

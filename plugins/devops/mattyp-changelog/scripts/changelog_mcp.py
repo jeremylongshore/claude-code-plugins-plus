@@ -4,7 +4,6 @@ import hashlib
 import json
 import os
 import subprocess
-from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -40,22 +39,19 @@ class MattypChangelogMcp:
                             "source_type": {"type": "string", "enum": ["github", "slack", "git"]},
                             "start_date": {"type": "string", "description": "YYYY-MM-DD"},
                             "end_date": {"type": "string", "description": "YYYY-MM-DD"},
-                            "config": {"type": "object"}
+                            "config": {"type": "object"},
                         },
-                        "required": ["source_type", "start_date", "end_date", "config"]
-                    }
+                        "required": ["source_type", "start_date", "end_date", "config"],
+                    },
                 ),
                 Tool(
                     name="validate_frontmatter",
                     description="Validate YAML frontmatter structure for changelog output.",
                     inputSchema={
                         "type": "object",
-                        "properties": {
-                            "frontmatter": {"type": "object"},
-                            "schema_path": {"type": "string"}
-                        },
-                        "required": ["frontmatter"]
-                    }
+                        "properties": {"frontmatter": {"type": "object"}, "schema_path": {"type": "string"}},
+                        "required": ["frontmatter"],
+                    },
                 ),
                 Tool(
                     name="write_changelog",
@@ -65,10 +61,10 @@ class MattypChangelogMcp:
                         "properties": {
                             "content": {"type": "string"},
                             "output_path": {"type": "string"},
-                            "overwrite": {"type": "boolean", "default": False}
+                            "overwrite": {"type": "boolean", "default": False},
                         },
-                        "required": ["content", "output_path"]
-                    }
+                        "required": ["content", "output_path"],
+                    },
                 ),
                 Tool(
                     name="create_changelog_pr",
@@ -81,32 +77,28 @@ class MattypChangelogMcp:
                             "pr_title": {"type": "string"},
                             "pr_body": {"type": "string"},
                             "base_branch": {"type": "string", "default": "main"},
-                            "files": {"type": "array", "items": {"type": "string"}}
+                            "files": {"type": "array", "items": {"type": "string"}},
                         },
-                        "required": ["branch_name", "commit_message", "pr_title", "pr_body", "files"]
-                    }
+                        "required": ["branch_name", "commit_message", "pr_title", "pr_body", "files"],
+                    },
                 ),
                 Tool(
                     name="validate_changelog_quality",
                     description="Run deterministic quality checks and return a 0-100 score.",
                     inputSchema={
                         "type": "object",
-                        "properties": {
-                            "content": {"type": "string"}
-                        },
-                        "required": ["content"]
-                    }
+                        "properties": {"content": {"type": "string"}},
+                        "required": ["content"],
+                    },
                 ),
                 Tool(
                     name="get_changelog_config",
                     description="Load and validate .changelog-config.json from the current repo.",
                     inputSchema={
                         "type": "object",
-                        "properties": {
-                            "config_path": {"type": "string", "default": ".changelog-config.json"}
-                        }
-                    }
-                )
+                        "properties": {"config_path": {"type": "string", "default": ".changelog-config.json"}},
+                    },
+                ),
             ]
 
         @self.server.call_tool()
@@ -159,7 +151,7 @@ class MattypChangelogMcp:
             try:
                 out = subprocess.check_output(
                     ["git", "log", branch, "--since", start_date, "--until", end_date, "--pretty=%H|%s|%an|%cI"],
-                    text=True
+                    text=True,
                 )
                 items = []
                 for line in out.splitlines():
@@ -172,10 +164,18 @@ class MattypChangelogMcp:
                             "author": author,
                             "labels": [],
                             "url": "",
-                            "timestamp": ts
+                            "timestamp": ts,
                         }
                     )
-                return {"ok": True, "data": {"items": items, "count": len(items), "source": "git", "date_range": f"{start_date} to {end_date}"}}
+                return {
+                    "ok": True,
+                    "data": {
+                        "items": items,
+                        "count": len(items),
+                        "source": "git",
+                        "date_range": f"{start_date} to {end_date}",
+                    },
+                }
             except Exception as exc:
                 return {"ok": False, "error": f"git fetch failed: {exc}"}
 
@@ -183,13 +183,31 @@ class MattypChangelogMcp:
             token_env = cfg.get("token_env", "GITHUB_TOKEN")
             if not os.getenv(token_env):
                 return {"ok": False, "error": f"Missing GitHub token env var: {token_env}"}
-            return {"ok": True, "data": {"items": [], "count": 0, "source": "github", "date_range": f"{start_date} to {end_date}", "note": "GitHub fetching not yet implemented in MCP v0.1.0"}}
+            return {
+                "ok": True,
+                "data": {
+                    "items": [],
+                    "count": 0,
+                    "source": "github",
+                    "date_range": f"{start_date} to {end_date}",
+                    "note": "GitHub fetching not yet implemented in MCP v0.1.0",
+                },
+            }
 
         if source_type == "slack":
             token_env = cfg.get("token_env", "SLACK_TOKEN")
             if token_env and not os.getenv(token_env):
                 return {"ok": False, "error": f"Missing Slack token env var: {token_env}"}
-            return {"ok": True, "data": {"items": [], "count": 0, "source": "slack", "date_range": f"{start_date} to {end_date}", "note": "Slack fetching not yet implemented in MCP v0.1.0"}}
+            return {
+                "ok": True,
+                "data": {
+                    "items": [],
+                    "count": 0,
+                    "source": "slack",
+                    "date_range": f"{start_date} to {end_date}",
+                    "note": "Slack fetching not yet implemented in MCP v0.1.0",
+                },
+            }
 
         return {"ok": False, "error": f"Unsupported source_type: {source_type}"}
 
@@ -220,7 +238,10 @@ class MattypChangelogMcp:
         target.write_text(content, encoding="utf-8")
         sha256 = hashlib.sha256(content.encode("utf-8")).hexdigest()
         lines = content.count("\n") + 1 if content else 0
-        return {"ok": True, "file": {"path": output_path, "sha256": sha256, "lines": lines, "size_bytes": len(content.encode('utf-8'))}}
+        return {
+            "ok": True,
+            "file": {"path": output_path, "sha256": sha256, "lines": lines, "size_bytes": len(content.encode("utf-8"))},
+        }
 
     async def _quality(self, args: dict) -> dict:
         content = args.get("content", "")
@@ -263,7 +284,7 @@ class MattypChangelogMcp:
             subprocess.check_call(["gh", "--version"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             pr_out = subprocess.check_output(
                 ["gh", "pr", "create", "--base", base_branch, "--head", branch, "--title", pr_title, "--body", pr_body],
-                text=True
+                text=True,
             ).strip()
             pr_url = pr_out.splitlines()[-1] if pr_out else None
         except Exception:
@@ -274,7 +295,7 @@ class MattypChangelogMcp:
             "branch": branch,
             "base_branch": base_branch,
             "pr": {"url": pr_url} if pr_url else None,
-            "note": "PR creation requires gh auth; if missing, push branch and open PR manually."
+            "note": "PR creation requires gh auth; if missing, push branch and open PR manually.",
         }
 
 
@@ -286,4 +307,3 @@ async def main() -> None:
 
 if __name__ == "__main__":
     asyncio.run(main())
-

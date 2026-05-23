@@ -10,7 +10,7 @@ License: MIT
 """
 
 import json
-from typing import Dict, Any, List, Optional, Tuple
+from typing import Dict, Any, List, Optional
 
 
 # Common function signatures (4-byte selectors)
@@ -19,37 +19,64 @@ KNOWN_SIGNATURES: Dict[str, Dict[str, Any]] = {
     "0xa9059cbb": {"name": "transfer", "params": ["address to", "uint256 amount"]},
     "0x23b872dd": {"name": "transferFrom", "params": ["address from", "address to", "uint256 amount"]},
     "0x095ea7b3": {"name": "approve", "params": ["address spender", "uint256 amount"]},
-
     # ERC721
     "0x42842e0e": {"name": "safeTransferFrom", "params": ["address from", "address to", "uint256 tokenId"]},
-    "0xb88d4fde": {"name": "safeTransferFrom", "params": ["address from", "address to", "uint256 tokenId", "bytes data"]},
-
+    "0xb88d4fde": {
+        "name": "safeTransferFrom",
+        "params": ["address from", "address to", "uint256 tokenId", "bytes data"],
+    },
     # Uniswap V2 Router
-    "0x38ed1739": {"name": "swapExactTokensForTokens", "params": ["uint256 amountIn", "uint256 amountOutMin", "address[] path", "address to", "uint256 deadline"]},
-    "0x8803dbee": {"name": "swapTokensForExactTokens", "params": ["uint256 amountOut", "uint256 amountInMax", "address[] path", "address to", "uint256 deadline"]},
-    "0x7ff36ab5": {"name": "swapExactETHForTokens", "params": ["uint256 amountOutMin", "address[] path", "address to", "uint256 deadline"]},
-    "0x18cbafe5": {"name": "swapExactTokensForETH", "params": ["uint256 amountIn", "uint256 amountOutMin", "address[] path", "address to", "uint256 deadline"]},
-
+    "0x38ed1739": {
+        "name": "swapExactTokensForTokens",
+        "params": ["uint256 amountIn", "uint256 amountOutMin", "address[] path", "address to", "uint256 deadline"],
+    },
+    "0x8803dbee": {
+        "name": "swapTokensForExactTokens",
+        "params": ["uint256 amountOut", "uint256 amountInMax", "address[] path", "address to", "uint256 deadline"],
+    },
+    "0x7ff36ab5": {
+        "name": "swapExactETHForTokens",
+        "params": ["uint256 amountOutMin", "address[] path", "address to", "uint256 deadline"],
+    },
+    "0x18cbafe5": {
+        "name": "swapExactTokensForETH",
+        "params": ["uint256 amountIn", "uint256 amountOutMin", "address[] path", "address to", "uint256 deadline"],
+    },
     # Uniswap V3 Router
     "0x414bf389": {"name": "exactInputSingle", "params": ["tuple params"]},
     "0xc04b8d59": {"name": "exactInput", "params": ["tuple params"]},
     "0xdb3e2198": {"name": "exactOutputSingle", "params": ["tuple params"]},
     "0xf28c0498": {"name": "exactOutput", "params": ["tuple params"]},
     "0x5ae401dc": {"name": "multicall", "params": ["uint256 deadline", "bytes[] data"]},
-
     # WETH
     "0xd0e30db0": {"name": "deposit", "params": []},
     "0x2e1a7d4d": {"name": "withdraw", "params": ["uint256 amount"]},
-
     # Aave
-    "0xe8eda9df": {"name": "deposit", "params": ["address asset", "uint256 amount", "address onBehalfOf", "uint16 referralCode"]},
+    "0xe8eda9df": {
+        "name": "deposit",
+        "params": ["address asset", "uint256 amount", "address onBehalfOf", "uint16 referralCode"],
+    },
     "0x69328dec": {"name": "withdraw", "params": ["address asset", "uint256 amount", "address to"]},
-    "0xa415bcad": {"name": "borrow", "params": ["address asset", "uint256 amount", "uint256 interestRateMode", "uint16 referralCode", "address onBehalfOf"]},
-    "0x573ade81": {"name": "repay", "params": ["address asset", "uint256 amount", "uint256 rateMode", "address onBehalfOf"]},
-
+    "0xa415bcad": {
+        "name": "borrow",
+        "params": [
+            "address asset",
+            "uint256 amount",
+            "uint256 interestRateMode",
+            "uint16 referralCode",
+            "address onBehalfOf",
+        ],
+    },
+    "0x573ade81": {
+        "name": "repay",
+        "params": ["address asset", "uint256 amount", "uint256 rateMode", "address onBehalfOf"],
+    },
     # Common
     "0x": {"name": "transfer (native)", "params": []},
-    "0x3593564c": {"name": "execute (Uniswap Universal Router)", "params": ["bytes commands", "bytes[] inputs", "uint256 deadline"]},
+    "0x3593564c": {
+        "name": "execute (Uniswap Universal Router)",
+        "params": ["bytes commands", "bytes[] inputs", "uint256 deadline"],
+    },
 }
 
 
@@ -88,11 +115,7 @@ class TransactionDecoder:
             if self.verbose:
                 print(f"Warning: Invalid ABI for {contract}")
 
-    def decode_input(
-        self,
-        input_data: str,
-        contract: Optional[str] = None
-    ) -> Dict[str, Any]:
+    def decode_input(self, input_data: str, contract: Optional[str] = None) -> Dict[str, Any]:
         """Decode transaction input data.
 
         Args:
@@ -103,12 +126,7 @@ class TransactionDecoder:
             Decoded function call info
         """
         if not input_data or input_data == "0x":
-            return {
-                "function": "transfer (native)",
-                "selector": "0x",
-                "params": [],
-                "decoded": True
-            }
+            return {"function": "transfer (native)", "selector": "0x", "params": [], "decoded": True}
 
         # Extract function selector (first 4 bytes)
         selector = input_data[:10].lower()
@@ -121,7 +139,7 @@ class TransactionDecoder:
                 "selector": selector,
                 "params": sig["params"],
                 "raw_data": input_data[10:] if len(input_data) > 10 else "",
-                "decoded": True
+                "decoded": True,
             }
 
         # Try custom ABI if available
@@ -136,7 +154,7 @@ class TransactionDecoder:
                             "selector": selector,
                             "params": [f"{inp['type']} {inp.get('name', '')}" for inp in item.get("inputs", [])],
                             "raw_data": input_data[10:],
-                            "decoded": True
+                            "decoded": True,
                         }
 
         # Unknown function
@@ -145,7 +163,7 @@ class TransactionDecoder:
             "selector": selector,
             "params": [],
             "raw_data": input_data[10:] if len(input_data) > 10 else "",
-            "decoded": False
+            "decoded": False,
         }
 
     def decode_logs(self, logs: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
@@ -167,15 +185,17 @@ class TransactionDecoder:
             event_sig = topics[0] if topics else None
             event_name = KNOWN_EVENTS.get(event_sig, "Unknown")
 
-            decoded.append({
-                "address": log.get("address"),
-                "event": event_name.split("(")[0] if "(" in event_name else event_name,
-                "signature": event_name,
-                "topic0": event_sig,
-                "topics": topics[1:],
-                "data": log.get("data"),
-                "log_index": log.get("logIndex"),
-            })
+            decoded.append(
+                {
+                    "address": log.get("address"),
+                    "event": event_name.split("(")[0] if "(" in event_name else event_name,
+                    "signature": event_name,
+                    "topic0": event_sig,
+                    "topics": topics[1:],
+                    "data": log.get("data"),
+                    "log_index": log.get("logIndex"),
+                }
+            )
 
         return decoded
 

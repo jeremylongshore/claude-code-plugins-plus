@@ -11,6 +11,7 @@ References:
   - Data Residency: https://cloud.google.com/vertex-ai/docs/general/locations
   - Cloud Audit Logs: https://cloud.google.com/logging/docs/audit
 """
+
 from __future__ import annotations
 
 import argparse
@@ -116,6 +117,7 @@ def _result(
 
 # ── Check 1: Audit Logging ──────────────────────────────────────────────────
 
+
 def check_audit_logging(project: str) -> dict[str, Any]:
     """Verify audit logging is enabled for aiplatform.googleapis.com.
 
@@ -153,8 +155,7 @@ def check_audit_logging(project: str) -> dict[str, Any]:
                 "Audit Logging",
                 "FAIL",
                 "No audit logging configured for aiplatform.googleapis.com",
-                "Enable audit logs: "
-                "https://cloud.google.com/logging/docs/audit/configure-data-access#config-console",
+                "Enable audit logs: https://cloud.google.com/logging/docs/audit/configure-data-access#config-console",
             )
 
         # Extract enabled log types
@@ -173,8 +174,7 @@ def check_audit_logging(project: str) -> dict[str, Any]:
                 "FAIL",
                 f"Missing audit log types for aiplatform: {', '.join(sorted(missing))}. "
                 f"Enabled: {', '.join(sorted(enabled_types))}",
-                "Enable all three log types: "
-                "https://cloud.google.com/logging/docs/audit/configure-data-access",
+                "Enable all three log types: https://cloud.google.com/logging/docs/audit/configure-data-access",
             )
 
         return _result(
@@ -196,6 +196,7 @@ def check_audit_logging(project: str) -> dict[str, Any]:
 
 # ── Check 2: Data Residency ─────────────────────────────────────────────────
 
+
 def check_data_residency(project: str, location: str) -> dict[str, Any]:
     """Verify the deployment region is in the approved list.
 
@@ -203,9 +204,7 @@ def check_data_residency(project: str, location: str) -> dict[str, Any]:
     """
     if location in ALL_APPROVED_REGIONS:
         # Determine which geo the region belongs to
-        geo = "US" if location in APPROVED_REGIONS_US else (
-            "EU" if location in APPROVED_REGIONS_EU else "APAC"
-        )
+        geo = "US" if location in APPROVED_REGIONS_US else ("EU" if location in APPROVED_REGIONS_EU else "APAC")
         return _result(
             "Data Residency",
             "PASS",
@@ -222,6 +221,7 @@ def check_data_residency(project: str, location: str) -> dict[str, Any]:
 
 
 # ── Check 3: Backup / DR Configuration ──────────────────────────────────────
+
 
 def check_backup_dr(project: str, location: str) -> dict[str, Any]:
     """Check for backup and disaster recovery indicators.
@@ -295,6 +295,7 @@ def check_backup_dr(project: str, location: str) -> dict[str, Any]:
 
 # ── Entrypoint ───────────────────────────────────────────────────────────────
 
+
 def run_compliance_checks(
     project: str,
     agent_id: str | None = None,
@@ -330,9 +331,9 @@ def run_compliance_checks(
         print(f"\n{YELLOW}[WARN]{RESET} Missing optional deps: {', '.join(_MISSING_DEPS)}")
         print(f"       Install with: pip install {' '.join(_MISSING_DEPS)}\n")
 
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"  Compliance Validation — project={project}, location={location}")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
 
     results = []
     for name, fn in checks:

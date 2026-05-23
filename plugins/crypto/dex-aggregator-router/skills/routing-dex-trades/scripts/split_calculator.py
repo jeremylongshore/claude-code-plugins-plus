@@ -8,7 +8,7 @@ price impact and slippage for whale-sized trades.
 
 from dataclasses import dataclass
 from decimal import Decimal
-from typing import Dict, List, Optional, Tuple
+from typing import List, Optional
 
 from quote_fetcher import NormalizedQuote
 
@@ -120,9 +120,7 @@ class SplitCalculator:
         single_venue_output = best_single.output_amount
 
         improvement = total_output - single_venue_output
-        improvement_pct = (
-            float(improvement / single_venue_output * 100) if single_venue_output > 0 else 0.0
-        )
+        improvement_pct = float(improvement / single_venue_output * 100) if single_venue_output > 0 else 0.0
 
         # Net benefit after extra gas
         single_gas = best_single.gas_cost_usd
@@ -132,15 +130,9 @@ class SplitCalculator:
         is_beneficial = net_benefit > 0
 
         if is_beneficial:
-            rec = (
-                f"Split order saves ${float(net_benefit):.2f} "
-                f"({improvement_pct:.2f}% improvement after gas)"
-            )
+            rec = f"Split order saves ${float(net_benefit):.2f} ({improvement_pct:.2f}% improvement after gas)"
         else:
-            rec = (
-                f"Single venue preferred. Split would cost extra "
-                f"${float(-net_benefit):.2f} in gas overhead."
-            )
+            rec = f"Single venue preferred. Split would cost extra ${float(-net_benefit):.2f} in gas overhead."
 
         return SplitRecommendation(
             allocations=allocations,
@@ -155,9 +147,7 @@ class SplitCalculator:
             is_split_beneficial=is_beneficial,
         )
 
-    def _optimize_split(
-        self, quotes: List[NormalizedQuote], total_amount: Decimal
-    ) -> List[SplitAllocation]:
+    def _optimize_split(self, quotes: List[NormalizedQuote], total_amount: Decimal) -> List[SplitAllocation]:
         """
         Greedy optimization of split allocations.
 
@@ -175,7 +165,8 @@ class SplitCalculator:
 
         # Simple allocation: proportional to inverse price impact
         total_weight = sum(
-            1 / (q.price_impact + 0.01) for q in venues  # Add 0.01 to avoid div by zero
+            1 / (q.price_impact + 0.01)
+            for q in venues  # Add 0.01 to avoid div by zero
         )
 
         allocations = []
@@ -203,9 +194,7 @@ class SplitCalculator:
 
         return allocations
 
-    def _create_allocation(
-        self, quote: NormalizedQuote, pct: Decimal, amount: Decimal
-    ) -> SplitAllocation:
+    def _create_allocation(self, quote: NormalizedQuote, pct: Decimal, amount: Decimal) -> SplitAllocation:
         """Create allocation entry for a venue."""
         # Scale output proportionally (simplified)
         output_ratio = amount / quote.input_amount if quote.input_amount > 0 else Decimal(0)
@@ -228,9 +217,7 @@ class SplitCalculator:
             gas_cost_usd=gas_cost,
         )
 
-    def _single_venue_recommendation(
-        self, quote: NormalizedQuote, amount: Decimal
-    ) -> SplitRecommendation:
+    def _single_venue_recommendation(self, quote: NormalizedQuote, amount: Decimal) -> SplitRecommendation:
         """Create recommendation for single-venue execution."""
         allocation = self._create_allocation(quote, Decimal(100), amount)
 
@@ -247,9 +234,7 @@ class SplitCalculator:
             is_split_beneficial=False,
         )
 
-    def estimate_split_impact(
-        self, base_impact: float, allocation_pct: float
-    ) -> float:
+    def estimate_split_impact(self, base_impact: float, allocation_pct: float) -> float:
         """
         Estimate price impact for a partial allocation.
 
@@ -319,9 +304,7 @@ def demo():
     ]
 
     calculator = SplitCalculator()
-    result = calculator.calculate_split(
-        quotes, total_amount=Decimal("100.0"), price_usd=2500.0
-    )
+    result = calculator.calculate_split(quotes, total_amount=Decimal("100.0"), price_usd=2500.0)
 
     if result:
         print("=" * 60)

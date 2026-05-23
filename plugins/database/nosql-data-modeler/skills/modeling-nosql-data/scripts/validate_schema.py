@@ -10,8 +10,7 @@ import argparse
 import json
 import sys
 from datetime import datetime
-from pathlib import Path
-from typing import Dict, List, Any, Tuple
+from typing import Dict, List, Any
 
 
 class NoSQLSchemaValidator:
@@ -24,41 +23,41 @@ class NoSQLSchemaValidator:
             "checks": [
                 "Use camelCase or snake_case consistently",
                 "Avoid single-letter field names",
-                "Use descriptive names"
-            ]
+                "Use descriptive names",
+            ],
         },
         "indexing": {
             "rule": "Index strategy is defined",
             "checks": [
                 "Frequently queried fields are indexed",
                 "Composite indexes are defined for common queries",
-                "Index overhead is considered"
-            ]
+                "Index overhead is considered",
+            ],
         },
         "denormalization": {
             "rule": "Denormalization is used appropriately",
             "checks": [
                 "Denormalization reduces query complexity",
                 "Duplicate data is managed intentionally",
-                "Update patterns are considered"
-            ]
+                "Update patterns are considered",
+            ],
         },
         "data_types": {
             "rule": "Data types are appropriate",
             "checks": [
                 "Numeric fields use appropriate numeric types",
                 "Dates use datetime types",
-                "IDs use consistent types"
-            ]
+                "IDs use consistent types",
+            ],
         },
         "document_size": {
             "rule": "Document size is reasonable",
             "checks": [
                 "Documents don't exceed size limits (16MB for MongoDB)",
                 "Array fields don't grow unbounded",
-                "Large nested objects are avoided"
-            ]
-        }
+                "Large nested objects are avoided",
+            ],
+        },
     }
 
     # Common anti-patterns
@@ -67,38 +66,38 @@ class NoSQLSchemaValidator:
             "name": "unbounded_arrays",
             "description": "Arrays that can grow without limits",
             "severity": "high",
-            "recommendation": "Cap array size or use separate collections"
+            "recommendation": "Cap array size or use separate collections",
         },
         {
             "name": "deeply_nested",
             "description": "Deeply nested document structures (>3 levels)",
             "severity": "medium",
-            "recommendation": "Flatten structure or normalize data"
+            "recommendation": "Flatten structure or normalize data",
         },
         {
             "name": "no_indexes",
             "description": "Frequently queried fields without indexes",
             "severity": "high",
-            "recommendation": "Add indexes for query performance"
+            "recommendation": "Add indexes for query performance",
         },
         {
             "name": "inconsistent_types",
             "description": "Field with inconsistent data types across documents",
             "severity": "medium",
-            "recommendation": "Enforce schema validation or add type hints"
+            "recommendation": "Enforce schema validation or add type hints",
         },
         {
             "name": "circular_references",
             "description": "Circular document references",
             "severity": "high",
-            "recommendation": "Use one-way references or denormalization"
+            "recommendation": "Use one-way references or denormalization",
         },
         {
             "name": "missing_ids",
             "description": "Documents or arrays without ID fields",
             "severity": "high",
-            "recommendation": "Add unique IDs for referencing"
-        }
+            "recommendation": "Add unique IDs for referencing",
+        },
     ]
 
     def __init__(self):
@@ -117,7 +116,7 @@ class NoSQLSchemaValidator:
             True if successful, False otherwise
         """
         try:
-            with open(filepath, 'r') as f:
+            with open(filepath, "r") as f:
                 self.schema = json.load(f)
             return True
         except (FileNotFoundError, json.JSONDecodeError) as e:
@@ -147,12 +146,14 @@ class NoSQLSchemaValidator:
         # Check for inconsistency
         non_zero_styles = [count for count in naming_styles.values() if count > 0]
         if len(non_zero_styles) > 1:
-            issues.append({
-                "severity": "medium",
-                "type": "naming_inconsistency",
-                "message": "Inconsistent naming convention across fields",
-                "details": naming_styles
-            })
+            issues.append(
+                {
+                    "severity": "medium",
+                    "type": "naming_inconsistency",
+                    "message": "Inconsistent naming convention across fields",
+                    "details": naming_styles,
+                }
+            )
 
         return issues
 
@@ -166,21 +167,25 @@ class NoSQLSchemaValidator:
         issues = []
 
         if "indexes" not in self.schema:
-            issues.append({
-                "severity": "medium",
-                "type": "missing_indexes",
-                "message": "No indexes defined in schema",
-                "recommendation": "Define indexes for frequently queried fields"
-            })
+            issues.append(
+                {
+                    "severity": "medium",
+                    "type": "missing_indexes",
+                    "message": "No indexes defined in schema",
+                    "recommendation": "Define indexes for frequently queried fields",
+                }
+            )
         else:
             indexes = self.schema.get("indexes", [])
             if not indexes:
-                issues.append({
-                    "severity": "medium",
-                    "type": "empty_indexes",
-                    "message": "Indexes array is empty",
-                    "recommendation": "Add indexes for query optimization"
-                })
+                issues.append(
+                    {
+                        "severity": "medium",
+                        "type": "empty_indexes",
+                        "message": "Indexes array is empty",
+                        "recommendation": "Add indexes for query optimization",
+                    }
+                )
 
         return issues
 
@@ -197,23 +202,27 @@ class NoSQLSchemaValidator:
         for field, field_def in self._extract_fields(self.schema).items():
             if field_def.get("type") == "array":
                 if "max_items" not in field_def:
-                    issues.append({
-                        "severity": "high",
-                        "type": "unbounded_array",
-                        "field": field,
-                        "message": f"Array field '{field}' has no maximum size limit",
-                        "recommendation": "Set max_items or use separate collection"
-                    })
+                    issues.append(
+                        {
+                            "severity": "high",
+                            "type": "unbounded_array",
+                            "field": field,
+                            "message": f"Array field '{field}' has no maximum size limit",
+                            "recommendation": "Set max_items or use separate collection",
+                        }
+                    )
 
         # Check for deeply nested structures
         depth = self._calculate_nesting_depth(self.schema)
         if depth > 3:
-            issues.append({
-                "severity": "medium",
-                "type": "deeply_nested",
-                "message": f"Document nesting depth is {depth} levels (recommended: ≤3)",
-                "recommendation": "Flatten structure or normalize data"
-            })
+            issues.append(
+                {
+                    "severity": "medium",
+                    "type": "deeply_nested",
+                    "message": f"Document nesting depth is {depth} levels (recommended: ≤3)",
+                    "recommendation": "Flatten structure or normalize data",
+                }
+            )
 
         return issues
 
@@ -233,21 +242,25 @@ class NoSQLSchemaValidator:
 
             # Check for type mismatches
             if field_type not in ["string", "number", "boolean", "object", "array", "date", "null"]:
-                issues.append({
-                    "severity": "medium",
-                    "type": "unknown_type",
-                    "field": field,
-                    "message": f"Unknown type '{field_type}' for field '{field}'"
-                })
+                issues.append(
+                    {
+                        "severity": "medium",
+                        "type": "unknown_type",
+                        "field": field,
+                        "message": f"Unknown type '{field_type}' for field '{field}'",
+                    }
+                )
 
             # Check for ID fields without proper type
             if "id" in field.lower() and field_type not in ["string", "number"]:
-                issues.append({
-                    "severity": "high",
-                    "type": "invalid_id_type",
-                    "field": field,
-                    "message": f"ID field '{field}' should be string or number, not {field_type}"
-                })
+                issues.append(
+                    {
+                        "severity": "high",
+                        "type": "invalid_id_type",
+                        "field": field,
+                        "message": f"ID field '{field}' should be string or number, not {field_type}",
+                    }
+                )
 
         return issues
 
@@ -327,12 +340,7 @@ class NoSQLSchemaValidator:
             "timestamp": datetime.now().isoformat(),
             "schema_name": self.schema.get("$id", "unknown"),
             "validations": [],
-            "summary": {
-                "critical": 0,
-                "high": 0,
-                "medium": 0,
-                "low": 0
-            }
+            "summary": {"critical": 0, "high": 0, "medium": 0, "low": 0},
         }
 
         # Run all validation methods
@@ -341,7 +349,7 @@ class NoSQLSchemaValidator:
             self.validate_indexes,
             self.validate_document_structure,
             self.validate_data_types,
-            self.validate_references
+            self.validate_references,
         ]
 
         for method in validation_methods:
@@ -367,10 +375,10 @@ def format_validation_report(results: Dict[str, Any]) -> str:
         Formatted report string
     """
     report = []
-    report.append(f"\n{'='*70}")
-    report.append(f"NoSQL Schema Validation Report")
+    report.append(f"\n{'=' * 70}")
+    report.append("NoSQL Schema Validation Report")
     report.append(f"Schema: {results['schema_name']}")
-    report.append(f"{'='*70}\n")
+    report.append(f"{'=' * 70}\n")
 
     summary = results.get("summary", {})
     report.append("Summary:")
@@ -387,7 +395,9 @@ def format_validation_report(results: Dict[str, Any]) -> str:
     else:
         report.append("Issues Found:\n")
 
-        for issue in sorted(validations, key=lambda x: ["critical", "high", "medium", "low"].index(x.get("severity", "low"))):
+        for issue in sorted(
+            validations, key=lambda x: ["critical", "high", "medium", "low"].index(x.get("severity", "low"))
+        ):
             severity = issue.get("severity", "low").upper()
             type_name = issue.get("type", "unknown")
             message = issue.get("message", "")
@@ -403,7 +413,7 @@ def format_validation_report(results: Dict[str, Any]) -> str:
 
             report.append("")
 
-    report.append(f"{'='*70}\n")
+    report.append(f"{'=' * 70}\n")
 
     return "\n".join(report)
 
@@ -418,29 +428,13 @@ Examples:
   %(prog)s --schema schema.json
   %(prog)s --schema user-schema.json --output report.json
   %(prog)s --schema product-schema.json --format json
-        """
+        """,
     )
 
-    parser.add_argument(
-        "--schema",
-        required=True,
-        help="Path to JSON schema file"
-    )
-    parser.add_argument(
-        "--output",
-        help="Output file for validation report (JSON)"
-    )
-    parser.add_argument(
-        "--format",
-        default="text",
-        choices=["text", "json"],
-        help="Output format"
-    )
-    parser.add_argument(
-        "--verbose",
-        action="store_true",
-        help="Print detailed output"
-    )
+    parser.add_argument("--schema", required=True, help="Path to JSON schema file")
+    parser.add_argument("--output", help="Output file for validation report (JSON)")
+    parser.add_argument("--format", default="text", choices=["text", "json"], help="Output format")
+    parser.add_argument("--verbose", action="store_true", help="Print detailed output")
 
     args = parser.parse_args()
 
@@ -468,7 +462,7 @@ Examples:
 
         # Save to file if requested
         if args.output:
-            with open(args.output, 'w') as f:
+            with open(args.output, "w") as f:
                 if args.format == "json":
                     json.dump(results, f, indent=2)
                 else:

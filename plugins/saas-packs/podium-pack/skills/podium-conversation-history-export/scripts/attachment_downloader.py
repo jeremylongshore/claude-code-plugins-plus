@@ -22,25 +22,34 @@ Exit codes:
 """
 
 from __future__ import annotations
-import argparse, gzip, json, os, sys, time
+import argparse
+import gzip
+import json
+import os
+import sys
 import concurrent.futures
 from pathlib import Path
 from urllib.parse import urlencode
-import urllib.request, urllib.error
+import urllib.request
+import urllib.error
 
 API_BASE = "https://api.podium.com"
 TOKEN_URL = "https://accounts.podium.com/oauth/token"
 
 
 def get_access_token(client_id: str, client_secret: str, refresh_token: str) -> str:
-    body = urlencode({
-        "grant_type": "refresh_token",
-        "refresh_token": refresh_token,
-        "client_id": client_id,
-        "client_secret": client_secret,
-    }).encode()
+    body = urlencode(
+        {
+            "grant_type": "refresh_token",
+            "refresh_token": refresh_token,
+            "client_id": client_id,
+            "client_secret": client_secret,
+        }
+    ).encode()
     req = urllib.request.Request(
-        TOKEN_URL, data=body, method="POST",
+        TOKEN_URL,
+        data=body,
+        method="POST",
         headers={"Content-Type": "application/x-www-form-urlencoded"},
     )
     with urllib.request.urlopen(req, timeout=10) as resp:
@@ -109,7 +118,7 @@ def iter_attachments(jsonl_path: Path):
                 if isinstance(att, dict) and att.get("id") and att.get("url"):
                     yield att
             for msg in row.get("messages", []) or []:
-                for att in (msg.get("attachments") or []):
+                for att in msg.get("attachments") or []:
                     if isinstance(att, dict) and att.get("id") and att.get("url"):
                         yield att
 
@@ -161,7 +170,7 @@ def main() -> int:
         "skipped_already_exists": len(skipped),
         "refreshed_signed_url": len(refreshed),
         "failed_after_refresh": len(failed),
-        "failed_ids": [r["id"] for r in failed][:50],   # cap report size
+        "failed_ids": [r["id"] for r in failed][:50],  # cap report size
     }
     print(json.dumps(summary, indent=2))
 

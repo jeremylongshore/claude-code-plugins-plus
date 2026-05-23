@@ -30,8 +30,8 @@ class OIAnalysis:
     weighted_long_ratio: float
     dominant_exchange: str
     dominant_share: float
-    trend: str                  # "increasing", "decreasing", "stable"
-    trend_strength: str         # "strong", "moderate", "weak"
+    trend: str  # "increasing", "decreasing", "stable"
+    trend_strength: str  # "strong", "moderate", "weak"
     timestamp: datetime
 
     @property
@@ -55,13 +55,13 @@ class OIDivergence:
     """OI vs Price divergence signal."""
 
     symbol: str
-    oi_direction: str           # "up" or "down"
-    price_direction: str        # "up" or "down"
+    oi_direction: str  # "up" or "down"
+    price_direction: str  # "up" or "down"
     oi_change_pct: float
     price_change_pct: float
-    signal: str                 # "bullish", "bearish", "short_squeeze", "long_liquidation"
+    signal: str  # "bullish", "bearish", "short_squeeze", "long_liquidation"
     description: str
-    confidence: str             # "high", "medium", "low"
+    confidence: str  # "high", "medium", "low"
 
 
 class OIAnalyzer:
@@ -76,8 +76,8 @@ class OIAnalyzer:
     """
 
     # Trend thresholds
-    STRONG_CHANGE = 10.0        # >10% is strong
-    MODERATE_CHANGE = 5.0       # >5% is moderate
+    STRONG_CHANGE = 10.0  # >10% is strong
+    MODERATE_CHANGE = 5.0  # >5% is moderate
 
     def __init__(
         self,
@@ -117,17 +117,11 @@ class OIAnalyzer:
         total_contracts = sum(float(oi.oi_contracts) for oi in oi_list)
 
         # Calculate weighted averages
-        avg_24h = sum(
-            oi.change_24h_pct * float(oi.oi_usd) for oi in oi_list
-        ) / total_usd
-        avg_7d = sum(
-            oi.change_7d_pct * float(oi.oi_usd) for oi in oi_list
-        ) / total_usd
+        avg_24h = sum(oi.change_24h_pct * float(oi.oi_usd) for oi in oi_list) / total_usd
+        avg_7d = sum(oi.change_7d_pct * float(oi.oi_usd) for oi in oi_list) / total_usd
 
         # Weighted long ratio
-        weighted_long = sum(
-            oi.long_ratio * float(oi.oi_usd) for oi in oi_list
-        ) / total_usd
+        weighted_long = sum(oi.long_ratio * float(oi.oi_usd) for oi in oi_list) / total_usd
 
         # Find dominant exchange
         dominant = max(oi_list, key=lambda x: x.oi_usd)
@@ -258,13 +252,15 @@ class OIAnalyzer:
         shares = []
         for oi in analysis.exchanges:
             share = float(oi.oi_usd) / total * 100
-            shares.append({
-                "exchange": oi.exchange,
-                "oi_usd": float(oi.oi_usd),
-                "share_pct": round(share, 1),
-                "change_24h": oi.change_24h_pct,
-                "long_ratio": oi.long_ratio,
-            })
+            shares.append(
+                {
+                    "exchange": oi.exchange,
+                    "oi_usd": float(oi.oi_usd),
+                    "share_pct": round(share, 1),
+                    "change_24h": oi.change_24h_pct,
+                    "long_ratio": oi.long_ratio,
+                }
+            )
 
         return sorted(shares, key=lambda x: x["oi_usd"], reverse=True)
 
@@ -290,14 +286,14 @@ def demo():
         share = float(oi.oi_usd) / float(analysis.total_oi_usd) * 100
         print(
             f"{oi.exchange:<12} "
-            f"${float(oi.oi_usd)/1e9:>12.2f}B "
+            f"${float(oi.oi_usd) / 1e9:>12.2f}B "
             f"{oi.change_24h_pct:>+9.1f}% "
             f"{oi.change_7d_pct:>+9.1f}% "
             f"{share:>7.1f}%"
         )
 
     print("-" * 60)
-    print(f"\nTotal OI: ${float(analysis.total_oi_usd)/1e9:.2f}B")
+    print(f"\nTotal OI: ${float(analysis.total_oi_usd) / 1e9:.2f}B")
     print(f"24h Change: {analysis.avg_change_24h:+.1f}%")
     print(f"7d Change: {analysis.avg_change_7d:+.1f}%")
     print(f"\nLong/Short Ratio: {analysis.weighted_long_ratio:.2f} ({analysis.long_percentage:.1f}% long)")
@@ -314,7 +310,7 @@ def demo():
     divergence = analyzer.detect_divergence("BTC", price_change)
 
     if divergence:
-        print(f"\n🔍 Divergence Detected!")
+        print("\n🔍 Divergence Detected!")
         print(f"   OI:    {divergence.oi_direction} ({divergence.oi_change_pct:+.1f}%)")
         print(f"   Price: {divergence.price_direction} ({divergence.price_change_pct:+.1f}%)")
         print(f"   Signal: {divergence.signal.upper()}")

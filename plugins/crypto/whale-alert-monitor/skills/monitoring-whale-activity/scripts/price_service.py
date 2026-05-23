@@ -148,8 +148,7 @@ class PriceService:
 
         try:
             data = self._api_get(
-                f"{COINGECKO_BASE}/simple/price",
-                params={"ids": coin_id, "vs_currencies": vs_currency}
+                f"{COINGECKO_BASE}/simple/price", params={"ids": coin_id, "vs_currencies": vs_currency}
             )
             price = data.get(coin_id, {}).get(vs_currency)
 
@@ -175,11 +174,7 @@ class PriceService:
         # Return None for unknown
         return None
 
-    def get_prices_batch(
-        self,
-        symbols: list,
-        vs_currency: str = "usd"
-    ) -> Dict[str, Optional[float]]:
+    def get_prices_batch(self, symbols: list, vs_currency: str = "usd") -> Dict[str, Optional[float]]:
         """Get prices for multiple cryptocurrencies.
 
         Args:
@@ -216,8 +211,7 @@ class PriceService:
 
         try:
             data = self._api_get(
-                f"{COINGECKO_BASE}/simple/price",
-                params={"ids": ",".join(coin_ids), "vs_currencies": vs_currency}
+                f"{COINGECKO_BASE}/simple/price", params={"ids": ",".join(coin_ids), "vs_currencies": vs_currency}
             )
 
             for coin_id, prices in data.items():
@@ -256,11 +250,7 @@ class PriceService:
             return amount * price
         return None
 
-    def get_price_change(
-        self,
-        symbol: str,
-        days: int = 1
-    ) -> Optional[Dict[str, float]]:
+    def get_price_change(self, symbol: str, days: int = 1) -> Optional[Dict[str, float]]:
         """Get price change over time period.
 
         Args:
@@ -280,7 +270,7 @@ class PriceService:
         try:
             data = self._api_get(
                 f"{COINGECKO_BASE}/coins/{coin_id}",
-                params={"localization": "false", "tickers": "false", "community_data": "false"}
+                params={"localization": "false", "tickers": "false", "community_data": "false"},
             )
 
             market_data = data.get("market_data", {})

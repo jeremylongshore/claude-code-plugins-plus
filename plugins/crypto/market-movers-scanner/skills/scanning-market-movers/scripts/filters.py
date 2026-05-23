@@ -16,17 +16,15 @@ from typing import List, Dict, Any, Optional
 @dataclass
 class FilterConfig:
     """Configuration for market mover filtering."""
-    min_change: float = 5.0       # Minimum absolute % change
-    volume_spike: float = 2.0     # Minimum volume ratio
+
+    min_change: float = 5.0  # Minimum absolute % change
+    volume_spike: float = 2.0  # Minimum volume ratio
     min_market_cap: float = 10_000_000  # Minimum market cap
     max_market_cap: Optional[float] = None  # Maximum market cap
-    min_volume: float = 100_000   # Minimum 24h volume
+    min_volume: float = 100_000  # Minimum 24h volume
 
 
-def apply_filters(
-    assets: List[Dict[str, Any]],
-    config: FilterConfig
-) -> List[Dict[str, Any]]:
+def apply_filters(assets: List[Dict[str, Any]], config: FilterConfig) -> List[Dict[str, Any]]:
     """
     Filter assets based on threshold configuration.
 
@@ -70,9 +68,7 @@ def apply_filters(
 
 
 def filter_by_category(
-    assets: List[Dict[str, Any]],
-    category: str,
-    category_map: Dict[str, List[str]]
+    assets: List[Dict[str, Any]], category: str, category_map: Dict[str, List[str]]
 ) -> List[Dict[str, Any]]:
     """
     Filter assets by category.
@@ -90,10 +86,7 @@ def filter_by_category(
 
     allowed_ids = set(category_map[category])
 
-    return [
-        a for a in assets
-        if a.get("id", "") in allowed_ids
-    ]
+    return [a for a in assets if a.get("id", "") in allowed_ids]
 
 
 def filter_gainers(assets: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
@@ -107,9 +100,7 @@ def filter_losers(assets: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
 
 
 def filter_by_rank(
-    assets: List[Dict[str, Any]],
-    min_rank: Optional[int] = None,
-    max_rank: Optional[int] = None
+    assets: List[Dict[str, Any]], min_rank: Optional[int] = None, max_rank: Optional[int] = None
 ) -> List[Dict[str, Any]]:
     """
     Filter by market cap rank.
@@ -139,11 +130,7 @@ def filter_by_rank(
     return filtered
 
 
-def suggest_relaxed_filters(
-    config: FilterConfig,
-    result_count: int,
-    target_count: int = 10
-) -> Dict[str, Any]:
+def suggest_relaxed_filters(config: FilterConfig, result_count: int, target_count: int = 10) -> Dict[str, Any]:
     """
     Suggest relaxed filter parameters if too few results.
 

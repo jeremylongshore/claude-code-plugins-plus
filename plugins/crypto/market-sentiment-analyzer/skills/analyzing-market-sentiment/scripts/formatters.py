@@ -24,20 +24,15 @@ class SentimentFormatter:
 
     # Sentiment classification colors (ANSI)
     COLORS = {
-        "Extreme Fear": "\033[91m",    # Red
-        "Fear": "\033[93m",            # Yellow
-        "Neutral": "\033[0m",          # Default
-        "Greed": "\033[92m",           # Green
-        "Extreme Greed": "\033[96m",   # Cyan
-        "reset": "\033[0m"
+        "Extreme Fear": "\033[91m",  # Red
+        "Fear": "\033[93m",  # Yellow
+        "Neutral": "\033[0m",  # Default
+        "Greed": "\033[92m",  # Green
+        "Extreme Greed": "\033[96m",  # Cyan
+        "reset": "\033[0m",
     }
 
-    def format(
-        self,
-        data: Dict[str, Any],
-        format_type: str = "table",
-        detailed: bool = False
-    ) -> str:
+    def format(self, data: Dict[str, Any], format_type: str = "table", detailed: bool = False) -> str:
         """Format sentiment data for output.
 
         Args:
@@ -84,7 +79,9 @@ class SentimentFormatter:
 
         lines.append("  COMPOSITE SENTIMENT")
         lines.append("-" * w)
-        lines.append(f"  Score: {color}{score:.1f}{reset} / 100{' ' * 30}Classification: {color}{classification.upper()}{reset}")
+        lines.append(
+            f"  Score: {color}{score:.1f}{reset} / 100{' ' * 30}Classification: {color}{classification.upper()}{reset}"
+        )
         lines.append("")
 
         # Sentiment gauge
@@ -106,7 +103,9 @@ class SentimentFormatter:
             fg_weight = fg.get("weight", 0.4) * 100
             fg_contrib = fg.get("contribution", 20)
             fg_class = fg.get("classification", "Neutral")
-            lines.append(f"  Fear & Greed Index:   {fg_score:5.1f}  (weight: {fg_weight:.0f}%)  → {fg_contrib:5.1f} pts  [{fg_class}]")
+            lines.append(
+                f"  Fear & Greed Index:   {fg_score:5.1f}  (weight: {fg_weight:.0f}%)  → {fg_contrib:5.1f} pts  [{fg_class}]"
+            )
 
             # News Sentiment
             ns = components.get("news_sentiment", {})
@@ -114,7 +113,9 @@ class SentimentFormatter:
             ns_weight = ns.get("weight", 0.4) * 100
             ns_contrib = ns.get("contribution", 20)
             ns_articles = ns.get("articles_analyzed", 0)
-            lines.append(f"  News Sentiment:       {ns_score:5.1f}  (weight: {ns_weight:.0f}%)  → {ns_contrib:5.1f} pts  [{ns_articles} articles]")
+            lines.append(
+                f"  News Sentiment:       {ns_score:5.1f}  (weight: {ns_weight:.0f}%)  → {ns_contrib:5.1f} pts  [{ns_articles} articles]"
+            )
 
             # Market Momentum
             mm = components.get("market_momentum", {})
@@ -123,7 +124,9 @@ class SentimentFormatter:
             mm_contrib = mm.get("contribution", 10)
             btc_change = mm.get("btc_change_24h")
             btc_str = f"{btc_change:+.1f}%" if btc_change is not None else "N/A"
-            lines.append(f"  Market Momentum:      {mm_score:5.1f}  (weight: {mm_weight:.0f}%)  → {mm_contrib:5.1f} pts  [BTC: {btc_str}]")
+            lines.append(
+                f"  Market Momentum:      {mm_score:5.1f}  (weight: {mm_weight:.0f}%)  → {mm_contrib:5.1f} pts  [BTC: {btc_str}]"
+            )
 
             lines.append("")
 
@@ -138,18 +141,18 @@ class SentimentFormatter:
                 pos = ns.get("positive", 0)
                 neg = ns.get("negative", 0)
                 neu = ns.get("neutral", 0)
-                lines.append(f"  News Analysis:")
+                lines.append("  News Analysis:")
                 lines.append(f"    Positive: {pos}  |  Negative: {neg}  |  Neutral: {neu}")
 
                 top_pos = ns.get("top_positive", [])
                 if top_pos:
-                    lines.append(f"    Top Positive Headlines:")
+                    lines.append("    Top Positive Headlines:")
                     for headline in top_pos[:2]:
                         lines.append(f"      + {headline[:60]}...")
 
                 top_neg = ns.get("top_negative", [])
                 if top_neg:
-                    lines.append(f"    Top Negative Headlines:")
+                    lines.append("    Top Negative Headlines:")
                     for headline in top_neg[:2]:
                         lines.append(f"      - {headline[:60]}...")
 
@@ -160,7 +163,7 @@ class SentimentFormatter:
             eth_change = mm.get("eth_change_24h")
             vol_ratio = mm.get("volume_ratio")
             if eth_change is not None or vol_ratio is not None:
-                lines.append(f"  Market Data:")
+                lines.append("  Market Data:")
                 if eth_change is not None:
                     lines.append(f"    ETH 24h: {eth_change:+.1f}%")
                 if vol_ratio is not None:
@@ -228,17 +231,11 @@ class SentimentFormatter:
             "momentum_weight",
             "btc_change_24h",
             "period",
-            "coin_filter"
+            "coin_filter",
         ]
 
         if detailed:
-            headers.extend([
-                "news_positive",
-                "news_negative",
-                "news_neutral",
-                "eth_change_24h",
-                "volume_ratio"
-            ])
+            headers.extend(["news_positive", "news_negative", "news_neutral", "eth_change_24h", "volume_ratio"])
 
         writer.writerow(headers)
 
@@ -262,17 +259,19 @@ class SentimentFormatter:
             mm.get("weight", 0.2),
             mm.get("btc_change_24h", ""),
             meta.get("period", "24h"),
-            meta.get("coin_filter", "")
+            meta.get("coin_filter", ""),
         ]
 
         if detailed:
-            row.extend([
-                ns.get("positive", 0),
-                ns.get("negative", 0),
-                ns.get("neutral", 0),
-                mm.get("eth_change_24h", ""),
-                mm.get("volume_ratio", "")
-            ])
+            row.extend(
+                [
+                    ns.get("positive", 0),
+                    ns.get("negative", 0),
+                    ns.get("neutral", 0),
+                    mm.get("eth_change_24h", ""),
+                    mm.get("volume_ratio", ""),
+                ]
+            )
 
         writer.writerow(row)
 
@@ -305,12 +304,7 @@ def main():
         "classification": "Greed",
         "interpretation": "Market is moderately greedy. Consider taking some profits or reducing position sizes. Watch for reversal signals.",
         "components": {
-            "fear_greed": {
-                "score": 72,
-                "classification": "Greed",
-                "weight": 0.40,
-                "contribution": 28.8
-            },
+            "fear_greed": {"score": 72, "classification": "Greed", "weight": 0.40, "contribution": 28.8},
             "news_sentiment": {
                 "score": 58.5,
                 "articles_analyzed": 25,
@@ -320,7 +314,7 @@ def main():
                 "weight": 0.40,
                 "contribution": 23.4,
                 "top_positive": ["Bitcoin breaks $50k resistance", "Institutional adoption surges"],
-                "top_negative": ["SEC delays ETF decision"]
+                "top_negative": ["SEC delays ETF decision"],
             },
             "market_momentum": {
                 "score": 66.5,
@@ -328,14 +322,10 @@ def main():
                 "eth_change_24h": 2.1,
                 "volume_ratio": 1.2,
                 "weight": 0.20,
-                "contribution": 13.3
-            }
+                "contribution": 13.3,
+            },
         },
-        "meta": {
-            "timestamp": "2026-01-14T15:30:00Z",
-            "period": "24h",
-            "coin_filter": None
-        }
+        "meta": {"timestamp": "2026-01-14T15:30:00Z", "period": "24h", "coin_filter": None},
     }
 
     formatter = SentimentFormatter()

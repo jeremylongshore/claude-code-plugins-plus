@@ -14,11 +14,7 @@ from security.redact import redact_session
 
 def test_redact_non_critical_email():
     """Non-critical: Email should be redacted and continue."""
-    session = {
-        "messages": [
-            {"role": "user", "content": "Contact me at john@example.com"}
-        ]
-    }
+    session = {"messages": [{"role": "user", "content": "Contact me at john@example.com"}]}
 
     redacted, report = redact_session(session)
 
@@ -31,11 +27,7 @@ def test_redact_non_critical_email():
 
 def test_redact_non_critical_phone():
     """Non-critical: Phone should be redacted and continue."""
-    session = {
-        "messages": [
-            {"role": "user", "content": "Call me at 555-123-4567"}
-        ]
-    }
+    session = {"messages": [{"role": "user", "content": "Call me at 555-123-4567"}]}
 
     redacted, report = redact_session(session)
 
@@ -46,11 +38,7 @@ def test_redact_non_critical_phone():
 
 def test_redact_non_critical_aws_access_key():
     """Non-critical: AWS access key should be redacted and continue."""
-    session = {
-        "messages": [
-            {"role": "user", "content": "My key is AKIAIOSFODNN7EXAMPLE"}
-        ]
-    }
+    session = {"messages": [{"role": "user", "content": "My key is AKIAIOSFODNN7EXAMPLE"}]}
 
     redacted, report = redact_session(session)
 
@@ -61,11 +49,7 @@ def test_redact_non_critical_aws_access_key():
 
 def test_fail_closed_on_private_key():
     """CRITICAL: Private key must fail-closed."""
-    session = {
-        "messages": [
-            {"role": "user", "content": "-----BEGIN RSA PRIVATE KEY-----\nMIIE..."}
-        ]
-    }
+    session = {"messages": [{"role": "user", "content": "-----BEGIN RSA PRIVATE KEY-----\nMIIE..."}]}
 
     with pytest.raises(ValueError) as exc_info:
         redact_session(session)
@@ -77,9 +61,7 @@ def test_fail_closed_on_private_key():
 def test_fail_closed_on_aws_secret_key():
     """CRITICAL: AWS secret key must fail-closed."""
     session = {
-        "messages": [
-            {"role": "user", "content": 'aws_secret_access_key="wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"'}
-        ]
+        "messages": [{"role": "user", "content": 'aws_secret_access_key="wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"'}]
     }
 
     with pytest.raises(ValueError) as exc_info:
@@ -93,7 +75,10 @@ def test_fail_closed_on_auth_header():
     """CRITICAL: Authorization header with bearer token must fail-closed."""
     session = {
         "messages": [
-            {"role": "user", "content": "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozjgNryP4J3jVmNHl0w5N_XgL0n3I9PlFUP0THsR8U"}
+            {
+                "role": "user",
+                "content": "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozjgNryP4J3jVmNHl0w5N_XgL0n3I9PlFUP0THsR8U",
+            }
         ]
     }
 
@@ -107,9 +92,7 @@ def test_fail_closed_on_auth_header():
 def test_multiple_non_critical_redactions():
     """Multiple non-critical patterns should all be redacted."""
     session = {
-        "messages": [
-            {"role": "user", "content": "Email john@example.com and call 555-1234 using AKIAIOSFODNN7EXAMPLE"}
-        ]
+        "messages": [{"role": "user", "content": "Email john@example.com and call 555-1234 using AKIAIOSFODNN7EXAMPLE"}]
     }
 
     redacted, report = redact_session(session)
@@ -129,7 +112,7 @@ def test_clean_session_no_redaction():
     session = {
         "messages": [
             {"role": "user", "content": "Deploy the API to production"},
-            {"role": "assistant", "content": "I'll help with that"}
+            {"role": "assistant", "content": "I'll help with that"},
         ]
     }
 

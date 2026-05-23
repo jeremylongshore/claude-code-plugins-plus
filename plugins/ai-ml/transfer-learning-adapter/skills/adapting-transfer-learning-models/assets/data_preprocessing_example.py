@@ -33,12 +33,12 @@ def load_and_preprocess_images(image_dir, target_size=(224, 224), grayscale=Fals
     filenames = []
     try:
         for filename in os.listdir(image_dir):
-            if filename.endswith(('.jpg', '.jpeg', '.png')):
+            if filename.endswith((".jpg", ".jpeg", ".png")):
                 image_path = os.path.join(image_dir, filename)
                 try:
                     img = Image.open(image_path)
                     if grayscale:
-                        img = img.convert('L')  # Convert to grayscale
+                        img = img.convert("L")  # Convert to grayscale
                     img = img.resize(target_size)
                     img_array = np.array(img)
 
@@ -47,7 +47,6 @@ def load_and_preprocess_images(image_dir, target_size=(224, 224), grayscale=Fals
                         img_array = np.stack([img_array] * 3, axis=-1)
                     elif len(img_array.shape) == 2:
                         img_array = np.stack([img_array] * 3, axis=-1)
-
 
                     images.append(img_array)
                     filenames.append(filename)
@@ -100,7 +99,7 @@ def create_dataframe(images, labels, filenames):
     Returns:
         pandas.DataFrame: A DataFrame containing the image data, labels, and filenames.
     """
-    df = pd.DataFrame({'image': images, 'label': labels, 'filename': filenames})
+    df = pd.DataFrame({"image": images, "label": labels, "filename": filenames})
     return df
 
 
@@ -134,7 +133,7 @@ def main(image_dir):
         return
 
     # Example labels (replace with your actual labels)
-    labels = [filename.split('_')[0] for filename in filenames]  # Assuming filename format: label_image_id.jpg
+    labels = [filename.split("_")[0] for filename in filenames]  # Assuming filename format: label_image_id.jpg
     encoded_labels = encode_labels(labels)
 
     normalized_images = normalize_images(images)

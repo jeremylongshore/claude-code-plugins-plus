@@ -33,13 +33,13 @@ def validate_conventional_commit(message: str) -> Tuple[bool, str]:
         return False, "Commit message cannot be empty"
 
     message = message.strip()
-    lines = message.split('\n')
+    lines = message.split("\n")
     subject = lines[0]
 
     # Validate subject line format
     # Pattern: type(scope)?: subject or type: subject
     # Where type is required, scope is optional, and subject is required
-    pattern = r'^(feat|fix|docs|style|refactor|perf|test|chore|ci|build|revert)(\(.+\))?!?: .{1,}$'
+    pattern = r"^(feat|fix|docs|style|refactor|perf|test|chore|ci|build|revert)(\(.+\))?!?: .{1,}$"
 
     if not re.match(pattern, subject):
         return False, (
@@ -52,17 +52,16 @@ def validate_conventional_commit(message: str) -> Tuple[bool, str]:
     # Validate subject line length (recommended max 50 chars)
     if len(subject) > 72:
         return False, (
-            f"Subject line too long ({len(subject)} chars). "
-            "Recommended maximum is 50 characters, hard limit is 72"
+            f"Subject line too long ({len(subject)} chars). Recommended maximum is 50 characters, hard limit is 72"
         )
 
     # Validate subject doesn't end with period
-    if subject.endswith('.'):
+    if subject.endswith("."):
         return False, "Subject line should not end with a period"
 
     # If there are multiple lines, validate blank line after subject
     if len(lines) > 1:
-        if lines[1].strip() != '':
+        if lines[1].strip() != "":
             return False, "Expected blank line between subject and body"
 
     return True, ""
@@ -83,34 +82,22 @@ Examples:
 
   # Validate with verbose output
   %(prog)s --message "fix: resolve bug" --verbose
-        """
+        """,
     )
 
     # Create mutually exclusive group for input source
     input_group = parser.add_mutually_exclusive_group(required=True)
-    input_group.add_argument(
-        '-m', '--message',
-        type=str,
-        help='Commit message to validate'
-    )
-    input_group.add_argument(
-        '-f', '--file',
-        type=str,
-        help='Path to file containing commit message'
-    )
+    input_group.add_argument("-m", "--message", type=str, help="Commit message to validate")
+    input_group.add_argument("-f", "--file", type=str, help="Path to file containing commit message")
 
-    parser.add_argument(
-        '-v', '--verbose',
-        action='store_true',
-        help='Enable verbose output'
-    )
+    parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose output")
 
     args = parser.parse_args()
 
     # Get the commit message
     if args.file:
         try:
-            with open(args.file, 'r', encoding='utf-8') as f:
+            with open(args.file, "r", encoding="utf-8") as f:
                 message = f.read()
         except FileNotFoundError:
             print(f"Error: File not found: {args.file}", file=sys.stderr)
@@ -129,10 +116,10 @@ Examples:
             print("✓ Commit message is valid")
         return 0
     else:
-        print(f"✗ Validation failed:", file=sys.stderr)
+        print("✗ Validation failed:", file=sys.stderr)
         print(error_msg, file=sys.stderr)
         return 1
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(main())

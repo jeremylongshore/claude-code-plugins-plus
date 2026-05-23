@@ -20,14 +20,12 @@ SKILL_DIR = SCRIPT_DIR.parent
 PLUGIN_DIR = SKILL_DIR.parent.parent
 
 # Path to tracking-crypto-prices dependency
-PRICE_TRACKER_PATH = (
-    PLUGIN_DIR.parent / "market-price-tracker" /
-    "skills" / "tracking-crypto-prices"
-)
+PRICE_TRACKER_PATH = PLUGIN_DIR.parent / "market-price-tracker" / "skills" / "tracking-crypto-prices"
 
 
 class DependencyError(Exception):
     """Raised when a required dependency is not available."""
+
     pass
 
 
@@ -75,24 +73,15 @@ class MarketAnalyzer:
             from cache_manager import CacheManager
 
             self._client = CryptoAPIClient()
-            self._cache = CacheManager(
-                cache_dir=SKILL_DIR / "data"
-            )
+            self._cache = CacheManager(cache_dir=SKILL_DIR / "data")
 
             if self.verbose:
-                print(f"Dependency loaded from {price_tracker_scripts}",
-                      file=sys.stderr)
+                print(f"Dependency loaded from {price_tracker_scripts}", file=sys.stderr)
 
         except ImportError as e:
-            raise ImportError(
-                f"Failed to import from tracking-crypto-prices: {e}"
-            )
+            raise ImportError(f"Failed to import from tracking-crypto-prices: {e}")
 
-    def fetch_market_data(
-        self,
-        category: Optional[str] = None,
-        limit: int = 1000
-    ) -> List[Dict[str, Any]]:
+    def fetch_market_data(self, category: Optional[str] = None, limit: int = 1000) -> List[Dict[str, Any]]:
         """
         Fetch current market data for all assets.
 
@@ -117,7 +106,7 @@ class MarketAnalyzer:
                 "per_page": min(limit, 250),  # CoinGecko max per page
                 "page": 1,
                 "sparkline": "false",
-                "price_change_percentage": "1h,24h,7d"
+                "price_change_percentage": "1h,24h,7d",
             }
 
             if category:
@@ -127,7 +116,7 @@ class MarketAnalyzer:
                     "layer2": "layer-2",
                     "nft": "non-fungible-tokens-nft",
                     "gaming": "gaming",
-                    "meme": "meme-token"
+                    "meme": "meme-token",
                 }
                 params["category"] = category_map.get(category, category)
 
@@ -158,23 +147,25 @@ class MarketAnalyzer:
             # Transform to our format
             result = []
             for coin in all_data:
-                result.append({
-                    "symbol": coin.get("symbol", "").upper(),
-                    "name": coin.get("name", ""),
-                    "id": coin.get("id", ""),
-                    "price": coin.get("current_price", 0),
-                    "change_1h": coin.get("price_change_percentage_1h_in_currency"),
-                    "change_24h": coin.get("price_change_percentage_24h"),
-                    "change_7d": coin.get("price_change_percentage_7d_in_currency"),
-                    "volume_24h": coin.get("total_volume", 0),
-                    "market_cap": coin.get("market_cap", 0),
-                    "market_cap_rank": coin.get("market_cap_rank"),
-                    "circulating_supply": coin.get("circulating_supply"),
-                    "high_24h": coin.get("high_24h"),
-                    "low_24h": coin.get("low_24h"),
-                    "ath": coin.get("ath"),
-                    "ath_change_pct": coin.get("ath_change_percentage")
-                })
+                result.append(
+                    {
+                        "symbol": coin.get("symbol", "").upper(),
+                        "name": coin.get("name", ""),
+                        "id": coin.get("id", ""),
+                        "price": coin.get("current_price", 0),
+                        "change_1h": coin.get("price_change_percentage_1h_in_currency"),
+                        "change_24h": coin.get("price_change_percentage_24h"),
+                        "change_7d": coin.get("price_change_percentage_7d_in_currency"),
+                        "volume_24h": coin.get("total_volume", 0),
+                        "market_cap": coin.get("market_cap", 0),
+                        "market_cap_rank": coin.get("market_cap_rank"),
+                        "circulating_supply": coin.get("circulating_supply"),
+                        "high_24h": coin.get("high_24h"),
+                        "low_24h": coin.get("low_24h"),
+                        "ath": coin.get("ath"),
+                        "ath_change_pct": coin.get("ath_change_percentage"),
+                    }
+                )
 
             return result
 
@@ -192,8 +183,7 @@ class MarketAnalyzer:
 
         # Try to load from cache
         try:
-            cached = self._cache.get_spot_price("_all_markets", "usd",
-                                                 allow_stale=True)
+            cached = self._cache.get_spot_price("_all_markets", "usd", allow_stale=True)
             if cached and isinstance(cached, list):
                 return cached
         except Exception:
@@ -204,20 +194,9 @@ class MarketAnalyzer:
     def get_category_metadata(self) -> Dict[str, List[str]]:
         """Get category to coin ID mappings."""
         return {
-            "defi": [
-                "uniswap", "aave", "chainlink", "maker",
-                "compound-governance-token", "curve-dao-token"
-            ],
-            "layer2": [
-                "matic-network", "arbitrum", "optimism", "immutable-x"
-            ],
-            "nft": [
-                "apecoin", "blur", "immutable-x"
-            ],
-            "gaming": [
-                "axie-infinity", "the-sandbox", "gala"
-            ],
-            "meme": [
-                "dogecoin", "shiba-inu", "pepe", "bonk"
-            ]
+            "defi": ["uniswap", "aave", "chainlink", "maker", "compound-governance-token", "curve-dao-token"],
+            "layer2": ["matic-network", "arbitrum", "optimism", "immutable-x"],
+            "nft": ["apecoin", "blur", "immutable-x"],
+            "gaming": ["axie-infinity", "the-sandbox", "gala"],
+            "meme": ["dogecoin", "shiba-inu", "pepe", "bonk"],
         }

@@ -16,6 +16,7 @@ from dataclasses import dataclass
 @dataclass
 class ProtocolMetrics:
     """Calculated protocol metrics."""
+
     name: str
     tvl: float
     market_share: float
@@ -32,11 +33,7 @@ class ProtocolMetrics:
 class MetricsCalculator:
     """Calculate on-chain analytics metrics."""
 
-    def calculate_market_share(
-        self,
-        protocols: List[Dict[str, Any]],
-        category: str = None
-    ) -> List[Dict[str, Any]]:
+    def calculate_market_share(self, protocols: List[Dict[str, Any]], category: str = None) -> List[Dict[str, Any]]:
         """Calculate market share for protocols.
 
         Args:
@@ -57,10 +54,7 @@ class MetricsCalculator:
 
         return protocols
 
-    def calculate_tvl_to_mcap(
-        self,
-        protocols: List[Dict[str, Any]]
-    ) -> List[Dict[str, Any]]:
+    def calculate_tvl_to_mcap(self, protocols: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """Calculate TVL/Market Cap ratio.
 
         Args:
@@ -80,10 +74,7 @@ class MetricsCalculator:
 
         return protocols
 
-    def calculate_pe_ratio(
-        self,
-        protocols: List[Dict[str, Any]]
-    ) -> List[Dict[str, Any]]:
+    def calculate_pe_ratio(self, protocols: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """Calculate P/E ratios for protocols.
 
         Args:
@@ -103,10 +94,7 @@ class MetricsCalculator:
 
         return protocols
 
-    def calculate_growth_rates(
-        self,
-        tvl_history: List[Dict[str, Any]]
-    ) -> Dict[str, float]:
+    def calculate_growth_rates(self, tvl_history: List[Dict[str, Any]]) -> Dict[str, float]:
         """Calculate growth rates from TVL history.
 
         Args:
@@ -147,11 +135,7 @@ class MetricsCalculator:
             "growth_30d": growth_30d,
         }
 
-    def rank_protocols(
-        self,
-        protocols: List[Dict[str, Any]],
-        metric: str = "tvl"
-    ) -> List[Dict[str, Any]]:
+    def rank_protocols(self, protocols: List[Dict[str, Any]], metric: str = "tvl") -> List[Dict[str, Any]]:
         """Rank protocols by metric.
 
         Args:
@@ -171,10 +155,7 @@ class MetricsCalculator:
 
         return protocols
 
-    def calculate_chain_dominance(
-        self,
-        chains: List[Dict[str, Any]]
-    ) -> List[Dict[str, Any]]:
+    def calculate_chain_dominance(self, chains: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """Calculate chain TVL dominance.
 
         Args:
@@ -193,10 +174,7 @@ class MetricsCalculator:
 
         return chains
 
-    def calculate_category_metrics(
-        self,
-        protocols: List[Dict[str, Any]]
-    ) -> Dict[str, Dict[str, Any]]:
+    def calculate_category_metrics(self, protocols: List[Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
         """Calculate metrics grouped by category.
 
         Args:
@@ -210,12 +188,7 @@ class MetricsCalculator:
         for p in protocols:
             cat = p.get("category", "Other")
             if cat not in categories:
-                categories[cat] = {
-                    "name": cat,
-                    "protocol_count": 0,
-                    "total_tvl": 0,
-                    "protocols": []
-                }
+                categories[cat] = {"name": cat, "protocol_count": 0, "total_tvl": 0, "protocols": []}
 
             categories[cat]["protocol_count"] += 1
             categories[cat]["total_tvl"] += p.get("tvl", 0)
@@ -229,9 +202,7 @@ class MetricsCalculator:
         return categories
 
     def identify_trends(
-        self,
-        protocols: List[Dict[str, Any]],
-        min_growth: float = 10.0
+        self, protocols: List[Dict[str, Any]], min_growth: float = 10.0
     ) -> Dict[str, List[Dict[str, Any]]]:
         """Identify trending protocols.
 
@@ -256,10 +227,7 @@ class MetricsCalculator:
         trending_up.sort(key=lambda x: x["growth"], reverse=True)
         trending_down.sort(key=lambda x: x["growth"])
 
-        return {
-            "trending_up": trending_up[:10],
-            "trending_down": trending_down[:10]
-        }
+        return {"trending_up": trending_up[:10], "trending_down": trending_down[:10]}
 
 
 def main():
@@ -278,7 +246,7 @@ def main():
     protocols = calc.rank_protocols(protocols, "tvl")
 
     for p in protocols:
-        print(f"#{p['rank']} {p['name']}: ${p['tvl']/1e9:.2f}B ({p['market_share']:.1f}%)")
+        print(f"#{p['rank']} {p['name']}: ${p['tvl'] / 1e9:.2f}B ({p['market_share']:.1f}%)")
 
 
 if __name__ == "__main__":

@@ -58,7 +58,7 @@ def format_risk_badge(score: int) -> str:
 
 def format_supply(supply: int, decimals: int) -> str:
     """Format token supply."""
-    value = supply / (10 ** decimals)
+    value = supply / (10**decimals)
 
     if value >= 1e12:
         return f"{value / 1e12:.2f}T"
@@ -72,11 +72,7 @@ def format_supply(supply: int, decimals: int) -> str:
         return f"{value:.2f}"
 
 
-def format_new_pairs_table(
-    pairs: List[Any],
-    token_infos: Dict[str, Any],
-    analyses: Dict[str, Any]
-) -> str:
+def format_new_pairs_table(pairs: List[Any], token_infos: Dict[str, Any], analyses: Dict[str, Any]) -> str:
     """Format new pairs as table.
 
     Args:
@@ -110,10 +106,7 @@ def format_new_pairs_table(
         pair_str = format_address(pair.pair_address, 8)
         time_str = format_age(pair.timestamp)
 
-        lines.append(
-            f"{time_str:<12} {token_str:<20} {pair.dex:<15} "
-            f"{pair.chain:<10} {risk_str:<15} {pair_str:<18}"
-        )
+        lines.append(f"{time_str:<12} {token_str:<20} {pair.dex:<15} {pair.chain:<10} {risk_str:<15} {pair_str:<18}")
 
     lines.append("=" * 90)
     lines.append(f"Total: {len(pairs)} new pairs")
@@ -121,12 +114,7 @@ def format_new_pairs_table(
     return "\n".join(lines)
 
 
-def format_launch_detail(
-    pair: Any,
-    token_info: Any,
-    analysis: Any,
-    chain_config: Any
-) -> str:
+def format_launch_detail(pair: Any, token_info: Any, analysis: Any, chain_config: Any) -> str:
     """Format detailed launch info.
 
     Args:
@@ -158,26 +146,30 @@ def format_launch_detail(
     ]
 
     if token_info:
-        lines.extend([
-            "TOKEN INFO",
-            "-" * 60,
-            f"Decimals:     {token_info.decimals}",
-            f"Total Supply: {format_supply(token_info.total_supply, token_info.decimals)}",
-            f"Owner:        {format_address(token_info.owner) if token_info.owner else 'None'}",
-            f"Verified:     {'Yes' if token_info.is_verified else 'No'}",
-            "",
-        ])
+        lines.extend(
+            [
+                "TOKEN INFO",
+                "-" * 60,
+                f"Decimals:     {token_info.decimals}",
+                f"Total Supply: {format_supply(token_info.total_supply, token_info.decimals)}",
+                f"Owner:        {format_address(token_info.owner) if token_info.owner else 'None'}",
+                f"Verified:     {'Yes' if token_info.is_verified else 'No'}",
+                "",
+            ]
+        )
 
     if analysis:
-        lines.extend([
-            "RISK ANALYSIS",
-            "-" * 60,
-            f"Risk Score:   {analysis.risk_score}/100 {format_risk_badge(analysis.risk_score)}",
-            f"Is Proxy:     {'Yes' if analysis.is_proxy else 'No'}",
-            f"Ownership:    {'Renounced' if analysis.ownership_renounced else 'Active'}",
-            "",
-            "Indicators:",
-        ])
+        lines.extend(
+            [
+                "RISK ANALYSIS",
+                "-" * 60,
+                f"Risk Score:   {analysis.risk_score}/100 {format_risk_badge(analysis.risk_score)}",
+                f"Is Proxy:     {'Yes' if analysis.is_proxy else 'No'}",
+                f"Ownership:    {'Renounced' if analysis.ownership_renounced else 'Active'}",
+                "",
+                "Indicators:",
+            ]
+        )
 
         for ind in analysis.indicators:
             severity_marker = {
@@ -254,11 +246,7 @@ def format_json(data: Any) -> str:
     if hasattr(data, "__dict__"):
         return json.dumps(vars(data), indent=2, default=str)
     elif isinstance(data, list):
-        return json.dumps(
-            [vars(x) if hasattr(x, "__dict__") else x for x in data],
-            indent=2,
-            default=str
-        )
+        return json.dumps([vars(x) if hasattr(x, "__dict__") else x for x in data], indent=2, default=str)
     else:
         return json.dumps(data, indent=2, default=str)
 

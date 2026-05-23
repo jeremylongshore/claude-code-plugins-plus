@@ -14,7 +14,7 @@ import json
 import csv
 import io
 from datetime import datetime
-from typing import List, Optional, Dict, Any
+from typing import List, Optional
 
 
 class PriceFormatter:
@@ -39,7 +39,7 @@ class PriceFormatter:
         "CHF": "CHF ",
         "CNY": "¥",
         "INR": "₹",
-        "KRW": "₩"
+        "KRW": "₩",
     }
 
     def __init__(self, currency: str = "USD"):
@@ -113,12 +113,7 @@ class PriceFormatter:
         else:
             return f"{change:.2f}%"
 
-    def format_prices(
-        self,
-        prices: List[dict],
-        format_type: str = "table",
-        verbose: bool = False
-    ) -> str:
+    def format_prices(self, prices: List[dict], format_type: str = "table", verbose: bool = False) -> str:
         """
         Format a list of price data.
 
@@ -219,11 +214,7 @@ class PriceFormatter:
 
         output = {
             "prices": cleaned,
-            "meta": {
-                "count": len(cleaned),
-                "currency": self.currency,
-                "timestamp": datetime.utcnow().isoformat()
-            }
+            "meta": {"count": len(cleaned), "currency": self.currency, "timestamp": datetime.utcnow().isoformat()},
         }
 
         return json.dumps(output, indent=2)
@@ -234,8 +225,18 @@ class PriceFormatter:
             return ""
 
         output = io.StringIO()
-        fieldnames = ["symbol", "name", "price", "currency", "change_24h",
-                      "change_7d", "volume_24h", "market_cap", "timestamp", "source"]
+        fieldnames = [
+            "symbol",
+            "name",
+            "price",
+            "currency",
+            "change_24h",
+            "change_7d",
+            "volume_24h",
+            "market_cap",
+            "timestamp",
+            "source",
+        ]
         writer = csv.DictWriter(output, fieldnames=fieldnames, extrasaction="ignore")
         writer.writeheader()
 
@@ -263,12 +264,7 @@ class PriceFormatter:
 
         return " | ".join(parts)
 
-    def format_historical(
-        self,
-        symbol: str,
-        data: List[dict],
-        format_type: str = "table"
-    ) -> str:
+    def format_historical(self, symbol: str, data: List[dict], format_type: str = "table") -> str:
         """
         Format historical price data.
 
@@ -341,8 +337,8 @@ class PriceFormatter:
                 "count": len(data),
                 "start_date": data[0].get("date") if data else None,
                 "end_date": data[-1].get("date") if data else None,
-                "timestamp": datetime.utcnow().isoformat()
-            }
+                "timestamp": datetime.utcnow().isoformat(),
+            },
         }
         return json.dumps(output, indent=2)
 
@@ -367,11 +363,7 @@ class PriceFormatter:
 
         return output.getvalue()
 
-    def print_coin_list(
-        self,
-        coins: List[dict],
-        query: Optional[str] = None
-    ) -> None:
+    def print_coin_list(self, coins: List[dict], query: Optional[str] = None) -> None:
         """
         Print a list of available coins.
 

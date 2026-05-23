@@ -30,7 +30,13 @@ Exit codes:
 """
 
 from __future__ import annotations
-import argparse, hashlib, json, os, sqlite3, sys, time
+import argparse
+import hashlib
+import json
+import os
+import sqlite3
+import sys
+import time
 from pathlib import Path
 
 import urllib.request
@@ -61,8 +67,9 @@ def now_iso() -> str:
     return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
 
 
-def http_request(method: str, url: str, token: str, body: dict | None = None,
-                 timeout: float = 10.0) -> tuple[int, dict]:
+def http_request(
+    method: str, url: str, token: str, body: dict | None = None, timeout: float = 10.0
+) -> tuple[int, dict]:
     data = json.dumps(body).encode("utf-8") if body is not None else None
     headers = {"Authorization": f"Bearer {token}"}
     if data is not None:
@@ -110,12 +117,19 @@ def load_cluster_members(db: sqlite3.Connection, cluster_id: str) -> list[dict] 
             (uid,),
         ).fetchone()
         if r:
-            members.append({
-                "contact_uid": r[0], "natural_key": r[1], "name": r[2], "email": r[3],
-                "field_count": r[4], "marketing_opt_out": bool(r[5]),
-                "sms_opt_out": bool(r[6]), "email_opt_out": bool(r[7]),
-                "updated_at_podium": r[8],
-            })
+            members.append(
+                {
+                    "contact_uid": r[0],
+                    "natural_key": r[1],
+                    "name": r[2],
+                    "email": r[3],
+                    "field_count": r[4],
+                    "marketing_opt_out": bool(r[5]),
+                    "sms_opt_out": bool(r[6]),
+                    "email_opt_out": bool(r[7]),
+                    "updated_at_podium": r[8],
+                }
+            )
     return members
 
 
@@ -128,10 +142,17 @@ def build_cluster_from_index(db: sqlite3.Connection, cluster_id: str) -> list[di
     ).fetchall()
     for (natural_key,) in rows:
         members = [
-            {"contact_uid": r[0], "natural_key": r[1], "name": r[2], "email": r[3],
-             "field_count": r[4], "marketing_opt_out": bool(r[5]),
-             "sms_opt_out": bool(r[6]), "email_opt_out": bool(r[7]),
-             "updated_at_podium": r[8]}
+            {
+                "contact_uid": r[0],
+                "natural_key": r[1],
+                "name": r[2],
+                "email": r[3],
+                "field_count": r[4],
+                "marketing_opt_out": bool(r[5]),
+                "sms_opt_out": bool(r[6]),
+                "email_opt_out": bool(r[7]),
+                "updated_at_podium": r[8],
+            }
             for r in db.execute(
                 """SELECT contact_uid, natural_key, name, email, field_count,
                           marketing_opt_out, sms_opt_out, email_opt_out, updated_at_podium
@@ -157,8 +178,8 @@ def select_primary(members: list[dict]) -> dict:
 def union_opt_outs(members: list[dict]) -> dict:
     return {
         "marketing_opt_out": any(m["marketing_opt_out"] for m in members),
-        "sms_opt_out":       any(m["sms_opt_out"]       for m in members),
-        "email_opt_out":     any(m["email_opt_out"]     for m in members),
+        "sms_opt_out": any(m["sms_opt_out"] for m in members),
+        "email_opt_out": any(m["email_opt_out"] for m in members),
     }
 
 
@@ -178,20 +199,23 @@ def conflict_check(token: str, members: list[dict]) -> tuple[bool, str]:
         live = body.get("data", body)
         live_updated = live.get("updated_at")
         if live_updated and live_updated != m["updated_at_podium"]:
-            return False, (f"updated_at_drift: {m['contact_uid']} "
-                           f"indexed={m['updated_at_podium']} live={live_updated}")
+            return False, (f"updated_at_drift: {m['contact_uid']} indexed={m['updated_at_podium']} live={live_updated}")
     return True, ""
 
 
-def do_merge(db: sqlite3.Connection, audit_path: Path, members: list[dict], cluster_id: str,
-             token: str, dry_run: bool) -> int:
+def do_merge(
+    db: sqlite3.Connection, audit_path: Path, members: list[dict], cluster_id: str, token: str, dry_run: bool
+) -> int:
     primary = select_primary(members)
     duplicates = [m for m in members if m["contact_uid"] != primary["contact_uid"]]
-    opt_out_pre = {m["contact_uid"]: {
-        "marketing_opt_out": m["marketing_opt_out"],
-        "sms_opt_out": m["sms_opt_out"],
-        "email_opt_out": m["email_opt_out"],
-    } for m in members}
+    opt_out_pre = {
+        m["contact_uid"]: {
+            "marketing_opt_out": m["marketing_opt_out"],
+            "sms_opt_out": m["sms_opt_out"],
+            "email_opt_out": m["email_opt_out"],
+        }
+        for m in members
+    }
     opt_out_union = union_opt_outs(members)
 
     plan = {
@@ -200,10 +224,12 @@ def do_merge(db: sqlite3.Connection, audit_path: Path, members: list[dict], clus
         "duplicate_uids": [d["contact_uid"] for d in duplicates],
         "opt_out_union": opt_out_union,
         "api_calls": (
-            [f"GET /v4/contacts/{d['contact_uid']}   (conflict check)" for d in duplicates] +
-            [f"POST /v4/contacts/{primary['contact_uid']}/merge {{\"duplicate_uids\": "
-             f"{json.dumps([d['contact_uid'] for d in duplicates])}}}",
-             f"PATCH /v4/contacts/{primary['contact_uid']} {json.dumps(opt_out_union)}"]
+            [f"GET /v4/contacts/{d['contact_uid']}   (conflict check)" for d in duplicates]
+            + [
+                f'POST /v4/contacts/{primary["contact_uid"]}/merge {{"duplicate_uids": '
+                f"{json.dumps([d['contact_uid'] for d in duplicates])}}}",
+                f"PATCH /v4/contacts/{primary['contact_uid']} {json.dumps(opt_out_union)}",
+            ]
         ),
     }
     if dry_run:
@@ -216,22 +242,33 @@ def do_merge(db: sqlite3.Connection, audit_path: Path, members: list[dict], clus
            (cluster_id, natural_key, primary_uid, duplicate_uids, opt_out_pre_json,
             status, attempts, started_at)
            VALUES (?, ?, ?, ?, ?, 'pending', 0, ?)""",
-        (cluster_id, primary["natural_key"], primary["contact_uid"],
-         json.dumps([d["contact_uid"] for d in duplicates]),
-         json.dumps(opt_out_pre), now_iso()),
+        (
+            cluster_id,
+            primary["natural_key"],
+            primary["contact_uid"],
+            json.dumps([d["contact_uid"] for d in duplicates]),
+            json.dumps(opt_out_pre),
+            now_iso(),
+        ),
     )
     db.commit()
 
     # Conflict check.
     ok, reason = conflict_check(token, members)
     if not ok:
-        db.execute("UPDATE merge_state SET status='re_index_required', last_error=? WHERE cluster_id=?",
-                   (reason, cluster_id))
+        db.execute(
+            "UPDATE merge_state SET status='re_index_required', last_error=? WHERE cluster_id=?", (reason, cluster_id)
+        )
         db.commit()
-        append_audit(audit_path, {
-            "ts": now_iso(), "event": "conflict_detected", "cluster_id": cluster_id,
-            "reason": reason,
-        })
+        append_audit(
+            audit_path,
+            {
+                "ts": now_iso(),
+                "event": "conflict_detected",
+                "cluster_id": cluster_id,
+                "reason": reason,
+            },
+        )
         sys.stderr.write(f"ERR_DEDUP_011 {reason}\n")
         return 4
 
@@ -245,13 +282,22 @@ def do_merge(db: sqlite3.Connection, audit_path: Path, members: list[dict], clus
         body={"duplicate_uids": [d["contact_uid"] for d in duplicates]},
     )
     if status not in (200, 201, 204):
-        db.execute("UPDATE merge_state SET status='failed_permanent', last_error=? WHERE cluster_id=?",
-                   (json.dumps(body), cluster_id))
+        db.execute(
+            "UPDATE merge_state SET status='failed_permanent', last_error=? WHERE cluster_id=?",
+            (json.dumps(body), cluster_id),
+        )
         db.commit()
-        append_audit(audit_path, {
-            "ts": now_iso(), "event": "merge_failed", "cluster_id": cluster_id,
-            "primary_uid": primary["contact_uid"], "status": status, "error": body,
-        })
+        append_audit(
+            audit_path,
+            {
+                "ts": now_iso(),
+                "event": "merge_failed",
+                "cluster_id": cluster_id,
+                "primary_uid": primary["contact_uid"],
+                "status": status,
+                "error": body,
+            },
+        )
         sys.stderr.write(f"merge failed {status}: {body}\n")
         return 1
 
@@ -266,18 +312,28 @@ def do_merge(db: sqlite3.Connection, audit_path: Path, members: list[dict], clus
         body=opt_out_union,
     )
     if status not in (200, 204):
-        db.execute("UPDATE merge_state SET status='compliance_failed', last_error=? WHERE cluster_id=?",
-                   (json.dumps(body), cluster_id))
+        db.execute(
+            "UPDATE merge_state SET status='compliance_failed', last_error=? WHERE cluster_id=?",
+            (json.dumps(body), cluster_id),
+        )
         db.commit()
-        append_audit(audit_path, {
-            "ts": now_iso(), "event": "compliance_failed", "cluster_id": cluster_id,
-            "primary_uid": primary["contact_uid"],
-            "opt_out_pre_merge": opt_out_pre,
-            "opt_out_intended": opt_out_union,
-            "status": status, "error": body,
-        })
-        sys.stderr.write(f"ERR_DEDUP_010 opt_out_patch_failed {status}: {body}\n"
-                         "PAGE COMPLIANCE — opt-out flags may be in default state on the merged record\n")
+        append_audit(
+            audit_path,
+            {
+                "ts": now_iso(),
+                "event": "compliance_failed",
+                "cluster_id": cluster_id,
+                "primary_uid": primary["contact_uid"],
+                "opt_out_pre_merge": opt_out_pre,
+                "opt_out_intended": opt_out_union,
+                "status": status,
+                "error": body,
+            },
+        )
+        sys.stderr.write(
+            f"ERR_DEDUP_010 opt_out_patch_failed {status}: {body}\n"
+            "PAGE COMPLIANCE — opt-out flags may be in default state on the merged record\n"
+        )
         return 5
 
     db.execute(
@@ -286,16 +342,21 @@ def do_merge(db: sqlite3.Connection, audit_path: Path, members: list[dict], clus
     )
     db.commit()
 
-    append_audit(audit_path, {
-        "ts": now_iso(), "event": "merge_complete", "cluster_id": cluster_id,
-        "natural_key": primary["natural_key"],
-        "primary_uid": primary["contact_uid"],
-        "duplicate_uids": [d["contact_uid"] for d in duplicates],
-        "opt_out_pre_merge": opt_out_pre,
-        "opt_out_post_merge": opt_out_union,
-        "soft_delete": True,
-        "restorable": True,
-    })
+    append_audit(
+        audit_path,
+        {
+            "ts": now_iso(),
+            "event": "merge_complete",
+            "cluster_id": cluster_id,
+            "natural_key": primary["natural_key"],
+            "primary_uid": primary["contact_uid"],
+            "duplicate_uids": [d["contact_uid"] for d in duplicates],
+            "opt_out_pre_merge": opt_out_pre,
+            "opt_out_post_merge": opt_out_union,
+            "soft_delete": True,
+            "restorable": True,
+        },
+    )
     return 0
 
 

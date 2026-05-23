@@ -12,7 +12,7 @@ Evaluates risks for flash loan strategies:
 from dataclasses import dataclass
 from decimal import Decimal
 from enum import Enum
-from typing import List, Optional
+from typing import List
 
 from strategy_engine import StrategyResult, StrategyType
 
@@ -128,10 +128,7 @@ class RiskAssessor:
             "Profit Margin": 0.15,
         }
 
-        overall_score = sum(
-            f.score * weights.get(f.name, 0.2)
-            for f in factors
-        )
+        overall_score = sum(f.score * weights.get(f.name, 0.2) for f in factors)
 
         # Determine overall level
         if overall_score < 30:
@@ -169,10 +166,7 @@ class RiskAssessor:
         # Higher score = more competition
         pair_key = (result.loan_asset, "USDC")  # Simplified
 
-        score = self.MEV_COMPETITION.get(
-            pair_key,
-            self.MEV_COMPETITION.get("default", 50)
-        )
+        score = self.MEV_COMPETITION.get(pair_key, self.MEV_COMPETITION.get("default", 50))
 
         # Adjust for trade size (larger = more attractive to MEV)
         if result.loan_amount > 100:
@@ -240,10 +234,7 @@ class RiskAssessor:
             protocols.add(step.protocol.lower())
 
         # Sum risk scores
-        total_risk = sum(
-            self.PROTOCOL_RISK.get(p, self.PROTOCOL_RISK["default"])
-            for p in protocols
-        )
+        total_risk = sum(self.PROTOCOL_RISK.get(p, self.PROTOCOL_RISK["default"]) for p in protocols)
 
         # Average across protocols
         score = total_risk / len(protocols) if protocols else 50
@@ -334,9 +325,7 @@ class RiskAssessor:
             mitigation="Increase trade size or wait for better opportunity",
         )
 
-    def _generate_recommendations(
-        self, factors: List[RiskFactor], result: StrategyResult
-    ) -> List[str]:
+    def _generate_recommendations(self, factors: List[RiskFactor], result: StrategyResult) -> List[str]:
         """Generate actionable recommendations."""
         recs = []
 
@@ -376,7 +365,7 @@ class RiskAssessor:
 
 def demo():
     """Demonstrate risk assessment."""
-    from strategy_engine import StrategyFactory, StrategyType, ArbitrageParams
+    from strategy_engine import StrategyFactory, ArbitrageParams
 
     # Run a simulation first
     factory = StrategyFactory()

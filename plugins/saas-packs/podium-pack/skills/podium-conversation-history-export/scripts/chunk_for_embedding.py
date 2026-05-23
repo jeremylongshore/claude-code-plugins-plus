@@ -34,7 +34,11 @@ Exit codes:
 """
 
 from __future__ import annotations
-import argparse, gzip, json, re, sys
+import argparse
+import gzip
+import json
+import re
+import sys
 from pathlib import Path
 from typing import Iterator
 
@@ -45,7 +49,10 @@ _FALLBACK_PII_PATTERNS = [
     (re.compile(r"\b\d{3}-\d{2}-\d{4}\b"), "[REDACTED_SSN]"),
     (re.compile(r"\b(?:\d[ -]*?){13,16}\b"), "[REDACTED_CARD]"),
     (re.compile(r"\b[A-Z]{1,2}\d{6,9}\b"), "[REDACTED_LICENSE]"),
-    (re.compile(r"\b\d{1,5} [\w ]{1,40}(?:Street|St|Ave|Avenue|Rd|Road|Blvd|Drive|Dr|Lane|Ln|Way|Court|Ct)\b", re.I), "[REDACTED_ADDR]"),
+    (
+        re.compile(r"\b\d{1,5} [\w ]{1,40}(?:Street|St|Ave|Avenue|Rd|Road|Blvd|Drive|Dr|Lane|Ln|Way|Court|Ct)\b", re.I),
+        "[REDACTED_ADDR]",
+    ),
     (re.compile(r"[\w\.-]+@[\w\.-]+\.\w+"), "[REDACTED_EMAIL]"),
     (re.compile(r"\+?\d{1,3}[ -.]?\(?\d{3}\)?[ -.]?\d{3}[ -.]?\d{4}"), "[REDACTED_PHONE]"),
 ]
@@ -55,6 +62,7 @@ def load_pii_patterns():
     """Prefer the shared patterns from podium-call-transcript-pipeline; fall back to inline."""
     try:
         from podium_pii import patterns as shared  # type: ignore
+
         return shared.PII_PATTERNS
     except Exception:
         return _FALLBACK_PII_PATTERNS
@@ -93,9 +101,7 @@ def chunk_messages(
     prev_ts = None
 
     def _emit(buf: list[dict]) -> dict:
-        body_raw = "\n".join(
-            f"[{m.get('sender_type', 'unknown')}] {m.get('body', '')}" for m in buf
-        )
+        body_raw = "\n".join(f"[{m.get('sender_type', 'unknown')}] {m.get('body', '')}" for m in buf)
         body = redact(body_raw, patterns) if redact_pii else body_raw
         return {
             "chunk_id": f"{source_id}:{buf[0]['id']}:{buf[-1]['id']}",
@@ -114,8 +120,7 @@ def chunk_messages(
         prev_ts = ts
 
         force_break = current and (
-            current_tokens + msg_tokens > target_tokens
-            or (idle_gap is not None and idle_gap > idle_gap_break_seconds)
+            current_tokens + msg_tokens > target_tokens or (idle_gap is not None and idle_gap > idle_gap_break_seconds)
         )
         if force_break:
             yield _emit(current)
@@ -160,8 +165,7 @@ def main() -> int:
 
     chunks_emitted = 0
     sources_processed = 0
-    with open_in(args.input, "rt", encoding="utf-8") as fin, \
-         gzip.open(args.output, "wt", encoding="utf-8") as fout:
+    with open_in(args.input, "rt", encoding="utf-8") as fin, gzip.open(args.output, "wt", encoding="utf-8") as fout:
         for line in fin:
             row = json.loads(line)
             sources_processed += 1
@@ -177,19 +181,23 @@ def main() -> int:
                 # If messages aren't embedded in the export (separate endpoint),
                 # use the conversation summary fields as a single fallback message.
                 if not messages:
-                    messages = [{
-                        "id": f"{source_id}_summary",
-                        "body": row.get("preview") or row.get("subject") or "",
-                        "created_at": row.get("created_at"),
-                        "sender_type": "system",
-                    }]
+                    messages = [
+                        {
+                            "id": f"{source_id}_summary",
+                            "body": row.get("preview") or row.get("subject") or "",
+                            "created_at": row.get("created_at"),
+                            "sender_type": "system",
+                        }
+                    ]
             else:
-                messages = [{
-                    "id": f"{source_id}_body",
-                    "body": row.get("body") or row.get("review_body") or row.get("notes") or "",
-                    "created_at": row.get("created_at"),
-                    "sender_type": args.source_type,
-                }]
+                messages = [
+                    {
+                        "id": f"{source_id}_body",
+                        "body": row.get("body") or row.get("review_body") or row.get("notes") or "",
+                        "created_at": row.get("created_at"),
+                        "sender_type": args.source_type,
+                    }
+                ]
 
             try:
                 for chunk in chunk_messages(
@@ -211,12 +219,16 @@ def main() -> int:
                 print(str(e), file=sys.stderr)
                 return 2
 
-    print(json.dumps({
-        "sources_processed": sources_processed,
-        "chunks_emitted": chunks_emitted,
-        "pii_redacted": bool(args.redact_pii),
-        "out": str(args.output),
-    }))
+    print(
+        json.dumps(
+            {
+                "sources_processed": sources_processed,
+                "chunks_emitted": chunks_emitted,
+                "pii_redacted": bool(args.redact_pii),
+                "out": str(args.output),
+            }
+        )
+    )
     return 0
 
 

@@ -13,9 +13,7 @@ def main():
         memory_file = Path(cwd) / ".claude" / "memories" / "project_memory.json"
 
         if not memory_file.exists():
-            print(json.dumps({
-                "systemMessage": "\033[1;97m🧠 Claude Never Forgets: Ready to learn.\033[0m"
-            }))
+            print(json.dumps({"systemMessage": "\033[1;97m🧠 Claude Never Forgets: Ready to learn.\033[0m"}))
             sys.exit(0)
 
         memories = json.load(open(memory_file, "r", encoding="utf-8"))
@@ -24,9 +22,7 @@ def main():
         realtime = memories.get("realtime_memories", [])
 
         if not manual and not realtime:
-            print(json.dumps({
-                "systemMessage": "\033[1;97m🧠 Claude Never Forgets: No memories yet.\033[0m"
-            }))
+            print(json.dumps({"systemMessage": "\033[1;97m🧠 Claude Never Forgets: No memories yet.\033[0m"}))
             sys.exit(0)
 
         lines = ["## Project Memory", "", "Apply these in your responses:", ""]
@@ -44,13 +40,14 @@ def main():
             lines.append("")
 
         count = len(manual) + len(realtime)
-        print(json.dumps({
-            "hookSpecificOutput": {
-                "hookEventName": "SessionStart",
-                "additionalContext": "\n".join(lines)
-            },
-            "systemMessage": f"\033[1;97m🧠 Claude Never Forgets: Loaded {count} memories.\033[0m"
-        }))
+        print(
+            json.dumps(
+                {
+                    "hookSpecificOutput": {"hookEventName": "SessionStart", "additionalContext": "\n".join(lines)},
+                    "systemMessage": f"\033[1;97m🧠 Claude Never Forgets: Loaded {count} memories.\033[0m",
+                }
+            )
+        )
 
     except Exception:
         print(json.dumps({}))

@@ -53,13 +53,13 @@ RE_FRONTMATTER = re.compile(r"^---\s*\n(.*?)\n---\s*\n(.*)$", re.DOTALL)
 # Platform display-name lookup. Used to render the migration target nicely.
 # Anything not in this map falls back to the raw string the user wrote.
 PLATFORM_DISPLAY = {
-    'claude-code': 'Claude Code',
-    'codex': 'Codex',
-    'openclaw': 'OpenClaw',
-    'aider': 'Aider',
-    'continue': 'Continue',
-    'cursor': 'Cursor',
-    'windsurf': 'Windsurf',
+    "claude-code": "Claude Code",
+    "codex": "Codex",
+    "openclaw": "OpenClaw",
+    "aider": "Aider",
+    "continue": "Continue",
+    "cursor": "Cursor",
+    "windsurf": "Windsurf",
 }
 
 
@@ -70,7 +70,7 @@ def normalize_platform_list(raw) -> List[str]:
     if isinstance(raw, list):
         return [str(p).strip().lower() for p in raw if str(p).strip()]
     if isinstance(raw, str):
-        return [p.strip().lower() for p in raw.split(',') if p.strip()]
+        return [p.strip().lower() for p in raw.split(",") if p.strip()]
     # Unknown shape — give up gracefully.
     return []
 
@@ -78,7 +78,7 @@ def normalize_platform_list(raw) -> List[str]:
 def render_compatibility_value(platforms: List[str]) -> str:
     """Render the AgentSkills.io-style free-text compatibility string."""
     if not platforms:
-        return ''
+        return ""
     display = [PLATFORM_DISPLAY.get(p, p) for p in platforms]
     if len(display) == 1:
         return f"Designed for {display[0]}"
@@ -119,11 +119,11 @@ def migrate_compatible_with(content: str) -> Tuple[str, Optional[str]]:
     if not isinstance(fm, dict):
         return content, None
 
-    if 'compatible-with' not in fm:
+    if "compatible-with" not in fm:
         return content, None
 
-    existing_compatibility = fm.get('compatibility')
-    raw = fm.pop('compatible-with')
+    existing_compatibility = fm.get("compatibility")
+    raw = fm.pop("compatible-with")
     platforms = normalize_platform_list(raw)
     new_value = render_compatibility_value(platforms)
 
@@ -131,11 +131,10 @@ def migrate_compatible_with(content: str) -> Tuple[str, Optional[str]]:
     if existing_compatibility:
         # Already migrated; just remove the legacy key.
         summary_parts.append(
-            f"removed `compatible-with` (existing `compatibility` "
-            f"`{existing_compatibility}` preserved)"
+            f"removed `compatible-with` (existing `compatibility` `{existing_compatibility}` preserved)"
         )
     elif new_value:
-        fm['compatibility'] = new_value
+        fm["compatibility"] = new_value
         summary_parts.append(f"compatible-with: {raw!r} → compatibility: {new_value!r}")
     else:
         # Empty platform list — drop the field outright.
@@ -152,7 +151,7 @@ def find_skill_files(root: Path) -> List[Path]:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__.split('\n')[0])
+    parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     parser.add_argument(
         "--migrate-compatible-with",
         action="store_true",
@@ -195,7 +194,7 @@ def main() -> int:
     errors = 0
     for path in files:
         try:
-            original = path.read_text(encoding='utf-8')
+            original = path.read_text(encoding="utf-8")
         except OSError as exc:
             print(f"  ! {path}: read error: {exc}")
             errors += 1
@@ -213,12 +212,12 @@ def main() -> int:
         rel = path.relative_to(root)
         print(f"  ~ {rel}: {summary}")
         if not args.dry_run:
-            path.write_text(new_content, encoding='utf-8')
+            path.write_text(new_content, encoding="utf-8")
         changed += 1
 
     print(f"\nSummary: {changed} changed, {skipped} unchanged, {errors} errors")
     return 0 if errors == 0 else 1
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(main())

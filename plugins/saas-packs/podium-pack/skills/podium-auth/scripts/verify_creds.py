@@ -17,23 +17,32 @@ Exit codes:
 """
 
 from __future__ import annotations
-import argparse, json, os, sys
+import argparse
+import json
+import os
+import sys
 from pathlib import Path
-import urllib.request, urllib.parse, urllib.error
+import urllib.request
+import urllib.parse
+import urllib.error
 
 ME_URL = "https://api.podium.com/v4/me"
 TOKEN_URL = "https://accounts.podium.com/oauth/token"
 
 
 def refresh(client_id: str, client_secret: str, refresh_token: str, timeout: float = 10.0) -> str | None:
-    body = urllib.parse.urlencode({
-        "grant_type": "refresh_token",
-        "refresh_token": refresh_token,
-        "client_id": client_id,
-        "client_secret": client_secret,
-    }).encode()
+    body = urllib.parse.urlencode(
+        {
+            "grant_type": "refresh_token",
+            "refresh_token": refresh_token,
+            "client_id": client_id,
+            "client_secret": client_secret,
+        }
+    ).encode()
     req = urllib.request.Request(
-        TOKEN_URL, data=body, method="POST",
+        TOKEN_URL,
+        data=body,
+        method="POST",
         headers={"Content-Type": "application/x-www-form-urlencoded"},
     )
     try:

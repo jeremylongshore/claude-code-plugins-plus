@@ -25,6 +25,7 @@ except ImportError:
 @dataclass
 class Trait:
     """Single trait attribute."""
+
     trait_type: str
     value: str
     display_type: Optional[str] = None
@@ -33,6 +34,7 @@ class Trait:
 @dataclass
 class TokenData:
     """NFT token metadata."""
+
     token_id: int
     name: str
     description: str
@@ -44,6 +46,7 @@ class TokenData:
 @dataclass
 class CollectionData:
     """Collection metadata."""
+
     name: str
     slug: str
     contract_address: str
@@ -65,12 +68,7 @@ IPFS_GATEWAYS = [
 class MetadataFetcher:
     """Fetch NFT metadata from multiple sources."""
 
-    def __init__(
-        self,
-        opensea_api_key: str = None,
-        alchemy_api_key: str = None,
-        verbose: bool = False
-    ):
+    def __init__(self, opensea_api_key: str = None, alchemy_api_key: str = None, verbose: bool = False):
         """Initialize metadata fetcher.
 
         Args:
@@ -105,10 +103,7 @@ class MetadataFetcher:
         """Save data to cache."""
         cache_path = self._get_cache_path(key)
         try:
-            cache_path.write_text(json.dumps({
-                "timestamp": time.time(),
-                "data": data
-            }, indent=2))
+            cache_path.write_text(json.dumps({"timestamp": time.time(), "data": data}, indent=2))
         except IOError:
             pass  # Non-critical - cache save failed, will refetch next time
 
@@ -162,11 +157,7 @@ class MetadataFetcher:
             except Exception:
                 return None
 
-    def fetch_collection_opensea(
-        self,
-        slug: str,
-        limit: int = 200
-    ) -> Optional[CollectionData]:
+    def fetch_collection_opensea(self, slug: str, limit: int = 200) -> Optional[CollectionData]:
         """Fetch collection from OpenSea API.
 
         Args:
@@ -205,12 +196,7 @@ class MetadataFetcher:
                 if next_cursor:
                     params["next"] = next_cursor
 
-                nfts_response = requests.get(
-                    nfts_url,
-                    headers=headers,
-                    params=params,
-                    timeout=30
-                )
+                nfts_response = requests.get(nfts_url, headers=headers, params=params, timeout=30)
                 nfts_response.raise_for_status()
                 nfts_data = nfts_response.json()
 
@@ -222,10 +208,7 @@ class MetadataFetcher:
 
                 time.sleep(0.5)  # Rate limiting
 
-            result = {
-                "collection": col_data,
-                "nfts": all_nfts
-            }
+            result = {"collection": col_data, "nfts": all_nfts}
 
             self._save_cache(cache_key, result)
             return self._parse_collection_data(result)
@@ -247,20 +230,24 @@ class MetadataFetcher:
                 attributes = []
 
                 for trait in nft.get("traits", []):
-                    attributes.append(Trait(
-                        trait_type=trait.get("trait_type", "Unknown"),
-                        value=str(trait.get("value", "")),
-                        display_type=trait.get("display_type"),
-                    ))
+                    attributes.append(
+                        Trait(
+                            trait_type=trait.get("trait_type", "Unknown"),
+                            value=str(trait.get("value", "")),
+                            display_type=trait.get("display_type"),
+                        )
+                    )
 
-                tokens.append(TokenData(
-                    token_id=token_id,
-                    name=nft.get("name", f"#{token_id}"),
-                    description=nft.get("description", ""),
-                    image_url=nft.get("image_url", ""),
-                    attributes=attributes,
-                    external_url=nft.get("external_url"),
-                ))
+                tokens.append(
+                    TokenData(
+                        token_id=token_id,
+                        name=nft.get("name", f"#{token_id}"),
+                        description=nft.get("description", ""),
+                        image_url=nft.get("image_url", ""),
+                        attributes=attributes,
+                        external_url=nft.get("external_url"),
+                    )
+                )
             except (ValueError, KeyError):
                 continue
 
@@ -280,11 +267,7 @@ class MetadataFetcher:
             tokens=tokens,
         )
 
-    def fetch_token_metadata(
-        self,
-        contract_address: str,
-        token_id: int
-    ) -> Optional[TokenData]:
+    def fetch_token_metadata(self, contract_address: str, token_id: int) -> Optional[TokenData]:
         """Fetch single token metadata from Alchemy.
 
         Args:
@@ -327,11 +310,13 @@ class MetadataFetcher:
         attributes = []
 
         for attr in metadata.get("attributes", []):
-            attributes.append(Trait(
-                trait_type=attr.get("trait_type", "Unknown"),
-                value=str(attr.get("value", "")),
-                display_type=attr.get("display_type"),
-            ))
+            attributes.append(
+                Trait(
+                    trait_type=attr.get("trait_type", "Unknown"),
+                    value=str(attr.get("value", "")),
+                    display_type=attr.get("display_type"),
+                )
+            )
 
         return TokenData(
             token_id=token_id,

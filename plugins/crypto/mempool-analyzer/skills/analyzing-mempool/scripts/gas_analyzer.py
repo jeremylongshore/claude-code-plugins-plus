@@ -9,7 +9,7 @@ Version: 1.0.0
 License: MIT
 """
 
-from typing import Dict, Any, List, Optional
+from typing import Any, List
 from dataclasses import dataclass
 import statistics
 
@@ -17,6 +17,7 @@ import statistics
 @dataclass
 class GasRecommendation:
     """Gas price recommendation."""
+
     priority: str  # slow, standard, fast, instant
     max_fee: int  # in wei
     priority_fee: int  # in wei
@@ -27,6 +28,7 @@ class GasRecommendation:
 @dataclass
 class GasDistribution:
     """Gas price distribution analysis."""
+
     min_gwei: float
     max_gwei: float
     mean_gwei: float
@@ -46,11 +48,7 @@ class GasAnalyzer:
         """Initialize gas analyzer."""
         self.verbose = verbose
 
-    def analyze_pending_gas(
-        self,
-        pending_txs: List[Any],
-        base_fee: int = None
-    ) -> GasDistribution:
+    def analyze_pending_gas(self, pending_txs: List[Any], base_fee: int = None) -> GasDistribution:
         """Analyze gas price distribution in pending transactions.
 
         Args:
@@ -110,10 +108,7 @@ class GasAnalyzer:
         )
 
     def recommend_gas(
-        self,
-        distribution: GasDistribution = None,
-        base_fee: int = None,
-        priority: str = "standard"
+        self, distribution: GasDistribution = None, base_fee: int = None, priority: str = "standard"
     ) -> GasRecommendation:
         """Get gas price recommendation.
 
@@ -176,11 +171,7 @@ class GasAnalyzer:
             confidence=confidence.get(priority, 0.5),
         )
 
-    def estimate_inclusion_time(
-        self,
-        gas_price: int,
-        distribution: GasDistribution
-    ) -> str:
+    def estimate_inclusion_time(self, gas_price: int, distribution: GasDistribution) -> str:
         """Estimate time to transaction inclusion.
 
         Args:
@@ -278,6 +269,7 @@ def main():
             self.gas_price = gas_price
 
     import random
+
     base = 30 * 10**9
     mock_txs = [MockTx(base + random.randint(-10, 30) * 10**9) for _ in range(100)]
 

@@ -116,11 +116,11 @@ def cmd_fees(args) -> int:
     fees.sort(key=lambda x: x.get("total30d", 0) or 0, reverse=True)
 
     if args.format == "json":
-        print(format_json(fees[:args.limit]))
+        print(format_json(fees[: args.limit]))
     elif args.format == "csv":
-        print(format_csv(fees[:args.limit], ["name", "total24h", "total30d", "revenue24h", "revenue30d"]))
+        print(format_csv(fees[: args.limit], ["name", "total24h", "total30d", "revenue24h", "revenue30d"]))
     else:
-        print(format_fees_table(fees[:args.limit]))
+        print(format_fees_table(fees[: args.limit]))
 
     return 0
 
@@ -146,12 +146,13 @@ def cmd_dex(args) -> int:
     volumes.sort(key=lambda x: x.get("total24h", 0) or 0, reverse=True)
 
     if args.format == "json":
-        print(format_json(volumes[:args.limit]))
+        print(format_json(volumes[: args.limit]))
     else:
         from formatters import format_usd
+
         print("\nDEX 24h Volumes")
         print("=" * 60)
-        for i, d in enumerate(volumes[:args.limit], 1):
+        for i, d in enumerate(volumes[: args.limit], 1):
             name = d.get("displayName", d.get("name", "Unknown"))
             vol = d.get("total24h", 0) or 0
             print(f"{i}. {name}: {format_usd(vol)}")
@@ -230,18 +231,19 @@ def cmd_yields(args) -> int:
         pools = [p for p in pools if (p.get("tvlUsd", 0) or 0) >= args.min_tvl]
 
     if args.format == "json":
-        print(format_json(pools[:args.limit]))
+        print(format_json(pools[: args.limit]))
     else:
         from formatters import format_usd
+
         print(f"\nTop Yields{' on ' + args.chain if args.chain else ''}")
         print("=" * 80)
         print(f"{'Pool':<30} {'APY':<12} {'TVL':<14} {'Chain':<12}")
         print("-" * 80)
-        for p in pools[:args.limit]:
+        for p in pools[: args.limit]:
             name = f"{p.get('project', '?')}: {p.get('symbol', '?')}"[:28]
             apy = f"{p.get('apy', 0):.2f}%"
-            tvl = format_usd(p.get('tvlUsd', 0) or 0)
-            chain = p.get('chain', '?')[:10]
+            tvl = format_usd(p.get("tvlUsd", 0) or 0)
+            chain = p.get("chain", "?")[:10]
             print(f"{name:<30} {apy:<12} {tvl:<14} {chain:<12}")
 
     return 0
@@ -264,12 +266,13 @@ def cmd_stables(args) -> int:
     stables.sort(key=lambda x: x.get("circulating", {}).get("peggedUSD", 0) or 0, reverse=True)
 
     if args.format == "json":
-        print(format_json(stables[:args.limit]))
+        print(format_json(stables[: args.limit]))
     else:
         from formatters import format_usd
+
         print("\nStablecoin Market Caps")
         print("=" * 70)
-        for i, s in enumerate(stables[:args.limit], 1):
+        for i, s in enumerate(stables[: args.limit], 1):
             name = s.get("name", "Unknown")
             mcap = s.get("circulating", {}).get("peggedUSD", 0) or 0
             price = s.get("price", 1.0) or 1.0
@@ -293,7 +296,7 @@ Examples:
   %(prog)s trends                          # Trending protocols
   %(prog)s yields --min-tvl 1000000        # Top yields with >$1M TVL
   %(prog)s stables                         # Stablecoin market caps
-        """
+        """,
     )
 
     parser.add_argument("--format", "-f", choices=["table", "json", "csv"], default="table")
@@ -362,6 +365,7 @@ Examples:
         print(f"Error: {e}", file=sys.stderr)
         if args.verbose:
             import traceback
+
             traceback.print_exc()
         return 1
 

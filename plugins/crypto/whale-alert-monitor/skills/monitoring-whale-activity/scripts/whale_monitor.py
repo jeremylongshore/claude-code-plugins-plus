@@ -85,23 +85,27 @@ def cmd_flows(args):
         from_label = labeler.label_wallet(tx.from_address, tx.blockchain)
 
         if to_label.entity_type == "exchange":
-            inflows.append({
-                "tx_hash": tx.tx_hash,
-                "amount": tx.amount,
-                "amount_usd": tx.amount_usd,
-                "symbol": tx.symbol,
-                "exchange": to_label.name,
-                "from": from_label.name if from_label.entity_type != "unknown" else tx.from_address[:16],
-            })
+            inflows.append(
+                {
+                    "tx_hash": tx.tx_hash,
+                    "amount": tx.amount,
+                    "amount_usd": tx.amount_usd,
+                    "symbol": tx.symbol,
+                    "exchange": to_label.name,
+                    "from": from_label.name if from_label.entity_type != "unknown" else tx.from_address[:16],
+                }
+            )
         elif from_label.entity_type == "exchange":
-            outflows.append({
-                "tx_hash": tx.tx_hash,
-                "amount": tx.amount,
-                "amount_usd": tx.amount_usd,
-                "symbol": tx.symbol,
-                "exchange": from_label.name,
-                "to": to_label.name if to_label.entity_type != "unknown" else tx.to_address[:16],
-            })
+            outflows.append(
+                {
+                    "tx_hash": tx.tx_hash,
+                    "amount": tx.amount,
+                    "amount_usd": tx.amount_usd,
+                    "symbol": tx.symbol,
+                    "exchange": from_label.name,
+                    "to": to_label.name if to_label.entity_type != "unknown" else tx.to_address[:16],
+                }
+            )
 
     if args.format == "json":
         print(format_json({"inflows": inflows, "outflows": outflows}))
@@ -173,8 +177,7 @@ def cmd_track(args):
     # Filter for this address
     addr_lower = args.address.lower()
     matching = [
-        tx for tx in transactions
-        if tx.from_address.lower() == addr_lower or tx.to_address.lower() == addr_lower
+        tx for tx in transactions if tx.from_address.lower() == addr_lower or tx.to_address.lower() == addr_lower
     ]
 
     if not matching:
@@ -240,8 +243,8 @@ def cmd_status(args):
         print(f"Rate Limit Remaining: {status['rate_limit_remaining']}")
 
     print("\nConfiguration:")
-    print(f"  Cache TTL: 60 seconds")
-    print(f"  Default Min Value: $500,000")
+    print("  Cache TTL: 60 seconds")
+    print("  Default Min Value: $500,000")
 
 
 def main():
@@ -260,30 +263,25 @@ Examples:
   %(prog)s track 0x123...                  Track specific wallet
   %(prog)s labels --type exchange          List known exchange wallets
   %(prog)s status                          Show API status
-        """
+        """,
     )
 
     parser.add_argument("-v", "--verbose", action="store_true", help="Verbose output")
-    parser.add_argument("--format", choices=["table", "json", "alert"], default="table",
-                        help="Output format")
+    parser.add_argument("--format", choices=["table", "json", "alert"], default="table", help="Output format")
 
     subparsers = parser.add_subparsers(dest="command", help="Command to run")
 
     # recent command
     recent_parser = subparsers.add_parser("recent", help="Show recent whale transactions")
     recent_parser.add_argument("--chain", help="Filter by blockchain (ethereum, bitcoin, etc.)")
-    recent_parser.add_argument("--min-value", type=int, default=500000,
-                               help="Minimum USD value (default: 500000)")
-    recent_parser.add_argument("--limit", type=int, default=20,
-                               help="Max transactions to show (default: 20)")
-    recent_parser.add_argument("--addresses", action="store_true",
-                               help="Show full addresses instead of labels")
+    recent_parser.add_argument("--min-value", type=int, default=500000, help="Minimum USD value (default: 500000)")
+    recent_parser.add_argument("--limit", type=int, default=20, help="Max transactions to show (default: 20)")
+    recent_parser.add_argument("--addresses", action="store_true", help="Show full addresses instead of labels")
 
     # flows command
     flows_parser = subparsers.add_parser("flows", help="Analyze exchange inflows/outflows")
     flows_parser.add_argument("--chain", help="Filter by blockchain")
-    flows_parser.add_argument("--min-value", type=int, default=500000,
-                              help="Minimum USD value")
+    flows_parser.add_argument("--min-value", type=int, default=500000, help="Minimum USD value")
 
     # watchlist command
     subparsers.add_parser("watchlist", help="Show your watchlist")
@@ -303,14 +301,14 @@ Examples:
     track_parser = subparsers.add_parser("track", help="Track specific wallet activity")
     track_parser.add_argument("address", help="Wallet address to track")
     track_parser.add_argument("--chain", default="ethereum", help="Blockchain network")
-    track_parser.add_argument("--min-value", type=int, default=100000,
-                              help="Minimum USD value")
+    track_parser.add_argument("--min-value", type=int, default=100000, help="Minimum USD value")
 
     # labels command
     labels_parser = subparsers.add_parser("labels", help="Search or list known wallet labels")
     labels_parser.add_argument("--query", help="Search query")
-    labels_parser.add_argument("--type", choices=["exchange", "protocol", "fund", "bridge"],
-                               help="Filter by entity type")
+    labels_parser.add_argument(
+        "--type", choices=["exchange", "protocol", "fund", "bridge"], help="Filter by entity type"
+    )
 
     # status command
     subparsers.add_parser("status", help="Show API status")
@@ -345,6 +343,7 @@ Examples:
         print(f"Error: {e}")
         if args.verbose:
             import traceback
+
             traceback.print_exc()
         sys.exit(1)
 

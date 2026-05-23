@@ -13,7 +13,7 @@ import json
 import csv
 import io
 from datetime import datetime
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 
 
 class YieldFormatter:
@@ -23,12 +23,7 @@ class YieldFormatter:
         """Initialize formatter."""
         self.timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")
 
-    def format(
-        self,
-        pools: List[Dict[str, Any]],
-        format_type: str = "table",
-        detailed: bool = False
-    ) -> str:
+    def format(self, pools: List[Dict[str, Any]], format_type: str = "table", detailed: bool = False) -> str:
         """Format pools for output.
 
         Args:
@@ -90,11 +85,11 @@ class YieldFormatter:
 
             # Format TVL
             if tvl >= 1e9:
-                tvl_str = f"${tvl/1e9:.1f}B"
+                tvl_str = f"${tvl / 1e9:.1f}B"
             elif tvl >= 1e6:
-                tvl_str = f"${tvl/1e6:.0f}M"
+                tvl_str = f"${tvl / 1e6:.0f}M"
             elif tvl >= 1e3:
-                tvl_str = f"${tvl/1e3:.0f}K"
+                tvl_str = f"${tvl / 1e3:.0f}K"
             else:
                 tvl_str = f"${tvl:.0f}"
 
@@ -146,11 +141,7 @@ class YieldFormatter:
         Returns:
             JSON string
         """
-        output = {
-            "timestamp": self.timestamp,
-            "count": len(pools),
-            "pools": []
-        }
+        output = {"timestamp": self.timestamp, "count": len(pools), "pools": []}
 
         for pool in pools:
             # Clean pool data for JSON output
@@ -192,39 +183,43 @@ class YieldFormatter:
         writer = csv.writer(output)
 
         # Header
-        writer.writerow([
-            "Protocol",
-            "Pool",
-            "Symbol",
-            "Chain",
-            "TVL (USD)",
-            "Base APY",
-            "Reward APY",
-            "Total APY",
-            "Risk Score",
-            "Risk Level",
-            "IL Risk",
-            "Audited",
-            "Reward Tokens",
-        ])
+        writer.writerow(
+            [
+                "Protocol",
+                "Pool",
+                "Symbol",
+                "Chain",
+                "TVL (USD)",
+                "Base APY",
+                "Reward APY",
+                "Total APY",
+                "Risk Score",
+                "Risk Level",
+                "IL Risk",
+                "Audited",
+                "Reward Tokens",
+            ]
+        )
 
         # Data rows
         for pool in pools:
-            writer.writerow([
-                pool.get("project", ""),
-                pool.get("pool", ""),
-                pool.get("symbol", ""),
-                pool.get("chain", ""),
-                pool.get("tvlUsd", 0),
-                pool.get("apyBase") or pool.get("base_apy") or 0,
-                pool.get("apyReward") or pool.get("reward_apy") or 0,
-                pool.get("apy") or pool.get("total_apy") or 0,
-                pool.get("risk_score", ""),
-                pool.get("risk_level", ""),
-                pool.get("il_risk", ""),
-                "Yes" if pool.get("audited") else "No",
-                ", ".join(t for t in (pool.get("rewardTokens") or []) if t),
-            ])
+            writer.writerow(
+                [
+                    pool.get("project", ""),
+                    pool.get("pool", ""),
+                    pool.get("symbol", ""),
+                    pool.get("chain", ""),
+                    pool.get("tvlUsd", 0),
+                    pool.get("apyBase") or pool.get("base_apy") or 0,
+                    pool.get("apyReward") or pool.get("reward_apy") or 0,
+                    pool.get("apy") or pool.get("total_apy") or 0,
+                    pool.get("risk_score", ""),
+                    pool.get("risk_level", ""),
+                    pool.get("il_risk", ""),
+                    "Yes" if pool.get("audited") else "No",
+                    ", ".join(t for t in (pool.get("rewardTokens") or []) if t),
+                ]
+            )
 
         return output.getvalue()
 
@@ -255,9 +250,9 @@ class YieldFormatter:
         # TVL
         tvl = pool.get("tvlUsd", 0)
         if tvl >= 1e9:
-            tvl_str = f"${tvl/1e9:.2f}B"
+            tvl_str = f"${tvl / 1e9:.2f}B"
         elif tvl >= 1e6:
-            tvl_str = f"${tvl/1e6:.2f}M"
+            tvl_str = f"${tvl / 1e6:.2f}M"
         else:
             tvl_str = f"${tvl:,.0f}"
         lines.append(f"  TVL:          {tvl_str}")
@@ -356,11 +351,11 @@ class YieldFormatter:
 
             # Format TVL
             if tvl >= 1e9:
-                tvl_str = f"${tvl/1e9:.1f}B"
+                tvl_str = f"${tvl / 1e9:.1f}B"
             elif tvl >= 1e6:
-                tvl_str = f"${tvl/1e6:.0f}M"
+                tvl_str = f"${tvl / 1e6:.0f}M"
             else:
-                tvl_str = f"${tvl/1e3:.0f}K"
+                tvl_str = f"${tvl / 1e3:.0f}K"
 
             # Markers for best values
             apy_mark = " ★" if apy == max_apy else ""

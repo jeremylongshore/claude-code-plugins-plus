@@ -25,7 +25,9 @@ Exit codes:
 """
 
 from __future__ import annotations
-import argparse, csv, sys
+import argparse
+import csv
+import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -46,8 +48,9 @@ def main() -> int:
     ap.add_argument("--target-window-seconds", type=float, default=120.0)
     ap.add_argument("--output", required=True, type=Path)
     ap.add_argument("--start-at", help="ISO timestamp to start the schedule (default: now)")
-    ap.add_argument("--max-batch", type=int, default=200,
-                    help="if N > max-batch, exit 3 (caller should spill to queue)")
+    ap.add_argument(
+        "--max-batch", type=int, default=200, help="if N > max-batch, exit 3 (caller should spill to queue)"
+    )
     args = ap.parse_args()
 
     if not args.input.exists():
@@ -68,7 +71,7 @@ def main() -> int:
             count = int(row.get("request_count") or 1)
             endpoint = row.get("endpoint") or "default"
         except Exception as e:
-            print(f"row {i+2}: bad value: {e}", file=sys.stderr)
+            print(f"row {i + 2}: bad value: {e}", file=sys.stderr)
             return 2
         for _ in range(count):
             flattened.append((endpoint,))

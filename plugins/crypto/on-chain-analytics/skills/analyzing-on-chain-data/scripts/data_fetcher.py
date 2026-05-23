@@ -28,6 +28,7 @@ COINGECKO_BASE = "https://api.coingecko.com/api/v3"
 @dataclass
 class ProtocolData:
     """Protocol metrics."""
+
     name: str
     slug: str
     tvl: float
@@ -107,18 +108,20 @@ class DataFetcher:
 
         protocols = []
         for p in data[:limit]:
-            protocols.append(ProtocolData(
-                name=p.get("name", "Unknown"),
-                slug=p.get("slug", ""),
-                tvl=p.get("tvl", 0),
-                tvl_change_24h=p.get("change_1d", 0) or 0,
-                tvl_change_7d=p.get("change_7d", 0) or 0,
-                chains=p.get("chains", []),
-                category=p.get("category", "Unknown"),
-                token=p.get("symbol"),
-                mcap=p.get("mcap"),
-                fdv=p.get("fdv"),
-            ))
+            protocols.append(
+                ProtocolData(
+                    name=p.get("name", "Unknown"),
+                    slug=p.get("slug", ""),
+                    tvl=p.get("tvl", 0),
+                    tvl_change_24h=p.get("change_1d", 0) or 0,
+                    tvl_change_7d=p.get("change_7d", 0) or 0,
+                    chains=p.get("chains", []),
+                    category=p.get("category", "Unknown"),
+                    token=p.get("symbol"),
+                    mcap=p.get("mcap"),
+                    fdv=p.get("fdv"),
+                )
+            )
 
         return protocols
 

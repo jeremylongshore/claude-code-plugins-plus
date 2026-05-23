@@ -12,17 +12,16 @@ License: MIT
 
 import json
 import time
-import hashlib
-from datetime import datetime
 from pathlib import Path
 from typing import Optional, Dict, Any, List
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass
 import threading
 
 
 @dataclass
 class CacheEntry:
     """Represents a cached item with metadata."""
+
     data: Any
     timestamp: float
     ttl: int
@@ -40,22 +39,12 @@ class CacheEntry:
 
     def to_dict(self) -> dict:
         """Convert to dictionary for JSON serialization."""
-        return {
-            "data": self.data,
-            "timestamp": self.timestamp,
-            "ttl": self.ttl,
-            "key": self.key
-        }
+        return {"data": self.data, "timestamp": self.timestamp, "ttl": self.ttl, "key": self.key}
 
     @classmethod
     def from_dict(cls, d: dict) -> "CacheEntry":
         """Create CacheEntry from dictionary."""
-        return cls(
-            data=d["data"],
-            timestamp=d["timestamp"],
-            ttl=d["ttl"],
-            key=d["key"]
-        )
+        return cls(data=d["data"], timestamp=d["timestamp"], ttl=d["ttl"], key=d["key"])
 
 
 class CacheManager:
@@ -70,12 +59,7 @@ class CacheManager:
     - Stale data access for fallback scenarios
     """
 
-    def __init__(
-        self,
-        cache_dir: Optional[Path] = None,
-        spot_ttl: int = 30,
-        historical_ttl: int = 3600
-    ):
+    def __init__(self, cache_dir: Optional[Path] = None, spot_ttl: int = 30, historical_ttl: int = 3600):
         """
         Initialize the cache manager.
 
@@ -169,12 +153,7 @@ class CacheManager:
         key_str = ":".join([prefix] + [str(p).lower() for p in parts])
         return key_str
 
-    def get_spot_price(
-        self,
-        symbol: str,
-        currency: str,
-        allow_stale: bool = False
-    ) -> Optional[dict]:
+    def get_spot_price(self, symbol: str, currency: str, allow_stale: bool = False) -> Optional[dict]:
         """
         Get cached spot price.
 
@@ -210,12 +189,7 @@ class CacheManager:
                 data["_cache_age"] = entry.age
             return data
 
-    def set_spot_price(
-        self,
-        symbol: str,
-        currency: str,
-        data: dict
-    ) -> None:
+    def set_spot_price(self, symbol: str, currency: str, data: dict) -> None:
         """
         Cache spot price data.
 
@@ -227,19 +201,10 @@ class CacheManager:
         key = self._make_key("spot", symbol, currency)
 
         with self._lock:
-            self._memory_cache[key] = CacheEntry(
-                data=data,
-                timestamp=time.time(),
-                ttl=self.spot_ttl,
-                key=key
-            )
+            self._memory_cache[key] = CacheEntry(data=data, timestamp=time.time(), ttl=self.spot_ttl, key=key)
             self._save_cache()
 
-    def get_historical(
-        self,
-        cache_key: str,
-        allow_stale: bool = False
-    ) -> Optional[List[dict]]:
+    def get_historical(self, cache_key: str, allow_stale: bool = False) -> Optional[List[dict]]:
         """
         Get cached historical data.
 
@@ -265,11 +230,7 @@ class CacheManager:
 
             return entry.data
 
-    def set_historical(
-        self,
-        cache_key: str,
-        data: List[dict]
-    ) -> None:
+    def set_historical(self, cache_key: str, data: List[dict]) -> None:
         """
         Cache historical data.
 
@@ -280,12 +241,7 @@ class CacheManager:
         key = self._make_key("hist", cache_key)
 
         with self._lock:
-            self._memory_cache[key] = CacheEntry(
-                data=data,
-                timestamp=time.time(),
-                ttl=self.historical_ttl,
-                key=key
-            )
+            self._memory_cache[key] = CacheEntry(data=data, timestamp=time.time(), ttl=self.historical_ttl, key=key)
             self._save_cache()
 
     def invalidate(self, pattern: Optional[str] = None) -> int:
@@ -304,10 +260,7 @@ class CacheManager:
                 self._memory_cache.clear()
             else:
                 pattern_lower = pattern.lower()
-                keys_to_remove = [
-                    k for k in self._memory_cache
-                    if pattern_lower in k.lower()
-                ]
+                keys_to_remove = [k for k in self._memory_cache if pattern_lower in k.lower()]
                 count = len(keys_to_remove)
                 for key in keys_to_remove:
                     del self._memory_cache[key]
@@ -334,10 +287,7 @@ class CacheManager:
             Number of entries removed
         """
         with self._lock:
-            expired_keys = [
-                k for k, v in self._memory_cache.items()
-                if v.is_expired
-            ]
+            expired_keys = [k for k, v in self._memory_cache.items() if v.is_expired]
             for key in expired_keys:
                 del self._memory_cache[key]
 
@@ -354,14 +304,8 @@ class CacheManager:
             Dictionary with cache stats
         """
         with self._lock:
-            spot_entries = [
-                e for k, e in self._memory_cache.items()
-                if k.startswith("spot:")
-            ]
-            hist_entries = [
-                e for k, e in self._memory_cache.items()
-                if k.startswith("hist:")
-            ]
+            spot_entries = [e for k, e in self._memory_cache.items() if k.startswith("spot:")]
+            hist_entries = [e for k, e in self._memory_cache.items() if k.startswith("hist:")]
 
             spot_expired = sum(1 for e in spot_entries if e.is_expired)
             hist_expired = sum(1 for e in hist_entries if e.is_expired)
@@ -374,7 +318,7 @@ class CacheManager:
                 "historical_expired": hist_expired,
                 "cache_dir": str(self.cache_dir),
                 "spot_ttl": self.spot_ttl,
-                "historical_ttl": self.historical_ttl
+                "historical_ttl": self.historical_ttl,
             }
 
     def get_all_symbols(self) -> List[str]:

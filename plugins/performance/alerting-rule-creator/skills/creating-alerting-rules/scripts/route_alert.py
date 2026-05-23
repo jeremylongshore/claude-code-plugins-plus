@@ -20,32 +20,20 @@ DEFAULT_ROUTING = {
         "critical": {"channels": ["pagerduty", "slack"], "priority": 1},
         "high": {"channels": ["slack", "email"], "priority": 2},
         "medium": {"channels": ["slack"], "priority": 3},
-        "low": {"channels": ["log"], "priority": 4}
+        "low": {"channels": ["log"], "priority": 4},
     },
     "category_overrides": {
         "security": {"channels": ["pagerduty", "slack", "email"], "priority": 1},
         "performance": {"channels": ["slack", "log"], "priority": 3},
         "availability": {"channels": ["pagerduty", "slack"], "priority": 1},
-        "cost": {"channels": ["email", "log"], "priority": 4}
+        "cost": {"channels": ["email", "log"], "priority": 4},
     },
     "channel_config": {
-        "slack": {
-            "webhook_env": "SLACK_WEBHOOK_URL",
-            "enabled": True
-        },
-        "pagerduty": {
-            "key_env": "PAGERDUTY_INTEGRATION_KEY",
-            "enabled": True
-        },
-        "email": {
-            "recipients_env": "ALERT_EMAIL_RECIPIENTS",
-            "enabled": True
-        },
-        "log": {
-            "file": "/var/log/alerts.log",
-            "enabled": True
-        }
-    }
+        "slack": {"webhook_env": "SLACK_WEBHOOK_URL", "enabled": True},
+        "pagerduty": {"key_env": "PAGERDUTY_INTEGRATION_KEY", "enabled": True},
+        "email": {"recipients_env": "ALERT_EMAIL_RECIPIENTS", "enabled": True},
+        "log": {"file": "/var/log/alerts.log", "enabled": True},
+    },
 }
 
 
@@ -69,7 +57,7 @@ def load_routing_config(filepath: Optional[str] = None) -> Dict[str, Any]:
             if not path.exists():
                 raise FileNotFoundError(f"Routing config file not found: {filepath}")
 
-            with open(path, 'r') as f:
+            with open(path, "r") as f:
                 config = json.load(f)
 
             # Merge with defaults
@@ -84,11 +72,7 @@ def load_routing_config(filepath: Optional[str] = None) -> Dict[str, Any]:
     return DEFAULT_ROUTING
 
 
-def determine_channels(
-    severity: str,
-    category: str,
-    config: Dict[str, Any]
-) -> List[str]:
+def determine_channels(severity: str, category: str, config: Dict[str, Any]) -> List[str]:
     """
     Determine routing channels based on severity and category.
 
@@ -101,7 +85,7 @@ def determine_channels(
         List of channels to route alert to
     """
     channels = set()
-    effective_priority = float('inf')
+    effective_priority = float("inf")
 
     # Check category overrides first
     if category in config.get("category_overrides", {}):
@@ -113,7 +97,7 @@ def determine_channels(
     if severity in config.get("severity_levels", {}):
         severity_config = config["severity_levels"][severity]
         severity_channels = severity_config.get("channels", [])
-        severity_priority = severity_config.get("priority", float('inf'))
+        severity_priority = severity_config.get("priority", float("inf"))
 
         # If severity has higher priority, use its channels
         if severity_priority < effective_priority:
@@ -145,19 +129,15 @@ def validate_alert(alert: Dict[str, Any]) -> bool:
     valid_severities = ["critical", "high", "medium", "low"]
     if alert["severity"] not in valid_severities:
         print(
-            f"Error: Invalid severity '{alert['severity']}'. "
-            f"Must be one of: {', '.join(valid_severities)}",
-            file=sys.stderr
+            f"Error: Invalid severity '{alert['severity']}'. Must be one of: {', '.join(valid_severities)}",
+            file=sys.stderr,
         )
         return False
 
     return True
 
 
-def format_alert_message(
-    alert: Dict[str, Any],
-    channels: List[str]
-) -> Dict[str, str]:
+def format_alert_message(alert: Dict[str, Any], channels: List[str]) -> Dict[str, str]:
     """
     Format alert message for different channels.
 
@@ -173,11 +153,11 @@ def format_alert_message(
     # Standard message
     timestamp = alert.get("timestamp", datetime.now().isoformat())
     base_message = f"""
-Alert: {alert['name']}
-Severity: {alert['severity'].upper()}
-Category: {alert.get('category', 'uncategorized')}
+Alert: {alert["name"]}
+Severity: {alert["severity"].upper()}
+Category: {alert.get("category", "uncategorized")}
 Timestamp: {timestamp}
-Message: {alert['message']}
+Message: {alert["message"]}
 """
 
     if alert.get("details"):
@@ -198,10 +178,7 @@ Message: {alert['message']}
 
 
 def route_alert(
-    alert: Dict[str, Any],
-    config: Dict[str, Any],
-    dry_run: bool = False,
-    verbose: bool = False
+    alert: Dict[str, Any], config: Dict[str, Any], dry_run: bool = False, verbose: bool = False
 ) -> Dict[str, Any]:
     """
     Route an alert to appropriate channels.
@@ -223,15 +200,11 @@ def route_alert(
         "channels": [],
         "messages": {},
         "dry_run": dry_run,
-        "errors": []
+        "errors": [],
     }
 
     # Determine channels
-    channels = determine_channels(
-        alert["severity"],
-        alert.get("category", "uncategorized"),
-        config
-    )
+    channels = determine_channels(alert["severity"], alert.get("category", "uncategorized"), config)
 
     if verbose:
         print(f"Routing to channels: {', '.join(channels)}", file=sys.stderr)
@@ -239,10 +212,7 @@ def route_alert(
     result["channels"] = channels
 
     # Filter enabled channels
-    enabled_channels = [
-        ch for ch in channels
-        if config.get("channel_config", {}).get(ch, {}).get("enabled", True)
-    ]
+    enabled_channels = [ch for ch in channels if config.get("channel_config", {}).get(ch, {}).get("enabled", True)]
 
     if not enabled_channels:
         result["errors"].append("No enabled channels available for routing")
@@ -278,50 +248,20 @@ Examples:
   %(prog)s --alert alert.json --dry-run --verbose
   %(prog)s --name "CPU High" --severity critical --category performance \\
           --message "CPU usage exceeded 90%%" --output result.json
-        """
+        """,
     )
 
+    parser.add_argument("--alert", help="Path to JSON file containing alert data")
+    parser.add_argument("--name", help="Alert name")
     parser.add_argument(
-        "--alert",
-        help="Path to JSON file containing alert data"
+        "--severity", default="high", choices=["critical", "high", "medium", "low"], help="Alert severity level"
     )
-    parser.add_argument(
-        "--name",
-        help="Alert name"
-    )
-    parser.add_argument(
-        "--severity",
-        default="high",
-        choices=["critical", "high", "medium", "low"],
-        help="Alert severity level"
-    )
-    parser.add_argument(
-        "--category",
-        default="uncategorized",
-        help="Alert category"
-    )
-    parser.add_argument(
-        "--message",
-        help="Alert message"
-    )
-    parser.add_argument(
-        "--config",
-        help="Path to routing configuration JSON"
-    )
-    parser.add_argument(
-        "--output",
-        help="Output file for routing result (JSON)"
-    )
-    parser.add_argument(
-        "--dry-run",
-        action="store_true",
-        help="Show what would be done without actually routing"
-    )
-    parser.add_argument(
-        "--verbose",
-        action="store_true",
-        help="Print detailed output"
-    )
+    parser.add_argument("--category", default="uncategorized", help="Alert category")
+    parser.add_argument("--message", help="Alert message")
+    parser.add_argument("--config", help="Path to routing configuration JSON")
+    parser.add_argument("--output", help="Output file for routing result (JSON)")
+    parser.add_argument("--dry-run", action="store_true", help="Show what would be done without actually routing")
+    parser.add_argument("--verbose", action="store_true", help="Print detailed output")
 
     args = parser.parse_args()
 
@@ -333,7 +273,7 @@ Examples:
 
     if args.alert:
         try:
-            with open(args.alert, 'r') as f:
+            with open(args.alert, "r") as f:
                 alert = json.load(f)
         except FileNotFoundError:
             print(f"Error: Alert file not found: {args.alert}", file=sys.stderr)
@@ -342,12 +282,7 @@ Examples:
             print(f"Error: Invalid JSON in {args.alert}: {e}", file=sys.stderr)
             sys.exit(1)
     elif args.name and args.message:
-        alert = {
-            "name": args.name,
-            "severity": args.severity,
-            "category": args.category,
-            "message": args.message
-        }
+        alert = {"name": args.name, "severity": args.severity, "category": args.category, "message": args.message}
     else:
         parser.error("Either --alert file or --name and --message are required")
 
@@ -360,7 +295,7 @@ Examples:
         result = route_alert(alert, config, args.dry_run, args.verbose)
 
         # Print result summary
-        print(f"\nAlert Routing Result:")
+        print("\nAlert Routing Result:")
         print(f"  Alert: {result['alert']}")
         print(f"  Severity: {result['severity']}")
         print(f"  Category: {result['category']}")
@@ -372,7 +307,7 @@ Examples:
 
         # Save JSON output if requested
         if args.output:
-            with open(args.output, 'w') as f:
+            with open(args.output, "w") as f:
                 json.dump(result, f, indent=2)
 
             if args.verbose:

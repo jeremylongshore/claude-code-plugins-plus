@@ -18,6 +18,7 @@ from approval_scanner import ApprovalSummary
 @dataclass
 class RiskFactor:
     """Individual risk factor."""
+
     category: str
     severity: str  # critical, high, medium, low, info
     description: str
@@ -29,6 +30,7 @@ class RiskFactor:
 @dataclass
 class Recommendation:
     """Security recommendation."""
+
     priority: int  # 1 = highest
     action: str
     reason: str
@@ -38,6 +40,7 @@ class Recommendation:
 @dataclass
 class SecurityScore:
     """Overall security score."""
+
     total_score: int  # 0-100 (higher = safer)
     approval_score: int
     interaction_score: int
@@ -60,23 +63,20 @@ class RiskScorer:
 
     # Risk factor impacts
     RISK_IMPACTS = {
-        "unlimited_unknown": -30,      # Unlimited approval to unknown contract
-        "approval_flagged": -25,       # Approval to flagged/scam contract
-        "interaction_scam": -20,       # Interaction with known scam
-        "many_unlimited": -15,         # >5 unlimited approvals
-        "unlimited_known": -5,         # Unlimited approval to known contract (lower risk)
-        "unknown_contract": -5,        # Interaction with unverified contract
-        "high_value_approval": -10,    # Approval for high-value token
+        "unlimited_unknown": -30,  # Unlimited approval to unknown contract
+        "approval_flagged": -25,  # Approval to flagged/scam contract
+        "interaction_scam": -20,  # Interaction with known scam
+        "many_unlimited": -15,  # >5 unlimited approvals
+        "unlimited_known": -5,  # Unlimited approval to known contract (lower risk)
+        "unknown_contract": -5,  # Interaction with unverified contract
+        "high_value_approval": -10,  # Approval for high-value token
     }
 
     def __init__(self):
         """Initialize risk scorer."""
         pass
 
-    def calculate_approval_risk(
-        self,
-        summary: ApprovalSummary
-    ) -> tuple[int, List[RiskFactor]]:
+    def calculate_approval_risk(self, summary: ApprovalSummary) -> tuple[int, List[RiskFactor]]:
         """Calculate risk score based on approvals.
 
         Args:
@@ -96,14 +96,16 @@ class RiskScorer:
                 if not approval.spender_name:
                     # Unknown spender - critical risk
                     score += self.RISK_IMPACTS["unlimited_unknown"]
-                    factors.append(RiskFactor(
-                        category="approvals",
-                        severity="critical",
-                        description=f"Unlimited approval to unknown contract",
-                        affected_items=[f"{approval.token_symbol} → {approval.spender[:20]}..."],
-                        mitigation="Revoke this approval if you don't recognize the spender",
-                        score_impact=self.RISK_IMPACTS["unlimited_unknown"],
-                    ))
+                    factors.append(
+                        RiskFactor(
+                            category="approvals",
+                            severity="critical",
+                            description="Unlimited approval to unknown contract",
+                            affected_items=[f"{approval.token_symbol} → {approval.spender[:20]}..."],
+                            mitigation="Revoke this approval if you don't recognize the spender",
+                            score_impact=self.RISK_IMPACTS["unlimited_unknown"],
+                        )
+                    )
                 else:
                     # Known spender - lower risk but unlimited approvals are still a concern
                     score += self.RISK_IMPACTS["unlimited_known"]
@@ -111,37 +113,38 @@ class RiskScorer:
         # Check for many unlimited approvals
         if len(unlimited) > 5:
             score += self.RISK_IMPACTS["many_unlimited"]
-            factors.append(RiskFactor(
-                category="approvals",
-                severity="medium",
-                description=f"Many unlimited approvals ({len(unlimited)})",
-                affected_items=[f"{a.token_symbol} → {a.spender_name or a.spender[:15]}..." for a in unlimited[:5]],
-                mitigation="Review and revoke unnecessary approvals",
-                score_impact=self.RISK_IMPACTS["many_unlimited"],
-            ))
+            factors.append(
+                RiskFactor(
+                    category="approvals",
+                    severity="medium",
+                    description=f"Many unlimited approvals ({len(unlimited)})",
+                    affected_items=[f"{a.token_symbol} → {a.spender_name or a.spender[:15]}..." for a in unlimited[:5]],
+                    mitigation="Review and revoke unnecessary approvals",
+                    score_impact=self.RISK_IMPACTS["many_unlimited"],
+                )
+            )
 
         # Check risky approvals
         risky = [a for a in summary.approvals if a.is_risky]
         for approval in risky:
             score += self.RISK_IMPACTS["approval_flagged"]
-            factors.append(RiskFactor(
-                category="approvals",
-                severity="critical",
-                description=f"Approval to flagged contract: {approval.risk_reason or 'Unknown risk'}",
-                affected_items=[f"{approval.token_symbol} → {approval.spender[:20]}..."],
-                mitigation="IMMEDIATELY revoke this approval",
-                score_impact=self.RISK_IMPACTS["approval_flagged"],
-            ))
+            factors.append(
+                RiskFactor(
+                    category="approvals",
+                    severity="critical",
+                    description=f"Approval to flagged contract: {approval.risk_reason or 'Unknown risk'}",
+                    affected_items=[f"{approval.token_symbol} → {approval.spender[:20]}..."],
+                    mitigation="IMMEDIATELY revoke this approval",
+                    score_impact=self.RISK_IMPACTS["approval_flagged"],
+                )
+            )
 
         # Ensure score stays in bounds
         score = max(0, min(100, score))
 
         return score, factors
 
-    def calculate_interaction_risk(
-        self,
-        interactions: List[dict] = None
-    ) -> tuple[int, List[RiskFactor]]:
+    def calculate_interaction_risk(self, interactions: List[dict] = None) -> tuple[int, List[RiskFactor]]:
         """Calculate risk based on contract interactions.
 
         Args:
@@ -158,10 +161,7 @@ class RiskScorer:
 
         return score, factors
 
-    def calculate_pattern_risk(
-        self,
-        patterns: dict = None
-    ) -> tuple[int, List[RiskFactor]]:
+    def calculate_pattern_risk(self, patterns: dict = None) -> tuple[int, List[RiskFactor]]:
         """Calculate risk based on transaction patterns.
 
         Args:
@@ -179,10 +179,7 @@ class RiskScorer:
         return score, factors
 
     def get_total_score(
-        self,
-        approval_summary: ApprovalSummary,
-        interactions: List[dict] = None,
-        patterns: dict = None
+        self, approval_summary: ApprovalSummary, interactions: List[dict] = None, patterns: dict = None
     ) -> SecurityScore:
         """Calculate total security score.
 
@@ -201,10 +198,10 @@ class RiskScorer:
 
         # Weighted total
         total_score = int(
-            approval_score * self.WEIGHTS["approvals"] +
-            interaction_score * self.WEIGHTS["interactions"] +
-            pattern_score * self.WEIGHTS["patterns"] +
-            100 * self.WEIGHTS["age"]  # Age score placeholder
+            approval_score * self.WEIGHTS["approvals"]
+            + interaction_score * self.WEIGHTS["interactions"]
+            + pattern_score * self.WEIGHTS["patterns"]
+            + 100 * self.WEIGHTS["age"]  # Age score placeholder
         )
 
         # Combine factors
@@ -233,15 +230,13 @@ class RiskScorer:
             risk_level=risk_level,
             risk_factors=sorted(
                 all_factors,
-                key=lambda x: {"critical": 0, "high": 1, "medium": 2, "low": 3, "info": 4}.get(x.severity, 5)
+                key=lambda x: {"critical": 0, "high": 1, "medium": 2, "low": 3, "info": 4}.get(x.severity, 5),
             ),
             recommendations=recommendations,
         )
 
     def _generate_recommendations(
-        self,
-        factors: List[RiskFactor],
-        approval_summary: ApprovalSummary
+        self, factors: List[RiskFactor], approval_summary: ApprovalSummary
     ) -> List[Recommendation]:
         """Generate actionable recommendations.
 
@@ -257,44 +252,52 @@ class RiskScorer:
         # Check for critical/high severity factors
         critical_factors = [f for f in factors if f.severity in ["critical", "high"]]
         if critical_factors:
-            recommendations.append(Recommendation(
-                priority=1,
-                action="Revoke risky approvals immediately",
-                reason="Critical security risks detected in token approvals",
-                items=[f.affected_items[0] if f.affected_items else f.description for f in critical_factors[:3]],
-            ))
+            recommendations.append(
+                Recommendation(
+                    priority=1,
+                    action="Revoke risky approvals immediately",
+                    reason="Critical security risks detected in token approvals",
+                    items=[f.affected_items[0] if f.affected_items else f.description for f in critical_factors[:3]],
+                )
+            )
 
         # Check for many unlimited approvals
         unlimited = [a for a in approval_summary.approvals if a.is_unlimited]
         if len(unlimited) > 3:
-            recommendations.append(Recommendation(
-                priority=2,
-                action="Review and revoke unnecessary unlimited approvals",
-                reason=f"You have {len(unlimited)} unlimited approvals which increase your risk",
-                items=[f"{a.token_symbol} → {a.spender_name or a.spender[:15]}..." for a in unlimited[:5]],
-            ))
+            recommendations.append(
+                Recommendation(
+                    priority=2,
+                    action="Review and revoke unnecessary unlimited approvals",
+                    reason=f"You have {len(unlimited)} unlimited approvals which increase your risk",
+                    items=[f"{a.token_symbol} → {a.spender_name or a.spender[:15]}..." for a in unlimited[:5]],
+                )
+            )
 
         # Check for old approvals (would need block timestamp data)
         if approval_summary.total_approvals > 10:
-            recommendations.append(Recommendation(
-                priority=3,
-                action="Audit all approvals periodically",
-                reason=f"You have {approval_summary.total_approvals} active approvals",
-                items=["Use revoke.cash or similar tool to review"],
-            ))
+            recommendations.append(
+                Recommendation(
+                    priority=3,
+                    action="Audit all approvals periodically",
+                    reason=f"You have {approval_summary.total_approvals} active approvals",
+                    items=["Use revoke.cash or similar tool to review"],
+                )
+            )
 
         # General best practices
         if not recommendations:
-            recommendations.append(Recommendation(
-                priority=4,
-                action="Continue good security practices",
-                reason="No critical issues found, but stay vigilant",
-                items=[
-                    "Regularly review approvals",
-                    "Use hardware wallet for high-value assets",
-                    "Be cautious with new dApps",
-                ],
-            ))
+            recommendations.append(
+                Recommendation(
+                    priority=4,
+                    action="Continue good security practices",
+                    reason="No critical issues found, but stay vigilant",
+                    items=[
+                        "Regularly review approvals",
+                        "Use hardware wallet for high-value assets",
+                        "Be cautious with new dApps",
+                    ],
+                )
+            )
 
         return sorted(recommendations, key=lambda x: x.priority)
 
@@ -328,18 +331,18 @@ def main():
 
     print(f"\nSecurity Score: {score.total_score}/100")
     print(f"Risk Level: {scorer.get_risk_level_description(score.risk_level)}")
-    print(f"\nComponent Scores:")
+    print("\nComponent Scores:")
     print(f"  Approvals: {score.approval_score}/100")
     print(f"  Interactions: {score.interaction_score}/100")
     print(f"  Patterns: {score.pattern_score}/100")
 
     if score.risk_factors:
-        print(f"\nRisk Factors:")
+        print("\nRisk Factors:")
         for factor in score.risk_factors[:5]:
             print(f"  [{factor.severity.upper()}] {factor.description}")
 
     if score.recommendations:
-        print(f"\nRecommendations:")
+        print("\nRecommendations:")
         for rec in score.recommendations[:3]:
             print(f"  {rec.priority}. {rec.action}")
 

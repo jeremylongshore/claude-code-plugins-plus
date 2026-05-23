@@ -24,7 +24,7 @@ import os
 import tempfile
 import time
 import uuid
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
 
@@ -157,16 +157,15 @@ class LocationRouter:
                     headers={"Authorization": f"Bearer {token}"},
                 )
             if r.status_code != 200:
-                raise LocationVerificationError(
-                    f"GET /v4/locations failed status={r.status_code}"
-                )
+                raise LocationVerificationError(f"GET /v4/locations failed status={r.status_code}")
             scope = [loc["uid"] for loc in r.json().get("locations", [])]
             if location_uid not in scope:
                 raise LocationNotInScopeError(location_uid, scope)
             cred.verified_at = time.time()
 
-    def emit_audit(self, *, location_uid: str, endpoint: str, method: str,
-                   status: int, latency_ms: float, request_id: str) -> None:
+    def emit_audit(
+        self, *, location_uid: str, endpoint: str, method: str, status: int, latency_ms: float, request_id: str
+    ) -> None:
         cred = self._creds[location_uid]
         record = {
             "ts": time.time(),
@@ -307,6 +306,7 @@ def _load_refresh_token(path: str) -> str:
 try:
     from podium_auth import PodiumAuth  # type: ignore
 except Exception:
+
     class PodiumAuth:
         def __init__(self, client_id: str, client_secret: str, refresh_token: str):
             self.client_id = client_id
@@ -321,6 +321,7 @@ except Exception:
 try:
     from podium_rate_limit import TokenBucket  # type: ignore
 except Exception:
+
     class TokenBucket:
         def __init__(self, capacity: int, refill_per_second: float):
             self.capacity = capacity

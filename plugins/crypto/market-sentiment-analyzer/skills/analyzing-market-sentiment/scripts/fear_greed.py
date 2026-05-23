@@ -70,11 +70,7 @@ class FearGreedFetcher:
             if self.verbose:
                 print(f"Fetching Fear & Greed Index from {self.API_URL}", file=sys.stderr)
 
-            response = requests.get(
-                self.API_URL,
-                params={"limit": limit},
-                timeout=10
-            )
+            response = requests.get(self.API_URL, params={"limit": limit}, timeout=10)
             response.raise_for_status()
 
             data = response.json()
@@ -96,7 +92,7 @@ class FearGreedFetcher:
                 "classification": current.get("value_classification", "Neutral"),
                 "timestamp": self._parse_timestamp(current.get("timestamp")),
                 "time_until_update": current.get("time_until_update"),
-                "source": "alternative.me"
+                "source": "alternative.me",
             }
 
             # Add historical data if requested
@@ -105,7 +101,7 @@ class FearGreedFetcher:
                     {
                         "value": int(item.get("value", 50)),
                         "classification": item.get("value_classification", "Neutral"),
-                        "timestamp": self._parse_timestamp(item.get("timestamp"))
+                        "timestamp": self._parse_timestamp(item.get("timestamp")),
                     }
                     for item in data["data"][1:]
                 ]
@@ -144,11 +140,7 @@ class FearGreedFetcher:
             return []
 
         history = [
-            {
-                "value": result["value"],
-                "classification": result["classification"],
-                "timestamp": result["timestamp"]
-            }
+            {"value": result["value"], "classification": result["classification"], "timestamp": result["timestamp"]}
         ]
 
         if "history" in result:
@@ -199,10 +191,7 @@ class FearGreedFetcher:
     def _save_file_cache(self, data: Dict[str, Any]) -> None:
         """Save data to file cache."""
         try:
-            cache_data = {
-                "_cache_time": time.time(),
-                "data": data
-            }
+            cache_data = {"_cache_time": time.time(), "data": data}
             with open(self.CACHE_FILE, "w") as f:
                 json.dump(cache_data, f)
         except Exception:
@@ -243,7 +232,7 @@ class FearGreedFetcher:
             "timestamp": datetime.utcnow().isoformat() + "Z",
             "source": "fallback",
             "stale": True,
-            "stale_reason": "API unavailable, no cache available"
+            "stale_reason": "API unavailable, no cache available",
         }
 
 

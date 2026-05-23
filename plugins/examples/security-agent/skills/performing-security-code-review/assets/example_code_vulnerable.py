@@ -18,7 +18,7 @@ import os
 import subprocess
 import pickle
 import base64
-import sys
+
 
 def sql_injection_example(user_input):
     """
@@ -53,7 +53,7 @@ def xss_example(user_input):
     try:
         output = "<h1>Welcome, " + user_input + "!</h1>"
         # In a real application, this output would be rendered in a web page.
-        print(f"Generated HTML: {output}") # For demonstration purposes only
+        print(f"Generated HTML: {output}")  # For demonstration purposes only
         return output
     except Exception as e:
         print(f"Error in xss_example: {e}")
@@ -119,13 +119,13 @@ def buffer_overflow_example(data, buffer_size):
     """
     try:
         buffer = bytearray(buffer_size)
-        if len(data.encode('utf-8')) > buffer_size:
+        if len(data.encode("utf-8")) > buffer_size:
             print("Simulating Buffer Overflow: Data exceeds buffer size.")
             # Normally this would overwrite adjacent memory, but in Python,
             # this will raise an IndexError. We avoid the error by truncating.
-            buffer[:] = data.encode('utf-8')[:buffer_size]  # Truncate to buffer size
+            buffer[:] = data.encode("utf-8")[:buffer_size]  # Truncate to buffer size
         else:
-            buffer[:] = data.encode('utf-8')
+            buffer[:] = data.encode("utf-8")
         print(f"Buffer content: {buffer.decode('utf-8', 'ignore')}")
     except Exception as e:
         print(f"Error in buffer_overflow_example: {e}")
@@ -168,7 +168,7 @@ if __name__ == "__main__":
     with open("data/test.txt", "w") as f:
         f.write("This is a test file.")
 
-    path_traversal_example("../example_code_vulnerable.py") # Attempt to access this file
+    path_traversal_example("../example_code_vulnerable.py")  # Attempt to access this file
 
     print("\nCommand Injection Example:")
     command_injection_example("&& ls -l")
@@ -177,13 +177,14 @@ if __name__ == "__main__":
     buffer_overflow_example("A" * 100, 10)
 
     print("\nInsecure Deserialization Example:")
+
     # Create a malicious object and serialize it.
     class MaliciousClass:
         def __reduce__(self):
             return (os.system, ("rm -rf /",))  # DANGEROUS: Never do this in real code!
 
     malicious_object = MaliciousClass()
-    serialized_data = base64.b64encode(pickle.dumps(malicious_object)).decode('utf-8')
+    serialized_data = base64.b64encode(pickle.dumps(malicious_object)).decode("utf-8")
     print(f"Serialized data: {serialized_data}")
     # WARNING: Deserializing this will execute the 'rm -rf /' command (if permitted)
     # This line is commented out for safety.  UNCOMMENT AT YOUR OWN RISK AND ONLY IN A SAFE ENVIRONMENT.

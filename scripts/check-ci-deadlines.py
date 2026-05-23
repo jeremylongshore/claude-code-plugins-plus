@@ -50,7 +50,9 @@ def scan_workflows(workflow_dir: Path) -> list[tuple[Path, int, dt.date, str]]:
             try:
                 d = dt.date.fromisoformat(m.group(1))
             except ValueError:
-                print(f"::error file={f},line={line_no}::Invalid REPORT-ONLY-UNTIL date '{m.group(1)}' (expected YYYY-MM-DD)")
+                print(
+                    f"::error file={f},line={line_no}::Invalid REPORT-ONLY-UNTIL date '{m.group(1)}' (expected YYYY-MM-DD)"
+                )
                 sys.exit(2)
             note = (m.group(2) or "").strip()
             out.append((f, line_no, d, note))
@@ -127,7 +129,9 @@ def main() -> int:
             days_over = (today - d).days
             extra = f" — {note}" if note else ""
             print(f"  ✗  {f}:{ln}  {d.isoformat()}  ({days_over} day(s) overdue){extra}")
-            print(f"     ::error file={f},line={ln}::Report-only deadline lapsed {days_over} day(s) ago. Flip to blocking, fix the gate, or extend the deadline.")
+            print(
+                f"     ::error file={f},line={ln}::Report-only deadline lapsed {days_over} day(s) ago. Flip to blocking, fix the gate, or extend the deadline."
+            )
         print()
         print("Remediation options for each expired marker:")
         print("  1. Fix the underlying issues, then flip the gate to blocking")

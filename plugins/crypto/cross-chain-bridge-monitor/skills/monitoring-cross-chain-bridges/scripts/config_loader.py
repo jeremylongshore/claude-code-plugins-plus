@@ -144,9 +144,7 @@ def get_all_chain_rpcs() -> Dict[str, str]:
     config = load_config()
     chains = config.get("chains", {})
     return {
-        chain: chain_config.get("rpc_url", "")
-        for chain, chain_config in chains.items()
-        if chain_config.get("rpc_url")
+        chain: chain_config.get("rpc_url", "") for chain, chain_config in chains.items() if chain_config.get("rpc_url")
     }
 
 

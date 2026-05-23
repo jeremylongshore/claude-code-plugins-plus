@@ -20,6 +20,7 @@ import statistics
 @dataclass
 class HourlyPattern:
     """Hourly gas pattern."""
+
     hour: int  # 0-23 UTC
     avg_gas_gwei: float
     min_gas_gwei: float
@@ -31,6 +32,7 @@ class HourlyPattern:
 @dataclass
 class DailyPattern:
     """Daily gas pattern."""
+
     day: int  # 0=Monday, 6=Sunday
     day_name: str
     avg_gas_gwei: float
@@ -43,6 +45,7 @@ class DailyPattern:
 @dataclass
 class TimeWindow:
     """Optimal time window for transactions."""
+
     start_hour: int
     end_hour: int
     day_of_week: Optional[int]
@@ -54,6 +57,7 @@ class TimeWindow:
 @dataclass
 class GasPrediction:
     """Gas price prediction."""
+
     target_time: datetime
     predicted_gwei: float
     confidence: float
@@ -63,10 +67,30 @@ class GasPrediction:
 # Default patterns based on historical Ethereum data
 # These serve as fallback when no local history is available
 DEFAULT_HOURLY_PATTERNS = {
-    0: 28, 1: 25, 2: 22, 3: 20, 4: 19, 5: 18,  # Night (lowest)
-    6: 20, 7: 25, 8: 32, 9: 38, 10: 42, 11: 45,  # Morning (rising)
-    12: 48, 13: 50, 14: 52, 15: 55, 16: 58, 17: 55,  # Afternoon (peak)
-    18: 50, 19: 45, 20: 40, 21: 35, 22: 32, 23: 30,  # Evening (declining)
+    0: 28,
+    1: 25,
+    2: 22,
+    3: 20,
+    4: 19,
+    5: 18,  # Night (lowest)
+    6: 20,
+    7: 25,
+    8: 32,
+    9: 38,
+    10: 42,
+    11: 45,  # Morning (rising)
+    12: 48,
+    13: 50,
+    14: 52,
+    15: 55,
+    16: 58,
+    17: 55,  # Afternoon (peak)
+    18: 50,
+    19: 45,
+    20: 40,
+    21: 35,
+    22: 32,
+    23: 30,  # Evening (declining)
 }
 
 DEFAULT_DAILY_PATTERNS = {
@@ -124,12 +148,14 @@ class PatternAnalyzer:
             gas_gwei: Current gas price in gwei
         """
         now = datetime.now()
-        self._save_history({
-            "timestamp": now.timestamp(),
-            "hour": now.hour,
-            "day": now.weekday(),
-            "gas_gwei": gas_gwei,
-        })
+        self._save_history(
+            {
+                "timestamp": now.timestamp(),
+                "hour": now.hour,
+                "day": now.weekday(),
+                "gas_gwei": gas_gwei,
+            }
+        )
 
     def analyze_hourly_pattern(self) -> List[HourlyPattern]:
         """Analyze hourly gas patterns.
@@ -155,25 +181,29 @@ class PatternAnalyzer:
             if data:
                 avg = statistics.mean(data)
                 all_averages.append(avg)
-                patterns.append(HourlyPattern(
-                    hour=hour,
-                    avg_gas_gwei=avg,
-                    min_gas_gwei=min(data),
-                    max_gas_gwei=max(data),
-                    sample_count=len(data),
-                    is_low=False,  # Set later
-                ))
+                patterns.append(
+                    HourlyPattern(
+                        hour=hour,
+                        avg_gas_gwei=avg,
+                        min_gas_gwei=min(data),
+                        max_gas_gwei=max(data),
+                        sample_count=len(data),
+                        is_low=False,  # Set later
+                    )
+                )
             else:
                 # Use default pattern
                 default_gas = DEFAULT_HOURLY_PATTERNS[hour]
-                patterns.append(HourlyPattern(
-                    hour=hour,
-                    avg_gas_gwei=default_gas,
-                    min_gas_gwei=default_gas * 0.7,
-                    max_gas_gwei=default_gas * 1.5,
-                    sample_count=0,
-                    is_low=False,
-                ))
+                patterns.append(
+                    HourlyPattern(
+                        hour=hour,
+                        avg_gas_gwei=default_gas,
+                        min_gas_gwei=default_gas * 0.7,
+                        max_gas_gwei=default_gas * 1.5,
+                        sample_count=0,
+                        is_low=False,
+                    )
+                )
                 all_averages.append(default_gas)
 
         # Mark low-gas hours (below overall average)
@@ -209,26 +239,30 @@ class PatternAnalyzer:
             if data:
                 avg = statistics.mean(data)
                 all_averages.append(avg)
-                patterns.append(DailyPattern(
-                    day=day,
-                    day_name=day_names[day],
-                    avg_gas_gwei=avg,
-                    min_gas_gwei=min(data),
-                    max_gas_gwei=max(data),
-                    sample_count=len(data),
-                    is_low=False,
-                ))
+                patterns.append(
+                    DailyPattern(
+                        day=day,
+                        day_name=day_names[day],
+                        avg_gas_gwei=avg,
+                        min_gas_gwei=min(data),
+                        max_gas_gwei=max(data),
+                        sample_count=len(data),
+                        is_low=False,
+                    )
+                )
             else:
                 default_gas = DEFAULT_DAILY_PATTERNS[day]
-                patterns.append(DailyPattern(
-                    day=day,
-                    day_name=day_names[day],
-                    avg_gas_gwei=default_gas,
-                    min_gas_gwei=default_gas * 0.7,
-                    max_gas_gwei=default_gas * 1.5,
-                    sample_count=0,
-                    is_low=False,
-                ))
+                patterns.append(
+                    DailyPattern(
+                        day=day,
+                        day_name=day_names[day],
+                        avg_gas_gwei=default_gas,
+                        min_gas_gwei=default_gas * 0.7,
+                        max_gas_gwei=default_gas * 1.5,
+                        sample_count=0,
+                        is_low=False,
+                    )
+                )
                 all_averages.append(default_gas)
 
         # Mark low-gas days
@@ -297,7 +331,7 @@ class PatternAnalyzer:
         day_pattern = daily[day]
 
         # Weighted prediction
-        predicted = (hour_pattern.avg_gas_gwei * 0.7 + day_pattern.avg_gas_gwei * 0.3)
+        predicted = hour_pattern.avg_gas_gwei * 0.7 + day_pattern.avg_gas_gwei * 0.3
 
         # Calculate confidence based on sample count
         samples = hour_pattern.sample_count + day_pattern.sample_count

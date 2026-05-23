@@ -4,33 +4,33 @@ Trading Strategy Definitions
 Each strategy implements generate_signals() returning entry/exit signals.
 """
 
-import numpy as np
 import pandas as pd
 from abc import ABC, abstractmethod
-from typing import Dict, Any, Optional
+from typing import Dict, Any
 from dataclasses import dataclass
 
 
 @dataclass
 class Signal:
     """Trading signal with entry/exit information."""
+
     entry: bool = False
     exit: bool = False
     direction: str = "long"  # "long" or "short"
-    strength: float = 1.0    # Signal strength 0-1
+    strength: float = 1.0  # Signal strength 0-1
 
 
 class Strategy(ABC):
     """Base class for all trading strategies."""
-    
+
     name: str = "base"
     lookback: int = 1
-    
+
     @abstractmethod
     def generate_signals(self, data: pd.DataFrame, params: Dict[str, Any]) -> Signal:
         """Generate trading signals from price data."""
         pass
-    
+
     def validate_params(self, params: Dict[str, Any]) -> Dict[str, Any]:
         """Validate and set default parameters."""
         return params
@@ -38,14 +38,14 @@ class Strategy(ABC):
 
 class SMAcrossover(Strategy):
     """Simple Moving Average Crossover Strategy.
-    
+
     Buy when fast MA crosses above slow MA (golden cross).
     Sell when fast MA crosses below slow MA (death cross).
     """
-    
+
     name = "sma_crossover"
     lookback = 200
-    
+
     def generate_signals(self, data: pd.DataFrame, params: Dict[str, Any]) -> Signal:
         params = self.validate_params(params)
         fast = params.get("fast_period", 20)
@@ -75,30 +75,30 @@ class SMAcrossover(Strategy):
 
 class EMAcrossover(Strategy):
     """Exponential Moving Average Crossover Strategy."""
-    
+
     name = "ema_crossover"
     lookback = 200
-    
+
     def generate_signals(self, data: pd.DataFrame, params: Dict[str, Any]) -> Signal:
         fast = params.get("fast_period", 12)
         slow = params.get("slow_period", 26)
-        
+
         if len(data) < slow + 1:
             return Signal()
-        
+
         close = data["close"]
         fast_ema = close.ewm(span=fast, adjust=False).mean()
         slow_ema = close.ewm(span=slow, adjust=False).mean()
-        
+
         curr_fast, prev_fast = fast_ema.iloc[-1], fast_ema.iloc[-2]
         curr_slow, prev_slow = slow_ema.iloc[-1], slow_ema.iloc[-2]
-        
+
         if prev_fast <= prev_slow and curr_fast > curr_slow:
             return Signal(entry=True, direction="long")
-        
+
         if prev_fast >= prev_slow and curr_fast < curr_slow:
             return Signal(exit=True)
-        
+
         return Signal()
 
 
@@ -212,8 +212,7 @@ class BollingerBands(Strategy):
         # Price crosses middle band: exit any position
         curr_mid = sma.iloc[-1]
         prev_mid = sma.iloc[-2]
-        if (prev_close < prev_mid and curr_close >= curr_mid) or \
-           (prev_close > prev_mid and curr_close <= curr_mid):
+        if (prev_close < prev_mid and curr_close >= curr_mid) or (prev_close > prev_mid and curr_close <= curr_mid):
             return Signal(exit=True)
 
         return Signal()
@@ -221,36 +220,36 @@ class BollingerBands(Strategy):
 
 class Breakout(Strategy):
     """Price Breakout Strategy.
-    
+
     Buy when price breaks above recent high.
     Sell when price breaks below recent low.
     """
-    
+
     name = "breakout"
     lookback = 20
-    
+
     def generate_signals(self, data: pd.DataFrame, params: Dict[str, Any]) -> Signal:
         lookback = params.get("lookback", 20)
         threshold = params.get("threshold", 0.0)  # % above/below
-        
+
         if len(data) < lookback + 1:
             return Signal()
-        
-        high = data["high"].iloc[-lookback-1:-1]
-        low = data["low"].iloc[-lookback-1:-1]
+
+        high = data["high"].iloc[-lookback - 1 : -1]
+        low = data["low"].iloc[-lookback - 1 : -1]
         curr_close = data["close"].iloc[-1]
-        
+
         resistance = high.max() * (1 + threshold / 100)
         support = low.min() * (1 - threshold / 100)
-        
+
         # Breakout above resistance
         if curr_close > resistance:
             return Signal(entry=True, direction="long")
-        
+
         # Breakdown below support
         if curr_close < support:
             return Signal(exit=True)
-        
+
         return Signal()
 
 
@@ -298,29 +297,29 @@ class MeanReversion(Strategy):
 
 class Momentum(Strategy):
     """Rate of Change Momentum Strategy."""
-    
+
     name = "momentum"
     lookback = 14
-    
+
     def generate_signals(self, data: pd.DataFrame, params: Dict[str, Any]) -> Signal:
         period = params.get("period", 14)
         threshold = params.get("threshold", 5.0)  # % change threshold
-        
+
         if len(data) < period + 1:
             return Signal()
-        
+
         close = data["close"]
         roc = ((close.iloc[-1] - close.iloc[-period]) / close.iloc[-period]) * 100
-        prev_roc = ((close.iloc[-2] - close.iloc[-period-1]) / close.iloc[-period-1]) * 100
-        
+        prev_roc = ((close.iloc[-2] - close.iloc[-period - 1]) / close.iloc[-period - 1]) * 100
+
         # Momentum turns positive and exceeds threshold
         if prev_roc <= threshold and roc > threshold:
             return Signal(entry=True, direction="long")
-        
+
         # Momentum turns negative
         if prev_roc >= 0 and roc < 0:
             return Signal(exit=True)
-        
+
         return Signal()
 
 
@@ -346,4 +345,4 @@ def get_strategy(name: str) -> Strategy:
 
 def list_strategies() -> Dict[str, str]:
     """List all available strategies with descriptions."""
-    return {name: strategy.__doc__.split('\n')[0] for name, strategy in STRATEGIES.items()}
+    return {name: strategy.__doc__.split("\n")[0] for name, strategy in STRATEGIES.items()}

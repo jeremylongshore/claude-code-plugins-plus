@@ -9,7 +9,6 @@ A → B → C → A
 from dataclasses import dataclass
 from decimal import Decimal
 from typing import Dict, List, Optional, Tuple
-import math
 
 
 @dataclass
@@ -194,9 +193,7 @@ class TriangularFinder:
         for perm in permutations(tokens):
             # Try starting with each token
             path_tokens = list(perm) + [perm[0]]  # Complete the cycle
-            profit, fees, steps, used_pairs = self._calculate_path_profit(
-                path_tokens, pairs
-            )
+            profit, fees, steps, used_pairs = self._calculate_path_profit(path_tokens, pairs)
 
             if profit is not None and profit > best_profit:
                 best_profit = profit
@@ -327,7 +324,7 @@ def demo():
         best = opportunities[0]
         print(f"\nBest Path: {' → '.join(best.tokens)}")
         print(f"Exchange: {best.exchange}")
-        print(f"\nExecution Steps:")
+        print("\nExecution Steps:")
         for i, step in enumerate(best.execution_steps, 1):
             print(f"  {i}. {step}")
         print(f"\nGross Profit: {best.gross_profit_pct:+.4f}%")
@@ -335,9 +332,9 @@ def demo():
         print(f"Net Profit: {best.net_profit_pct:+.4f}%")
 
         if best.is_profitable:
-            print(f"\n✓ PROFITABLE - Consider execution")
+            print("\n✓ PROFITABLE - Consider execution")
         else:
-            print(f"\n✗ NOT PROFITABLE after fees")
+            print("\n✗ NOT PROFITABLE after fees")
     else:
         print("No triangular paths found")
 

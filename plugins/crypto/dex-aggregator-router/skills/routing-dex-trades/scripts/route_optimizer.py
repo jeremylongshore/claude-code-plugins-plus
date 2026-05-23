@@ -99,22 +99,18 @@ class RouteOptimizer:
 
         # Assign ranks and calculate savings
         worst_output = min(a.quote.output_amount for a in analyses)
-        best_output = max(a.quote.output_amount for a in analyses)
+        max(a.quote.output_amount for a in analyses)
 
         for i, analysis in enumerate(analyses):
             analysis.rank = i + 1
             analysis.savings_vs_worst = analysis.quote.output_amount - worst_output
             if worst_output > 0:
-                analysis.savings_pct = float(
-                    (analysis.quote.output_amount - worst_output) / worst_output * 100
-                )
+                analysis.savings_pct = float((analysis.quote.output_amount - worst_output) / worst_output * 100)
             analysis.recommendation = self._get_recommendation(analysis, i == 0)
 
         return analyses
 
-    def _calculate_score(
-        self, quote: NormalizedQuote, all_quotes: List[NormalizedQuote]
-    ) -> float:
+    def _calculate_score(self, quote: NormalizedQuote, all_quotes: List[NormalizedQuote]) -> float:
         """
         Calculate composite score for a quote.
 
@@ -130,9 +126,7 @@ class RouteOptimizer:
         output_range = max_output - min_output
 
         if output_range > 0:
-            output_score = (
-                float((quote.effective_rate - min_output) / output_range) * 60
-            )
+            output_score = float((quote.effective_rate - min_output) / output_range) * 60
         else:
             output_score = 60.0
 
@@ -226,25 +220,13 @@ class RouteOptimizer:
             Recommendation string
         """
         if trade_size_usd < 1000:
-            return (
-                "Small trade: Use direct quote. Gas optimization savings "
-                "may not exceed complexity cost."
-            )
+            return "Small trade: Use direct quote. Gas optimization savings may not exceed complexity cost."
         elif trade_size_usd < 10000:
-            return (
-                "Medium trade: Compare routes and consider multi-hop if "
-                "savings exceed 0.3%."
-            )
+            return "Medium trade: Compare routes and consider multi-hop if savings exceed 0.3%."
         elif trade_size_usd < 100000:
-            return (
-                "Large trade: Analyze split orders across 2-3 venues. "
-                "Multi-hop routes likely beneficial."
-            )
+            return "Large trade: Analyze split orders across 2-3 venues. Multi-hop routes likely beneficial."
         else:
-            return (
-                "Whale trade: Use split orders + MEV protection. "
-                "Consider private transactions or OTC."
-            )
+            return "Whale trade: Use split orders + MEV protection. Consider private transactions or OTC."
 
 
 def demo():

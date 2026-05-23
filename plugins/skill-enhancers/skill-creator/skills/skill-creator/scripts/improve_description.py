@@ -41,9 +41,7 @@ def _call_claude(prompt: str, model: str | None, timeout: int = 300) -> str:
         timeout=timeout,
     )
     if result.returncode != 0:
-        raise RuntimeError(
-            f"claude -p exited {result.returncode}\nstderr: {result.stderr}"
-        )
+        raise RuntimeError(f"claude -p exited {result.returncode}\nstderr: {result.stderr}")
     return result.stdout
 
 
@@ -59,14 +57,8 @@ def improve_description(
     iteration: int | None = None,
 ) -> str:
     """Call Claude to improve the description based on eval results."""
-    failed_triggers = [
-        r for r in eval_results["results"]
-        if r["should_trigger"] and not r["pass"]
-    ]
-    false_triggers = [
-        r for r in eval_results["results"]
-        if not r["should_trigger"] and not r["pass"]
-    ]
+    failed_triggers = [r for r in eval_results["results"] if r["should_trigger"] and not r["pass"]]
+    false_triggers = [r for r in eval_results["results"] if not r["should_trigger"] and not r["pass"]]
 
     # Build scores summary
     train_score = f"{eval_results['summary']['passed']}/{eval_results['summary']['total']}"
@@ -104,9 +96,11 @@ Current scores ({scores_summary}):
         prompt += "PREVIOUS ATTEMPTS (do NOT repeat these — try something structurally different):\n\n"
         for h in history:
             train_s = f"{h.get('train_passed', h.get('passed', 0))}/{h.get('train_total', h.get('total', 0))}"
-            test_s = f"{h.get('test_passed', '?')}/{h.get('test_total', '?')}" if h.get('test_passed') is not None else None
+            test_s = (
+                f"{h.get('test_passed', '?')}/{h.get('test_total', '?')}" if h.get("test_passed") is not None else None
+            )
             score_str = f"train={train_s}" + (f", test={test_s}" if test_s else "")
-            prompt += f'<attempt {score_str}>\n'
+            prompt += f"<attempt {score_str}>\n"
             prompt += f'Description: "{h["description"]}"\n'
             if "results" in h:
                 prompt += "Train results:\n"
@@ -114,7 +108,7 @@ Current scores ({scores_summary}):
                     status = "PASS" if r["pass"] else "FAIL"
                     prompt += f'  [{status}] "{r["query"][:80]}" (triggered {r["triggers"]}/{r["runs"]})\n'
             if h.get("note"):
-                prompt += f'Note: {h["note"]}\n'
+                prompt += f"Note: {h['note']}\n"
             prompt += "</attempt>\n\n"
 
     prompt += f"""</scores_summary>
@@ -232,13 +226,16 @@ def main():
     # Output as JSON with both the new description and updated history
     output = {
         "description": new_description,
-        "history": history + [{
-            "description": current_description,
-            "passed": eval_results["summary"]["passed"],
-            "failed": eval_results["summary"]["failed"],
-            "total": eval_results["summary"]["total"],
-            "results": eval_results["results"],
-        }],
+        "history": history
+        + [
+            {
+                "description": current_description,
+                "passed": eval_results["summary"]["passed"],
+                "failed": eval_results["summary"]["failed"],
+                "total": eval_results["summary"]["total"],
+                "results": eval_results["results"],
+            }
+        ],
     }
     print(json.dumps(output, indent=2))
 

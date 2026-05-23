@@ -161,8 +161,7 @@ def _beta_ppf(p: float, a: float, b: float) -> float:
     std = math.sqrt(var) if var > 0 else 0.01
 
     # Normal approximation z-score
-    z_scores = {0.025: -1.96, 0.975: 1.96, 0.05: -1.645, 0.95: 1.645,
-                0.005: -2.576, 0.995: 2.576}
+    z_scores = {0.025: -1.96, 0.975: 1.96, 0.05: -1.645, 0.95: 1.645, 0.005: -2.576, 0.995: 2.576}
     # For arbitrary p, use probit approximation
     if p in z_scores:
         z = z_scores[p]

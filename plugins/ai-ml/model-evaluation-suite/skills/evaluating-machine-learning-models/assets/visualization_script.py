@@ -18,8 +18,6 @@ import argparse
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-import numpy as np
-import os
 
 
 def generate_scatter_plot(actual_values_path, predicted_values_path, output_path):
@@ -98,7 +96,7 @@ def generate_residual_plot(actual_values_path, predicted_values_path, output_pat
         plt.xlabel("Predicted Values")
         plt.ylabel("Residuals")
         plt.title("Residual Plot")
-        plt.axhline(y=0, color='r', linestyle='--')  # Add a horizontal line at y=0
+        plt.axhline(y=0, color="r", linestyle="--")  # Add a horizontal line at y=0
         plt.savefig(output_path)
         plt.close()
 
@@ -114,9 +112,7 @@ def main():
     """
     Main function to parse arguments and generate visualizations.
     """
-    parser = argparse.ArgumentParser(
-        description="Generate visualizations of model performance metrics."
-    )
+    parser = argparse.ArgumentParser(description="Generate visualizations of model performance metrics.")
     parser.add_argument(
         "--plot_type",
         type=str,
@@ -139,17 +135,13 @@ def main():
         type=str,
         help="Path to the CSV file containing errors (required for histogram).",
     )
-    parser.add_argument(
-        "--output", type=str, required=True, help="Path to save the generated plot."
-    )
+    parser.add_argument("--output", type=str, required=True, help="Path to save the generated plot.")
 
     args = parser.parse_args()
 
     if args.plot_type == "scatter":
         if not args.actual_values or not args.predicted_values:
-            print(
-                "Error: --actual_values and --predicted_values are required for scatter plots."
-            )
+            print("Error: --actual_values and --predicted_values are required for scatter plots.")
             return
         generate_scatter_plot(args.actual_values, args.predicted_values, args.output)
     elif args.plot_type == "histogram":
@@ -159,9 +151,7 @@ def main():
         generate_histogram(args.errors, args.output)
     elif args.plot_type == "residual":
         if not args.actual_values or not args.predicted_values:
-            print(
-                "Error: --actual_values and --predicted_values are required for residual plots."
-            )
+            print("Error: --actual_values and --predicted_values are required for residual plots.")
             return
         generate_residual_plot(args.actual_values, args.predicted_values, args.output)
 

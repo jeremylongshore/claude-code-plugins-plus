@@ -14,7 +14,7 @@ from datetime import datetime
 from typing import List, Any, Optional
 from decimal import Decimal
 
-from bridge_fetcher import BridgeInfo, TVLData, ChainVolume, BridgeVolume
+from bridge_fetcher import BridgeInfo, TVLData, ChainVolume
 from protocol_adapters import FeeEstimate, TxStatus
 
 
@@ -75,8 +75,7 @@ def format_bridges_table(bridges: List[BridgeInfo], limit: int = 20) -> str:
 
         # Calculate change
         if bridge.volume_prev2_day > 0:
-            change = ((bridge.volume_prev_day - bridge.volume_prev2_day) /
-                      bridge.volume_prev2_day * 100)
+            change = (bridge.volume_prev_day - bridge.volume_prev2_day) / bridge.volume_prev2_day * 100
             change_str = format_percent(change)
         else:
             change_str = "N/A"
@@ -85,9 +84,7 @@ def format_bridges_table(bridges: List[BridgeInfo], limit: int = 20) -> str:
         if len(name) > 23:
             name = name[:20] + "..."
 
-        lines.append(
-            f"{i:<6} {name:<25} {vol_str:<15} {chain_count:<10} {change_str:<10}"
-        )
+        lines.append(f"{i:<6} {name:<25} {vol_str:<15} {chain_count:<10} {change_str:<10}")
 
     lines.append("=" * 90)
     lines.append(f"Total bridges: {len(bridges)}")
@@ -125,9 +122,7 @@ def format_tvl_table(tvl_data: List[tuple]) -> str:
         if len(name) > 23:
             name = name[:20] + "..."
 
-        lines.append(
-            f"{i:<6} {name:<25} {tvl_str:<20} {chain_count:<10}"
-        )
+        lines.append(f"{i:<6} {name:<25} {tvl_str:<20} {chain_count:<10}")
 
     lines.append("=" * 80)
 
@@ -158,8 +153,7 @@ def format_bridge_detail(bridge: BridgeInfo, tvl: Optional[TVLData]) -> str:
     ]
 
     if bridge.volume_prev2_day > 0:
-        change = ((bridge.volume_prev_day - bridge.volume_prev2_day) /
-                  bridge.volume_prev2_day * 100)
+        change = (bridge.volume_prev_day - bridge.volume_prev2_day) / bridge.volume_prev2_day * 100
         lines.append(f"Change:       {format_percent(change)}")
 
     lines.append("")
@@ -169,7 +163,7 @@ def format_bridge_detail(bridge: BridgeInfo, tvl: Optional[TVLData]) -> str:
     # Combine and deduplicate chains
     all_chains = sorted(set(bridge.chains + bridge.destination_chains))
     for i in range(0, len(all_chains), 5):
-        chunk = all_chains[i:i+5]
+        chunk = all_chains[i : i + 5]
         lines.append(f"  {', '.join(chunk)}")
 
     if tvl:
@@ -211,9 +205,7 @@ def format_chain_volume_table(volumes: List[ChainVolume]) -> str:
         vol_str = format_number(vol.total_volume_24h)
         net_str = format_number(vol.net_flow_24h) if vol.net_flow_24h else "N/A"
 
-        lines.append(
-            f"{vol.chain:<20} {vol_str:<20} {net_str:<15}"
-        )
+        lines.append(f"{vol.chain:<20} {vol_str:<20} {net_str:<15}")
 
     lines.append("=" * 70)
 
@@ -251,9 +243,7 @@ def format_fee_comparison(estimates: List[FeeEstimate]) -> str:
         total_fee = f"${est.total_fee:.4f}"
         time_str = format_time(est.estimated_time_minutes)
 
-        lines.append(
-            f"{est.bridge:<20} {bridge_fee:<15} {gas_fee:<15} {total_fee:<15} {time_str:<10}"
-        )
+        lines.append(f"{est.bridge:<20} {bridge_fee:<15} {gas_fee:<15} {total_fee:<15} {time_str:<10}")
 
     lines.append("=" * 80)
     lines.append(f"Cheapest: {estimates[0].bridge}")
@@ -331,7 +321,7 @@ def format_chains_list(chains: List[str]) -> str:
 
     # Group into columns
     for i in range(0, len(chains), 4):
-        chunk = chains[i:i+4]
+        chunk = chains[i : i + 4]
         lines.append("  " + "  ".join(f"{c:<15}" for c in chunk))
 
     lines.append("=" * 60)
@@ -349,6 +339,7 @@ def format_json(data: Any) -> str:
     Returns:
         JSON string
     """
+
     def default_serializer(obj):
         if hasattr(obj, "__dict__"):
             return vars(obj)

@@ -16,7 +16,7 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import Dict, List, Any, Optional, Tuple
+from typing import Dict, List, Any
 from datetime import datetime
 
 
@@ -35,7 +35,7 @@ class PerformanceBudgetValidator:
         "api_response_time": "ms",
         "lighthouse_score": "score (0-100)",
         "memory_usage": "MB",
-        "cpu_usage": "%"
+        "cpu_usage": "%",
     }
 
     def __init__(self):
@@ -44,11 +44,7 @@ class PerformanceBudgetValidator:
         self.warnings = []
         self.passed_checks = []
 
-    def validate_metrics(
-        self,
-        budget: Dict[str, Any],
-        metrics: Dict[str, Any]
-    ) -> Dict[str, Any]:
+    def validate_metrics(self, budget: Dict[str, Any], metrics: Dict[str, Any]) -> Dict[str, Any]:
         """
         Validate performance metrics against budget.
 
@@ -64,25 +60,19 @@ class PerformanceBudgetValidator:
         self.passed_checks = []
 
         if not budget:
-            return {
-                "valid": False,
-                "error": "Empty budget configuration",
-                "timestamp": datetime.now().isoformat()
-            }
+            return {"valid": False, "error": "Empty budget configuration", "timestamp": datetime.now().isoformat()}
 
         if not metrics:
-            return {
-                "valid": False,
-                "error": "No metrics provided",
-                "timestamp": datetime.now().isoformat()
-            }
+            return {"valid": False, "error": "No metrics provided", "timestamp": datetime.now().isoformat()}
 
         # Validate each budget constraint
         budget_items = budget.get("budgets", [])
         if not budget_items:
             budget_items = budget  # Support flat structure
 
-        for item_name, budget_value in budget_items.items() if isinstance(budget_items, dict) else enumerate(budget_items):
+        for item_name, budget_value in (
+            budget_items.items() if isinstance(budget_items, dict) else enumerate(budget_items)
+        ):
             if isinstance(budget_items, dict):
                 # Named budget
                 self._validate_metric(item_name, budget_value, metrics)
@@ -92,22 +82,19 @@ class PerformanceBudgetValidator:
 
         return self._generate_report(budget, metrics)
 
-    def _validate_metric(
-        self,
-        metric_name: str,
-        budget_value: Any,
-        metrics: Dict[str, Any]
-    ) -> None:
+    def _validate_metric(self, metric_name: str, budget_value: Any, metrics: Dict[str, Any]) -> None:
         """Validate a single metric against budget."""
         actual_value = metrics.get(metric_name)
 
         if actual_value is None:
-            self.warnings.append({
-                "severity": "warning",
-                "metric": metric_name,
-                "issue": f"Metric '{metric_name}' not found in metrics",
-                "budget": budget_value
-            })
+            self.warnings.append(
+                {
+                    "severity": "warning",
+                    "metric": metric_name,
+                    "issue": f"Metric '{metric_name}' not found in metrics",
+                    "budget": budget_value,
+                }
+            )
             return
 
         # Handle budget as dict with thresholds
@@ -116,71 +103,72 @@ class PerformanceBudgetValidator:
         else:
             # Simple comparison
             if actual_value > budget_value:
-                self.violations.append({
-                    "severity": "violation",
-                    "metric": metric_name,
-                    "budget": budget_value,
-                    "actual": actual_value,
-                    "difference": actual_value - budget_value,
-                    "percentage_over": round((actual_value - budget_value) / budget_value * 100, 2),
-                    "unit": self.METRIC_UNITS.get(metric_name, "units"),
-                    "message": f"{metric_name}: {actual_value} exceeds budget of {budget_value}"
-                })
+                self.violations.append(
+                    {
+                        "severity": "violation",
+                        "metric": metric_name,
+                        "budget": budget_value,
+                        "actual": actual_value,
+                        "difference": actual_value - budget_value,
+                        "percentage_over": round((actual_value - budget_value) / budget_value * 100, 2),
+                        "unit": self.METRIC_UNITS.get(metric_name, "units"),
+                        "message": f"{metric_name}: {actual_value} exceeds budget of {budget_value}",
+                    }
+                )
             else:
-                self.passed_checks.append({
-                    "metric": metric_name,
-                    "budget": budget_value,
-                    "actual": actual_value,
-                    "margin": budget_value - actual_value,
-                    "unit": self.METRIC_UNITS.get(metric_name, "units")
-                })
+                self.passed_checks.append(
+                    {
+                        "metric": metric_name,
+                        "budget": budget_value,
+                        "actual": actual_value,
+                        "margin": budget_value - actual_value,
+                        "unit": self.METRIC_UNITS.get(metric_name, "units"),
+                    }
+                )
 
-    def _validate_threshold_budget(
-        self,
-        metric_name: str,
-        budget_config: Dict[str, Any],
-        actual_value: float
-    ) -> None:
+    def _validate_threshold_budget(self, metric_name: str, budget_config: Dict[str, Any], actual_value: float) -> None:
         """Validate metric against threshold-based budget."""
         critical = budget_config.get("critical")
         warning = budget_config.get("warning")
 
         if critical is not None and actual_value > critical:
-            self.violations.append({
-                "severity": "critical",
-                "metric": metric_name,
-                "budget_critical": critical,
-                "actual": actual_value,
-                "difference": actual_value - critical,
-                "percentage_over": round((actual_value - critical) / critical * 100, 2),
-                "unit": self.METRIC_UNITS.get(metric_name, "units"),
-                "message": f"{metric_name}: {actual_value} CRITICAL (exceeds {critical})"
-            })
+            self.violations.append(
+                {
+                    "severity": "critical",
+                    "metric": metric_name,
+                    "budget_critical": critical,
+                    "actual": actual_value,
+                    "difference": actual_value - critical,
+                    "percentage_over": round((actual_value - critical) / critical * 100, 2),
+                    "unit": self.METRIC_UNITS.get(metric_name, "units"),
+                    "message": f"{metric_name}: {actual_value} CRITICAL (exceeds {critical})",
+                }
+            )
         elif warning is not None and actual_value > warning:
-            self.warnings.append({
-                "severity": "warning",
-                "metric": metric_name,
-                "budget_warning": warning,
-                "actual": actual_value,
-                "difference": actual_value - warning,
-                "percentage_over": round((actual_value - warning) / warning * 100, 2),
-                "unit": self.METRIC_UNITS.get(metric_name, "units"),
-                "message": f"{metric_name}: {actual_value} WARNING (exceeds {warning})"
-            })
+            self.warnings.append(
+                {
+                    "severity": "warning",
+                    "metric": metric_name,
+                    "budget_warning": warning,
+                    "actual": actual_value,
+                    "difference": actual_value - warning,
+                    "percentage_over": round((actual_value - warning) / warning * 100, 2),
+                    "unit": self.METRIC_UNITS.get(metric_name, "units"),
+                    "message": f"{metric_name}: {actual_value} WARNING (exceeds {warning})",
+                }
+            )
         else:
-            self.passed_checks.append({
-                "metric": metric_name,
-                "budget_critical": critical,
-                "budget_warning": warning,
-                "actual": actual_value,
-                "unit": self.METRIC_UNITS.get(metric_name, "units")
-            })
+            self.passed_checks.append(
+                {
+                    "metric": metric_name,
+                    "budget_critical": critical,
+                    "budget_warning": warning,
+                    "actual": actual_value,
+                    "unit": self.METRIC_UNITS.get(metric_name, "units"),
+                }
+            )
 
-    def _validate_budget_item(
-        self,
-        item: Dict[str, Any],
-        metrics: Dict[str, Any]
-    ) -> None:
+    def _validate_budget_item(self, item: Dict[str, Any], metrics: Dict[str, Any]) -> None:
         """Validate a budget item from list format."""
         metric_name = item.get("name") or item.get("metric")
         budget_value = item.get("budget") or item.get("threshold")
@@ -191,11 +179,9 @@ class PerformanceBudgetValidator:
 
         actual_value = metrics.get(metric_name)
         if actual_value is None:
-            self.warnings.append({
-                "severity": "warning",
-                "metric": metric_name,
-                "issue": f"Metric not found: {metric_name}"
-            })
+            self.warnings.append(
+                {"severity": "warning", "metric": metric_name, "issue": f"Metric not found: {metric_name}"}
+            )
             return
 
         # Handle different comparison types
@@ -218,31 +204,31 @@ class PerformanceBudgetValidator:
             else:
                 percentage = 0
 
-            self.violations.append({
-                "severity": item.get("severity", "violation"),
-                "metric": metric_name,
-                "type": item_type,
-                "comparison": comparison,
-                "budget": budget_value,
-                "actual": actual_value,
-                "difference": difference,
-                "percentage_difference": percentage,
-                "unit": item.get("unit", self.METRIC_UNITS.get(metric_name, "units")),
-                "message": f"{metric_name}: {actual_value} {comparison} {budget_value}"
-            })
+            self.violations.append(
+                {
+                    "severity": item.get("severity", "violation"),
+                    "metric": metric_name,
+                    "type": item_type,
+                    "comparison": comparison,
+                    "budget": budget_value,
+                    "actual": actual_value,
+                    "difference": difference,
+                    "percentage_difference": percentage,
+                    "unit": item.get("unit", self.METRIC_UNITS.get(metric_name, "units")),
+                    "message": f"{metric_name}: {actual_value} {comparison} {budget_value}",
+                }
+            )
         else:
-            self.passed_checks.append({
-                "metric": metric_name,
-                "budget": budget_value,
-                "actual": actual_value,
-                "unit": item.get("unit", self.METRIC_UNITS.get(metric_name, "units"))
-            })
+            self.passed_checks.append(
+                {
+                    "metric": metric_name,
+                    "budget": budget_value,
+                    "actual": actual_value,
+                    "unit": item.get("unit", self.METRIC_UNITS.get(metric_name, "units")),
+                }
+            )
 
-    def _generate_report(
-        self,
-        budget: Dict[str, Any],
-        metrics: Dict[str, Any]
-    ) -> Dict[str, Any]:
+    def _generate_report(self, budget: Dict[str, Any], metrics: Dict[str, Any]) -> Dict[str, Any]:
         """Generate validation report."""
         total_checks = len(self.violations) + len(self.warnings) + len(self.passed_checks)
         critical_violations = len([v for v in self.violations if v.get("severity") == "critical"])
@@ -257,14 +243,14 @@ class PerformanceBudgetValidator:
                 "warnings": len(self.warnings),
                 "violations": violation_count,
                 "critical_violations": critical_violations,
-                "pass_rate": round(len(self.passed_checks) / total_checks * 100, 2) if total_checks > 0 else 100
+                "pass_rate": round(len(self.passed_checks) / total_checks * 100, 2) if total_checks > 0 else 100,
             },
             "budget_name": budget.get("name", "Performance Budget"),
             "budget_version": budget.get("version", "1.0.0"),
             "passed_checks": self.passed_checks,
             "warnings": self.warnings,
             "violations": self.violations,
-            "recommendations": self._generate_recommendations()
+            "recommendations": self._generate_recommendations(),
         }
 
     def _generate_recommendations(self) -> List[str]:
@@ -342,44 +328,18 @@ Examples:
   validate_budget.py --budget budget.json --metrics metrics.json --output report.json
   validate_budget.py --budget budget.json --metrics metrics.json --fail-on-violation
   validate_budget.py --config config.json
-        """
+        """,
     )
 
+    parser.add_argument("-b", "--budget", type=str, help="Path to budget configuration JSON file")
+    parser.add_argument("-m", "--metrics", type=str, help="Path to metrics JSON file")
+    parser.add_argument("-c", "--config", type=str, help="Path to combined config file (budget + metrics)")
+    parser.add_argument("-o", "--output", type=str, help="Output file for JSON report")
+    parser.add_argument("-s", "--summary", action="store_true", help="Print text summary to console")
     parser.add_argument(
-        "-b", "--budget",
-        type=str,
-        help="Path to budget configuration JSON file"
+        "-f", "--fail-on-violation", action="store_true", help="Exit with error code 1 if violations found"
     )
-    parser.add_argument(
-        "-m", "--metrics",
-        type=str,
-        help="Path to metrics JSON file"
-    )
-    parser.add_argument(
-        "-c", "--config",
-        type=str,
-        help="Path to combined config file (budget + metrics)"
-    )
-    parser.add_argument(
-        "-o", "--output",
-        type=str,
-        help="Output file for JSON report"
-    )
-    parser.add_argument(
-        "-s", "--summary",
-        action="store_true",
-        help="Print text summary to console"
-    )
-    parser.add_argument(
-        "-f", "--fail-on-violation",
-        action="store_true",
-        help="Exit with error code 1 if violations found"
-    )
-    parser.add_argument(
-        "-v", "--verbose",
-        action="store_true",
-        help="Enable verbose output"
-    )
+    parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose output")
 
     args = parser.parse_args()
 
@@ -391,7 +351,7 @@ Examples:
                 print(f"Error: Config file not found: {args.config}", file=sys.stderr)
                 return 1
 
-            with open(config_path, 'r') as f:
+            with open(config_path, "r") as f:
                 config = json.load(f)
 
             budget = config.get("budget", config)
@@ -411,10 +371,10 @@ Examples:
                 print(f"Error: Metrics file not found: {args.metrics}", file=sys.stderr)
                 return 1
 
-            with open(budget_path, 'r') as f:
+            with open(budget_path, "r") as f:
                 budget = json.load(f)
 
-            with open(metrics_path, 'r') as f:
+            with open(metrics_path, "r") as f:
                 metrics = json.load(f)
 
         # Validate metrics
@@ -424,7 +384,7 @@ Examples:
         # Output report
         if args.output:
             output_path = Path(args.output)
-            with open(output_path, 'w') as f:
+            with open(output_path, "w") as f:
                 json.dump(report, f, indent=2)
             print(f"Report written to: {args.output}")
 

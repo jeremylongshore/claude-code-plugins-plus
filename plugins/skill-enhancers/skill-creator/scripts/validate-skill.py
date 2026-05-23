@@ -32,19 +32,41 @@ except ImportError:
 # === CONSTANTS ===
 
 VALID_TOOLS = {
-    "Read", "Write", "Edit", "Bash", "Glob", "Grep",
-    "WebFetch", "WebSearch", "Task", "NotebookEdit",
-    "AskUserQuestion", "Skill",
+    "Read",
+    "Write",
+    "Edit",
+    "Bash",
+    "Glob",
+    "Grep",
+    "WebFetch",
+    "WebSearch",
+    "Task",
+    "NotebookEdit",
+    "AskUserQuestion",
+    "Skill",
 }
 
 KNOWN_FRONTMATTER_FIELDS = {
     # AgentSkills.io spec
-    "name", "description", "license", "compatibility", "metadata", "allowed-tools",
+    "name",
+    "description",
+    "license",
+    "compatibility",
+    "metadata",
+    "allowed-tools",
     # Top-level identity fields (marketplace standard)
-    "version", "author", "compatible-with", "tags",
+    "version",
+    "author",
+    "compatible-with",
+    "tags",
     # Claude Code extensions
-    "argument-hint", "disable-model-invocation", "user-invocable", "model",
-    "context", "agent", "hooks",
+    "argument-hint",
+    "disable-model-invocation",
+    "user-invocable",
+    "model",
+    "context",
+    "agent",
+    "hooks",
 }
 
 DEPRECATED_FIELDS = {
@@ -53,7 +75,13 @@ DEPRECATED_FIELDS = {
 }
 
 VALID_PLATFORMS = {
-    "claude-code", "codex", "openclaw", "aider", "continue", "cursor", "windsurf",
+    "claude-code",
+    "codex",
+    "openclaw",
+    "aider",
+    "continue",
+    "cursor",
+    "windsurf",
 }
 
 RE_FRONTMATTER = re.compile(r"^---\s*\n(.*?)\n---\s*\n(.*)$", re.DOTALL)
@@ -69,7 +97,10 @@ RE_XML_TAG = re.compile(r"[<>]")
 RE_TIME_SENSITIVE = [
     re.compile(r"\b(20\d{2}[-/]\d{2}[-/]\d{2})\b"),  # dates like 2025-01-01
     re.compile(r"\b(v\d+\.\d+\.\d+)\b", re.IGNORECASE),  # version numbers like v1.2.3
-    re.compile(r"\b(as of|since|after|before) (January|February|March|April|May|June|July|August|September|October|November|December)\b", re.IGNORECASE),
+    re.compile(
+        r"\b(as of|since|after|before) (January|February|March|April|May|June|July|August|September|October|November|December)\b",
+        re.IGNORECASE,
+    ),
 ]
 
 ABSOLUTE_PATH_PATTERNS = [
@@ -285,9 +316,7 @@ def validate_optional_fields(fm: dict) -> Tuple[List[str], List[str]]:
     if isinstance(metadata, dict):
         for field in ("author", "version", "license", "tags"):
             if field in metadata and field not in fm:
-                warnings.append(
-                    f"'{field}' found in metadata block - move to top-level for marketplace scoring"
-                )
+                warnings.append(f"'{field}' found in metadata block - move to top-level for marketplace scoring")
 
     # Unknown fields
     all_known = KNOWN_FRONTMATTER_FIELDS | DEPRECATED_FIELDS.keys()
@@ -369,10 +398,7 @@ def validate_body(body: str, path: Path, enterprise: bool) -> Tuple[List[str], L
             )
             if instr_match:
                 instr = instr_match.group(1)
-                has_steps = (
-                    re.search(r"(?m)^\s*\d+\.\s+", instr)
-                    or re.search(r"(?mi)^\s*#{2,6}\s*step\s*\d+", instr)
-                )
+                has_steps = re.search(r"(?m)^\s*\d+\.\s+", instr) or re.search(r"(?mi)^\s*#{2,6}\s*step\s*\d+", instr)
                 if not has_steps:
                     warnings.append("Instructions should have numbered steps or ### Step N headings")
 
@@ -386,8 +412,7 @@ def validate_body(body: str, path: Path, enterprise: bool) -> Tuple[List[str], L
         refs_dir = skill_dir / "references"
         if line_count > 300 and not refs_dir.exists():
             warnings.append(
-                f"SKILL.md is {line_count} lines with no references/ directory - "
-                "consider splitting heavy content"
+                f"SKILL.md is {line_count} lines with no references/ directory - consider splitting heavy content"
             )
 
     if "{baseDir}/../" in body:
@@ -1003,7 +1028,7 @@ def print_result(result: Dict[str, Any], path: Path) -> None:
             print(f"  - {i}")
         print()
 
-    print(f"Stats:")
+    print("Stats:")
     print(f"  Words: {stats['word_count']}")
     print(f"  Lines: {stats['line_count']}")
     print(f"  Tokens (est.): {stats['token_estimate']}")
@@ -1056,9 +1081,7 @@ def print_grade(grade_result: Dict[str, Any], path: Path) -> None:
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Validate SKILL.md files (Standard tier by default)"
-    )
+    parser = argparse.ArgumentParser(description="Validate SKILL.md files (Standard tier by default)")
     parser.add_argument("path", help="Path to SKILL.md file")
     parser.add_argument(
         "--standard",

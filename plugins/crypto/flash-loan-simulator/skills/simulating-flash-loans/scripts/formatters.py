@@ -9,13 +9,12 @@ Handles all output formatting:
 """
 
 import json
-from dataclasses import asdict
 from decimal import Decimal
-from typing import Any, Dict, List, Optional
+from typing import List, Optional
 
-from strategy_engine import StrategyResult, TransactionStep, StrategyType
-from profit_calculator import ProfitBreakdown, GasEstimate
-from risk_assessor import RiskAssessment, RiskFactor, RiskLevel
+from strategy_engine import StrategyResult, StrategyType
+from profit_calculator import ProfitBreakdown
+from risk_assessor import RiskAssessment, RiskLevel
 from protocol_adapters import ProviderInfo
 
 
@@ -79,8 +78,7 @@ class ConsoleFormatter:
             border_left = (inner_width - len(title_part)) // 2
             border_right = inner_width - len(title_part) - border_left
             result.append(
-                f"{self.BOX_TL}{self.BOX_H * border_left}{title_part}"
-                f"{self.BOX_H * border_right}{self.BOX_TR}"
+                f"{self.BOX_TL}{self.BOX_H * border_left}{title_part}{self.BOX_H * border_right}{self.BOX_TR}"
             )
         else:
             result.append(f"{self.BOX_TL}{self.BOX_H * (inner_width + 2)}{self.BOX_TR}")
@@ -126,14 +124,9 @@ class ConsoleFormatter:
         lines.append(self._subheader("PROFIT BREAKDOWN"))
         lines.append(f"  Gross Profit:  {result.gross_profit:+.6f} {result.loan_asset}")
         lines.append(f"  Flash Loan Fee: -{result.loan_fee:.6f} {result.loan_asset}")
-        lines.append(
-            f"  Gas Cost:       -{result.gas_cost_eth:.6f} ETH (${result.gas_cost_usd:.2f})"
-        )
+        lines.append(f"  Gas Cost:       -{result.gas_cost_eth:.6f} ETH (${result.gas_cost_usd:.2f})")
         lines.append(f"  {'-' * 40}")
-        lines.append(
-            f"  Net Profit:    {result.net_profit:+.6f} {result.loan_asset} "
-            f"(${result.net_profit_usd:+.2f})"
-        )
+        lines.append(f"  Net Profit:    {result.net_profit:+.6f} {result.loan_asset} (${result.net_profit_usd:+.2f})")
         lines.append(f"  ROI:           {result.roi_percent:.4f}%")
 
         return "\n".join(lines)
@@ -150,20 +143,14 @@ class ConsoleFormatter:
         # Costs
         lines.append("\n  Costs:")
         lines.append(f"    Flash Loan Fee: -{breakdown.flash_loan_fee:.6f} ETH")
-        lines.append(
-            f"    Gas Cost:       -{breakdown.gas_cost_eth:.6f} ETH "
-            f"(${breakdown.gas_cost_usd:.2f})"
-        )
+        lines.append(f"    Gas Cost:       -{breakdown.gas_cost_eth:.6f} ETH (${breakdown.gas_cost_usd:.2f})")
         lines.append(f"    Est. Slippage:  -{breakdown.slippage_cost:.6f} ETH")
         lines.append(f"    DEX Fees:       ~{breakdown.dex_fees:.6f} ETH (in price)")
         lines.append(f"    {'-' * 45}")
         lines.append(f"    Total Costs:    -{breakdown.total_costs:.6f} ETH")
 
         # Net
-        lines.append(
-            f"\n  Net Profit: {breakdown.net_profit:+.6f} ETH "
-            f"(${breakdown.net_profit_usd:+.2f})"
-        )
+        lines.append(f"\n  Net Profit: {breakdown.net_profit:+.6f} ETH (${breakdown.net_profit_usd:+.2f})")
         lines.append(f"  ROI: {breakdown.roi_percent:.4f}%")
         lines.append(f"  Breakeven Gas: {breakdown.breakeven_gas_price:.1f} gwei")
 
@@ -182,9 +169,7 @@ class ConsoleFormatter:
         lines.append(self._header("RISK ASSESSMENT"))
 
         # Overall rating
-        indicator, label = self.RISK_INDICATORS.get(
-            assessment.overall_level, ("⚪", "UNKNOWN")
-        )
+        indicator, label = self.RISK_INDICATORS.get(assessment.overall_level, ("⚪", "UNKNOWN"))
         lines.append(f"\n  Overall Risk: {indicator} {label}")
         lines.append(f"  Risk Score: {assessment.overall_score:.0f}/100")
         lines.append(f"  Viability: {assessment.viability}")
@@ -211,9 +196,7 @@ class ConsoleFormatter:
 
         return "\n".join(lines)
 
-    def format_provider_comparison(
-        self, providers: List[ProviderInfo], asset: str, amount: Decimal
-    ) -> str:
+    def format_provider_comparison(self, providers: List[ProviderInfo], asset: str, amount: Decimal) -> str:
         """Format provider comparison table."""
         lines = []
 
@@ -221,10 +204,7 @@ class ConsoleFormatter:
         lines.append(f"\n  Comparing {amount} {asset} flash loan:\n")
 
         # Table header
-        lines.append(
-            f"  {'Provider':<14} {'Fee %':<8} {'Fee Amount':<14} "
-            f"{'Gas OH':<10} {'Chains':<20}"
-        )
+        lines.append(f"  {'Provider':<14} {'Fee %':<8} {'Fee Amount':<14} {'Gas OH':<10} {'Chains':<20}")
         lines.append(f"  {'-' * 66}")
 
         # Table rows
@@ -236,10 +216,7 @@ class ConsoleFormatter:
             if len(info.supported_chains) > 2:
                 chains += "..."
 
-            lines.append(
-                f"  {info.name:<14} {fee_pct:<8} {fee_amt:<14} "
-                f"{gas_oh:<10} {chains:<20}"
-            )
+            lines.append(f"  {info.name:<14} {fee_pct:<8} {fee_amt:<14} {gas_oh:<10} {chains:<20}")
 
         # Recommendation
         if providers:
@@ -252,17 +229,14 @@ class ConsoleFormatter:
 
         return "\n".join(lines)
 
-    def format_quick_summary(
-        self, result: StrategyResult, assessment: Optional[RiskAssessment] = None
-    ) -> str:
+    def format_quick_summary(self, result: StrategyResult, assessment: Optional[RiskAssessment] = None) -> str:
         """Format a quick one-box summary."""
         lines = []
 
         # Profit line
         profit_emoji = "✓" if result.is_profitable else "✗"
         lines.append(
-            f"Net Profit: {result.net_profit:+.6f} {result.loan_asset} "
-            f"(${result.net_profit_usd:+.2f}) {profit_emoji}"
+            f"Net Profit: {result.net_profit:+.6f} {result.loan_asset} (${result.net_profit_usd:+.2f}) {profit_emoji}"
         )
 
         # Provider
@@ -270,15 +244,11 @@ class ConsoleFormatter:
 
         # Risk if available
         if assessment:
-            ind, lbl = self.RISK_INDICATORS.get(
-                assessment.overall_level, ("⚪", "?")
-            )
+            ind, lbl = self.RISK_INDICATORS.get(assessment.overall_level, ("⚪", "?"))
             lines.append(f"Risk: {ind} {lbl} | Viability: {assessment.viability}")
 
         # Verdict
-        if result.is_profitable and (
-            assessment is None or assessment.viability != "NO-GO"
-        ):
+        if result.is_profitable and (assessment is None or assessment.viability != "NO-GO"):
             lines.append("Verdict: PROCEED WITH CAUTION")
         elif result.is_profitable:
             lines.append("Verdict: HIGH RISK - RECONSIDER")
@@ -400,9 +370,7 @@ class MarkdownFormatter:
         lines.append(f"- **Strategy**: {result.strategy_type.value}")
         lines.append(f"- **Loan**: {result.loan_amount} {result.loan_asset}")
         lines.append(f"- **Provider**: {result.provider}")
-        lines.append(
-            f"- **Profitable**: {'Yes ✓' if result.is_profitable else 'No ✗'}"
-        )
+        lines.append(f"- **Profitable**: {'Yes ✓' if result.is_profitable else 'No ✗'}")
         lines.append("")
 
         # Profit
@@ -461,7 +429,7 @@ class MarkdownFormatter:
 
 def demo():
     """Demonstrate formatters."""
-    from strategy_engine import StrategyFactory, StrategyType, ArbitrageParams
+    from strategy_engine import StrategyFactory, ArbitrageParams
     from profit_calculator import ProfitCalculator
     from risk_assessor import RiskAssessor
     from protocol_adapters import ProviderManager
