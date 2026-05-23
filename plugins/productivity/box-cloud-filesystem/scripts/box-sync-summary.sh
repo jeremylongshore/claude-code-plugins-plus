@@ -26,4 +26,4 @@ while read -r ts action file id; do
 done < "$LOG_FILE"
 
 # Clear log for next session
-> "$LOG_FILE"
+: > "$LOG_FILE"

@@ -817,29 +817,17 @@ jobs:
           sudo apt-get install -y -qq shellcheck
           shellcheck --version | head -2
 
-      # REPORT-ONLY-UNTIL: 2026-06-21 (shellcheck-skills — bead claude-lrhq)
-      - name: Run shellcheck across all .sh in plugins/ (REPORT-ONLY)
-        # REPORT-ONLY for initial rollout — exits 0 even on errors.
-        # Local scan already found a misnamed Python file shipping as .sh
-        # (plugins/packages/security-pro-pack/.../security_scan.sh); more
-        # likely exist across the remaining 316 files. Flip this step to
-        # blocking once the cleanup pass clears the existing errors.
-        # ENFORCEMENT: scripts/check-ci-deadlines.py fails the build if the
-        # REPORT-ONLY-UNTIL marker above passes without action. No silent rot.
+      # BLOCKING — codebase passed baseline at PR #768 (2026-05-22, 223→0).
+      # .shellcheckrc at repo root governs disable= directives.
+      # No `|| true` swallow: external PRs that introduce shellcheck
+      # warnings or errors fail this gate.
+      - name: Run shellcheck (severity=warning) across plugins/**/*.sh
         run: |
-          set +e
-          fail=0
-          count=0
-          while IFS= read -r f; do
-            count=$((count + 1))
-            shellcheck --severity=error --shell=bash "$f" || fail=1
-          done < <(find plugins -name '*.sh' -not -path '*/node_modules/*' -type f)
-          echo ""
-          echo "Shellchecked $count .sh files (severity=error)."
-          if [ $fail -ne 0 ]; then
-            echo "::warning::shellcheck found errors — reporting only for now"
-          fi
-          exit 0
+          set -e
+          count=$(find plugins -name '*.sh' -not -path '*/node_modules/*' -type f | wc -l)
+          echo "Shellchecking $count .sh files at severity=warning..."
+          find plugins -name '*.sh' -not -path '*/node_modules/*' -type f -print0 \
+            | xargs -0 shellcheck --severity=warning --shell=bash
 
   skill-codeblock-syntax:
     runs-on: ubuntu-latest

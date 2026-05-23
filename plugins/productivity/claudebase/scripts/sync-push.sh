@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 # sync-push.sh — Push local Claude Code config to GitHub repo
 # Usage: sync-push.sh [--profile NAME] [--auto] [--force] [--dry-run]
+#
+# shellcheck disable=SC2088
+# Tilde-prefixed paths passed as display labels to apply_file are
+# intentional — they show the literal '~/.claude/...' string in output.
 set -euo pipefail
 source "$(dirname "$0")/common.sh"
 
@@ -25,7 +29,7 @@ done
 # ── Preflight (early-exit before any network/tool calls) ───────────
 if [[ "$(get_state "setup_complete")" != "true" ]]; then
   $AUTO || err "Config sync not set up yet. Run /sync-setup first."
-  exit $( $AUTO && echo 0 || echo 1 )
+  if $AUTO; then exit 0; else exit 1; fi
 fi
 
 PROFILE=$(get_profile "$PROFILE")
@@ -144,7 +148,7 @@ fi
 if $INCLUDE_GLOBAL; then
   info "Collecting global config from: ${CLAUDE_HOME}"
   copy_if_exists "${CLAUDE_HOME}/settings.json" \
-    "${GLOBAL_DIR}/settings.json" "~/.claude/settings.json"
+    "${GLOBAL_DIR}/settings.json" '~/.claude/settings.json'
 fi
 
 # ── Detect agent skills (offer opt-in) ─────────────────────────────

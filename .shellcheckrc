@@ -1,0 +1,28 @@
+# shellcheck configuration for claude-code-plugins-plus-skills
+#
+# Applied to all shell scripts in plugins/ via the CI shellcheck-skills job.
+# Single source of truth so external PRs see the same rule set as local runs.
+#
+# Severity policy: enforced via the CI step (--severity=warning), not here.
+# .shellcheckrc does not honor a `severity=` directive — only `disable=`,
+# `enable=`, `source-path=`, `external-sources=`, `shell=`.
+#
+# Reference: https://www.shellcheck.net/wiki/Directive
+#
+# Source-handling: plugin scripts commonly do `source $CONFIG_FILE` where
+# the file is determined at runtime. ShellCheck can't statically follow
+# dynamic source paths. Disabling globally is honest — adding per-line
+# `# shellcheck disable=SC1090,SC1091` to every dynamic-source line is
+# pure noise that buries real findings.
+disable=SC1090,SC1091
+
+# Variable-declaration: SC2155 (declare and assign separately) is a
+# stylistic preference. The pattern `local x=$(cmd)` is idiomatic and
+# the failure-mode (masking exit codes) is rarely the bug being hunted.
+disable=SC2155
+
+# SC2034 (unused variable): noisy in templated scripts where the var is
+# referenced by sourcing scripts or external commands. Real-unused-locals
+# are catchable via ruff for Python — for shell, the analysis is too
+# imprecise to enforce as blocking.
+disable=SC2034

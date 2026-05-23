@@ -263,7 +263,7 @@ deploy_kubernetes() {
     log_step "Converting Docker Compose to Kubernetes manifests..."
     local temp_dir
     temp_dir=$(mktemp -d)
-    trap "rm -rf $temp_dir" EXIT
+    trap 'rm -rf "$temp_dir"' EXIT
 
     if ! kompose -f "$COMPOSE_FILE" convert -o "$temp_dir" 2>&1; then
         log_error "Failed to convert Docker Compose file"

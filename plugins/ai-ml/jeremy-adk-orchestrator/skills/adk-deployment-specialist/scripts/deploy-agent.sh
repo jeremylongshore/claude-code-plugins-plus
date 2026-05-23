@@ -72,7 +72,7 @@ echo ""
 # Check Python SDK is installed
 if ! python3 -c "import vertexai" 2>/dev/null; then
     echo -e "${YELLOW}Vertex AI SDK not found. Installing...${NC}"
-    pip install google-cloud-aiplatform[agent_engines]>=1.120.0 google-adk>=1.15.1
+    pip install 'google-cloud-aiplatform[agent_engines]>=1.120.0' 'google-adk>=1.15.1'
 fi
 
 # Validate agent files

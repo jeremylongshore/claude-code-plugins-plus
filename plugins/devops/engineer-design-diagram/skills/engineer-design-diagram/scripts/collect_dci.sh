@@ -34,7 +34,7 @@ fi
 
 # Docker-compose config (capped at 40 KB)
 COMPOSE_JSON='null'
-if command -v docker >/dev/null 2>&1 && [ -f docker-compose.yml -o -f compose.yml ]; then
+if command -v docker >/dev/null 2>&1 && { [ -f docker-compose.yml ] || [ -f compose.yml ]; }; then
   RAW=$(docker compose config 2>/dev/null | head -c "$COMPOSE_BYTES_CAP" || true)
   if [ -n "$RAW" ]; then
     COMPOSE_JSON=$(jq -Rs . <<< "$RAW")
