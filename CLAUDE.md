@@ -152,7 +152,3 @@ Key tables: `skill_compliance` (scores, grades, JRig columns), `forge_proofs` (d
 ## npm Publish Pipeline
 
 Patch version bumps happen automatically on PR (via `auto-bump-on-pr.yml`). For minor/major bumps, hand-edit the version in the same PR. Merge to main triggers publish + tag + GitHub Release via `publish-changed-packages.yml`. See `RELEASING.md` for the full operator flow.
-
-## Legacy Root Files
-
-Not part of the active build: `docker-compose.test.yml`, `Dockerfile.test`, `firebase.json` + `firestore.rules` (tonsofskills.com migrated to Contabo VPS 2026-05-06 via `deploy-vps.yml`; `deploy-firebase.yml` is renamed `.disabled`), `config.zcf.json`, scratch scripts.

@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "api-debugger": {
-      "command": "node",
-      "args": ["dist/servers/api-debugger.js"]
-    }
-  }
-}

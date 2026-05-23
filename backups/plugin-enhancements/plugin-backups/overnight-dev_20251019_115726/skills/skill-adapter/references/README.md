@@ -1,1 +1,0 @@
-# References for overnight-dev
