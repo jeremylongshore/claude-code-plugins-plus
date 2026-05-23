@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/distributed-tracing-setup",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Set up distributed tracing for microservices",
   "keywords": [
     "tracing",

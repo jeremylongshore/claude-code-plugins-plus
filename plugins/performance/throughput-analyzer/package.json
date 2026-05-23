@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/throughput-analyzer",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Analyze and optimize system throughput",
   "keywords": [
     "throughput",

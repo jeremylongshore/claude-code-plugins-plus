@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/log-aggregation-setup",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Set up log aggregation (ELK, Loki, Splunk)",
   "keywords": [
     "logging",

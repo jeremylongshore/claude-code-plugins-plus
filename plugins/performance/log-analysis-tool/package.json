@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/log-analysis-tool",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Analyze logs for performance insights and issues",
   "keywords": [
     "logs",

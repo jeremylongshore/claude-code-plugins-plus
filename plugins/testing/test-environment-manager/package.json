@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/test-environment-manager",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Manage test environments with Docker Compose, Testcontainers, and environment isolation",
   "keywords": [
     "testing",

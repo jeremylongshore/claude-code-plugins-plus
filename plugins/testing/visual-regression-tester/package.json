@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/visual-regression-tester",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Visual diff testing with Percy, Chromatic, BackstopJS - catch unintended UI changes",
   "keywords": [
     "testing",
