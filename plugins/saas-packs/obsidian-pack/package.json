@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/obsidian-pack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Claude Code skill pack for Obsidian - 24 skills covering plugin development, vault management, and knowledge graphs",
   "main": "README.md",
   "type": "module",

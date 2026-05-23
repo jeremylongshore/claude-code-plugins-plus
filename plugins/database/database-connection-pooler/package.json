@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/database-connection-pooler",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Implement and optimize database connection pooling for improved performance and resource management",
   "keywords": [
     "connection-pool",

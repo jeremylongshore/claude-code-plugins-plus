@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/framecraft",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Generate polished demo videos from a single prompt. Orchestrates Playwright, FFmpeg, and Edge TTS MCP servers to produce 1920x1080 videos with voiceover, transitions, and CSS animations.",
   "keywords": [
     "demo-video",

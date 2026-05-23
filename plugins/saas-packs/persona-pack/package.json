@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/persona-pack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Claude Code skill pack for Persona - 18 skills covering identity verification, KYC compliance, and fraud prevention",
   "main": "README.md",
   "type": "module",

@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/dataset-splitter",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Split datasets for training, validation, and testing",
   "keywords": [
     "split",

@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/n8n-workflow-designer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Design complex n8n workflows with AI assistance - loops, branching, error handling",
   "keywords": [
     "n8n",

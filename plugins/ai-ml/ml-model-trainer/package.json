@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/ml-model-trainer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Train and optimize machine learning models with automated workflows",
   "keywords": [
     "ml",

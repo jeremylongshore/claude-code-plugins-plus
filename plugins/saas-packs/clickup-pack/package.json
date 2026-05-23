@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/clickup-pack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Claude Code skill pack for ClickUp - 24 skills covering project management, task automation, and team collaboration",
   "main": "README.md",
   "type": "module",

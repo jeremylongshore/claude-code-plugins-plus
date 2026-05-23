@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/error-rate-monitor",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Monitor and analyze application error rates",
   "keywords": [
     "errors",

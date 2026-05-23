@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/claude-memory-kit",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "5 Claude Code skills for context management. Save, load, update, share, and audit session memory across resets.",
   "keywords": [
     "memory",

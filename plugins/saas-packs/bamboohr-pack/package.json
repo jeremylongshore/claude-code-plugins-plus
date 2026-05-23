@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/bamboohr-pack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Claude Code skill pack for BambooHR - 18 skills covering HR management, employee data, and people operations",
   "main": "README.md",
   "type": "module",

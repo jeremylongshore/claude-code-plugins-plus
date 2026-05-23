@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/session-security-checker",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Check session security implementation",
   "keywords": [
     "security",

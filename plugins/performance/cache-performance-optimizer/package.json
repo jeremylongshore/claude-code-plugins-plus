@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/cache-performance-optimizer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Optimize caching strategies for improved performance",
   "keywords": [
     "cache",

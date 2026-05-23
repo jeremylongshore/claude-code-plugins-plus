@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/e2e-test-framework",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "End-to-end test automation with Playwright, Cypress, and Selenium for browser-based testing",
   "keywords": [
     "testing",

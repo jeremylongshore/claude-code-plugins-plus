@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/neural-network-builder",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Build and configure neural network architectures",
   "keywords": [
     "neural-networks",

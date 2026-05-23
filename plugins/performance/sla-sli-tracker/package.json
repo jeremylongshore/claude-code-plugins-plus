@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/sla-sli-tracker",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Track SLAs, SLIs, and SLOs for service reliability",
   "keywords": [
     "sla",

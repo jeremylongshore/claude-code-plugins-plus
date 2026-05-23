@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/remofirst-pack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Claude Code skill pack for RemoFirst - 12 skills covering global employment, EOR services, and international payroll",
   "main": "README.md",
   "type": "module",

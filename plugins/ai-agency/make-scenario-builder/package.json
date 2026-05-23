@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/make-scenario-builder",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Create Make.com (Integromat) scenarios with AI assistance - visual automation design",
   "keywords": [
     "make",

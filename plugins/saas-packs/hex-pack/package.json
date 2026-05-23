@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/hex-pack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Claude Code skill pack for Hex - 18 skills covering collaborative data notebooks, SQL analytics, and data apps",
   "main": "README.md",
   "type": "module",

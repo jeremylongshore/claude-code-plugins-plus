@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/assemblyai-pack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Claude Code skill pack for AssemblyAI - 18 skills covering speech-to-text, audio intelligence, and transcription",
   "main": "README.md",
   "type": "module",

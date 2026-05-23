@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/infrastructure-drift-detector",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Detect infrastructure drift from desired state",
   "keywords": [
     "drift",

@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/sql-injection-detector",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Detect SQL injection vulnerabilities",
   "keywords": [
     "security",

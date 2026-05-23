@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/database-health-monitor",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Database plugin for database-health-monitor",
   "keywords": [
     "database",

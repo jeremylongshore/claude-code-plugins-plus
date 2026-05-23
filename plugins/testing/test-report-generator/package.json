@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/test-report-generator",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Generate comprehensive test reports with coverage, trends, and stakeholder-friendly formats",
   "keywords": [
     "testing",

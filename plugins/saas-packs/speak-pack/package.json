@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/speak-pack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Claude Code skill pack for Speak - 24 skills covering AI-powered language learning with speech recognition and personalized tutoring",
   "main": "README.md",
   "type": "module",

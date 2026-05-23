@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/hootsuite-pack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Claude Code skill pack for Hootsuite - 18 skills covering social media management, scheduling, and analytics",
   "main": "README.md",
   "type": "module",

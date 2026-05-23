@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/documenso-pack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Claude Code skill pack for Documenso - 24 skills covering open-source document signing platform",
   "main": "README.md",
   "type": "module",

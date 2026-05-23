@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/elevenlabs-pack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Claude Code skill pack for ElevenLabs - 18 skills covering text-to-speech, voice cloning, and audio AI",
   "main": "README.md",
   "type": "module",

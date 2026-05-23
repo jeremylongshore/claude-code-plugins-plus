@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/grammarly-pack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Claude Code skill pack for Grammarly - 24 skills covering writing assistance, grammar checking, and content style",
   "main": "README.md",
   "type": "module",

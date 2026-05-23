@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/promptbook",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Opt-in Claude Code analytics. After setup consent, Promptbook sends session metrics to promptbook.gg and publishes shareable build cards.",
   "keywords": [
     "analytics",

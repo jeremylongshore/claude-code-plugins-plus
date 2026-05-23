@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/gastown",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Multi-agent orchestrator for Claude Code. Track work with convoys, sling to polecats. The Cognition Engine for AI-powered software factories.",
   "keywords": [
     "multi-agent",

@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/backup-strategy-implementor",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Implement backup strategies for databases and applications",
   "keywords": [
     "backup",

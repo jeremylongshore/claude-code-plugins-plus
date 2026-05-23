@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/database-schema-designer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Design and visualize database schemas with normalization guidance, relationship mapping, and ERD generation",
   "keywords": [
     "database",

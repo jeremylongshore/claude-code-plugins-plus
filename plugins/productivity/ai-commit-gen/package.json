@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/ai-commit-gen",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "AI-powered commit message generator - analyzes your git diff and creates conventional commit messages instantly",
   "keywords": [
     "git",

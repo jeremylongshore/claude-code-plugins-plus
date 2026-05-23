@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/aomi",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Aomi for AI agents — drive the Aomi CLI from natural-language prompts (chat, simulate, sign on-chain transactions with account-abstraction-first execution) and scaffold new Aomi apps from API specs. B",
   "keywords": [
     "aomi",

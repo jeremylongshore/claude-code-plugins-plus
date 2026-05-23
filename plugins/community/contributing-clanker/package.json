@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/contributing-clanker",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Local-only OSS contribution command center with 41 deterministic gates against AI-slop failure modes",
   "keywords": [
     "oss",

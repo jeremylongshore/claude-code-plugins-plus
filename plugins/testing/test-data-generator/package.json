@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/test-data-generator",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Generate realistic test data including users, products, orders, and custom schemas for comprehensive testing",
   "keywords": [
     "testing",

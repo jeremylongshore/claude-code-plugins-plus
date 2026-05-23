@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/wallet-portfolio-tracker",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Track crypto wallets across multiple chains with portfolio analytics and transaction history",
   "keywords": [
     "wallet",

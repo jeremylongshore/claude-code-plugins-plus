@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/shipwright",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Describe your app in plain English — Shipwright builds, tests, and deploys it autonomously via a 9-phase pipeline.",
   "keywords": [
     "app-builder",

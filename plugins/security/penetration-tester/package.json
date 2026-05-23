@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/penetration-tester",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Security testing toolkit with HTTP header analysis, dependency auditing, and static code scanning",
   "keywords": [
     "security",

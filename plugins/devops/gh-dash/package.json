@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/gh-dash",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "GitHub PR dashboard for Claude Code. View PR status, CI/CD progress, bot comments, and merge PRs directly from your terminal.",
   "keywords": [
     "github",

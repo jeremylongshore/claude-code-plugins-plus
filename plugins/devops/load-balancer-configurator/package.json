@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/load-balancer-configurator",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Configure load balancers (ALB, NLB, Nginx, HAProxy)",
   "keywords": [
     "load-balancer",

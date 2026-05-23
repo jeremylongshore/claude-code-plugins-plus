@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/ci-cd-pipeline-builder",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Build CI/CD pipelines for GitHub Actions, GitLab CI, Jenkins, and more",
   "keywords": [
     "ci-cd",

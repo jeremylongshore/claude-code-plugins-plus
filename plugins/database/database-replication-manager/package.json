@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/database-replication-manager",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Manage database replication, failover, and high availability configurations",
   "keywords": [
     "replication",

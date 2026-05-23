@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/langfuse-pack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Claude Code skill pack for Langfuse - 24 skills covering LLM observability, prompt management, and evaluation",
   "main": "README.md",
   "type": "module",

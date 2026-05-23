@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/pm-ai-partner",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "12 PM-specific agent skills, 6 workflow commands, 3 automation hooks for Product Managers",
   "keywords": [
     "product-manager",

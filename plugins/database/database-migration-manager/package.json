@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/database-migration-manager",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Manage database migrations with version control, rollback capabilities, and automated schema evolution tracking",
   "keywords": [
     "database",

@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/database-audit-logger",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Database plugin for database-audit-logger",
   "keywords": [
     "database",

@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/security-test-scanner",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Automated security vulnerability testing covering OWASP Top 10, SQL injection, XSS, CSRF, and authentication issues",
   "keywords": [
     "testing",

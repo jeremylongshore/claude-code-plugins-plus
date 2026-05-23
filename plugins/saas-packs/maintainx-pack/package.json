@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/maintainx-pack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Claude Code skill pack for MaintainX - 24 skills covering CMMS work orders, assets, preventive maintenance, and procedures",
   "main": "README.md",
   "type": "module",

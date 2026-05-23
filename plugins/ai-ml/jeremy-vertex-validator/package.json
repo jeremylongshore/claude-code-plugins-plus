@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/jeremy-vertex-validator",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Production readiness validator for Vertex AI deployments and configurations",
   "keywords": [
     "vertex-ai",

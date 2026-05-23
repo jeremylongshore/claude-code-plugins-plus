@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/fathom-pack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Claude Code skill pack for Fathom - 18 skills covering AI meeting assistant, note-taking, and call summaries",
   "main": "README.md",
   "type": "module",

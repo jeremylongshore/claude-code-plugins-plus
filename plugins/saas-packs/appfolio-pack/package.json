@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/appfolio-pack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Claude Code skill pack for AppFolio - 18 skills covering property management and real estate operations",
   "main": "README.md",
   "type": "module",

@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/fullstack-starter-pack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Complete fullstack development toolkit: React, Express/FastAPI, PostgreSQL scaffolding with AI agents",
   "keywords": [
     "fullstack",

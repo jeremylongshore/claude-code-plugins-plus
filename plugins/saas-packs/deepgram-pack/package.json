@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/deepgram-pack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Claude Code skill pack for Deepgram - 24 skills covering speech-to-text, real-time transcription, and voice intelligence",
   "main": "README.md",
   "type": "module",

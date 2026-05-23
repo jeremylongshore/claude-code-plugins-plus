@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/research-to-deploy",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Enhances web_search Skill by researching best practices and deploying infrastructure automatically",
   "keywords": [
     "deployment",

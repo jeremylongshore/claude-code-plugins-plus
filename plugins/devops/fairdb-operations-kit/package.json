@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/fairdb-operations-kit",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Complete operations kit for FairDB PostgreSQL as a Service - VPS setup, PostgreSQL management, customer provisioning, monitoring, and backup automation",
   "keywords": [
     "fairdb",

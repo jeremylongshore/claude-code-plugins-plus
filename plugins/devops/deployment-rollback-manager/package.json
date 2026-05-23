@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/deployment-rollback-manager",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Manage and execute deployment rollbacks with safety checks",
   "keywords": [
     "rollback",

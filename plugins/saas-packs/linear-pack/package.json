@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/linear-pack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Claude Code skill pack for Linear - 24 skills covering issue tracking, project management, and workflows",
   "main": "README.md",
   "type": "module",

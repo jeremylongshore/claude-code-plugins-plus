@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/pci-dss-validator",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Validate PCI DSS compliance",
   "keywords": [
     "security",

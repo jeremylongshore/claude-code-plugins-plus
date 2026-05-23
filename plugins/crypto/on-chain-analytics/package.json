@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/on-chain-analytics",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Analyze on-chain metrics including whale movements, network activity, and holder distribution",
   "keywords": [
     "on-chain",

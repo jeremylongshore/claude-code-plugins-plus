@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/boycott-filter",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Personal boycott list managed conversationally by your AI agent. Chrome extension warns you on pages from brands you've decided to avoid, with your own reasons.",
   "keywords": [
     "boycott",

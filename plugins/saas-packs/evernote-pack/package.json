@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/evernote-pack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Claude Code skill pack for Evernote - 24 skills covering note management, organization, and productivity",
   "main": "README.md",
   "type": "module",

@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/juicebox-pack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Claude Code skill pack for Juicebox - 24 skills covering people data, enrichment, and contact discovery",
   "main": "README.md",
   "type": "module",

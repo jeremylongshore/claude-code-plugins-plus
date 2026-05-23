@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/zai-cli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Z.AI vision, search, reader, and GitHub exploration via CLI and MCP. Analyze images, search the web, read pages as markdown, explore repos.",
   "keywords": [
     "vision",

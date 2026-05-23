@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/security-audit-reporter",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Generate comprehensive security audit reports",
   "keywords": [
     "security",

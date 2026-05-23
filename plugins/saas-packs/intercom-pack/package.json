@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/intercom-pack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Claude Code skill pack for Intercom - 24 skills covering customer messaging, support automation, and engagement",
   "main": "README.md",
   "type": "module",

@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/search-to-slack",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Enhances web_search Skill by posting formatted research digests to Slack channels",
   "keywords": [
     "slack",

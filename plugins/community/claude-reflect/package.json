@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/claude-reflect",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "Self-learning system for Claude Code that captures corrections and updates CLAUDE.md automatically",
   "keywords": [
     "claude-code",

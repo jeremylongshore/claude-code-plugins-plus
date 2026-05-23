@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/cohere-pack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Claude Code skill pack for Cohere - 24 skills covering NLP APIs, embeddings, and enterprise AI models",
   "main": "README.md",
   "type": "module",

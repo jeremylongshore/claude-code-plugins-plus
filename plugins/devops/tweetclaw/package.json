@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/tweetclaw",
-  "version": "1.5.3",
+  "version": "1.5.4",
   "description": "X/Twitter automation - post, reply, like, retweet, follow, DM, search, extract data, monitor accounts, run giveaways via Xquik REST API.",
   "keywords": [
     "twitter",

@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/runway-pack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Claude Code skill pack for Runway - 18 skills covering AI video generation, creative tools, and generative media",
   "main": "README.md",
   "type": "module",

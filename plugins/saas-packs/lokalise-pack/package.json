@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/lokalise-pack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Claude Code skill pack for Lokalise - 24 skills covering translation management system (TMS) for software localization",
   "main": "README.md",
   "type": "module",

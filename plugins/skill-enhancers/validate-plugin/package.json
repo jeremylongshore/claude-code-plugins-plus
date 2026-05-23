@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/validate-plugin",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Validates Claude Code plugin structure against official Anthropic spec and Intent Solutions enterprise standard",
   "keywords": [
     "validation",

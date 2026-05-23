@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/container-registry-manager",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Manage container registries (ECR, GCR, Harbor)",
   "keywords": [
     "registry",

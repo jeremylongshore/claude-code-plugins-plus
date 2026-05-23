@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/cloud-cost-optimizer",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Optimize cloud costs and generate cost reports",
   "keywords": [
     "cost",

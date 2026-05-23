@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/quicknode-pack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Claude Code skill pack for QuickNode - 18 skills covering blockchain node infrastructure, RPC endpoints, and web3 APIs",
   "main": "README.md",
   "type": "module",

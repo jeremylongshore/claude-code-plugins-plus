@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/auto-scaling-configurator",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Configure auto-scaling policies for applications and infrastructure",
   "keywords": [
     "autoscaling",

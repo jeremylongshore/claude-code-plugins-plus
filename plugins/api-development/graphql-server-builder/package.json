@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/graphql-server-builder",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Build GraphQL servers with schema-first design, resolvers, and subscriptions",
   "keywords": [
     "graphql",

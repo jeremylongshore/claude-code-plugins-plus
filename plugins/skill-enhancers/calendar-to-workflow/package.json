@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/calendar-to-workflow",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Enhances calendar Skills by automating meeting prep, standup notes, and workflow triggers",
   "keywords": [
     "calendar",

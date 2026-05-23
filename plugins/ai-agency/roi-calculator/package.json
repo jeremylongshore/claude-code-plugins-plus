@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/roi-calculator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Calculate and present ROI for AI automation projects",
   "keywords": [
     "roi",

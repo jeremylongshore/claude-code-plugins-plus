@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/local-tts",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Offline text-to-speech via VoxCPM2 — 30 languages, voice design, voice cloning. Runs locally on Apple Silicon.",
   "keywords": [
     "tts",

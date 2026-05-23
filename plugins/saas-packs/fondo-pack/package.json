@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/fondo-pack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Claude Code skill pack for Fondo - 18 skills covering R&D tax credits, startup tax compliance, and financial operations",
   "main": "README.md",
   "type": "module",

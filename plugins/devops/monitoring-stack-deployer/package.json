@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/monitoring-stack-deployer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Deploy monitoring stacks (Prometheus, Grafana, Datadog)",
   "keywords": [
     "monitoring",

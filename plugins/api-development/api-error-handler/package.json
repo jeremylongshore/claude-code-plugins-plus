@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/api-error-handler",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Implement standardized error handling with proper HTTP status codes",
   "keywords": [
     "error-handling",

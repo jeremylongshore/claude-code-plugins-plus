@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/clustering-algorithm-runner",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Run clustering algorithms on datasets",
   "keywords": [
     "clustering",

@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/model-versioning-tracker",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Track and manage model versions",
   "keywords": [
     "versioning",

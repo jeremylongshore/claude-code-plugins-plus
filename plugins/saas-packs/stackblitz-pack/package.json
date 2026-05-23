@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/stackblitz-pack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Claude Code skill pack for StackBlitz - 18 skills covering browser-based IDE, WebContainers, and instant dev environments",
   "main": "README.md",
   "type": "module",

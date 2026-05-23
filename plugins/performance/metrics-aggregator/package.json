@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/metrics-aggregator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Aggregate and centralize performance metrics",
   "keywords": [
     "metrics",

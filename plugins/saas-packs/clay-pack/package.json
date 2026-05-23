@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/clay-pack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Claude Code skill pack for Clay - 30 skills covering data enrichment for sales and marketing",
   "main": "README.md",
   "type": "module",

@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/onenote-pack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Claude Code skill pack for OneNote - 18 skills covering notebook management, content organization, and Microsoft 365 integration",
   "main": "README.md",
   "type": "module",

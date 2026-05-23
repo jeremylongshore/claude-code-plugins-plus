@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/gamma-pack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Claude Code skill pack for Gamma - 24 skills covering AI presentations, documents, and visual content",
   "main": "README.md",
   "type": "module",

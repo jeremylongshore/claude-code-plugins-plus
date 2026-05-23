@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/ai-ml-engineering-pack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Professional AI/ML Engineering toolkit: Prompt engineering, LLM integration, RAG systems, AI safety with 12 expert plugins",
   "keywords": [
     "ai",

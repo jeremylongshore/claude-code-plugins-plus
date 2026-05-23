@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/ssl-certificate-manager",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Manage and monitor SSL/TLS certificates",
   "keywords": [
     "security",

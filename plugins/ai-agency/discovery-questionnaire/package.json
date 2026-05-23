@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/discovery-questionnaire",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Generate custom discovery questionnaires for AI agency prospects",
   "keywords": [
     "discovery",

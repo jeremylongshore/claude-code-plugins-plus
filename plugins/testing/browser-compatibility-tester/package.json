@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/browser-compatibility-tester",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Cross-browser testing with Playwright, BrowserStack, Sauce Labs, LambdaTest, and Kobiton - test across Chrome, Firefox, Safari, Edge on real devices",
   "keywords": [
     "testing",

@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/apify-pack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Claude Code skill pack for Apify - 18 skills covering web scraping, crawling, and data extraction automation",
   "main": "README.md",
   "type": "module",

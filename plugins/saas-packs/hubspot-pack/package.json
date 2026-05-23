@@ -1,6 +1,6 @@
 {
   "name": "@intentsolutionsio/hubspot-pack",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Claude Code skill pack for HubSpot - 10 production-engineer skills covering auth, dedup, lifecycle, deal pipeline, warehouse sync, product events, webhooks, bulk migration, rate limits, and multi-portal agency ops",
   "main": "README.md",
   "type": "module",
