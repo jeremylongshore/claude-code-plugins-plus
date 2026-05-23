@@ -27,6 +27,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+        # fetch-depth=2 + persist-credentials=true required for the
+        # "Catalog format guard" step below — it runs `git fetch origin
+        # <base_ref>` to compare against the PR's merge base. Without
+        # credentials persisted, that fetch errors with "could not read
+        # Username for github.com". Default actions/checkout@v6 behavior
+        # depth=1 doesn't include any history to compare against either.
+        with:
+          fetch-depth: 2
+          persist-credentials: true
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
